@@ -38,7 +38,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $vlsmSystemConfig = $general->getSystemConfig();
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 $fhir = new Fhir($interopConfig['FHIR']['url'], $interopConfig['FHIR']['auth']);
 

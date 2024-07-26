@@ -29,7 +29,7 @@ $query = "SELECT hep.*, fd.facility_name, fd.other_id
 $formResults = $db->rawQuery($query);
 $counter = 0;
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 $url = "/api/events";
 
 $processingErrors = [];

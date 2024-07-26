@@ -23,7 +23,7 @@ $request = AppRegistry::get('request');
 
 try {
     $db->beginTransaction();
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
     $data = $apiService->getJsonFromRequest($request, true);
 
     $labId = $data['labName'] ?? $data['labId'] ?? null;

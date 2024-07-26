@@ -185,8 +185,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control isRequired date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
-                                            <input type="checkbox" name="unreported" id="unreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
 
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
@@ -834,7 +834,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
     function updateAgeInfo()
      {
-          var isChecked = $("#unreported").is(":checked");
+          var isChecked = $("#ageUnreported").is(":checked");
           if(isChecked == true){
                $("#childDob").val("");
                $("#childAge").val("");

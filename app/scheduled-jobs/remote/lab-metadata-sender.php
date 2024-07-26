@@ -58,7 +58,7 @@ try {
         return false;
     }
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     $payload = [
         "transactionId" => $transactionId,

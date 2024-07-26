@@ -3,14 +3,14 @@
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -42,7 +42,7 @@ if (
 }
 
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];

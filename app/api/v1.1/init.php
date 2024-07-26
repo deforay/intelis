@@ -41,7 +41,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-$transactionId = MiscUtility::generateUUID();
+$transactionId = MiscUtility::generateULID();
 $formId = (int) $general->getGlobalConfig('vl_form');
 $authToken = $apiService->getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);

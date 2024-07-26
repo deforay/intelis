@@ -43,7 +43,7 @@ try {
     $sampleCodes = $facilityIds = [];
     $labId = null;
 
-    $transactionId = MiscUtility::generateUUID();
+    $transactionId = MiscUtility::generateULID();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
