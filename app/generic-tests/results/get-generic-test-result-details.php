@@ -150,29 +150,9 @@ try {
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-     $start_date = '';
-     $end_date = '';
-     $t_start_date = '';
-     $t_end_date = '';
-     if (!empty($_POST['sampleCollectionDate'])) {
-          $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-          if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-               $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-          }
-          if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-               $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-          }
-     }
-
-     if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          $s_t_date = explode("to", (string) $_POST['sampleTestDate']);
-          if (isset($s_t_date[0]) && trim($s_t_date[0]) != "") {
-               $t_start_date = DateUtility::isoDateFormat(trim($s_t_date[0]));
-          }
-          if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
-               $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
-          }
-     }
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+[$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -209,6 +189,16 @@ try {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
           }
      }
+
+     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+          if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
+               $sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) = "' . $r_start_date . '"';
+          } else {
+               $sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $r_end_date . '"';
+          }
+     }
+
+
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
           $sWhere[] = ' s.sample_type_id = "' . $_POST['sampleType'] . '"';
      }

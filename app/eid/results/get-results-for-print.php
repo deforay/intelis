@@ -123,7 +123,7 @@ $start_date = '';
 $end_date = '';
 $t_start_date = '';
 $t_end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
+/*if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
     //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
@@ -143,7 +143,11 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
     if (isset($s_t_date[1]) && trim($s_t_date[1]) != "") {
         $t_end_date = DateUtility::isoDateFormat(trim($s_t_date[1]));
     }
-}
+}*/
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+[$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+
 if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
     $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
 }
@@ -178,6 +182,16 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
         $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
     }
 }
+
+if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+    if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
+         $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
+    } else {
+         $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
+    }
+}
+
+
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
 }
