@@ -243,4 +243,11 @@ final class BatchService
         }
         return ['content' => $content, 'labelNewContent' => $labelNewContent, 'displayOrder' => $displayOrder];
     }
+
+    public function getLastInstumentForBatch($testType){
+        $getmachineQuery = "SELECT machine FROM batch_details WHERE test_type= ? ORDER BY `request_created_datetime` DESC limit 1";
+        $machineData = $this->db->rawQueryOne($getmachineQuery, [$testType]);
+        $machine = $machineData['machine'];
+        return $machine;
+    }
 }
