@@ -59,8 +59,8 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$batchCode = (isset($_COOKIE['batchCode']) && $_COOKIE['batchCode'] != '') ? $_COOKIE['batchCode'] : '';
 	$sampleType = (isset($_COOKIE['sampleType']) && $_COOKIE['sampleType'] != '') ? $_COOKIE['sampleType'] : '';
 	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', (string) $_COOKIE['facilityName']) : [];
-	$gender = (isset($_COOKIE['gender']) && $_COOKIE['gender'] != '') ? $_COOKIE['gender'] : '';
-	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
+	$gender = $_COOKIE['gender'] ?? '';
+	$status = $_COOKIE['status'] ?? 'no_result';
 }
 ?>
 <style>
@@ -440,6 +440,9 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			"bServerSide": true,
 			"sAjaxSource": "/vl/results/get-manual-results.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
+				if ($("#status").val() == '') {
+					$("#status").val('no_result');
+				}
 				aoData.push({
 					"name": "batchCode",
 					"value": $("#batchCode").val()
