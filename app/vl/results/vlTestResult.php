@@ -27,11 +27,6 @@ $healthFacilites = $facilitiesService->getHealthFacilities('vl');
 $request = AppRegistry::get('request');
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_COOKIE = _sanitizeInput($request->getCookieParams());
-
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 $testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
@@ -48,17 +43,15 @@ $sampleType = '';
 $facilityName = [];
 $gender = '';
 $status = 'no_result';
-$lastUrl1 = '';
-$lastUrl2 = '';
-if (isset($_SERVER['HTTP_REFERER'])) {
-	$lastUrl1 = strpos((string) $_SERVER['HTTP_REFERER'], "updateVlTestResult.php");
-	$lastUrl2 = strpos((string) $_SERVER['HTTP_REFERER'], "vlTestResult.php");
-}
-if ($lastUrl1 != '' || $lastUrl2 != '') {
-	$collectionDate = (isset($_COOKIE['collectionDate']) && $_COOKIE['collectionDate'] != '') ? $_COOKIE['collectionDate'] : '';
-	$batchCode = (isset($_COOKIE['batchCode']) && $_COOKIE['batchCode'] != '') ? $_COOKIE['batchCode'] : '';
-	$sampleType = (isset($_COOKIE['sampleType']) && $_COOKIE['sampleType'] != '') ? $_COOKIE['sampleType'] : '';
-	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', (string) $_COOKIE['facilityName']) : [];
+
+$serverParams = $request->getServerParams();
+$httpReferer = $serverParams['HTTP_REFERER'] ?? '';
+
+if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpReferer, "vlTestResult.php")) {
+	$collectionDate = $_COOKIE['collectionDate'] ?? '';
+	$batchCode = $_COOKIE['batchCode'] ?? '';
+	$sampleType = $_COOKIE['sampleType'] ?? '';
+	$facilityName = isset($_COOKIE['facilityName']) ? explode(',', (string) $_COOKIE['facilityName']) : [];
 	$gender = $_COOKIE['gender'] ?? '';
 	$status = $_COOKIE['status'] ?? 'no_result';
 }
