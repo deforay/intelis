@@ -824,17 +824,17 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                $("#ageInYears").val("");
                $('#dob').prop('readonly', true);
                $('#ageInYears').prop('readonly', true);
-               $('#dob').removeClass('isRequired');
+               //$('#dob').removeClass('isRequired');
           }
           else{
                $('#dob').prop('readonly', false);
                $('#ageInYears').prop('readonly', false);
-               $('#dob').addClass('isRequired');
+               //$('#dob').addClass('isRequired');
           }
      }
 
     $(document).ready(function() {
-        updateAgeInfo();
+        //updateAgeInfo();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

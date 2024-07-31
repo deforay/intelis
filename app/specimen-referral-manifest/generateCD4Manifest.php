@@ -60,7 +60,7 @@ if (!empty($id)) {
     MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
 
     $globalConfig = $general->getGlobalConfig();
-    $showPatientName = $globalConfig['vl_show_participant_name_in_manifest'];
+    $showPatientName = $globalConfig['cd4_show_participant_name_in_manifest'];
     $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
