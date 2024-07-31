@@ -488,7 +488,7 @@ $state = $geolocationService->getProvinces("yes");
             placeholder: "<?php echo _translate("Select Facilities"); ?>",
             width: '100%'
         });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
+        $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
@@ -518,7 +518,7 @@ $state = $geolocationService->getProvinces("yes");
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
+            $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
         loadVlRequestData();
         //loadPrintedVlRequestData();
         $(".showhideCheckBox").change(function() {

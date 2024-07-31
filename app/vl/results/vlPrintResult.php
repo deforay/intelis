@@ -680,7 +680,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			placeholder: "<?php echo _translate("Select Facilities"); ?>",
 			width: '100%',
 		});
-		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
+		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -710,8 +710,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
-		loadVlRequestData();
+			$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
+			loadVlRequestData();
 
 		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {

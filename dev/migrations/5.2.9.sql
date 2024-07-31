@@ -588,3 +588,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 
 -- Brindha 24-Jul-2024
 ALTER TABLE `batch_details` CHANGE `last_modified_by` `last_modified_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+
+
+-- Jeyabanu 31-Jul-2024
+DELETE FROM `global_config` WHERE name IN ('lockApprovedVlSamples','vl_sample_expiry_after_days','vl_sample_lock_after_days','eid_min_length','lockApprovedEidSamples','eid_sample_expiry_after_days','eid_sample_lock_after_days','covid19ReportType','covid19_min_length','covid19TestsTableInResultsPdf','lockApprovedCovid19Samples','lockApprovedCovid19Samples','covid19ReportQrCode','covid19_sample_expiry_after_days','covid19_sample_lock_after_days','hepatitis_min_length','hepatitis_sample_expiry_after_days','hepatitis_sample_lock_after_days','hepatitis_auto_approve_api_results','tb_min_length','tb_sample_expiry_after_days','tb_sample_lock_after_days','cd4_sample_expiry_after_days','cd4_sample_lock_after_days','cd4_auto_approve_api_results','generic_min_length','generic_max_length','genericTestsTableInResultsPdf','generic_sample_lock_after_days','generic_auto_approve_api_results');

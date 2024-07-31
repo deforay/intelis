@@ -491,7 +491,7 @@ $state = $geolocationService->getProvinces("yes");
             placeholder: "<?php echo _translate("Select Facilities"); ?>",
             width: '100%'
         });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
+        $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
@@ -521,8 +521,8 @@ $state = $geolocationService->getProvinces("yes");
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
-        loadVlRequestData();
+            $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
+            loadVlRequestData();
         /*Hide Province, District Columns */
         //var bVisCol = oTable.fnSettings().aoColumns[7].bVisible;
         // oTable.fnSetColumnVis(7, false);

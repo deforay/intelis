@@ -205,7 +205,7 @@ try {
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
-     //echo $sQuery; die;
+    // echo $sQuery; die;
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

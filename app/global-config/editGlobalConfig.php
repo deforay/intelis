@@ -280,16 +280,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
-										<div class="form-group" style="height:38px;">
-											<label for="manager_email" class="col-lg-4 control-label"><?php echo _translate("Manager Email"); ?></label>
-											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="manager_email" name="manager_email" placeholder="<?php echo _translate('eg. manager1@example.com, manager2@example.com'); ?>" title="<?php echo _translate('Please enter manager email'); ?>" value="<?php echo $arr['manager_email']; ?>" />
-											</div>
-										</div>
-									</div>
-								</div>
+								
 								<div class="row">
 									<div class="col-md-7" style="text-align:center;">
 										<code><?php echo _translate("You can enter multiple emails by separating them with commas"); ?></code>
@@ -409,29 +400,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<h3 class="panel-title"><?php echo _translate("Viral Load Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="show_date" class="col-lg-2 control-label"><?php echo _translate("Date For Patient ART NO"); ?>. </label>
-												<div class="col-lg-10">
-													<br>
-													<input type="radio" class="readPage" id="show_full_date_yes" name="show_date" value="yes" <?php echo ($arr['show_date'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Full Date"); ?>&nbsp;&nbsp;
-													<input type="radio" class="readPage" id="show_full_date_no" name="show_date" value="no" <?php echo ($arr['show_date'] == 'no' || $arr['show_date'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Month and Year"); ?>
-												</div>
-											</div>
-										</div>
-									</div>
-									<!--<div class="row">
-										<div class="col-md-7">
-											<div class="form-group">
-											<label for="auto_approval" class="col-lg-4 control-label">Auto Approval </label>
-											<div class="col-lg-8">
-												<input type="radio" class="" id="auto_approval_yes" name="auto_approval" value="yes" < ?php echo($arr['auto_approval'] == 'yes')?'checked':''; ?>>&nbsp;&nbsp;Yes&nbsp;&nbsp;
-												<input type="radio" class="" id="auto_approval_no" name="auto_approval" value="no" < ?php echo($arr['auto_approval'] == 'no' || $arr['auto_approval'] == '')?'checked':''; ?>>&nbsp;&nbsp;No
-											</div>
-											</div>
-										</div>
-									</div>-->
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -522,22 +491,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="lockApprovedVlSamples" class="col-lg-2 control-label"><?php echo _translate("Lock Approved VL Samples"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select id="lockApprovedVlSamples" name="lockApprovedVlSamples" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_vl_samples']) && $arr['lock_approved_vl_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }
+										
+									<?php 
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -585,29 +540,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									<?php }
-									if (isset($arr['vl_sample_expiry_after_days']) && $arr['vl_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="vl_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['vl_sample_expiry_after_days']; ?>" type="text" id="vl_sample_expiry_after_days" name="vl_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="vl_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['vl_sample_lock_after_days']; ?>" type="text" id="vl_sample_lock_after_days" name="vl_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -730,16 +664,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</code>
 										</div>
 									</div><br />
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID"); ?> <?php echo _translate("Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_min_length" name="eid_min_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -775,45 +700,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									<?php }
-									if (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="lockApprovedEidSamples" class="col-lg-2 control-label"><?php echo _translate("Lock Approved EID Samples"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select id="lockApprovedEidSamples" name="lockApprovedEidSamples" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_eid_samples']) && $arr['lock_approved_eid_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }
-									if (isset($arr['eid_sample_expiry_after_days']) && $arr['eid_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="eid_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['eid_sample_expiry_after_days']; ?>" type="text" id="eid_sample_expiry_after_days" name="eid_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['eid_sample_lock_after_days']; ?>" type="text" id="eid_sample_lock_after_days" name="eid_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -854,17 +741,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<?php if (isset($arr['covid19_report_type']) && $arr['covid19_report_type'] != '') { ?>
-													<label for="covid19ReportType" class="col-lg-2 control-label"><?php echo _translate("Covid-19 Excel Export Report Format"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select name="covid19ReportType" id="covid19ReportType" class="form-control isRequired readPage" title="<?php echo _translate('Please select covid19 report type'); ?>">
-															<option value=""><?php echo _translate("-- Select --"); ?></option>
-															<option value='who' <?php echo (empty($arr['covid19_report_type']) || $arr['covid19_report_type'] == 'standard') ? "selected='selected'" : ""; ?>> <?php echo _translate("Standard"); ?> </option>
-															<option value='rwanda' <?php echo ($arr['covid19_report_type'] == 'rwanda') ? "selected='selected'" : ""; ?>> <?php echo _translate("Rwanda"); ?> </option>
-															<option value='drc' <?php echo ($arr['covid19_report_type'] == 'drc') ? "selected='selected'" : ""; ?>> <?php echo _translate("DRC"); ?> </option>
-														</select>
-													</div>
-												<?php }
+											<?php 
 												if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] != '') { ?>
 													<label for="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="col-lg-2 control-label"><?php echo _translate("Covid-19 Positive Confirmatory Tests Required"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
@@ -928,21 +805,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="covid19_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_min_length" name="covid19_min_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
-												</div>
-												<label for="covid19_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['covid19_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="covid19_max_length" name="covid19_max_length" <?php echo ($arr['covid19_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['covid19_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
 												<label for="covid19_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric isNumeric" id="covid19_min_patient_id_length" name="covid19_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['covid19_min_patient_id_length'] == '') ? '' : $arr['covid19_min_patient_id_length']; ?>" style="max-width:60px;" />
@@ -951,22 +813,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 
-									<?php if (isset($arr['covid19_tests_table_in_results_pdf']) && $arr['covid19_tests_table_in_results_pdf'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Covid19 Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select name="covid19TestsTableInResultsPdf" id="covid19TestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Please select covid19 Tests method in Results Pdf'); ?>">
-															<option value=""><?php echo _translate("-- Select --"); ?></option>
-															<option value='yes' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _translate("Yes"); ?> </option>
-															<option value='no' <?php echo ($arr['covid19_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _translate("No"); ?> </option>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }
+									<?php 
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -983,61 +830,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<?php if (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] != '') { ?>
-												<div class="form-group">
-													<label for="lockApprovedCovid19Samples" class="col-lg-2 control-label"><?php echo _translate("Lock Approved Covid19 Samples"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select id="lockApprovedCovid19Samples" name="lockApprovedCovid19Samples" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-															<option value="no" <?php echo (isset($arr['lock_approved_covid19_samples']) && $arr['lock_approved_covid19_samples'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-														</select>
-													</div>
-												</div>
-											<?php } ?>
-										</div>
-									</div>
-
-									<?php if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="covid19ReportQrCode" class="col-lg-2 control-label"><?php echo _translate("Covid-19 Report QR Code"); ?></label>
-													<div class="col-lg-4">
-														<select id="covid19ReportQrCode" name="covid19ReportQrCode" type="text" class="form-control readPage" title="<?php echo _translate('Please select report QR code yes/no'); ?>?">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-															<option value="no" <?php echo (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }
-									if (isset($arr['covid19_sample_expiry_after_days']) && $arr['covid19_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="covid19_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['covid19_sample_expiry_after_days']; ?>" type="text" id="covid19_sample_expiry_after_days" name="covid19_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="covid19_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['covid19_sample_lock_after_days']; ?>" type="text" id="covid19_sample_lock_after_days" name="covid19_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
+										
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1124,20 +917,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="hepatitis_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_min_length" name="hepatitis_min_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
-												</div>
-												<label for="hepatitis_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="hepatitis_max_length" name="hepatitis_max_length" <?php echo ($arr['hepatitis_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['hepatitis_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
 												<label for="hepatitis_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric isNumeric" id="hepatitis_min_patient_id_length" name="hepatitis_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['hepatitis_min_patient_id_length'] == '') ? '' : $arr['hepatitis_min_patient_id_length']; ?>" style="max-width:60px;" />
@@ -1160,43 +939,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									<?php }
-									if (isset($arr['hepatitis_sample_expiry_after_days']) && $arr['hepatitis_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="hepatitis_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['hepatitis_sample_expiry_after_days']; ?>" type="text" id="hepatitis_sample_expiry_after_days" name="hepatitis_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="hepatitis_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['hepatitis_sample_lock_after_days']; ?>" type="text" id="hepatitis_sample_lock_after_days" name="hepatitis_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="hepatitis_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("Hepatitis Auto Approve API Results"); ?></label>
-												<div class="col-lg-4">
-													<select id="hepatitis_auto_approve_api_results" name="hepatitis_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select Hepatitis Auto Approve API Results'); ?>">
-														<option value=""><?php echo _translate("--Select--"); ?></option>
-														<option value="yes" <?php echo (isset($arr['hepatitis_auto_approve_api_results']) && $arr['hepatitis_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-														<option value="no" <?php echo (isset($arr['hepatitis_auto_approve_api_results']) && $arr['hepatitis_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1269,20 +1013,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="tb_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_min_length" name="tb_min_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
-												</div>
-												<label for="tb_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['tb_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="tb_max_length" name="tb_max_length" <?php echo ($arr['tb_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['tb_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
 												<label for="tb_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric isNumeric" id="tb_min_patient_id_length" name="tb_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['tb_min_patient_id_length'] == '') ? '' : $arr['tb_min_patient_id_length']; ?>" style="max-width:60px;" />
@@ -1305,29 +1035,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									<?php }
-									if (isset($arr['tb_sample_expiry_after_days']) && $arr['tb_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="tb_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['tb_sample_expiry_after_days']; ?>" type="text" id="tb_sample_expiry_after_days" name="tb_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="tb_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['tb_sample_lock_after_days']; ?>" type="text" id="tb_sample_lock_after_days" name="tb_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1435,18 +1144,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									<?php if (isset($arr['cd4_sample_expiry_after_days']) && $arr['cd4_sample_expiry_after_days'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="cd4_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
-													<div class="col-lg-4">
-														<input value="<?php echo $arr['cd4_sample_expiry_after_days']; ?>" type="text" id="cd4_sample_expiry_after_days" name="cd4_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php }
+										
+									<?php 
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -1463,30 +1162,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="cd4_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['cd4_sample_lock_after_days']; ?>" type="text" id="cd4_sample_lock_after_days" name="cd4_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="cd4_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("cd4 Auto Approve API Results"); ?></label>
-												<div class="col-lg-4">
-													<select id="cd4_auto_approve_api_results" name="cd4_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select cd4 Auto Approve API Results'); ?>">
-														<option value=""><?php echo _translate("--Select--"); ?></option>
-														<option value="yes" <?php echo (isset($arr['cd4_auto_approve_api_results']) && $arr['cd4_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-														<option value="no" <?php echo (isset($arr['cd4_auto_approve_api_results']) && $arr['cd4_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1559,36 +1235,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-												<label for="generic_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="generic_min_length" name="generic_min_length" <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['generic_sample_code'] == 'auto') ? '' : $arr['generic_min_length']; ?>" />
-												</div>
-												<label for="generic_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['generic_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="generic_max_length" name="generic_max_length" <?php echo ($arr['generic_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['generic_sample_code'] == 'auto') ? '' : $arr['generic_max_length']; ?>" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<?php if (isset($arr['generic_tests_table_in_results_pdf']) && $arr['generic_tests_table_in_results_pdf'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
-												<div class="form-group">
-													<label for="covid19TestsTableInResultsPdf" class="col-lg-2 control-label"><?php echo _translate("Show Other Tests table in Results PDF"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select name="genericTestsTableInResultsPdf" id="genericTestsTableInResultsPdf" class="form-control readPage isRequired" title="<?php echo _translate('Show Test Results Table?'); ?>">
-															<option value=""><?php echo _translate("-- Select --"); ?></option>
-															<option value='yes' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'yes') ? "selected='selected'" : ""; ?>> <?php echo _translate("Yes"); ?> </option>
-															<option value='no' <?php echo ($arr['generic_tests_table_in_results_pdf'] == 'no') ? "selected='selected'" : ""; ?>> <?php echo _translate("No"); ?> </option>
-														</select>
-													</div>
-												</div>
-											</div>
-										</div>
-									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
 												<label for="generic_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
 													<input type="text" class="form-control forceNumeric isNumeric" id="generic_min_patient_id_length" name="generic_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['generic_min_patient_id_length'] == '') ? '' : $arr['generic_min_patient_id_length']; ?>" style="max-width:60px;" />
@@ -1624,30 +1270,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="generic_sample_lock_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Lock Expiry Days"); ?></label>
-												<div class="col-lg-4">
-													<input value="<?php echo $arr['generic_sample_lock_after_days']; ?>" type="text" id="generic_sample_lock_after_days" name="generic_sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample lock expiry days'); ?>">
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="generic_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("Auto Approve API Results"); ?></label>
-												<div class="col-lg-4">
-													<select id="generic_auto_approve_api_results" name="generic_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select Other Lab Tests Auto Approve API Results'); ?>">
-														<option value=""><?php echo _translate("--Select--"); ?></option>
-														<option value="yes" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Yes"); ?></option>
-														<option value="no" <?php echo (isset($arr['generic_auto_approve_api_results']) && $arr['generic_auto_approve_api_results'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("No"); ?></option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
+									
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1977,10 +1600,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#eid_auto-sample-code-YY').show();
 			}
-			$('#eid_min_length').val('');
 			$('.eid_minlth').hide();
-			$('#eid_min_length').removeClass('isRequired');
-			$('#eid_min_length').prop('readonly', true);
 			$('#eid_max_length').val('');
 			$('.eid_maxlth').hide();
 			$('#eid_max_length').removeClass('isRequired');
@@ -1989,9 +1609,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.eid_autoSample').hide();
 			$('#eid_auto-sample-eg').show();
 			$('#eid_auto-sample-code').show();
-			$('#eid_min_length').val('');
 			$('.eid_minlth').hide();
-			$('#eid_min_length').removeClass('isRequired');
 			$('#min_length').prop('readonly', true);
 			$('#eid_max_length').val('');
 			$('.eid_maxlth').hide();
@@ -2002,10 +1620,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.eid_autoSample').hide();
 			$('#eid_auto-sample-eg').show();
 			$('#eid_auto-sample-code2').show();
-			$('#eid_min_length').val('');
 			$('.eid_minlth').hide();
-			$('#eid_min_length').removeClass('isRequired');
-			$('#eid_min_length').prop('readonly', true);
 			$('#eid_max_length').val('');
 			$('.eid_maxlth').hide();
 			$('#eid_max_length').removeClass('isRequired');
@@ -2014,8 +1629,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		} else {
 			$('#eid_auto-sample-eg').hide();
 			$('.eid_minlth').show();
-			$('#eid_min_length').addClass('isRequired');
-			$('#eid_min_length').prop('readonly', false);
 			$('.eid_maxlth').show();
 			$('#eid_max_length').addClass('isRequired');
 			$('#eid_max_length').prop('readonly', false);
@@ -2032,10 +1645,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#covid19_auto-sample-code-YY').show();
 			}
-			$('#covid19_min_length').val('');
 			$('.covid19_minlth').hide();
-			$('#covid19_min_length').removeClass('isRequired');
-			$('#covid19_min_length').prop('readonly', true);
 			$('#covid19_max_length').val('');
 			$('.covid19_maxlth').hide();
 			$('#covid19_max_length').removeClass('isRequired');
@@ -2044,9 +1654,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.covid19_autoSample').hide();
 			$('#covid19_auto-sample-eg').show();
 			$('#covid19_auto-sample-code').show();
-			$('#covid19_min_length').val('');
 			$('.covid19_minlth').hide();
-			$('#covid19_min_length').removeClass('isRequired');
 			$('#min_length').prop('readonly', true);
 			$('#covid19_max_length').val('');
 			$('.covid19_maxlth').hide();
@@ -2057,10 +1665,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.covid19_autoSample').hide();
 			$('#covid19_auto-sample-eg').show();
 			$('#covid19_auto-sample-code2').show();
-			$('#covid19_min_length').val('');
 			$('.covid19_minlth').hide();
-			$('#covid19_min_length').removeClass('isRequired');
-			$('#covid19_min_length').prop('readonly', true);
 			$('#covid19_max_length').val('');
 			$('.covid19_maxlth').hide();
 			$('#covid19_max_length').removeClass('isRequired');
@@ -2069,8 +1674,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		} else {
 			$('#covid19_auto-sample-eg').hide();
 			$('.covid19_minlth').show();
-			$('#covid19_min_length').addClass('isRequired');
-			$('#covid19_min_length').prop('readonly', false);
 			$('.covid19_maxlth').show();
 			$('#covid19_max_length').addClass('isRequired');
 			$('#covid19_max_length').prop('readonly', false);
@@ -2087,10 +1690,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#hepatitis_auto-sample-code-YY').show();
 			}
-			$('#hepatitis_min_length').val('');
 			$('.hepatitis_minlth').hide();
-			$('#hepatitis_min_length').removeClass('isRequired');
-			$('#hepatitis_min_length').prop('readonly', true);
 			$('#hepatitis_max_length').val('');
 			$('.hepatitis_maxlth').hide();
 			$('#hepatitis_max_length').removeClass('isRequired');
@@ -2099,9 +1699,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.hepatitis_autoSample').hide();
 			$('#hepatitis_auto-sample-eg').show();
 			$('#hepatitis_auto-sample-code').show();
-			$('#hepatitis_min_length').val('');
 			$('.hepatitis_minlth').hide();
-			$('#hepatitis_min_length').removeClass('isRequired');
 			$('#min_length').prop('readonly', true);
 			$('#hepatitis_max_length').val('');
 			$('.hepatitis_maxlth').hide();
@@ -2112,10 +1710,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.hepatitis_autoSample').hide();
 			$('#hepatitis_auto-sample-eg').show();
 			$('#hepatitis_auto-sample-code2').show();
-			$('#hepatitis_min_length').val('');
 			$('.hepatitis_minlth').hide();
-			$('#hepatitis_min_length').removeClass('isRequired');
-			$('#hepatitis_min_length').prop('readonly', true);
 			$('#hepatitis_max_length').val('');
 			$('.hepatitis_maxlth').hide();
 			$('#hepatitis_max_length').removeClass('isRequired');
@@ -2124,8 +1719,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		} else {
 			$('#hepatitis_auto-sample-eg').hide();
 			$('.hepatitis_minlth').show();
-			$('#hepatitis_min_length').addClass('isRequired');
-			$('#hepatitis_min_length').prop('readonly', false);
 			$('.hepatitis_maxlth').show();
 			$('#hepatitis_max_length').addClass('isRequired');
 			$('#hepatitis_max_length').prop('readonly', false);
@@ -2142,10 +1735,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#tb_auto-sample-code-YY').show();
 			}
-			$('#tb_min_length').val('');
 			$('.tb_minlth').hide();
-			$('#tb_min_length').removeClass('isRequired');
-			$('#tb_min_length').prop('readonly', true);
 			$('#tb_max_length').val('');
 			$('.tb_maxlth').hide();
 			$('#tb_max_length').removeClass('isRequired');
@@ -2154,9 +1744,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.tb_autoSample').hide();
 			$('#tb_auto-sample-eg').show();
 			$('#tb_auto-sample-code').show();
-			$('#tb_min_length').val('');
 			$('.tb_minlth').hide();
-			$('#tb_min_length').removeClass('isRequired');
 			$('#min_length').prop('readonly', true);
 			$('#tb_max_length').val('');
 			$('.tb_maxlth').hide();
@@ -2167,10 +1755,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			$('.tb_autoSample').hide();
 			$('#tb_auto-sample-eg').show();
 			$('#tb_auto-sample-code2').show();
-			$('#tb_min_length').val('');
 			$('.tb_minlth').hide();
-			$('#tb_min_length').removeClass('isRequired');
-			$('#tb_min_length').prop('readonly', true);
 			$('#tb_max_length').val('');
 			$('.tb_maxlth').hide();
 			$('#tb_max_length').removeClass('isRequired');
@@ -2179,8 +1764,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		} else {
 			$('#tb_auto-sample-eg').hide();
 			$('.tb_minlth').show();
-			$('#tb_min_length').addClass('isRequired');
-			$('#tb_min_length').prop('readonly', false);
 			$('.tb_maxlth').show();
 			$('#tb_max_length').addClass('isRequired');
 			$('#tb_max_length').prop('readonly', false);
@@ -2204,48 +1787,27 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#generic_auto-sample-code-YY').show();
 			}
-			$('#generic_min_length').val('');
 			$('.generic_minlth').hide();
-			$('#generic_min_length').removeClass('isRequired');
-			$('#generic_min_length').prop('readonly', true);
-			$('#generic_max_length').val('');
 			$('.generic_maxlth').hide();
-			$('#generic_max_length').removeClass('isRequired');
-			$('#generic_max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.generic_autoSample').hide();
 			$('#generic_auto-sample-eg').show();
 			$('#generic_auto-sample-code').show();
-			$('#generic_min_length').val('');
 			$('.generic_minlth').hide();
-			$('#generic_min_length').removeClass('isRequired');
 			$('#min_length').prop('readonly', true);
-			$('#generic_max_length').val('');
 			$('.generic_maxlth').hide();
-			$('#generic_max_length').removeClass('isRequired');
-			$('#generic_max_length').prop('readonly', true);
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.generic_autoSample').hide();
 			$('#generic_auto-sample-eg').show();
 			$('#generic_auto-sample-code2').show();
-			$('#generic_min_length').val('');
 			$('.generic_minlth').hide();
-			$('#generic_min_length').removeClass('isRequired');
-			$('#generic_min_length').prop('readonly', true);
-			$('#generic_max_length').val('');
 			$('.generic_maxlth').hide();
-			$('#generic_max_length').removeClass('isRequired');
-			$('#generic_max_length').prop('readonly', true);
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#generic_auto-sample-eg').hide();
 			$('.generic_minlth').show();
-			$('#generic_min_length').addClass('isRequired');
-			$('#generic_min_length').prop('readonly', false);
 			$('.generic_maxlth').show();
-			$('#generic_max_length').addClass('isRequired');
-			$('#generic_max_length').prop('readonly', false);
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});

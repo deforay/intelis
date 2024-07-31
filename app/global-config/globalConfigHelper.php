@@ -133,11 +133,7 @@ try {
 
 
     /* For Lock approve sample updates */
-    if (isset($_POST['lockApprovedVlSamples']) && trim((string) $_POST['lockApprovedVlSamples']) != "") {
-        $data = array('value' => trim((string) $_POST['lockApprovedVlSamples']));
-        $db->where('name', 'lock_approved_vl_samples');
-        $id = $db->update("global_config", $data);
-    }
+
     if (isset($_POST['vl_monthly_target']) && trim((string) $_POST['vl_monthly_target']) != "") {
         $data = array('value' => trim((string) $_POST['vl_monthly_target']));
         $db->where('name', 'vl_monthly_target');
@@ -148,34 +144,7 @@ try {
         $db->where('name', 'vl_suppression_target');
         $id = $db->update("global_config", $data);
     }
-    if (isset($_POST['lockApprovedEidSamples']) && trim((string) $_POST['lockApprovedEidSamples']) != "") {
-        $data = array('value' => trim((string) $_POST['lockApprovedEidSamples']));
-        $db->where('name', 'lock_approved_eid_samples');
-        $id = $db->update("global_config", $data);
-    }
-    if (isset($_POST['lockApprovedCovid19Samples']) && trim((string) $_POST['lockApprovedCovid19Samples']) != "") {
-        $data = array('value' => trim((string) $_POST['lockApprovedCovid19Samples']));
-        $db->where('name', 'lock_approved_covid19_samples');
-        $id = $db->update("global_config", $data);
-    }
-    if (isset($_POST['covid19ReportQrCode']) && trim((string) $_POST['covid19ReportQrCode']) != "") {
-        $data = array('value' => trim((string) $_POST['covid19ReportQrCode']));
-        $db->where('name', 'covid19_report_qr_code');
-        $id = $db->update("global_config", $data);
-    }
-
-    if (isset($_POST['covid19ReportType']) && trim((string) $_POST['covid19ReportType']) != "") {
-        $data = array('value' => trim((string) $_POST['covid19ReportType']));
-        $db->where('name', 'covid19_report_type');
-        $id = $db->update("global_config", $data);
-        if ($id) {
-            $db->where('name', 'logo');
-            $db->update("global_config", array(
-                "updated_datetime" => $currentDateTime,
-                "updated_by" => $_SESSION['userId']
-            ));
-        }
-    }
+   
     if (isset($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) && trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) != "") {
         $data = array('value' => trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']));
         $db->where('name', 'covid19_positive_confirmatory_tests_required_by_central_lab');
@@ -188,19 +157,8 @@ try {
             ));
         }
     }
-    if (isset($_POST['covid19TestsTableInResultsPdf']) && trim((string) $_POST['covid19TestsTableInResultsPdf']) != "") {
-        $data = array('value' => trim((string) $_POST['covid19TestsTableInResultsPdf']));
-        $db->where('name', 'covid19_tests_table_in_results_pdf');
-        $id = $db->update("global_config", $data);
-        if ($id) {
-            $db->where('name', 'logo');
-            $db->update("global_config", array(
-                "updated_datetime" => $currentDateTime,
-                "updated_by" => $_SESSION['userId']
-            ));
-        }
-    }
-    if (isset($_POST['genericTestsTableInResultsPdf']) && trim((string) $_POST['genericTestsTableInResultsPdf']) != "") {
+   
+    /*if (isset($_POST['genericTestsTableInResultsPdf']) && trim((string) $_POST['genericTestsTableInResultsPdf']) != "") {
         $data = array('value' => trim((string) $_POST['genericTestsTableInResultsPdf']));
         $db->where('name', 'generic_tests_table_in_results_pdf');
         $id = $db->update("global_config", $data);
@@ -211,7 +169,7 @@ try {
                 "updated_by" => $_SESSION['userId']
             ));
         }
-    }
+    }*/
 
     $_SESSION['alertMsg'] = _translate("Configuration updated successfully");
 

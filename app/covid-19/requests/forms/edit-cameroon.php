@@ -406,8 +406,6 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="<?= _translate("Please enter the specimen quality"); ?>">
@@ -416,6 +414,9 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <option value="poor" <?php echo (isset($covid19Info['sample_condition']) && $covid19Info['sample_condition'] == 'poor') ? "selected='selected'" : ""; ?>><?= _translate("Poor"); ?></option>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                           
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="<?= _translate("Please select a Lab Technician"); ?>" style="width:100%;">
@@ -423,8 +424,6 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['lab_technician'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="testingPointField" style="display:none;"><label for=""><?= _translate("Testing Point"); ?> </label></th>
                                             <td class="testingPointField" style="display:none;">
                                                 <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _translate("Please select a Testing Point"); ?>" style="width:100%;">
