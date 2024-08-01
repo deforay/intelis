@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\TestResultsService;
 use App\Utilities\DateUtility;
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\SMTP;
@@ -15,6 +16,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var TestResultsService $general */
+$testResult = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -61,6 +65,8 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
 
       if($storeMail)
       {
+         $updateInfo = $testResult->updateEmailTestResultsInfo('generic-tests',$tempMailData);
+
          $_SESSION['alertMsg'] = 'Email will be sent shortly';
          header('location:email-results.php');
       }
