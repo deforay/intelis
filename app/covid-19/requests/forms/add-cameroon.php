@@ -390,8 +390,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="Please enter the specimen quality">
@@ -400,6 +398,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                     <option value="poor"><?= _translate("Poor"); ?></option>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                            
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
@@ -407,16 +408,15 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $_SESSION['userId'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="testingPointField" style="display:none;"><label for=""><?= _translate("Testing Point"); ?> </label></th>
                                             <td class="testingPointField" style="display:none;">
                                                 <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _translate('Please select a Testing Point'); ?>" style="width:100%;">
                                                 </select>
                                             </td>
+                                          
                                         </tr>
-                                        <tr>
-                                            <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
+                                      <tr>
+                                      <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> <?= _translate("-- Select --"); ?> </option>
@@ -424,7 +424,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                     <option value="no"> <?= _translate("No"); ?> </option>
                                                 </select>
                                             </td>
-
                                             <th scope="row" class="show-rejection" style="display:none;"><?= _translate("Reason for Rejection"); ?></th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please select the Reason for Rejection'); ?>">
@@ -436,9 +435,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <tr class="show-rejection" style="display:none;">
                                             <th scope="row"><?= _translate("Rejection Date"); ?><span class="mandatory">*</span></th>
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" title="<?= _translate('Please select the Rejection Date'); ?>" /></td>
-                                            <td></td>
-                                            <td></td>
+
                                         </tr>
+                                       
                                         <tr>
                                             <td colspan="4">
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">

@@ -96,6 +96,8 @@ $sResult = $db->rawQuery($sQuery);
 $fundingSourceList = $general->getFundingSources();
 $formId = (int) $general->getGlobalConfig('vl_form');
 
+$previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
+
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -188,7 +190,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                             </option>
                             <?php foreach ($testPlatformResult as $machine) {
                                 $labelOrder = $machinesLabelOrder[$machine['instrument_id']]; ?>
-                                <option value="<?php echo $machine['instrument_id']; ?>" data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
+                                <option value="<?php echo $machine['instrument_id']; ?>" <?= ($previousMachine == $machine['instrument_id']) ? 'selected' : '' ?> data-no-of-samples="<?php echo $machine['max_no_of_samples_in_a_batch']; ?>"><?= $machine['machine_name']; ?></option>
                             <?php } ?>
                         </select>
                     </td>
@@ -384,6 +386,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
     sortedTitle = [];
     let batchXhr = null;
     $(document).ready(function() {
+
+        if ($("#machine").val() !== "") {
+            $("#machine").trigger("change");
+        }
 
         $("#testType").select2({
             width: '100%',

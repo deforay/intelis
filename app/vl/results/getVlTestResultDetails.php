@@ -106,6 +106,8 @@ try {
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
      [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+     [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
@@ -141,6 +143,16 @@ try {
                $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
           }
      }
+
+     if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+          if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
+               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
+          } else {
+               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
+          }
+     }
+
+
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
           $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
      }
@@ -193,7 +205,7 @@ try {
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
-     //echo $sQuery; die;
+    // echo $sQuery; die;
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);

@@ -100,12 +100,21 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="width:220px;background:#fff;" />
+													</td>
                                                     <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
+                                                   
+                                                </tr>
+                                                <tr>
                                                     <td><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
@@ -113,8 +122,6 @@ $state = $geolocationService->getProvinces("yes");
                                                         </select>
                                                     </td>
 
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
@@ -123,6 +130,9 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                    
+                                                </tr>
+                                                <tr>
                                                     <td><strong>
                                                             <?php echo _translate("Batch Code"); ?>&nbsp;:
                                                         </strong></td>
@@ -263,14 +273,23 @@ $state = $geolocationService->getProvinces("yes");
                                                 <tr>
                                                     <td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td>
-                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" style="width:220px;background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" style="background:#fff;" />
+													</td>
                                                     <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
+                                                   
+                                                </tr>
+                                                <tr>
                                                     <td><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printLabId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
@@ -278,8 +297,6 @@ $state = $geolocationService->getProvinces("yes");
                                                         </select>
                                                     </td>
 
-                                                </tr>
-                                                <tr>
                                                     <td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
                                                     <td>
                                                         <input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
@@ -288,6 +305,9 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                   
+                                                </tr>
+                                                <tr>
                                                     <td><strong>
                                                             <?php echo _translate("Batch Code"); ?>&nbsp;:
                                                         </strong></td>
@@ -456,8 +476,8 @@ $state = $geolocationService->getProvinces("yes");
         $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _translate("Select Facilities"); ?>"
         });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
-                locale: {
+		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
+            locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
@@ -486,7 +506,7 @@ $state = $geolocationService->getProvinces("yes");
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
+            $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
         loadVlRequestData();
         // loadPrintedVlRequestData();
         $(".showhideCheckBox").change(function() {
@@ -650,6 +670,10 @@ $state = $geolocationService->getProvinces("yes");
                     "name": "sampleTestDate",
                     "value": $("#sampleTestDate").val()
                 });
+                aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#sampleReceivedDate").val()
+				});
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#batchCode").val()

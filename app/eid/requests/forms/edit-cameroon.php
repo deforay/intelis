@@ -853,7 +853,6 @@ if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
     }
 
     $(document).ready(function() {
-        updateAgeInfo();
 
         setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({

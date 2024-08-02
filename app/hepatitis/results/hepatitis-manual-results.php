@@ -50,7 +50,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 
 	$facilityName = (isset($_COOKIE['facilityName']) && $_COOKIE['facilityName'] != '') ? explode(',', (string) $_COOKIE['facilityName']) : [];
 
-	$status = (isset($_COOKIE['status']) && $_COOKIE['status'] != '') ? $_COOKIE['status'] : '';
+	$status = $_COOKIE['status'] ?? 'no_result';
 }
 
 $testingLabs = $facilitiesService->getTestingLabs('hepatitis');

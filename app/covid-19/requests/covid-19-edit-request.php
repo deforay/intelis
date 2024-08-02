@@ -132,6 +132,7 @@ if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_opti
         $covid19Info['patient_surname'] = $general->crypto('decrypt', $covid19Info['patient_surname'], $key);
     }
 }
+$covid19Info['patient_dob'] = DateUtility::humanReadableDateFormat($covid19Info['patient_dob'] ?? '');
 
 $minPatientIdLength = 0;
 if (isset($arr['covid19_min_patient_id_length']) && $arr['covid19_min_patient_id_length'] != "") {
@@ -186,8 +187,6 @@ require_once($fileArray[$arr['vl_form']]);
 
     $(document).ready(function() {
         initDatePicker();
-
-
 
 
 

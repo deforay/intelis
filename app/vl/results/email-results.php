@@ -103,7 +103,7 @@ $batchResult = $db->rawQuery($batchQuery);
 											<option></option>
 											<?php
 											foreach ($facilityResult as $facility) { ?>
-												?>
+												
 												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
 											<?php } ?>
 										</select>
