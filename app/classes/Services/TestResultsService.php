@@ -88,4 +88,33 @@ final class TestResultsService
 
         $this->db->insert('result_import_stats', $data);
     }
+
+    public function updateEmailTestResultsInfo($testType,$emailInfo){
+        $testName = TestsService::getTestTypes();
+        $tableName = $testName[$testType]['tableName'];
+        $primaryKey = $testName[$testType]['primaryKey'];
+        $this->db->where("$primaryKey IN (" . $emailInfo['samples'] . ")");
+        $result = $this->db->get($tableName,NULL,"result_dispatched_datetime,form_attributes,is_result_mail_sent");
+        foreach($result as $val){
+            if(!empty($val['form_attributes'])){
+                    $formAttributes = json_decode($val['form_attributes']);
+                    $formAttributes->email_sent_to = $emailInfo['to_mail'];
+            }
+            else{
+                $formAttributes = array('email_sent_to'=>$emailInfo['to_mail']);
+            }
+
+            $data = array(
+                'is_result_mail_sent' => 'yes',
+                'form_attributes' => json_encode($formAttributes),
+            );
+
+            if($val['result_dispatched_datetime'] == ""){
+                $data['result_dispatched_datetime'] = DateUtility::getCurrentDateTime();
+            }
+
+            $this->db->update($tableName,$data);
+        }
+
+    }
 }

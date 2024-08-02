@@ -126,17 +126,10 @@ try {
             LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
             LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
             LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
-    $start_date = '';
-    $end_date = '';
-    $t_start_date = '';
-    $t_end_date = '';
-    if (!empty($_POST['sampleCollectionDate'])) {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
-    }
 
-    if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-        [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate']);
-    }
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+[$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
 
     if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
         $sWhere[] = ' f.facility_district_id = "' . $_POST['district'] . '"';
@@ -171,6 +164,16 @@ try {
             $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
         }
     }
+
+    if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
+        if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
+             $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
+        } else {
+             $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
+        }
+   }
+
+   
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
     }

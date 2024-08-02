@@ -801,7 +801,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
-          updateAgeInfo();
 
           $("#vlResult").trigger('change');
 

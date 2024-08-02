@@ -96,20 +96,27 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+													</td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
+                                                   
+                                                </tr>
+                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-                                                </tr>
-                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="childId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
@@ -118,12 +125,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="childName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                </tr>
+                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="batchCode" name="batchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                                                     </td>
                                                 </tr>
-
                                                 <tr>
                                                     <td colspan="6">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
                                                         &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
@@ -256,23 +264,30 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
-                                                        <input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" />
+                                                        <input type="text" id="printSampleTestDate" name="printSampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                                                     </td>
+                                                    <td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+													</td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
+                                                    
+
+                                                </tr>
+                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $labsDropdown; ?>
                                                         </select>
                                                     </td>
-
-                                                </tr>
-                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Child ID"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="printChildId" name="childId" class="form-control" placeholder="<?php echo _translate('Enter Child ID'); ?>" style="background:#fff;" />
@@ -281,6 +296,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
+                                                   
+                                                </tr>
+                                                <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
                                                         <input type="text" id="printBatchCode" name="printBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
@@ -469,7 +487,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         $("#facility,#printFacility, #labId, #printLabId").select2({
             placeholder: "<?php echo _translate("Select Facilities"); ?>"
         });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
+        $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printsampleReceivedDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
                     format: 'DD-MMM-YYYY',
@@ -499,7 +517,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-        $('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
+        $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
         loadVlRequestData();
 
 
@@ -697,6 +715,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "value": $("#sampleTestDate").val()
                 });
                 aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#sampleReceivedDate").val()
+				});
+                aoData.push({
                     "name": "batchCode",
                     "value": $("#batchCode").val()
                 });
@@ -844,6 +866,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "name": "sampleTestDate",
                     "value": $("#printSampleTestDate").val()
                 });
+                aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#printSampleReceivedDate").val()
+				});
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#printBatchCode").val()

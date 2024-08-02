@@ -90,7 +90,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
 													</td>
 													<!--<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 													<td>
@@ -129,7 +129,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -146,7 +146,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -154,7 +154,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Testing Labs"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
@@ -165,7 +165,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;">
+														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -185,18 +185,23 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
 													</td>
+													<td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+													</td>
+
+												</tr>
+												<tr>
 													<td><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="patientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
-
-												</tr>
-												<tr>
-
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
@@ -356,21 +361,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
 													</td>
-													<!--<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="printBatchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-															<?php
-															foreach ($batResult as $code) {
-															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-															<?php
-															}
-															?>
-														</select>
-													</td>-->
 
 													<td><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
@@ -394,7 +386,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select style="width:220px;" class="form-control" id="printSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select class="form-control" id="printSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -411,7 +403,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -419,7 +411,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Testing Labs"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple" style="width:220px;">
+														<select class="form-control" id="printLabId" name="printLabId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
@@ -430,7 +422,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;">
+														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -450,16 +442,23 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<input type="text" id="printSampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="printSampleTestDate" name="printSampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
 													</td>
 													<td><strong>
+															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+														</strong></td>
+													<td>
+														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+													</td>
+													
+												</tr>
+												<tr>
+												<td><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<input type="text" id="printPatientId" name="patientId" class="form-control" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
 													</td>
-												</tr>
-												<tr>
 													<td><strong>
 															<?php echo _translate("Patient Name"); ?>&nbsp;:
 														</strong></td>
@@ -670,15 +669,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 
 		$("#state, #printState").select2({
-			placeholder: "<?php echo _translate("Select Province"); ?>"
+			placeholder: "<?php echo _translate("Select Province"); ?>",
+			width: '100%',
 		});
 		$("#district, #printDistrict").select2({
-			placeholder: "<?php echo _translate("Select District"); ?>"
+			placeholder: "<?php echo _translate("Select District"); ?>",
+			width: '100%',
 		});
 		$("#facility,#printFacility, #labId, #printLabId").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+			placeholder: "<?php echo _translate("Select Facilities"); ?>",
+			width: '100%',
 		});
-		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').daterangepicker({
+		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
 					format: 'DD-MMM-YYYY',
@@ -708,8 +710,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$('#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate').val("");
-		loadVlRequestData();
+			$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
+			loadVlRequestData();
 
 		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {
@@ -898,6 +900,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					"value": $("#sampleTestDate").val()
 				});
 				aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#sampleReceivedDate").val()
+				});
+				aoData.push({
 					"name": "fundingSource",
 					"value": $("#fundingSource").val()
 				});
@@ -1059,6 +1065,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				aoData.push({
 					"name": "sampleTestDate",
 					"value": $("#printSampleTestDate").val()
+				});
+				aoData.push({
+					"name": "sampleReceivedDate",
+					"value": $("#printSampleReceivedDate").val()
 				});
 				aoData.push({
 					"name": "fundingSource",

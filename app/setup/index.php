@@ -428,22 +428,25 @@ $testName = TestsService::getTestTypes();
       }
 
       function getTestingLabs() {
+       
         if ($('#instanceType').val() == 'vluser') {
-          $.blockUI();
-          $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
-              remoteURL: $('#remoteUrl').val()
-            },
-            function(data) {
-              $.post("/includes/getTestingLabOptions.php",
-                function(data) {
-                  if (data != 0) {
-                    $("#testingLab").html(data);
-                    $.unblockUI();
-                  }
-                });
-            });
+          if($('#remoteUrl').val() != ""){
+            $.blockUI();
+          
+            $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
+                remoteURL: $('#remoteUrl').val()
+              },
+              function(data) {
+                $.post("/includes/getTestingLabOptions.php",
+                  function(data) {
+                    if (data != 0) {
+                      $("#testingLab").html(data);
+                      $.unblockUI();
+                    }
+                  });
+              });
 
-
+          }
         }
       }
 

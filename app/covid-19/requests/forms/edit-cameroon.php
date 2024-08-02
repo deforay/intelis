@@ -249,7 +249,8 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                     <tr>
                                         <th scope="row"><label for="dob"><?= _translate("Date of Birth"); ?> <span class="mandatory">*</span></label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Date of Birth"); ?>" title="<?= _translate("Please enter Date of birth"); ?>" style="width:100%;" onchange="getAge();" value="<?php echo $covid19Info['patient_dob']; ?>" <?php if($ageInfo=="ageUnreported") echo "readonly"; ?> />
+                                            <input type="text" name="dob" id="dob" value="<?= $covid19Info['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
+
                                             <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if($ageInfo=="ageUnreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Case Age (years)"); ?></th>
@@ -405,8 +406,6 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <?= $general->generateSelectOptions($testingLabs, $covid19Info['lab_id'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <td><label for="specimenQuality"><?= _translate("Specimen Quality"); ?></label></td>
                                             <td>
                                                 <select class="form-control" id="specimenQuality" name="specimenQuality" title="<?= _translate("Please enter the specimen quality"); ?>">
@@ -415,6 +414,9 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <option value="poor" <?php echo (isset($covid19Info['sample_condition']) && $covid19Info['sample_condition'] == 'poor') ? "selected='selected'" : ""; ?>><?= _translate("Poor"); ?></option>
                                                 </select>
                                             </td>
+                                        </tr>
+                                        <tr>
+                                           
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="<?= _translate("Please select a Lab Technician"); ?>" style="width:100%;">
@@ -422,8 +424,6 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                     <?= $general->generateSelectOptions($labTechniciansResults, $covid19Info['lab_technician'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="testingPointField" style="display:none;"><label for=""><?= _translate("Testing Point"); ?> </label></th>
                                             <td class="testingPointField" style="display:none;">
                                                 <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _translate("Please select a Testing Point"); ?>" style="width:100%;">
@@ -824,18 +824,17 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                $("#ageInYears").val("");
                $('#dob').prop('readonly', true);
                $('#ageInYears').prop('readonly', true);
-               $('#dob').removeClass('isRequired');
+               //$('#dob').removeClass('isRequired');
           }
           else{
                $('#dob').prop('readonly', false);
                $('#ageInYears').prop('readonly', false);
-               $('#dob').addClass('isRequired');
+               //$('#dob').addClass('isRequired');
           }
      }
 
     $(document).ready(function() {
-        updateAgeInfo();
-
+        //updateAgeInfo();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
@@ -1105,7 +1104,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
             $('.testNameOther' + id).hide();
         }
     }
-    $('#editCovid19RequestForm').keypress((e) => { 
+    $('#editCovid19RequestForm').keypress((e) => {
         // Enter key corresponds to number 13 
         if (e.which === 13) {
             e.preventDefault(); 
