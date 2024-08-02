@@ -112,7 +112,14 @@ foreach ($commonResult as $key => $result) {
 $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
 $userResult = $usersService->getActiveUsers($facilityMap, $updatedDateTime);
 $labTechniciansList = [];
+$userList = [];
 foreach ($userResult as $row) {
+    $userList[] = array(
+        'user_id'       => $row['user_id'],
+        'user_name'     => $row['user_name'],
+        'email'         => $row['email'],
+        'phone_number'  => $row['phone_number'],
+    );
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
 
@@ -132,6 +139,7 @@ $data['implementingPartnerList'] = $implementingPartnerList;
 $data['fundingSourceList'] = $general->generateSelectOptionsAPI($fundingSourceList);
 $data['nationalityList'] = $nationalityList;
 $data['labTechniciansList'] = $general->generateSelectOptionsAPI($labTechniciansList);
+$data['userList'] = $userList;
 $data['sampleStatusList'] = $general->generateSelectOptionsAPI($statusList);
 
 $statusFilterList = $general->generateSelectOptionsAPI($general->getSampleStatus(true));
