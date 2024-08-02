@@ -81,7 +81,18 @@ $remoteUrl = $general->getRemoteURL();
     let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
     let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
 
-
+    $('.richtextarea').summernote({
+        toolbar: [
+            // [groupName, [list of button]]
+            ['style', ['bold', 'italic', 'underline', 'clear']],
+            ['font', ['strikethrough', 'superscript', 'subscript']],
+            ['fontsize', ['fontsize']],
+            ['color', ['color']],
+            ['para', ['ul', 'ol', 'paragraph']],
+            ['height', ['height']]
+        ],
+        height : 200
+    });
 
     <?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
         remoteSync = true;

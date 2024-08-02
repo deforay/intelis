@@ -209,7 +209,7 @@ sort($fileList);
 										<?php echo _translate("Description/Comment to add in Test Result"); ?>
 									</label>
 									<div class="col-lg-7">
-										<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'></textarea>
+										<textarea class="form-control richtextarea" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'></textarea>
 									</div>
 								</div>
 							</div>
@@ -560,18 +560,6 @@ sort($fileList);
 	tableRowId = 2;
 
 	$(document).ready(function() {
-		$('#additionalText').summernote({
-			toolbar: [
-				// [groupName, [list of button]]
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['font', ['strikethrough', 'superscript', 'subscript']],
-				['fontsize', ['fontsize']],
-				['color', ['color']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['height', ['height']]
-			]
-		});
-
 
 		$(".select2").select2({
 			width: '100%',
