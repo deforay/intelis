@@ -552,9 +552,17 @@ spinner "$pid"
 wait $pid
 log_action "Database migrations and post-update tasks completed."
 
-for script in "${vlsm_path}/run-once/*.php"; do
-    php $script
-done
+# Check if there are any PHP scripts in the run-once directory
+run_once_scripts=("${vlsm_path}/run-once/"*.php)
+
+if [ -e "${run_once_scripts[0]}" ]; then
+    for script in "${run_once_scripts[@]}"; do
+        php $script
+    done
+else
+    echo "No scripts found in the run-once directory."
+    log_action "No scripts found in the run-once directory."
+fi
 
 # Ask User to Run 'maintenance' Scripts
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then

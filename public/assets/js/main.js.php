@@ -80,7 +80,7 @@ $remoteUrl = $general->getRemoteURL();
     let remoteSync = false;
     let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
     let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
-    
+
     function callSampleCodeGenerator() {
         $.ajax({
             url: "/scheduled-jobs/sample-code-generator.php"
@@ -680,18 +680,18 @@ $remoteUrl = $general->getRemoteURL();
 
 
 
-	    $('.richtextarea').summernote({
-	        toolbar: [
-	            // [groupName, [list of button]]
-	            ['style', ['bold', 'italic', 'underline', 'clear']],
-	            ['font', ['strikethrough', 'superscript', 'subscript']],
-	            ['fontsize', ['fontsize']],
-	            ['color', ['color']],
-	            ['para', ['ul', 'ol', 'paragraph']],
-	            ['height', ['height']]
-	        ],
-	        height : 200
-	    });
+        $('.richtextarea').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
+            height: 200
+        });
 
 
         $(".allMenu").removeClass('active');
