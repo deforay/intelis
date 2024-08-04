@@ -27,9 +27,9 @@ abstract class AbstractTestService
     {
         $this->db = $db;
         $this->commonService = $commonService;
-        $this->table = $this->table ?? TestsService::getTestTableName($this->testType);
-        $this->primaryKey = $this->primaryKey ?? TestsService::getTestPrimaryKeyColumn($this->testType);
-        $this->shortCode = $this->shortCode ?? TestsService::getTestShortCode($this->testType);
+        $this->table ??= TestsService::getTestTableName($this->testType);
+        $this->primaryKey ??= TestsService::getTestPrimaryKeyColumn($this->testType);
+        $this->shortCode ??= TestsService::getTestShortCode($this->testType);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);
@@ -146,6 +146,8 @@ abstract class AbstractTestService
                     $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['monthYear'];
                 } elseif ($sampleCodeFormat == 'YY') {
                     $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix . $sampleCodeGenerator['year'];
+                } else {
+                    $sampleCodeGenerator['sampleCodeFormat'] = $remotePrefix . $prefix;
                 }
 
                 $sampleCodeGenerator['sampleCode'] = $sampleCodeGenerator['sampleCodeFormat'] . $sampleCodeGenerator['maxId'];

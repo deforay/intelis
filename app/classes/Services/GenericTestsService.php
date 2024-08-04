@@ -25,8 +25,8 @@ final class GenericTestsService extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
+            $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
 
-            $params['prefix'] = $params['testType'] ?? $this->shortCode;
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {

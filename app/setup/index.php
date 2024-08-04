@@ -428,11 +428,11 @@ $testName = TestsService::getTestTypes();
       }
 
       function getTestingLabs() {
-       
+
         if ($('#instanceType').val() == 'vluser') {
-          if($('#remoteUrl').val() != ""){
+          if ($('#remoteUrl').val() != "") {
             $.blockUI();
-          
+
             $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
                 remoteURL: $('#remoteUrl').val()
               },

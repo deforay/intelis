@@ -23,7 +23,7 @@ final class TbService extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
-            $params['prefix'] = $params['prefix'] ?? $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
+            $params['prefix'] ??= $globalConfig['tb_sample_code_prefix'] ?? $this->shortCode;
 
             try {
                 return $this->generateSampleCode($this->table, $params);

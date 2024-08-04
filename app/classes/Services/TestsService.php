@@ -2,7 +2,14 @@
 
 namespace App\Services;
 
+use App\Services\TbService;
+use App\Services\VlService;
+use App\Services\CD4Service;
+use App\Services\EidService;
 use InvalidArgumentException;
+use App\Services\Covid19Service;
+use App\Services\HepatitisService;
+use App\Services\GenericTestsService;
 
 final class TestsService
 {
@@ -17,7 +24,8 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => VlService::class
             ],
             'recency' => [
                 'testName' => _translate('HIV Recency'),
@@ -27,7 +35,8 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => VlService::class
             ],
             'cd4' => [
                 'testName' => _translate('CD4'),
@@ -37,7 +46,8 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => CD4Service::class
             ],
             'eid' => [
                 'testName' => _translate('Early Infant Diagnosis'),
@@ -47,7 +57,8 @@ final class TestsService
                 'patientId' => 'child_id',
                 'patientFirstName' => 'child_name',
                 'patientLastName' => 'child_surname',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => EidService::class
             ],
             'covid19' => [
                 'testName' => _translate('Covid-19'),
@@ -57,7 +68,8 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => Covid19Service::class
             ],
             'hepatitis' => [
                 'testName' => _translate('Hepatitis'),
@@ -67,7 +79,8 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => HepatitisService::class
             ],
             'tb' => [
                 'testName' => _translate('Tubercolosis'),
@@ -77,7 +90,8 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => TbService::class
             ],
             'generic-tests' => [
                 'testName' => _translate('Other Tests'),
@@ -87,7 +101,8 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
-                'specimenType' => 'specimen_type'
+                'specimenType' => 'specimen_type',
+                'serviceClass' => GenericTestsService::class
             ]
         ];
     }
@@ -135,6 +150,11 @@ final class TestsService
     public static function getSpecimenTypeColumn(string $testType): string
     {
         return self::getTestTypes()[$testType]['specimenType'] ?? throw new InvalidArgumentException("Invalid test type key");
+    }
+
+    public static function getTestServiceClass(string $testType): string
+    {
+        return self::getTestTypes()[$testType]['serviceClass'] ?? throw new InvalidArgumentException("Invalid test type key");
     }
 
     public static function getAllTableNames(): array

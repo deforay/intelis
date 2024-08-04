@@ -1,4 +1,4 @@
-logs#!/bin/bash
+#!/bin/bash
 
 # To use this script:
 # cd ~;

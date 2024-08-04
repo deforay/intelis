@@ -22,6 +22,13 @@ $timeZone = $_SESSION['APP_TIMEZONE'];
 $schedule = new Schedule();
 
 
+// Generate Sample Codes
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/app/scheduled-jobs/sample-code-generator.php")
+    ->everyMinute()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Generating sample codes');
+
 // DB Backup
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/db-backups.php")
     ->everySixHours()

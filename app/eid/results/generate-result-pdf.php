@@ -83,7 +83,6 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                     LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner
                     LEFT JOIN instruments as i ON i.instrument_id = vl.instrument_id
-                    LEFT JOIN instrument_machines as im ON im.config_machine_name = vl.eid_test_platform
                     LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
                     WHERE vl.eid_id IN(" . $_POST['id'] . ")";
 } else {
