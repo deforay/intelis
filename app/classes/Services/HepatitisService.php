@@ -34,7 +34,7 @@ final class HepatitisService extends AbstractTestService
         'negat'
     ];
 
-    protected string $testType = 'hepatitis';
+    public string $testType = 'hepatitis';
 
 
     public function getSampleCode($params)
@@ -49,7 +49,7 @@ final class HepatitisService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

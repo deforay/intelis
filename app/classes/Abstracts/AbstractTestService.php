@@ -15,13 +15,13 @@ use App\Exceptions\SystemException;
 
 abstract class AbstractTestService
 {
-    protected DatabaseService $db;
-    protected CommonService $commonService;
-    protected int $maxTries = 5; // Max tries for generating Sample ID
-    protected string $table;
-    protected string $primaryKey;
-    protected string $testType;
-    protected string $shortCode;
+    public DatabaseService $db;
+    public CommonService $commonService;
+    public int $maxTries = 5; // Max tries for generating Sample ID
+    public string $table;
+    public string $primaryKey;
+    public string $testType;
+    public string $shortCode;
 
     public function __construct(DatabaseService $db, CommonService $commonService)
     {

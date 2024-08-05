@@ -13,7 +13,7 @@ use App\Abstracts\AbstractTestService;
 
 final class EidService extends AbstractTestService
 {
-    protected string $testType = 'eid';
+    public string $testType = 'eid';
 
 
     public function getSampleCode($params)
@@ -28,7 +28,7 @@ final class EidService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

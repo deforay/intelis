@@ -13,7 +13,7 @@ use App\Abstracts\AbstractTestService;
 
 final class TbService extends AbstractTestService
 {
-    protected string $testType = 'tb';
+    public string $testType = 'tb';
 
 
     public function getSampleCode($params)

@@ -69,7 +69,7 @@ try {
                     'provinceCode' => $item['province_code'] ?? null,
                     'testType' => $item['test_type'],
                     'sampleCodeFormat' => $item['sample_code_format'] ?? 'MMYY',
-                    'prefix' => $item['prefix'] ?? 'T',
+                    'prefix' => $item['prefix'] ?? $testTypeService->shortCode ?? 'T',
                     'insertOperation' => true,
                 ];
 
