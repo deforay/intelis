@@ -476,11 +476,12 @@ final class VlService extends AbstractTestService
             $id = 0;
         }
         if ($returnSampleData === true) {
+            $sampleCodeData = $this->commonService->processSampleCodeQueue(uniqueIds: $uniqueId, parallelProcess: true);
             return [
                 'id' => max($id, 0),
-                'uniqueId' => $tesRequestData['unique_id'] ?? null,
-                'sampleCode' => $tesRequestData['sample_code'] ?? null,
-                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+                'uniqueId' => $sampleCodeData[$uniqueId]['unique_id'] ?? null,
+                'sampleCode' => $sampleCodeData[$uniqueId]['sample_code'] ?? null,
+                'remoteSampleCode' => $sampleCodeData[$uniqueId]['remote_sample_code'] ?? null
             ];
         } else {
             return max($id, 0);
