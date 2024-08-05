@@ -262,7 +262,7 @@ try {
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : "",
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
 		'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		//'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status' => $status,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (!empty($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
@@ -276,9 +276,22 @@ try {
 	$getPrevResult = $db->getOne('form_covid19');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
 		$covid19Data['result_modified'] = "yes";
+
+		$reasonForChangesArr = array(
+			'user' => $_SESSION['userId'] ?? $_POST['userId'],
+			'dateOfChange' => DateUtility::getCurrentDateTime(),
+			'previousResult' => $getPrevResult['result'],
+			'previousResultStatus' => $getPrevResult['result_status'],
+			'reasonForChange' => $_POST['reasonForChanging']
+	    );
+
+		$reasonForChanges = json_encode($reasonForChangesArr);
 	} else {
 		$covid19Data['result_modified'] = "no";
 	}
+
+	$covid19Data['reason_for_changing'] = $reasonForChanges ?? null;
+
 
 	if (!empty($_POST['labId'])) {
 		$facility = $facilitiesService->getFacilityById($_POST['labId']);

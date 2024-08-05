@@ -203,6 +203,7 @@ if (!empty($result)) {
           $result['labName'] = '';
      }
 
+
      //Set Age
      $age = DateUtility::calculatePatientAge($result);
 
@@ -471,6 +472,22 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:1px;border-bottom:2px solid #d3d3d3;"></td>';
+     $html .= '</tr>';
+     $modified = "No";
+     if($result['result_modified']=="yes"){
+          $modified = "Yes";
+
+          $resultHistory = json_decode($result['reason_for_result_changes']);
+          $dateOfModified = $resultHistory->dateOfChange;
+          $prevResult = $resultHistory->previousResult;
+
+     }
+     $html .= '<tr>';
+     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
+     if($modified=='Yes' && ($result['reason_for_result_changes']!="") && $resultHistory->dateOfChange!=""){
+          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified).'</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult.' cp/mL</td>';
+     }
      $html .= '</tr>';
 
      $html .= '<tr>';

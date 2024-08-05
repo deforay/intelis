@@ -48,6 +48,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					vl.control_vl_testing_type,
 					vl.coinfection_type,
 					vl.reason_for_vl_testing_other,
+					vl.reason_for_result_changes,
 					l_f.facility_name as labName,
 					l_f.report_format as reportFormat,
 					l_f.facility_attributes as vl_facility_attributes,
@@ -91,7 +92,6 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	//LoggerUtility::log('info', $searchQuery);
 	$requestResult = $db->query($searchQuery);
 }
-
 
 if (empty($requestResult) || !$requestResult) {
 	return null;

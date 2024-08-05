@@ -155,7 +155,7 @@ try {
      $hivDetection = $processedResults['hivDetection'];
      $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
-     $reasonForChanges = null;
+    /* $reasonForChanges = null;
      $allChange = [];
      if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
           $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
@@ -169,8 +169,12 @@ try {
      }
      if (!empty($allChange)) {
           $reasonForChanges = json_encode($allChange);
-     }
+     }*/
      //set vl test reason
+   
+   // echo $reasonForChanges; die;
+     
+
      if (isset($_POST['reasonForVLTesting']) && trim((string) $_POST['reasonForVLTesting']) != "") {
           if (!is_numeric($_POST['reasonForVLTesting'])) {
                $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons WHERE test_reason_name= ?";
@@ -289,7 +293,6 @@ try {
           'result_approved_datetime' => DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true),
           'date_test_ordered_by_physician' => DateUtility::isoDateFormat($_POST['dateOfDemand'] ?? ''),
           'lab_tech_comments' => $_POST['labComments'] ?? null,
-          'reason_for_result_changes' => $reasonForChanges ?? null,
           'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
           'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,
           'vl_test_number' => $_POST['viralLoadNo'] ?? null,
@@ -298,6 +301,28 @@ try {
           'manual_result_entry' => 'yes',
           'last_modified_by' => $_SESSION['userId'] ?? $_POST['userId'] ?? null
      );
+
+     $db->where('vl_sample_id', $_POST['vlSampleId']);
+     $getPrevResult = $db->getOne('form_vl');
+     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
+          $vlData['result_modified'] = "yes";
+
+          $reasonForChangesArr = array(
+                                   'user' => $_SESSION['userId'] ?? $_POST['userId'],
+                                   'dateOfChange' => DateUtility::getCurrentDateTime(),
+                                   'previousResult' => $getPrevResult['result'],
+                                   'previousResultStatus' => $getPrevResult['result_status'],
+                                   'reasonForChange' => $_POST['reasonForResultChanges']
+                              );
+
+          $reasonForChanges = json_encode($reasonForChangesArr);
+
+     } else {
+          $vlData['result_modified'] = "no";
+          $reasonForChanges = null;
+     }
+     
+     $vlData['reason_for_result_changes'] = $reasonForChanges ?? null;
 
      $formAttributes = [
           'applicationVersion' => $general->getSystemConfig('sc_version'),
@@ -337,13 +362,7 @@ try {
 
      $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
      $vlData['form_attributes'] = $db->func($formAttributes);
-     $db->where('vl_sample_id', $_POST['vlSampleId']);
-     $getPrevResult = $db->getOne('form_vl');
-     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $finalResult) {
-          $vlData['result_modified'] = "yes";
-     } else {
-          $vlData['result_modified'] = "no";
-     }
+     
 
      $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
      $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';

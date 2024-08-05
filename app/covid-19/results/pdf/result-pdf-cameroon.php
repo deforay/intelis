@@ -301,6 +301,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COUNTY</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labCounty']) . '</td>';
         $html .= '</tr>';
+        
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
@@ -381,6 +382,26 @@ if (!empty($requestResult)) {
         $html .= '<tr>';
         $html .= '<td colspan="4" style="line-height:17px;font-size:11px;text-align:left;"><span style="font-weight:bold;">DATE RESULTS RELEASED :</span> ' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
         $html .= '</tr>';
+
+
+        $modified = "No";
+        $dateOfModified = "";
+        $reasonForChange = "";
+        if($result['result_modified']=="yes"){
+            $modified = "Yes";
+
+            $resultHistory = json_decode($result['reason_for_changing']);
+            $dateOfModified = $resultHistory->dateOfChange;
+            $prevResult = $covid19Results[$resultHistory->previousResult];
+        }
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
+        if($modified=='Yes' && ($result['reason_for_changing']!="") && $resultHistory->dateOfChange!=""){
+            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified).'</td>';
+            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult.'</td>';
+        }
+        $html .= '</tr>';
+
 
         if ($result['reason_for_sample_rejection'] != '') {
             $html .= '<tr>';

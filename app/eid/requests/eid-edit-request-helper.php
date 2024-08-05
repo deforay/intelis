@@ -297,6 +297,7 @@ try {
 		$instrumentId = $platForm[1];
 	}
 
+	
 	//Update patient Information in Patients Table
 	$systemPatientCode = $patientsService->savePatient($_POST, 'form_eid');
 
@@ -423,7 +424,7 @@ try {
 		'result_approved_datetime' => $_POST['approvedOnDateTime'] ?? null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
+		//'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'result_status' => $status,
 		'second_dbs_requested' => (isset($_POST['secondDBSRequested']) && $_POST['secondDBSRequested'] != '') ? $_POST['secondDBSRequested'] : null,
 		'second_dbs_requested_reason' => (isset($_POST['secondDBSRequestedReason']) && $_POST['secondDBSRequestedReason'] != '') ? $_POST['secondDBSRequestedReason'] : null,
@@ -441,9 +442,22 @@ try {
 	$getPrevResult = $db->getOne('form_eid');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
 		$eidData['result_modified'] = "yes";
+
+		$reasonForChangesArr = array(
+			'user' => $_SESSION['userId'] ?? $_POST['userId'],
+			'dateOfChange' => DateUtility::getCurrentDateTime(),
+			'previousResult' => $getPrevResult['result'],
+			'previousResultStatus' => $getPrevResult['result_status'],
+			'reasonForChange' => $_POST['reasonForChanging']
+	    );
+
+		$reasonForChanges = json_encode($reasonForChangesArr);
+
 	} else {
 		$eidData['result_modified'] = "no";
 	}
+
+	$eidData['reason_for_changing'] = $reasonForChanges ?? null;
 
 
 	$eidData['request_created_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;

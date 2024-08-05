@@ -392,6 +392,27 @@ if (!empty($result)) {
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:10px;"></td>';
     $html .= '</tr>';
+
+    $modified = "No";
+    $dateOfModified = "";
+    $reasonForChange = "";
+        if($result['result_modified']=="yes"){
+            $modified = "Yes";
+
+            $resultHistory = json_decode($result['reason_for_changing']);
+            $dateOfModified = $resultHistory->dateOfChange;
+            $prevResult = $eidResults[$resultHistory->previousResult];
+        }
+    $html .= '<tr>';
+    $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
+    if($modified=='Yes' && ($result['reason_for_changing']!="") && $resultHistory->dateOfChange!=""){
+         $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified).'</td>';
+         $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult.'</td>';
+    }
+    $html .= '</tr>';
+    $html .= '<tr>';
+    $html .= '<td colspan="3" style="line-height:10px;"></td>';
+    $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
     $html .= '</tr>';

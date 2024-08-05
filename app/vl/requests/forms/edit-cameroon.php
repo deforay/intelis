@@ -668,7 +668,7 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
                                                                       <div class="col-md-6 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                            <label class="col-lg-5 control-label" for="vlLog"><?= _translate('Viral Load (Log)'); ?> </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="<?= _translate('Viral Load Log'); ?>" title="<?= _translate('Please enter viral load log'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
+                                                                                <input type="text" class="form-control labSection" id="vlLog" name="vlLog" placeholder="<?= _translate('Viral Load Log'); ?>" title="<?= _translate('Please enter viral load log'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                            </div>
                                                                       </div>
                                                                  </div>
@@ -733,6 +733,14 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
                                                                            </div>
                                                                       </div>
                                                                  </div>
+                                                                 <div class="row">
+                                                                      <div class="col-md-6 reasonForResultChanges" style="display:none;">
+                                                                           <label class="col-lg-5 control-label" for="reasonForResultChanges">Reason For Changes in Result<span class="mandatory">*</span></label>
+                                                                           <div class="col-lg-7">
+                                                                                <textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
+                                                                           </div>
+                                                                      </div>
+											          </div>
                                                             </div>
                                                        </div>
                                                   <?php } ?>
