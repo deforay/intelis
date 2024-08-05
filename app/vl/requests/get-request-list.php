@@ -13,6 +13,9 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Generate Sample Codes in case there are samples without codes
+require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
+
 $_POST = _sanitizeInput($_POST);
 
 try {
@@ -336,6 +339,8 @@ try {
           $editRequest = $syncRequest = true;
      }
 
+     $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+
      foreach ($rResult as $aRow) {
 
           $vlResult = '';
@@ -346,6 +351,10 @@ try {
           $patientFname = $aRow['patient_first_name'];
           $patientMname = $aRow['patient_middle_name'];
           $patientLname = $aRow['patient_last_name'];
+
+          if (empty($aRow[$sampleCodeColumn])) {
+               $aRow[$sampleCodeColumn] = _translate("Generating...");
+          }
 
 
           $row = [];

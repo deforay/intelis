@@ -81,8 +81,11 @@ $remoteUrl = $general->getRemoteURL();
     let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
     let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
 
-
-
+    function callSampleCodeGenerator() {
+        $.ajax({
+            url: "/scheduled-jobs/sample-code-generator.php"
+        });
+    }
     <?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
@@ -666,6 +669,30 @@ $remoteUrl = $general->getRemoteURL();
 
 
     $(document).ready(function() {
+
+        // Call the function on page load
+        callSampleCodeGenerator();
+
+        // Set an interval to call the function every minute (60000 milliseconds)
+        setInterval(function() {
+            callSampleCodeGenerator();
+        }, 60000);
+
+
+
+        $('.richtextarea').summernote({
+            toolbar: [
+                // [groupName, [list of button]]
+                ['style', ['bold', 'italic', 'underline', 'clear']],
+                ['font', ['strikethrough', 'superscript', 'subscript']],
+                ['fontsize', ['fontsize']],
+                ['color', ['color']],
+                ['para', ['ul', 'ol', 'paragraph']],
+                ['height', ['height']]
+            ],
+            height: 200
+        });
+
 
         $(".allMenu").removeClass('active');
 

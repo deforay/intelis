@@ -14,7 +14,7 @@ use App\Abstracts\AbstractTestService;
 
 final class CD4Service extends AbstractTestService
 {
-    protected string $testType = 'cd4';
+    public string $testType = 'cd4';
 
     public function getSampleCode($params)
     {
@@ -23,12 +23,12 @@ final class CD4Service extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['cd4_sample_code'] ?? 'MMYY';
-            $params['prefix'] = $params['prefix'] ?? $globalConfig['cd4_sample_code_prefix'] ?? $this->shortCode;
+            $params['prefix'] ??= $globalConfig['cd4_sample_code_prefix'] ?? $this->shortCode;
 
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

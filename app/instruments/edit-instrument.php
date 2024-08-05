@@ -262,7 +262,7 @@ $testTypeList = SystemService::getActiveModules(true);
 										<?php echo _translate("Description/Comment to add in Test Result"); ?>
 									</label>
 									<div class="col-lg-7">
-										<textarea class="form-control" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo htmlspecialchars_decode($sInfo['additional_text'], ENT_QUOTES); ?></textarea>
+										<textarea class="form-control richtextarea" id="additionalText" name="additionalText" placeholder='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>' title='<?php echo _translate("Enter Description or Comment to be added in Test Result"); ?>'><?php echo htmlspecialchars_decode($sInfo['additional_text'], ENT_QUOTES); ?></textarea>
 									</div>
 								</div>
 							</div>
@@ -449,11 +449,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("VL"); ?><input type="hidden" name="testType[]" id="testType1" value="vl" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in vl'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in vl'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['vl']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in vl'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in vl'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in vl'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in vl'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['vl']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in vl'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in vl'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['vl']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in vl'); ?>" title="<?php echo _translate('Please enter No of Calibrators in vl'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['vl']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in vl'); ?>" title="<?php echo _translate('Please enter No of Calibrators in vl'); ?>" /></td>
 											</tr>
 										<?php }
 										if ((SYSTEM_CONFIG['modules']['eid'])) { ?>
@@ -461,11 +461,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("EID"); ?><input type="hidden" name="testType[]" id="testType1" value="eid" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in eid'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in eid'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['eid']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in eid'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in eid'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in eid'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in eid'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['eid']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in eid'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in eid'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['eid']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in eid'); ?>" title="<?php echo _translate('Please enter No of Calibrators in eid'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['eid']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in eid'); ?>" title="<?php echo _translate('Please enter No of Calibrators in eid'); ?>" />
 												</td>
 											</tr>
 										<?php }
@@ -474,11 +474,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("Covid-19"); ?><input type="hidden" name="testType[]" id="testType1" value="covid-19" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in covid-19'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in covid-19'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in covid-19'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in covid-19'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in covid-19'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in covid-19'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in covid-19'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in covid-19'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['covid-19']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in covid-19'); ?>" title="<?php echo _translate('Please enter No of Calibrators in covid-19'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['covid-19']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in covid-19'); ?>" title="<?php echo _translate('Please enter No of Calibrators in covid-19'); ?>" />
 												</td>
 											</tr>
 										<?php }
@@ -487,11 +487,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("Hepatitis"); ?><input type="hidden" name="testType[]" id="testType1" value="hepatitis" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in hepatitis'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in hepatitis'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in hepatitis'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in hepatitis'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in hepatitis'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in hepatitis'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in hepatitis'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in hepatitis'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['hepatitis']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in hepatitis'); ?>" title="<?php echo _translate('Please enter No of Calibrators in hepatitis'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['hepatitis']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in hepatitis'); ?>" title="<?php echo _translate('Please enter No of Calibrators in hepatitis'); ?>" />
 												</td>
 											</tr>
 										<?php }
@@ -500,11 +500,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("tb"); ?><input type="hidden" name="testType[]" id="testType1" value="tb" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['tb']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in TB'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in TB'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['tb']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in TB'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in TB'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in TB'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in TB'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['tb']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in TB'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in TB'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in TB'); ?>" title="<?php echo _translate('Please enter No of Calibrators in TB'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['tb']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in TB'); ?>" title="<?php echo _translate('Please enter No of Calibrators in TB'); ?>" /></td>
 											</tr>
 										<?php }
 										if ((SYSTEM_CONFIG['modules']['cd4'])) { ?>
@@ -512,11 +512,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("CD4"); ?><input type="hidden" name="testType[]" id="testType1" value="cd4" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['cd4']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder="<?php echo _translate('No of In-House Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in CD4'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['cd4']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of In-House Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of In-House Controls in CD4'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['cd4']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder="<?php echo _translate('No of Manufacturer Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in CD4'); ?>" />
+												<td><input type="text" value="<?php echo $configControl['cd4']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Manufacturer Controls in CD4'); ?>" title="<?php echo _translate('Please enter No of Manufacturer Controls in CD4'); ?>" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['cd4']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder="<?php echo _translate('No of Calibrators in CD4'); ?>" title="<?php echo _translate('Please enter No of Calibrators in CD4'); ?>" /></td>
+												<td><input type="text" value="<?php echo $configControl['cd4']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder="<?php echo _translate('No of Calibrators in CD4'); ?>" title="<?php echo _translate('Please enter No of Calibrators in CD4'); ?>" /></td>
 											</tr>
 										<?php }
 										if (SYSTEM_CONFIG['modules']['generic-tests']) { ?>
@@ -524,11 +524,11 @@ $testTypeList = SystemService::getActiveModules(true);
 												<td align="left">
 													<?php echo _translate("Other Lab Tests"); ?><input type="hidden" name="testType[]" id="testType1" value="generic-tests" />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control" placeholder='<?php echo _translate("No of In-House Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noHouseCtrl']; ?>" name="noHouseCtrl[]" id="noHouseCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of In-House Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of In-House Controls in Other Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control" placeholder='<?php echo _translate("No of Manufacturer Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noManufacturerCtrl']; ?>" name="noManufacturerCtrl[]" id="noManufacturerCtrl1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Manufacturer Controls in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Manufacturer Controls in Other Lab Tests"); ?>' />
 												</td>
-												<td><input type="text" value="<?php echo $configControl['generic-tests']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control" placeholder='<?php echo _translate("No of Calibrators in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
+												<td><input type="text" value="<?php echo $configControl['generic-tests']['noCalibrators']; ?>" name="noCalibrators[]" id="noCalibrators1" class="form-control forceNumeric" placeholder='<?php echo _translate("No of Calibrators in Other Lab Tests"); ?>' title='<?php echo _translate("Please enter No of Calibrators in Other Lab Tests"); ?>' />
 												</td>
 											</tr>
 										<?php } ?>
@@ -684,17 +684,6 @@ $testTypeList = SystemService::getActiveModules(true);
 	tableRowId = '<?php echo $i; ?>';
 
 	$(document).ready(function() {
-		$('#additionalText').summernote({
-			toolbar: [
-				// [groupName, [list of button]]
-				['style', ['bold', 'italic', 'underline', 'clear']],
-				['font', ['strikethrough', 'superscript', 'subscript']],
-				['fontsize', ['fontsize']],
-				['color', ['color']],
-				['para', ['ul', 'ol', 'paragraph']],
-				['height', ['height']]
-			]
-		});
 
 		$('#configurationFile').on('change', function() {
 			$('input[name="fileName[]"]').each(function() {

@@ -1,18 +1,19 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+// Generate Sample Codes in case there are samples without codes
+require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
 
 try {
 
@@ -281,6 +282,8 @@ try {
           $syncRequest = true;
      }
 
+     $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+
      foreach ($rResult as $aRow) {
 
           $vlResult = '';
@@ -300,6 +303,12 @@ try {
                $aRow['mother_id'] = $general->crypto('decrypt', $aRow['mother_id'], $key);
                $aRow['mother_name'] = $general->crypto('decrypt', $aRow['mother_name'], $key);
           }
+
+
+          if (empty($aRow[$sampleCodeColumn])) {
+               $aRow[$sampleCodeColumn] = _translate("Generating...");
+          }
+
           if (!empty($aRow['sample_package_code'])) {
                $sampleCodeTooltip .= _translate("Manifest Code", true) . " : " . $aRow['sample_package_code'] . '<br>';
           }

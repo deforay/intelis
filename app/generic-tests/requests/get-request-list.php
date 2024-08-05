@@ -2,7 +2,6 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -10,6 +9,10 @@ use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+// Generate Sample Codes in case there are samples without codes
+require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
+
 try {
 
      $db->beginReadOnlyTransaction();
@@ -141,20 +144,20 @@ try {
 
      $_SESSION['genericRequestQueryCount'] = $resultCount;
 
-     /*
-* Output
-*/
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
 
      $editRequest = false;
      if ((_isAllowed("/generic-tests/requests/edit-request.php"))) {
           $editRequest = true;
      }
+
+     $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+
      foreach ($rResult as $aRow) {
           $edit = '';
 
@@ -165,6 +168,9 @@ try {
           $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
           $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
 
+          if (empty($aRow[$sampleCodeColumn])) {
+               $aRow[$sampleCodeColumn] = _translate("Generating...");
+          }
 
           $row = [];
 

@@ -17,6 +17,7 @@ syntax: glob
 *.orig
 *.pid
 *.idea
+*.lock
 *.vendor
 *error_log
 *.DS_Store

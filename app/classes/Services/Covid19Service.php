@@ -13,7 +13,7 @@ use App\Abstracts\AbstractTestService;
 
 final class Covid19Service extends AbstractTestService
 {
-    protected string $testType = 'covid19';
+    public string $testType = 'covid19';
 
     public function getSampleCode($params)
     {
@@ -22,12 +22,12 @@ final class Covid19Service extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['covid19_sample_code'] ?? 'MMYY';
-            $params['prefix'] = $params['prefix'] ?? $globalConfig['covid19_sample_code_prefix'] ?? $this->shortCode;
+            $params['prefix'] ??= $globalConfig['covid19_sample_code_prefix'] ?? $this->shortCode;
 
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

@@ -2,11 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
-use Laminas\Filter\StringTrim;
-use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -14,6 +10,9 @@ use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+// Generate Sample Codes in case there are samples without codes
+require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
 
 try {
 
@@ -307,6 +306,8 @@ try {
           $editRequest = $syncRequest = true;
      }
 
+     $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+
      foreach ($rResult as $aRow) {
 
           $vlResult = '';
@@ -318,6 +319,9 @@ try {
           $patientMname = $aRow['patient_middle_name'];
           $patientLname = $aRow['patient_last_name'];
 
+          if (empty($aRow[$sampleCodeColumn])) {
+               $aRow[$sampleCodeColumn] = _translate("Generating...");
+          }
 
           $row = [];
           $sampleCodeTooltip = '';

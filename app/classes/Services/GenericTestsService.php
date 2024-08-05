@@ -14,7 +14,7 @@ use App\Abstracts\AbstractTestService;
 
 final class GenericTestsService extends AbstractTestService
 {
-    protected string $testType = 'generic-tests';
+    public string $testType = 'generic-tests';
 
 
 
@@ -25,12 +25,12 @@ final class GenericTestsService extends AbstractTestService
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['sample_code'] ?? 'MMYY';
+            $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
 
-            $params['prefix'] = $params['testType'] ?? $this->shortCode;
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

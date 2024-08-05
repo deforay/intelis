@@ -1,15 +1,17 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+// Generate Sample Codes in case there are samples without codes
+require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
 
 try {
 
@@ -243,6 +245,9 @@ try {
           $editRequest = true;
           $syncRequest = true;
      }
+
+     $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
+
      foreach ($rResult as $aRow) {
           $vlResult = '';
           $edit = '';
@@ -251,6 +256,10 @@ try {
           $barcode = '';
           $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
+
+          if (empty($aRow[$sampleCodeColumn])) {
+               $aRow[$sampleCodeColumn] = _translate("Generating...");
+          }
 
           $row = [];
           $sampleCodeTooltip = '';
