@@ -402,7 +402,7 @@ final class VlService extends AbstractTestService
             }
 
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
-            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
             // Insert into the queue_sample_code_generation table
             $this->db->insert("queue_sample_code_generation", [
@@ -450,7 +450,13 @@ final class VlService extends AbstractTestService
                 $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             }
 
-            $this->db->insert("form_vl", $tesRequestData);
+            $formAttributes = [
+                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'ip_address' => $this->commonService->getClientIpAddress()
+            ];
+            $tesRequestData['form_attributes'] = json_encode($formAttributes);
+
+            $this->db->insert($this->table, $tesRequestData);
 
             $id = $this->db->getInsertId();
             if ($this->db->getLastErrno() > 0) {

@@ -252,7 +252,7 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
-            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = (int) $currentSampleData['id'];;
             if ($data['covid19SampleId'] == 0) {

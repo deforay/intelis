@@ -233,7 +233,7 @@ try {
 
                 $params['insertOperation'] = true;
                 $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
-                $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+                $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
                 $currentSampleData['action'] = 'inserted';
                 $data['genericSampleId'] = (int) $currentSampleData['id'];;
                 if ($data['genericSampleId'] == 0) {

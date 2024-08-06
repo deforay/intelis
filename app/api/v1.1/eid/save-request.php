@@ -238,7 +238,7 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
-            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = (int) $currentSampleData['id'];;
             if ($data['eidSampleId'] == 0) {

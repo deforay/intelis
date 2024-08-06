@@ -233,9 +233,9 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $tbService->insertSample($params, returnSampleData: true);
-            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
-            $data['tbSampleId'] = (int) $currentSampleData['id'];;
+            $data['tbSampleId'] = (int) $currentSampleData['id'];
             if ($data['tbSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [

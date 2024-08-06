@@ -219,8 +219,8 @@ try {
             $params['labId'] = $data['labId'] ?? null;
 
             $params['insertOperation'] = true;
-            $currentSampleData = $vlService->insertSample($params, returnSampleData: true);
-            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            $currentSampleData['id'] = $vlService->insertSample($params);
+            $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['vlSampleId'] = (int) $currentSampleData['id'];;
             if ($data['vlSampleId'] == 0) {
