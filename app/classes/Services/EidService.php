@@ -154,12 +154,9 @@ final class EidService extends AbstractTestService
         }
 
         if ($returnSampleData === true) {
-            $sampleCodeData = $this->commonService->processSampleCodeQueue(uniqueIds: $uniqueId, parallelProcess: true);
             return [
                 'id' => max($id, 0),
-                'uniqueId' => $sampleCodeData[$uniqueId]['unique_id'] ?? null,
-                'sampleCode' => $sampleCodeData[$uniqueId]['sample_code'] ?? null,
-                'remoteSampleCode' => $sampleCodeData[$uniqueId]['remote_sample_code'] ?? null
+                'uniqueId' => $uniqueId
             ];
         } else {
             return max($id, 0);

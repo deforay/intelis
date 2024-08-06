@@ -46,6 +46,8 @@ try {
     $noOfFailedRecords = 0;
 
     $updatedLabs = [];
+    $uniqueIdsForSampleCodeGeneration = [];
+
 
     $origJson = $request->getBody()->getContents();
     if (JsonUtility::isJSON($origJson) === false) {
@@ -236,6 +238,7 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
+            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = (int) $currentSampleData['id'];;
             if ($data['eidSampleId'] == 0) {
@@ -492,6 +495,19 @@ try {
                 'appSampleCode' => $data['appSampleCode'] ?? null,
                 'error' => $db->getLastError()
             ];
+        }
+    }
+
+    // For inserted samples, generate sample code
+    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        if (!empty($sampleCodeData)) {
+            foreach ($responseData as $rootKey => $currentSampleData) {
+                $uniqueId = $currentSampleData['uniqueId'] ?? null;
+                if ($uniqueId && isset($sampleCodeData[$uniqueId])) {
+                    $responseData[$rootKey]['sampleCode'] = $sampleCodeData[$uniqueId]['remote_sample_code'] ?? $sampleCodeData[$uniqueId]['sample_code'] ?? null;
+                }
+            }
         }
     }
 

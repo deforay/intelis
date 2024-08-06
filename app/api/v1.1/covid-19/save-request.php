@@ -46,6 +46,8 @@ try {
 
     $updatedLabs = [];
 
+    $uniqueIdsForSampleCodeGeneration = [];
+
     $origJson = $request->getBody()->getContents();
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
@@ -250,6 +252,7 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
+            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['covid19SampleId'] = (int) $currentSampleData['id'];;
             if ($data['covid19SampleId'] == 0) {
@@ -558,6 +561,21 @@ try {
             ];
         }
     }
+
+
+    // For inserted samples, generate sample code
+    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        if (!empty($sampleCodeData)) {
+            foreach ($responseData as $rootKey => $currentSampleData) {
+                $uniqueId = $currentSampleData['uniqueId'] ?? null;
+                if ($uniqueId && isset($sampleCodeData[$uniqueId])) {
+                    $responseData[$rootKey]['sampleCode'] = $sampleCodeData[$uniqueId]['remote_sample_code'] ?? $sampleCodeData[$uniqueId]['sample_code'] ?? null;
+                }
+            }
+        }
+    }
+
     if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {

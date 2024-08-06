@@ -85,6 +85,7 @@ try {
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
+    $uniqueIdsForSampleCodeGeneration = [];
 
     $instanceId = $general->getInstanceId();
     $formId = (int) $general->getGlobalConfig('vl_form');
@@ -232,6 +233,7 @@ try {
 
                 $params['insertOperation'] = true;
                 $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
+                $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
                 $currentSampleData['action'] = 'inserted';
                 $data['genericSampleId'] = (int) $currentSampleData['id'];;
                 if ($data['genericSampleId'] == 0) {
@@ -457,6 +459,19 @@ try {
                     'appSampleCode' => $data['appSampleCode'] ?? null,
                     'error' => $db->getLastError()
                 ];
+            }
+        }
+    }
+
+    // For inserted samples, generate sample code
+    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        if (!empty($sampleCodeData)) {
+            foreach ($responseData as $rootKey => $currentSampleData) {
+                $uniqueId = $currentSampleData['uniqueId'] ?? null;
+                if ($uniqueId && isset($sampleCodeData[$uniqueId])) {
+                    $responseData[$rootKey]['sampleCode'] = $sampleCodeData[$uniqueId]['remote_sample_code'] ?? $sampleCodeData[$uniqueId]['sample_code'] ?? null;
+                }
             }
         }
     }
