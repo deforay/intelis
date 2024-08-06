@@ -11,15 +11,14 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-// Generate Sample Codes in case there are samples without codes
-require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
-
 try {
 
      $db->beginReadOnlyTransaction();
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
+
+     $general->processSampleCodeQueue(maxTries: 5, interval: 5);
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

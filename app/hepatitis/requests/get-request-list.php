@@ -14,13 +14,14 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-// Generate Sample Codes in case there are samples without codes
-require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
 
 try {
+
+
+     /** @var CommonService $general */
+     $general = ContainerRegistry::get(CommonService::class);
+
+     $general->processSampleCodeQueue(maxTries: 5, interval: 5);
 
      $db->beginReadOnlyTransaction();
 

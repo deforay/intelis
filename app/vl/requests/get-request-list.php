@@ -13,8 +13,6 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-// Generate Sample Codes in case there are samples without codes
-require_once(APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php");
 
 $_POST = _sanitizeInput($_POST);
 
@@ -24,6 +22,9 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
+
+     $general->processSampleCodeQueue(maxTries: 5, interval: 5);
+
      $formId = (int) $general->getGlobalConfig('vl_form');
 
      /** @var FacilitiesService $facilitiesService */
