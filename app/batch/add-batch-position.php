@@ -132,6 +132,8 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 					</div>
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?= $_GET['type']; ?>" />
+						<input type="hidden" name="sortType" id="typeSort" value="<?= $_GET['sortType']; ?>" />
+						<input type="hidden" name="sortBy" id="bySort" value="<?= $_GET['sortBy']; ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?= implode(",", $contentData['displayOrder']); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?= htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>
@@ -190,6 +192,10 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 	function sortBatch() {
 		let sortBy = $("#sortBy").val();
 		let sortType = $("#sortType").val();
+
+		$("#typeSort").val(sortType);
+		$("#bySort").val(sortBy);
+
 
 		let url = new URL(window.location.href);
 		let params = new URLSearchParams(url.search);

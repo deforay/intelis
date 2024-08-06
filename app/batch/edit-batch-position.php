@@ -49,22 +49,36 @@ if (!isset($id) || trim($id) == '') {
 }
 
 $batchInfo = $batchService->getBatchInfo($id);
+
 if (empty($batchInfo)) {
 	header("Location:batches.php?type=$testType");
 	exit;
 }
-
 $batchAttributes = json_decode((string)$batchInfo['batch_attributes']);
-$sortBy = $batchAttributes->sort_by ?? 'sampleCode';
-$sortType = $batchService->getSortType($batchAttributes->sort_type);
+
+$sby = $batchAttributes->sort_by;
+if(isset($_GET['sortBy'])){
+	$sby = $_GET['sortBy'];
+	$batchInfo['label_order'] = "";
+}
+
+$stype = $batchAttributes->sort_type;
+if(isset($_GET['sortType'])){
+	$stype = $_GET['sortType'];
+	$batchInfo['label_order'] = "";
+}
+$sortBy =  $sby ?? 'sampleCode';
+$sortType = $batchService->getSortType($stype);
+
 $orderBy = $batchService->getOrderBy($sortBy, $sortType);
 $samplesResult = $batchService->getSamplesByBatchId($table, $primaryKeyColumn, $patientIdColumn, $id, $orderBy);
+
 $samplesCount = count($samplesResult);
 $configControl = $batchService->getConfigControl($batchInfo['machine']);
 $prevBatchControlNames = $batchService->getPreviousBatchControlNames($batchInfo['machine']);
 $batchControlNames = $batchService->getBatchControlNames($batchInfo, $prevBatchControlNames);
 $content = $batchService->generateContent($samplesResult, $batchInfo, $batchControlNames, $configControl, $samplesCount, $table, $primaryKeyColumn, $patientIdColumn, $testType, $orderBy, $id);
-
+//echo '<pre>'; print_r($samplesResult); die;
 ?>
 
 <!-- HTML and JavaScript -->
@@ -102,13 +116,34 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 	</section>
 	<section class="content">
 		<div class="box box-default">
+
 			<div class="box-header with-border">
 				<h4><strong><?= _translate("Batch Code"); ?> :
 						<?php echo (isset($batchInfo['batch_code'])) ? $batchInfo['batch_code'] : ''; ?>
-					</strong>
+					</strong></h4>
+					<div class="row">
+						<div class="col-lg-4">
+							<select class="form-control" id="sortBy">
+								<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
+								<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+								<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
+								<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
+							</select>
+						</div>
+						<div class="col-lg-2">
+							<select class="form-control" id="sortType">
+								<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
+								<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
+							</select>
+						</div>
+						<div class="col-lg-2 col-md-2 col-xs-2">
+							<button type="button" class="btn btn-primary pull-right" onclick="sortBatch();return false;">Reset Sorting</button>
+						</div>
+					</div>
+
 					<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers
 					</button>
-				</h4>
+				
 			</div>
 			<div class="box-body">
 				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
@@ -129,6 +164,8 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 					</div>
 					<div class="box-footer">
 						<input type="hidden" name="type" id="type" value="<?php echo $type; ?>" />
+						<input type="hidden" name="sortType" id="typeSort" value="<?= $_GET['sortType']; ?>" />
+						<input type="hidden" name="sortBy" id="bySort" value="<?= $_GET['sortBy']; ?>" />
 						<input type="hidden" name="sortOrders" id="sortOrders" value="<?= implode(",", $content['displayOrder']); ?>" />
 						<input type="hidden" name="batchId" id="batchId" value="<?php echo htmlspecialchars($id); ?>" />
 						<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
@@ -183,6 +220,22 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 			$(this).text(updatedText);
 		});
 		$("#updateSerialNumbersButton").hide();
+	}
+
+	function sortBatch() {
+		let sortBy = $("#sortBy").val();
+		let sortType = $("#sortType").val();
+
+		$("#typeSort").val(sortType);
+		$("#bySort").val(sortBy);
+
+		let url = new URL(window.location.href);
+		let params = new URLSearchParams(url.search);
+		params.set('sortBy', sortBy);
+		params.set('sortType', sortType);
+
+		url.search = params.toString();
+		window.location.href = url.toString();
 	}
 </script>
 <?php

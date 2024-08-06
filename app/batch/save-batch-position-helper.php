@@ -24,6 +24,7 @@ $batchService = ContainerRegistry::get(BatchService::class);
 
 $tableName = "batch_details";
 try {
+   // echo '<pre>'; print_r($_POST); die;
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
 
@@ -71,6 +72,18 @@ try {
             'last_modified_by' => $_SESSION['userId'],
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
         ];
+
+        $batchAttributes = [];
+        if (!empty($_POST['sortBy'])) {
+            $batchAttributes['sort_by'] = $_POST['sortBy'];
+        }
+        if (!empty($_POST['sortType'])) {
+            $batchAttributes['sort_type'] = $_POST['sortType'];
+        }
+
+        if (!empty($batchAttributes)) {
+            $data['batch_attributes'] = json_encode($batchAttributes, true);
+        }
         $db->where('batch_id', $_POST['batchId']);
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Samples position in batch saved");
