@@ -41,16 +41,6 @@ final class GenericTestsService extends AbstractTestService
         }
     }
 
-    public function getGenericSampleTypesByName($name = "")
-    {
-        $where = "";
-        if (!empty($name)) {
-            $where = " AND sample_type_name LIKE '$name%'";
-        }
-        $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active '$where";
-        return $this->db->rawQuery($query);
-    }
-
     public function getGenericSampleTypes($updatedDateTime = null): array
     {
         $query = "SELECT * FROM r_generic_sample_types where sample_type_status='active'";
@@ -63,15 +53,6 @@ final class GenericTestsService extends AbstractTestService
             $response[$row['sample_type_id']] = $row['sample_type_name'];
         }
         return $response;
-    }
-
-    public function getGenericResults(): array
-    {
-        return array(
-            'positive' => 'Positive',
-            'negative' => 'Negative',
-            'invalid' => 'Invalid'
-        );
     }
 
     public function insertSample($params, $returnSampleData = false): int|array
@@ -97,17 +78,18 @@ final class GenericTestsService extends AbstractTestService
 
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
+            $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
 
-            // Insert into the queue_sample_code_generation table
-            $this->db->insert("queue_sample_code_generation", [
-                'unique_id' => $uniqueId,
-                'test_type' => $this->testType,
-                'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
-                'province_code' => $params['provinceCode'] ?? null,
-                'sample_code_format' => $params['sampleCodeFormat'] ?? null,
-                'prefix' => $params['prefix'] ?? $this->shortCode,
-                'access_type' => $accessType
-            ]);
+            // Insert into the Code Generation Queue
+            $this->testRequestsService->addToSampleCodeQueue(
+                $uniqueId,
+                $this->testType,
+                DateUtility::isoDateFormat($sampleCollectionDate, true),
+                $params['provinceCode'] ?? null,
+                $params['sampleCodeFormat'] ?? null,
+                $params['prefix'] ?? $this->shortCode,
+                $accessType
+            );
 
             $id = 0;
             $tesRequestData = [
@@ -203,7 +185,7 @@ final class GenericTestsService extends AbstractTestService
         $result = [];
         $this->db->where('test_failure_reason_status', 'active');
         if ($updatedDateTime) {
-            $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');
+            $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
         $results = $this->db->get('r_generic_test_failure_reasons');
         if ($option) {

@@ -14,6 +14,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -35,6 +36,10 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
+
+
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 try {
 
@@ -449,7 +454,7 @@ try {
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
                 $uniqueId = $currentSampleData['uniqueId'] ?? null;

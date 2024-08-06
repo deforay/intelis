@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -14,7 +15,10 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
-     $general->processSampleCodeQueue(maxTries: 5, interval: 5);
+
+     /** @var TestRequestsService $testRequestsService */
+     $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+     $testRequestsService->processSampleCodeQueue(maxTries: 5, interval: 5);
 
      $db->beginReadOnlyTransaction();
 

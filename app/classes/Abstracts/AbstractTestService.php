@@ -12,11 +12,13 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Services\TestRequestsService;
 
 abstract class AbstractTestService
 {
     public DatabaseService $db;
     public CommonService $commonService;
+    public TestRequestsService $testRequestsService;
     public int $maxTries = 5; // Max tries for generating Sample ID
     public string $table;
     public string $primaryKey;
@@ -30,6 +32,7 @@ abstract class AbstractTestService
         $this->table ??= TestsService::getTestTableName($this->testType);
         $this->primaryKey ??= TestsService::getTestPrimaryKeyColumn($this->testType);
         $this->shortCode ??= TestsService::getTestShortCode($this->testType);
+        $this->testRequestsService = new TestRequestsService($db, $commonService);
     }
     abstract public function getSampleCode($params);
     abstract public function insertSample($params, $returnSampleData = false);

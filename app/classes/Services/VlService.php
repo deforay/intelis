@@ -404,16 +404,16 @@ final class VlService extends AbstractTestService
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
-            // Insert into the queue_sample_code_generation table
-            $this->db->insert("queue_sample_code_generation", [
-                'unique_id' => $uniqueId,
-                'test_type' => $this->testType,
-                'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
-                'province_code' => $params['provinceCode'] ?? null,
-                'sample_code_format' => $params['sampleCodeFormat'] ?? null,
-                'prefix' => $params['prefix'] ?? $this->shortCode,
-                'access_type' => $accessType
-            ]);
+            // Insert into the Code Generation Queue
+            $this->testRequestsService->addToSampleCodeQueue(
+                $uniqueId,
+                $this->testType,
+                DateUtility::isoDateFormat($sampleCollectionDate, true),
+                $params['provinceCode'] ?? null,
+                $params['sampleCodeFormat'] ?? null,
+                $params['prefix'] ?? $this->shortCode,
+                $accessType
+            );
 
             $id = 0;
             $tesRequestData = [

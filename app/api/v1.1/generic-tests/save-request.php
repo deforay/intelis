@@ -1,10 +1,10 @@
 <?php
 
-use App\Utilities\JsonUtility;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -13,6 +13,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -34,6 +35,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var GenericTestsService $genericService */
 $genericService = ContainerRegistry::get(GenericTestsService::class);
 
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 try {
 
@@ -465,7 +468,7 @@ try {
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
                 $uniqueId = $currentSampleData['uniqueId'] ?? null;
