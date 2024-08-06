@@ -49,7 +49,7 @@ $condition = "status = 'active'";
 $importResult = $general->fetchDataFromTable('instruments', $condition);
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $reasonForFailure = $genericTestsService->getReasonForFailure();
-$genericResults = $genericTestsService->getGenericResults();
+
 /* To get testing platform names */
 $testPlatformResult = $general->getTestingPlatforms('generic-tests');
 foreach ($testPlatformResult as $row) {

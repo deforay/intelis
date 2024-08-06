@@ -77,11 +77,6 @@ final class EidService extends AbstractTestService
 
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
-            $params['tries'] = $params['tries'] ?? 0;
-            if ($params['tries'] >= $this->maxTries) {
-                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
-            }
-
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
@@ -93,19 +88,20 @@ final class EidService extends AbstractTestService
             }
 
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
-            $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
-            // Insert into the queue_sample_code_generation table
-            $this->db->insert("queue_sample_code_generation", [
-                'unique_id' => $uniqueId,
-                'test_type' => $this->testType,
-                'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
-                'province_code' => $params['provinceCode'] ?? null,
-                'sample_code_format' => $params['sampleCodeFormat'] ?? null,
-                'prefix' => $params['prefix'] ?? $this->shortCode,
-                'access_type' => $accessType
-            ]);
+            // Insert into the Code Generation Queue
+            $this->testRequestsService->addToSampleCodeQueue(
+                $uniqueId,
+                $this->testType,
+                DateUtility::isoDateFormat($sampleCollectionDate, true),
+                $params['provinceCode'] ?? null,
+                $params['sampleCodeFormat'] ?? null,
+                $params['prefix'] ?? $this->shortCode,
+                $accessType
+            );
 
+            $id = 0;
             $tesRequestData = [
                 'vlsm_country_id' => $formId,
                 'sample_reordered' => $params['sampleReordered'] ?? 'no',
@@ -133,7 +129,13 @@ final class EidService extends AbstractTestService
                 $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             }
 
-            $this->db->insert("form_eid", $tesRequestData);
+            $formAttributes = [
+                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'ip_address' => $this->commonService->getClientIpAddress()
+            ];
+            $tesRequestData['form_attributes'] = json_encode($formAttributes);
+
+            $this->db->insert($this->table, $tesRequestData);
             $id = $this->db->getInsertId();
             // Commit the transaction after the successful insert
             $this->db->commitTransaction();

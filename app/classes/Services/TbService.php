@@ -168,11 +168,6 @@ final class TbService extends AbstractTestService
             // see the beginTransaction() function implementation to understand how this works
             $this->db->beginTransaction();
 
-            $params['tries'] = $params['tries'] ?? 0;
-            if ($params['tries'] >= $this->maxTries) {
-                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for inserting sample");
-            }
-
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
             $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
@@ -184,88 +179,62 @@ final class TbService extends AbstractTestService
                 return 0;
             }
 
-            $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = $sampleCollectionDate;
-            $sampleCodeParams['provinceCode'] = $provinceCode;
-            $sampleCodeParams['provinceId'] = $provinceId;
-            $sampleCodeParams['existingMaxId'] = $params['oldSampleCodeKey'] ?? null;
-            $sampleCodeParams['insertOperation'] = $params['insertOperation'] ?? false;
+            $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
+            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
-            $sampleJson = $this->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode((string) $sampleJson, true);
-
-
-            $sQuery = "SELECT tb_id FROM form_tb ";
-            if (!empty($sampleData['sampleCode'])) {
-                $sQuery .= " WHERE (sample_code like '" . $sampleData['sampleCode'] . "' OR remote_sample_code like '" . $sampleData['sampleCode'] . "')";
-            }
-            $sQuery .= " LIMIT 1";
-            $rowData = $this->db->rawQueryOne($sQuery);
+            // Insert into the Code Generation Queue
+            $this->testRequestsService->addToSampleCodeQueue(
+                $uniqueId,
+                $this->testType,
+                DateUtility::isoDateFormat($sampleCollectionDate, true),
+                $params['provinceCode'] ?? null,
+                $params['sampleCodeFormat'] ?? null,
+                $params['prefix'] ?? $this->shortCode,
+                $accessType
+            );
 
             $id = 0;
-            if (empty($rowData) && !empty($sampleData['sampleCode'])) {
-                $tesRequestData = [
-                    'vlsm_country_id' => $formId,
-                    'sample_reordered' => $params['sampleReordered'] ?? 'no',
-                    'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
-                    'unique_id' => $params['uniqueId'] ?? MiscUtility::generateUUID(),
-                    'facility_id' => $params['facilityId'] ?? null,
-                    'lab_id' => $params['labId'] ?? null,
-                    'app_sample_code' => $params['appSampleCode'] ?? null,
-                    'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
-                    'province_id' => _castVariable($provinceId, 'int'),
-                    'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                    'form_attributes' => $params['formAttributes'] ?? "{}",
-                    'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                    'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime()
-                ];
+            $tesRequestData = [
+                'vlsm_country_id' => $formId,
+                'sample_reordered' => $params['sampleReordered'] ?? 'no',
+                'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
+                'unique_id' => $uniqueId,
+                'facility_id' => $params['facilityId'] ?? null,
+                'lab_id' => $params['labId'] ?? null,
+                'app_sample_code' => $params['appSampleCode'] ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
+                'province_id' => _castVariable($provinceId, 'int'),
+                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'form_attributes' => $params['formAttributes'] ?? "{}",
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
+            ];
 
-                $accessType = $_SESSION['accessType'] ?? $params['accessType'] ?? null;
+            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
-                if ($this->commonService->isSTSInstance()) {
-                    $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
-                    $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                    $tesRequestData['remote_sample'] = 'yes';
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-                    if ($accessType === 'testing-lab') {
-                        $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                        $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-                    }
-                } else {
-                    $tesRequestData['sample_code'] = $sampleData['sampleCode'];
-                    $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-                    $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                    $tesRequestData['remote_sample'] = 'no';
+            if ($this->commonService->isSTSInstance()) {
+                $tesRequestData['remote_sample'] = 'yes';
+                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                if ($accessType === 'testing-lab') {
                     $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                 }
-                $formAttributes = [
-                    'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
-                    'ip_address' => $this->commonService->getClientIpAddress()
-                ];
-                $tesRequestData['form_attributes'] = json_encode($formAttributes);
-                $this->db->insert("form_tb", $tesRequestData);
-                $id = $this->db->getInsertId();
-                if ($this->db->getLastErrno() > 0) {
-                    throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
-                }
-                // Commit the transaction after the successful insert
-                $this->db->commitTransaction();
             } else {
-                LoggerUtility::log('info', 'Sample ID exists already. Trying to regenerate Sample ID - ' . $sampleData['sampleCode'], [
-                    'file' => __FILE__,
-                    'line' => __LINE__,
-                ]);
-
-                // Rollback the current transaction to release locks and undo changes
-                $this->db->rollbackTransaction();
-
-                // If this sample id exists, let us regenerate the sample id and insert
-                $params['tries']++;
-                $params['oldSampleCodeKey'] = $sampleData['sampleCodeKey'];
-                return $this->insertSample($params);
+                $tesRequestData['remote_sample'] = 'no';
+                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             }
+            $formAttributes = [
+                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'ip_address' => $this->commonService->getClientIpAddress()
+            ];
+            $tesRequestData['form_attributes'] = json_encode($formAttributes);
+            $this->db->insert($this->table, $tesRequestData);
+            $id = $this->db->getInsertId();
+            if ($this->db->getLastErrno() > 0) {
+                throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
+            }
+            // Commit the transaction after the successful insert
+            $this->db->commitTransaction();
         } catch (Throwable $e) {
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
@@ -281,9 +250,7 @@ final class TbService extends AbstractTestService
         if ($returnSampleData === true) {
             return [
                 'id' => max($id, 0),
-                'uniqueId' => $tesRequestData['unique_id'] ?? null,
-                'sampleCode' => $tesRequestData['sample_code'] ?? null,
-                'remoteSampleCode' => $tesRequestData['remote_sample_code'] ?? null
+                'uniqueId' => $uniqueId
             ];
         } else {
             return max($id, 0);

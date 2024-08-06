@@ -1,11 +1,11 @@
 <?php
 
-use App\Utilities\JsonUtility;
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -13,6 +13,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use JsonMachine\Exception\PathNotFoundException;
 
@@ -35,6 +36,9 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
+
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 try {
 
@@ -238,7 +242,7 @@ try {
 
             $params['insertOperation'] = true;
             $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
-            $uniqueIdsForSampleCodeGeneration[] = $uniqueId;
+            $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
             $data['eidSampleId'] = (int) $currentSampleData['id'];;
             if ($data['eidSampleId'] == 0) {
@@ -500,7 +504,7 @@ try {
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $general->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
                 $uniqueId = $currentSampleData['uniqueId'] ?? null;

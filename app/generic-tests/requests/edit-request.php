@@ -30,7 +30,7 @@ $healthFacilities = $facilitiesService->getHealthFacilities('generic-tests');
 $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 $reasonForFailure = $genericTestsService->getReasonForFailure();
-$genericResults = $genericTestsService->getGenericResults();
+
 if ($general->isSTSInstance()) {
 	$labFieldDisabled = 'disabled="disabled"';
 }
@@ -288,11 +288,11 @@ if (!isset($facilityResult[0]['facility_district'])) {
 }
 
 $user = '';
-if($facilityResult[0]['contact_person'] != ''){
-     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($facilityResult[0]['contact_person'] != '') {
+	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 //echo '<pre>'; print_r($facility); die;
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
