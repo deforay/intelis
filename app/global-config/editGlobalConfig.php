@@ -280,7 +280,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 								</div>
-								
+
 								<div class="row">
 									<div class="col-md-7" style="text-align:center;">
 										<code><?php echo _translate("You can enter multiple emails by separating them with commas"); ?></code>
@@ -400,7 +400,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<h3 class="panel-title"><?php echo _translate("Viral Load Settings"); ?></h3>
 								</div>
 								<div class="panel-body">
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -491,8 +491,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-										
-									<?php 
+
+									<?php
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -541,7 +541,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -593,18 +593,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 														<option value=""><?php echo _translate("--Select--"); ?></option>
 														<option value="default" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'default') ? "selected='selected'" : ''; ?>><?php echo _translate("Default Format"); ?></option>
 														<option value="cresar" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'cresar') ? "selected='selected'" : ''; ?>><?php echo _translate("CRESAR Format"); ?></option>
-													</select>
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="vl_lab_id" class="col-lg-2 control-label"><?php echo _translate("VL Lab"); ?> <span class="mandatory">*</span> </label>
-												<div class="col-lg-4">
-													<select class="form-control isRequired readPage select2" id="vl_lab_id" name="vl_lab_id" placeholder="<?php echo _translate('Lab'); ?>" title="<?php echo _translate('Please choose VL Lab'); ?>">
-														<?= $general->generateSelectOptions($vlTestingLabs, $arr['vl_lab_id'], '-- Select --'); ?>
 													</select>
 												</div>
 											</div>
@@ -664,7 +652,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</code>
 										</div>
 									</div><br />
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -741,7 +729,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
-											<?php 
+												<?php
 												if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] != '') { ?>
 													<label for="covid19PositiveConfirmatoryTestsRequiredByCentralLab" class="col-lg-2 control-label"><?php echo _translate("Covid-19 Positive Confirmatory Tests Required"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
@@ -813,7 +801,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 
-									<?php 
+									<?php
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -830,7 +818,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-										
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -940,7 +928,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1036,7 +1024,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1144,8 +1132,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-										
-									<?php 
+
+									<?php
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
 										<div class="row">
 											<div class="col-md-12">
@@ -1162,7 +1150,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1270,7 +1258,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									<?php } ?>
-									
+
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">

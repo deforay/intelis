@@ -83,7 +83,7 @@ final class GenericTestsService extends AbstractTestService
             // Insert into the Code Generation Queue
             $this->testRequestsService->addToSampleCodeQueue(
                 $uniqueId,
-                $this->testType,
+                'generic-tests',
                 DateUtility::isoDateFormat($sampleCollectionDate, true),
                 $params['provinceCode'] ?? null,
                 $params['sampleCodeFormat'] ?? null,
