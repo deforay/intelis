@@ -13,12 +13,11 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-     $db->beginReadOnlyTransaction();
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
-
      $general->processSampleCodeQueue(maxTries: 5, interval: 5);
+
+     $db->beginReadOnlyTransaction();
 
      $gconfig = $general->getGlobalConfig();
 

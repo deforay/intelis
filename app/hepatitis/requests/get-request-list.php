@@ -17,10 +17,8 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 try {
 
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
-
      $general->processSampleCodeQueue(maxTries: 5, interval: 5);
 
      $db->beginReadOnlyTransaction();
