@@ -585,8 +585,6 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
                                                                            <input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>" value="<?= $vlQueryInfo['external_sample_code']; ?>" <?php echo $labFieldDisabled; ?>>
                                                                       </div>
                                                                  </div> -->
-                                                                 </div>
-                                                                 <div class="row">
                                                                       <div class="col-md-6">
                                                                            <label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?> </label>
                                                                            <div class="col-lg-7">

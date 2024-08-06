@@ -602,8 +602,6 @@ foreach ($testReasonsResultDetails as $row) {
 														<input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>" value="<?= $vlQueryInfo['external_sample_code']; ?>" <?php echo $labFieldDisabled; ?>>
 													</div>
 												</div> -->
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label"><?= _translate('VL Testing Platform'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -615,14 +613,15 @@ foreach ($testReasonsResultDetails as $row) {
 														</select>
 													</div>
 												</div>
+												
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
 														<input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" title="<?= _translate('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> />
 													</div>
 												</div>
-											</div>
-											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _translate('Sample Testing Date'); ?> <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
@@ -630,6 +629,8 @@ foreach ($testReasonsResultDetails as $row) {
 													</div>
 												</div>
 
+											</div>
+											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="isSampleRejected"><?= _translate('Is Sample Rejected?'); ?><span class="mandatory">*</span> </label>
 													<div class="col-lg-7">
@@ -640,7 +641,6 @@ foreach ($testReasonsResultDetails as $row) {
 														</select>
 													</div>
 												</div>
-
 											</div>
 											<div class="row rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
 												<div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
