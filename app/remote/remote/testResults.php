@@ -45,8 +45,6 @@ try {
         'vl_sample_id',
         'sample_package_id',
         'sample_package_code',
-        //'last_modified_by',
-        'request_created_by',
         'result_printed_datetime'
     ];
 

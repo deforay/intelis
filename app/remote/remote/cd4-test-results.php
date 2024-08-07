@@ -45,8 +45,6 @@ try {
         'cd4_id',
         'sample_package_id',
         'sample_package_code',
-        //'last_modified_by',
-        'request_created_by',
         'result_printed_datetime'
     ];
     // Create an array with all column names set to null

@@ -92,7 +92,8 @@ try {
             $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['covid19_id']);
         }
 
-        $url = "$remoteUrl/remote/remote/covid-19-test-results.php";
+        $url = "$remoteUrl/remote/remote/generic-test-results.php";
+
         $payload = [
             "labId" => $labId,
             "results" => $customTestResultData,

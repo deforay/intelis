@@ -50,9 +50,7 @@ try {
         $unwantedColumns = [
             'eid_id',
             'sample_package_id',
-            'sample_package_code',
-            //'last_modified_by',
-            'request_created_by'
+            'sample_package_code'
         ];
         // Create an array with all column names set to null
         $emptyLabArray = $general->getTableFieldsAsArray('form_eid', $unwantedColumns);
