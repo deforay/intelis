@@ -69,15 +69,13 @@ try {
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
-            } else if ($name === 'testResults') {
-                $testResultsData = $data;
-            } else if ($name === 'result') {
-                $resultData = $data;
+            } elseif ($name === 'results') {
+                $resultsData = $data;
             }
         }
 
         $counter = 0;
-        foreach ($resultData as $key => $resultRow) {
+        foreach ($resultsData as $uniqueId => $resultRow) {
 
             $counter++;
 
