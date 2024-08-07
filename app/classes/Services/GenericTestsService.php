@@ -109,6 +109,7 @@ final class GenericTestsService extends AbstractTestService
                 'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'is_result_sms_sent'  => 'no',
+                'is_result_mail_sent'  => 'no',
                 'locked' => 'no'
             ];
 
