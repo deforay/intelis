@@ -82,7 +82,6 @@ try {
                 continue;
             }
 
-
             // Overwrite the values in $emptyLabArray with the values in $formData
             $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
 

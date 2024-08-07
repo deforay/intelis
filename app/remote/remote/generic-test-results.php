@@ -80,8 +80,13 @@ try {
         foreach ($resultData as $key => $resultRow) {
 
             $counter++;
-            // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
+
+            $formData = $resultRow[$uniqueId]['form_data'] ?? [];
+            if (empty($formData)) {
+                continue;
+            }
+            // Overwrite the values in $emptyLabArray with the values in $formData
+            $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
