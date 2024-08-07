@@ -134,17 +134,34 @@ try {
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $lab['form_attributes'],
-                    'form_attributes'
-                );
+                $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
+                    $primaryKeyValue = $sResult[$primaryKey];
                 } else {
                     $id = $db->insert($tableName, $lab);
+                    $primaryKeyValue = $db->getInsertId();
+                }
+
+                // Insert generic_test_results
+                $testsData = $resultRow[$uniqueId]['data_from_tests'] ?? [];
+
+                $db->where('generic_id', $primaryKeyValue);
+                $db->delete("generic_test_results");
+                foreach ($testsData as $tRow) {
+                    $customTestData = [
+                        "generic_id" => $primaryKeyValue,
+                        "test_name" => $tRow['test_name'],
+                        "facility_id" => $tRow['facility_id'],
+                        "sample_tested_datetime" => $tRow['sample_tested_datetime'],
+                        "testing_platform" => $tRow['testing_platform'],
+                        "result" => $tRow['result'],
+                        "updated_datetime" => DateUtility::getCurrentDateTime()
+                    ];
+                    $db->insert("generic_test_results", $customTestData);
                 }
             } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {
@@ -159,25 +176,6 @@ try {
             if ($id === true && isset($lab['sample_code'])) {
                 $sampleCodes[] = $lab['sample_code'];
                 $facilityIds[] = $lab['facility_id'];
-            }
-        }
-
-        foreach ($testResultsData as $genId => $testResults) {
-            if (empty($genId) || empty($testResults)) {
-                continue;
-            }
-            $db->where('generic_id', $genId);
-            $db->delete("generic_test_results");
-            foreach ($testResults as $testId => $test) {
-                $db->insert("generic_test_results", [
-                    "generic_id" => $genId,
-                    "test_name" => $test['test_name'],
-                    "facility_id" => $test['facility_id'],
-                    "sample_tested_datetime" => $test['sample_tested_datetime'],
-                    "testing_platform" => $test['testing_platform'],
-                    "result" => $test['result'],
-                    "updated_datetime" => DateUtility::getCurrentDateTime()
-                ]);
             }
         }
     }

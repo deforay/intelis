@@ -84,15 +84,20 @@ try {
 
         /** @var GenericTestsService $genericService */
         $genericService = ContainerRegistry::get(GenericTestsService::class);
-        $testResults = $genericService->getTestsByGenericSampleIds($forms);
-        $url = $remoteUrl . '/remote/remote/generic-test-results.php';
+
+        $customTestResultData = [];
+        foreach ($genericLabResult as $r) {
+            $customTestResultData[$r['unique_id']] = [];
+            $customTestResultData[$r['unique_id']]['form_data'] = $r;
+            $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['covid19_id']);
+        }
+
+        $url = "$remoteUrl/remote/remote/covid-19-test-results.php";
         $payload = [
             "labId" => $labId,
-            "result" => $genericLabResult,
-            "testResults" => $testResults,
+            "results" => $customTestResultData,
             "Key" => "vlsm-lab-data--",
         ];
-
         $jsonResponse = $apiService->post($url, $payload);
         $result = json_decode($jsonResponse, true);
 
