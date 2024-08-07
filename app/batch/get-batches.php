@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -50,6 +51,11 @@ try {
 
     $aColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
     $orderColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
+
+    if ($formId != COUNTRY\CAMEROON) {
+        $aColumns = MiscUtility::removeMatchingElements($aColumns, ['b.lab_assigned_batch_code']);
+        $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['b.lab_assigned_batch_code']);
+    }
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {

@@ -335,22 +335,25 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
 
                             </div>
                         </div>
-                    <?php if ($formId == COUNTRY\CAMEROON) { ?>
+
                         <div class="row">
                             <div class="col-md-10">
-                                <div class="form-group">
-                                    <label for="batchCode" class="col-lg-3 control-label">
-                                        <?php echo _translate("Lab Assigned Batch Code"); ?>
-                                    </label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" />
+                                <?php if ($formId == COUNTRY\CAMEROON) { ?>
+                                    <div class="form-group">
+
+                                        <label for="batchCode" class="col-lg-3 control-label">
+                                            <?php echo _translate("Lab Assigned Batch Code"); ?>
+                                        </label>
+                                        <div class="col-lg-7" style="margin-left:3%;">
+                                            <input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" />
+                                        </div>
                                     </div>
-                                </div>
+                                <?php } ?>
                                 <p><button type='button' class='btn btn-default selectSamples' onclick='autoselectBatchSamples()'><?php echo _translate('Automatically select samples for Batch'); ?></button></p>
 
                             </div>
                         </div>
-                    <?php } ?>
+
                         <div class="row" id="sampleDetails">
                         </div>
                         <div class="row col-md-12" id="alertText"></div>
