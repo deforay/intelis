@@ -50,7 +50,7 @@ try {
         $unwantedColumns = [
             'tb_id',
             'sample_package_id',
-            'sample_package_code'
+            'sample_package_code',
         ];
         // Create an array with all column names set to null
         $emptyLabArray = $general->getTableFieldsAsArray('form_tb', $unwantedColumns);
@@ -86,6 +86,10 @@ try {
 
             $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            //unset($lab['request_created_by']);
+            //unset($lab['last_modified_by']);
+            //unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
                 $keysToRemove = [

@@ -53,7 +53,8 @@ try {
         $unwantedColumns = [
             'covid19_id',
             'sample_package_id',
-            'sample_package_code'
+            'sample_package_code',
+            'request_created_by'
         ];
         // Create an array with all column names set to null
         $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $unwantedColumns);

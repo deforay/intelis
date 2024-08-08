@@ -45,7 +45,8 @@ try {
         'cd4_id',
         'sample_package_id',
         'sample_package_code',
-        'result_printed_datetime'
+        'result_printed_datetime',
+        'request_created_by'
     ];
     // Create an array with all column names set to null
     $emptyLabArray = $general->getTableFieldsAsArray('form_cd4', $unwantedColumns);
