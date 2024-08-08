@@ -63,10 +63,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT tar.*, l.facility_name as labName FROM $tableName AS tar
             LEFT JOIN facility_details as l ON l.facility_id=tar.facility_id

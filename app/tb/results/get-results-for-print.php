@@ -103,10 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
             f.facility_name,f.facility_district,f.facility_state,
             l_f.facility_name as labName,
@@ -165,9 +162,9 @@ if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) !
 
 if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
     if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
-         $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
+        $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
     } else {
-         $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
+        $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
     }
 }
 

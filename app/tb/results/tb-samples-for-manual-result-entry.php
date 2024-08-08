@@ -95,10 +95,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $sQuery = "SELECT vl.tb_id,vl.sample_code, vl.external_sample_code,
     vl.remote_sample_code, vl.patient_id, vl.patient_name,
     vl.patient_surname,vl.patient_phone,vl.patient_gender,vl.reason_for_tb_test,

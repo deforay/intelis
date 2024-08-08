@@ -5,7 +5,6 @@ if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
 }
 
-
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
@@ -44,7 +43,7 @@ if (empty($remoteUrl)) {
 }
 try {
     // Checking if the network connection is available
-    if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
+    if ($apiService->checkConnectivity("$remoteUrl/api/version.php?labId=$labId&version=$version") === false) {
         LoggerUtility::log('error', "No network connectivity while trying remote sync.");
         return false;
     }
@@ -135,7 +134,7 @@ try {
 
         $vlLabResult = $db->rawQuery($vlQuery);
 
-        $url = $remoteUrl . '/remote/remote/testResults.php';
+        $url = "$remoteUrl/remote/remote/testResults.php";
 
         $payload = [
             "labId" => $labId,
@@ -177,7 +176,7 @@ try {
         }
         $eidLabResult = $db->rawQuery($eidQuery);
 
-        $url = $remoteUrl . '/remote/remote/eid-test-results.php';
+        $url = "$remoteUrl/remote/remote/eid-test-results.php";
         $payload = [
             "labId" => $labId,
             "result" => $eidLabResult,
@@ -271,7 +270,7 @@ try {
         }
         $hepLabResult = $db->rawQuery($hepQuery);
 
-        $url = $remoteUrl . '/remote/remote/hepatitis-test-results.php';
+        $url = "$remoteUrl/remote/remote/hepatitis-test-results.php";
         $payload = [
             "labId" => $labId,
             "result" => $hepLabResult,
@@ -313,7 +312,7 @@ try {
 
         $cd4LabResult = $db->rawQuery($cd4Query);
 
-        $url = $remoteUrl . '/remote/remote/cd4-test-results.php';
+        $url = "$remoteUrl/remote/remote/cd4-test-results.php";
 
         $payload = [
             "labId" => $labId,

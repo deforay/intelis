@@ -95,10 +95,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 			vl.sample_collection_date,
