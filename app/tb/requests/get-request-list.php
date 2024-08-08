@@ -259,7 +259,7 @@ try {
           $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
-          if (empty($aRow[$sampleCodeColumn])) {
+          if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
                $aRow[$sampleCodeColumn] = _translate("Generating...");
           }
 
