@@ -50,7 +50,8 @@ try {
         $unwantedColumns = [
             'eid_id',
             'sample_package_id',
-            'sample_package_code'
+            'sample_package_code',
+            'request_created_by'
         ];
         // Create an array with all column names set to null
         $emptyLabArray = $general->getTableFieldsAsArray('form_eid', $unwantedColumns);
@@ -134,8 +135,10 @@ try {
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
+                    $primaryKeyValue = $sResult[$primaryKey];
                 } else {
                     $id = $db->insert($tableName, $lab);
+                    $primaryKeyValue = $db->getInsertId();
                 }
             } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {

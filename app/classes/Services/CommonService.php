@@ -1237,4 +1237,20 @@ final class CommonService
         $result = $this->db->rawQuery($maxBatchIdQuery);
         return isset($result[0]['max_batch_id']) ? (int)$result[0]['max_batch_id'] : 0;
     }
+
+    public function updateNullColumnsWithDefaults($tableName, $columnsDefaults)
+    {
+        // Construct the SET clause of the update query
+        $setClauses = [];
+        foreach ($columnsDefaults as $column => $defaultValue) {
+            $setClauses[] = "$column = CASE WHEN $column IS NULL THEN '$defaultValue' ELSE $column END";
+        }
+        $setClause = implode(", ", $setClauses);
+
+        // Construct the full update query
+        $updateQuery = "UPDATE $tableName SET $setClause;";
+
+        // Execute the update query
+        $this->db->rawQuery($updateQuery);
+    }
 }

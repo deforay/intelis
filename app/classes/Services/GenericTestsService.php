@@ -163,7 +163,7 @@ final class GenericTestsService extends AbstractTestService
     {
         $return = [];
         if ($genericTestId > 0) {
-            $labelsResponse = $dynamicJson = [];
+            $labelsResponse = $dynamicJson = $testTypes = [];
             $this->db->where("sample_id", $genericTestId);
             $generic = $this->db->getOne('form_generic');
             if ($generic['test_type_form']) {
@@ -175,8 +175,12 @@ final class GenericTestsService extends AbstractTestService
                 foreach ($labels['field_id'] as $key => $le) {
                     $labelsResponse[$le] = $labels['field_name'][$key];
                 }
+                unset(
+                    $testTypes['test_form_config'], 
+                    $testTypes['test_results_config']
+                );
             }
-            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse);
+            $return = array('dynamicValue' => $dynamicJson, 'dynamicLabel' => $labelsResponse, 'testDetails' => $testTypes);
         }
         return $return;
     }

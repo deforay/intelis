@@ -20,18 +20,18 @@ if (file_exists($file)) {
         $lineNumber = $start + $index + 1; // Calculate line number
         $entry = htmlspecialchars($entry); // Convert special characters to HTML entities
         $entry = str_replace("\n", "<br>", $entry); // Replace newlines with <br> tags
-        echo "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
+        echo "<div class='logLine' style='position: relative;' data-linenumber='{$lineNumber}'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
     }
 } else {
-    $htm ="";
+    $htm = "";
     $notFoundStatus = true;
     $selectedDate = date('d-M-Y');
-    foreach(range(1,365) as $n){
+    foreach (range(1, 365) as $n) {
         $dateObj = new DateTime($selectedDate);
         $dateObj->modify('-1 day');
         $selectedDate = $dateObj->format('Y-m-d');
         $file = ROOT_PATH . '/logs/' . $selectedDate . '-logfile.log';
-        if(file_exists($file)){
+        if (file_exists($file)) {
             $notFoundStatus = false;
             $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
             $logEntries = array_slice($fileContent, $start, $linesPerPage);
@@ -41,13 +41,13 @@ if (file_exists($file)) {
                 $lineNumber = $start + $index + 1; // Calculate line number
                 $entry = htmlspecialchars($entry); // Convert special characters to HTML entities
                 $entry = str_replace("\n", "<br>", $entry); // Replace newlines with <br> tags
-                $htm .= "<div class='logLine' style='position: relative;'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
+                $htm .= "<div class='logLine' style='position: relative;' data-linenumber='{$lineNumber}'><span class='lineNumber'>{$lineNumber}</span>{$entry}</div>";
             }
-            echo "<h4>".$_GET['date']."  not found any logs. Latest logs was available in ".date('d-M-Y', strtotime($selectedDate))."</h4><br>" . $htm;
+            echo "<h4>" . _translate("No data found for the selected date") . " - " . $_GET['date'] . "</h4><br>" . $htm;
             exit(0);
         }
     }
-    if($notFoundStatus){
+    if ($notFoundStatus) {
         echo '<div class="logLine">No files found</div>';
     }
 }

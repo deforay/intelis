@@ -47,7 +47,8 @@ try {
         'sample_id',
         'sample_package_id',
         'sample_package_code',
-        'result_printed_datetime'
+        'result_printed_datetime',
+        'request_created_by',
     ];
     // Create an array with all column names set to null
     $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $unwantedColumns);
@@ -57,15 +58,6 @@ try {
     $sampleCodes = $facilityIds = [];
     $labId = null;
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
-
-        //remove fields that we DO NOT NEED here
-        $unwantedColumns = [
-            'generic_id',
-            'sample_package_id',
-            'sample_package_code'
-        ];
-        // Create an array with all column names set to null
-        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $unwantedColumns);
 
         $resultsData = [];
         $testResultsData = [];

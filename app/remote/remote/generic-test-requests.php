@@ -62,7 +62,7 @@ try {
 	}
 
 
-	$removeKeys = array(
+	$removeKeys = [
 		'sample_code',
 		'sample_code_key',
 		'sample_code_format',
@@ -91,7 +91,13 @@ try {
 		'last_modified_by',
 		'result_printed_datetime',
 		'last_modified_datetime'
-	);
+	];
+
+	$general->updateNullColumnsWithDefaults('generic_tests', [
+		'is_result_mail_sent' => 'no',
+		'is_request_mail_sent' => 'no',
+		'is_result_sms_sent' => 'no'
+	]);
 
 	$sQuery = "SELECT * FROM form_generic
                     WHERE $condition ";

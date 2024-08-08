@@ -42,8 +42,8 @@ try {
 
         $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
         $testTypeShortCode = "T";
-        if (!empty($testType['dynamicLabel']['test_short_code'])) {
-            $testTypeShortCode = $testType['dynamicLabel']['test_short_code'];
+        if (!empty($testType['testDetails']['test_short_code'])) {
+            $testTypeShortCode = $testType['testDetails']['test_short_code'];
         }
 
         if (!empty($sampleRow['province_id'])) {
