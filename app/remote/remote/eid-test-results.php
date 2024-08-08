@@ -134,8 +134,10 @@ try {
                 if (!empty($sResult)) {
                     $db->where($primaryKey, $sResult[$primaryKey]);
                     $id = $db->update($tableName, $lab);
+                    $primaryKeyValue = $sResult[$primaryKey];
                 } else {
                     $id = $db->insert($tableName, $lab);
+                    $primaryKeyValue = $db->getInsertId();
                 }
             } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {

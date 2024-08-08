@@ -93,9 +93,10 @@ try {
                     $tableName = $tableInfo['table'][$j];
                     try {
                         if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
-                            if (!in_array($data['instrument_id'], $deletedId)) {
+                            if ((in_array($data['instrument_id'], $deletedId))==false) {
                                 $deletedId[] = $data['instrument_id'];
-                                $db->delete($tableName, "instrument_id = " . $data['instrument_id']);
+                                $db->where('instrument_id', $data['instrument_id']);
+                                $db->delete($tableName);
                             }
                             $id = $db->insert($tableName, $data);
                         } else {
@@ -113,8 +114,8 @@ try {
 
                             $sResult = [];
                             if (!empty($data[$checkColumn])) {
-                                $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn =?";
-                                $sResult = $db->rawQueryOne($sQuery, [$data[$checkColumn]]);
+                                $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn = ?";
+                                $sResult = $db->rawQueryOne($sQuery, $data[$checkColumn]);
                             }
                             if (!empty($sResult)) {
                                 $db->where($primaryKey, $sResult[$primaryKey]);
