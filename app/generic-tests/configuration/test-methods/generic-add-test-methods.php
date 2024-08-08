@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
                                 <div class="form-group">
                                     <label for="testMethod" class="col-lg-4 control-label"><?php echo _translate("Test Method"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testMethod" name="testMethod" placeholder="<?php echo _translate('Test Method'); ?>" title="<?php echo _translate('Please enter test method'); ?>" onblur='checkNameValidation("r_generic_test_methods","test_method",this,null,"<?php echo _translate("The test method that you entered already exists.Enter another name"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="testMethod" name="testMethod" placeholder="<?php echo _translate('Test Method'); ?>" title="<?php echo _translate('Please enter test method'); ?>" onblur='checkNameValidation("r_generic_test_methods","test_method_name",this,null,"<?php echo _translate("The test method that you entered already exists.Enter another name"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>
