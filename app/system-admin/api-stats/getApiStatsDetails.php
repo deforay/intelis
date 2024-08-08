@@ -63,10 +63,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS api.api_track_id,api.requested_by,api.requested_on,api.number_of_records,api.request_type,api.test_type,api.api_url,api.api_params,api.facility_id,api.data_format FROM track_api_requests as api";
 

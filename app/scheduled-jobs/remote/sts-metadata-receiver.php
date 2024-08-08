@@ -485,10 +485,6 @@ try {
                             MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
                         }
 
-                        if ($dataType == 'geoDivisions' && is_null($tableDataValues['geo_parent'])) {
-                            $tableDataValues['geo_parent'] = 0; // Or any other appropriate default value
-                        }
-
                         $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
                         $updateColumns = array_keys($tableData);
                         $primaryKey = $dataToSync[$dataType]['primaryKey'];

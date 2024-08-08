@@ -113,10 +113,7 @@ try {
 
 
 
-     /*
- * SQL queries
- * Get data to display
- */
+
      $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.hepatitis_id,vl.sample_code, vl.external_sample_code,
           vl.remote_sample_code, vl.patient_id, vl.patient_name,
           vl.patient_surname,vl.patient_phone_number,vl.patient_gender,vl.is_sample_collected,vl.reason_for_hepatitis_test,

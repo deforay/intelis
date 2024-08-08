@@ -87,10 +87,7 @@ try {
     }
 
 
-    /*
- * SQL queries
- * Get data to display
- */
+
 
     $sQuery = "SELECT * FROM $tableName";
     if (isset($testType) && $testType != "") {

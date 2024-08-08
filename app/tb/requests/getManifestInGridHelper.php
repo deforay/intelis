@@ -101,10 +101,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $aWhere = '';
 $sQuery = "SELECT * FROM form_tb as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

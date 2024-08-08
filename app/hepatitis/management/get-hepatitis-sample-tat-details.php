@@ -104,10 +104,7 @@ try {
 
 
 
-	/*
- * SQL queries
- * Get data to display
- */
+
 	$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.sample_collection_date,
 				vl.sample_tested_datetime,
 				vl.sample_received_at_lab_datetime,

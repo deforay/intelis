@@ -45,7 +45,7 @@ if (empty($remoteUrl)) {
     exit(0);
 }
 
-if ($apiService->checkConnectivity($remoteUrl . '/api/version.php?labId=' . $labId . '&version=' . $version) === false) {
+if ($apiService->checkConnectivity("$remoteUrl/api/version.php?labId=$labId&version=$version") === false) {
     LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
     return false;
 }

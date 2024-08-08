@@ -74,10 +74,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $sQuery = "SELECT vl.sample_collection_date,
 					vl.sample_tested_datetime,
 					vl.sample_received_at_lab_datetime,

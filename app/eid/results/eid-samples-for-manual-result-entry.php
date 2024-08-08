@@ -104,10 +104,7 @@ try {
 
 
 
-     /*
- * SQL queries
- * Get data to display
- */
+
      $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.eid_id, vl.sample_code, vl.remote_sample,
                vl.remote_sample_code, vl.sample_collection_date, vl.sample_tested_datetime,
                vl.child_id,vl.mother_id, vl.child_name,vl.mother_name, vl.result, vl.reason_for_eid_test, vl.last_modified_datetime as lastModifiedDate,

@@ -78,10 +78,7 @@ try {
     }
 
 
-    /*
- * SQL queries
- * Get data to display
- */
+
 
     $sQuery = "SELECT * FROM $tableName";
 
