@@ -1,6 +1,7 @@
 <?php
 
 
+use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -74,6 +75,8 @@ require_once APPLICATION_PATH . '/header.php';
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
+					<!-- Display server datetime -->
+
 					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:40%;">
 						<tr>
 							<td><strong><?php echo _translate("Date"); ?>&nbsp;:</strong></td>
@@ -88,6 +91,9 @@ require_once APPLICATION_PATH . '/header.php';
 							</td>
 						</tr>
 					</table>
+					<div style="margin-left: 1%; margin-top: 20px;text-align:right;padding:0 1em;">
+						<strong><?= _translate("Current Server Date and Time"); ?> : </strong> <?= DateUtility::getCurrentDateTime('Y-m-d\TH:i:s.uP') ?>
+					</div>
 					<!-- /.box-header -->
 					<div class="box-body">
 						<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
@@ -111,6 +117,34 @@ require_once APPLICATION_PATH . '/header.php';
 	let loading = false; // Flag to prevent multiple simultaneous AJAX calls
 	let linesPerPage = 3; // Adjust based on what you want per load
 	let hasMoreLogs = true; // Flag to check if there are more logs to load
+
+	function copyToClipboard(text, lineNumber) {
+		const tempInput = document.createElement('input');
+		tempInput.style.position = 'absolute';
+		tempInput.style.left = '-9999px';
+		tempInput.value = text;
+		document.body.appendChild(tempInput);
+		tempInput.select();
+		document.execCommand('copy');
+		document.body.removeChild(tempInput);
+		Toastify({
+			text: "<?= _translate("Copied to clipboard", true); ?>" + " - " + "<?= _translate("Line Number", true); ?>" + " - " + lineNumber,
+			duration: 3000,
+			close: true,
+			gravity: "top",
+			position: "right",
+			backgroundColor: "#4CAF50",
+		}).showToast();
+	}
+
+	function bindLogLineClick() {
+		document.querySelectorAll('.logLine').forEach(function(logLine) {
+			logLine.addEventListener('click', function() {
+				const lineNumber = logLine.getAttribute('data-linenumber');
+				copyToClipboard(logLine.innerText, lineNumber);
+			});
+		});
+	}
 
 	function resetAndLoadLogs() {
 		start = 0; // Reset start index
@@ -140,6 +174,7 @@ require_once APPLICATION_PATH . '/header.php';
 						$('#logViewer').append(data);
 						let linesReturned = (data.match(/class='logLine'/g) || []).length;
 						start += linesReturned; // Update the start index based on actual lines returned
+						bindLogLineClick(); // Bind click event to new log lines
 					}
 					loading = false;
 				},
