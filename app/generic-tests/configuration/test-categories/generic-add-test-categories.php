@@ -31,7 +31,7 @@ require_once APPLICATION_PATH . '/header.php';
                                 <div class="form-group">
                                     <label for="testCategory" class="col-lg-4 control-label"><?php echo _translate("Test Category"); ?><span class="mandatory">*</span></label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control isRequired" id="testCategory" name="testCategory" placeholder="<?php echo _translate('Test Category'); ?>" title="<?php echo _translate('Please enter test Category'); ?>" onblur='checkNameValidation("r_generic_test_categories","test_category",this,null,"<?php echo _translate("The test category that you entered already exists.Enter another name"); ?>",null)' />
+                                        <input type="text" class="form-control isRequired" id="testCategory" name="testCategory" placeholder="<?php echo _translate('Test Category'); ?>" title="<?php echo _translate('Please enter test Category'); ?>" onblur='checkNameValidation("r_generic_test_categories","test_category_name",this,null,"<?php echo _translate("The test category that you entered already exists.Enter another name"); ?>",null)' />
                                     </div>
                                 </div>
                             </div>

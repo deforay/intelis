@@ -78,10 +78,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT * FROM $tableName";
 

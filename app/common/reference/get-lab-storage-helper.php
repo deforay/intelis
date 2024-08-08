@@ -69,10 +69,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT s.*, lab.facility_name FROM $tableName as s JOIN facility_details as lab ON (lab.facility_id=s.lab_id)";
 

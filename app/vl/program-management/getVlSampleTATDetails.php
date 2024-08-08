@@ -80,10 +80,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $aWhere = '';
 $sQuery = "SELECT vl.sample_code,
 				vl.sample_collection_date,

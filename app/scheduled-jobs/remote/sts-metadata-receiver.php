@@ -485,7 +485,6 @@ try {
                             MiscUtility::displayProgressBar($index + 1, $totalRows); // Update the progress bar for each row
                         }
 
-
                         $tableData = MiscUtility::updateFromArray($emptyTableArray, $tableDataValues);
                         $updateColumns = array_keys($tableData);
                         $primaryKey = $dataToSync[$dataType]['primaryKey'];

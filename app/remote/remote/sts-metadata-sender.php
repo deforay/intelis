@@ -362,10 +362,16 @@ if (isset($data['Key']) && $data['Key'] == 'vlsm-get-remote') {
 
 
     // Geographical Divisions
+
+    // Set all geo_parent to 0 where geo_parent is NULL or empty
+    $db->where("geo_parent is NULL OR geo_parent like ''");
+    $db->update('geographical_divisions', ['geo_parent' => 0]);
+
     $condition = [];
     if (!empty($data['geoDivisionsLastModified'])) {
         $condition = "updated_datetime > '" . $data['geoDivisionsLastModified'] . "'";
     }
+
     $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
     // Patients

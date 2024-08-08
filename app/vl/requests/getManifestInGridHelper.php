@@ -50,10 +50,7 @@ if (!empty($columnSearch) && $columnSearch != '') {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT vl.sample_collection_date,
                     vl.vl_sample_id,

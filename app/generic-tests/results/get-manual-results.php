@@ -93,10 +93,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 $sQuery = "SELECT vl.sample_id,
 vl.sample_code,
 vl.remote_sample,

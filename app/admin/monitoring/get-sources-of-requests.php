@@ -117,10 +117,7 @@ try {
 
 
 
-    /*
- * SQL queries
- * Get data to display
- */
+
     $aWhere = '';
     $sQuery = '';
 

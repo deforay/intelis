@@ -88,7 +88,6 @@ try {
             $lab['data_sync'] = 1;
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
                 $keysToRemove = [
                     'result',

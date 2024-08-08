@@ -71,31 +71,28 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS ul.history_id,ul.login_id,ul.login_attempted_datetime,ul.login_status,ul.ip_address,ul.browser,ul.operating_system FROM user_login_history as ul";
+$sQuery = "SELECT ul.history_id,
+                    ul.login_id,
+                    ul.login_attempted_datetime,
+                    ul.login_status,
+                    ul.ip_address,
+                    ul.browser,
+                    ul.operating_system
+                FROM user_login_history AS ul";
 
 $start_date = '';
 $end_date = '';
 $cWhere = [];
 
 if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
-    $s_c_date = explode("to", (string) $_POST['userDate']);
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['userDate'] ?? '');
 }
 
 if (isset($_POST['userDate']) && trim((string) $_POST['userDate']) != '') {
     if (trim((string) $start_date) == trim((string) $end_date)) {
-        $cWhere[] = ' DATE(ul.login_attempted_datetime) = "' . $start_date . '"';
+        $cWhere[] = " DATE(ul.login_attempted_datetime) = '$start_date'";
     } else {
-        $cWhere[] = ' DATE(ul.login_attempted_datetime) >= "' . $start_date . '" AND DATE(ul.login_attempted_datetime) <= "' . $end_date . '"';
+        $cWhere[] = " DATE(ul.login_attempted_datetime) BETWEEN '$start_date' AND '$end_date'";
     }
 }
 // print_r($cWhere);die;
@@ -105,47 +102,41 @@ if (isset($_POST['loginId']) && trim((string) $_POST['loginId']) != '') {
 }
 
 if ((isset($sWhere) && $sWhere != "") || (count($cWhere) > 0)) {
-    $sWhere = ' WHERE ' . $sWhere;
+    $sWhere = " WHERE $sWhere";
     $sQuery = $sQuery . ' ' . $sWhere . implode(" AND ", $cWhere);
 }
 
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
-// die($sQuery);
-// echo $sQuery;
+
 $rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-/*
- * Output
- */
-$output = array(
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+
+
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
     $row = [];
-    $row[] = ($aRow['login_id']);
-    $row[] = ($aRow['login_attempted_datetime']);
-    $row[] = ($aRow['ip_address']);
-    $row[] = ($aRow['browser']);
-    $row[] = ($aRow['operating_system']);
-    $row[] = ($aRow['login_status']);
+    $row[] = $aRow['login_id'];
+    $row[] = $aRow['login_attempted_datetime'];
+    $row[] = $aRow['ip_address'];
+    $row[] = $aRow['browser'];
+    $row[] = $aRow['operating_system'];
+    $row[] = $aRow['login_status'];
     $output['aaData'][] = $row;
 }
 

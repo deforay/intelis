@@ -107,10 +107,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $sWhere[] = $sWhereSub;
 }
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 
 $sQuery = "SELECT p.request_created_datetime,

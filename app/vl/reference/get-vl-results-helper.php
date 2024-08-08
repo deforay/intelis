@@ -59,10 +59,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT r.*, GROUP_CONCAT(i.machine_name SEPARATOR ', ') AS machine_names
             FROM r_vl_results r

@@ -82,10 +82,7 @@ try {
 
 
 
-	/*
- * SQL queries
- * Get data to display
- */
+
 	$sQuery = "SELECT vl.sample_code,
 				vl.remote_sample_code,
 				vl.sample_collection_date,

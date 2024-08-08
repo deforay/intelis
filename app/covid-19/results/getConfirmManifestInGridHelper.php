@@ -71,10 +71,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     }
     $sWhere .= $sWhereSub;
 }
-/*
- * SQL queries
- * Get data to display
- */
+
 $facilityQuery = '';
 
 $tableName = "form_covid19";

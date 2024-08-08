@@ -84,10 +84,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
- * SQL queries
- * Get data to display
- */
+
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
           DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthrange,

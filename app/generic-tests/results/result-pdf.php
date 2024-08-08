@@ -48,8 +48,8 @@ if (!empty($requestResult)) {
 
           // $genericTestQuery = "SELECT res.*, m.test_method_name from generic_test_results as res INNER JOIN r_generic_test_methods AS m ON m.test_method_id=res.test_name where res.generic_id=? ORDER BY res.test_id ASC";
           // $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
-          $genericTestQuery = "SELECT * from generic_test_results where generic_id=? ORDER BY test_id ASC";
-          $genericTestInfo = $db->rawQuery($genericTestQuery, array($result['sample_id']));
+          $genericTestQuery = "SELECT * FROM generic_test_results WHERE generic_id=? ORDER BY test_id ASC";
+          $genericTestInfo = $db->rawQuery($genericTestQuery, [$result['sample_id']]);
           // $testedBy = '';
           if (!empty($result['tested_by'])) {
                $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));

@@ -102,10 +102,7 @@ try {
 
 
 
-    /*
- * SQL queries
- * Get data to display
- */
+
     $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
                     f.*,s.*,fd.facility_name as labName,
                     ts.status_name
