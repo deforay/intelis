@@ -168,7 +168,7 @@ $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 								if (!empty($arr['edit_profile']) && $arr['edit_profile'] == 'yes') {
 								?>
 									<li class="user-footer">
-										<a href="/users/editProfile.php" class="">
+										<a href="/users/edit-profile.php" class="">
 											<?= _translate("Edit Profile"); ?>
 										</a>
 									</li>

@@ -1,2 +1,2 @@
 <?php
-header("Location: /users/editProfile.php");
+header("Location: /users/edit-profile.php");

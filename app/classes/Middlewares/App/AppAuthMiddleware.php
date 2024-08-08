@@ -39,8 +39,8 @@ class AppAuthMiddleware implements MiddlewareInterface
 
             // Redirect to the edit profile page if the user is logged in but needs to change their password
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
-            if (basename((string) $_SESSION['requestedURI']) !== "editProfile.php") {
-                $redirect = new RedirectResponse('/users/editProfile.php');
+            if (basename((string) $_SESSION['requestedURI']) !== "edit-profile.php") {
+                $redirect = new RedirectResponse('/users/edit-profile.php');
             }
         }
 
@@ -72,7 +72,7 @@ class AppAuthMiddleware implements MiddlewareInterface
                     '/setup/registerProcess.php',
                     '/setup/registerProcess.php',
                     '/includes/captcha.php',
-                    '/users/editProfileHelper.php',
+                    '/users/edit-profile-helper.php',
                     // Add other routes to exclude from the authentication check here
                 ];
                 $return = in_array($_SESSION['requestedURI'], $excludedRoutes, true);

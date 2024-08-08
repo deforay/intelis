@@ -67,7 +67,7 @@ try {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
                 if (password_verify((string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
-                    header("Location:editProfile.php");
+                    header("Location:edit-profile.php");
                 }
 
                 if (SYSTEM_CONFIG['recency']['crosslogin']) {
@@ -108,7 +108,7 @@ try {
             }
         } else {
             $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
-            header("Location:editProfile.php");
+            header("Location:edit-profile.php");
         }
     }
 } catch (Exception $exc) {

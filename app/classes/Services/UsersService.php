@@ -148,7 +148,7 @@ final class UsersService
             '401.php',
             '404.php',
             'error.php',
-            'editProfile.php'
+            'edit-profile.php'
         ];
     }
 
