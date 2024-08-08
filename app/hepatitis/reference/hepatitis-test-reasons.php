@@ -24,9 +24,11 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_hepatitis_test_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
-						<?php if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) { ?>
-							<a href="add-hepatitis-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Hepatitis Test Reasons"); ?></a>
+						<?php if ($general->isSTSInstance()) { ?>
+								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_hepatitis_test_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+						<?php }
+							  if (_isAllowed("hepatitis-sample-type.php") && $general->isLISInstance() === false) { ?>
+								<a href="add-hepatitis-test-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Hepatitis Test Reasons"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
