@@ -125,7 +125,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             'result_approved_by',
             'result_approved_datetime',
             'request_created_datetime',
-            'request_created_by',
             'last_modified_by',
             'data_sync'
         );
@@ -405,7 +404,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
             'last_modified_by',
             'request_created_datetime',
             'data_sync'
@@ -601,7 +599,6 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
             'last_modified_by',
             'request_created_datetime',
             'data_sync'
@@ -773,7 +770,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            'request_created_by',
             'last_modified_by',
             'request_created_datetime',
             'data_sync'
@@ -825,7 +821,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     'sample_registered_at_lab',
                     'last_modified_by',
                     'last_modified_datetime',
-                    'request_created_by',
                     'last_modified_by',
                     'lab_technician'
                 );
