@@ -124,9 +124,9 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_datetime',
-            //'request_created_by',
-            //'last_modified_by',
+            'request_created_datetime',
+            'request_created_by',
+            'last_modified_by',
             'data_sync'
         );
 
@@ -194,6 +194,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
 
                 $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
                 $id = $db->update('form_vl', $request);
@@ -208,6 +209,8 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $id = $db->insert('form_vl', $request);
@@ -327,6 +330,8 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
+
                 $db->where('eid_id', $existingSampleResult['eid_id']);
                 $id = $db->update('form_eid', $request);
             } else {
@@ -339,6 +344,8 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 
@@ -398,9 +405,9 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_by',
-            //'last_modified_by',
-            //'request_created_datetime',
+            'request_created_by',
+            'last_modified_by',
+            'request_created_datetime',
             'data_sync'
         ];
 
@@ -466,6 +473,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
 
                 $db->where('covid19_id', $existingSampleResult['covid19_id']);
                 $db->update('form_covid19', $request);
@@ -479,6 +487,8 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $db->insert('form_covid19', $request);
@@ -591,9 +601,9 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_by',
-            //'last_modified_by',
-            //'request_created_datetime',
+            'request_created_by',
+            'last_modified_by',
+            'request_created_datetime',
             'data_sync'
         ];
 
@@ -657,6 +667,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
 
                 $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
                 $db->update('form_hepatitis', $request);
@@ -670,6 +681,8 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 
@@ -760,9 +773,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             'reason_for_sample_rejection',
             'result_approved_by',
             'result_approved_datetime',
-            //'request_created_by',
-            //'last_modified_by',
-            //'request_created_datetime',
+            'request_created_by',
+            'last_modified_by',
+            'request_created_datetime',
             'data_sync'
         ];
 
@@ -825,6 +838,8 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
+
                 $db->where('tb_id', $existingSampleResult['tb_id']);
                 $db->update('form_tb', $request);
                 $id = $existingSampleResult['tb_id'];
@@ -838,6 +853,8 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
 
@@ -963,6 +980,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                     ['syncTransactionId' => $transactionId]
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
 
                 $db->where('cd4_id', $existingSampleResult['cd4_id']);
                 $id = $db->update('form_cd4', $request);
@@ -977,6 +995,8 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
+
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                     $request['data_sync'] = 0;
                     $id = $db->insert('form_cd4', $request);
