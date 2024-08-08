@@ -77,7 +77,7 @@ try {
             $i++;
         }
 
-        $transactionId = $transactionId ?? MiscUtility::generateUUID();
+        $transactionId ??= MiscUtility::generateUUID();
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
                 $emptyTableArray = $general->getTableFieldsAsArray($table);
@@ -93,7 +93,7 @@ try {
                     $tableName = $tableInfo['table'][$j];
                     try {
                         if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
-                            if ((in_array($data['instrument_id'], $deletedId))==false) {
+                            if ((in_array($data['instrument_id'], $deletedId)) == false) {
                                 $deletedId[] = $data['instrument_id'];
                                 $db->where('instrument_id', $data['instrument_id']);
                                 $db->delete($tableName);

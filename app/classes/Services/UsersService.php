@@ -235,7 +235,19 @@ final class UsersService
         $this->db->where('u.api_token', $token);
         $this->db->where('u.status', 'active');
         $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
-        return $this->db->getOne("$this->table as u");
+        $user = $this->db->getOne("$this->table as u");
+
+        // in case of empty access_type, set default access_type
+        // if the instance is STS, set access_type to collection-site
+        // else set access_type to testing-lab
+        if (empty($user['access_type']) || $user['access_type'] == '') {
+            if ($this->commonService->isSTSInstance()) {
+                $user['access_type'] = 'collection-site';
+            } else {
+                $user['access_type'] = 'testing-lab';
+            }
+        }
+        return $user;
     }
 
     public function getUserByUserId(?string $userId = null): ?array

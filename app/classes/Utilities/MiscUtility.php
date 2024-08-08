@@ -348,9 +348,13 @@ final class MiscUtility
 
 
     // Generate a ULID
-    public static function generateULID(): string
+    public static function generateULID($attachExtraString = true): string
     {
-        return (new Ulid())->toRfc4122();
+        $ulid = (new Ulid())->toRfc4122();
+        if ($attachExtraString) {
+            $ulid .= '-' . self::generateRandomString(6);
+        }
+        return $ulid;
     }
 
     /**

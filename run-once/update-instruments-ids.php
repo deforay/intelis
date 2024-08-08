@@ -52,7 +52,7 @@ foreach ($instrumentResult as $row) {
     $oldInstrumentId = null;
     if (is_numeric($row['instrument_id'])) {
         $oldInstrumentId = $row['instrument_id'];
-        $instrumentId = MiscUtility::generateUUID();
+        $instrumentId = MiscUtility::generateULID();
         $db->where("instrument_id", $row['instrument_id']);
         $db->update('instruments', ['instrument_id' => $instrumentId, 'updated_datetime' => $updatedOn]);
 

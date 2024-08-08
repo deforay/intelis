@@ -87,7 +87,7 @@ final class EidService extends AbstractTestService
                 return 0;
             }
 
-            $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
+            $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
 
             // Insert into the Code Generation Queue

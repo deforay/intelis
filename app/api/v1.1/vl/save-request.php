@@ -200,7 +200,7 @@ try {
                 $update = "yes";
                 $uniqueId = $rowData['unique_id'];
             } else {
-                $uniqueId = MiscUtility::generateUUID();
+                $uniqueId = MiscUtility::generateULID();
             }
         }
 
