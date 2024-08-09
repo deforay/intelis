@@ -1675,7 +1675,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	}
 
 	function validateLessThanDays(spanId,days,error) {
-		debugger;
         var inputElement = event.target;
     	var value = inputElement.value;
         var errorElement = document.getElementById(spanId);
