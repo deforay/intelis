@@ -80,22 +80,6 @@ $tbTestInfo = $db->rawQuery($testQuery, array($id));
 
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
-if ($arr['tb_sample_code'] == 'auto' || $arr['tb_sample_code'] == 'auto2' || $arr['tb_sample_code'] == 'alphanumeric') {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['tb_max_length'] != '' && $arr['tb_sample_code'] == 'alphanumeric') {
-        $maxLength = $arr['tb_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-} else {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['tb_max_length'] != '') {
-        $maxLength = $arr['tb_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-}
-
 
 if (isset($tbInfo['request_created_datetime']) && trim((string) $tbInfo['request_created_datetime']) != '' && $tbInfo['request_created_datetime'] != '0000-00-00 00:00:00') {
     $requestedDate = $tbInfo['request_created_datetime'];

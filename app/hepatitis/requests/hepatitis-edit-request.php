@@ -74,22 +74,6 @@ $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 $hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
 $hepatitisInfo = $db->rawQueryOne($hepatitisQuery, array($id));
 
-if ($arr['hepatitis_sample_code'] == 'auto' || $arr['hepatitis_sample_code'] == 'auto2' || $arr['hepatitis_sample_code'] == 'alphanumeric') {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['hepatitis_max_length'] != '' && $arr['hepatitis_sample_code'] == 'alphanumeric') {
-        $maxLength = $arr['hepatitis_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-} else {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['hepatitis_max_length'] != '') {
-        $maxLength = $arr['hepatitis_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-}
-
 
 if (isset($hepatitisInfo['sample_collection_date']) && trim((string) $hepatitisInfo['sample_collection_date']) != '' && $hepatitisInfo['sample_collection_date'] != '0000-00-00 00:00:00') {
     $sampleCollectionDate = $hepatitisInfo['sample_collection_date'];
