@@ -294,7 +294,7 @@ try {
           }
 
 
-          if (empty($aRow[$sampleCodeColumn])) {
+          if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
                $aRow[$sampleCodeColumn] = _translate("Generating...");
           }
 

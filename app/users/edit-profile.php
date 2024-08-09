@@ -1,8 +1,8 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
@@ -51,7 +51,7 @@ $data = $db->get("user_login_history", 25);
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-horizontal" method='post' name='userEditForm' id='userEditForm' autocomplete="off" action="editProfileHelper.php">
+        <form class="form-horizontal" method='post' name='userEditForm' id='userEditForm' autocomplete="off" action="edit-profile-helper.php">
           <div class="box-body">
             <div class="row">
               <div class="col-md-12">

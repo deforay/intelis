@@ -228,7 +228,7 @@ try {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
             $params['provinceId'] = $provinceId;
-            $params['uniqueId'] = $uniqueId ?? MiscUtility::generateUUID();
+            $params['uniqueId'] = $uniqueId ?? MiscUtility::generateULID();
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];

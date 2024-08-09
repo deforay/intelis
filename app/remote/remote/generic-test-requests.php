@@ -99,14 +99,6 @@ try {
 		'is_result_sms_sent' => 'no'
 	]);
 
-	$updateQuery = "UPDATE generic_tests
-					SET
-						is_result_mail_sent = CASE WHEN is_result_mail_sent IS NULL THEN 'no' ELSE is_result_mail_sent END,
-						is_request_mail_sent = CASE WHEN is_request_mail_sent IS NULL THEN 'no' ELSE is_request_mail_sent END,
-						is_result_sms_sent = CASE WHEN is_result_sms_sent IS NULL THEN 'no' ELSE is_result_sms_sent END;";
-
-	$db->rawQuery($updateQuery);
-
 	$sQuery = "SELECT * FROM form_generic
                     WHERE $condition ";
 

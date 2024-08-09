@@ -67,7 +67,7 @@ final class StorageService
                 $save = $this->db->update($this->table, $data);
             } else {
                 $data = array(
-                    'storage_id' => MiscUtility::generateUUID(),
+                    'storage_id' => MiscUtility::generateULID(),
                     'storage_code'     => $params['storageCode'],
                     'lab_id'     => $_SESSION['instance']['labId'],
                     'storage_status' => $params['storageStatus'],

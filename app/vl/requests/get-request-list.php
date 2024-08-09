@@ -356,7 +356,7 @@ try {
           $patientMname = $aRow['patient_middle_name'];
           $patientLname = $aRow['patient_last_name'];
 
-          if (empty($aRow[$sampleCodeColumn])) {
+          if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
                $aRow[$sampleCodeColumn] = _translate("Generating...");
           }
 

@@ -384,14 +384,38 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group" style="height:38px;">
 											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch PDF Layout"); ?> </label>
 											<div class="col-lg-8">
-												<br>
 												<input type="radio" class="readPage" id="standard_batch_pdf_layout" name="batch_pdf_layout" value="standard" <?php echo ($arr['batch_pdf_layout'] == 'standard' || $arr['batch_pdf_layout'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Standard"); ?>&nbsp;&nbsp;
 												<input type="radio" class="readPage" id="compact_batch_pdf_layout" name="batch_pdf_layout" value="compact" <?php echo ($arr['batch_pdf_layout'] == 'compact') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Compact"); ?>
 											</div>
 										</div>
 									</div>
 								</div>
-
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="sample_expiry_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Expiry Days"); ?> <span class="mandatory">*</span> </label>
+											<div class="col-lg-4">
+												<input value="<?php echo $arr['sample_expiry_after_days']; ?>" type="text" id="sample_expiry_after_days" name="sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control forceNumeric readPage isRequired" title="<?php echo _translate('Please enter the sample expiry days'); ?>" onblur="validateLessThanDays('expiry_days_error',90,'Expiry days cannot be less than 90 days')">
+											</div>
+											<div class="col-lg-4">
+												<span id="expiry_days_error" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="sample_lock_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Lock Days"); ?> <span class="mandatory">*</span> </label>
+											<div class="col-lg-4">
+												<input value="<?php echo $arr['sample_lock_after_days']; ?>" type="text" id="sample_lock_after_days" name="sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock days'); ?>" class="form-control forceNumeric readPage isRequired" title="<?php echo _translate('Please enter the sample lock days'); ?>" onblur="validateLessThanDays('lock_days_error',7,'Lock days cannot be less than 7 days')">
+											</div>
+											<div class="col-lg-4">
+												<span id="lock_days_error" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
@@ -461,26 +485,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</code>
 										</div>
 									</div><br />
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory" style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="min_length" name="min_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" style="max-width:60px;" />
-												</div>
-											</div>
-										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="min_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory" style="display:<?php echo ($arr['sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric readPage isNumeric <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="max_length" name="max_length" <?php echo ($arr['sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
-												</div>
-											</div>
-										</div>
-									</div>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -652,17 +656,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</code>
 										</div>
 									</div><br />
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="eid_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['eid_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-10">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="eid_max_length" name="eid_max_length" <?php echo ($arr['eid_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['eid_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" style="max-width:60px;" />
-												</div>
-											</div>
-										</div>
-									</div>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -894,10 +887,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												<?php echo _translate("eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"); ?>
 											</code>
 											<code id="hepatitis_auto-sample-code-MMYY" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'MMYY') ? 'block' : 'none'; ?>;">
-												<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (C190517999)"); ?>
+												<?php echo _translate("eg. Prefix+Month+Year+Increment Counter (HEP0517999)"); ?>
 											</code>
 											<code id="hepatitis_auto-sample-code-YY" class="hepatitis_autoSample" style="display:<?php echo ($arr['hepatitis_sample_code'] == 'YY') ? 'block' : 'none'; ?>;">
-												<?php echo _translate("eg. Prefix+Year+Increment Counter (C1917999)"); ?>
+												<?php echo _translate("eg. Prefix+Year+Increment Counter (HEP17999)"); ?>
 											</code>
 										</div>
 									</div><br />
@@ -1107,21 +1100,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</code>
 										</div>
 									</div><br />
-
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="cd4_min_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="cd4_min_length" name="cd4_min_length" <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter sample id min length'); ?>" value="<?php echo ($arr['cd4_sample_code'] == 'auto') ? '' : $arr['min_length']; ?>" />
-												</div>
-												<label for="cd4_max_length" class="col-lg-2 control-label"><?php echo _translate("Maximum Sample ID Length"); ?> <span class="mandatory " style="display:<?php echo ($arr['cd4_sample_code'] == 'auto') ? 'none' : 'block'; ?>">*</span></label>
-												<div class="col-lg-4">
-													<input type="text" class="form-control readPage forceNumeric isNumeric <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? '' : 'isRequired'; ?>" id="cd4_max_length" name="cd4_max_length" <?php echo ($arr['cd4_sample_code'] == 'auto' || 'MMYY' || 'YY') ? 'readonly' : ''; ?> placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter sample id max length'); ?>" value="<?php echo ($arr['cd4_sample_code'] == 'auto') ? '' : $arr['max_length']; ?>" />
-												</div>
-											</div>
-										</div>
-									</div>
 									<div class="row">
 										<div class="col-md-12">
 											<div class="form-group">
@@ -1533,48 +1511,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#auto-sample-code-YY').show();
 			}
-			$('#min_length').val('');
-			$('.minlth').hide();
-			$('#min_length').removeClass('isRequired');
-			$('#min_length').prop('readonly', true);
-			$('#max_length').val('');
-			$('.maxlth').hide();
-			$('#max_length').removeClass('isRequired');
-			$('#max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.autoSample').hide();
 			$('#auto-sample-eg').show();
 			$('#auto-sample-code').show();
-			$('#min_length').val('');
-			$('.minlth').hide();
-			$('#min_length').removeClass('isRequired');
-			$('#min_length').prop('readonly', true);
-			$('#max_length').val('');
-			$('.maxlth').hide();
-			$('#max_length').removeClass('isRequired');
-			$('#max_length').prop('readonly', true);
 			$('.boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.autoSample').hide();
 			$('#auto-sample-eg').show();
 			$('#auto-sample-code2').show();
-			$('#min_length').val('');
-			$('.minlth').hide();
-			$('#min_length').removeClass('isRequired');
-			$('#min_length').prop('readonly', true);
-			$('#max_length').val('');
-			$('.maxlth').hide();
-			$('#max_length').removeClass('isRequired');
-			$('#max_length').prop('readonly', true);
 			$('.boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#auto-sample-eg').hide();
-			$('.minlth').show();
-			$('#min_length').addClass('isRequired');
-			$('#min_length').prop('readonly', false);
-			$('.maxlth').show();
-			$('#max_length').addClass('isRequired');
-			$('#max_length').prop('readonly', false);
 			$('.boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1588,38 +1536,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#eid_auto-sample-code-YY').show();
 			}
-			$('.eid_minlth').hide();
-			$('#eid_max_length').val('');
-			$('.eid_maxlth').hide();
-			$('#eid_max_length').removeClass('isRequired');
-			$('#eid_max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.eid_autoSample').hide();
 			$('#eid_auto-sample-eg').show();
 			$('#eid_auto-sample-code').show();
-			$('.eid_minlth').hide();
-			$('#min_length').prop('readonly', true);
-			$('#eid_max_length').val('');
-			$('.eid_maxlth').hide();
-			$('#eid_max_length').removeClass('isRequired');
-			$('#eid_max_length').prop('readonly', true);
 			$('.eid_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.eid_autoSample').hide();
 			$('#eid_auto-sample-eg').show();
 			$('#eid_auto-sample-code2').show();
-			$('.eid_minlth').hide();
-			$('#eid_max_length').val('');
-			$('.eid_maxlth').hide();
-			$('#eid_max_length').removeClass('isRequired');
-			$('#eid_max_length').prop('readonly', true);
 			$('.eid_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#eid_auto-sample-eg').hide();
-			$('.eid_minlth').show();
-			$('.eid_maxlth').show();
-			$('#eid_max_length').addClass('isRequired');
-			$('#eid_max_length').prop('readonly', false);
 			$('.eid_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1633,38 +1561,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#covid19_auto-sample-code-YY').show();
 			}
-			$('.covid19_minlth').hide();
-			$('#covid19_max_length').val('');
-			$('.covid19_maxlth').hide();
-			$('#covid19_max_length').removeClass('isRequired');
-			$('#covid19_max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.covid19_autoSample').hide();
 			$('#covid19_auto-sample-eg').show();
 			$('#covid19_auto-sample-code').show();
-			$('.covid19_minlth').hide();
-			$('#min_length').prop('readonly', true);
-			$('#covid19_max_length').val('');
-			$('.covid19_maxlth').hide();
-			$('#covid19_max_length').removeClass('isRequired');
-			$('#covid19_max_length').prop('readonly', true);
 			$('.covid19_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.covid19_autoSample').hide();
 			$('#covid19_auto-sample-eg').show();
 			$('#covid19_auto-sample-code2').show();
-			$('.covid19_minlth').hide();
-			$('#covid19_max_length').val('');
-			$('.covid19_maxlth').hide();
-			$('#covid19_max_length').removeClass('isRequired');
-			$('#covid19_max_length').prop('readonly', true);
 			$('.covid19_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#covid19_auto-sample-eg').hide();
-			$('.covid19_minlth').show();
-			$('.covid19_maxlth').show();
-			$('#covid19_max_length').addClass('isRequired');
-			$('#covid19_max_length').prop('readonly', false);
 			$('.covid19_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1678,38 +1586,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#hepatitis_auto-sample-code-YY').show();
 			}
-			$('.hepatitis_minlth').hide();
-			$('#hepatitis_max_length').val('');
-			$('.hepatitis_maxlth').hide();
-			$('#hepatitis_max_length').removeClass('isRequired');
-			$('#hepatitis_max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.hepatitis_autoSample').hide();
 			$('#hepatitis_auto-sample-eg').show();
 			$('#hepatitis_auto-sample-code').show();
-			$('.hepatitis_minlth').hide();
-			$('#min_length').prop('readonly', true);
-			$('#hepatitis_max_length').val('');
-			$('.hepatitis_maxlth').hide();
-			$('#hepatitis_max_length').removeClass('isRequired');
-			$('#hepatitis_max_length').prop('readonly', true);
 			$('.hepatitis_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.hepatitis_autoSample').hide();
 			$('#hepatitis_auto-sample-eg').show();
 			$('#hepatitis_auto-sample-code2').show();
-			$('.hepatitis_minlth').hide();
-			$('#hepatitis_max_length').val('');
-			$('.hepatitis_maxlth').hide();
-			$('#hepatitis_max_length').removeClass('isRequired');
-			$('#hepatitis_max_length').prop('readonly', true);
 			$('.hepatitis_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#hepatitis_auto-sample-eg').hide();
-			$('.hepatitis_minlth').show();
-			$('.hepatitis_maxlth').show();
-			$('#hepatitis_max_length').addClass('isRequired');
-			$('#hepatitis_max_length').prop('readonly', false);
 			$('.hepatitis_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1723,38 +1611,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#tb_auto-sample-code-YY').show();
 			}
-			$('.tb_minlth').hide();
-			$('#tb_max_length').val('');
-			$('.tb_maxlth').hide();
-			$('#tb_max_length').removeClass('isRequired');
-			$('#tb_max_length').prop('readonly', true);
 		} else if (this.value == 'auto') {
 			$('.tb_autoSample').hide();
 			$('#tb_auto-sample-eg').show();
 			$('#tb_auto-sample-code').show();
-			$('.tb_minlth').hide();
-			$('#min_length').prop('readonly', true);
-			$('#tb_max_length').val('');
-			$('.tb_maxlth').hide();
-			$('#tb_max_length').removeClass('isRequired');
-			$('#tb_max_length').prop('readonly', true);
 			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.tb_autoSample').hide();
 			$('#tb_auto-sample-eg').show();
 			$('#tb_auto-sample-code2').show();
-			$('.tb_minlth').hide();
-			$('#tb_max_length').val('');
-			$('.tb_maxlth').hide();
-			$('#tb_max_length').removeClass('isRequired');
-			$('#tb_max_length').prop('readonly', true);
 			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#tb_auto-sample-eg').hide();
-			$('.tb_minlth').show();
-			$('.tb_maxlth').show();
-			$('#tb_max_length').addClass('isRequired');
-			$('#tb_max_length').prop('readonly', false);
 			$('.tb_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1775,27 +1643,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			} else {
 				$('#generic_auto-sample-code-YY').show();
 			}
-			$('.generic_minlth').hide();
-			$('.generic_maxlth').hide();
 		} else if (this.value == 'auto') {
 			$('.generic_autoSample').hide();
 			$('#generic_auto-sample-eg').show();
 			$('#generic_auto-sample-code').show();
-			$('.generic_minlth').hide();
-			$('#min_length').prop('readonly', true);
-			$('.generic_maxlth').hide();
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else if (this.value == 'auto2') {
 			$('.generic_autoSample').hide();
 			$('#generic_auto-sample-eg').show();
 			$('#generic_auto-sample-code2').show();
-			$('.generic_minlth').hide();
-			$('.generic_maxlth').hide();
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		} else {
 			$('#generic_auto-sample-eg').hide();
-			$('.generic_minlth').show();
-			$('.generic_maxlth').show();
 			$('.generic_boxWidth').removeClass('isRequired').attr('disabled', true).val('');
 		}
 	});
@@ -1814,5 +1673,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 		}
 	}
+
+	function validateLessThanDays(spanId,days,error) {
+        var inputElement = event.target;
+    	var value = inputElement.value;
+        var errorElement = document.getElementById(spanId);
+
+        if (value < days) {
+            errorElement.textContent = error;
+			inputElement.value = ""; // Clear the input field
+        } else {
+            errorElement.textContent = "";
+        }
+    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>

@@ -89,21 +89,6 @@ $specimenTypeResult = $general->fetchDataFromTable('r_covid19_sample_type', "sta
 
 $arr = $general->getGlobalConfig();
 
-if ($arr['covid19_sample_code'] == 'auto' || $arr['covid19_sample_code'] == 'auto2' || $arr['covid19_sample_code'] == 'alphanumeric') {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['covid19_max_length'] != '' && $arr['covid19_sample_code'] == 'alphanumeric') {
-        $maxLength = $arr['covid19_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-} else {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['covid19_max_length'] != '') {
-        $maxLength = $arr['covid19_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-}
 
 $sampleCollectionDate = $covid19Info['sample_collection_date'];
 $covid19Info['sample_collection_date'] = DateUtility::humanReadableDateFormat($covid19Info['sample_collection_date'] ?? '', true);
@@ -277,6 +262,5 @@ require_once($fileArray[$arr['vl_form']]);
             checkPostive();
         <?php } ?>
     }
-
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>

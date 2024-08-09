@@ -169,7 +169,7 @@ try {
           $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
           $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
 
-          if (empty($aRow[$sampleCodeColumn])) {
+          if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
                $aRow[$sampleCodeColumn] = _translate("Generating...");
           }
 

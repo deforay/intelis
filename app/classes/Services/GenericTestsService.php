@@ -76,7 +76,7 @@ final class GenericTestsService extends AbstractTestService
                 return 0;
             }
 
-            $uniqueId = $params['uniqueId'] ?? MiscUtility::generateUUID();
+            $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
             $params['prefix'] ??= $params['testType'] ?? $this->shortCode;
 
@@ -176,7 +176,7 @@ final class GenericTestsService extends AbstractTestService
                     $labelsResponse[$le] = $labels['field_name'][$key];
                 }
                 unset(
-                    $testTypes['test_form_config'], 
+                    $testTypes['test_form_config'],
                     $testTypes['test_results_config']
                 );
             }

@@ -24,9 +24,11 @@ require_once APPLICATION_PATH . '/header.php';
 			<div class="col-xs-12">
 				<div class="box">
 					<div class="box-header with-border">
-						<?php if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
-							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_art_regimen', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
-							<a href="/vl/reference/add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
+						<?php if ($general->isSTSInstance()) { ?>
+								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_art_regimen', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+						<?php }
+							if (_isAllowed("/vl/reference/add-vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
+								<a href="/vl/reference/add-vl-art-code-details.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL ART Regimen"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->

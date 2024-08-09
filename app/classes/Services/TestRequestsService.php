@@ -55,11 +55,12 @@ final class TestRequestsService
 
         try {
 
-            $this->db->where('processed', 0);
+
             if (!empty($uniqueIds)) {
                 $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
                 $this->db->where('unique_id', $uniqueIds, 'IN');
             }
+            $this->db->where('processed = 0');
             $queueItems = $this->db->get('queue_sample_code_generation', 100);
 
             if (!empty($queueItems)) {

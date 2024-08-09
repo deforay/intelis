@@ -27,7 +27,7 @@ try {
     if (isset($_POST['qcCode']) && trim((string) $_POST['qcCode']) != "") {
 
         $data = array(
-            'unique_id'             => MiscUtility::generateUUID(),
+            'unique_id'             => MiscUtility::generateULID(),
             'qc_code'               => $_POST['qcCode'],
             'testkit'               => base64_decode((string) $_POST['testKit']),
             'lot_no'                => $_POST['lotNo'],

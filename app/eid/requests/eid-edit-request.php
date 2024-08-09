@@ -98,23 +98,6 @@ $sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'act
 
 $arr = $general->getGlobalConfig();
 
-
-if ($arr['eid_sample_code'] == 'auto' || $arr['eid_sample_code'] == 'auto2' || $arr['eid_sample_code'] == 'alphanumeric') {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['eid_max_length'] != '' && $arr['eid_sample_code'] == 'alphanumeric') {
-        $maxLength = $arr['eid_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-} else {
-    $sampleClass = '';
-    $maxLength = '';
-    if ($arr['eid_max_length'] != '') {
-        $maxLength = $arr['eid_max_length'];
-        $maxLength = "maxlength=" . $maxLength;
-    }
-}
-
 $iResultQuery = "select * from  instrument_machines";
 $iResult = $db->rawQuery($iResultQuery);
 $machine = [];

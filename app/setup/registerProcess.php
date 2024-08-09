@@ -58,7 +58,7 @@ try {
         // UPDATING s_vlsm_instance TABLE
 
         $data = [
-            'vlsm_instance_id' => MiscUtility::generateUUID(),
+            'vlsm_instance_id' => MiscUtility::generateULID(),
             'instance_mac_address' => MiscUtility::getMacAddress(),
             'instance_added_on' => DateUtility::getCurrentDateTime(),
             'instance_update_on' => DateUtility::getCurrentDateTime()
@@ -111,17 +111,17 @@ try {
         $userPassword = $usersService->passwordHash($password);
         $userId = MiscUtility::generateUUID();
 
-        $insertData = array(
-            'user_id'           => $userId,
-            'user_name'         => $userName,
-            'email'             => $emailId,
-            'login_id'          => $loginId,
-            'password'          => $userPassword,
-            'user_locale'       => $locale,
-            'hash_algorithm'    => 'phb',
-            'role_id'           => 1,
-            'status'            => 'active'
-        );
+        $insertData = [
+            'user_id' => $userId,
+            'user_name' => $userName,
+            'email' => $emailId,
+            'login_id' => $loginId,
+            'password' => $userPassword,
+            'user_locale' => $locale,
+            'hash_algorithm' => 'phb',
+            'role_id' => 1,
+            'status' => 'active'
+        ];
         $db->insert($tableName, $insertData);
 
         $configFields = [

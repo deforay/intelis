@@ -41,18 +41,18 @@ $signatureImage = null;
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
         $userId = MiscUtility::generateUUID();
-        $data = array(
-            'user_id'               => $userId,
-            'user_name'             => $_POST['userName'],
-            'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
-            'email'                 => $_POST['email'],
-            'login_id'              => $_POST['loginId'],
-            'phone_number'          => $_POST['phoneNo'],
-            'role_id'               => $_POST['role'],
-            'status'                => 'active',
-            'app_access'            => $_POST['appAccessable'],
-            'force_password_reset'  => 1
-        );
+        $data = [
+            'user_id' => $userId,
+            'user_name' => $_POST['userName'],
+            'interface_user_name' => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
+            'email' => $_POST['email'],
+            'login_id' => $_POST['loginId'],
+            'phone_number' => $_POST['phoneNo'],
+            'role_id' => $_POST['role'],
+            'status' => 'active',
+            'app_access' => $_POST['appAccessable'],
+            'force_password_reset' => 1
+        ];
 
         $password = $usersService->passwordHash($_POST['password']);
         $data['password'] = $password;

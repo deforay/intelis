@@ -42,9 +42,11 @@ require_once APPLICATION_PATH . '/header.php';
 						</div>
 					</span>
 					<div class="box-header with-border">
-						<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_covid19_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
-						<?php if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
-							<a href="add-covid19-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Sample Type"); ?></a>
+						<?php if ($general->isSTSInstance()) { ?>
+								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_covid19_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+						<?php }
+							if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
+								<a href="add-covid19-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Sample Type"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>

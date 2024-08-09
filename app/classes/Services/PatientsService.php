@@ -104,7 +104,7 @@ final class PatientsService
             $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
 
             if (empty($systemPatientCode) || $systemPatientCode === '') {
-                $systemPatientCode = MiscUtility::generateUUID();
+                $systemPatientCode = MiscUtility::generateULID();
             }
 
             $data['system_patient_code'] = $systemPatientCode;

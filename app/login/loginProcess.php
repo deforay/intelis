@@ -130,7 +130,7 @@ try {
         $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
         if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
-            $redirect = "/users/editProfile.php";
+            $redirect = "/users/edit-profile.php";
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
         }
     } else {
