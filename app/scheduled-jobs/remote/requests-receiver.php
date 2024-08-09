@@ -1114,6 +1114,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     $request['form_attributes'],
                 );
                 $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                $request['is_result_mail_sent'] = 'no';
                 $db->where('sample_id', $existingSampleResult['sample_id']);
                 $id = $db->update('form_generic', $request);
                 $genericId = $existingSampleResult['sample_id'];
@@ -1133,6 +1134,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                    $request['is_result_mail_sent'] = 'no';
 
                     $request['source_of_request'] = "vlsts";
                     //column data_sync value is 1 equal to data_sync done.value 0 is not done.

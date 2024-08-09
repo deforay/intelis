@@ -312,9 +312,7 @@ try {
     $vlData['last_modified_by'] = $_SESSION['userId'] ?? $_POST['userId'] ?? null;
 
 
-
     $vlData['vl_result_category'] = $vlService->getVLResultCategory($vlData['result_status'], $vlData['result']);
-
 
 
     //For PNG form

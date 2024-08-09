@@ -351,8 +351,25 @@ $sFormat = '';
                                                             </select>
                                                        </div>
                                                   </div>
-
+                                                  <?php if($general->isLISInstance()){ ?>
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="">Date Sample Received at Hub (PHL)  <span class="mandatory">*</span></label>
+                                                            <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
+                                                       </div>
+                                                  </div>
+                                                  <?php } ?>
                                              </div>
+                                             <?php if($general->isLISInstance()){ ?>
+                                             <div class="row">
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="sampleReceivedDate">Date Sample Received at Testing Lab  <span class="mandatory">*</span></label>
+                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       </div>
+                                                  </div>
+                                             </div>
+                                             <?php } ?>
                                         </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
@@ -566,20 +583,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
+                                                           
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels">VL Testing Platform </label>

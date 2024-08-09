@@ -427,7 +427,25 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</select>
 											</div>
 										</div>
+										<?php if($general->isLISInstance()){ ?>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL)  <span class="mandatory">*</span></label>
+												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
+											</div>
+										</div>
+										<?php } ?>
 									</div>
+									<?php if($general->isLISInstance()){ ?>
+									<div class="row">
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span> </label>
+												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+											</div>
+										</div>
+									</div>
+									<?php } ?>
 								</div>
 								<div class="box box-primary">
 									<div class="box-header with-border">
@@ -676,20 +694,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
-											<div class="row">
-												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
-													</div>
-												</div>
-												<div class="col-md-6">
-													<label class="col-lg-5 control-label" for="sampleReceivedDate">Date Sample Received at Testing Lab </label>
-													<div class="col-lg-7">
-														<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
-													</div>
-												</div>
-											</div>
+											
 											<div class="row">
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory result-span">*</span></label>
@@ -1115,6 +1120,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 				$('#vlLog, .hivDetection').attr('readonly', false);
 			}
 		});
+
 	});
 
 	function showTesting(chosenClass) {
