@@ -609,3 +609,6 @@ CREATE TABLE IF NOT EXISTS queue_sample_code_generation (
     processed TINYINT(1) DEFAULT 0
 ) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
+-- Brindha 09-Aug-2024
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Expiry After Days', 'sample_expiry_after_days', '365', NULL, NULL, 'no', NULL, NULL, 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Lock After Days', 'sample_lock_after_days', '14', NULL, NULL, 'no', NULL, NULL, 'active');

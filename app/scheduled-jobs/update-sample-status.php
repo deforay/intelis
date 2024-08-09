@@ -51,7 +51,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         }
 
         //EXPIRING SAMPLES
-        $expiryDays = $general->getGlobalConfig($module . '_sample_expiry_after_days');
+        $expiryDays = $general->getGlobalConfig('sample_expiry_after_days');
         if (empty($expiryDays)) {
             $expiryDays = 365 * 2; // by default, we consider samples more than 2 years as expired
         }
@@ -69,7 +69,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
 
 
         //LOCKING SAMPLES
-        $lockExpiryDays = $general->getGlobalConfig($module . '_sample_lock_after_days');
+        $lockExpiryDays = $general->getGlobalConfig('sample_lock_after_days');
         if ($lockExpiryDays != null && $lockExpiryDays >= 0) {
             $db->where("(result_status = " . SAMPLE_STATUS\REJECTED . " OR result_status = " . SAMPLE_STATUS\ACCEPTED . ")"); // Samples that are Accepted, Rejected
             $db->where("locked NOT LIKE 'yes'");

@@ -384,14 +384,38 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group" style="height:38px;">
 											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch PDF Layout"); ?> </label>
 											<div class="col-lg-8">
-												<br>
 												<input type="radio" class="readPage" id="standard_batch_pdf_layout" name="batch_pdf_layout" value="standard" <?php echo ($arr['batch_pdf_layout'] == 'standard' || $arr['batch_pdf_layout'] == '') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Standard"); ?>&nbsp;&nbsp;
 												<input type="radio" class="readPage" id="compact_batch_pdf_layout" name="batch_pdf_layout" value="compact" <?php echo ($arr['batch_pdf_layout'] == 'compact') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Compact"); ?>
 											</div>
 										</div>
 									</div>
 								</div>
-
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="sample_expiry_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Expiry Days"); ?> <span class="mandatory">*</span> </label>
+											<div class="col-lg-4">
+												<input value="<?php echo $arr['sample_expiry_after_days']; ?>" type="text" id="sample_expiry_after_days" name="sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control forceNumeric readPage isRequired" title="<?php echo _translate('Please enter the sample expiry days'); ?>" onblur="validateLessThanDays('expiry_days_error',90,'Expiry days cannot be less than 90 days')">
+											</div>
+											<div class="col-lg-4">
+												<span id="expiry_days_error" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-7" style="height:38px;">
+										<div class="form-group" style="height:38px;">
+											<label for="sample_lock_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Lock Days"); ?> <span class="mandatory">*</span> </label>
+											<div class="col-lg-4">
+												<input value="<?php echo $arr['sample_lock_after_days']; ?>" type="text" id="sample_lock_after_days" name="sample_lock_after_days" placeholder="<?php echo _translate('Enter the sample lock days'); ?>" class="form-control forceNumeric readPage isRequired" title="<?php echo _translate('Please enter the sample lock days'); ?>" onblur="validateLessThanDays('lock_days_error',7,'Lock days cannot be less than 7 days')">
+											</div>
+											<div class="col-lg-4">
+												<span id="lock_days_error" class="text-danger"></span>
+											</div>
+										</div>
+									</div>
+								</div>
 							</div>
 						</div>
 						<?php if (SYSTEM_CONFIG['modules']['vl']) { ?>
@@ -1649,5 +1673,19 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 		}
 	}
+
+	function validateLessThanDays(spanId,days,error) {
+		debugger;
+        var inputElement = event.target;
+    	var value = inputElement.value;
+        var errorElement = document.getElementById(spanId);
+
+        if (value < days) {
+            errorElement.textContent = error;
+			inputElement.value = ""; // Clear the input field
+        } else {
+            errorElement.textContent = "";
+        }
+    }
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>
