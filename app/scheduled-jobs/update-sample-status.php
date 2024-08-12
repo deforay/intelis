@@ -53,7 +53,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         //EXPIRING SAMPLES
         $expiryDays = $general->getGlobalConfig('sample_expiry_after_days');
         if (empty($expiryDays)) {
-            $expiryDays = 365 * 2; // by default, we consider samples more than 2 years as expired
+            $expiryDays = 365; // by default, we consider samples more than 1 years as expired
         }
         $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
         $db->where("result_status != " . SAMPLE_STATUS\ACCEPTED); // not approved
