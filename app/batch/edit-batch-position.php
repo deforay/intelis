@@ -223,19 +223,25 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 	}
 
 	function sortBatch() {
-		let sortBy = $("#sortBy").val();
-		let sortType = $("#sortType").val();
+		conf  = confirm("<?= _translate("Are you sure you want to reset the sorting to default? This will reset all previous changes", true); ?>");
+		if(conf){
+        	let sortType = 'asc'; // Resetting sortType to 'asc'
+			let sortBy = 'sampleCode'; // Resetting sortBy to 'sampleCode'
+			
+        	$("#sortType").val(sortType);
+			$("#sortBy").val(sortBy);
 
-		$("#typeSort").val(sortType);
-		$("#bySort").val(sortBy);
+			$("#typeSort").val(sortType);
+			$("#bySort").val(sortBy);
 
-		let url = new URL(window.location.href);
-		let params = new URLSearchParams(url.search);
-		params.set('sortBy', sortBy);
-		params.set('sortType', sortType);
+			let url = new URL(window.location.href);
+			let params = new URLSearchParams(url.search);
+			params.set('sortBy', sortBy);
+			params.set('sortType', sortType);
 
-		url.search = params.toString();
-		window.location.href = url.toString();
+			url.search = params.toString();
+			window.location.href = url.toString();
+		}
 	}
 </script>
 <?php
