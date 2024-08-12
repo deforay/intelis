@@ -222,6 +222,26 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                             </select>
                                         </td>
                                     </tr>
+                                    <tr class="femaleSection" style="display:<?php echo ($tbInfo['patient_gender'] == 'female') ? "" : "none" ?>">
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Pregnant?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo ($tbInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($tbInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?> /> <?= _translate('No'); ?>
+                                                </label>
+                                        </td>
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Breastfeeding?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                </label>
+                                        </td>
+                                    </tr>
                                     <tr>
                                         <th scope="row" class="th-label"><?= _translate("Weight"); ?> <small>(<?= _translate("kg"); ?>)</small></th>
                                         <td class="td-input"><input type="number" class="form-control" value="<?php echo $tbInfo['patient_weight']; ?>" id="patientWeight" name="patientWeight" placeholder="Enter the tatient weight" title="Please enter the patient weight" style="width:100%;" /></td>
@@ -354,6 +374,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                             </select>
                                         </td>
                                     </tr>
+                                    <?php if ($general->isLISInstance()) { ?>
+                                    <tr>
+                                        <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> </label></th>
+                                        <td class="td-input">
+                                           <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                        </td>
+                                    </tr>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -367,28 +395,22 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> </label></th>
-                                            <td class="td-input">
-                                                <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
-                                            </td>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleTestedDateTime"><?= _translate("Date of Sample Tested"); ?></label></th>
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['sample_tested_datetime']; ?>" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On"); ?></label></th>
                                             <td class="td-input">
                                                 <input type="text" value="<?php echo $tbInfo['sample_dispatched_datetime']; ?>" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By"); ?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, $tbInfo['tested_by'], '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -705,6 +727,16 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
     }
 
     $(document).ready(function() {
+
+        $("#patientGender").change(function() {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
+               $('.femaleSection').hide();
+               $('input[name="breastfeeding"]').prop('checked', false);
+               $('input[name="patientPregnant"]').prop('checked', false);
+          } else if ($(this).val() == 'female') {
+               $('.femaleSection').show();
+          }
+     });
 
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {

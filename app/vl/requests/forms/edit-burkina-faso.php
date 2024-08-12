@@ -339,6 +339,28 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                        </select>
                                                   </div>
                                              </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregNo" name="patientPregnant" value="no" <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="box box-primary">
@@ -370,7 +392,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                             </select>
                                                        </div>
                                                   </div>
-
+                                                  <?php if ($general->isLISInstance()) { ?>
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group" style=" width: 100%; ">
+                                                       <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
+                                                            <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       </div>
+                                                  </div>
+                                                  <?php } ?>
                                              </div>
                                         </div>
                                         <div class="box box-primary">
@@ -531,20 +560,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
-                                                            <div class="row">
+                                                               
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
                                                                       <div class="col-lg-7">
@@ -556,6 +572,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?></label>
                                                                       <div class="col-lg-7">
@@ -566,8 +585,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6 rejectionReason" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? '' : 'none'; ?>;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionReason"><?= _translate("Rejection Reason"); ?> </label>
                                                                       <div class="col-lg-7">
@@ -589,20 +606,24 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                 
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate"><?= _translate("Rejection Date"); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input value="<?php echo DateUtility::humanReadableDateFormat($vlQueryInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" title="Please select rejection date" />
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab"><?= _translate("Sample Testing Date"); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control result-fields dateTime <?php echo ($vlQueryInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="Sample Testing Date" title="Please select sample testing date" value="<?php echo $vlQueryInfo['sample_tested_datetime']; ?>" onchange="checkSampleTestingDate();" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/ml)"); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
@@ -612,15 +633,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            </datalist>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
-
                                                                  <div class="vlLog col-md-6" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
                                                                       <label class="col-lg-5 control-label  labels" for="vlLog"><?= _translate("Viral Load (Log)"); ?> </label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control" id="vlLog" name="vlLog" placeholder="Viral Load (Log)" title="Please enter viral load result in Log" value="<?= ($vlQueryInfo['result_value_log']); ?>" <?php echo ($vlQueryInfo['result'] == 'Target Not Detected' || $vlQueryInfo['result'] == 'Below Detection Level') ? 'readonly="readonly"' : ''; ?> style="width:100%;" onchange="calculateLogValue(this);" />
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
+                                                                
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy"><?= _translate("Reviewed By"); ?> <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -629,8 +650,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                            </div>
-                                                            <div class="row">
                                                                  <div class="col-md-6 hivDetection" style="display: none;">
                                                                       <label for="hivDetection" class="col-lg-5 control-label labels"><?= _translate("HIV Detection"); ?> </label>
                                                                       <div class="col-lg-7">
@@ -641,6 +660,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                            </select>
                                                                       </div>
                                                                  </div>
+                                                            </div>
+                                                            <div class="row">
                                                                  <?php if (count($reasonForFailure) > 0) { ?>
                                                                       <div class="col-md-6 reasonForFailure" style="display: none;">
                                                                            <label class="col-lg-5 control-label" for="reasonForFailure"><?= _translate("Reason for Failure"); ?> <span class="mandatory">*</span> </label>
@@ -654,7 +675,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                             </div>
                                                             <hr>
                                                             <div class="row">
-
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="reviewedOn"><?= _translate("Reviewed On"); ?> <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -808,7 +828,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
-                    $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
           });
 
@@ -1171,7 +1190,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
           $.unblockUI();
      }
-     $("input:radio[name=gender]").click(function() {
+     $("#gender").change(function() {
           if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);

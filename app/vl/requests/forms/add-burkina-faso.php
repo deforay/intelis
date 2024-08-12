@@ -246,6 +246,28 @@ foreach ($testReasonsResultDetails as $row) {
                                                        </select>
                                                   </div>
                                              </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:none;">
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>"> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:none;">
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>"> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
                                         </div>
                                    </div>
                                    <div class="box box-primary">
@@ -277,7 +299,14 @@ foreach ($testReasonsResultDetails as $row) {
                                                             </select>
                                                        </div>
                                                   </div>
-
+                                                  <?php if ($general->isLISInstance()) { ?>
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group" style=" width: 100%; ">
+                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
+                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       </div>
+                                                  </div>
+                                                  <?php } ?>
                                              </div>
                                         </div>
                                         <div class="box box-primary">
@@ -451,20 +480,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
+                                                          
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
@@ -735,7 +751,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
-                    $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
           });
 
@@ -1067,7 +1082,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
      }
-     $("input:radio[name=gender]").click(function() {
+     $("#gender").change(function() {
           if ($(this).val() == 'male' || $(this).val() == 'unreported') {
                $('.femaleSection').hide();
                $('input[name="breastfeeding"]').prop('checked', false);

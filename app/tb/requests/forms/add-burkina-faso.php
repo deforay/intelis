@@ -197,8 +197,28 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                 <option value=''> -- <?= _translate("Select");?> -- </option>
                                                 <option value='male'> <?= _translate("Male");?> </option>
                                                 <option value='female'> <?= _translate("Female");?> </option>
-                                                <option value='other'> <?= _translate("Other");?> </option>
+                                                <option value='unreported'> <?= _translate("Unreported");?> </option>
                                             </select>
+                                        </td>
+                                    </tr>
+                                    <tr class="femaleSection" style="display:none;">
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Pregnant?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>"> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregNo" name="patientPregnant" value="no"> <?= _translate('No'); ?>
+                                                </label>
+                                        </td>
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Breastfeeding?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>"> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no"> <?= _translate('No'); ?>
+                                                </label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -332,6 +352,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                             </select>
                                         </td>
                                     </tr>
+                                    <?php if ($general->isLISInstance()) { ?>
+                                    <tr>
+                                        <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception");?> </label></th>
+                                            <td class="td-input">
+                                                <input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                            </td>
+                                    </tr>
+                                    <?php } ?>
                                 </table>
                             </div>
                         </div>
@@ -345,28 +373,22 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-                                            <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception");?> </label></th>
-                                            <td class="td-input">
-                                                <input type="text" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
-                                            </td>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleTestedDateTime"><?= _translate("Date of Sample Tested");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleTestedDateTime" name="sampleTestedDateTime" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample tested" style="width:100%;" />
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="sampleDispatchedDate"><?= _translate("Sample Dispatched On");?></label></th>
                                             <td class="td-input">
                                                 <input type="text" class="date-time form-control" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please choose sample dispatched date" style="width:100%;" />
                                             </td>
+                                        </tr>
+                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="testedBy"><?= _translate("Tested By");?></label></th>
                                             <td class="td-input">
                                                 <select name="testedBy" id="testedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
-                                        <tr>
                                             <th scope="row" class="th-label"><label class="label-control" for="isSampleRejected"><?= _translate("Is Sample Rejected?");?></label></th>
                                             <td class="td-input">
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="Please select the Is sample rejected?">
@@ -687,7 +709,15 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
     $(document).ready(function() {
 
-
+        $("#patientGender").change(function() {
+          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
+               $('.femaleSection').hide();
+               $('input[name="breastfeeding"]').prop('checked', false);
+               $('input[name="patientPregnant"]').prop('checked', false);
+          } else if ($(this).val() == 'female') {
+               $('.femaleSection').show();
+          }
+     });
 
 
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {

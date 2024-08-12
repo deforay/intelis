@@ -161,6 +161,11 @@ try {
         }
     }
 
+    if (isset($_POST['patientGender']) && (trim((string) $_POST['patientGender']) == 'male' || trim((string) $_POST['patientGender']) == 'unreported')) {
+        $_POST['patientPregnant'] = "N/A";
+        $_POST['breastfeeding'] = "N/A";
+    }
+
     if (!empty($_POST['newRejectionReason'])) {
         $rejectionReasonQuery = "SELECT rejection_reason_id
 					FROM r_tb_sample_rejection_reasons
@@ -207,6 +212,8 @@ try {
         'patient_surname' => !empty($_POST['lastName']) ? $_POST['lastName'] : null,
         'patient_dob' => !empty($_POST['dob']) ? $_POST['dob'] : null,
         'patient_gender' => !empty($_POST['patientGender']) ? $_POST['patientGender'] : null,
+        'is_patient_pregnant' => $_POST['patientPregnant'] ?? null,
+        'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
         'patient_age' => !empty($_POST['patientAge']) ? $_POST['patientAge'] : null,
         'patient_weight' => !empty($_POST['patientWeight']) ? $_POST['patientWeight'] : null,
         'patient_phone' => !empty($_POST['patientPhoneNumber']) ? $_POST['patientPhoneNumber'] : null,
