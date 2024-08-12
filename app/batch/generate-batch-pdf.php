@@ -514,6 +514,11 @@ if (!empty($id)) {
         $pdf->writeHTML($tbl);
         $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(12) . '.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
+        if ($bResult['printed_datetime'] == '') {
+            $printedDatetime = DateUtility::getCurrentDateTime();
+            $update = "UPDATE batch_details SET printed_datetime = ? WHERE batch_id = ?";
+            $bResult = $db->rawQueryOne($update, [$printedDatetime, $id]);
+        }
         exit;
     }
 }
