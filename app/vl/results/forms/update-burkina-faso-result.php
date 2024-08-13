@@ -114,7 +114,6 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      }
 }
 
-//var_dump($vlQueryInfo['sample_received_at_hub_datetime']);die;
 $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) $vlQueryInfo['vl_test_platform'], "genexpert") === 0);
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
@@ -344,6 +343,28 @@ $disable = "disabled = 'disabled'";
                                                   </select>
                                              </div>
                                         </div>
+                                        <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                                  <div class="form-group">
+                                                       <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                                  <div class="form-group">
+                                                       <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                       </label>
+                                                       <label class="radio-inline">
+                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?> <?php echo $disable; ?>> <?= _translate('No'); ?>
+                                                       </label>
+                                                  </div>
+                                             </div>
                                    </div>
                               </div>
                               <div class="box box-primary">
@@ -375,6 +396,14 @@ $disable = "disabled = 'disabled'";
                                                        </select>
                                                   </div>
                                              </div>
+                                             <?php if ($general->isLISInstance()) { ?>
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group" style=" width: 100%; ">
+                                                       <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
+                                                            <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" <?php echo $disable; ?> class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       </div>
+                                                  </div>
+                                                  <?php } ?>
 
                                         </div>
                                    </div>
@@ -536,20 +565,7 @@ $disable = "disabled = 'disabled'";
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                            <div class="row">
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedAtHubOn"><?= _translate("Date Sample Received at Hub (PHL)"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
-                                                                      </div>
-                                                                 </div>
-                                                                 <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label labels" for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
-                                                                      </div>
-                                                                 </div>
-                                                            </div>
+                                                         
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
@@ -813,7 +829,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());
-                    $('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
                }
           });
 

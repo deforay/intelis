@@ -221,6 +221,27 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 										</select>
 									</td>
 								</tr>
+								<tr class="femaleSection" style="display:<?php echo ($tbInfo['patient_gender'] == 'female') ? "" : "none" ?>">
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Pregnant?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo ($tbInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($tbInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?> /> <?= _translate('No'); ?>
+                                                </label>
+                                        </td>
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Breastfeeding?");?></th>
+                                        <td class="td-input">
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                </label>
+                                                <label class="radio-inline">
+                                                    <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                </label>
+                                        </td>
+                                    </tr>
+
 								<tr>
 									<th scope="row" class="th-label"><?= _translate("Weight"); ?> <small>(<?= _translate("kg"); ?>)</small></th>
 									<td class="td-input"><input type="number" class="form-control" value="<?php echo $tbInfo['patient_weight']; ?>" id="patientWeight" name="patientWeight" placeholder="Enter the tatient weight" title="Please enter the patient weight" style="width:100%;" /></td>

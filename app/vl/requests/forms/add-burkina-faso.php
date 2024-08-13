@@ -301,9 +301,9 @@ foreach ($testReasonsResultDetails as $row) {
                                                   </div>
                                                   <?php if ($general->isLISInstance()) { ?>
                                                   <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group" style=" width: 100%; ">
-                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
-                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       <div class="form-group" style="width: 100%; ">
+                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?><span class="mandatory">*</span> </label>
+                                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
                                                        </div>
                                                   </div>
                                                   <?php } ?>
