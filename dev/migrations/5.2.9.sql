@@ -613,7 +613,9 @@ CREATE TABLE IF NOT EXISTS queue_sample_code_generation (
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Expiry After Days', 'sample_expiry_after_days', '365', NULL, NULL, 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Lock After Days', 'sample_lock_after_days', '14', NULL, NULL, 'no', NULL, NULL, 'active');
 
-
 --Jeyabanu 11-Aug-2024
 ALTER TABLE `form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `is_patient_pregnant`;
 ALTER TABLE `audit_form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+
+-- Brindha 12-Aug-2024
+ALTER TABLE batch_details ADD COLUMN printed_datetime DATETIME NULL DEFAULT NULL AFTER control_names;
