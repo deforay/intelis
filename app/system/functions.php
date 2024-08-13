@@ -46,8 +46,13 @@ function _sanitizeInput($input, $nullifyEmptyStrings = false)
         foreach ($input as $key => $value) {
             $input[$key] = _sanitizeInput($value, $nullifyEmptyStrings);
         }
+    } elseif (is_object($input)) {
+        foreach ($input as $key => $value) {
+            $input->$key = _sanitizeInput($value, $nullifyEmptyStrings);
+        }
     } else {
-        // Sanitize using AntiXSS
+        // Trim and sanitize using AntiXSS
+        $input = trim($input);
         $input = $antiXss->xss_clean($input);
 
         // Convert empty strings to null if $nullifyEmptyStrings is true
@@ -183,7 +188,7 @@ function _capitalizeFirstLetter($string, $encoding = "UTF-8")
  */
 function _getIteratorKey($iterator, $key)
 {
-    if ($iterator instanceof Traversable) {
+    if ($iterator instanceof Iterator) {
         $array = iterToArray($iterator);
         return $array[$key] ?? null;
     }

@@ -76,7 +76,7 @@ try {
         foreach ($resultsData as $uniqueId => $resultRow) {
             $counter++;
 
-            $formData = $resultRow[$uniqueId]['form_data'] ?? [];
+            $formData = $resultRow['form_data'] ?? [];
             if (empty($formData)) {
                 continue;
             }

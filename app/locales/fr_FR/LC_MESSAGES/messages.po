@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-08-08 14:23+0530\n"
-"PO-Revision-Date: 2024-08-08 14:24+0530\n"
+"POT-Creation-Date: 2024-08-12 16:10+0530\n"
+"PO-Revision-Date: 2024-08-12 16:10+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -204,7 +204,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: tb/results/forms/update-southsudan.php:101
 #: tb/results/tb-failed-results.php:58 tb/results/tb-manual-results.php:77
 #: tb/results/tb-print-results.php:43 tb/results/tb-result-status.php:65
-#: users/addUser.php:60 users/editProfile.php:39 users/editUser.php:103
+#: users/addUser.php:60 users/edit-profile.php:39 users/editUser.php:103
 #: users/users.php:13 vl/program-management/highViralLoad.php:121
 #: vl/program-management/sample-storage-reports.php:57
 #: vl/program-management/sampleRejectionReport.php:56
@@ -271,7 +271,7 @@ msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
 #: admin/monitoring/activity-log.php:69 system/translate-strings.php:11
-#: users/addUser.php:61 users/editProfile.php:40 users/editUser.php:104
+#: users/addUser.php:61 users/edit-profile.php:40 users/editUser.php:104
 #: users/users.php:2 users/users.php:11 users/users.php:14
 msgid "Users"
 msgstr "Utilisateurs"
@@ -508,7 +508,7 @@ msgstr "Journal d'audit"
 
 #: admin/monitoring/activity-log.php:108
 #: system-admin/user-login-history/userLoginIndex.php:64
-#: users/editProfile.php:144
+#: users/edit-profile.php:144
 msgid "IP Address"
 msgstr "Adresse IP"
 
@@ -525,8 +525,8 @@ msgstr "Pas enregistré"
 #: cd4/management/cd4-export-data.php:268
 #: cd4/management/cd4-sample-status.php:128
 #: cd4/management/cd4-testing-target-report.php:235
-#: cd4/reference/cd4-sample-rejection-reasons.php:47
-#: cd4/reference/cd4-sample-type.php:49 cd4/reference/cd4-test-reasons.php:49
+#: cd4/reference/cd4-sample-rejection-reasons.php:49
+#: cd4/reference/cd4-sample-type.php:51 cd4/reference/cd4-test-reasons.php:51
 #: cd4/requests/cd4-requests.php:609 cd4/results/cd4-failed-results.php:228
 #: cd4/results/cd4-manual-results.php:285 cd4/results/cd4-print-results.php:231
 #: cd4/results/cd4-print-results.php:405 cd4/results/cd4-result-status.php:262
@@ -542,12 +542,12 @@ msgstr "Pas enregistré"
 #: covid-19/management/covid-19-export-data.php:288
 #: covid-19/management/covid-19-sample-status.php:124
 #: covid-19/management/covid19TestingTargetReport.php:238
-#: covid-19/reference/covid19-comorbidities.php:65
-#: covid-19/reference/covid19-qc-test-kits.php:47
+#: covid-19/reference/covid19-comorbidities.php:67
+#: covid-19/reference/covid19-qc-test-kits.php:49
 #: covid-19/reference/covid19-results.php:41
-#: covid-19/reference/covid19-sample-rejection-reasons.php:49
-#: covid-19/reference/covid19-sample-type.php:65
-#: covid-19/reference/covid19-symptoms.php:47
+#: covid-19/reference/covid19-sample-rejection-reasons.php:51
+#: covid-19/reference/covid19-sample-type.php:67
+#: covid-19/reference/covid19-symptoms.php:49
 #: covid-19/reference/covid19-test-reasons.php:42
 #: covid-19/requests/covid-19-requests.php:480
 #: covid-19/results/covid-19-failed-results.php:228
@@ -563,22 +563,22 @@ msgstr "Pas enregistré"
 #: eid/management/eid-export-data.php:318
 #: eid/management/eid-sample-status.php:136
 #: eid/management/eidTestingTargetReport.php:236
-#: eid/reference/eid-results.php:46
-#: eid/reference/eid-sample-rejection-reasons.php:50
-#: eid/reference/eid-sample-type.php:47 eid/reference/eid-test-reasons.php:47
+#: eid/reference/eid-results.php:48
+#: eid/reference/eid-sample-rejection-reasons.php:52
+#: eid/reference/eid-sample-type.php:49 eid/reference/eid-test-reasons.php:49
 #: eid/requests/eid-requests.php:495 eid/results/eid-failed-results.php:249
 #: eid/results/eid-manual-results.php:235 eid/results/eid-print-results.php:237
 #: eid/results/eid-print-results.php:409 eid/results/eid-result-status.php:189
 #: facilities/facilities.php:182
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:52
-#: generic-tests/configuration/sample-types/generic-sample-type.php:52
-#: generic-tests/configuration/symptoms/generic-symptoms.php:52
-#: generic-tests/configuration/test-categories/generic-test-categories.php:51
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:52
-#: generic-tests/configuration/test-methods/generic-test-methods.php:51
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:51
-#: generic-tests/configuration/test-type.php:53
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:54
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:54
+#: generic-tests/configuration/sample-types/generic-sample-type.php:54
+#: generic-tests/configuration/symptoms/generic-symptoms.php:54
+#: generic-tests/configuration/test-categories/generic-test-categories.php:53
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:54
+#: generic-tests/configuration/test-methods/generic-test-methods.php:53
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:53
+#: generic-tests/configuration/test-type.php:55
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:56
 #: generic-tests/program-management/generic-export-data.php:342
 #: generic-tests/program-management/generic-sample-status.php:179
 #: generic-tests/requests/view-requests.php:209
@@ -594,12 +594,12 @@ msgstr "Pas enregistré"
 #: hepatitis/management/hepatitis-export-data.php:290
 #: hepatitis/management/hepatitis-sample-status.php:126
 #: hepatitis/management/hepatitis-testing-target-report.php:237
-#: hepatitis/reference/hepatitis-comorbidities.php:47
-#: hepatitis/reference/hepatitis-results.php:46
-#: hepatitis/reference/hepatitis-risk-factors.php:46
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:49
-#: hepatitis/reference/hepatitis-sample-type.php:46
-#: hepatitis/reference/hepatitis-test-reasons.php:47
+#: hepatitis/reference/hepatitis-comorbidities.php:49
+#: hepatitis/reference/hepatitis-results.php:48
+#: hepatitis/reference/hepatitis-risk-factors.php:48
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:51
+#: hepatitis/reference/hepatitis-sample-type.php:48
+#: hepatitis/reference/hepatitis-test-reasons.php:49
 #: hepatitis/requests/hepatitis-dhis2.php:357
 #: hepatitis/requests/hepatitis-requests.php:455
 #: hepatitis/results/hepatitis-failed-results.php:224
@@ -616,7 +616,7 @@ msgstr "Pas enregistré"
 #: tb/management/tb-clinic-report.php:449 tb/management/tb-export-data.php:283
 #: tb/management/tb-sample-status.php:125 tb/reference/tb-results.php:47
 #: tb/reference/tb-sample-rejection-reasons.php:49
-#: tb/reference/tb-sample-type.php:65 tb/reference/tb-test-reasons.php:49
+#: tb/reference/tb-sample-type.php:67 tb/reference/tb-test-reasons.php:49
 #: tb/requests/tb-requests.php:331 tb/results/tb-failed-results.php:227
 #: tb/results/tb-manual-results.php:201 tb/results/tb-print-results.php:226
 #: tb/results/tb-print-results.php:396 tb/results/tb-result-status.php:181
@@ -631,11 +631,11 @@ msgstr "Pas enregistré"
 #: vl/program-management/vlMonitoringReport.php:292
 #: vl/program-management/vlWeeklyReport.php:180
 #: vl/program-management/vlWeeklyReport.php:275
-#: vl/reference/vl-art-code-details.php:44 vl/reference/vl-results.php:48
-#: vl/reference/vl-sample-rejection-reasons.php:47
-#: vl/reference/vl-sample-type.php:46
-#: vl/reference/vl-test-failure-reasons.php:46
-#: vl/reference/vl-test-reasons.php:47 vl/requests/vl-requests.php:694
+#: vl/reference/vl-art-code-details.php:46 vl/reference/vl-results.php:50
+#: vl/reference/vl-sample-rejection-reasons.php:49
+#: vl/reference/vl-sample-type.php:48
+#: vl/reference/vl-test-failure-reasons.php:48
+#: vl/reference/vl-test-reasons.php:49 vl/requests/vl-requests.php:694
 #: vl/result-mail/testResultEmailConfig.php:36
 #: vl/results/vl-failed-results.php:213 vl/results/vlPrintResult.php:349
 #: vl/results/vlPrintResult.php:605 vl/results/vlResultApproval.php:262
@@ -1073,7 +1073,7 @@ msgstr "Veuillez sélectionner le projet"
 #: generic-tests/results/update-generic-test-result.php:769
 #: generic-tests/results/update-generic-test-result.php:802
 #: global-config/editGlobalConfig.php:152
-#: global-config/editGlobalConfig.php:737
+#: global-config/editGlobalConfig.php:706
 #: hepatitis/management/hepatitis-clinic-report.php:103
 #: hepatitis/management/hepatitis-clinic-report.php:116
 #: hepatitis/management/hepatitis-clinic-report.php:131
@@ -1180,7 +1180,7 @@ msgstr "Veuillez sélectionner le projet"
 #: tb/results/tb-result-status.php:77 tb/results/tb-result-status.php:96
 #: tb/results/tb-result-status.php:112 users/addUser.php:228
 #: users/addUser.php:238 users/addUser.php:263 users/addUser.php:273
-#: users/editProfile.php:73 users/editUser.php:273 users/editUser.php:304
+#: users/edit-profile.php:73 users/editUser.php:273 users/editUser.php:304
 #: users/editUser.php:314 users/editUser.php:344 users/editUser.php:354
 #: vl/program-management/getHighVlResultDetails.php:235
 #: vl/program-management/highViralLoad.php:162
@@ -1469,7 +1469,7 @@ msgstr "Synchronisé sur"
 #: generic-tests/configuration/add-test-type.php:219
 #: generic-tests/configuration/clone-test-type.php:258
 #: generic-tests/configuration/edit-test-type.php:261
-#: generic-tests/configuration/test-type.php:47
+#: generic-tests/configuration/test-type.php:49
 #: generic-tests/requests/view-requests.php:202
 #: generic-tests/results/generic-failed-results.php:205
 #: generic-tests/results/generic-print-result.php:292
@@ -1591,13 +1591,13 @@ msgstr "Action"
 #: generic-tests/results/generic-test-results.php:225
 #: generic-tests/results/update-generic-test-result.php:421
 #: global-config/editGlobalConfig.php:422
-#: global-config/editGlobalConfig.php:613
-#: global-config/editGlobalConfig.php:750
-#: global-config/editGlobalConfig.php:862
-#: global-config/editGlobalConfig.php:958
-#: global-config/editGlobalConfig.php:1068
-#: global-config/editGlobalConfig.php:1180
-#: global-config/editGlobalConfig.php:1398
+#: global-config/editGlobalConfig.php:593
+#: global-config/editGlobalConfig.php:719
+#: global-config/editGlobalConfig.php:831
+#: global-config/editGlobalConfig.php:927
+#: global-config/editGlobalConfig.php:1037
+#: global-config/editGlobalConfig.php:1134
+#: global-config/editGlobalConfig.php:1352
 #: hepatitis/management/hepatitis-clinic-report.php:180
 #: hepatitis/management/hepatitis-clinic-report.php:285
 #: hepatitis/management/hepatitis-clinic-report.php:381
@@ -1718,7 +1718,7 @@ msgstr "ID de l'échantillon"
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:65
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:76
 #: generic-tests/requests/add-samples-from-manifest.php:43
-#: global-config/editGlobalConfig.php:1427
+#: global-config/editGlobalConfig.php:1381
 #: hepatitis/reference/add-hepatitis-comorbidities.php:56
 #: hepatitis/reference/add-hepatitis-results.php:55
 #: hepatitis/reference/add-hepatitis-risk-factors.php:55
@@ -1737,7 +1737,7 @@ msgstr "ID de l'échantillon"
 #: tb/reference/add-tb-sample-type.php:56
 #: tb/reference/add-tb-test-reasons.php:75
 #: tb/requests/addSamplesFromManifest.php:37 users/addUser.php:315
-#: users/editProfile.php:129 users/editUser.php:404
+#: users/edit-profile.php:129 users/editUser.php:404
 #: vl/reference/add-vl-art-code-details.php:92
 #: vl/reference/add-vl-results.php:148
 #: vl/reference/add-vl-sample-rejection-reasons.php:74
@@ -2342,7 +2342,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: generic-tests/results/generic-test-results.php:120
 #: generic-tests/results/generic-test-results.php:186
 #: generic-tests/results/generic-test-results.php:242
-#: global-config/editGlobalConfig.php:1397
+#: global-config/editGlobalConfig.php:1351
 #: hepatitis/management/get-rejected-samples.php:100
 #: hepatitis/management/hepatitis-clinic-report.php:184
 #: hepatitis/management/hepatitis-clinic-report.php:289
@@ -2660,11 +2660,11 @@ msgstr "Échantillon ajouté au lot le"
 #: cd4/management/cd4-clinic-report.php:387
 #: cd4/reference/add-cd4-sample-type.php:40
 #: cd4/reference/add-cd4-sample-type.php:42
-#: cd4/reference/cd4-sample-type.php:41 cd4/results/email-results.php:250
+#: cd4/reference/cd4-sample-type.php:43 cd4/results/email-results.php:250
 #: covid-19/management/covid-19-clinic-report.php:390
 #: covid-19/reference/add-covid19-sample-type.php:40
 #: covid-19/reference/add-covid19-sample-type.php:42
-#: covid-19/reference/covid19-sample-type.php:57
+#: covid-19/reference/covid19-sample-type.php:59
 #: covid-19/results/email-results.php:250
 #: eid/management/eid-clinic-report.php:393
 #: eid/reference/add-eid-sample-type.php:40
@@ -2676,10 +2676,10 @@ msgstr "Échantillon ajouté au lot le"
 #: hepatitis/results/email-results.php:250 mail/vlResultMail.php:250
 #: tb/management/tb-clinic-report.php:388
 #: tb/reference/add-tb-sample-type.php:40
-#: tb/reference/add-tb-sample-type.php:42 tb/reference/tb-sample-type.php:57
+#: tb/reference/add-tb-sample-type.php:42 tb/reference/tb-sample-type.php:59
 #: tb/results/email-results.php:250 vl/program-management/highViralLoad.php:885
 #: vl/reference/add-vl-sample-type.php:40
-#: vl/reference/add-vl-sample-type.php:42 vl/reference/vl-sample-type.php:38
+#: vl/reference/add-vl-sample-type.php:42 vl/reference/vl-sample-type.php:40
 #: vl/results/email-results.php:250 vl/results/vlResultMail.php:250
 msgid "Sample Status"
 msgstr "Statut de l'échantillon"
@@ -2835,28 +2835,28 @@ msgstr "Nom du Labo"
 #: generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:57
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:53
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:64
-#: global-config/editGlobalConfig.php:503
-#: global-config/editGlobalConfig.php:519
-#: global-config/editGlobalConfig.php:535
-#: global-config/editGlobalConfig.php:551
-#: global-config/editGlobalConfig.php:565
-#: global-config/editGlobalConfig.php:579
-#: global-config/editGlobalConfig.php:593
-#: global-config/editGlobalConfig.php:683
-#: global-config/editGlobalConfig.php:698
-#: global-config/editGlobalConfig.php:712
-#: global-config/editGlobalConfig.php:812
-#: global-config/editGlobalConfig.php:828
-#: global-config/editGlobalConfig.php:842
-#: global-config/editGlobalConfig.php:922
-#: global-config/editGlobalConfig.php:938
-#: global-config/editGlobalConfig.php:1018
-#: global-config/editGlobalConfig.php:1034
-#: global-config/editGlobalConfig.php:1048
-#: global-config/editGlobalConfig.php:1144
-#: global-config/editGlobalConfig.php:1160
-#: global-config/editGlobalConfig.php:1240
-#: global-config/editGlobalConfig.php:1268
+#: global-config/editGlobalConfig.php:483
+#: global-config/editGlobalConfig.php:499
+#: global-config/editGlobalConfig.php:515
+#: global-config/editGlobalConfig.php:531
+#: global-config/editGlobalConfig.php:545
+#: global-config/editGlobalConfig.php:559
+#: global-config/editGlobalConfig.php:573
+#: global-config/editGlobalConfig.php:652
+#: global-config/editGlobalConfig.php:667
+#: global-config/editGlobalConfig.php:681
+#: global-config/editGlobalConfig.php:781
+#: global-config/editGlobalConfig.php:797
+#: global-config/editGlobalConfig.php:811
+#: global-config/editGlobalConfig.php:891
+#: global-config/editGlobalConfig.php:907
+#: global-config/editGlobalConfig.php:987
+#: global-config/editGlobalConfig.php:1003
+#: global-config/editGlobalConfig.php:1017
+#: global-config/editGlobalConfig.php:1098
+#: global-config/editGlobalConfig.php:1114
+#: global-config/editGlobalConfig.php:1194
+#: global-config/editGlobalConfig.php:1222
 #: hepatitis/requests/forms/add-rwanda.php:81
 #: hepatitis/requests/forms/edit-rwanda.php:162 patients/add-patient.php:46
 #: patients/add-patient.php:224 patients/edit-patient.php:63
@@ -3314,7 +3314,7 @@ msgstr "Créer un lot"
 #: tb/results/forms/update-burkina-faso.php:91
 #: tb/results/forms/update-sierraleone.php:109
 #: tb/results/forms/update-southsudan.php:109 users/addUser.php:70
-#: users/editProfile.php:49 users/editUser.php:113
+#: users/edit-profile.php:49 users/editUser.php:113
 #: vl/program-management/addContactNotes.php:45
 #: vl/reference/add-vl-art-code-details.php:35
 #: vl/reference/add-vl-results.php:49
@@ -3618,7 +3618,7 @@ msgstr "Échantillons entrés par"
 #: generic-tests/results/generic-result-approval.php:226
 #: generic-tests/results/generic-test-results.php:90
 #: generic-tests/results/update-generic-test-result.php:644
-#: global-config/editGlobalConfig.php:1399
+#: global-config/editGlobalConfig.php:1353
 #: hepatitis/management/hepatitis-clinic-report.php:187
 #: hepatitis/management/hepatitis-clinic-report.php:292
 #: hepatitis/management/hepatitis-clinic-report.php:307
@@ -3770,21 +3770,21 @@ msgstr "Veuillez sélectionner le poste"
 
 #: batch/add-batch.php:252 batch/edit-batch.php:243
 #: global-config/editGlobalConfig.php:441
-#: global-config/editGlobalConfig.php:632
-#: global-config/editGlobalConfig.php:881
-#: global-config/editGlobalConfig.php:977
-#: global-config/editGlobalConfig.php:1087
-#: global-config/editGlobalConfig.php:1199
+#: global-config/editGlobalConfig.php:612
+#: global-config/editGlobalConfig.php:850
+#: global-config/editGlobalConfig.php:946
+#: global-config/editGlobalConfig.php:1056
+#: global-config/editGlobalConfig.php:1153
 msgid "Numeric"
 msgstr "Numérique"
 
 #: batch/add-batch.php:255 batch/edit-batch.php:244
 #: global-config/editGlobalConfig.php:442
-#: global-config/editGlobalConfig.php:633
-#: global-config/editGlobalConfig.php:882
-#: global-config/editGlobalConfig.php:978
-#: global-config/editGlobalConfig.php:1088
-#: global-config/editGlobalConfig.php:1200
+#: global-config/editGlobalConfig.php:613
+#: global-config/editGlobalConfig.php:851
+#: global-config/editGlobalConfig.php:947
+#: global-config/editGlobalConfig.php:1057
+#: global-config/editGlobalConfig.php:1154
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
@@ -3859,7 +3859,7 @@ msgstr "Alphanumérique"
 #: generic-tests/results/generic-test-results.php:192
 #: generic-tests/results/generic-test-results.php:248
 #: generic-tests/results/update-generic-test-result.php:656
-#: global-config/editGlobalConfig.php:1403
+#: global-config/editGlobalConfig.php:1357
 #: hepatitis/management/hepatitis-clinic-report.php:113
 #: hepatitis/management/hepatitis-clinic-report.php:222
 #: hepatitis/management/hepatitis-clinic-report.php:324
@@ -4100,7 +4100,7 @@ msgstr "Sauvegarder et Suivant"
 #: generic-tests/requests/edit-request.php:949
 #: generic-tests/results/email-results.php:333
 #: generic-tests/results/update-generic-test-result.php:916
-#: global-config/editGlobalConfig.php:1428
+#: global-config/editGlobalConfig.php:1382
 #: hepatitis/reference/add-hepatitis-comorbidities.php:57
 #: hepatitis/reference/add-hepatitis-results.php:56
 #: hepatitis/reference/add-hepatitis-risk-factors.php:56
@@ -4119,7 +4119,7 @@ msgstr "Sauvegarder et Suivant"
 #: tb/reference/add-tb-test-reasons.php:76
 #: tb/requests/forms/add-burkina-faso.php:473 tb/results/email-results.php:333
 #: tb/results/forms/update-burkina-faso.php:529 users/addUser.php:316
-#: users/editProfile.php:130 users/editUser.php:405
+#: users/edit-profile.php:130 users/editUser.php:405
 #: vl/reference/add-vl-art-code-details.php:93
 #: vl/reference/add-vl-results.php:151
 #: vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -5273,7 +5273,7 @@ msgstr "Exporter vers Excel"
 #: vl/results/vl-failed-results.php:115 vl/results/vlPrintResult.php:200
 #: vl/results/vlPrintResult.php:457
 msgid "Patient ID"
-msgstr "No Patient"
+msgstr "ID Patient"
 
 #: cd4/management/cd4-clinic-report.php:184
 #: cd4/management/cd4-clinic-report.php:288
@@ -5347,7 +5347,7 @@ msgstr "Noms du patient"
 #: eid/management/eid-clinic-report.php:188
 #: eid/management/eid-sample-status.php:95 eid/requests/eid-requests.php:148
 #: generic-tests/program-management/generic-sample-status.php:121
-#: global-config/editGlobalConfig.php:1402
+#: global-config/editGlobalConfig.php:1356
 #: hepatitis/management/hepatitis-clinic-report.php:188
 #: hepatitis/management/hepatitis-sample-status.php:88
 #: hepatitis/requests/hepatitis-dhis2.php:233
@@ -5452,7 +5452,7 @@ msgstr "Résultat CD4"
 #: cd4/management/cd4-clinic-report.php:444
 #: cd4/management/cd4-export-data.php:127
 #: cd4/management/cd4-export-data.php:233
-#: cd4/management/cd4-export-data.php:260 cd4/reference/cd4-test-reasons.php:41
+#: cd4/management/cd4-export-data.php:260 cd4/reference/cd4-test-reasons.php:43
 #: cd4/requests/cd4-requests.php:198 cd4/requests/cd4-requests.php:544
 #: cd4/requests/cd4-requests.php:597 cd4/results/cd4-failed-results.php:216
 #: cd4/results/cd4-manual-results.php:219
@@ -5476,7 +5476,7 @@ msgstr "Résultat CD4"
 #: covid-19/management/covid-19-export-data.php:280
 #: covid-19/reference/add-covid19-qc-test-kit.php:55
 #: covid-19/reference/covid19-comorbidities.php:39
-#: covid-19/reference/covid19-qc-test-kits.php:39
+#: covid-19/reference/covid19-qc-test-kits.php:41
 #: covid-19/reference/covid19-results.php:33
 #: covid-19/reference/covid19-sample-type.php:39
 #: covid-19/reference/edit-covid19-qc-test-kit.php:65
@@ -5497,9 +5497,9 @@ msgstr "Résultat CD4"
 #: eid/management/eid-clinic-report.php:451
 #: eid/management/eid-export-data.php:153
 #: eid/management/eid-export-data.php:279
-#: eid/management/eid-export-data.php:310 eid/reference/eid-results.php:38
-#: eid/reference/eid-sample-rejection-reasons.php:42
-#: eid/reference/eid-sample-type.php:39 eid/reference/eid-test-reasons.php:39
+#: eid/management/eid-export-data.php:310 eid/reference/eid-results.php:40
+#: eid/reference/eid-sample-rejection-reasons.php:44
+#: eid/reference/eid-sample-type.php:41 eid/reference/eid-test-reasons.php:41
 #: eid/requests/addSamplesFromManifest.php:120
 #: eid/requests/eid-requests.php:235 eid/requests/eid-requests.php:483
 #: eid/results/eid-failed-results.php:237
@@ -5514,24 +5514,24 @@ msgstr "Résultat CD4"
 #: generic-tests/configuration/edit-test-type.php:236
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:49
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:62
-#: generic-tests/configuration/sample-types/generic-sample-type.php:43
+#: generic-tests/configuration/sample-types/generic-sample-type.php:45
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:50
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:61
-#: generic-tests/configuration/symptoms/generic-symptoms.php:43
+#: generic-tests/configuration/symptoms/generic-symptoms.php:45
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:41
 #: generic-tests/configuration/test-categories/generic-edit-test-categories.php:54
-#: generic-tests/configuration/test-categories/generic-test-categories.php:42
+#: generic-tests/configuration/test-categories/generic-test-categories.php:44
 #: generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:50
 #: generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:61
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:42
 #: generic-tests/configuration/test-methods/generic-edit-test-methods.php:55
-#: generic-tests/configuration/test-methods/generic-test-methods.php:42
+#: generic-tests/configuration/test-methods/generic-test-methods.php:44
 #: generic-tests/configuration/test-result-units/generic-add-test-result-units.php:43
 #: generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:54
-#: generic-tests/configuration/test-type.php:45
+#: generic-tests/configuration/test-type.php:47
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:50
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:61
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:45
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:47
 #: generic-tests/mail/mail-generic-tests-results.php:249
 #: generic-tests/program-management/generic-export-data.php:135
 #: generic-tests/program-management/generic-export-data.php:297
@@ -5551,11 +5551,11 @@ msgstr "Résultat CD4"
 #: hepatitis/management/hepatitis-export-data.php:141
 #: hepatitis/management/hepatitis-export-data.php:255
 #: hepatitis/management/hepatitis-export-data.php:282
-#: hepatitis/reference/hepatitis-results.php:38
-#: hepatitis/reference/hepatitis-risk-factors.php:38
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:41
-#: hepatitis/reference/hepatitis-sample-type.php:38
-#: hepatitis/reference/hepatitis-test-reasons.php:39
+#: hepatitis/reference/hepatitis-results.php:40
+#: hepatitis/reference/hepatitis-risk-factors.php:40
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:43
+#: hepatitis/reference/hepatitis-sample-type.php:40
+#: hepatitis/reference/hepatitis-test-reasons.php:41
 #: hepatitis/requests/add-samples-from-manifest.php:109
 #: hepatitis/requests/hepatitis-dhis2.php:345
 #: hepatitis/requests/hepatitis-requests.php:223
@@ -5599,9 +5599,9 @@ msgstr "Résultat CD4"
 #: vl/reference/add-vl-art-code-details.php:77
 #: vl/reference/add-vl-test-failure-reason.php:41
 #: vl/reference/edit-vl-test-failure-reason.php:50
-#: vl/reference/vl-art-code-details.php:39 vl/reference/vl-results.php:40
-#: vl/reference/vl-test-failure-reasons.php:38
-#: vl/reference/vl-test-reasons.php:39 vl/requests/export-sample-storage.php:26
+#: vl/reference/vl-art-code-details.php:41 vl/reference/vl-results.php:42
+#: vl/reference/vl-test-failure-reasons.php:40
+#: vl/reference/vl-test-reasons.php:41 vl/requests/export-sample-storage.php:26
 #: vl/requests/vl-requests.php:219 vl/requests/vl-requests.php:621
 #: vl/requests/vl-requests.php:682
 #: vl/result-mail/editTestResultEmailConfig.php:117
@@ -5616,16 +5616,16 @@ msgstr "Statut"
 #: cd4/management/cd4-clinic-report.php:291
 #: cd4/management/export-cd4-results.php:32
 #: cd4/management/get-rejected-samples.php:101
-#: cd4/reference/cd4-sample-rejection-reasons.php:39
+#: cd4/reference/cd4-sample-rejection-reasons.php:41
 #: covid-19/management/covid-19-clinic-report.php:264
 #: covid-19/management/covid-19-clinic-report.php:291
 #: covid-19/management/get-rejected-samples.php:86
-#: covid-19/reference/covid19-sample-rejection-reasons.php:38
+#: covid-19/reference/covid19-sample-rejection-reasons.php:40
 #: eid/management/eid-clinic-report.php:267
 #: eid/management/eid-clinic-report.php:296
 #: eid/management/get-rejected-samples.php:93
-#: eid/reference/eid-sample-rejection-reasons.php:39
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:41
+#: eid/reference/eid-sample-rejection-reasons.php:41
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:43
 #: generic-tests/mail/mail-generic-tests-results.php:245
 #: generic-tests/program-management/get-rejection-result.php:93
 #: generic-tests/requests/add-request.php:569
@@ -5636,7 +5636,7 @@ msgstr "Statut"
 #: hepatitis/management/get-rejected-samples.php:101
 #: hepatitis/management/hepatitis-clinic-report.php:267
 #: hepatitis/management/hepatitis-clinic-report.php:294
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:38
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:40
 #: import-result/imported-results.php:242
 #: tb/management/get-rejected-samples.php:103
 #: tb/management/tb-clinic-report.php:264
@@ -5647,7 +5647,7 @@ msgstr "Statut"
 #: vl/program-management/getRejectionResult.php:96
 #: vl/program-management/highViralLoad.php:610
 #: vl/program-management/highViralLoad.php:683
-#: vl/reference/vl-sample-rejection-reasons.php:39
+#: vl/reference/vl-sample-rejection-reasons.php:41
 #: vl/requests/forms/add-burkina-faso.php:493
 #: vl/requests/forms/add-cameroon.php:561
 #: vl/requests/forms/edit-burkina-faso.php:572
@@ -6314,21 +6314,21 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: global-config/editGlobalConfig.php:247
 #: global-config/editGlobalConfig.php:277
 #: global-config/editGlobalConfig.php:310
-#: global-config/editGlobalConfig.php:552
-#: global-config/editGlobalConfig.php:566
-#: global-config/editGlobalConfig.php:580
-#: global-config/editGlobalConfig.php:699
-#: global-config/editGlobalConfig.php:713
-#: global-config/editGlobalConfig.php:738
-#: global-config/editGlobalConfig.php:829
-#: global-config/editGlobalConfig.php:843
-#: global-config/editGlobalConfig.php:939
-#: global-config/editGlobalConfig.php:1035
-#: global-config/editGlobalConfig.php:1049
-#: global-config/editGlobalConfig.php:1161
-#: global-config/editGlobalConfig.php:1269
-#: global-config/editGlobalConfig.php:1326
-#: global-config/editGlobalConfig.php:1337
+#: global-config/editGlobalConfig.php:532
+#: global-config/editGlobalConfig.php:546
+#: global-config/editGlobalConfig.php:560
+#: global-config/editGlobalConfig.php:668
+#: global-config/editGlobalConfig.php:682
+#: global-config/editGlobalConfig.php:707
+#: global-config/editGlobalConfig.php:798
+#: global-config/editGlobalConfig.php:812
+#: global-config/editGlobalConfig.php:908
+#: global-config/editGlobalConfig.php:1004
+#: global-config/editGlobalConfig.php:1018
+#: global-config/editGlobalConfig.php:1115
+#: global-config/editGlobalConfig.php:1223
+#: global-config/editGlobalConfig.php:1280
+#: global-config/editGlobalConfig.php:1291
 #: hepatitis/management/hepatitis-export-data.php:186
 #: hepatitis/requests/forms/add-rwanda.php:83
 #: hepatitis/requests/forms/edit-rwanda.php:164
@@ -6504,21 +6504,21 @@ msgstr "Oui"
 #: global-config/editGlobalConfig.php:248
 #: global-config/editGlobalConfig.php:278
 #: global-config/editGlobalConfig.php:311
-#: global-config/editGlobalConfig.php:553
-#: global-config/editGlobalConfig.php:567
-#: global-config/editGlobalConfig.php:581
-#: global-config/editGlobalConfig.php:700
-#: global-config/editGlobalConfig.php:714
-#: global-config/editGlobalConfig.php:739
-#: global-config/editGlobalConfig.php:830
-#: global-config/editGlobalConfig.php:844
-#: global-config/editGlobalConfig.php:940
-#: global-config/editGlobalConfig.php:1036
-#: global-config/editGlobalConfig.php:1050
-#: global-config/editGlobalConfig.php:1162
-#: global-config/editGlobalConfig.php:1270
-#: global-config/editGlobalConfig.php:1327
-#: global-config/editGlobalConfig.php:1338
+#: global-config/editGlobalConfig.php:533
+#: global-config/editGlobalConfig.php:547
+#: global-config/editGlobalConfig.php:561
+#: global-config/editGlobalConfig.php:669
+#: global-config/editGlobalConfig.php:683
+#: global-config/editGlobalConfig.php:708
+#: global-config/editGlobalConfig.php:799
+#: global-config/editGlobalConfig.php:813
+#: global-config/editGlobalConfig.php:909
+#: global-config/editGlobalConfig.php:1005
+#: global-config/editGlobalConfig.php:1019
+#: global-config/editGlobalConfig.php:1116
+#: global-config/editGlobalConfig.php:1224
+#: global-config/editGlobalConfig.php:1281
+#: global-config/editGlobalConfig.php:1292
 #: hepatitis/management/hepatitis-export-data.php:187
 #: hepatitis/requests/forms/add-rwanda.php:82
 #: hepatitis/requests/forms/edit-rwanda.php:163
@@ -7793,7 +7793,7 @@ msgid "Test Reasons"
 msgstr "Motifs du test"
 
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:10
-#: cd4/reference/cd4-sample-rejection-reasons.php:30
+#: cd4/reference/cd4-sample-rejection-reasons.php:32
 msgid "Add CD4 Sample Rejection Reasons"
 msgstr "Ajouter les raisons du rejet de l'échantillon de CD4"
 
@@ -7872,15 +7872,15 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:51
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:53
-#: cd4/reference/cd4-sample-rejection-reasons.php:41
+#: cd4/reference/cd4-sample-rejection-reasons.php:43
 #: covid-19/reference/add-covid19-sample-rejection-reason.php:51
 #: covid-19/reference/add-covid19-sample-rejection-reason.php:53
-#: covid-19/reference/covid19-sample-rejection-reasons.php:40
+#: covid-19/reference/covid19-sample-rejection-reasons.php:42
 #: eid/reference/add-eid-sample-rejection-reasons.php:50
 #: eid/reference/add-eid-sample-rejection-reasons.php:52
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:50
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:52
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:43
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:45
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:51
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:53
 #: tb/reference/add-tb-sample-rejection-reason.php:51
@@ -7888,7 +7888,7 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: tb/reference/tb-sample-rejection-reasons.php:40
 #: vl/reference/add-vl-sample-rejection-reasons.php:51
 #: vl/reference/add-vl-sample-rejection-reasons.php:53
-#: vl/reference/vl-sample-rejection-reasons.php:41
+#: vl/reference/vl-sample-rejection-reasons.php:43
 msgid "Rejection Reason Code"
 msgstr "Code de motif de rejet"
 
@@ -7918,15 +7918,15 @@ msgstr ""
 
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:59
 #: cd4/reference/add-cd4-sample-rejection-reasons.php:61
-#: cd4/reference/cd4-sample-rejection-reasons.php:42
+#: cd4/reference/cd4-sample-rejection-reasons.php:44
 #: covid-19/reference/add-covid19-sample-rejection-reason.php:59
 #: covid-19/reference/add-covid19-sample-rejection-reason.php:61
-#: covid-19/reference/covid19-sample-rejection-reasons.php:41
+#: covid-19/reference/covid19-sample-rejection-reasons.php:43
 #: eid/reference/add-eid-sample-rejection-reasons.php:58
 #: eid/reference/add-eid-sample-rejection-reasons.php:60
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:58
 #: generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:60
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:44
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:46
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:59
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:61
 #: tb/reference/add-tb-sample-rejection-reason.php:59
@@ -7934,7 +7934,7 @@ msgstr ""
 #: tb/reference/tb-sample-rejection-reasons.php:41
 #: vl/reference/add-vl-sample-rejection-reasons.php:59
 #: vl/reference/add-vl-sample-rejection-reasons.php:61
-#: vl/reference/vl-sample-rejection-reasons.php:42
+#: vl/reference/vl-sample-rejection-reasons.php:44
 msgid "Rejection Reason Status"
 msgstr "Motif de rejet"
 
@@ -8149,7 +8149,7 @@ msgid "Inactive"
 msgstr "Inactif"
 
 #: cd4/reference/add-cd4-sample-type.php:10
-#: cd4/reference/cd4-sample-type.php:32
+#: cd4/reference/cd4-sample-type.php:34
 msgid "Add CD4 Sample Type"
 msgstr "Ajouter un type d'échantillon CD4"
 
@@ -8160,20 +8160,20 @@ msgstr "Type d'échantillon CD4"
 
 #: cd4/reference/add-cd4-sample-type.php:32
 #: cd4/reference/add-cd4-sample-type.php:34
-#: cd4/reference/cd4-sample-type.php:40
+#: cd4/reference/cd4-sample-type.php:42
 #: covid-19/reference/add-covid19-sample-type.php:32
 #: covid-19/reference/add-covid19-sample-type.php:34
-#: covid-19/reference/covid19-sample-type.php:56
+#: covid-19/reference/covid19-sample-type.php:58
 #: eid/reference/add-eid-sample-type.php:32
 #: eid/reference/add-eid-sample-type.php:34
-#: eid/reference/eid-sample-type.php:38
+#: eid/reference/eid-sample-type.php:40
 #: hepatitis/reference/add-hepatitis-sample-type.php:32
 #: hepatitis/reference/add-hepatitis-sample-type.php:34
-#: hepatitis/reference/hepatitis-sample-type.php:37
+#: hepatitis/reference/hepatitis-sample-type.php:39
 #: tb/reference/add-tb-sample-type.php:32
-#: tb/reference/add-tb-sample-type.php:34 tb/reference/tb-sample-type.php:56
+#: tb/reference/add-tb-sample-type.php:34 tb/reference/tb-sample-type.php:58
 #: vl/reference/add-vl-sample-type.php:32
-#: vl/reference/add-vl-sample-type.php:34 vl/reference/vl-sample-type.php:37
+#: vl/reference/add-vl-sample-type.php:34 vl/reference/vl-sample-type.php:39
 msgid "Sample Name"
 msgstr "Nom de l'échantillon"
 
@@ -8207,7 +8207,7 @@ msgid "Please enter Sample Status"
 msgstr "Veuillez saisir le statut de l'échantillon"
 
 #: cd4/reference/add-cd4-test-reasons.php:16
-#: cd4/reference/cd4-test-reasons.php:31
+#: cd4/reference/cd4-test-reasons.php:33
 msgid "Add CD4 Test Reasons"
 msgstr "Ajouter les raisons du test CD4"
 
@@ -8295,87 +8295,87 @@ msgstr "Statut du motif du test"
 msgid "Please select Test Reason Status"
 msgstr "Veuillez sélectionner le statut"
 
-#: cd4/reference/cd4-sample-rejection-reasons.php:40
-#: covid-19/reference/covid19-sample-rejection-reasons.php:39
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:42
+#: cd4/reference/cd4-sample-rejection-reasons.php:42
+#: covid-19/reference/covid19-sample-rejection-reasons.php:41
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:44
 #: tb/reference/tb-sample-rejection-reasons.php:39
-#: vl/reference/vl-sample-rejection-reasons.php:40
+#: vl/reference/vl-sample-rejection-reasons.php:42
 msgid "Rejection Reason Type"
 msgstr "Motif de rejet"
 
-#: cd4/reference/cd4-sample-rejection-reasons.php:112
-#: cd4/reference/cd4-sample-type.php:108 cd4/reference/cd4-test-reasons.php:110
-#: covid-19/reference/covid19-comorbidities.php:124
-#: covid-19/reference/covid19-qc-test-kits.php:115
+#: cd4/reference/cd4-sample-rejection-reasons.php:114
+#: cd4/reference/cd4-sample-type.php:110 cd4/reference/cd4-test-reasons.php:112
+#: covid-19/reference/covid19-comorbidities.php:126
+#: covid-19/reference/covid19-qc-test-kits.php:117
 #: covid-19/reference/covid19-results.php:100
-#: covid-19/reference/covid19-sample-rejection-reasons.php:114
-#: covid-19/reference/covid19-sample-type.php:124
-#: covid-19/reference/covid19-symptoms.php:106
+#: covid-19/reference/covid19-sample-rejection-reasons.php:116
+#: covid-19/reference/covid19-sample-type.php:126
+#: covid-19/reference/covid19-symptoms.php:108
 #: covid-19/reference/covid19-test-reasons.php:102
-#: eid/reference/eid-results.php:105
-#: eid/reference/eid-sample-rejection-reasons.php:115
-#: eid/reference/eid-sample-type.php:106 eid/reference/eid-test-reasons.php:107
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:117
-#: hepatitis/reference/hepatitis-comorbidities.php:106
-#: hepatitis/reference/hepatitis-results.php:105
-#: hepatitis/reference/hepatitis-risk-factors.php:106
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:114
-#: hepatitis/reference/hepatitis-sample-type.php:105
-#: hepatitis/reference/hepatitis-test-reasons.php:106
+#: eid/reference/eid-results.php:107
+#: eid/reference/eid-sample-rejection-reasons.php:117
+#: eid/reference/eid-sample-type.php:108 eid/reference/eid-test-reasons.php:109
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:119
+#: hepatitis/reference/hepatitis-comorbidities.php:108
+#: hepatitis/reference/hepatitis-results.php:107
+#: hepatitis/reference/hepatitis-risk-factors.php:108
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:116
+#: hepatitis/reference/hepatitis-sample-type.php:107
+#: hepatitis/reference/hepatitis-test-reasons.php:108
 #: tb/reference/tb-results.php:110
 #: tb/reference/tb-sample-rejection-reasons.php:114
-#: tb/reference/tb-sample-type.php:124 tb/reference/tb-test-reasons.php:108
-#: vl/reference/vl-art-code-details.php:107 vl/reference/vl-results.php:138
-#: vl/reference/vl-sample-rejection-reasons.php:112
-#: vl/reference/vl-sample-type.php:105
-#: vl/reference/vl-test-failure-reasons.php:108
-#: vl/reference/vl-test-reasons.php:108
+#: tb/reference/tb-sample-type.php:126 tb/reference/tb-test-reasons.php:108
+#: vl/reference/vl-art-code-details.php:109 vl/reference/vl-results.php:140
+#: vl/reference/vl-sample-rejection-reasons.php:114
+#: vl/reference/vl-sample-type.php:107
+#: vl/reference/vl-test-failure-reasons.php:110
+#: vl/reference/vl-test-reasons.php:110
 msgid "Are you sure you want to change the status?"
 msgstr "Êtes-vous sûr de que vouloir modifier le statut ?"
 
-#: cd4/reference/cd4-sample-rejection-reasons.php:121
-#: cd4/reference/cd4-sample-type.php:117 cd4/reference/cd4-test-reasons.php:120
+#: cd4/reference/cd4-sample-rejection-reasons.php:123
+#: cd4/reference/cd4-sample-type.php:119 cd4/reference/cd4-test-reasons.php:122
 #: cd4/results/cd4-result-status.php:577
 #: common/reference/funding-sources.php:107
 #: common/reference/implementation-partners.php:107
-#: common/reference/lab-storage.php:123 eid/reference/eid-results.php:115
-#: eid/reference/eid-sample-rejection-reasons.php:125
-#: eid/reference/eid-sample-type.php:115 eid/reference/eid-test-reasons.php:117
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:126
-#: generic-tests/configuration/sample-types/generic-sample-type.php:131
-#: generic-tests/configuration/symptoms/generic-symptoms.php:131
-#: generic-tests/configuration/test-categories/generic-test-categories.php:128
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:131
-#: generic-tests/configuration/test-methods/generic-test-methods.php:128
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:127
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:133
-#: hepatitis/reference/hepatitis-results.php:114
+#: common/reference/lab-storage.php:123 eid/reference/eid-results.php:117
+#: eid/reference/eid-sample-rejection-reasons.php:127
+#: eid/reference/eid-sample-type.php:117 eid/reference/eid-test-reasons.php:119
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:128
+#: generic-tests/configuration/sample-types/generic-sample-type.php:133
+#: generic-tests/configuration/symptoms/generic-symptoms.php:133
+#: generic-tests/configuration/test-categories/generic-test-categories.php:130
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:133
+#: generic-tests/configuration/test-methods/generic-test-methods.php:130
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:129
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:135
+#: hepatitis/reference/hepatitis-results.php:116
 #: hepatitis/results/hepatitis-result-status.php:460
 #: hepatitis/results/hepatitis-result-status.php:490
 #: instruments/add-instrument.php:790 instruments/add-instrument.php:804
 #: instruments/edit-instrument.php:901 instruments/edit-instrument.php:915
 #: tb/reference/tb-results.php:119
 #: tb/reference/tb-sample-rejection-reasons.php:123
-#: tb/reference/tb-sample-type.php:133 tb/reference/tb-test-reasons.php:117
+#: tb/reference/tb-sample-type.php:135 tb/reference/tb-test-reasons.php:117
 #: tb/results/tb-result-status.php:415 tb/results/tb-result-status.php:461
-#: tb/results/tb-result-status.php:491 vl/reference/vl-art-code-details.php:116
-#: vl/reference/vl-results.php:148
-#: vl/reference/vl-sample-rejection-reasons.php:121
-#: vl/reference/vl-sample-type.php:114
-#: vl/reference/vl-test-failure-reasons.php:116
-#: vl/reference/vl-test-reasons.php:118 vl/results/vlResultApproval.php:577
+#: tb/results/tb-result-status.php:491 vl/reference/vl-art-code-details.php:118
+#: vl/reference/vl-results.php:150
+#: vl/reference/vl-sample-rejection-reasons.php:123
+#: vl/reference/vl-sample-type.php:116
+#: vl/reference/vl-test-failure-reasons.php:118
+#: vl/reference/vl-test-reasons.php:120 vl/results/vlResultApproval.php:577
 msgid "Updated successfully"
 msgstr "Mise à jour avec succès"
 
-#: cd4/reference/cd4-test-reasons.php:40
+#: cd4/reference/cd4-test-reasons.php:42
 #: covid-19/reference/covid19-test-reasons.php:33
-#: eid/reference/eid-test-reasons.php:38
+#: eid/reference/eid-test-reasons.php:40
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:32
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:34
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:44
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:43
-#: hepatitis/reference/hepatitis-test-reasons.php:38
-#: tb/reference/tb-test-reasons.php:40 vl/reference/vl-test-reasons.php:38
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:45
+#: hepatitis/reference/hepatitis-test-reasons.php:40
+#: tb/reference/tb-test-reasons.php:40 vl/reference/vl-test-reasons.php:40
 msgid "Test Reason"
 msgstr "Raison"
 
@@ -8911,12 +8911,12 @@ msgstr "Êtes-vous sûr de vouloir modifier le statut de l'échantillon ?"
 
 #: cd4/requests/cd4-requests.php:1086 cd4/results/cd4-result-status.php:501
 #: cd4/results/cd4-result-status.php:547
-#: covid-19/reference/covid19-comorbidities.php:133
-#: covid-19/reference/covid19-qc-test-kits.php:124
+#: covid-19/reference/covid19-comorbidities.php:135
+#: covid-19/reference/covid19-qc-test-kits.php:126
 #: covid-19/reference/covid19-results.php:109
-#: covid-19/reference/covid19-sample-rejection-reasons.php:123
-#: covid-19/reference/covid19-sample-type.php:133
-#: covid-19/reference/covid19-symptoms.php:115
+#: covid-19/reference/covid19-sample-rejection-reasons.php:125
+#: covid-19/reference/covid19-sample-type.php:135
+#: covid-19/reference/covid19-symptoms.php:117
 #: covid-19/reference/covid19-test-reasons.php:111
 #: covid-19/results/covid-19-result-status.php:412
 #: covid-19/results/covid-19-result-status.php:458
@@ -8927,11 +8927,11 @@ msgstr "Êtes-vous sûr de vouloir modifier le statut de l'échantillon ?"
 #: generic-tests/results/generic-result-approval.php:493
 #: generic-tests/results/generic-result-approval.php:539
 #: generic-tests/results/generic-result-approval.php:569
-#: hepatitis/reference/hepatitis-comorbidities.php:115
-#: hepatitis/reference/hepatitis-risk-factors.php:115
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:123
-#: hepatitis/reference/hepatitis-sample-type.php:114
-#: hepatitis/reference/hepatitis-test-reasons.php:115
+#: hepatitis/reference/hepatitis-comorbidities.php:117
+#: hepatitis/reference/hepatitis-risk-factors.php:117
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:125
+#: hepatitis/reference/hepatitis-sample-type.php:116
+#: hepatitis/reference/hepatitis-test-reasons.php:117
 #: hepatitis/results/hepatitis-result-status.php:414
 #: vl/requests/vl-requests.php:1187 vl/results/vlResultApproval.php:501
 #: vl/results/vlResultApproval.php:547
@@ -9979,7 +9979,7 @@ msgstr "Choisir le(s) échantillon(s)"
 #: generic-tests/mail/mail-generic-tests-results.php:217
 #: generic-tests/results/email-results.php:309
 #: generic-tests/results/getRequestSampleCodeDetails.php:95
-#: global-config/editGlobalConfig.php:1391
+#: global-config/editGlobalConfig.php:1345
 #: hepatitis/results/email-results.php:309
 #: hepatitis/results/getRequestSampleCodeDetails.php:95
 #: mail/getRequestSampleCodeDetails.php:95 mail/vlResultMail.php:309
@@ -10002,7 +10002,7 @@ msgstr "Tout sélectionner"
 #: generic-tests/mail/mail-generic-tests-results.php:217
 #: generic-tests/results/email-results.php:311
 #: generic-tests/results/getRequestSampleCodeDetails.php:95
-#: global-config/editGlobalConfig.php:1391
+#: global-config/editGlobalConfig.php:1345
 #: hepatitis/results/email-results.php:311
 #: hepatitis/results/getRequestSampleCodeDetails.php:95
 #: mail/getRequestSampleCodeDetails.php:95 mail/vlResultMail.php:311
@@ -10722,13 +10722,13 @@ msgstr "Nom de la source de financement"
 #: common/reference/funding-sources.php:98
 #: common/reference/implementation-partners.php:98
 #: common/reference/lab-storage.php:114
-#: generic-tests/configuration/sample-types/generic-sample-type.php:122
-#: generic-tests/configuration/symptoms/generic-symptoms.php:122
-#: generic-tests/configuration/test-categories/generic-test-categories.php:119
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:122
-#: generic-tests/configuration/test-methods/generic-test-methods.php:119
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:118
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:124
+#: generic-tests/configuration/sample-types/generic-sample-type.php:124
+#: generic-tests/configuration/symptoms/generic-symptoms.php:124
+#: generic-tests/configuration/test-categories/generic-test-categories.php:121
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:124
+#: generic-tests/configuration/test-methods/generic-test-methods.php:121
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:120
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:126
 msgid "Are you sure you want to change the status"
 msgstr "Êtes-vous sûr de vouloir changer de statut"
 
@@ -10739,13 +10739,13 @@ msgstr "Ajouter de nouvelles divisions géographiques"
 #: common/reference/geographical-divisions-details.php:33
 #: facilities/addFacility.php:700 facilities/addFacility.php:1033
 #: facilities/editFacility.php:661 facilities/editFacility.php:700
-#: facilities/editFacility.php:1055 global-config/editGlobalConfig.php:1289
+#: facilities/editFacility.php:1055 global-config/editGlobalConfig.php:1243
 msgid "Name"
 msgstr "Nom"
 
 #: common/reference/geographical-divisions-details.php:34
-#: eid/reference/eid-sample-rejection-reasons.php:41
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:40
+#: eid/reference/eid-sample-rejection-reasons.php:43
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:42
 #: hepatitis/requests/add-samples-from-manifest.php:75
 msgid "Code"
 msgstr "Code"
@@ -11139,7 +11139,7 @@ msgstr "Type de spécimen"
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:33
 #: generic-tests/configuration/test-methods/generic-add-test-methods.php:35
 #: generic-tests/configuration/test-methods/generic-edit-test-methods.php:45
-#: generic-tests/configuration/test-methods/generic-test-methods.php:41
+#: generic-tests/configuration/test-methods/generic-test-methods.php:43
 msgid "Test Method"
 msgstr "Méthode d'essai"
 
@@ -11179,7 +11179,7 @@ msgid "Comorbidity details added successfully"
 msgstr "Les détails de la comorbidité ont été ajoutés avec succès"
 
 #: covid-19/reference/add-covid19-comorbidities.php:10
-#: covid-19/reference/covid19-comorbidities.php:47
+#: covid-19/reference/covid19-comorbidities.php:49
 msgid "Add Covid-19 Co-morbidities"
 msgstr "Ajouter les comorbidités Covid-19"
 
@@ -11192,10 +11192,10 @@ msgstr "Covid-19 Co-morbidités"
 
 #: covid-19/reference/add-covid19-comorbidities.php:32
 #: covid-19/reference/add-covid19-comorbidities.php:34
-#: covid-19/reference/covid19-comorbidities.php:56
+#: covid-19/reference/covid19-comorbidities.php:58
 #: hepatitis/reference/add-hepatitis-comorbidities.php:32
 #: hepatitis/reference/add-hepatitis-comorbidities.php:34
-#: hepatitis/reference/hepatitis-comorbidities.php:38
+#: hepatitis/reference/hepatitis-comorbidities.php:40
 msgid "Comorbidity Name"
 msgstr "Nom de la comorbidité"
 
@@ -11210,10 +11210,10 @@ msgid "The comorbidity name that you entered already exists.Enter another name"
 msgstr "Le nom de la comorbidité que vous avez saisi existe déjà"
 
 #: covid-19/reference/add-covid19-comorbidities.php:40
-#: covid-19/reference/covid19-comorbidities.php:57
+#: covid-19/reference/covid19-comorbidities.php:59
 #: hepatitis/reference/add-hepatitis-comorbidities.php:40
 #: hepatitis/reference/add-hepatitis-comorbidities.php:42
-#: hepatitis/reference/hepatitis-comorbidities.php:39
+#: hepatitis/reference/hepatitis-comorbidities.php:41
 msgid "Comorbidity Status"
 msgstr "État de comorbidité"
 
@@ -11294,10 +11294,10 @@ msgstr "Ajouter les résultats de Covid-19"
 #: covid-19/reference/add-covid19-results.php:35
 #: covid-19/reference/covid19-results.php:32
 #: eid/reference/add-eid-results.php:33 eid/reference/add-eid-results.php:35
-#: eid/reference/eid-results.php:37
+#: eid/reference/eid-results.php:39
 #: hepatitis/reference/add-hepatitis-results.php:33
 #: hepatitis/reference/add-hepatitis-results.php:35
-#: hepatitis/reference/hepatitis-results.php:37
+#: hepatitis/reference/hepatitis-results.php:39
 #: tb/reference/add-tb-results.php:42 tb/reference/add-tb-results.php:45
 #: tb/reference/tb-results.php:37
 msgid "Result Name"
@@ -11323,7 +11323,7 @@ msgid "Please select Result Status"
 msgstr "Veuillez sélectionner le statut du résultat"
 
 #: covid-19/reference/add-covid19-sample-rejection-reason.php:10
-#: covid-19/reference/covid19-sample-rejection-reasons.php:29
+#: covid-19/reference/covid19-sample-rejection-reasons.php:31
 msgid "Add Covid-19 Sample Rejection Reasons"
 msgstr "Ajouter les raisons du rejet de l'échantillon Covid-19"
 
@@ -11335,7 +11335,7 @@ msgid "Covid-19 Sample Rejection Reasons"
 msgstr "Raisons du rejet de l'échantillon Covid-19"
 
 #: covid-19/reference/add-covid19-sample-type.php:10
-#: covid-19/reference/covid19-sample-type.php:47
+#: covid-19/reference/covid19-sample-type.php:49
 msgid "Add Covid-19 Sample Type"
 msgstr "Ajouter un type d'échantillon Covid-19"
 
@@ -11347,7 +11347,7 @@ msgid "Covid-19 Sample Type"
 msgstr "Type d'échantillon Covid-19"
 
 #: covid-19/reference/add-covid19-symptoms.php:12
-#: covid-19/reference/covid19-symptoms.php:29
+#: covid-19/reference/covid19-symptoms.php:31
 msgid "Add Covid-19 Symptoms"
 msgstr "Ajouter les symptômes de Covid-19"
 
@@ -11360,12 +11360,12 @@ msgstr "Covid-19 Symptômes"
 
 #: covid-19/reference/add-covid19-symptoms.php:34
 #: covid-19/reference/add-covid19-symptoms.php:36
-#: covid-19/reference/covid19-symptoms.php:38
+#: covid-19/reference/covid19-symptoms.php:40
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:32
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:34
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:44
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:46
-#: generic-tests/configuration/symptoms/generic-symptoms.php:41
+#: generic-tests/configuration/symptoms/generic-symptoms.php:43
 msgid "Symptom Name"
 msgstr "Nom du symptôme"
 
@@ -11390,7 +11390,7 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 
 #: covid-19/reference/add-covid19-symptoms.php:59
 #: covid-19/reference/add-covid19-symptoms.php:61
-#: covid-19/reference/covid19-symptoms.php:39
+#: covid-19/reference/covid19-symptoms.php:41
 msgid "Symptom Status"
 msgstr "Symptôme"
 
@@ -11430,7 +11430,7 @@ msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succ
 #: facilities/addFacility.php:112 facilities/addFacility.php:117
 #: facilities/editFacility.php:172 facilities/editFacility.php:174
 #: facilities/facilities.php:139 facilities/facilities.php:169
-#: global-config/editGlobalConfig.php:1394 tb/reference/tb-sample-type.php:30
+#: global-config/editGlobalConfig.php:1348 tb/reference/tb-sample-type.php:30
 #: vl/results/forms/update-cameroon-result.php:262
 msgid "Facility Code"
 msgstr "Nom et code de la structure"
@@ -11449,15 +11449,15 @@ msgstr "Nom de la structure"
 msgid "Covid-19 QC Test Kits"
 msgstr "Covid-19-Demandes de test"
 
-#: covid-19/reference/covid19-qc-test-kits.php:29
+#: covid-19/reference/covid19-qc-test-kits.php:31
 msgid "Add New Covid-19 QC Test Kit"
 msgstr "Ajouter un nouveau kit de test Covid-19 QC"
 
-#: covid-19/reference/covid19-qc-test-kits.php:37
+#: covid-19/reference/covid19-qc-test-kits.php:39
 msgid "QC Test Kit Name"
 msgstr "Nom du kit"
 
-#: covid-19/reference/covid19-qc-test-kits.php:38
+#: covid-19/reference/covid19-qc-test-kits.php:40
 msgid "Created On"
 msgstr "Créé le"
 
@@ -11504,7 +11504,7 @@ msgstr ""
 
 #: covid-19/requests/covid-19-add-request.php:202
 #: hepatitis/requests/hepatitis-quick-add.php:161
-#: tb/results/tb-update-result.php:207 vl/vl.js.php:140
+#: tb/results/tb-update-result.php:191 vl/vl.js.php:140
 msgid "This Sample ID already exists"
 msgstr "Ce numéro d'identification d'échantillon existe déjà"
 
@@ -11534,15 +11534,15 @@ msgstr "La demande de Covid-19 a été mise à jour avec succès"
 msgid "COVID-19 | Edit Request"
 msgstr "EID-Modifier la demande de test"
 
-#: covid-19/requests/covid-19-edit-request.php:176
+#: covid-19/requests/covid-19-edit-request.php:161
 #: covid-19/requests/covid-19-quick-add.php:175
 #: generic-tests/requests/add-request.php:1379
 #: generic-tests/requests/clone-request.php:1357
 #: generic-tests/requests/edit-request.php:1237
 #: generic-tests/results/update-generic-test-result.php:1205
 #: hepatitis/requests/hepatitis-add-request.php:180
-#: hepatitis/requests/hepatitis-edit-request.php:177
-#: tb/requests/tb-add-request.php:179 tb/requests/tb-edit-request.php:208
+#: hepatitis/requests/hepatitis-edit-request.php:161
+#: tb/requests/tb-add-request.php:179 tb/requests/tb-edit-request.php:192
 msgid "This Sample Code already exists"
 msgstr "Cet exemple de code existe déjà"
 
@@ -11988,7 +11988,7 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: covid-19/requests/forms/edit-cameroon.php:242
 #: covid-19/results/forms/update-cameroon-result.php:202
 #: covid-19/results/forms/update-cameroon-result.php:204
-#: global-config/editGlobalConfig.php:1369
+#: global-config/editGlobalConfig.php:1323
 #: tb/requests/forms/add-burkina-faso.php:176
 #: tb/requests/forms/edit-burkina-faso.php:197
 #: tb/results/forms/update-burkina-faso.php:196
@@ -12079,7 +12079,7 @@ msgstr "Numéro de téléphone"
 #: generic-tests/results/update-generic-test-result.php:707
 #: patients/add-patient.php:203 patients/edit-patient.php:220
 #: patients/view-patients.php:37 users/addUser.php:98 users/addUser.php:100
-#: users/editProfile.php:97 users/editProfile.php:99 users/editUser.php:142
+#: users/edit-profile.php:97 users/edit-profile.php:99 users/editUser.php:142
 #: users/editUser.php:144 vl/requests/forms/add-cameroon.php:311
 #: vl/requests/forms/add-cameroon.php:392
 #: vl/requests/forms/edit-cameroon.php:361
@@ -13747,7 +13747,7 @@ msgstr "EID-Imprimer le résultat"
 msgid "EID Laboratory Turnaround Time"
 msgstr "Délai d'exécution du laboratoire de l'EID"
 
-#: eid/reference/add-eid-results.php:11 eid/reference/eid-results.php:29
+#: eid/reference/add-eid-results.php:11 eid/reference/eid-results.php:31
 msgid "Add EID Results"
 msgstr "EID-Imprimer le résultat"
 
@@ -13759,7 +13759,7 @@ msgstr ""
 "Le nom de résultat que vous avez saisi existe déjà. Saisissez un autre nom"
 
 #: eid/reference/add-eid-sample-rejection-reasons.php:9
-#: eid/reference/eid-sample-rejection-reasons.php:30
+#: eid/reference/eid-sample-rejection-reasons.php:32
 msgid "Add EID Sample Rejection Reasons"
 msgstr "Ajouter les motifs de rejet de l'échantillon de l'EID"
 
@@ -13771,7 +13771,7 @@ msgid "EID Sample Rejection Reasons"
 msgstr "Motifs de rejet des échantillons de l'EID"
 
 #: eid/reference/add-eid-sample-type.php:10
-#: eid/reference/eid-sample-type.php:30
+#: eid/reference/eid-sample-type.php:32
 msgid "Add EID Sample Type"
 msgstr "EID-Ajouter une nouvelle demande"
 
@@ -13781,7 +13781,7 @@ msgid "EID Sample Type"
 msgstr "Type d'échantillon EID"
 
 #: eid/reference/add-eid-test-reasons.php:15
-#: eid/reference/eid-test-reasons.php:29
+#: eid/reference/eid-test-reasons.php:31
 msgid "Add EID Test Reasons"
 msgstr "Ajouter les raisons de l'essai de l'EID"
 
@@ -13791,8 +13791,8 @@ msgstr "Ajouter les raisons de l'essai de l'EID"
 msgid "EID Test Reasons"
 msgstr "Raisons de l'essai de l'EID"
 
-#: eid/reference/eid-sample-rejection-reasons.php:40
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:39
+#: eid/reference/eid-sample-rejection-reasons.php:42
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:41
 msgid "Type"
 msgstr "Type"
 
@@ -14259,7 +14259,7 @@ msgstr "Machine utilisée pour le test"
 #: generic-tests/requests/add-request.php:671
 #: generic-tests/requests/edit-request.php:895
 #: generic-tests/results/update-generic-test-result.php:860
-#: global-config/editGlobalConfig.php:1406
+#: global-config/editGlobalConfig.php:1360
 #: import-result/imported-results.php:305
 #: tb/requests/forms/add-burkina-faso.php:447
 #: tb/requests/forms/edit-burkina-faso.php:499
@@ -15527,7 +15527,7 @@ msgstr "Commentaires utilisateurs"
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:32
 #: generic-tests/configuration/test-categories/generic-add-test-categories.php:34
 #: generic-tests/configuration/test-categories/generic-edit-test-categories.php:44
-#: generic-tests/configuration/test-categories/generic-test-categories.php:41
+#: generic-tests/configuration/test-categories/generic-test-categories.php:43
 msgid "Test Category"
 msgstr "Catégorie de motif"
 
@@ -15650,7 +15650,7 @@ msgstr "Dernière synchronisation le"
 
 #: generic-tests/configuration/add-test-type.php:56
 #: generic-tests/configuration/add-test-type.php:59
-#: generic-tests/configuration/test-type.php:33
+#: generic-tests/configuration/test-type.php:35
 msgid "Add Test Type"
 msgstr "Ajouter un type de test"
 
@@ -16335,7 +16335,7 @@ msgstr "Raisons génériques du rejet d'un échantillon"
 msgid "Other Lab Tests Sample Rejection Reasons"
 msgstr "Autres tests de laboratoire Raisons du rejet de l'échantillon"
 
-#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:33
+#: generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:35
 msgid "Add Sample Rejection Reasons"
 msgstr "Ajouter les raisons du rejet de l'échantillon"
 
@@ -16345,7 +16345,7 @@ msgstr ""
 "Tests de laboratoire Raisons du rejet de l'échantillon ajoutées avec succès"
 
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:11
-#: generic-tests/configuration/sample-types/generic-sample-type.php:33
+#: generic-tests/configuration/sample-types/generic-sample-type.php:35
 msgid "Add Sample Type"
 msgstr "Ajouter un type d'échantillon"
 
@@ -16353,7 +16353,7 @@ msgstr "Ajouter un type d'échantillon"
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:35
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:45
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:47
-#: generic-tests/configuration/sample-types/generic-sample-type.php:41
+#: generic-tests/configuration/sample-types/generic-sample-type.php:43
 msgid "Sample Type Name"
 msgstr "Nom du type d'échantillon"
 
@@ -16372,7 +16372,7 @@ msgstr ""
 #: generic-tests/configuration/sample-types/generic-add-sample-type.php:43
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:54
 #: generic-tests/configuration/sample-types/generic-edit-sample-type.php:56
-#: generic-tests/configuration/sample-types/generic-sample-type.php:42
+#: generic-tests/configuration/sample-types/generic-sample-type.php:44
 msgid "Sample Type Code"
 msgstr "Code du type d'échantillon"
 
@@ -16416,13 +16416,13 @@ msgstr "Autres tests de laboratoire Types d'échantillons"
 msgid "Sample Types"
 msgstr "Types d'échantillons"
 
-#: generic-tests/configuration/sample-types/generic-sample-type.php:44
-#: generic-tests/configuration/symptoms/generic-symptoms.php:44
-#: generic-tests/configuration/test-categories/generic-test-categories.php:43
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:44
-#: generic-tests/configuration/test-methods/generic-test-methods.php:43
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:43
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:46
+#: generic-tests/configuration/sample-types/generic-sample-type.php:46
+#: generic-tests/configuration/symptoms/generic-symptoms.php:46
+#: generic-tests/configuration/test-categories/generic-test-categories.php:45
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:46
+#: generic-tests/configuration/test-methods/generic-test-methods.php:45
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:45
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:48
 #: system-admin/instance-overview/instanceIndex.php:71
 msgid "Updated On"
 msgstr "Mis à jour le"
@@ -16436,7 +16436,7 @@ msgid "Sample type added successfully"
 msgstr "Le type d'échantillon a été ajouté avec succès"
 
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:10
-#: generic-tests/configuration/symptoms/generic-symptoms.php:33
+#: generic-tests/configuration/symptoms/generic-symptoms.php:35
 msgid "Add Symptoms"
 msgstr "Ajouter des symptômes"
 
@@ -16454,7 +16454,7 @@ msgstr ""
 #: generic-tests/configuration/symptoms/generic-add-symptoms.php:43
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:53
 #: generic-tests/configuration/symptoms/generic-edit-symptoms.php:55
-#: generic-tests/configuration/symptoms/generic-symptoms.php:42
+#: generic-tests/configuration/symptoms/generic-symptoms.php:44
 msgid "Symptom Code"
 msgstr "Symptôme"
 
@@ -16540,7 +16540,7 @@ msgstr ""
 msgid "Other Lab Test Categories"
 msgstr "Autres catégories de tests de laboratoire"
 
-#: generic-tests/configuration/test-categories/generic-test-categories.php:33
+#: generic-tests/configuration/test-categories/generic-test-categories.php:35
 msgid "Add Test Categories"
 msgstr "Ajouter des catégories de test"
 
@@ -16553,7 +16553,7 @@ msgid "Test Category added successfully"
 msgstr "Catégorie de test ajoutée avec succès"
 
 #: generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:10
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:33
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:35
 msgid "Add Test Failure Reason"
 msgstr "Ajouter la raison de l'échec du test"
 
@@ -16564,7 +16564,7 @@ msgstr "Ajouter la raison de l'échec du test"
 #: generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:25
 #: generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:44
 #: generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:46
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:41
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:43
 #: vl/reference/add-vl-test-failure-reason.php:32
 #: vl/reference/edit-vl-test-failure-reason.php:42
 msgid "Test Failure Reason"
@@ -16585,13 +16585,13 @@ msgstr "Le motif d'échec du test que vous avez saisi existe déjà"
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:43
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:53
 #: generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:55
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:44
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:46
 msgid "Test Reason Code"
 msgstr "Code de raison du test"
 
 #: generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:43
 #: generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:53
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:42
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:44
 msgid "Test Failure Reason Code"
 msgstr "Code de raison de l'échec du test"
 
@@ -16634,7 +16634,7 @@ msgstr ""
 msgid "Other Lab Test Failure Reasons"
 msgstr "Autres raisons d'échec des tests de laboratoire"
 
-#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:43
+#: generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:45
 msgid "Test Failure Status"
 msgstr "Statut"
 
@@ -16672,7 +16672,7 @@ msgstr ""
 msgid "Other Lab Test Methods"
 msgstr "Autres méthodes d'essai en laboratoire"
 
-#: generic-tests/configuration/test-methods/generic-test-methods.php:33
+#: generic-tests/configuration/test-methods/generic-test-methods.php:35
 msgid "Add Test Methods"
 msgstr "Test-Raisons"
 
@@ -16695,7 +16695,7 @@ msgid "Test Result Units"
 msgstr "Résultat du test Unités"
 
 #: generic-tests/configuration/test-result-units/generic-add-test-result-units.php:11
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:33
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:35
 msgid "Add Test Result Units"
 msgstr "Gestion des résultats des tests"
 
@@ -16738,11 +16738,11 @@ msgstr ""
 msgid "Other Lab Test Result Units"
 msgstr "Autres unités de résultats de tests de laboratoire"
 
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:41
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:43
 msgid "Result Unit Name"
 msgstr "Résultat Nom de l'unité"
 
-#: generic-tests/configuration/test-result-units/generic-test-result-units.php:42
+#: generic-tests/configuration/test-result-units/generic-test-result-units.php:44
 msgid "Result Unit Status"
 msgstr "Résultat État de l'unité"
 
@@ -16759,19 +16759,19 @@ msgstr "Résultat du test Les détails de l'unité ont été ajoutés avec succ�
 msgid "Test Type Configuration"
 msgstr "Configuration du type de test"
 
-#: generic-tests/configuration/test-type.php:41
+#: generic-tests/configuration/test-type.php:43
 msgid "Standard Name"
 msgstr "Nom de niveau scolaire"
 
-#: generic-tests/configuration/test-type.php:42
+#: generic-tests/configuration/test-type.php:44
 msgid "Generic Name"
 msgstr "Nom générique"
 
-#: generic-tests/configuration/test-type.php:43
+#: generic-tests/configuration/test-type.php:45
 msgid "Short Code"
 msgstr "Short Code"
 
-#: generic-tests/configuration/test-type.php:44
+#: generic-tests/configuration/test-type.php:46
 msgid "LOINC Code"
 msgstr "Code LOINC"
 
@@ -16782,7 +16782,7 @@ msgid "Testing Reasons"
 msgstr "Raisons des tests"
 
 #: generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:10
-#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:35
+#: generic-tests/configuration/testing-reasons/generic-testing-reason.php:37
 msgid "Add Testing Reason"
 msgstr "Ajouter un motif de test"
 
@@ -16882,7 +16882,7 @@ msgid "Lab ID"
 msgstr "ID lab"
 
 #: generic-tests/mail/mail-generic-tests-results.php:241
-#: global-config/editGlobalConfig.php:1404
+#: global-config/editGlobalConfig.php:1358
 #: vl/requests/forms/add-burkina-faso.php:470
 #: vl/requests/forms/add-cameroon.php:523
 #: vl/requests/forms/edit-burkina-faso.php:549
@@ -17285,7 +17285,7 @@ msgid "Please select sample received at Hub date"
 msgstr "Veuillez sélectionner l'échantillon reçu à la date du Hub"
 
 #: generic-tests/requests/add-request.php:538
-#: global-config/editGlobalConfig.php:1401
+#: global-config/editGlobalConfig.php:1355
 #: vl/requests/forms/add-burkina-faso.php:462
 #: vl/requests/forms/add-cameroon.php:401
 #: vl/requests/forms/edit-burkina-faso.php:541
@@ -17867,14 +17867,12 @@ msgstr "Longueur minimale du numéro de téléphone"
 
 #: global-config/editGlobalConfig.php:367
 #: global-config/editGlobalConfig.php:469
-#: global-config/editGlobalConfig.php:489
-#: global-config/editGlobalConfig.php:671
-#: global-config/editGlobalConfig.php:798
-#: global-config/editGlobalConfig.php:910
-#: global-config/editGlobalConfig.php:1006
-#: global-config/editGlobalConfig.php:1116
-#: global-config/editGlobalConfig.php:1130
-#: global-config/editGlobalConfig.php:1228
+#: global-config/editGlobalConfig.php:640
+#: global-config/editGlobalConfig.php:767
+#: global-config/editGlobalConfig.php:879
+#: global-config/editGlobalConfig.php:975
+#: global-config/editGlobalConfig.php:1084
+#: global-config/editGlobalConfig.php:1182
 msgid "Min"
 msgstr "Min"
 
@@ -17887,9 +17885,6 @@ msgid "Maximum Length of Phone Number"
 msgstr "Longueur maximale du numéro de téléphone"
 
 #: global-config/editGlobalConfig.php:377
-#: global-config/editGlobalConfig.php:479
-#: global-config/editGlobalConfig.php:661
-#: global-config/editGlobalConfig.php:1120
 msgid "Max"
 msgstr "Max"
 
@@ -17930,12 +17925,12 @@ msgid "cp/ml"
 msgstr "cp/ml"
 
 #: global-config/editGlobalConfig.php:422
-#: global-config/editGlobalConfig.php:613
-#: global-config/editGlobalConfig.php:750
-#: global-config/editGlobalConfig.php:862
-#: global-config/editGlobalConfig.php:958
-#: global-config/editGlobalConfig.php:1068
-#: global-config/editGlobalConfig.php:1180
+#: global-config/editGlobalConfig.php:593
+#: global-config/editGlobalConfig.php:719
+#: global-config/editGlobalConfig.php:831
+#: global-config/editGlobalConfig.php:927
+#: global-config/editGlobalConfig.php:1037
+#: global-config/editGlobalConfig.php:1134
 msgid "Format"
 msgstr "Format"
 
@@ -17952,53 +17947,53 @@ msgstr ""
 
 #: global-config/editGlobalConfig.php:437
 #: global-config/editGlobalConfig.php:438
-#: global-config/editGlobalConfig.php:628
-#: global-config/editGlobalConfig.php:629
-#: global-config/editGlobalConfig.php:877
-#: global-config/editGlobalConfig.php:878
-#: global-config/editGlobalConfig.php:973
-#: global-config/editGlobalConfig.php:974
-#: global-config/editGlobalConfig.php:1083
-#: global-config/editGlobalConfig.php:1084
-#: global-config/editGlobalConfig.php:1195
-#: global-config/editGlobalConfig.php:1196
+#: global-config/editGlobalConfig.php:608
+#: global-config/editGlobalConfig.php:609
+#: global-config/editGlobalConfig.php:846
+#: global-config/editGlobalConfig.php:847
+#: global-config/editGlobalConfig.php:942
+#: global-config/editGlobalConfig.php:943
+#: global-config/editGlobalConfig.php:1052
+#: global-config/editGlobalConfig.php:1053
+#: global-config/editGlobalConfig.php:1149
+#: global-config/editGlobalConfig.php:1150
 msgid "Enter Prefix"
 msgstr "Saisir le préfixe"
 
 #: global-config/editGlobalConfig.php:437
-#: global-config/editGlobalConfig.php:628
-#: global-config/editGlobalConfig.php:877
-#: global-config/editGlobalConfig.php:973
-#: global-config/editGlobalConfig.php:1083
-#: global-config/editGlobalConfig.php:1195
+#: global-config/editGlobalConfig.php:608
+#: global-config/editGlobalConfig.php:846
+#: global-config/editGlobalConfig.php:942
+#: global-config/editGlobalConfig.php:1052
+#: global-config/editGlobalConfig.php:1149
 msgid "YY"
 msgstr "AA"
 
 #: global-config/editGlobalConfig.php:438
-#: global-config/editGlobalConfig.php:629
-#: global-config/editGlobalConfig.php:878
-#: global-config/editGlobalConfig.php:974
-#: global-config/editGlobalConfig.php:1084
-#: global-config/editGlobalConfig.php:1196
+#: global-config/editGlobalConfig.php:609
+#: global-config/editGlobalConfig.php:847
+#: global-config/editGlobalConfig.php:943
+#: global-config/editGlobalConfig.php:1053
+#: global-config/editGlobalConfig.php:1150
 msgid "MMYY"
 msgstr "MMYY"
 
 #: global-config/editGlobalConfig.php:440
-#: global-config/editGlobalConfig.php:631
-#: global-config/editGlobalConfig.php:880
-#: global-config/editGlobalConfig.php:976
-#: global-config/editGlobalConfig.php:1086
-#: global-config/editGlobalConfig.php:1198
+#: global-config/editGlobalConfig.php:611
+#: global-config/editGlobalConfig.php:849
+#: global-config/editGlobalConfig.php:945
+#: global-config/editGlobalConfig.php:1055
+#: global-config/editGlobalConfig.php:1152
 msgid "Auto"
 msgstr "Auto"
 
 #: global-config/editGlobalConfig.php:451
-#: global-config/editGlobalConfig.php:642
-#: global-config/editGlobalConfig.php:779
-#: global-config/editGlobalConfig.php:891
-#: global-config/editGlobalConfig.php:987
-#: global-config/editGlobalConfig.php:1097
-#: global-config/editGlobalConfig.php:1209
+#: global-config/editGlobalConfig.php:622
+#: global-config/editGlobalConfig.php:748
+#: global-config/editGlobalConfig.php:860
+#: global-config/editGlobalConfig.php:956
+#: global-config/editGlobalConfig.php:1066
+#: global-config/editGlobalConfig.php:1163
 msgid "eg. Province Code+Year+Month+Date+Increment Counter"
 msgstr "ex. Code de la province+année+mois+date+compteur d'augmentation"
 
@@ -18015,416 +18010,400 @@ msgid "eg. Prefix+Year+Increment Counter (VL17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (VL17999)"
 
 #: global-config/editGlobalConfig.php:467
-#: global-config/editGlobalConfig.php:1114
-msgid "Minimum Sample ID Length"
-msgstr "Longueur minimale de l'identifiant de l'échantillon"
-
-#: global-config/editGlobalConfig.php:469
-#: global-config/editGlobalConfig.php:1116
-msgid "Please enter sample id min length"
-msgstr "Veuillez saisir la longueur minimale de l'identifiant de l'échantillon"
-
-#: global-config/editGlobalConfig.php:477
-#: global-config/editGlobalConfig.php:659
-#: global-config/editGlobalConfig.php:1118
-msgid "Maximum Sample ID Length"
-msgstr "Longueur maximale de l'identifiant de l'échantillon"
-
-#: global-config/editGlobalConfig.php:479
-#: global-config/editGlobalConfig.php:661
-#: global-config/editGlobalConfig.php:1120
-msgid "Please enter sample id max length"
-msgstr "Veuillez saisir la longueur maximale de l'identifiant de l'échantillon"
-
-#: global-config/editGlobalConfig.php:487
-#: global-config/editGlobalConfig.php:669
-#: global-config/editGlobalConfig.php:796
-#: global-config/editGlobalConfig.php:908
-#: global-config/editGlobalConfig.php:1004
-#: global-config/editGlobalConfig.php:1128
-#: global-config/editGlobalConfig.php:1226
+#: global-config/editGlobalConfig.php:638
+#: global-config/editGlobalConfig.php:765
+#: global-config/editGlobalConfig.php:877
+#: global-config/editGlobalConfig.php:973
+#: global-config/editGlobalConfig.php:1082
+#: global-config/editGlobalConfig.php:1180
 msgid "Minimum Patient ID Length"
 msgstr "Longueur minimale de l'identifiant du patient"
 
-#: global-config/editGlobalConfig.php:489
-#: global-config/editGlobalConfig.php:671
-#: global-config/editGlobalConfig.php:798
-#: global-config/editGlobalConfig.php:910
-#: global-config/editGlobalConfig.php:1006
-#: global-config/editGlobalConfig.php:1130
-#: global-config/editGlobalConfig.php:1228
+#: global-config/editGlobalConfig.php:469
+#: global-config/editGlobalConfig.php:640
+#: global-config/editGlobalConfig.php:767
+#: global-config/editGlobalConfig.php:879
+#: global-config/editGlobalConfig.php:975
+#: global-config/editGlobalConfig.php:1084
+#: global-config/editGlobalConfig.php:1182
 msgid "Please enter patient id min length"
 msgstr "Veuillez saisir la longueur minimale de l'identifiant du patient"
 
-#: global-config/editGlobalConfig.php:500
-#: global-config/editGlobalConfig.php:680
-#: global-config/editGlobalConfig.php:809
-#: global-config/editGlobalConfig.php:919
-#: global-config/editGlobalConfig.php:1015
-#: global-config/editGlobalConfig.php:1141
-#: global-config/editGlobalConfig.php:1237
+#: global-config/editGlobalConfig.php:480
+#: global-config/editGlobalConfig.php:649
+#: global-config/editGlobalConfig.php:778
+#: global-config/editGlobalConfig.php:888
+#: global-config/editGlobalConfig.php:984
+#: global-config/editGlobalConfig.php:1095
+#: global-config/editGlobalConfig.php:1191
 msgid "Copy Request On Save and Next Form"
 msgstr "Demande de copie sur les formulaires Enregistrer et Suivant"
 
-#: global-config/editGlobalConfig.php:502
-#: global-config/editGlobalConfig.php:682
-#: global-config/editGlobalConfig.php:811
-#: global-config/editGlobalConfig.php:921
-#: global-config/editGlobalConfig.php:1017
-#: global-config/editGlobalConfig.php:1143
-#: global-config/editGlobalConfig.php:1239
+#: global-config/editGlobalConfig.php:482
+#: global-config/editGlobalConfig.php:651
+#: global-config/editGlobalConfig.php:780
+#: global-config/editGlobalConfig.php:890
+#: global-config/editGlobalConfig.php:986
+#: global-config/editGlobalConfig.php:1097
+#: global-config/editGlobalConfig.php:1193
 msgid "Please select copy request on save and next form"
 msgstr ""
 "Veuillez sélectionner la demande de copie sur le formulaire de sauvegarde et "
 "le formulaire suivant"
 
-#: global-config/editGlobalConfig.php:504
-#: global-config/editGlobalConfig.php:520
-#: global-config/editGlobalConfig.php:536
-#: global-config/editGlobalConfig.php:684
-#: global-config/editGlobalConfig.php:813
-#: global-config/editGlobalConfig.php:923
-#: global-config/editGlobalConfig.php:1019
-#: global-config/editGlobalConfig.php:1145
-#: global-config/editGlobalConfig.php:1241
+#: global-config/editGlobalConfig.php:484
+#: global-config/editGlobalConfig.php:500
+#: global-config/editGlobalConfig.php:516
+#: global-config/editGlobalConfig.php:653
+#: global-config/editGlobalConfig.php:782
+#: global-config/editGlobalConfig.php:892
+#: global-config/editGlobalConfig.php:988
+#: global-config/editGlobalConfig.php:1099
+#: global-config/editGlobalConfig.php:1195
 msgid "Enable"
 msgstr "Activer"
 
-#: global-config/editGlobalConfig.php:505
-#: global-config/editGlobalConfig.php:521
-#: global-config/editGlobalConfig.php:537
-#: global-config/editGlobalConfig.php:685
-#: global-config/editGlobalConfig.php:814
-#: global-config/editGlobalConfig.php:924
-#: global-config/editGlobalConfig.php:1020
-#: global-config/editGlobalConfig.php:1146
-#: global-config/editGlobalConfig.php:1242
+#: global-config/editGlobalConfig.php:485
+#: global-config/editGlobalConfig.php:501
+#: global-config/editGlobalConfig.php:517
+#: global-config/editGlobalConfig.php:654
+#: global-config/editGlobalConfig.php:783
+#: global-config/editGlobalConfig.php:893
+#: global-config/editGlobalConfig.php:989
+#: global-config/editGlobalConfig.php:1100
+#: global-config/editGlobalConfig.php:1196
 msgid "Disable"
 msgstr "Désactiver"
 
-#: global-config/editGlobalConfig.php:516
+#: global-config/editGlobalConfig.php:496
 msgid "VL Suppression Target"
 msgstr "Cible de suppression VL"
 
-#: global-config/editGlobalConfig.php:518
-#: global-config/editGlobalConfig.php:534
+#: global-config/editGlobalConfig.php:498
+#: global-config/editGlobalConfig.php:514
 msgid "Please select lock approved sample"
 msgstr "Veuillez sélectionner l'échantillon approuvé pour la serrure"
 
-#: global-config/editGlobalConfig.php:532
+#: global-config/editGlobalConfig.php:512
 msgid "VL Monthly Target"
 msgstr "VL Objectif mensuel"
 
-#: global-config/editGlobalConfig.php:548
+#: global-config/editGlobalConfig.php:528
 msgid "VL Auto Approve API Results"
 msgstr ""
 "VL Auto Approve API Results (Approbation automatique des résultats de l'API)"
 
-#: global-config/editGlobalConfig.php:550
+#: global-config/editGlobalConfig.php:530
 msgid "Please select VL Auto Approve API Results"
 msgstr "Veuillez sélectionner VL Auto Approve API Results"
 
-#: global-config/editGlobalConfig.php:562
+#: global-config/editGlobalConfig.php:542
 msgid "VL Show Participant Name in Manifest"
 msgstr "VL Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:564
+#: global-config/editGlobalConfig.php:544
 msgid "Please select VL Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant VL dans le manifeste"
 
-#: global-config/editGlobalConfig.php:576
+#: global-config/editGlobalConfig.php:556
 msgid "Interpret and Convert VL Results"
 msgstr "Interpréter et convertir les résultats de la LV"
 
-#: global-config/editGlobalConfig.php:578
-#: global-config/editGlobalConfig.php:592
+#: global-config/editGlobalConfig.php:558
+#: global-config/editGlobalConfig.php:572
 msgid "Please select Interpret and Convert VL Results"
 msgstr "Veuillez sélectionner Interpréter et convertir les résultats VL"
 
-#: global-config/editGlobalConfig.php:590
+#: global-config/editGlobalConfig.php:570
 msgid "Viral Load Export Format"
 msgstr "Format d'exportation de la charge virale"
 
-#: global-config/editGlobalConfig.php:594
+#: global-config/editGlobalConfig.php:574
 msgid "Default Format"
 msgstr "Format par défaut"
 
-#: global-config/editGlobalConfig.php:595
+#: global-config/editGlobalConfig.php:575
 msgid "CRESAR Format"
 msgstr "Format CRESAR"
 
-#: global-config/editGlobalConfig.php:607
+#: global-config/editGlobalConfig.php:587
 msgid "EID Settings"
 msgstr "EID Paramètres"
 
-#: global-config/editGlobalConfig.php:628
-#: global-config/editGlobalConfig.php:629
-#: global-config/editGlobalConfig.php:630
-#: global-config/editGlobalConfig.php:631
-#: global-config/editGlobalConfig.php:632
-#: global-config/editGlobalConfig.php:633
+#: global-config/editGlobalConfig.php:608
+#: global-config/editGlobalConfig.php:609
+#: global-config/editGlobalConfig.php:610
+#: global-config/editGlobalConfig.php:611
+#: global-config/editGlobalConfig.php:612
+#: global-config/editGlobalConfig.php:613
 msgid "Please select the EID Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon EID"
 
-#: global-config/editGlobalConfig.php:645
+#: global-config/editGlobalConfig.php:625
 msgid "eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"
 msgstr ""
 "ex. R+Année+Code province+EID+Compteur d'incrémentation (R18NCDEID0001)"
 
-#: global-config/editGlobalConfig.php:648
+#: global-config/editGlobalConfig.php:628
 msgid "eg. Prefix+Month+Year+Increment Counter (EID0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (EID0517999)"
 
-#: global-config/editGlobalConfig.php:651
+#: global-config/editGlobalConfig.php:631
 msgid "eg. Prefix+Year+Increment Counter (EID17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (EID17999)"
 
-#: global-config/editGlobalConfig.php:695
+#: global-config/editGlobalConfig.php:664
 msgid "EID Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API par l'EID"
 
-#: global-config/editGlobalConfig.php:697
+#: global-config/editGlobalConfig.php:666
 msgid "Please select EID Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner l'EID Approuver automatiquement les résultats de l'API"
 
-#: global-config/editGlobalConfig.php:709
+#: global-config/editGlobalConfig.php:678
 msgid "EID Show Participant Name in Manifest"
 msgstr "EID Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:711
+#: global-config/editGlobalConfig.php:680
 msgid "Please select EID Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant à l'EID dans le manifeste"
 
-#: global-config/editGlobalConfig.php:726
+#: global-config/editGlobalConfig.php:695
 msgid "Covid-19 Settings"
 msgstr "Covid-19 Paramètres"
 
-#: global-config/editGlobalConfig.php:734
+#: global-config/editGlobalConfig.php:703
 msgid "Covid-19 Positive Confirmatory Tests Required"
 msgstr "Covid-19 Tests de confirmation positifs requis"
 
-#: global-config/editGlobalConfig.php:736
+#: global-config/editGlobalConfig.php:705
 msgid "Please select covid19 report type"
 msgstr "Veuillez sélectionner le type de rapport covid19"
 
-#: global-config/editGlobalConfig.php:782
+#: global-config/editGlobalConfig.php:751
 msgid "eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+covid19+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:785
-#: global-config/editGlobalConfig.php:897
-#: global-config/editGlobalConfig.php:993
-#: global-config/editGlobalConfig.php:1103
+#: global-config/editGlobalConfig.php:754
+#: global-config/editGlobalConfig.php:962
+#: global-config/editGlobalConfig.php:1072
 msgid "eg. Prefix+Month+Year+Increment Counter (C190517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (C190517999)"
 
-#: global-config/editGlobalConfig.php:788
-#: global-config/editGlobalConfig.php:900
-#: global-config/editGlobalConfig.php:996
-#: global-config/editGlobalConfig.php:1106
+#: global-config/editGlobalConfig.php:757
+#: global-config/editGlobalConfig.php:965
+#: global-config/editGlobalConfig.php:1075
 msgid "eg. Prefix+Year+Increment Counter (C1917999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (C1917999)"
 
-#: global-config/editGlobalConfig.php:825
+#: global-config/editGlobalConfig.php:794
 msgid "COVID-19 Auto Approve API Results"
 msgstr "COVID-19 Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:827
+#: global-config/editGlobalConfig.php:796
 msgid "Please select COVID-19 Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner COVID-19 Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:839
+#: global-config/editGlobalConfig.php:808
 msgid "COVID-19 Show Participant Name in Manifest"
 msgstr "COVID-19 Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:841
+#: global-config/editGlobalConfig.php:810
 msgid "Please select COVID-19 Show Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner COVID-19 Afficher le nom du participant dans le "
 "manifeste"
 
-#: global-config/editGlobalConfig.php:856
+#: global-config/editGlobalConfig.php:825
 msgid "Hepatitis Settings"
 msgstr "Paramètres de l'hépatite"
 
-#: global-config/editGlobalConfig.php:877
-#: global-config/editGlobalConfig.php:878
-#: global-config/editGlobalConfig.php:879
-#: global-config/editGlobalConfig.php:880
-#: global-config/editGlobalConfig.php:881
-#: global-config/editGlobalConfig.php:882
+#: global-config/editGlobalConfig.php:846
+#: global-config/editGlobalConfig.php:847
+#: global-config/editGlobalConfig.php:848
+#: global-config/editGlobalConfig.php:849
+#: global-config/editGlobalConfig.php:850
+#: global-config/editGlobalConfig.php:851
 msgid "Please select the Hepatitis Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon d'hépatite"
 
-#: global-config/editGlobalConfig.php:894
+#: global-config/editGlobalConfig.php:863
 msgid "eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+hépatite+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:935
+#: global-config/editGlobalConfig.php:866
+msgid "eg. Prefix+Month+Year+Increment Counter (HEP0517999)"
+msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (HEP0517999)"
+
+#: global-config/editGlobalConfig.php:869
+msgid "eg. Prefix+Year+Increment Counter (HEP17999)"
+msgstr "eg. Préfixe+année+compteur d'incrément (HEP17999)"
+
+#: global-config/editGlobalConfig.php:904
 msgid "Hepatitis Show Participant Name in Manifest"
 msgstr "Hépatite Montrer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:937
+#: global-config/editGlobalConfig.php:906
 msgid "Please select Hepatitis Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner le nom du participant à l'hépatite dans le manifeste"
 
-#: global-config/editGlobalConfig.php:952
+#: global-config/editGlobalConfig.php:921
 msgid "TB Settings"
 msgstr "Réglages TB"
 
-#: global-config/editGlobalConfig.php:973
-#: global-config/editGlobalConfig.php:974
-#: global-config/editGlobalConfig.php:975
-#: global-config/editGlobalConfig.php:976
-#: global-config/editGlobalConfig.php:977
-#: global-config/editGlobalConfig.php:978
+#: global-config/editGlobalConfig.php:942
+#: global-config/editGlobalConfig.php:943
+#: global-config/editGlobalConfig.php:944
+#: global-config/editGlobalConfig.php:945
+#: global-config/editGlobalConfig.php:946
+#: global-config/editGlobalConfig.php:947
 msgid "Please select the TB Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon TB"
 
-#: global-config/editGlobalConfig.php:990
+#: global-config/editGlobalConfig.php:959
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"
 msgstr "eg. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:1031
+#: global-config/editGlobalConfig.php:1000
 msgid "TB Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API par le CT"
 
-#: global-config/editGlobalConfig.php:1033
+#: global-config/editGlobalConfig.php:1002
 msgid "Please select TB Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner TB Approbation automatique des résultats de l'API"
 
-#: global-config/editGlobalConfig.php:1045
+#: global-config/editGlobalConfig.php:1014
 msgid "TB Show Participant Name in Manifest"
 msgstr "TB Indiquer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1047
+#: global-config/editGlobalConfig.php:1016
 msgid "Please select TB Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant TB dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1062
+#: global-config/editGlobalConfig.php:1031
 msgid "CD4 Settings"
 msgstr "CD4 Paramètres"
 
-#: global-config/editGlobalConfig.php:1083
-#: global-config/editGlobalConfig.php:1084
-#: global-config/editGlobalConfig.php:1085
-#: global-config/editGlobalConfig.php:1086
-#: global-config/editGlobalConfig.php:1087
-#: global-config/editGlobalConfig.php:1088
+#: global-config/editGlobalConfig.php:1052
+#: global-config/editGlobalConfig.php:1053
+#: global-config/editGlobalConfig.php:1054
+#: global-config/editGlobalConfig.php:1055
+#: global-config/editGlobalConfig.php:1056
+#: global-config/editGlobalConfig.php:1057
 msgid "Please select the CD4 Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon CD4"
 
-#: global-config/editGlobalConfig.php:1100
+#: global-config/editGlobalConfig.php:1069
 msgid "eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+cd4+Compteur d'incrémentation (R18NCDC190001)"
 
-#: global-config/editGlobalConfig.php:1157
+#: global-config/editGlobalConfig.php:1111
 msgid "cd4 Show Participant Name in Manifest"
 msgstr "cd4 Afficher le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1159
+#: global-config/editGlobalConfig.php:1113
 msgid "Please select cd4 Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant au cd4 dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1174
+#: global-config/editGlobalConfig.php:1128
 msgid "Other Lab Tests Settings"
 msgstr "Autres tests de laboratoire Paramètres"
 
-#: global-config/editGlobalConfig.php:1195
-#: global-config/editGlobalConfig.php:1196
-#: global-config/editGlobalConfig.php:1197
-#: global-config/editGlobalConfig.php:1198
-#: global-config/editGlobalConfig.php:1199
-#: global-config/editGlobalConfig.php:1200
+#: global-config/editGlobalConfig.php:1149
+#: global-config/editGlobalConfig.php:1150
+#: global-config/editGlobalConfig.php:1151
+#: global-config/editGlobalConfig.php:1152
+#: global-config/editGlobalConfig.php:1153
+#: global-config/editGlobalConfig.php:1154
 msgid "Please select the Generic Test Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon de test "
 "générique"
 
-#: global-config/editGlobalConfig.php:1212
+#: global-config/editGlobalConfig.php:1166
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"
 msgstr "ex. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDLAB0001)"
 
-#: global-config/editGlobalConfig.php:1215
+#: global-config/editGlobalConfig.php:1169
 msgid "eg. Prefix+Month+Year+Increment Counter (LAB0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (LAB0517999)"
 
-#: global-config/editGlobalConfig.php:1218
+#: global-config/editGlobalConfig.php:1172
 msgid "eg. Prefix+Year+Increment Counter (LAB17999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (LAB17999)"
 
-#: global-config/editGlobalConfig.php:1253
+#: global-config/editGlobalConfig.php:1207
 msgid "Sample Expiry Days"
 msgstr "Jours d'expiration de l'échantillon"
 
-#: global-config/editGlobalConfig.php:1255
+#: global-config/editGlobalConfig.php:1209
 msgid "Enter the sample expiry days"
 msgstr "Saisir les jours d'expiration de l'échantillon"
 
-#: global-config/editGlobalConfig.php:1255
+#: global-config/editGlobalConfig.php:1209
 msgid "Please enter the sample expiry days"
 msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
 
-#: global-config/editGlobalConfig.php:1265
+#: global-config/editGlobalConfig.php:1219
 msgid "Other Lab Tests Show Participant Name in Manifest"
 msgstr ""
 "Autres tests de laboratoire Indiquer le nom du participant dans le manifeste"
 
-#: global-config/editGlobalConfig.php:1267
+#: global-config/editGlobalConfig.php:1221
 msgid "Please select Other Lab Tests Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Nom du participant dans le "
 "manifeste"
 
-#: global-config/editGlobalConfig.php:1281
+#: global-config/editGlobalConfig.php:1235
 msgid "Mobile App Settings"
 msgstr "Paramètres de l'application mobile"
 
-#: global-config/editGlobalConfig.php:1287
+#: global-config/editGlobalConfig.php:1241
 msgid "Mobile APP Menu Name"
 msgstr "Nom du menu de l'APP mobile"
 
-#: global-config/editGlobalConfig.php:1289
+#: global-config/editGlobalConfig.php:1243
 msgid "Please enter name"
 msgstr "S'il vous plaît entrer le nom"
 
-#: global-config/editGlobalConfig.php:1298
+#: global-config/editGlobalConfig.php:1252
 msgid "Connect"
 msgstr "Connecter"
 
-#: global-config/editGlobalConfig.php:1304
+#: global-config/editGlobalConfig.php:1258
 msgid "National Dashboard URL"
 msgstr "URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1306
+#: global-config/editGlobalConfig.php:1260
 msgid "Please enter the National Dashboard URL"
 msgstr "Veuillez saisir l'URL du tableau de bord national"
 
-#: global-config/editGlobalConfig.php:1318
+#: global-config/editGlobalConfig.php:1272
 msgid "Viral Load Result PDF Settings"
 msgstr "Résultat de la charge virale PDF Settings"
 
-#: global-config/editGlobalConfig.php:1324
+#: global-config/editGlobalConfig.php:1278
 msgid "Show Emoticon/Smiley"
 msgstr "Afficher l'émoticône/l'émoticône"
 
-#: global-config/editGlobalConfig.php:1335
+#: global-config/editGlobalConfig.php:1289
 msgid "Display VL Log Result"
 msgstr "Afficher le résultat du journal VL"
 
-#: global-config/editGlobalConfig.php:1346
+#: global-config/editGlobalConfig.php:1300
 msgid "High Viral Load Message"
 msgstr "Message sur la charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1348
+#: global-config/editGlobalConfig.php:1302
 msgid ""
 "High Viral Load message that will appear for results >= the VL threshold "
 "limit"
@@ -18432,15 +18411,15 @@ msgstr ""
 "Message de charge virale élevée apparaissant pour les résultats >= au seuil "
 "limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1348
+#: global-config/editGlobalConfig.php:1302
 msgid "Please enter high viral load message"
 msgstr "Veuillez saisir le message de charge virale élevée"
 
-#: global-config/editGlobalConfig.php:1356
+#: global-config/editGlobalConfig.php:1310
 msgid "Low Viral Load Message"
 msgstr "Message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1358
+#: global-config/editGlobalConfig.php:1312
 msgid ""
 "Low Viral Load message that will appear for results lesser than the VL "
 "threshold limit"
@@ -18448,70 +18427,70 @@ msgstr ""
 "Message de faible charge virale apparaissant pour les résultats inférieurs "
 "au seuil limite de la charge virale"
 
-#: global-config/editGlobalConfig.php:1358
+#: global-config/editGlobalConfig.php:1312
 msgid "Please enter low viral load message"
 msgstr "Veuillez saisir le message de faible charge virale"
 
-#: global-config/editGlobalConfig.php:1366
+#: global-config/editGlobalConfig.php:1320
 msgid "Patient Name Format"
 msgstr "Format du nom du patient"
 
-#: global-config/editGlobalConfig.php:1368
+#: global-config/editGlobalConfig.php:1322
 msgid "Choose one option"
 msgstr "Choisissez une option"
 
-#: global-config/editGlobalConfig.php:1369
+#: global-config/editGlobalConfig.php:1323
 msgid "Last Name"
 msgstr "Nom"
 
-#: global-config/editGlobalConfig.php:1370 setup/index.php:329
+#: global-config/editGlobalConfig.php:1324 setup/index.php:329
 #: users/addUser.php:80 users/addUser.php:82
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: global-config/editGlobalConfig.php:1371
+#: global-config/editGlobalConfig.php:1325
 msgid "Hide Patient Name"
 msgstr "Cacher le nom du patient"
 
-#: global-config/editGlobalConfig.php:1381
+#: global-config/editGlobalConfig.php:1335
 msgid "Mandatory Fields for COMPLETED Result PDF"
 msgstr "Champs obligatoires pour le résultat COMPLET PDF"
 
-#: global-config/editGlobalConfig.php:1387
+#: global-config/editGlobalConfig.php:1341
 msgid ""
 "If any of the selected fields are incomplete, the Result PDF appears with a"
 msgstr ""
 "Si l'un des champs sélectionnés est incomplet, le PDF Résultat s'affiche "
 "avec une icône"
 
-#: global-config/editGlobalConfig.php:1387
+#: global-config/editGlobalConfig.php:1341
 msgid "DRAFT"
 msgstr "Brouillon"
 
-#: global-config/editGlobalConfig.php:1387
+#: global-config/editGlobalConfig.php:1341
 msgid "watermark. Leave right block blank (Deselect All) to disable this"
 msgstr ""
 "filigrane. Laissez le bloc de droite vide (Désélectionner tout) pour "
 "désactiver ce filigrane"
 
-#: global-config/editGlobalConfig.php:1395
+#: global-config/editGlobalConfig.php:1349
 msgid "Facility Province"
 msgstr "Facilité Province"
 
-#: global-config/editGlobalConfig.php:1396
+#: global-config/editGlobalConfig.php:1350
 msgid "Facility District"
 msgstr "District des installations"
 
-#: global-config/editGlobalConfig.php:1400
+#: global-config/editGlobalConfig.php:1354
 msgid "Patient ART No"
 msgstr "Patient ART No"
 
-#: global-config/editGlobalConfig.php:1405
+#: global-config/editGlobalConfig.php:1359
 msgid "VL Result"
 msgstr "Résultat VL"
 
-#: global-config/editGlobalConfig.php:1459
-#: global-config/editGlobalConfig.php:1460
+#: global-config/editGlobalConfig.php:1413
+#: global-config/editGlobalConfig.php:1414
 #: vl/result-mail/editTestResultEmailConfig.php:145
 #: vl/result-mail/editTestResultEmailConfig.php:146
 msgid "Enter Field Name"
@@ -18545,7 +18524,7 @@ msgstr "Désolé"
 msgid "You do not have permission to access this page."
 msgstr "Vous n’avez pas la permission d'accéder à cette page."
 
-#: header.php:172 users/editProfile.php:37
+#: header.php:172 users/edit-profile.php:37
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
@@ -18639,7 +18618,7 @@ msgid "Hepatitis Testing Target Report"
 msgstr "Hépatite-Rapport d'objectif de dépistage"
 
 #: hepatitis/reference/add-hepatitis-comorbidities.php:10
-#: hepatitis/reference/hepatitis-comorbidities.php:29
+#: hepatitis/reference/hepatitis-comorbidities.php:31
 msgid "Add Hepatitis Co-morbidities"
 msgstr "Ajouter les comorbidités de l'hépatite"
 
@@ -18651,7 +18630,7 @@ msgid "Hepatitis Co-morbidities"
 msgstr "Hépatite Co-morbidités"
 
 #: hepatitis/reference/add-hepatitis-results.php:11
-#: hepatitis/reference/hepatitis-results.php:29
+#: hepatitis/reference/hepatitis-results.php:31
 msgid "Add Hepatitis Results"
 msgstr "Ajouter les résultats concernant l'hépatite"
 
@@ -18663,7 +18642,7 @@ msgid "Hepatitis Results"
 msgstr "Hepatite-Imprimer le résultat"
 
 #: hepatitis/reference/add-hepatitis-risk-factors.php:11
-#: hepatitis/reference/hepatitis-risk-factors.php:29
+#: hepatitis/reference/hepatitis-risk-factors.php:31
 msgid "Add Hepatitis Risk Factors"
 msgstr "Ajouter les facteurs de risque de l'hépatite"
 
@@ -18676,7 +18655,7 @@ msgstr "Facteurs de risque de l'hépatite"
 
 #: hepatitis/reference/add-hepatitis-risk-factors.php:33
 #: hepatitis/reference/add-hepatitis-risk-factors.php:35
-#: hepatitis/reference/hepatitis-risk-factors.php:37
+#: hepatitis/reference/hepatitis-risk-factors.php:39
 msgid "Risk Factor Name"
 msgstr "Nom du facteur de risque"
 
@@ -18700,7 +18679,7 @@ msgid "Please select Risk Factor Status"
 msgstr "Veuillez sélectionner le statut du facteur de risque"
 
 #: hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:10
-#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:29
+#: hepatitis/reference/hepatitis-sample-rejection-reasons.php:31
 msgid "Add Hepatitis Sample Rejection Reasons"
 msgstr "Ajouter les raisons du rejet de l'échantillon d'hépatite"
 
@@ -18712,7 +18691,7 @@ msgid "Hepatitis Sample Rejection Reasons"
 msgstr "Raisons du rejet de l'échantillon d'hépatite"
 
 #: hepatitis/reference/add-hepatitis-sample-type.php:10
-#: hepatitis/reference/hepatitis-sample-type.php:29
+#: hepatitis/reference/hepatitis-sample-type.php:31
 msgid "Add Hepatitis Sample Type"
 msgstr "Ajouter un type d'échantillon d'hépatite"
 
@@ -18724,7 +18703,7 @@ msgid "Hepatitis Sample Type"
 msgstr "Hépatite Type d'échantillon"
 
 #: hepatitis/reference/add-hepatitis-test-reasons.php:15
-#: hepatitis/reference/hepatitis-test-reasons.php:29
+#: hepatitis/reference/hepatitis-test-reasons.php:31
 msgid "Add Hepatitis Test Reasons"
 msgstr "Ajouter les raisons du test de l'hépatite"
 
@@ -19612,7 +19591,7 @@ msgstr ""
 "fichier est au bon format."
 
 #: instruments/instruments.php:11 instruments/instruments.php:18
-#: system/translate-strings.php:26 vl/reference/vl-results.php:39
+#: system/translate-strings.php:26 vl/reference/vl-results.php:41
 msgid "Instruments"
 msgstr "Instruments"
 
@@ -19639,8 +19618,8 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/reset-password/get-user.php:29
 #: system-admin/reset-password/get-user.php:31 system-admin/setup/index.php:98
-#: users/addUser.php:189 users/addUser.php:191 users/editProfile.php:108
-#: users/editProfile.php:110 users/editUser.php:251 users/editUser.php:253
+#: users/addUser.php:189 users/addUser.php:191 users/edit-profile.php:108
+#: users/edit-profile.php:110 users/editUser.php:251 users/editUser.php:253
 #: vl/result-mail/editTestResultEmailConfig.php:65
 #: vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -20048,7 +20027,7 @@ msgstr "Email ID"
 
 #: setup/index.php:333 system-admin/setup/index.php:94
 #: system-admin/user-login-history/userLoginIndex.php:34 users/addUser.php:179
-#: users/editProfile.php:143 users/users.php:58
+#: users/edit-profile.php:143 users/users.php:58
 msgid "Login ID"
 msgstr "Identifiant de connexion"
 
@@ -20056,8 +20035,8 @@ msgstr "Identifiant de connexion"
 #: system-admin/edit-config/resetPassword.php:47
 #: system-admin/reset-password/get-user.php:39
 #: system-admin/reset-password/get-user.php:41 system-admin/setup/index.php:102
-#: users/addUser.php:199 users/addUser.php:201 users/editProfile.php:118
-#: users/editProfile.php:120 users/editUser.php:261 users/editUser.php:263
+#: users/addUser.php:199 users/addUser.php:201 users/edit-profile.php:118
+#: users/edit-profile.php:120 users/editUser.php:261 users/editUser.php:263
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
@@ -20070,7 +20049,7 @@ msgstr "Terminer"
 #: system-admin/reset-password/get-user.php:33
 #: system-admin/reset-password/reset-password.php:105
 #: system-admin/setup/index.php:140 users/addUser.php:193 users/addUser.php:511
-#: users/editProfile.php:112 users/editProfile.php:240 users/editUser.php:255
+#: users/edit-profile.php:112 users/edit-profile.php:240 users/editUser.php:255
 #: users/editUser.php:611
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
@@ -20316,7 +20295,7 @@ msgstr "Gérer le mot de passe"
 #: system-admin/edit-config/resetPassword.php:38
 #: system-admin/login/login.php:65 system-admin/reset-password/get-user.php:31
 #: system-admin/setup/index.php:98 users/addUser.php:191
-#: users/editProfile.php:110 users/editUser.php:253
+#: users/edit-profile.php:110 users/editUser.php:253
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -20374,7 +20353,7 @@ msgid "Remote Reference Last Sync"
 msgstr "Référence à distance Dernière synchronisation"
 
 #: system-admin/instance-overview/instanceIndex.php:126
-#: users/editProfile.php:173
+#: users/edit-profile.php:173
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
@@ -20395,7 +20374,7 @@ msgid "Please enter the user name"
 msgstr "Veuillez saisir le nom d'utilisateur"
 
 #: system-admin/reset-password/get-user.php:32 users/addUser.php:192
-#: users/editProfile.php:111 users/editUser.php:254
+#: users/edit-profile.php:111 users/editUser.php:254
 msgid "Generate Random Password"
 msgstr "Générer un mot de passe aléatoire"
 
@@ -20408,7 +20387,8 @@ msgstr "Gérer la réinitialisation du mot de passe"
 msgid "User"
 msgstr "Utilisateur"
 
-#: system-admin/reset-password/reset-password.php:123 users/editProfile.php:258
+#: system-admin/reset-password/reset-password.php:123
+#: users/edit-profile.php:258
 msgid "Random password generated and copied to clipboard"
 msgstr "Mot de passe aléatoire généré et copié dans le presse-papiers"
 
@@ -20462,12 +20442,12 @@ msgid "Attempted Datetime"
 msgstr "Date de la tentative"
 
 #: system-admin/user-login-history/userLoginIndex.php:65
-#: users/editProfile.php:145
+#: users/edit-profile.php:145
 msgid "Browser"
 msgstr "Navigateur"
 
 #: system-admin/user-login-history/userLoginIndex.php:66
-#: users/editProfile.php:146
+#: users/edit-profile.php:146
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
@@ -21736,7 +21716,7 @@ msgstr "Ajouter les raisons du rejet de l'échantillon de tuberculose"
 msgid "TB Sample Rejection Reasons"
 msgstr "Raisons du rejet de l'échantillon de tuberculose"
 
-#: tb/reference/add-tb-sample-type.php:10 tb/reference/tb-sample-type.php:47
+#: tb/reference/add-tb-sample-type.php:10 tb/reference/tb-sample-type.php:49
 msgid "Add TB Sample Type"
 msgstr "Ajouter un type d'échantillon de tuberculose"
 
@@ -22197,7 +22177,7 @@ msgstr "Tubercolose-Imprimer le résultat"
 msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
-#: users/addUser.php:82 users/editProfile.php:61 users/editUser.php:125
+#: users/addUser.php:82 users/edit-profile.php:61 users/editUser.php:125
 msgid "Please enter user name"
 msgstr "Veuillez saisir votre nom d'utilisateur"
 
@@ -22206,18 +22186,18 @@ msgstr "Veuillez saisir votre nom d'utilisateur"
 msgid "Email"
 msgstr "Courriel"
 
-#: users/addUser.php:90 users/editProfile.php:91 users/editUser.php:134
+#: users/addUser.php:90 users/edit-profile.php:91 users/editUser.php:134
 #: vl/result-mail/editTestResultEmailConfig.php:57
 msgid "Please enter email"
 msgstr "Veuillez entrer votre email"
 
-#: users/addUser.php:90 users/editProfile.php:91 users/editUser.php:134
+#: users/addUser.php:90 users/edit-profile.php:91 users/editUser.php:134
 msgid "This email id that you entered already exists.Try another email id"
 msgstr ""
 "L'adresse électronique que vous avez saisie existe déjà. Essayez une autre "
 "adresse électronique"
 
-#: users/addUser.php:100 users/editProfile.php:99 users/editUser.php:144
+#: users/addUser.php:100 users/edit-profile.php:99 users/editUser.php:144
 #: vl/requests/forms/add-drc.php:126 vl/results/forms/update-drc-result.php:155
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
@@ -22321,35 +22301,7 @@ msgstr ""
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
-#: users/editProfile.php:59 users/editProfile.php:61
-msgid "Your Full Name"
-msgstr "Votre nom complet"
-
-#: users/editProfile.php:70
-msgid "Preferred Language"
-msgstr "Préférence linguistique"
-
-#: users/editProfile.php:72
-msgid "Please select your Locale"
-msgstr "Veuillez sélectionner votre localité"
-
-#: users/editProfile.php:89 users/editProfile.php:91
-msgid "Official Email"
-msgstr "Email officiel"
-
-#: users/editProfile.php:137
-msgid "Recent Login Attempts"
-msgstr "Tentatives de connexion récentes"
-
-#: users/editProfile.php:142
-msgid "Login Attempt Date and Time"
-msgstr "Date et heure de la tentative de connexion"
-
-#: users/editProfile.php:147
-msgid "Login Status"
-msgstr "Statut de connexion"
-
-#: users/editProfileHelper.php:69
+#: users/edit-profile-helper.php:69
 msgid ""
 "Your new password cannot be same as the current password. Please try another "
 "password."
@@ -22357,12 +22309,40 @@ msgstr ""
 "Votre nouveau mot de passe ne peut pas être identique au mot de passe "
 "actuel. Veuillez essayer un autre mot de passe."
 
-#: users/editProfileHelper.php:110
+#: users/edit-profile-helper.php:110
 msgid ""
 "Your profile changes have been saved. You can continue using the application."
 msgstr ""
 "Les modifications apportées à votre profil ont été enregistrées. Vous pouvez "
 "continuer à utiliser l'application."
+
+#: users/edit-profile.php:59 users/edit-profile.php:61
+msgid "Your Full Name"
+msgstr "Votre nom complet"
+
+#: users/edit-profile.php:70
+msgid "Preferred Language"
+msgstr "Préférence linguistique"
+
+#: users/edit-profile.php:72
+msgid "Please select your Locale"
+msgstr "Veuillez sélectionner votre localité"
+
+#: users/edit-profile.php:89 users/edit-profile.php:91
+msgid "Official Email"
+msgstr "Email officiel"
+
+#: users/edit-profile.php:137
+msgid "Recent Login Attempts"
+msgstr "Tentatives de connexion récentes"
+
+#: users/edit-profile.php:142
+msgid "Login Attempt Date and Time"
+msgstr "Date et heure de la tentative de connexion"
+
+#: users/edit-profile.php:147
+msgid "Login Status"
+msgstr "Statut de connexion"
 
 #: users/editUser.php:16 users/editUser.php:101
 msgid "Edit User"
@@ -22919,7 +22899,7 @@ msgid "Viral Load ART Regimen"
 msgstr "Charge virale Régime ART"
 
 #: vl/reference/add-vl-art-code-details.php:45
-#: vl/reference/vl-art-code-details.php:37
+#: vl/reference/vl-art-code-details.php:39
 msgid "ART Code"
 msgstr "Code ART"
 
@@ -22938,7 +22918,7 @@ msgstr ""
 "artistique"
 
 #: vl/reference/add-vl-art-code-details.php:53
-#: vl/reference/vl-art-code-details.php:38
+#: vl/reference/vl-art-code-details.php:40
 msgid "Category"
 msgstr "Catégorie"
 
@@ -22972,12 +22952,12 @@ msgstr "Sélectionner le statut de l'art"
 msgid "Please select art status"
 msgstr "Veuillez sélectionner le statut de l'art"
 
-#: vl/reference/add-vl-results.php:31 vl/reference/vl-results.php:29
+#: vl/reference/add-vl-results.php:31 vl/reference/vl-results.php:31
 msgid "Add VL Results"
 msgstr "Ajouter les résultats VL"
 
 #: vl/reference/add-vl-results.php:61 vl/reference/add-vl-results.php:64
-#: vl/reference/vl-results.php:38 vl/requests/forms/add-cameroon.php:591
+#: vl/reference/vl-results.php:40 vl/requests/forms/add-cameroon.php:591
 #: vl/requests/forms/edit-cameroon.php:652
 #: vl/results/forms/update-cameroon-result.php:676
 #: vl/results/pdf/result-pdf-cameroon.php:441
@@ -23011,7 +22991,7 @@ msgstr "Ajouter les raisons du rejet de l'échantillon de charge virale"
 msgid "Viral Load Sample Rejection Reasons"
 msgstr "Raisons du rejet de l'échantillon de charge virale"
 
-#: vl/reference/add-vl-sample-type.php:10 vl/reference/vl-sample-type.php:29
+#: vl/reference/add-vl-sample-type.php:10 vl/reference/vl-sample-type.php:31
 msgid "Add Viral Load Sample Type"
 msgstr "Ajouter un type d'échantillon de charge virale"
 
@@ -23056,7 +23036,7 @@ msgstr ""
 msgid "Select status"
 msgstr "Sélectionner un statut"
 
-#: vl/reference/add-vl-test-reasons.php:16 vl/reference/vl-test-reasons.php:29
+#: vl/reference/add-vl-test-reasons.php:16 vl/reference/vl-test-reasons.php:31
 msgid "Add VL Test Reasons"
 msgstr "Ajouter les raisons du test VL"
 
@@ -23103,7 +23083,7 @@ msgstr "Viral Load Art Code Details"
 msgid "VL ART Regimen"
 msgstr "VL Régime ART"
 
-#: vl/reference/vl-art-code-details.php:29
+#: vl/reference/vl-art-code-details.php:31
 msgid "Add VL ART Regimen"
 msgstr "Ajouter un régime ART VL"
 
@@ -23111,15 +23091,15 @@ msgstr "Ajouter un régime ART VL"
 msgid "Viral Load Results"
 msgstr "Résultats de la charge virale"
 
-#: vl/reference/vl-sample-rejection-reasons.php:30
+#: vl/reference/vl-sample-rejection-reasons.php:32
 msgid "Add VL Sample Rejection Reasons"
 msgstr "Ajouter les raisons du rejet de l'échantillon VL"
 
-#: vl/reference/vl-test-failure-reasons.php:29
+#: vl/reference/vl-test-failure-reasons.php:31
 msgid "Add VL Test Reason"
 msgstr "Ajouter le motif du test VL"
 
-#: vl/reference/vl-test-failure-reasons.php:37
+#: vl/reference/vl-test-failure-reasons.php:39
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
@@ -23710,11 +23690,11 @@ msgstr "Veuillez sélectionner une machine"
 msgid "Select Lab"
 msgstr "Sélectionner un laboratoire"
 
-#: vl/requests/upload-storage-helper.php:141
+#: vl/requests/upload-storage-helper.php:140
 msgid "Lab Storage added successfully"
 msgstr "Lab Storage ajouté avec succès"
 
-#: vl/requests/upload-storage-helper.php:143
+#: vl/requests/upload-storage-helper.php:142
 msgid "Bulk Storage Import Failed"
 msgstr "Échec de l'importation du stockage en vrac"
 
@@ -24102,6 +24082,20 @@ msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
+
+#~ msgid "Minimum Sample ID Length"
+#~ msgstr "Longueur minimale de l'identifiant de l'échantillon"
+
+#~ msgid "Please enter sample id min length"
+#~ msgstr ""
+#~ "Veuillez saisir la longueur minimale de l'identifiant de l'échantillon"
+
+#~ msgid "Maximum Sample ID Length"
+#~ msgstr "Longueur maximale de l'identifiant de l'échantillon"
+
+#~ msgid "Please enter sample id max length"
+#~ msgstr ""
+#~ "Veuillez saisir la longueur maximale de l'identifiant de l'échantillon"
 
 #~ msgid "Manager Email"
 #~ msgstr "Courriel du directeur"
