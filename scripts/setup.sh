@@ -398,6 +398,7 @@ log_action "MySQL configured."
 # PHP Setup
 echo "Installing PHP 8.2..."
 
+# Download and install switch-php script
 wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -O /usr/local/bin/switch-php
 chmod u+x /usr/local/bin/switch-php
 

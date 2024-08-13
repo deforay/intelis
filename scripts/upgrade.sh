@@ -255,12 +255,12 @@ ask_yes_no() {
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
 
+# Download and install switch-php script
+wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -O /usr/local/bin/switch-php
+chmod u+x /usr/local/bin/switch-php
+
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     echo "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
-
-    # Download and install switch-php script
-    wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -O /usr/local/bin/switch-php
-    chmod u+x /usr/local/bin/switch-php
 
     # Switch to PHP 8.2
     switch-php ${desired_php_version}
