@@ -1,5 +1,4 @@
 <?php
-
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -41,7 +40,6 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
-
     //remove unwanted columns
     $unwantedColumns = [
         'sample_id',
@@ -78,7 +76,7 @@ try {
 
             $counter++;
 
-            $formData = $resultRow[$uniqueId]['form_data'] ?? [];
+            $formData = $resultsData[$uniqueId]['form_data'] ?? [];
             if (empty($formData)) {
                 continue;
             }
@@ -185,7 +183,7 @@ try {
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime('generic', $facilityIds, $labId);
+    $general->updateResultSyncDateTime('generic-tests', $facilityIds, $labId);
 
     $db->commitTransaction();
 } catch (Throwable $e) {
