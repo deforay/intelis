@@ -138,7 +138,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     <tr>
                                         <th class="th-label" scope="row"><label for="requestedDate"><?= _translate("Date of request"); ?> <span class="mandatory">*</span></label></th>
                                         <td class="td-input">
-                                            <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
+                                            <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="requestedDate" name="requestedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date of request date" style="width:100%;" />
                                         </td>
                                         <th class="th-label"><label class="label-control" for="referringUnit"><?= _translate("Referring Unit"); ?> </label></th>
                                         <td class="td-input">
@@ -218,7 +218,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                                 <option value=''> -- <?= _translate("Select"); ?> -- </option>
                                                 <option value='male' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate("Male"); ?> </option>
                                                 <option value='female' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate("Female"); ?> </option>
-                                                <option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'other') ? "selected='selected'" : ""; ?>> <?= _translate("Other"); ?> </option>
+                                                <option value='other' <?php echo (isset($tbInfo['patient_gender']) && $tbInfo['patient_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate("Unreported"); ?> </option>
                                             </select>
                                         </td>
                                     </tr>
@@ -376,9 +376,9 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     </tr>
                                     <?php if ($general->isLISInstance()) { ?>
                                     <tr>
-                                        <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> </label></th>
+                                        <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> <span class="mandatory">*</span></label></th>
                                         <td class="td-input">
-                                           <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                           <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
                                         </td>
                                     </tr>
                                     <?php } ?>

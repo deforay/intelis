@@ -88,7 +88,7 @@ try {
         foreach ($genericLabResult as $r) {
             $customTestResultData[$r['unique_id']] = [];
             $customTestResultData[$r['unique_id']]['form_data'] = $r;
-            $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['covid19_id']);
+            $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['sample_id']);
         }
 
         $url = "$remoteUrl/remote/remote/generic-test-results.php";
@@ -111,7 +111,7 @@ try {
             echo "Sent $totalResults test results from Custom Tests...\n";
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
 
