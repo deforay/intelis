@@ -2,13 +2,12 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
-use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 final class EidService extends AbstractTestService

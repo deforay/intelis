@@ -127,19 +127,19 @@ final class TestRequestsService
                         $tesRequestData = [];
 
                         if ($this->commonService->isSTSInstance()) {
+                            $tesRequestData['remote_sample'] = 'yes';
                             $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                            $tesRequestData['remote_sample'] = 'yes';
                             $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
                             if ($accessType === 'testing-lab') {
                                 $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             }
                         } else {
+                            $tesRequestData['remote_sample'] = 'no';
                             $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
-                            $tesRequestData['remote_sample'] = 'no';
                         }
 
                         if (!empty($sampleData['sampleCode'])) {

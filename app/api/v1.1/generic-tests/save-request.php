@@ -213,6 +213,8 @@ try {
                     }
                     $update = "yes";
                     $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
+                } else {
+                    $uniqueId = MiscUtility::generateULID();
                 }
             }
 
@@ -226,7 +228,7 @@ try {
                 $params['appSampleCode'] = $data['appSampleCode'] ?? null;
                 $params['provinceCode'] = $provinceCode;
                 $params['provinceId'] = $provinceId;
-                $params['uniqueId'] = $uniqueId ?? MiscUtility::generateULID();
+                $params['uniqueId'] = $uniqueId;
                 $params['sampleCollectionDate'] = $sampleCollectionDate;
                 $params['userId'] = $user['user_id'];
                 $params['accessType'] = $user['access_type'];
@@ -468,7 +470,7 @@ try {
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
                 $uniqueId = $currentSampleData['uniqueId'] ?? null;

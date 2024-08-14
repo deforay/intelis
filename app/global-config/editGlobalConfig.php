@@ -588,20 +588,22 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="vl_excel_export_format" class="col-lg-2 control-label"><?php echo _translate("Viral Load Export Format"); ?></label>
-												<div class="col-lg-4">
-													<select id="vl_excel_export_format" name="vl_excel_export_format" type="text" class="form-control readPage" title="<?php echo _translate('Please select Interpret and Convert VL Results'); ?>">
-														<option value=""><?php echo _translate("--Select--"); ?></option>
-														<option value="default" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'default') ? "selected='selected'" : ''; ?>><?php echo _translate("Default Format"); ?></option>
-														<option value="cresar" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'cresar') ? "selected='selected'" : ''; ?>><?php echo _translate("CRESAR Format"); ?></option>
-													</select>
+									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON) { ?>
+										<div class="row">
+											<div class="col-md-12">
+												<div class="form-group">
+													<label for="vl_excel_export_format" class="col-lg-2 control-label"><?php echo _translate("Viral Load Export Format"); ?></label>
+													<div class="col-lg-4">
+														<select id="vl_excel_export_format" name="vl_excel_export_format" type="text" class="form-control readPage" title="<?php echo _translate('Please select Interpret and Convert VL Results'); ?>">
+															<option value=""><?php echo _translate("--Select--"); ?></option>
+															<option value="default" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'default') ? "selected='selected'" : ''; ?>><?php echo _translate("Default Format"); ?></option>
+															<option value="cresar" <?php echo (isset($arr['vl_excel_export_format']) && $arr['vl_excel_export_format'] == 'cresar') ? "selected='selected'" : ''; ?>><?php echo _translate("CRESAR Format"); ?></option>
+														</select>
+													</div>
 												</div>
 											</div>
 										</div>
-									</div>
+									<?php } ?>
 								</div>
 							</div>
 						<?php }
@@ -1674,17 +1676,17 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		}
 	}
 
-	function validateLessThanDays(spanId,days,error) {
-        var inputElement = event.target;
-    	var value = inputElement.value;
-        var errorElement = document.getElementById(spanId);
+	function validateLessThanDays(spanId, days, error) {
+		var inputElement = event.target;
+		var value = inputElement.value;
+		var errorElement = document.getElementById(spanId);
 
-        if (value < days) {
-            errorElement.textContent = error;
+		if (value < days) {
+			errorElement.textContent = error;
 			inputElement.value = ""; // Clear the input field
-        } else {
-            errorElement.textContent = "";
-        }
-    }
+		} else {
+			errorElement.textContent = "";
+		}
+	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>

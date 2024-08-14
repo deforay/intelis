@@ -221,7 +221,7 @@ abstract class AbstractTestService
             [$year, $testType, $sampleCodeType]
         );
 
-        $codeKey = $sampleCodeType . '_key';
+        $codeKey = "{$sampleCodeType}_key";
         $query = "INSERT INTO sequence_counter (test_type, year, code_type, max_sequence_number)
                         SELECT
                         '$testType' AS test_type,

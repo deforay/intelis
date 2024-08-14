@@ -20,25 +20,28 @@ require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
+
+
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$jsonResponse = $apiService->getJsonFromRequest($request);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+
 try {
     $db->beginTransaction();
-    //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
-
-    /** @var ApiService $apiService */
-    $apiService = ContainerRegistry::get(ApiService::class);
-
-    /** @var Laminas\Diactoros\ServerRequest $request */
-    $request = AppRegistry::get('request');
-    $jsonResponse = $apiService->getJsonFromRequest($request);
-
-    /** @var DatabaseService $db */
-    $db = ContainerRegistry::get(DatabaseService::class);
-
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
-
-    /** @var UsersService $usersService */
-    $usersService = ContainerRegistry::get(UsersService::class);
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
