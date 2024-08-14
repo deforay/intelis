@@ -39,6 +39,9 @@ $state = $geolocationService->getProvinces("yes");
     .select2-selection__choice {
         color: black !important;
     }
+    .selectize-dropdown {
+        width: 100% !important;
+    }
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">

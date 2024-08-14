@@ -117,7 +117,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+														<select id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -125,7 +125,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Testing Labs"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
+														<select id="labId" name="labId" title="<?php echo _translate('Please select testing labs'); ?>" multiple="multiple">
 															<?= $labsDropdown; ?>
 														</select>
 													</td>
@@ -336,7 +336,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Sample Type"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select class="form-control" id="printSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+														<select id="printSampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 															<?= $general->generateSelectOptions($sampleTypeResults, null, '-- Select --'); ?>
 														</select>
 													</td>
@@ -344,7 +344,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Facility Name"); ?> :
 														</strong></td>
 													<td>
-														<select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
+														<select id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -580,9 +580,8 @@ $state = $geolocationService->getProvinces("yes");
 			placeholder: "<?php echo _translate("Select District"); ?>",
             width: '100%'
 		});
-		$("#facility,#printFacility, #labId, #printLabId").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>",
-            width: '100%'
+		$("#facility,#printFacility, #labId, #printLabId").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').daterangepicker({
 			locale: {

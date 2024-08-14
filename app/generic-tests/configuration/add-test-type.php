@@ -140,7 +140,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 								<div class="form-group">
 									<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample/Specimen Types"); ?> <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='sampleType[]' id='sampleType' title="<?php echo _translate('Please select the sample type'); ?>" multiple>
+										<select class="isRequired" name='sampleType[]' id='sampleType' title="<?php echo _translate('Please select the sample type'); ?>" multiple>
 											<?= $general->generateSelectOptions($sampleTypeInfo, null, '-- Select --') ?>
 										</select>
 									</div>
@@ -185,7 +185,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 								<div class="form-group">
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _translate("Symptoms"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
+										<select name='symptoms[]' id='symptoms' title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
 											<?= $general->generateSelectOptions($symptomInfo, null, '-- Select --') ?>
 										</select>
 									</div>
@@ -395,15 +395,15 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 			otherSectionNames.push(section);
 	}
 	$(document).ready(function() {
+		$("#sampleType, #symptoms").selectize({
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+		});
 		$(".auto-complete-tbx").autocomplete({
 			source: otherSectionNames
 		});
 
 		$('input').tooltip();
 		generateRandomString('1');
-		$("#sampleType").select2({
-			placeholder: "<?php echo _translate("Select Sample Type"); ?>"
-		});
 		$("#testingReason").select2({
 			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
@@ -412,9 +412,6 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		});
 		$("#rejectionReason").select2({
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
-		});
-		$("#symptoms").select2({
-			placeholder: "<?php echo _translate("Select Symptoms"); ?>"
 		});
 		$("#testResultUnit").select2({
 			placeholder: "<?php echo _translate("Select Test Result Unit"); ?>"

@@ -58,7 +58,6 @@ try {
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $resultsData = [];
-        $testResultsData = [];
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];

@@ -24,7 +24,7 @@ $testingLabs = $facilitiesService->getTestingLabs('generic-tests');
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
-$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select Facility Name --");
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 
 
@@ -72,7 +72,7 @@ $state = $geolocationService->getProvinces("yes");
                             </td>
                             <td><strong><?php echo _translate("District/County"); ?> :</strong></td>
                             <td>
-                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value		)">
+                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)">
                                 </select>
                             </td>
 
@@ -80,13 +80,13 @@ $state = $geolocationService->getProvinces("yes");
                         <tr>
                             <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                             <td>
-                                <select class="form-control" id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
+                                <select id="facilityName" name="facilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>">
                                     <?= $facilitiesDropdown; ?>
                                 </select>
                             </td>
                             <td><strong><?php echo _translate("Testing Lab"); ?> :</strong></td>
                             <td>
-                                <select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+                                <select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>">
                                     <?= $testingLabsDropdown; ?>
                                 </select>
                             </td>
@@ -267,16 +267,21 @@ $state = $geolocationService->getProvinces("yes");
             plugins: ["restore_on_backspace", "remove_button", "clear_button"],
         });
         $("#state").select2({
-            placeholder: "<?php echo _translate("Select Province"); ?>"
+            placeholder: "<?php echo _translate("Select Province"); ?>",
+            width: "100%"
         });
         $("#district").select2({
-            placeholder: "<?php echo _translate("Select District"); ?>"
+            placeholder: "<?php echo _translate("Select District"); ?>",
+            width: "100%"
+
         });
         $("#vlLab").select2({
-            placeholder: "<?php echo _translate("Select Labs"); ?>"
+            placeholder: "<?php echo _translate("Select Labs"); ?>",
+            width: "100%"
+
         });
-        $("#facilityName").select2({
-            placeholder: "<?php echo _translate("Select Facilities"); ?>"
+        $("#facilityName").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {

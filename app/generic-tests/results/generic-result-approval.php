@@ -21,7 +21,7 @@ $sarr = $general->getSystemConfig();
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('generic-tests');
 
-$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
+$facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select Facility Name--");
 
 
 $sQuery = "SELECT * FROM r_generic_sample_types";
@@ -152,7 +152,7 @@ foreach ($rejectionTypeResult as $type) {
 									<?php echo _translate("Facility Name"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+								<select id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -278,8 +278,8 @@ foreach ($rejectionTypeResult as $type) {
 	var selectedTests = [];
 	var selectedTestsId = [];
 	$(document).ready(function() {
-		$("#facilityName").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+		$("#facilityName").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {

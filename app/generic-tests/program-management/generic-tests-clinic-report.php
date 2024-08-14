@@ -71,7 +71,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
 													<td style="width: 23%;">
-														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+														<select class="stReportFilter" id="stfacilityName" name="stfacilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 															<?= $facilitiesDropdown; ?>
 														</select>
 													</td>
@@ -123,8 +123,8 @@ $state = $geolocationService->getProvinces("yes");
 		$("#stDistrict").select2({
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
-		$("#stfacilityName").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+		$("#stfacilityName").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$('#stSampleCollectionDate').daterangepicker({
 				locale: {

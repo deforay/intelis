@@ -101,7 +101,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
 							<td>
-								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
+								<select id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -370,8 +370,8 @@ $state = $geolocationService->getProvinces("yes");
 		$("#district").select2({
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
-		$("#facilityName").select2({
-			placeholder: "<?php echo _translate("Select Facilities"); ?>"
+		$("#facilityName").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$("#vlLab").select2({
 			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"

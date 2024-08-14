@@ -253,10 +253,10 @@ final class GenericTestsService extends AbstractTestService
             foreach ($results as $row) {
                 $response[$row['generic_id']][$row['test_id']] = $row;
             }
-        } elseif (!empty($genericSampleIds) && !is_array($genericSampleIds)) {
+        } elseif (!empty($genericSampleIds) && (is_array($genericSampleIds)==false)) {
             $response = $this->db->rawQuery("SELECT * FROM generic_test_results
                                             WHERE `generic_id` = ?
-                                            ORDER BY test_id ASC", [$genericSampleIds]);
+                                            ORDER BY test_id ASC", $genericSampleIds);
         } else {
             $response = $this->db->rawQuery("SELECT * FROM generic_test_results
                                             ORDER BY test_id ASC");

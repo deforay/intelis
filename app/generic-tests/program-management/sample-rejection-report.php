@@ -84,7 +84,7 @@ $sampleTypeDetails = $genericService->getGenericSampleTypes();
 									<?php echo _translate("Clinic Name"); ?> &nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="clinicName" name="clinicName" title="<?php echo _translate('Please select clinic name'); ?>" multiple="multiple" style="width:220px;">
+								<select id="clinicName" name="clinicName" title="<?php echo _translate('Please select clinic name'); ?>" multiple="multiple" style="width:220px;">
 									<?= $facilitiesDropdown; ?>
 								</select>
 							</td>
@@ -118,8 +118,8 @@ $sampleTypeDetails = $genericService->getGenericSampleTypes();
 <script src="/assets/js/highcharts.js"></script>
 <script>
 	$(function() {
-		$("#clinicName").select2({
-			placeholder: "<?php echo _translate("Select Clinics"); ?>"
+		$("#clinicName").selectize({
+            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$("#labName").select2({
 			placeholder: "<?php echo _translate("Select Labs"); ?>"
