@@ -192,11 +192,6 @@ try {
 
             $sQueryWhere = [];
 
-            // if (!empty($data['uniqueId'])) {
-            //     $uniqueId = $data['uniqueId'];
-            //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            // }
-
             if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
@@ -219,6 +214,8 @@ try {
                 }
                 $update = "yes";
                 $uniqueId = $data['uniqueId'] = $rowData['unique_id'];
+            } else {
+                $uniqueId = MiscUtility::generateULID();
             }
         }
         $currentSampleData = [];
@@ -232,7 +229,7 @@ try {
             $params['appSampleCode'] = $data['appSampleCode'] ?? null;
             $params['provinceCode'] = $provinceCode;
             $params['provinceId'] = $provinceId;
-            $params['uniqueId'] = $uniqueId ?? MiscUtility::generateULID();
+            $params['uniqueId'] = $uniqueId;
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
@@ -504,7 +501,7 @@ try {
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration);
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
         if (!empty($sampleCodeData)) {
             foreach ($responseData as $rootKey => $currentSampleData) {
                 $uniqueId = $currentSampleData['uniqueId'] ?? null;
@@ -522,7 +519,6 @@ try {
     } else {
         $payloadStatus = 'success';
     }
-
 
     if (!empty($data['lab_id'])) {
         $updatedLabs[] = $data['lab_id'];
@@ -553,7 +549,7 @@ try {
     ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input ?? []), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);
 
