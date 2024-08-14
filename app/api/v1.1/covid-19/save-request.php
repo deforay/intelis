@@ -469,14 +469,23 @@ try {
         if (isset($data['asymptomatic']) && $data['asymptomatic'] != "yes") {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
-            if (!empty($data['symptomDetected']) || (!empty($data['symptom']))) {
-                for ($i = 0; $i < count($data['symptomDetected']); $i++) {
+            $syptomDetections = $data['covid19PatientSymptomsArray'] ?? $data['symptom'];
+            if (!empty($syptomDetections) || (!empty($syptomDetections))) {
+                for ($i = 0; $i < count($syptomDetections); $i++) {
+
+                    $data['symptomId'][$i] = $data['symptomId'][$i] ?? $syptomDetections[$i]['id'];
+                    $data['symptomDetected'][$i] = $data['symptomDetected'][$i] ?? $syptomDetections[$i]['symptom'];
+                    $data['symptomDetails'][$i] = $data['symptomDetails'][$i] ?? $syptomDetections[$i]['detail'];
+
                     $symptomData = [];
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
                     $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
-                    $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
-                    //var_dump($symptomData);
+                    if(isset($data['covid19PatientSymptomsArray']) && !empty($data['covid19PatientSymptomsArray'])){
+                        $symptomData["symptom_details"] = $syptomDetections[$i]['detail'] ?? null;
+                    }else{
+                        $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
+                    }
                     $db->insert("covid19_patient_symptoms", $symptomData);
                     //LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                 }
