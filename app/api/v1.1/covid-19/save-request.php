@@ -483,9 +483,9 @@ try {
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
                     $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
-                    if(isset($data['covid19PatientSymptomsArray']) && !empty($data['covid19PatientSymptomsArray'])){
+                    if (isset($data['covid19PatientSymptomsArray']) && !empty($data['covid19PatientSymptomsArray'])) {
                         $symptomData["symptom_details"] = $syptomDetections[$i]['detail'] ?? null;
-                    }else{
+                    } else {
                         $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     }
                     $db->insert("covid19_patient_symptoms", $symptomData);

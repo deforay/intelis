@@ -1,16 +1,18 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -122,10 +124,12 @@ try {
           LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-    $failedStatusIds = [SAMPLE_STATUS\ON_HOLD,
-                        SAMPLE_STATUS\LOST_OR_MISSING,
-                        SAMPLE_STATUS\TEST_FAILED,
-                        SAMPLE_STATUS\EXPIRED];
+    $failedStatusIds = [
+        SAMPLE_STATUS\ON_HOLD,
+        SAMPLE_STATUS\LOST_OR_MISSING,
+        SAMPLE_STATUS\TEST_FAILED,
+        SAMPLE_STATUS\EXPIRED
+    ];
     $start_date = '';
     $end_date = '';
     if (!empty($_POST['sampleCollectionDate'])) {

@@ -10,6 +10,16 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+$_GET = _sanitizeInput($request->getQueryParams());
+
+$_REQUEST = array_merge($_GET, $_POST);
+
+
 session_unset(); // no need of session in json response
 
 // PURPOSE : Fetch Results using external_sample_code field which is used to

@@ -6,7 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\LoggerUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -80,8 +80,11 @@ try {
                 GROUP BY cd4.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $e->getTraceAsString()
+    ]);
 }
 
 ?>

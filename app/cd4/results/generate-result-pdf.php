@@ -133,14 +133,14 @@ foreach ($requestResult as $result) {
 	}
 
 	$fileToInclude = $fileArray[$arr['vl_form']];
-	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['vl'])) {
-		$fileExtension = pathinfo(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['vl'], PATHINFO_EXTENSION);
-		if (($fileExtension === 'php' || $fileExtension === 'phtml')) {
-			$fileToInclude = $selectedReportFormats['vl'];
+	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl'])) {
+		$includedFile = realpath(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['vl']);
+		if ($includedFile !== false && file_exists($includedFile) && is_file($includedFile)) {
+			$fileToInclude = $includedFile;
 		}
 	}
 
-	require(__DIR__ . DIRECTORY_SEPARATOR . $fileToInclude);
+	require($fileToInclude);
 }
 
 

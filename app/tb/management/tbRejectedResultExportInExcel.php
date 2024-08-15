@@ -1,7 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
 
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;

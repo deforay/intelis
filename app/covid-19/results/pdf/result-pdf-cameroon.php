@@ -3,15 +3,20 @@
 // this file is included in covid-19/results/generate-result-pdf.php
 
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
+use App\Services\DatabaseService;
 use App\Services\ResultPdfService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\Covid19ResultPDFHelper;
 
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
@@ -19,6 +24,8 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var ResultPdfService $resultPdfService */
 $resultPdfService = ContainerRegistry::get(ResultPdfService::class);
@@ -301,7 +308,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;">COUNTY</td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;">' . ($result['labCounty']) . '</td>';
         $html .= '</tr>';
-        
+
         $html .= '<tr>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;font-weight:bold;border-left:1px solid #67b3ff;"></td>';
         $html .= '<td style="line-height:20px;font-size:11px;text-align:left;border-left:1px solid #67b3ff;"></td>';
@@ -387,7 +394,7 @@ if (!empty($requestResult)) {
         $modified = "No";
         $dateOfModified = "";
         $reasonForChange = "";
-        if($result['result_modified']=="yes"){
+        if ($result['result_modified'] == "yes") {
             $modified = "Yes";
 
             $resultHistory = json_decode($result['reason_for_changing']);
@@ -395,10 +402,10 @@ if (!empty($requestResult)) {
             $prevResult = $covid19Results[$resultHistory->previousResult];
         }
         $html .= '<tr>';
-        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
-        if($modified=='Yes' && ($result['reason_for_changing']!="") && $resultHistory->dateOfChange!=""){
-            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified).'</td>';
-            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult.'</td>';
+        $html .= '<td style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : ' . _translate($modified) . '</td>';
+        if ($modified == 'Yes' && ($result['reason_for_changing'] != "") && $resultHistory->dateOfChange != "") {
+            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:center;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified) . '</td>';
+            $html .= '<td colspan="2" style="line-height:17px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult . '</td>';
         }
         $html .= '</tr>';
 

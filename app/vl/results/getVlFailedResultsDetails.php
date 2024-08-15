@@ -3,12 +3,19 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+
 
 
 /** @var DatabaseService $db */
@@ -123,10 +130,12 @@ try {
     LEFT JOIN r_vl_test_reasons as tr ON tr.test_reason_id=vl.reason_for_vl_testing
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-    $failedStatusIds = [SAMPLE_STATUS\ON_HOLD,
-                        SAMPLE_STATUS\LOST_OR_MISSING,
-                        SAMPLE_STATUS\TEST_FAILED,
-                        SAMPLE_STATUS\EXPIRED];
+    $failedStatusIds = [
+        SAMPLE_STATUS\ON_HOLD,
+        SAMPLE_STATUS\LOST_OR_MISSING,
+        SAMPLE_STATUS\TEST_FAILED,
+        SAMPLE_STATUS\EXPIRED
+    ];
     if (!empty($_POST['sampleCollectionDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 

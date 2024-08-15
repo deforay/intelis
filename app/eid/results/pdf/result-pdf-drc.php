@@ -2,11 +2,27 @@
 
 // this file is included in eid/results/generate-result-pdf.php
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+
+$pages = [];
+$page = 1;
 
 if (!empty($result)) {
 
@@ -126,19 +142,8 @@ if (!empty($result)) {
         $sampleReceivedTime = $expStr[1];
     }
 
-    if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['result_printed_datetime']);
-        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-    } else {
-        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
-    }
-
-    if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-        $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
-    } else {
-        $result['sample_tested_datetime'] = '';
-    }
+    $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
+    $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = _translate('Unreported');

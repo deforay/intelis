@@ -1,8 +1,9 @@
 #!/usr/bin/env php
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . '/../bootstrap.php');
 
@@ -179,7 +180,11 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
             $mysqli->commit();
         } catch (Exception $e) {
             $mysqli->rollback();
-            error_log("Error: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
+            LoggerUtility::log('error', $e->getMessage(), [
+                'file' => __FILE__,
+                'line' => __LINE__,
+                'trace' => $e->getTraceAsString()
+            ]);
             continue;
         }
     }

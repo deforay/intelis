@@ -1,38 +1,24 @@
 <?php
 
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
-
-
-
-// $formConfigQuery = "SELECT * FROM global_config WHERE name='vl_form'";
-// $configResult = $db->query($formConfigQuery);
-// $arr = [];
-// // now we create an associative array so that we can easily create view variables
-// for ($i = 0; $i < sizeof($configResult); $i++) {
-//      $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-// }
-// //system config
-// $systemConfigQuery = "SELECT * from system_config";
-// $systemConfigResult = $db->query($systemConfigQuery);
-// $sarr = [];
-// // now we create an associative array so that we can easily create view variables
-// for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-//      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-// }
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+
 
 try {
      $db->beginReadOnlyTransaction();
@@ -254,7 +240,7 @@ try {
           }
 
           $row[] = $aRow['last_modified_datetime'];
-          $row[] = ($aRow['status_name']);
+          $row[] = $aRow['status_name'];
           $row[] = $print;
           $output['aaData'][] = $row;
      }
