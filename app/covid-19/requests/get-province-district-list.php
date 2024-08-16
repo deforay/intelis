@@ -1,8 +1,15 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+$_GET = _sanitizeInput($request->getQueryParams());
 
 /** @var GeoLocationsService $geoDb */
 $geoDb = ContainerRegistry::get(GeoLocationsService::class);
@@ -33,7 +40,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     }
     $cResult = $db->rawQuery($cQuery);
     $echoResult = [];
-    if (count($cResult) > 0) {
+    if (!empty($cResult)) {
         foreach ($cResult as $row) {
             $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
         }
@@ -41,30 +48,28 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
         $echoResult[] = array("id" => $text, 'text' => $text);
     }
 
-    $result = array("result" => $echoResult);
+    $result = ["result" => $echoResult];
     echo json_encode($result);
 } else if (isset($_POST['pName']) && $_POST['pName'] != "") {
     $cQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_province like '%" . $_POST['pName'] . "%' AND patient_zone is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];
-    if (count($cResult) > 0) {
+    if (!empty($cResult)) {
         foreach ($cResult as $row) {
             $option[$row['patient_zone']] = $row['patient_zone'];
         }
         $option["other"] = "Other";
     }
-    $options = $general->generateSelectOptions($option, null, '-- Sélectionner --');
-    echo $options;
+    echo $general->generateSelectOptions($option, null, '-- Sélectionner --');
 } else if (isset($_POST['zName']) && $_POST['zName'] != "") {
     $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $_POST['zName'] . "%' AND patient_district is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];
-    if (count($cResult) > 0) {
+    if (!empty($cResult)) {
         foreach ($cResult as $row) {
             $option[$row['patient_district']] = $row['patient_district'];
         }
         $option["other"] = "Other";
     }
-    $options = $general->generateSelectOptions($option, null, '-- Sélectionner --');
-    echo $options;
+    echo $general->generateSelectOptions($option, null, '-- Sélectionner --');
 }

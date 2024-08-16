@@ -222,7 +222,7 @@ sudo dpkg --configure -a
 apt-get autoremove -y
 
 echo "Installing basic packages..."
-apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev
+apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh
 
 echo "Setting up locale..."
 locale-gen en_US en_US.UTF-8

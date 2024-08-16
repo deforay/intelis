@@ -2,15 +2,18 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
-use Laminas\Filter\StringTrim;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use Laminas\Filter\FilterChain;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 
 /** @var DatabaseService $db */
@@ -101,9 +104,9 @@ try {
      INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-[$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+     [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
@@ -148,7 +151,7 @@ try {
           }
      }
 
-     
+
      if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
           $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
      }

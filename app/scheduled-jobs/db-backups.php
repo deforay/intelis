@@ -7,9 +7,10 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 
@@ -98,7 +99,9 @@ try {
         unlink($sqlFileName);
     }
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-    error_log('whoops! Something went wrong in scheduled-jobs/db-backups.php');
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'trace' => $e->getTraceAsString()
+    ]);
 }

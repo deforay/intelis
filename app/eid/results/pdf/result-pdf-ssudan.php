@@ -1,10 +1,28 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+
+$pages = [];
+$page = 1;
 
 if (!empty($result)) {
     $currentTime = DateUtility::getCurrentDateTime();
@@ -97,11 +115,7 @@ if (!empty($result)) {
 
     $sampleDispatchDate = '';
     $sampleDispatchTime = '';
-    if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? '', true, 'd/M/Y H:i:s');
-    } else {
-        $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($currentDateTime, true, 'd/M/Y H:i:s');
-    }
+    $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
     $testedBy = '';
     if (!empty($result['tested_by'])) {
         $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));

@@ -2,10 +2,26 @@
 
 // imported in /vl/results/generate-result-pdf.php
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Helpers\PdfWatermarkHelper;
+use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\DrcVlPDFHelper;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+$pages = [];
+$page = 1;
 
 if (!empty($result)) {
 
@@ -117,11 +133,7 @@ if (!empty($result)) {
 		$sampleReceivedTime = $expStr[1];
 	}
 
-	if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_printed_datetime'] != '0000-00-00 00:00:00') {
-		$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'], true);
-	} else {
-		$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
-	}
+	$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
 
 	$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
 	$result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');

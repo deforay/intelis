@@ -5,12 +5,24 @@
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\VLResultPDFHelper;
 
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+
+$pages = [];
+$page = 1;
 
 if (!empty($result)) {
 
@@ -175,11 +187,7 @@ if (!empty($result)) {
      $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
 
-     if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-          $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? '', true);
-     } else {
-          $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($currentTime ?? '', true);
-     }
+     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
 
      if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
           $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
@@ -191,21 +199,21 @@ if (!empty($result)) {
           $result['patient_gender'] = _translate('Unreported');
      }
      $resultApprovedBy  = '';
-	$userRes = [];
-	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
+     $userRes = [];
+     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+          $resultApprovedBy = $result['approvedBy'];
+          $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+          if ($approvedByRes) {
+               $resultApprovedBy = $approvedByRes['user_name'];
+          }
+          $userRes = $approvedByRes;
+     }
 
-	if (!empty($userRes['user_signature'])) {
-		$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-	}
+     if (!empty($userRes['user_signature'])) {
+          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+     }
      $smileyContent = '';
      $showMessage = '';
      $tndMessage = '';
