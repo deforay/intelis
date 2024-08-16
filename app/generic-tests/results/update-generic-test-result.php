@@ -1564,6 +1564,9 @@ $reasonForChange = $reasonForChangeArr[1];
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
+					$(".multipleSelectize").selectize({
+                        plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+                	});
 				});
 		} else {
 			removeDynamicForm();

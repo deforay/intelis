@@ -280,7 +280,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 							<div class="col-md-8">
 								<label for="resultUnit" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> </label>
 								<div class="col-lg-7">
-									<select class="form-control quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
+									<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
 										<?= $general->generateSelectOptions($testResultUnitInfo, null, false) ?>
 									</select>
 								</div>
@@ -413,9 +413,9 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		$("#rejectionReason").select2({
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
 		});
-		$("#testResultUnit").select2({
-			placeholder: "<?php echo _translate("Select Test Result Unit"); ?>"
-		});
+		$("#testResultUnit").selectize({
+                plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+        });
 
 		/*	$('.tag-input-field').on('keyup', function(e) {
 			if (e.key === ',' || e.key === 'Enter') {
