@@ -75,15 +75,20 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     $fieldName = 'dynamicFields[' . $testAttributeId . ']';
     $isMultiple = $testAttribute['field_type'] == 'multiple';
     $title = _translate("Please select an option");
+    $commonClass = "form-control";
+    $selectizeCls = "";
     if ($isMultiple) {
         $fieldName .= '[]';
         $commonClass = "";
+        $selectizeCls = "multipleSelectize";
+        $inputClass = "";
         $title = _translate("Please select one or more options");
     }
+    
 
     $field = sprintf(
         '<div class="col-lg-7">
-            <select name="%s" id="%s" class="form-control %s%s%s%s"
+            <select name="%s" id="%s" class="'.$commonClass. $selectizeCls.' %s%s%s%s"
                 title="%s" %s style="width:%s;">',
         $fieldName,
         $testAttributeId,
@@ -168,6 +173,7 @@ if (!empty($testTypeAttributes)) {
                 }
 
                 $inputClass = $testAttribute['section'] == 'facilitySection' ? " dynamicFacilitySelect2 " : " dynamicSelect2 ";
+
                 $inputWidth = $testAttribute['section'] == 'facilitySection' ? "100% !important;" : "100%;";
 
                 $sectionClass = $testAttribute['section'] . 'Input';

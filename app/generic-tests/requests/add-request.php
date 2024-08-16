@@ -1494,6 +1494,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    placeholder: "<?php echo _translate("Select any one of the option"); ?>"
                               });
 
+                              $(".multipleSelectize").selectize({
+                                   plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+                              });
+
                               if ($('#resultType').val() == 'qualitative') {
                                    $('.final-result-row').attr('colspan', 4)
                                    $('.testResultUnit').hide();

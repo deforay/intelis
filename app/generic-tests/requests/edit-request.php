@@ -1589,9 +1589,14 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
+
 					$(".dynamicSelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
+					});
+
+					$(".multipleSelectize").selectize({
+						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 					});
 					if ($('#resultType').val() == 'qualitative') {
 						// $('.final-result-row').attr('colspan', 4)
@@ -1676,6 +1681,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
+				
 					if ($('#resultType').val() == 'qualitative') {
 						// $('.final-result-row').attr('colspan', 4)
 						$('.testResultUnit').hide();
