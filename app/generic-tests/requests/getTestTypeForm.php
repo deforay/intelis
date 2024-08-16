@@ -77,6 +77,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     $title = _translate("Please select an option");
     if ($isMultiple) {
         $fieldName .= '[]';
+        $commonClass = "";
         $title = _translate("Please select one or more options");
     }
 
@@ -96,7 +97,8 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
     );
     $field .= '<option value="">' . _translate("-- Select --") . '</option>';
     foreach (explode(',', (string) $testAttribute['dropdown_options']) as $option) {
-        if ($isMultiple && is_array($option)) {
+        if ($isMultiple && is_array($value)) {
+         
             $selected = (!empty($value) && in_array($option, $value)) ? "selected" : "";
         } else {
             $selected = (!empty($value) && $value == $option) ? "selected" : "";
@@ -138,6 +140,7 @@ function getField($testAttribute, $testAttributeId, $value, $inputClass, $sectio
     $fieldDiv .= '</div>';
     return $fieldDiv;
 }
+//echo '<pre>'; print_r($testTypeAttributes); die;
 
 if (!empty($testTypeAttributes)) {
     $i = 1;
@@ -154,6 +157,7 @@ if (!empty($testTypeAttributes)) {
                 $isRequired = $testAttribute['mandatory_field'] === 'yes' ? 'isRequired' : '';
                 $mandatory = $testAttribute['mandatory_field'] === 'yes' ? '<span class="mandatory">*</span>' : '';
                 $value = $testTypeForm[$testAttributeId] ?? $recentData ?? null;
+
                 $fieldType = getClassNameFromFieldType($testAttribute['field_type']);
                 if (
                     !empty($_POST['formType']) &&
@@ -170,7 +174,7 @@ if (!empty($testTypeAttributes)) {
 
                 $result[$testAttribute['section']][] = getField($testAttribute, $testAttributeId, $value, $inputClass, $sectionClass, $isRequired, $fieldType, $disabled, $inputWidth, $mandatory);
                 $i++;
-            }
+            } 
         } else {
             //Othersection code
             foreach ($testAttributeDetails as $otherSectionName => $otherSectionFields) {

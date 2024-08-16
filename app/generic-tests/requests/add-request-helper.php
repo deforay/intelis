@@ -279,7 +279,7 @@ try {
 
     $genericData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
     $id = 0;
-
+    //dynamicFields[_7ccf3703a3e2adea][]    "_7ccf3703a3e2adea":["AFP","Cholera"]
     //Update patient Information in Patients Table
     // $patientsService->savePatient($_POST,'form_generic');
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {

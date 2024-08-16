@@ -966,6 +966,10 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	let reason = null;
 	let resultValue = null;
 	$(document).ready(function() {
+
+		
+		
+
 		$("#subTestResult").multipleSelect({
 			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',
 			width: '100%'
