@@ -6,6 +6,7 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
@@ -129,7 +130,12 @@ try {
         'data' => []
     ];
     http_response_code(500);
-    error_log($exc->getMessage());
+    LoggerUtility::logError($exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'requestUrl' => $requestUrl,
+        'stacktrace' => $exc->getTraceAsString()
+    ]);
 }
 
 $payload = JsonUtility::encodeUtf8Json($payload);

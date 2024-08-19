@@ -187,7 +187,7 @@ try {
     }
 
     $payload = JsonUtility::encodeUtf8Json($payload);
-} catch (Exception | SystemException $exc) {
+} catch (Throwable $exc) {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),

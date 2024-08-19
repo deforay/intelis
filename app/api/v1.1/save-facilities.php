@@ -244,7 +244,12 @@ try {
     if (!empty($db->getLastError())) {
         LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     }
-    LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+    LoggerUtility::logError($exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'requestUrl' => $requestUrl,
+        'stacktrace' => $exc->getTraceAsString()
+    ]);
 }
 
 

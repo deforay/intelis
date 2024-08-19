@@ -1,16 +1,17 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 
 session_unset(); // no need of session in json response
 
@@ -135,7 +136,6 @@ try {
         f.facility_district_id                               as districtId,
         f.facility_name                                      as facilityName,
         vl.is_sample_rejected                                as isSampleRejected,
-
         vl.revised_by                                        as revisedBy,
         r_r_b.user_name                                      as revisedByName,
         vl.revised_on                                        as revisedOn,
@@ -148,7 +148,6 @@ try {
         u_d.user_name                                        as reviewedByName,
         vl.result_reviewed_datetime                          as reviewedOn,
         lt_u_d.user_name                                     as labTechnicianName,
-
         vl.external_sample_code                              as serialNo,
         vl.is_patient_new                                    as isPatientNew,
         vl.has_patient_changed_regimen                       as hasChangedRegimen,
@@ -182,9 +181,9 @@ try {
     if (!empty($user)) {
         $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id'], 1);
         if (!empty($facilityMap)) {
-            $where[] = " vl.facility_id IN (" . $facilityMap . ")";
+            $where[] = " vl.facility_id IN ($facilityMap)";
         } else {
-            $where[] = " (vl.request_created_by = '" . $user['user_id'] . "')";
+            $where[] = " (vl.request_created_by = '{$user['user_id']}') ";
         }
     }
 
@@ -218,7 +217,7 @@ try {
 
     if (!empty($input['patientArtNo'])) {
         $patientArtNo = implode("','", $input['patientArtNo']);
-        $where[] = " vl.patient_art_no IN ('" . $patientArtNo . "') ";
+        $where[] = " vl.patient_art_no IN ('$patientArtNo') ";
     }
 
     if (!empty($input['patientName'])) {
@@ -234,7 +233,7 @@ try {
     }
 
     $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $sQuery .= "$where ORDER BY vl.last_modified_datetime DESC limit 100 ";
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
@@ -259,7 +258,7 @@ try {
     ];
 } catch (Throwable $exc) {
 
-    // http_response_code(500);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -267,7 +266,12 @@ try {
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    error_log($exc->getMessage());
+    LoggerUtility::logError($exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'requestUrl' => $requestUrl,
+        'stacktrace' => $exc->getTraceAsString()
+    ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
