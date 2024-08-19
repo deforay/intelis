@@ -60,6 +60,8 @@ foreach ($testReasonsResultDetails as $row) {
 }
 
 ?>
+   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+
 <style>
      .table>tbody>tr>td {
           border-top: none;
@@ -382,8 +384,9 @@ foreach ($testReasonsResultDetails as $row) {
 
                                                   <div class="col-md-3">
                                                        <div class="form-group">
-                                                            <label for="reqClinician" class=""><?= _translate('Name Of Requester'); ?></label>
+                                                            <label for="reqClinician" class=""><?= _translate('Name Of Requester'); ?> <i class="fa fa-pen-to-square" aria-hidden="true"></i></label>
                                                             <select class="form-control editableSelectClinician" id="reqClinician" value="<?php echo $_SESSION['vlData']['request_clinician_name'] ?? null; ?>" name="reqClinician" title="<?= _translate('Please enter request clinician'); ?>">
+                                                                 <option value=""> --Choose Request Clinician--</option>
                                                             </select>
                                                        </div>
                                                   </div>
@@ -407,6 +410,7 @@ foreach ($testReasonsResultDetails as $row) {
 
                                                   </div>
                                              <?php } ?>
+                                             <br>
                                         </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
@@ -738,7 +742,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
 
      $(document).ready(function() {
-          editableSelectClinician('reqClinician', 'request_clinician_name', 'form_vl', 'Requesting Clinician');
+          editableSelectClinician('reqClinician', 'request_clinician_name', 'form_vl');
 
           //Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');

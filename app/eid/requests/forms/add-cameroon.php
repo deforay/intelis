@@ -395,9 +395,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
 
                                     <tr>
-                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?> <i class="fa fa-pen-to-square" aria-hidden="true"></i></th>
                                         <td> <select value="<?php echo $_SESSION['eidData']['clinician_name'] ?? null;?>" class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Requesting Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>">
-                                                </select>
+                                                <option value=""> --Choose Request Clinician--</option>
+                                            </select>
                                         </td>
 
                                     </tr>
@@ -853,7 +854,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
      }
 
     $(document).ready(function() {
-        editableSelectClinician('clinicianName', 'clinician_name', 'form_eid', 'Requesting Clinician');
+        editableSelectClinician('clinicianName', 'clinician_name', 'form_eid');
 
         Utilities.autoSelectSingleOption('facilityId');
         $("#sampleCollectionDate").trigger('change');

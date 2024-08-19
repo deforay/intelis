@@ -438,10 +438,10 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
 
                                                   <div class="col-md-3">
                                                        <div class="form-group">
-                                                            <label for="reqClinician" class=""><?= _translate('Requesting Clinician Name'); ?></label>
+                                                            <label for="reqClinician" class=""><?= _translate('Requesting Clinician Name'); ?> <i class="fa fa-pen-to-square" aria-hidden="true"></i></label>
 
                                                             <select class="form-control editableSelectClinician" id="reqClinician" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>">
-                                                                 <?= $general->generateSelectOptions($reqClinicianList, $vlQueryInfo['request_clinician_name'], '-- Select --') ?>
+                                                                 <?= $general->generateSelectOptions($reqClinicianList, $vlQueryInfo['request_clinician_name'], '-- Choose Requesting Clinician --') ?>
                                                             </select>
                                                        </div>
                                                   </div>
@@ -452,6 +452,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                        </div>
                                                   </div>
                                              </div>
+                                             <?php if ($general->isLISInstance()) { ?>
                                              <div class="row">
                                                   <div class="col-md-3">
                                                        <div class="form-group">
@@ -460,6 +461,9 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                        </div>
                                                   </div>
                                              </div>
+                                             
+                                             <?php } ?>
+                                             <br>
                                              <div class="box box-primary">
                                                   <div class="box-header with-border">
                                                        <h3 class="box-title"><?= _translate('Treatment Information'); ?></h3>

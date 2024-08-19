@@ -98,7 +98,7 @@ if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 		$colNo++;
 	}
 }
-$sheet->getStyle('A3:AH3')->applyFromArray($styleArray);
+$sheet->getStyle('A3:AN3')->applyFromArray($styleArray);
 
 $key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
@@ -220,16 +220,29 @@ foreach ($resultSet as $aRow) {
 	$no++;
 }
 
-$start = (count($output)) + 2;
-foreach ($output as $rowNo => $rowData) {
-	$colNo = 1;
-	$rRowCount = $rowNo + 4;
-	foreach ($rowData as $field => $value) {
-		$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-		$colNo++;
+
+if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] > 50000) {
+
+	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
+	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
+	// we dont need the $output variable anymore
+	unset($output);
+	echo base64_encode((string) $fileName);
+} else {
+
+	$start = (count($output)) + 2;
+	foreach ($output as $rowNo => $rowData) {
+		$colNo = 1;
+		$rRowCount = $rowNo + 4;
+		foreach ($rowData as $field => $value) {
+			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
+			$colNo++;
+		}
 	}
+	$writer = IOFactory::createWriter($excel, 'Xlsx');
+	$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+	echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 }
-$writer = IOFactory::createWriter($excel, 'Xlsx');
-$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+
+

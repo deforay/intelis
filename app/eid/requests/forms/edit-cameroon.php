@@ -422,9 +422,9 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?>  <i class="fa fa-pen-to-square" aria-hidden="true"></i></th>
                                         <td><select class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>">
-                                                <?= $general->generateSelectOptions($reqClinicianList, $eidInfo['clinician_name'], '-- Select --') ?>
+                                                <?= $general->generateSelectOptions($reqClinicianList, $eidInfo['clinician_name'], '-- Choose Requesting Clinician --') ?>
                                             </select>
                                         </td>
                                     </tr>
