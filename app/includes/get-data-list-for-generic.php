@@ -50,6 +50,9 @@ if (!empty($_GET['status'])) {
 if (!empty($_GET['labId'])) {
     $cQuery .= " AND lab_id = " . $_GET['labId'];
 }
+if (!empty($_GET['facilityId'])) {
+    $cQuery .= " AND facility_id = " . $_GET['facilityId'];
+}
 if (!empty($_GET['group'])) {
     $cQuery .= " GROUP BY '" . $_GET['group'] . "'";
 }

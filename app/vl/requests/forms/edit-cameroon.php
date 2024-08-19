@@ -108,6 +108,9 @@ $ageInfo = "";
 if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQueryInfo['patient_age_in_years'] == null) {
      $ageInfo = "ageUnreported";
 }
+$facilityId = $vlQueryInfo['facility_id'];
+$reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request_clinician_name","request_clinician_name"), true, "facility_id= $facilityId ");
+
 ?>
 <style>
      .table>tbody>tr>td {
@@ -437,7 +440,9 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
                                                        <div class="form-group">
                                                             <label for="reqClinician" class=""><?= _translate('Requesting Clinician Name'); ?></label>
 
-                                                            <input type="text" class="form-control" id="reqClinician" name="reqClinician" value="<?= $vlQueryInfo['request_clinician_name']; ?>" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
+                                                            <select class="form-control editableSelectClinician" id="reqClinician" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>">
+                                                                 <?= $general->generateSelectOptions($reqClinicianList, $vlQueryInfo['request_clinician_name'], '-- Select --') ?>
+                                                            </select>
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
@@ -807,6 +812,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
+          editableSelectClinician('reqClinician', 'request_clinician_name', 'form_vl', 'Requesting Clinician');
 
           $("#vlResult").trigger('change');
 
@@ -872,6 +878,47 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
 
      });
+
+     function editableSelectClinician(id, _fieldName, table, _placeholder) {
+        $("#" + id).select2({
+            placeholder: _placeholder,
+            minimumInputLength: 0,
+            width: '100%',
+            allowClear: true,
+            id: function(bond) {
+                return bond._id;
+            },
+            ajax: {
+                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                url: "/includes/get-data-list-for-generic.php",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        fieldName: _fieldName,
+                        tableName: table,
+                        q: params.term, // search term
+                        page: params.page,
+                        facilityId: $("#facilityId").val(),
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.result,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                //cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
+
 
      function hivDetectionChange() {
 

@@ -383,7 +383,8 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinician" class=""><?= _translate('Name Of Requester'); ?></label>
-                                                            <input type="text" class="form-control" id="reqClinician" value="<?php echo $_SESSION['vlData']['request_clinician_name'] ?? null; ?>" name="reqClinician" placeholder="<?= _translate('Requesting Clinician name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" />
+                                                            <select class="form-control editableSelectClinician" id="reqClinician" value="<?php echo $_SESSION['vlData']['request_clinician_name'] ?? null; ?>" name="reqClinician" title="<?= _translate('Please enter request clinician'); ?>">
+                                                            </select>
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
@@ -737,6 +738,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
 
      $(document).ready(function() {
+          editableSelectClinician('reqClinician', 'request_clinician_name', 'form_vl', 'Requesting Clinician');
+
           //Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
           $("#sampleCollectionDate").trigger('change');
@@ -821,6 +824,46 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                fillFacilityDetails();
           <?php } ?>
      });
+
+    function editableSelectClinician(id, _fieldName, table, _placeholder) {
+        $("#" + id).select2({
+            placeholder: _placeholder,
+            minimumInputLength: 0,
+            width: '100%',
+            allowClear: true,
+            id: function(bond) {
+                return bond._id;
+            },
+            ajax: {
+                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                url: "/includes/get-data-list-for-generic.php",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        fieldName: _fieldName,
+                        tableName: table,
+                        q: params.term, // search term
+                        page: params.page,
+                        facilityId: $("#facilityId").val(),
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.result,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                //cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
 
 
 

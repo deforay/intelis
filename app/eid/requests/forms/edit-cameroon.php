@@ -64,6 +64,8 @@ $ageInfo = "";
 if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
      $ageInfo = "ageUnreported";
 }
+$facilityId = $eidInfo['facility_id'];
+$reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinician_name","clinician_name"), true, "facility_id= $facilityId ");
 
 ?>
 
@@ -421,7 +423,10 @@ if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?></th>
-                                        <td> <input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Requesting Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>" /></td>
+                                        <td><select class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>">
+                                                <?= $general->generateSelectOptions($reqClinicianList, $eidInfo['clinician_name'], '-- Select --') ?>
+                                            </select>
+                                        </td>
                                     </tr>
 
                                     <tr>
@@ -853,6 +858,7 @@ if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
     }
 
     $(document).ready(function() {
+        editableSelectClinician('clinicianName', 'clinician_name', 'form_eid', 'Requesting Clinician');
 
         setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({
@@ -914,6 +920,46 @@ if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
         $('#isChildOnCotrim').trigger('change');
         $('#infantArtStatus').trigger('change');
     });
+
+    function editableSelectClinician(id, _fieldName, table, _placeholder) {
+        $("#" + id).select2({
+            placeholder: _placeholder,
+            minimumInputLength: 0,
+            width: '100%',
+            allowClear: true,
+            id: function(bond) {
+                return bond._id;
+            },
+            ajax: {
+                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                url: "/includes/get-data-list-for-generic.php",
+                dataType: 'json',
+                delay: 250,
+                data: function(params) {
+                    return {
+                        fieldName: _fieldName,
+                        tableName: table,
+                        q: params.term, // search term
+                        page: params.page,
+                        facilityId: $("#facilityId").val(),
+                    };
+                },
+                processResults: function(data, params) {
+                    params.page = params.page || 1;
+                    return {
+                        results: data.result,
+                        pagination: {
+                            more: (params.page * 30) < data.total_count
+                        }
+                    };
+                },
+                //cache: true
+            },
+            escapeMarkup: function(markup) {
+                return markup;
+            }
+        });
+    }
 
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
