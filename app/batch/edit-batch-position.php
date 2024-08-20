@@ -122,7 +122,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 						<?php echo (isset($batchInfo['batch_code'])) ? $batchInfo['batch_code'] : ''; ?>
 					</strong></h4>
 					<div class="row">
-						<div class="col-lg-4">
+						<div class="col-lg-3">
 							<select class="form-control" id="sortBy">
 								<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
 								<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
@@ -136,10 +136,14 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 								<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
 							</select>
 						</div>
-						<div class="col-lg-3">
-							<button type="button" class="btn btn-danger pull-right" style="margin-left:20px;" onclick="sortBatch();return false;">Reset to Default</button>
-							<button type="button" class="btn btn-primary pull-right" onclick="changeSampleOrder();return false;">Change Sample Order</button>
-
+						<div class="col-lg-7">
+						<div class="col-lg-4">
+							<button type="button" class="btn btn-primary pull-right form-control" onclick="changeSampleOrder();return false;">Change Sample Order</button>
+						</div>
+							<div class="col-lg-3">
+								<button type="button" class="btn btn-danger pull-right form-control" onclick="sortBatch();return false;">Reset to Default</button>
+							</div>
+							
 						</div>
 					</div>
 
