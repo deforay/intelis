@@ -414,6 +414,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                        <div class="form-group">
                                                             <label for=""><?= _translate('Date of Sample Collection'); ?> <span class="mandatory">*</span></label>
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate(); checkCollectionDate(this.value);">
+                                                            <span class="expiredCollectionDate" style="color:red; display:none;"><?php echo _translate("Sample Collection Date is over 6 months old"); ?></span>
                                                        </div>
                                                   </div>
                                                   <div class="col-md-3">
@@ -816,6 +817,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
+          checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
           editableSelectClinician('reqClinician', 'request_clinician_name', 'form_vl', 'Requesting Clinician');
 
           $("#vlResult").trigger('change');

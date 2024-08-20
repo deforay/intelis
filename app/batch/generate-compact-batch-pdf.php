@@ -64,8 +64,6 @@ if (!empty($id)) {
 
     MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "batches");
 
-    $logo = $globalConfig['logo'] ?? '';
-    $headerText = $globalConfig['header'] ?? '';
 
     $bQuery = "SELECT * FROM batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
@@ -105,7 +103,9 @@ if (!empty($id)) {
         // create new PDF document
         $pdf = new CustomBatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
+        //$pdf->setHeading($bResult);
         $pdf->setHeading($bResult);
+
 
         // set document information
         $pdf->SetCreator(_translate('VLSM'));
@@ -129,7 +129,7 @@ if (!empty($id)) {
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(PDF_MARGIN_LEFT, 2, PDF_MARGIN_RIGHT);
+        $pdf->SetMargins(PDF_MARGIN_LEFT, 20, PDF_MARGIN_RIGHT);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -185,6 +185,7 @@ if (!empty($id)) {
                 }
                 $sampleCounter = $alphaNumeric[0];
             }
+            $a=1;
             for ($j = 0; $j < count($jsonToArray); $j++) {
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
@@ -235,7 +236,7 @@ if (!empty($id)) {
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
                         $tbl .= '<td colspan="2" align="center">';
-                        $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
+                        $tbl .= $a .'. Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                         }
@@ -324,7 +325,7 @@ if (!empty($id)) {
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
 
                         $tbl .= '<td colspan="2" align="center">';
-                        $tbl .= 'Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
+                        $tbl .= $a .'.Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
                         }
@@ -356,7 +357,7 @@ if (!empty($id)) {
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
                         $tbl .= '<td colspan="2" align="center">';
-                        $tbl .= $label . '<br>';
+                        $tbl .= $a.'.'.$label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
@@ -369,6 +370,7 @@ if (!empty($id)) {
                     }
                     $sampleCounter++;
                 }
+                $a++;
             }
             $tbl .= '</tr></table>';
         } else {
