@@ -136,8 +136,9 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 								<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
 							</select>
 						</div>
-						<div class="col-lg-2 col-md-2 col-xs-2">
-							<button type="button" class="btn btn-primary pull-right" onclick="sortBatch();return false;">Reset Sorting</button>
+						<div class="col-lg-3">
+							<button type="button" class="btn btn-primary pull-left" onclick="changeSampleOrder();return false;">Change Sample Order</button>
+							<button type="button" class="btn btn-danger pull-right" style="margin-right:70px;" onclick="sortBatch();return false;">Reset to Default</button>
 						</div>
 					</div>
 
@@ -242,6 +243,26 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 			url.search = params.toString();
 			window.location.href = url.toString();
 		}
+	}
+
+	function changeSampleOrder()
+	{
+			sortType = $("#sortType").val();
+			sortBy = $("#sortBy").val();
+			
+        	$("#sortType").val(sortType);
+			$("#sortBy").val(sortBy);
+
+			$("#typeSort").val(sortType);
+			$("#bySort").val(sortBy);
+
+			let url = new URL(window.location.href);
+			let params = new URLSearchParams(url.search);
+			params.set('sortBy', sortBy);
+			params.set('sortType', sortType);
+
+			url.search = params.toString();
+			window.location.href = url.toString();
 	}
 </script>
 <?php
