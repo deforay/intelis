@@ -48,4 +48,14 @@ final class LoggerUtility
         $context['line'] =  $callerInfo['line'] ?? $context['line'] ?? '';
         $logger->log($level, $message, $context);
     }
+
+    public static function logError($message, array $context = []): void
+    {
+        self::log('error', $message, $context);
+    }
+
+    public static function logInfo($message, array $context = []): void
+    {
+        self::log('info', $message, $context);
+    }
 }

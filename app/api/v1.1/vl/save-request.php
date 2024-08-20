@@ -428,7 +428,6 @@ try {
         if (!empty($data['vlSampleId'])) {
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
-            //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         }
 
         if ($id === true) {

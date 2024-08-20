@@ -82,16 +82,21 @@ try {
         'transactionId' => $transactionId,
         'data' => $rowData
     ];
-} catch (Exception | InvalidArgumentException | SystemException $exc) {
+} catch (Throwable $exc) {
 
-    // http_response_code(500);
+    http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'error' => $exc->getMessage(),
         'data' => []
     ];
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'requestUrl' => $requestUrl,
+        'stacktrace' => $exc->getTraceAsString()
+    ]);
 }
 
 $payload = JsonUtility::encodeUtf8Json($payload);

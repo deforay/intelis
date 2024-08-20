@@ -1,16 +1,17 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
-use App\Services\DatabaseService;
-use App\Services\FacilitiesService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GenericTestsService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -134,7 +135,12 @@ try {
         'data' => []
     ];
 
-    error_log($exc->getMessage());
+    LoggerUtility::logError($exc->getMessage(), [
+        'file' => __FILE__,
+        'line' => __LINE__,
+        'requestUrl' => $requestUrl,
+        'stacktrace' => $exc->getTraceAsString()
+    ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');

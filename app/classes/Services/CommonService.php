@@ -626,7 +626,7 @@ final class CommonService
                 'data_format' => $format ?? null
             ];
             return $this->db->insert("track_api_requests", $data);
-        } catch (Exception | SystemException $exc) {
+        } catch (Throwable $exc) {
             if (!empty($this->db->getLastError())) {
                 LoggerUtility::log('error', 'Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
             }

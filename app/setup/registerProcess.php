@@ -178,7 +178,7 @@ try {
         $_SESSION['alertMsg'] = "New admin user added successfully";
     }
     header("Location:/login/login.php");
-} catch (Exception | SystemException $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getFile() . ':' . $exc->getLine()  . ':' .  $exc->getMessage(), [
         'exception' => $exc->getMessage(),
         'line' => __LINE__,

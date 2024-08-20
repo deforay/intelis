@@ -475,7 +475,6 @@ try {
         if (!empty($data['eidSampleId'])) {
             $db->where('eid_id', $data['eidSampleId']);
             $id = $db->update('form_eid', $eidData);
-            //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         }
 
         if ($id === true) {
