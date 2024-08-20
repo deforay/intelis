@@ -137,8 +137,9 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 							</select>
 						</div>
 						<div class="col-lg-3">
-							<button type="button" class="btn btn-primary pull-left" onclick="changeSampleOrder();return false;">Change Sample Order</button>
-							<button type="button" class="btn btn-danger pull-right" style="margin-right:70px;" onclick="sortBatch();return false;">Reset to Default</button>
+							<button type="button" class="btn btn-danger pull-right" style="margin-left:20px;" onclick="sortBatch();return false;">Reset to Default</button>
+							<button type="button" class="btn btn-primary pull-right" onclick="changeSampleOrder();return false;">Change Sample Order</button>
+
 						</div>
 					</div>
 
