@@ -37,9 +37,9 @@ try {
 
 
     $sampleCode = 'sample_code';
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'lab_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
     } elseif ($general->isStandaloneInstance()) {
@@ -50,18 +50,13 @@ try {
     $sIndexColumn = $primaryKey;
 
     $sTable = $tableName;
-    /*
-* Paging
-*/
+
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
         $sLimit = $_POST['iDisplayLength'];
     }
 
-    /*
-* Ordering
-*/
 
     $sOrder = "";
     if (isset($_POST['iSortCol_0'])) {
@@ -101,7 +96,7 @@ try {
         $sWhere[] = $sWhereSub;
     }
 
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS
+    $sQuery = "SELECT
     vl.vl_sample_id,
     vl.sample_code,
     vl.remote_sample_code,
@@ -133,16 +128,16 @@ try {
     $failedStatusIds = [
         SAMPLE_STATUS\ON_HOLD,
         SAMPLE_STATUS\LOST_OR_MISSING,
-        SAMPLE_STATUS\TEST_FAILED,
-        SAMPLE_STATUS\EXPIRED
+        SAMPLE_STATUS\TEST_FAILED
     ];
+
     if (!empty($_POST['sampleCollectionDate'])) {
         [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
         if (trim((string) $start_date) == trim((string) $end_date)) {
-            $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
+            $sWhere[] = " DATE(vl.sample_collection_date) like '$start_date'";
         } else {
-            $sWhere[] =  ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+            $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
         }
     }
     if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
@@ -171,17 +166,7 @@ try {
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
         $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
     }
-    /*
-$whereResult = '';
-if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'result') {
-    $whereResult = 'vl.result != ""  ';
-} else if (isset($_POST['reqSampleType']) && trim($_POST['reqSampleType']) == 'noresult') {
-    $whereResult = '(vl.result IS NULL OR vl.result = "")  ';
-}
-if(!empty($whereResult))
-    $sWhere[] = $whereResult;
-    */
-    //$sFilter = '';
+
 
     if (!empty($_SESSION['facilityMap'])) {
         $sWhere[] = "  vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
@@ -190,28 +175,29 @@ if(!empty($whereResult))
     //  $sWhere[] = ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
     if (!empty($sWhere)) {
         $sWhere = implode(' AND ', $sWhere);
-        $sQuery = $sQuery . ' WHERE ' . $sWhere;
+        $sQuery = "$sQuery WHERE $sWhere";
     }
 
 
     //echo $sQuery; die;
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-        $sQuery = $sQuery . " ORDER BY " . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
 
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-    $output = array(
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
         "iTotalRecords" => $resultCount,
         "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
+
     $editRequest = false;
     if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
         $editRequest = true;
@@ -242,14 +228,14 @@ if(!empty($whereResult))
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['batch_code'];
         $row[] = $aRow['patient_art_no'];
-        $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['facility_state']);
-        $row[] = ($aRow['facility_district']);
-        $row[] = ($aRow['sample_name']);
+        $row[] = trim("$patientFname $patientMname $patientLname");
+        $row[] = $aRow['facility_name'];
+        $row[] = $aRow['facility_state'];
+        $row[] = $aRow['facility_district'];
+        $row[] = $aRow['sample_name'];
         $row[] = $aRow['result'];
         $row[] = $aRow['last_modified_datetime'];
-        $row[] = ($aRow['status_name']);
+        $row[] = $aRow['status_name'];
         if ($editRequest) {
             $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['vl_sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';
         }

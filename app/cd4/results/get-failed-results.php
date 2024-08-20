@@ -127,8 +127,7 @@ try {
     $failedStatusIds = [
         SAMPLE_STATUS\ON_HOLD,
         SAMPLE_STATUS\LOST_OR_MISSING,
-        SAMPLE_STATUS\TEST_FAILED,
-        SAMPLE_STATUS\EXPIRED
+        SAMPLE_STATUS\TEST_FAILED
     ];
     $start_date = '';
     $end_date = '';

@@ -39,6 +39,7 @@ $state = $geolocationService->getProvinces("yes");
     .select2-selection__choice {
         color: black !important;
     }
+
     .selectize-dropdown {
         width: 100% !important;
     }
@@ -112,7 +113,7 @@ $state = $geolocationService->getProvinces("yes");
                                     <option value="<?= SAMPLE_STATUS\TEST_FAILED; ?>" selected="selected"><?php echo _translate("Failed"); ?></option>
                                     <option value="<?= SAMPLE_STATUS\ON_HOLD; ?>" selected="selected"><?php echo _translate("Hold"); ?></option>
                                     <option value="<?= SAMPLE_STATUS\LOST_OR_MISSING; ?>"><?php echo _translate("Lost"); ?></option>
-                                    <option value="<?= SAMPLE_STATUS\EXPIRED; ?>"><?php echo _translate("Expired"); ?></option>
+                                    <!-- <option value="<?= SAMPLE_STATUS\EXPIRED; ?>"><?php echo _translate("Expired"); ?></option> -->
                                 </select>
                             </td>
                             <td><strong><?php echo _translate("Patient ID"); ?>&nbsp;:</strong></td>
