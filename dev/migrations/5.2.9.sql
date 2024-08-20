@@ -644,3 +644,23 @@ WHERE `access_type` IS NULL
       WHERE `name` = 'sc_user_type'
         AND `value` = 'remoteuser'
   );
+
+
+ALTER TABLE `form_vl` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_vl` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_eid` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_eid` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_covid19` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_covid19` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_cd4` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_cd4` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_hepatitis` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_hepatitis` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+
+ALTER TABLE `form_generic` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+ALTER TABLE `audit_form_generic` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
+

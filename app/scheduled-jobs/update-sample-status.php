@@ -51,14 +51,14 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
         }
 
         //EXPIRING SAMPLES
-        $expiryDays = $general->getGlobalConfig('sample_expiry_after_days');
-        if (empty($expiryDays)) {
+        $expiryDays = (int) ($general->getGlobalConfig('sample_expiry_after_days') ?? 365);
+        if (empty($expiryDays) || $expiryDays < 0) {
             $expiryDays = 365; // by default, we consider samples more than 1 years as expired
         }
         $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
         $db->where("result_status != " . SAMPLE_STATUS\ACCEPTED); // not approved
         $db->where("result_status != " . SAMPLE_STATUS\EXPIRED); // not expired
-        $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) > " . $expiryDays);
+        $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) > $expiryDays");
         $db->update(
             $tableName[$module],
             [
