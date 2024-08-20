@@ -619,3 +619,28 @@ ALTER TABLE `audit_form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET u
 
 -- Brindha 12-Aug-2024
 ALTER TABLE batch_details ADD COLUMN printed_datetime DATETIME NULL DEFAULT NULL AFTER control_names;
+
+-- Amit 20-Aug-2024
+-- Check if system_config.value is 'vluser' where system_config.name = 'sc_user_type'
+UPDATE `roles`
+SET `access_type` = 'testing-lab'
+WHERE `access_type` IS NULL
+  OR `access_type` = ''
+  AND EXISTS (
+      SELECT 1
+      FROM `system_config`
+      WHERE `name` = 'sc_user_type'
+        AND `value` = 'vluser'
+  );
+
+-- Check if system_config.value is 'remoteuser' where system_config.name = 'sc_user_type'
+UPDATE `roles`
+SET `access_type` = 'collection-site'
+WHERE `access_type` IS NULL
+  OR `access_type` = ''
+  AND EXISTS (
+      SELECT 1
+      FROM `system_config`
+      WHERE `name` = 'sc_user_type'
+        AND `value` = 'remoteuser'
+  );
