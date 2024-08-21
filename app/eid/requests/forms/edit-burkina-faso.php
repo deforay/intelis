@@ -323,7 +323,8 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                     <tr>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35%;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15%" class="labels"><?= _translate("Sample Dispatched On"); ?>
                                             <span class="mandatory">*</span>
@@ -636,6 +637,8 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
     }
 
     $(document).ready(function() {
+        checkCollectionDate('<?php echo $eidInfo['sample_collection_date']; ?>');
+
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
                 $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

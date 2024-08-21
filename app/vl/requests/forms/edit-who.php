@@ -383,7 +383,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate();">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate(); checkCollectionDate(this.value);">
+												<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 											</div>
 										</div>
 										<div class="col-xs-3 col-md-3">
@@ -887,6 +888,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	let resultValue = null;
 
 	$(document).ready(function() {
+		checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
+
 		hivDetectionChange();
 
 		$("#labId,#facilityId,#sampleCollectionDate").on('change', function() {

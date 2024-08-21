@@ -331,7 +331,8 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     <tr>
                                         <th scope="row" class="th-label"><label class="label-control" for="sampleCollectionDate"><?= _translate("Date Specimen Collected"); ?> <span class="mandatory">*</span></label></th>
                                         <td class="td-input">
-                                            <input class="form-control isRequired" type="text" value="<?php echo $tbInfo['sample_collection_date']; ?>" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" />
+                                            <input class="form-control isRequired" type="text" value="<?php echo $tbInfo['sample_collection_date']; ?>" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="checkCollectionDate(this.value);" />
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" class="th-label"><label class="label-control" for="specimenType"><?= _translate("Specimen Type"); ?> <span class="mandatory">*</span></label></th>
                                         <td class="td-input">
@@ -727,6 +728,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
     }
 
     $(document).ready(function() {
+        checkCollectionDate('<?php echo $tbInfo['sample_collection_date']; ?>');
 
         $("#patientGender").change(function() {
           if ($(this).val() == 'male' || $(this).val() == 'unreported') {

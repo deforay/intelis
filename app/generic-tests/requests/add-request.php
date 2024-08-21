@@ -480,7 +480,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                   <div class="col-md-6">
                                                        <label class="col-lg-5" for="sampleCollectionDate"><?= _translate("Date of Sample Collection"); ?> <span class="mandatory">*</span></label>
                                                        <div class="col-lg-7">
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?php echo _translate('Sample Collection Date'); ?>" title="<?php echo _translate('Please select sample collection date'); ?>" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?php echo _translate('Sample Collection Date'); ?>" title="<?php echo _translate('Please select sample collection date'); ?>" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();checkCollectionDate(this.value);">
+                                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                                        </div>
                                                   </div>
                                                   <div class="col-md-6">
