@@ -381,7 +381,8 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
