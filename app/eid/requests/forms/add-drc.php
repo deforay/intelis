@@ -370,7 +370,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									<tr>
 										<th scope="row" style="width:15%;">Date de collecte <span class="mandatory">*</span> </th>
 										<td style="width:35%;">
-											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="generateSampleCode();" />
+											<input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 
 										<th scope="row" style="width:15%;">Tel. du préleveur</th>

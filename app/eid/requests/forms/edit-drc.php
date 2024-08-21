@@ -411,7 +411,8 @@ $storageInfo = $storageService->getLabStorage();
 									<tr>
 										<th scope="row">Date de collecte</th>
 										<td>
-											<input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" />
+											<input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
+											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 
 										<th scope="row">Tel. du préleveur</th>
@@ -807,6 +808,7 @@ $storageInfo = $storageService->getLabStorage();
 	}
 
 	$(document).ready(function() {
+        checkCollectionDate('<?php echo $eidInfo['sample_collection_date']; ?>');
 
 
 		$('#facilityId').select2({

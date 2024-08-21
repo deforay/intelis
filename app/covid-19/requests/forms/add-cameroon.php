@@ -338,7 +338,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>" onchange="generateSampleCode();" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">

@@ -376,6 +376,7 @@ $sFormat = '';
 										</td>
 										<td>
 											<input type="text" class="form-control dateTime isRequired" id="sampleCollectionDate" name="sampleCollectionDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du prélèvement" onchange="generateSampleCode(); checkCollectionDate(this.value);" style="width:100%;" />
+											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 										<td></td>
 										<td></td>
