@@ -352,7 +352,8 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
-                                                       <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $cd4QueryInfo['sample_collection_date']; ?>">
+                                                       <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $cd4QueryInfo['sample_collection_date']; ?>" onchange="checkCollectionDate(this.value);">
+                                                       <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
@@ -833,6 +834,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      facilityName = true;
 
      $(document).ready(function() {
+
+          checkCollectionDate('<?php echo $cd4QueryInfo['sample_collection_date']; ?>');
           Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
           fillFacilityDetails();
