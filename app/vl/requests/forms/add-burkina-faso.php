@@ -405,7 +405,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                        <h3 class="box-title"><?= _translate("Indication for Viral Load Testing"); ?> <span class="mandatory">*</span></h3><small> <?= _translate("(Please choose one):(To be completed by clinician)"); ?></small>
                                                   </div>
                                                   <div class="box-body">
-                                                       <?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+                                                       <?php if (!empty($testReasonsResult)) {
                                                             foreach ($testReasonsResult as $key => $title) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">
@@ -429,7 +429,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+                                                                 <?php if (!empty($subTestReasons[$key])) { ?>
                                                                       <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
                                                                            <div class="col-md-6">
                                                                                 <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>

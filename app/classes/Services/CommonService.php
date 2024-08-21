@@ -40,7 +40,7 @@ final class CommonService
     {
         return $this->fileCache->get('remoteURL', function () {
             $remoteUrl = SYSTEM_CONFIG['remoteURL'];
-            if (!isset($remoteUrl) || $remoteUrl == '' || empty($remoteUrl)) {
+            if ($remoteUrl == '' || empty($remoteUrl)) {
                 return null;
             }
 
