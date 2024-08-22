@@ -339,7 +339,8 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <tr>
                                         <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th style="width:15% !important;"></th>
                                         <td style="width:35% !important;"></td>
@@ -630,6 +631,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
     $(document).ready(function() {
 
+        checkCollectionDate('<?php echo $eidInfo['sample_collection_date']; ?>');
         setrapidTestRelatedField($('#rapidTestPerformed').val());
         setRelatedField($('#pcrTestPerformedBefore').val());
         $('#facilityId').select2({

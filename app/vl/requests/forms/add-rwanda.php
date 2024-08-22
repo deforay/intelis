@@ -251,6 +251,7 @@ $sFormat = '';
                                                        <div class="form-group">
                                                             <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
                                                             <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="generateSampleCode(); checkCollectionDate(this.value);">
+                                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">

@@ -137,6 +137,8 @@ try {
         vl.rejection_on                         as rejectionDate,
         vl.result_status                        as resultStatus,
         vl.sample_tested_datetime               as sampleTestedDate,
+        vl.sample_dispatched_datetime           as sampleDispatchedOn,
+        vl.result_dispatched_datetime           as resultDispatchedOn,
         l_f.facility_name                       as labName,
         vl.result,
         vl.sample_received_at_lab_datetime      as sampleReceivedDate,
