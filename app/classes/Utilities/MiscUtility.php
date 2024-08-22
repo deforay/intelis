@@ -24,6 +24,8 @@ final class MiscUtility
         $ids = $sqids->decode($data);
         if (count($ids) == 1) {
             return $ids[0];
+        }else{
+            return $ids;
         }
     }
     public static function generateRandomString(int $length = 32): string

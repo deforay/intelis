@@ -247,7 +247,6 @@ try {
     LoggerUtility::logError($exc->getMessage(), [
         'file' => __FILE__,
         'line' => __LINE__,
-        'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);
 }

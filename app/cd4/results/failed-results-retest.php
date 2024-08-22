@@ -37,11 +37,12 @@ try {
 
     $id = $db->update(
         "form_cd4",
-        array(
+        [
             "cd4_result" => null,
             "sample_batch_id" => null,
+            "sample_tested_datetime" => null,
             "result_status" => $status
-        )
+        ]
     );
 
     if ($id > 0 && !empty($response)) {

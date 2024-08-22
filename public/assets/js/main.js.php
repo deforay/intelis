@@ -667,37 +667,35 @@ $remoteUrl = $general->getRemoteURL();
         $.unblockUI();
     }
 
-    function checkCollectionDate(collectionDate, allowFutureDate = false){
+    function checkCollectionDate(collectionDate, allowFutureDate = false) {
         if (collectionDate != "") {
             const dateC = collectionDate.split(" ");
             dt = dateC[0];
             f = dt.split("-");
-            cDate = f[2]+'-'+f[1]+'-'+f[0];
-                $.post("/common/date-validation.php", {
-                        sampleCollectionDate: collectionDate,
-                        allowFutureDates : allowFutureDate
-                    },
-                    function(data) {
-                        console.log(data);
-                        if (data == "1") {
-                            alert("Please enter valid Sample Collection Date & Date should not be in future")
-                            return false;
+            cDate = f[2] + '-' + f[1] + '-' + f[0];
+            $.post("/common/date-validation.php", {
+                    sampleCollectionDate: collectionDate,
+                    allowFutureDates: allowFutureDate
+                },
+                function(data) {
+                    console.log(data);
+                    if (data == "1") {
+                        alert("Please enter valid Sample Collection Date & Date should not be in future")
+                        return false;
+                    } else {
+                        var diff = (new Date(cDate).getTime() - new Date().getTime()) / 1000;
+                        diff = diff / (60 * 60 * 24 * 10 * 3);
+                        var diffMonths = Math.abs(Math.round(diff));
+                        if (diffMonths > 6) {
+                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old"); ?>');
+                            $('.expiredCollectionDate').show();
+                        } else {
+                            $('.expiredCollectionDate').hide();
                         }
-                        else{
-                            var diff =(new Date(cDate).getTime() - new Date().getTime()) / 1000;
-                            diff = diff / (60 * 60 * 24 * 10 * 3);
-                            var diffMonths = Math.abs(Math.round(diff));
-                            if(diffMonths > 6){
-                                $('.expiredCollectionDate').html('<?php echo _translate("Sample Collection Date is over 6 months old"); ?>');
-                                $('.expiredCollectionDate').show();
-                            }
-                            else{
-                                $('.expiredCollectionDate').hide();
-                            }
-                            
-                        }
-                    });
-            }
+
+                    }
+                });
+        }
 
     }
 

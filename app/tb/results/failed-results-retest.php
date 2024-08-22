@@ -46,6 +46,7 @@ try {
             "result" => null,
             "xpert_mtb_result" => null,
             "sample_batch_id" => null,
+            "sample_tested_datetime" => null,
             "result_status" => $status
         )
     );

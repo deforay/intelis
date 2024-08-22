@@ -374,7 +374,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Maximum Length of Phone Number"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control forceNumeric readPage isNumeric" id="max_phone_length" name="max_phone_length" placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter maximun length of phone number'); ?>" value="<?php echo ($arr['max_phone_length'] == '') ? '' : $arr['max_phone_length']; ?>" style="max-width:60px;" />
+												<input type="text" class="form-control forceNumeric readPage isNumeric" id="max_phone_length" name="max_phone_length" placeholder="<?php echo _translate('Max'); ?>" title="<?php echo _translate('Please enter maximum length of phone number'); ?>" value="<?php echo ($arr['max_phone_length'] == '') ? '' : $arr['max_phone_length']; ?>" style="max-width:60px;" />
 											</div>
 										</div>
 									</div>

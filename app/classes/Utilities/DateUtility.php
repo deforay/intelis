@@ -103,8 +103,9 @@ final class DateUtility
         return false;
     }
     private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = true): ?Carbon
+
     {
-        if ($ignoreTime) {
+        if ($ignoreTime === true) {
             $dateStr = explode(' ', $dateStr)[0]; // Extract only the date part
         }
         if ($formats) {

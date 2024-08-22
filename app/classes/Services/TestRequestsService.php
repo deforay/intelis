@@ -162,6 +162,7 @@ final class TestRequestsService
                             'line' => $e->getLine(),
                             'stacktrace' => $e->getTraceAsString()
                         ]);
+                        return false;
                     }
                 }
             }

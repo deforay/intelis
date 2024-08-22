@@ -43,6 +43,7 @@ try {
         array(
             "result" => null,
             "sample_batch_id" => null,
+            "sample_tested_datetime" => null,
             "lot_expiration_date" => null,
             "lot_number" => null,
             "result_status" => $status

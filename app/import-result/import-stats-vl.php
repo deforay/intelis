@@ -72,19 +72,19 @@ unset($_SESSION['controllertrack']);
                             <tbody>
                                 <tr>
                                     <td>
-                                        <?= isset($tsResult['totalCount']) ? $tsResult['totalCount'] : 0; ?>
+                                        <?= $tsResult['totalCount'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult['HighViralLoad']) ? $tsResult['HighViralLoad'] : 0; ?>
+                                        <?= $tsResult['HighViralLoad'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult['LowViralLoad']) ? $tsResult['LowViralLoad'] : 0; ?>
+                                        <?= $tsResult['LowViralLoad'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult['Rejected']) ? $tsResult['Rejected'] : 0; ?>
+                                        <?= $tsResult['Rejected'] ?? 0; ?>
                                     </td>
                                     <td>
-                                        <?= isset($tsResult['HoldOrFailed']) ? $tsResult['HoldOrFailed'] : 0; ?>
+                                        <?= $tsResult['HoldOrFailed'] ?? 0; ?>
                                     </td>
                                 </tr>
                             </tbody>

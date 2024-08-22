@@ -51,6 +51,7 @@ try {
             "result_value_text" => null,
             "result_value_absolute_decimal" => null,
             "result" => null,
+            "sample_tested_datetime" => null,
             "sample_batch_id" => null,
             "lot_expiration_date" => null,
             "lot_number" => null,

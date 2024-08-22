@@ -85,7 +85,11 @@ try {
         $testTypeCol = " vl.test_type, ";
     }
 
-    $sQuery = "SELECT SUM(CASE WHEN vl.sample_tested_datetime is not null THEN 1 ELSE 0 END) as `testcount`,
+    $sQuery = "SELECT SUM(CASE
+                    WHEN (vl.result IS NOT NULL AND vl.result != '')
+                    OR IFNULL(vl.is_sample_rejected, 'no') = 'yes'
+                    THEN 1 ELSE 0
+                END) as `testcount`,
                 MAX(vl.sample_tested_datetime) as last_tested_date,
                 $testTypeCol
                 b.request_created_datetime,

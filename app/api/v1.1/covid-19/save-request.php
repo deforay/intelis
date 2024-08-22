@@ -485,7 +485,7 @@ try {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
             $syptomDetections = $data['covid19PatientSymptomsArray'] ?? $data['symptom'];
-            if (!empty($syptomDetections) || (!empty($syptomDetections))) {
+            if ((!empty($syptomDetections))) {
                 for ($i = 0; $i < count($syptomDetections); $i++) {
 
                     $data['symptomId'][$i] = $data['symptomId'][$i] ?? $syptomDetections[$i]['id'];
