@@ -294,6 +294,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/covid-19/requests/activate-samples-from-manifest.php", {
+				testType: 'covid19',
+				manifestCode: $("#samplePackageCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},

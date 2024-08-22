@@ -125,7 +125,7 @@ try {
         }
     }
 
-    $vldata = array(
+    $dataToUpdate = array(
         'vlsm_instance_id' => $instanceId,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
         'test_platform' => $testingPlatform,
@@ -161,7 +161,7 @@ try {
 
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-        $vldata['result_status'] = SAMPLE_STATUS\REJECTED;
+        $dataToUpdate['result_status'] = SAMPLE_STATUS\REJECTED;
     }
     // echo "<pre>";print_r($_POST);die;
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
@@ -238,7 +238,7 @@ try {
                 }
             }
         }
-        $vldata['result'] = $finalResult;
+        $dataToUpdate['result'] = $finalResult;
     } else {
         $db->where('generic_id', $_POST['vlSampleId']);
         $db->delete('generic_test_results');
@@ -246,7 +246,7 @@ try {
     }
 
     $db->where('sample_id', $_POST['vlSampleId']);
-    $id = $db->update($tableName, $vldata);
+    $id = $db->update($tableName, $dataToUpdate);
     // var_dump($db->getLastError());die;
     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id === true) {

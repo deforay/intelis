@@ -62,7 +62,6 @@ final class TestRequestsService
             }
             $this->db->where('processed = 0');
             $queueItems = $this->db->get('queue_sample_code_generation', 100);
-
             if (!empty($queueItems)) {
                 foreach ($queueItems as $item) {
 
@@ -152,8 +151,6 @@ final class TestRequestsService
                         }
 
                         $this->db->commitTransaction();
-
-                        return $response;
                     } catch (Throwable $e) {
                         $this->db->rollbackTransaction();
                         LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
@@ -162,7 +159,7 @@ final class TestRequestsService
                             'line' => $e->getLine(),
                             'stacktrace' => $e->getTraceAsString()
                         ]);
-                        return false;
+                        continue;
                     }
                 }
             }
@@ -171,6 +168,69 @@ final class TestRequestsService
                 // Remove the lock file when the script ends
                 unlink($lockFile);
             }
+            return $response;
         }
+    }
+
+    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode)
+    {
+        $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
+        $tableName = TestsService::getTestTableName($testType);
+
+        $sampleQuery = "SELECT $primaryKey,
+                    unique_id,
+                    sample_collection_date,
+                    sample_package_code,
+                    province_id,
+                    sample_code
+                    FROM $tableName WHERE sample_package_code = '$manifestCode'";
+        $sampleResult = $this->db->rawQuery($sampleQuery);
+
+        $status = 0;
+
+        $uniqueIdsForSampleCodeGeneration = [];
+        foreach ($sampleResult as $sampleRow) {
+
+            $_POST['sampleReceivedOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedOn'] ?? '', true);
+
+            // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
+            if (empty($sampleRow['sample_code']) || $sampleRow['sample_code'] == 'null') {
+
+                $this->addToSampleCodeQueue(
+                    $sampleRow['unique_id'],
+                    $testType,
+                    DateUtility::isoDateFormat($sampleRow['sample_collection_date'], true),
+                    $provinceCode,
+                    $sampleCodeFormat ?? 'MMYY',
+                    $prefix,
+                    'testing-lab'
+                );
+
+                $uniqueIdsForSampleCodeGeneration[] = $sampleRow['unique_id'];
+            }
+        }
+
+        $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
+        if ($sampleCodeData !== false) {
+
+            $uniqueIds = array_keys($sampleCodeData);
+
+            $dataToUpdate = [];
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $dataToUpdate['data_sync'] = 0;
+
+            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
+            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            if (!empty($_POST['sampleReceivedOn'])) {
+                $dataToUpdate['sample_tested_datetime'] = null;
+                $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
+            }
+            $this->db->where('unique_id', $uniqueIds, 'IN');
+            $this->db->update($tableName, $dataToUpdate);
+            $status = 1;
+        }
+
+        return $status;
     }
 }

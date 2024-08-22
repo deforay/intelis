@@ -59,21 +59,21 @@ try {
             $sampleJson = $cd4Obj->getSampleCode($sampleCodeParams);
             $sampleData = json_decode((string) $sampleJson, true);
 
-            $vldata['sample_code'] = $sampleData['sampleCode'];
-            $vldata['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $vldata['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $vldata['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-            $vldata['data_sync'] = 0;
+            $dataToUpdate['sample_code'] = $sampleData['sampleCode'];
+            $dataToUpdate['sample_code_format'] = $sampleData['sampleCodeFormat'];
+            $dataToUpdate['sample_code_key'] = $sampleData['sampleCodeKey'];
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $dataToUpdate['data_sync'] = 0;
 
-            $vldata['last_modified_by'] = $_SESSION['userId'];
-            $vldata['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
+            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
             if (!empty($_POST['sampleReceivedOn'])) {
-                $vldata['sample_tested_datetime'] = null;
-                $vldata['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
+                $dataToUpdate['sample_tested_datetime'] = null;
+                $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
             }
             $db->where('cd4_id', $sampleRow['cd4_id']);
-            $id = $db->update('form_cd4', $vldata);
+            $id = $db->update('form_cd4', $dataToUpdate);
 
             if ($id === true) {
                 $status = 1;

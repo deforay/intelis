@@ -119,7 +119,7 @@ try {
     }
 
 
-    $vlData = array(
+    $vlData = [
         'vlsm_instance_id' => $instanceId,
         // 'lab_id' => $_POST['labId'] ?? null,
         'vl_test_platform' => $testingPlatform ?? null,
@@ -172,7 +172,7 @@ try {
         'tech_name_png' => $_POST['techName'] ?? null,
         'qc_tech_name' => $_POST['qcTechName'] ?? null,
         'qc_tech_sign' => $_POST['qcTechSign'] ?? null,
-    );
+    ];
 
     $formAttributes = [
         'applicationVersion' => $general->getSystemConfig('sc_version'),

@@ -2,18 +2,22 @@
 
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\ConfigService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
-use App\Services\ConfigService;
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
 
 /** @var ConfigService $configService */
 $configService = ContainerRegistry::get(ConfigService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
 $modulesToEnable = $_POST['enabledModules'];
 $systemConfigFields = [
     'sc_testing_lab_id',
@@ -49,7 +53,7 @@ try {
     }
 
     $updatedConfig = [
-        'remoteURL' => $remoteUrl,
+        'remoteURL' => $_POST['remoteUrl'] ?? $general->getRemoteUrl(),
         'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
         'modules.eid' => in_array('eid', $modulesToEnable) ? true : false,
         'modules.covid19' => in_array('covid19', $modulesToEnable) ? true : false,

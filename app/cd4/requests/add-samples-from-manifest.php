@@ -285,6 +285,8 @@ $title = _translate("Add Samples from Manifest");
 		}
 		$.blockUI();
 		$.post("/cd4/requests/activate-samples-from-manifest.php", {
+				testType: 'cd4',
+				manifestCode: $("#samplePackageCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},

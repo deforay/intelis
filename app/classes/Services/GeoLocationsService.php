@@ -53,7 +53,7 @@ final class GeoLocationsService
 
         if (!empty($facilityMap)) {
             $this->db->join("facility_details", "facility_state_id=geo_id", "INNER");
-            $this->db->where("facility_id IN (" . $facilityMap . ")");
+            $this->db->where("facility_id IN ($facilityMap)");
         }
 
         $this->db->orderBy("geo_name", "asc");
@@ -82,6 +82,23 @@ final class GeoLocationsService
 
         if ($pResult) {
             return $pResult['geo_id'];
+        } else {
+            return null;
+        }
+    }
+    // get province id from the province table
+    public function getProvinceCodeFromId(int $provinceId)
+    {
+        if ($this->db == null || $provinceId == 0) {
+            return null;
+        }
+
+        $q = "SELECT geo_code FROM geographical_divisions
+                    WHERE (geo_parent = 0) AND (geo_id like ?)";
+        $result = $this->db->rawQueryOne($q, [$provinceId]);
+
+        if ($result) {
+            return $result['geo_code'];
         } else {
             return null;
         }
@@ -212,7 +229,7 @@ final class GeoLocationsService
         return $district;
     }
 
-    function getProvinceDropdown($selectedProvince = null, $option = null)
+    public function getProvinceDropdown($selectedProvince = null, $option = null)
     {
         if (!empty($_SESSION['facilityMap'])) {
             $this->db->join("facility_details f", "f.facility_state_id=p.geo_id", "INNER");

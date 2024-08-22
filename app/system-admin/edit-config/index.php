@@ -27,7 +27,7 @@ $testName = TestsService::getTestTypes();
 $globalConfig = $general->getGlobalConfig();
 
 ?>
-  <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -51,7 +51,7 @@ $globalConfig = $general->getGlobalConfig();
         <!-- form start -->
         <form class="form-horizontal" method='post' name='editSystemConfigForm' id='editSystemConfigForm' enctype="multipart/form-data" autocomplete="off" action="systemConfigHelper.php">
           <div class="box-body">
-          <div class="panel panel-default">
+            <div class="panel panel-default">
               <div class="panel-heading">
                 <h3 class="panel-title"><?php echo _translate("System Settings"); ?></h3>
               </div>
@@ -61,7 +61,7 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Database Host Name"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="dbHostName" value="<?= SYSTEM_CONFIG['database']['host']; ?>" type="text" class="form-control" name="dbHostName" placeholder="<?= _translate("Please enter database host name"); ?>" title="<?= _translate("Please enter database host name"); ?>" />
+                        <input id="dbHostName" value="<?= SYSTEM_CONFIG['database']['host']; ?>" type="text" class="form-control" name="dbHostName" placeholder="<?= _translate("Please enter database host name"); ?>" title="<?= _translate("Please enter database host name"); ?>" />
                       </div>
                     </div>
                   </div>
@@ -69,7 +69,7 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Database Username"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="dbUserName" value="<?= SYSTEM_CONFIG['database']['username']; ?>" type="text" class="form-control" name="dbUserName" placeholder="<?= _translate("Please enter database user name"); ?>" title="<?= _translate("Please enter database user name"); ?>" />
+                        <input id="dbUserName" value="<?= SYSTEM_CONFIG['database']['username']; ?>" type="text" class="form-control" name="dbUserName" placeholder="<?= _translate("Please enter database user name"); ?>" title="<?= _translate("Please enter database user name"); ?>" />
                       </div>
                     </div>
                   </div>
@@ -77,7 +77,7 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Database Password"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="dbPassword" value="<?= SYSTEM_CONFIG['database']['password']; ?>" type="text" class="form-control" name="dbPassword" placeholder="<?= _translate("Please enter database password"); ?>" title="<?= _translate("Please enter database password"); ?>" />
+                        <input id="dbPassword" value="<?= SYSTEM_CONFIG['database']['password']; ?>" type="text" class="form-control" name="dbPassword" placeholder="<?= _translate("Please enter database password"); ?>" title="<?= _translate("Please enter database password"); ?>" />
                       </div>
                     </div>
                   </div>
@@ -85,7 +85,7 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Database Name"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="dbName" value="<?= SYSTEM_CONFIG['database']['db']; ?>" type="text" class="form-control" name="dbName" placeholder="<?= _translate("Please enter database name"); ?>" title="<?= _translate("Please enter database name"); ?>" />
+                        <input id="dbName" value="<?= SYSTEM_CONFIG['database']['db']; ?>" type="text" class="form-control" name="dbName" placeholder="<?= _translate("Please enter database name"); ?>" title="<?= _translate("Please enter database name"); ?>" />
                       </div>
                     </div>
                   </div>
@@ -93,10 +93,10 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Database Port"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="dbPort" value="<?= SYSTEM_CONFIG['database']['port']; ?>" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" />
+                        <input id="dbPort" value="<?= SYSTEM_CONFIG['database']['port']; ?>" type="text" class="form-control" name="dbPort" placeholder="<?= _translate("Please enter database port"); ?>" title="<?= _translate("Please enter database port"); ?>" />
                       </div>
                     </div>
-                  </div>                 
+                  </div>
                 </div>
               </div>
             </div>
@@ -106,7 +106,7 @@ $globalConfig = $general->getGlobalConfig();
               </div>
               <div class="panel-body">
                 <div class="row">
-                <div class="col-md-7">
+                  <div class="col-md-7">
                     <div class="form-group">
                       <label for="sc_user_type" class="col-lg-4 control-label"><?php echo _translate("Instance Type"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
@@ -123,10 +123,10 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("STS URL"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <input id="remoteUrl" type="text" class="form-control lis-input" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
+                        <input id="remoteUrl" type="text" class="form-control lis-input" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
                       </div>
                     </div>
-                  </div>  
+                  </div>
                   <div class="col-md-7 labName" style="<?php echo ($general->isLISInstance()) ? 'display:show' : 'display:none'; ?>">
                     <div class="form-group">
                       <label for="sc_testing_lab_id" class="col-lg-4 control-label"><?php echo _translate("Lab Name"); ?></label>
@@ -144,34 +144,34 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Enabled Modules"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <select class="" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
-                <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
-                <?php foreach ($testName as $key => $val) {
-                ?>
-                  <option value="<?= $key; ?>" <?php if(isset(SYSTEM_CONFIG['modules'][$key]) && SYSTEM_CONFIG['modules'][$key]==true) echo "selected='selected'"; ?>><?= $val['testName']; ?></option>
-                <?php
-                } ?>
-              </select>
+                        <select class="" name="enabledModules[]" id="enabledModules" title="<?php echo _translate('Please select the tests'); ?>" multiple="multiple">
+                          <option value=""><?= _translate("-- Choose Modules to Enable --"); ?></option>
+                          <?php foreach ($testName as $key => $val) {
+                          ?>
+                            <option value="<?= $key; ?>" <?php if (isset(SYSTEM_CONFIG['modules'][$key]) && SYSTEM_CONFIG['modules'][$key] == true) echo "selected='selected'"; ?>><?= $val['testName']; ?></option>
+                          <?php
+                          } ?>
+                        </select>
                       </div>
                     </div>
-                  </div>  
+                  </div>
                   <div class="col-md-7">
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Viral Load Form"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                      <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
-                        <option value=""></option>
-                        <?php
-                        foreach ($formResult as $val) {
-                        ?>
-                          <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $globalConfig['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
-                        <?php
-                        }
-                        ?>
-                      </select>                      
+                        <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
+                          <option value=""></option>
+                          <?php
+                          foreach ($formResult as $val) {
+                          ?>
+                            <option value="<?php echo $val['vlsm_country_id']; ?>" <?php echo ($val['vlsm_country_id'] == $globalConfig['vl_form']) ? "selected='selected'" : "" ?>><?php echo $val['form_name']; ?></option>
+                          <?php
+                          }
+                          ?>
+                        </select>
+                      </div>
                     </div>
-                    </div>
-                  </div>  
+                  </div>
                   <div class="col-md-7">
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("Timezone"); ?> <span class="mandatory">*</span></label>
@@ -191,8 +191,8 @@ $globalConfig = $general->getGlobalConfig();
                       </div>
                     </div>
                   </div>
-                  
-                 
+
+
                 </div>
               </div>
             </div>
@@ -242,9 +242,9 @@ $globalConfig = $general->getGlobalConfig();
     enableLab();
     $(".select2").select2();
 
-      $("#enabledModules").selectize({
-        plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-      });
+    $("#enabledModules").selectize({
+      plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+    });
   });
 
   function enableLab() {

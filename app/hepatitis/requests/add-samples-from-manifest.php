@@ -293,6 +293,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/hepatitis/requests/activate-samples-from-manifest.php", {
+				testType: 'hepatitis',
+				manifestCode: $("#samplePackageCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},

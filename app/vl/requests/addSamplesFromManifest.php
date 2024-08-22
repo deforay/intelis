@@ -284,7 +284,8 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 		$.blockUI();
 		$.post("/vl/requests/activate-samples-from-manifest.php", {
-				sampleId: $("#sampleId").val(),
+				testType: 'vl',
+				manifestCode: $("#samplePackageCode").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
 			function(data) {

@@ -246,6 +246,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 		$.blockUI();
 		$.post("/tb/requests/activate-samples-from-manifest.php", {
+				testType: 'tb',
+				manifestCode: $("#samplePackageCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
