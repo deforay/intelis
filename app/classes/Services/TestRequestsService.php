@@ -172,18 +172,11 @@ final class TestRequestsService
         }
     }
 
-    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode)
+    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null, $provinceCode = null)
     {
-        $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
         $tableName = TestsService::getTestTableName($testType);
 
-        $sampleQuery = "SELECT $primaryKey,
-                    unique_id,
-                    sample_collection_date,
-                    sample_package_code,
-                    province_id,
-                    sample_code
-                    FROM $tableName WHERE sample_package_code = '$manifestCode'";
+        $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode'";
         $sampleResult = $this->db->rawQuery($sampleQuery);
 
         $status = 0;
@@ -195,6 +188,10 @@ final class TestRequestsService
 
             // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
             if (empty($sampleRow['sample_code']) || $sampleRow['sample_code'] == 'null') {
+
+                if ($testType == 'hepatitis') {
+                    $prefix = $sampleRow['hepatitis_test_type'] ?? $prefix;
+                }
 
                 $this->addToSampleCodeQueue(
                     $sampleRow['unique_id'],
