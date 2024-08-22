@@ -326,6 +326,17 @@ try {
         } else {
             $data['reviewedOn'] = null;
         }
+        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
+            $data['resultDispatchedOn'] = DateUtility::isoDateFormat($data['resultDispatchedOn'], true);
+        } else {
+            $data['resultDispatchedOn'] = null;
+        }
+
+        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
+            $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($data['sampleDispatchedOn'], true);
+        } else {
+            $data['sampleDispatchedOn'] = null;
+        }
 
         $formAttributes = [
             'applicationVersion' => $version,
@@ -407,6 +418,8 @@ try {
             'reason_for_covid19_test' => !empty($data['reasonForCovid19Test']) ? $data['reasonForCovid19Test'] : null,
             'type_of_test_requested' => !empty($data['testTypeRequested']) ? $data['testTypeRequested'] : null,
             'specimen_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
+            'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
+            'result_dispatched_datetime' => $data['resultDispatchedOn'],
             'sample_collection_date' => DateUtility::isoDateFormat($data['sampleCollectionDate'] ?? '', true),
             'health_outcome' => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date' => !empty($data['outcomeDate']) ? DateUtility::isoDateFormat($data['outcomeDate']) : null,
