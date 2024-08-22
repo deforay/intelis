@@ -664,3 +664,9 @@ ALTER TABLE `audit_form_hepatitis` ADD `rejection_on` DATE NULL DEFAULT NULL AFT
 ALTER TABLE `form_generic` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 ALTER TABLE `audit_form_generic` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
 
+
+-- Jeyabanu 22-Aug-2024
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', 'test-results-metadata.php', NULL, 'Test Results Metadata', NULL, 'always');
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Test Results Metadata', '/admin/monitoring/test-results-metadata.php', NULL, 'always', 'fa-solid fa-meta', 'no', 'allMenu treeview test-result-metadata-menu', '7', '20', 'active', CURRENT_TIMESTAMP);
+
+UPDATE `privileges` SET `show_mode` = 'always' WHERE `privileges`.`privilege_name` = '/vl/program-management/sample-storage-reports.php';
