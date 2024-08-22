@@ -296,6 +296,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             <div class="form-group">
                                                                  <label for="">Date of Sample Collection <span class="mandatory">*</span></label>
                                                                  <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkSampleTestingDate(); checkCollectionDate(this.value);">
+                                                                 <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
@@ -758,7 +759,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      provinceName = true;
      facilityName = true;
      $(document).ready(function() {
-
+          checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
+          
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);

@@ -279,7 +279,8 @@ foreach ($testReasonsResultDetails as $row) {
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group" style=" width: 100%; ">
                                                             <label for=""><?= _translate("Date of Sample Collection"); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();">
+                                                            <input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select sample collection date" onchange="checkSampleTestingDate();generateSampleCode();setSampleDispatchDate();checkCollectionDate(this.value);">
+                                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                                        </div>
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
@@ -404,7 +405,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                        <h3 class="box-title"><?= _translate("Indication for Viral Load Testing"); ?> <span class="mandatory">*</span></h3><small> <?= _translate("(Please choose one):(To be completed by clinician)"); ?></small>
                                                   </div>
                                                   <div class="box-body">
-                                                       <?php if (isset($testReasonsResult) && !empty($testReasonsResult)) {
+                                                       <?php if (!empty($testReasonsResult)) {
                                                             foreach ($testReasonsResult as $key => $title) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">
@@ -428,7 +429,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <?php if (isset($subTestReasons[$key]) && !empty($subTestReasons[$key])) { ?>
+                                                                 <?php if (!empty($subTestReasons[$key])) { ?>
                                                                       <div class="row rmTesting<?php echo $key; ?> hideTestData well" style="display:none;">
                                                                            <div class="col-md-6">
                                                                                 <label class="col-lg-5 control-label"><?= _translate('Choose reason for testing'); ?></label>

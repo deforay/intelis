@@ -490,7 +490,8 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 											<label for="sampleCollectionDate">Collection date <span class="mandatory">*</span></label>
 										</td>
 										<td>
-											<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter sample collection date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>">
+											<input type="text" class="form-control isRequired" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please enter sample collection date" style="width:100%;" value="<?php echo $vlQueryInfo['sample_collection_date']; ?>" onchange="checkCollectionDate(this.value);">
+											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 										<td colspan="4" class="typeOfSample">
 											<label class="radio-inline">
@@ -816,6 +817,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	}
 
 	$(document).ready(function() {
+		checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
 		getVlResults('testingPlatform', 'possibleVlResults', 'cphlvlResult');
 		getVlResults('failedTestingTech', 'failedPossibleVlResults', 'failedvlResult');
 		getVlResults('testingPlatform', 'finalPossibleVlResults', 'finalViralLoadResult');

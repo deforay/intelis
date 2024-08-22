@@ -481,8 +481,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <input class="form-control dateTime isRequired" value="<?php if(isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'],true); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);"  />
-                                            <span class="expiredCollectionDate" style="color:red; display:none;"><?php echo _translate("Sample Collection Date is over 6 months old"); ?></span>
-                                        </td>
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
+                                            </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
@@ -980,38 +980,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 			});
 	}
 
-    function checkCollectionDate(collectionDate, allowFutureDate = false){
-        if (collectionDate != "") {
-            const dateC = collectionDate.split(" ");
-            dt = dateC[0];
-            f = dt.split("-");
-            cDate = f[2]+'-'+f[1]+'-'+f[0];
-                $.post("/common/date-validation.php", {
-                        sampleCollectionDate: collectionDate,
-                        allowFutureDates : allowFutureDate
-                    },
-                    function(data) {
-                        console.log(data);
-                        if (data == "1") {
-                            alert("Please enter valid Sample Collection Date & Date should not be in future")
-                            return false;
-                        }
-                        else{
-                            var diff =(new Date(cDate).getTime() - new Date().getTime()) / 1000;
-                            diff = diff / (60 * 60 * 24 * 10 * 3);
-                            var diffMonths = Math.abs(Math.round(diff));
-                            if(diffMonths > 6){
-                                $('.expiredCollectionDate').show();
-                            }
-                            else{
-                                $('.expiredCollectionDate').hide();
-                            }
-                            
-                        }
-                    });
-            }
-
-    }
     
     $('#addEIDRequestForm').keypress((e) => { 
           // Enter key corresponds to number 13 

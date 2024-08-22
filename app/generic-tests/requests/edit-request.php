@@ -677,7 +677,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<div class="col-md-6">
 											<label class="col-lg-5" for=""><?= _translate("Date of Sample Collection"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" value="<?php echo $genericResultInfo['sample_collection_date']; ?>">
+												<input type="text" class="form-control isRequired dateTime" style="width:100%;" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" title="<?= _translate('Please select sample collection date'); ?>" value="<?php echo $genericResultInfo['sample_collection_date']; ?>" onchange="checkCollectionDate(this.value);" >
+												<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -968,7 +969,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	$(document).ready(function() {
 
 		
-		
+		checkCollectionDate('<?php echo $genericTestInfo['sample_collection_date']; ?>');
+
 
 		$("#subTestResult").multipleSelect({
 			placeholder: '<?php echo _translate("Select Sub Tests"); ?>',

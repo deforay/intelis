@@ -353,7 +353,8 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate("Sample Collection Date"); ?>" value="<?php echo ($covid19Info['sample_collection_date']); ?>" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate("Sample Collection Date"); ?>" value="<?php echo ($covid19Info['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
@@ -834,6 +835,8 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
      }
 
     $(document).ready(function() {
+        checkCollectionDate('<?php echo $covid19Info['sample_collection_date']; ?>');
+
         //updateAgeInfo();
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {

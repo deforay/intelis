@@ -485,7 +485,8 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         </td>
                                         <th scope="row" style="width:15% !important"><label for="sampleCollectionDate">Sample Collection Date<span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" />
+                                            <input class="form-control isRequired" value="<?php echo ($covid19Info['sample_collection_date']); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" title="Please select the sample collection date" onchange="checkCollectionDate(this.value);" />
+                                            <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                     </tr>
                                 </table>
@@ -846,7 +847,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
 
     $(document).ready(function() {
-
+        checkCollectionDate('<?php echo $covid19Info['sample_collection_date']; ?>');
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
         });
