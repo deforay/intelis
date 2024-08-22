@@ -1,0 +1,187 @@
+<?php
+
+use App\Services\TestsService;
+use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+try {
+
+    $db->beginReadOnlyTransaction();
+
+    /** @var CommonService $general */
+    $general = ContainerRegistry::get(CommonService::class);
+
+
+    $testType = $_POST['testType'] ?? 'vl';
+    $resultColumn = "result";
+    if ($testType == "cd4") {
+        $resultColumn = "cd4_result";
+    }
+
+    $table = TestsService::getTestTableName($testType);
+    $testName = TestsService::getTestName($testType);
+
+
+    /*
+    * Array of database columns which should be read and sent back to DataTables. Use a space where
+    * you want to insert a non-database field (for example a counter or static image)
+    */
+    $orderColumns = $aColumns = [
+        'vl.sample_code',
+        'vl.remote_sample_code',
+        'vl.request_tested_datetime',
+        'vl.sample_received_at_lab_datetime',
+        "vl.$resultColumn",
+    ];
+
+    /*
+    * Paging
+    */
+    $sOffset = $sLimit = null;
+    if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
+        $sOffset = $_POST['iDisplayStart'];
+        $sLimit = $_POST['iDisplayLength'];
+    }
+
+
+
+    $sOrder = "";
+    if (isset($_POST['iSortCol_0'])) {
+        $sOrder = "";
+        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
+            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
+                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
+                " . ($_POST['sSortDir_' . $i]) . ", ";
+            }
+        }
+        $sOrder = substr_replace($sOrder, "", -2);
+    }
+
+
+
+    $sWhere = [];
+    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
+        $searchArray = explode(" ", (string) $_POST['sSearch']);
+        $sWhereSub = "";
+        foreach ($searchArray as $search) {
+            $sWhereSub .= " (";
+            $colSize = count($aColumns);
+
+            for ($i = 0; $i < $colSize; $i++) {
+                if ($i < $colSize - 1) {
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
+                } else {
+                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
+                }
+            }
+            $sWhereSub .= ")";
+        }
+        $sWhere[] = $sWhereSub;
+    }
+
+
+
+    /*
+    * SQL queries
+    * Get data to display
+    */
+    $aWhere = '';
+    $sQuery = '';
+
+    $sQuery = "SELECT
+                    vl.sample_code,
+                    ts.status_name,
+                    vl.tested_by,
+                    vl.sample_tested_datetime,
+                    vl.sample_collection_date,
+                    vl.remote_sample_code,
+                    vl.sample_received_at_lab_datetime,
+                    vl.$resultColumn,
+                    ins.machine_name,vl.manual_result_entry,vl.import_machine_file_name,vl.file_name
+                FROM $table as vl
+                LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
+                LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id
+                LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
+
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+
+    if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
+        $sWhere[] = ' DATE(vl.sample_tested_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+    }
+    if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) != '') {
+        $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
+    }
+  
+
+    /* Implode all the where fields for filtering the data */
+    if (!empty($sWhere)) {
+        $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
+    }
+
+    //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
+    if (!empty($sOrder) && $sOrder !== '') {
+        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sQuery = $sQuery . " ORDER BY " . $sOrder;
+    }
+    //echo $sQuery; die;
+    $_SESSION['testResultReportsQuery'] = $sQuery;
+
+    if (isset($sLimit) && isset($sOffset)) {
+        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    }
+
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+
+
+    /*
+    * Output
+    */
+    $output = array(
+        "sEcho" => (int) $_POST['sEcho'],
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
+        "calculation" => [],
+        "aaData" => []
+    );
+  
+    foreach ($rResult as $key => $aRow) {
+
+        $row = [];
+        //$row[] = $aRow['f.facility_name'];
+        $row[] = $aRow['sample_code'];
+        $row[] = $aRow['remote_sample_code'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $row[] = $aRow['result'];
+        $row[] = $aRow['tested_by'];
+        $row[] = $aRow['machine_name'];
+        $row[] = $aRow['status_name'];
+        $row[] = $aRow['manual_result_entry'];
+        $row[] = $aRow['file_name'].' - '.$aRow['import_machine_file_name'];
+        $output['aaData'][] = $row;
+    }
+
+    echo JsonUtility::encodeUtf8Json($output);
+
+    $db->commitTransaction();
+} catch (Exception $exc) {
+    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+}
