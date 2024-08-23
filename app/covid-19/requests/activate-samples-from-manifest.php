@@ -38,4 +38,4 @@ $prefix = $globalConfig['covid19_sample_code_prefix'] ?? $testTypeService->short
 
 $testRequestsService = new TestRequestsService($db, $general);
 
-echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode);
+echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);

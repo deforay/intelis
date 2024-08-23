@@ -4,12 +4,14 @@ namespace App\Services;
 
 use Throwable;
 use SAMPLE_STATUS;
+use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\GeoLocationsService;
 use App\Abstracts\AbstractTestService;
 
 final class TestRequestsService
@@ -173,7 +175,7 @@ final class TestRequestsService
         }
     }
 
-    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null, $provinceCode = null)
+    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)
     {
         $tableName = TestsService::getTestTableName($testType);
 
@@ -199,6 +201,19 @@ final class TestRequestsService
                     $prefix = "T";
                     if (!empty($testType['testDetails']['test_short_code'])) {
                         $prefix = $testType['testDetails']['test_short_code'];
+                    }
+                }
+
+                $provinceCode = null;
+
+                // For PNG, we need to get the province code
+                $formId = (int) $this->commonService->getGlobalConfig('vl_form');
+                if ($formId == COUNTRY\PNG) {
+                    /** @var GeoLocationsService $geoService */
+                    $geoService = ContainerRegistry::get(GeoLocationsService::class);
+
+                    if (!empty($sampleRow['province_id'])) {
+                        $provinceCode = $geoService->getProvinceCodeFromId($sampleRow['province_id']);
                     }
                 }
 

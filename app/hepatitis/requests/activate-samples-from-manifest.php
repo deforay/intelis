@@ -38,4 +38,4 @@ $prefix = $globalConfig['hepatitis_sample_code_prefix'] ?? $testTypeService->sho
 
 $testRequestsService = new TestRequestsService($db, $general);
 
-echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode);
+echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);

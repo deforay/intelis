@@ -38,4 +38,4 @@ $prefix = $globalConfig['generic_sample_code_prefix'] ?? 'T'; // will be set lat
 
 $testRequestsService = new TestRequestsService($db, $general);
 
-echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode);
+echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);
