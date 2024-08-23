@@ -88,7 +88,6 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 	if (!empty($searchQueryWhere)) {
 		$searchQuery .= " WHERE " . implode(" AND ", $searchQueryWhere);
 	}
-	//LoggerUtility::log('info', $searchQuery);
 	$requestResult = $db->query($searchQuery);
 }
 
@@ -123,6 +122,7 @@ $resultFilename = '';
 $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = 1;
+
 foreach ($requestResult as $result) {
 
 

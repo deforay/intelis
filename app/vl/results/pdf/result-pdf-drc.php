@@ -20,8 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-$pages = [];
-$page = 1;
 
 if (!empty($result)) {
 
