@@ -1,12 +1,13 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
-use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
+use App\Services\GeoLocationsService;
+use App\Services\TestRequestsService;
+use App\Abstracts\AbstractTestService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -14,78 +15,27 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var GenericTestsService $genericTestsService */
-$genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+/** @var GeoLocationsService $geoService */
+$geoService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+$testType = $_POST['testType'];
+$manifestCode = $_POST['manifestCode'];
 
-$queryParams = explode(',', (string) $_POST['sampleId']);
-$placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
-try {
+$serviceClass = TestsService::getTestServiceClass($testType);
 
-    $db->beginTransaction();
-    $sampleQuery = "SELECT sample_id,
-                sample_collection_date,
-                sample_package_code,
-                province_id,
-                sample_code
-                FROM form_generic WHERE sample_id IN ($placeholders)";
-    $sampleResult = $db->rawQuery($sampleQuery, $queryParams);
+/** @var AbstractTestService $testTypeService */
+$testTypeService = ContainerRegistry::get($serviceClass);
 
-    $status = 0;
-    foreach ($sampleResult as $sampleRow) {
-        $provinceCode = null;
+$globalConfig = $general->getGlobalConfig();
+$sampleCodeFormat = $globalConfig['generic_sample_code'] ?? 'MMYY';
+$prefix = $globalConfig['generic_sample_code_prefix'] ?? 'T'; // will be set later in activateSamplesFromManifest()
 
-        $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
-        $testTypeShortCode = "T";
-        if (!empty($testType['testDetails']['test_short_code'])) {
-            $testTypeShortCode = $testType['testDetails']['test_short_code'];
-        }
 
-        if (!empty($sampleRow['province_id'])) {
-            $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id = ?";
-            $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
-            $provinceCode = $provinceResult['geo_code'];
-        }
-        $_POST['sampleReceivedOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedOn'] ?? '', true);
-        // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
-        if (empty($sampleRow['sample_code']) || $sampleRow['sample_code'] == 'null') {
+$testRequestsService = new TestRequestsService($db, $general);
 
-            $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
-            $sampleCodeParams['provinceCode'] = $provinceCode;
-            $sampleCodeParams['testType'] = $testTypeShortCode;
-            $sampleCodeParams['insertOperation'] = true;
-            $sampleJson = $genericTestsService->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode((string) $sampleJson, true);
-            //$vldata['sample_code'] = $sampleData['sampleCode'];
-            $dataToUpdate['sample_code'] = $sampleData['sampleCode'];
-            $dataToUpdate['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $dataToUpdate['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-            $dataToUpdate['data_sync'] = 0;
-
-            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
-            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            if (!empty($_POST['sampleReceivedOn'])) {
-                $dataToUpdate['sample_tested_datetime'] = null;
-                $dataToUpdate['sample_received_at_testing_lab_datetime'] = $_POST['sampleReceivedOn'];
-            }
-            $db->where('sample_id', $sampleRow['sample_id']);
-            $id = $db->update('form_generic', $dataToUpdate);
-            if ($id === true) {
-                $status = 1;
-            }
-        }
-    }
-    $db->commitTransaction();
-} catch (Throwable $exception) {
-    $db->rollbackTransaction();
-    error_log("Error while generating Sample Codes : " . $exception->getMessage());
-}
-echo $status;
+echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix, $provinceCode);
