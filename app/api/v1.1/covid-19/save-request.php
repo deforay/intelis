@@ -507,9 +507,18 @@ try {
             }
         }
 
-        $db->where('covid19_id', $data['covid19SampleId']);
-        $db->delete("covid19_reasons_for_testing");
-        if (!empty($data['reasonDetails'])) {
+        if (isset($data['reasonDetails']) && !empty($data['reasonDetails'])) {
+            /* For Rest API service data came as multiple index so rechange and remove unwanted index */
+            if (array_key_exists('reason_details', (array)$data['reasonDetails'][0])) {
+                $res = [];
+                foreach ((array)$data['reasonDetails'] as $row) {
+                    $res[] = $row['reason_details'];
+                }
+                $data['reasonDetails'] = $res;
+            }
+            $db->where('covid19_id', $data['covid19SampleId']);
+            $db->delete("covid19_reasons_for_testing");
+
             $reasonData = [];
             $reasonData["covid19_id"] = $data['covid19SampleId'];
             $reasonData["reasons_id"] = $data['reasonForCovid19Test'];
