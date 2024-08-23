@@ -162,7 +162,6 @@ foreach ($sources as $list) {
                                     <th>
                                         <?php echo _translate("Sample Recieved On"); ?>
                                     </th>
-                                  
                                     <th>
                                         <?php echo _translate("Sample Tested On"); ?>
                                     </th>
@@ -182,8 +181,21 @@ foreach ($sources as $list) {
                                         <?php echo _translate("Manual Result Entry"); ?>
                                     </th>
                                     <th>
+                                        <?php echo _translate("Is Sample Rejected"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Rejection Reason"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Was Result Changed"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Reason for Changing"); ?>
+                                    </th>
+                                    <th>
                                         <?php echo _translate("File Link"); ?>
                                     </th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -310,6 +322,18 @@ foreach ($sources as $list) {
                 },
                 {
                     "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
                 }
             ],
             "aaSorting": [10, "desc"],
@@ -374,7 +398,7 @@ foreach ($sources as $list) {
     function exportTestRequests() {
 
         $.blockUI();
-        $.post("/admin/monitoring/export-samplewise-reports.php", {
+        $.post("/admin/monitoring/export-test-results-report.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
             },

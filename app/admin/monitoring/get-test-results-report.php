@@ -36,6 +36,7 @@ try {
     $testName = TestsService::getTestName($testType);
 
 
+    $rejectionTable = "r_".$testType."_sample_rejection_reasons";
     /*
     * Array of database columns which should be read and sent back to DataTables. Use a space where
     * you want to insert a non-database field (for example a counter or static image)
@@ -43,9 +44,9 @@ try {
     $orderColumns = $aColumns = [
         'vl.sample_code',
         'vl.remote_sample_code',
-        'vl.request_tested_datetime',
+        'vl.sample_tested_datetime',
         'vl.sample_received_at_lab_datetime',
-        "vl.$resultColumn",
+        "vl.$resultColumn"
     ];
 
     /*
@@ -95,6 +96,24 @@ try {
 
 
 
+if($testType=="covid19")
+{
+    $joinCond = " LEFT JOIN covid19_tests as ct ON ct.covid19_id=vl.covid19_id
+    LEFT JOIN instruments as ins ON ins.instrument_id=ct.instrument_id";
+}
+else{
+    $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
+}
+
+if($testType=="vl" || $testType="cd4")
+{
+    $resultChangeColumn = "vl.reason_for_result_changes";
+}
+else{
+    $resultChangeColumn = "vl.reason_for_changing";
+}
+
+
     /*
     * SQL queries
     * Get data to display
@@ -105,18 +124,21 @@ try {
     $sQuery = "SELECT
                     vl.sample_code,
                     ts.status_name,
-                    vl.tested_by,
+                    t_b.user_name as testedByName,
                     vl.sample_tested_datetime,
                     vl.sample_collection_date,
-                    vl.remote_sample_code,
+                    vl.remote_sample_code,vl.result_modified,
                     vl.sample_received_at_lab_datetime,
-                    vl.$resultColumn,
-                    ins.machine_name,vl.manual_result_entry,vl.import_machine_file_name,vl.file_name
+                    vl.is_sample_rejected,$resultChangeColumn,
+                    vl.$resultColumn,rs.rejection_reason_name,
+                    ins.machine_name,vl.manual_result_entry,vl.import_machine_file_name
                 FROM $table as vl
                 LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                 LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-                LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id
+                LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by
+                LEFT JOIN $rejectionTable as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+                $joinCond
                 LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
@@ -140,11 +162,11 @@ try {
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
     //echo $sQuery; die;
-    $_SESSION['testResultReportsQuery'] = $sQuery;
 
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
+    $_SESSION['testResultReportsQuery'] = $sQuery;
 
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
@@ -162,20 +184,31 @@ try {
   
     foreach ($rResult as $key => $aRow) {
 
+        $rejectedObj = json_decode($aRow['reason_for_result_changes']);
         $row = [];
         //$row[] = $aRow['f.facility_name'];
         $row[] = $aRow['sample_code'];
         $row[] = $aRow['remote_sample_code'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
         $row[] = $aRow['result'];
-        $row[] = $aRow['tested_by'];
+        $row[] = $aRow['testedByName'];
         $row[] = $aRow['machine_name'];
         $row[] = $aRow['status_name'];
         $row[] = $aRow['manual_result_entry'];
-        $row[] = $aRow['file_name'].' - '.$aRow['import_machine_file_name'];
+        $row[] = $aRow['is_sample_rejected'];
+        $row[] = $aRow['rejection_reason_name'];
+        $row[] = $aRow["result_modified"];
+        $row[] = $rejectedObj->reasonForChange;
+        $fileName = $aRow['import_machine_file_name'];
+        if (!empty($aRow['import_machine_file_name']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $aRow['import_machine_file_name'])) {
+            $a = "/uploads/imported-results" . DIRECTORY_SEPARATOR . $fileName;
+            $row[] = '<a title="'.$fileName.'" href="'.$a.'" download> Download </a>';
+        }
+        else{
+            $row[] = $fileName;
+        }
         $output['aaData'][] = $row;
     }
 
