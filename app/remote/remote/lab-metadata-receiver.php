@@ -114,10 +114,10 @@ try {
                                 unset($data['signature_image_filename']);
                             }
 
-                            $sResult = [];
+                            $sResult = null;
                             if (!empty($data[$checkColumn])) {
-                                $sQuery = "SELECT $primaryKey FROM $tableName WHERE $checkColumn = ?";
-                                $sResult = $db->rawQueryOne($sQuery, $data[$checkColumn]);
+                                $db->where($checkColumn, $data[$checkColumn]);
+                                $sResult = $db->getOne($tableName, [$primaryKey]);
                             }
                             if (!empty($sResult)) {
                                 $db->where($primaryKey, $sResult[$primaryKey]);
@@ -130,7 +130,7 @@ try {
                         LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
                         LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                         LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
-                        LoggerUtility::logError($e->getMessage(), [
+                        LoggerUtility::logError("Error when processing for $tableName : " . $e->getMessage(), [
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),
                             'trace' => $e->getTraceAsString(),
@@ -155,11 +155,16 @@ try {
     $payload = json_encode([]);
 
     if (!empty($db->getLastError())) {
-        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastErrno());
-        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastError());
-        error_log('Error in lab-metadata-receiver.php : ' . $db->getLastQuery());
+        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastErrno());
+        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastError());
+        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastQuery());
     }
-    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
+
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
 
 echo $apiService->sendJsonResponse($payload);

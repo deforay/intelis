@@ -681,12 +681,14 @@ final class CommonService
                 }
                 $this->db->update('facility_details', $data);
             }
-        } catch (Throwable $exc) {
-            if ($this->db->getLastErrno() > 0) {
-                LoggerUtility::log('error', $this->db->getLastError());
-                LoggerUtility::log('error', $this->db->getLastQuery());
-            }
-            LoggerUtility::log('error', "Error while updating timestamps : " . $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastError());
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastQuery());
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 
