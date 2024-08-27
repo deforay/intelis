@@ -337,7 +337,11 @@ try {
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
-} catch (Exception $exc) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
