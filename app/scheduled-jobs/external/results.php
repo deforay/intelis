@@ -33,9 +33,7 @@ try {
     ];
     $db->where("(vl.result IS NOT NULL AND vl.result != '')
                     OR IFNULL(vl.is_sample_rejected, 'no') = 'yes'");
-    $db->where("IFNULL(vl.result_sent_to_external, 'no') = 'no'");
     $db->where("result_status", $resultStatus, 'IN');
-
     $db->get($tableName);
 } catch (Exception $exc) {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
