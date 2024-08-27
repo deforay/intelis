@@ -26,7 +26,7 @@ else if($_POST['codeType']=="batch"){
     $condition = " LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id where b.batch_code='".$batchCode."'";
 }
 
-$query = "SELECT  vl.sample_code  FROM form_vl as vl ". $condition;
+$query = "SELECT  vl.sample_code,vl.patient_art_no  FROM form_vl as vl ". $condition;
 
 $sampleResult = $db->rawQuery($query);
 
