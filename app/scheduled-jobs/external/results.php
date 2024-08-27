@@ -11,9 +11,8 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 
-use App\Utilities\MiscUtility;
+use App\Services\TestsService;
 use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -25,7 +24,17 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 try {
-    echo "WIP";
+
+
+    $tableName = TestsService::getTestTableName('vl');
+    $resultStatus = [
+        SAMPLE_STATUS\REJECTED,
+        SAMPLE_STATUS\ACCEPTED
+    ];
+    $db->where("(vl.result IS NOT NULL AND vl.result != '')
+                    OR IFNULL(vl.is_sample_rejected, 'no') = 'yes'");
+    $db->where("result_status", $resultStatus, 'IN');
+    $db->get($tableName);
 } catch (Exception $exc) {
     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     error_log($exc->getMessage());
