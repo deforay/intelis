@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\UploadedFile;
@@ -144,7 +145,7 @@ try {
         $db->where('name', 'vl_suppression_target');
         $id = $db->update("global_config", $data);
     }
-   
+
     if (isset($_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) && trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']) != "") {
         $data = array('value' => trim((string) $_POST['covid19PositiveConfirmatoryTestsRequiredByCentralLab']));
         $db->where('name', 'covid19_positive_confirmatory_tests_required_by_central_lab');
@@ -157,7 +158,7 @@ try {
             ));
         }
     }
-   
+
     /*if (isset($_POST['genericTestsTableInResultsPdf']) && trim((string) $_POST['genericTestsTableInResultsPdf']) != "") {
         $data = array('value' => trim((string) $_POST['genericTestsTableInResultsPdf']));
         $db->where('name', 'generic_tests_table_in_results_pdf');
@@ -180,6 +181,11 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
     header("Location:editGlobalConfig.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

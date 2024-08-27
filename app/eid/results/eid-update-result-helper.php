@@ -163,7 +163,6 @@ try {
 
   $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
-  error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 
   $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log

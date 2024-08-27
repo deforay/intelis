@@ -94,9 +94,11 @@ try {
                     try {
                         if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
                             if ((in_array($data['instrument_id'], $deletedId)) == false) {
-                                $deletedId[] = $data['instrument_id'];
-                                $db->where('instrument_id', $data['instrument_id']);
-                                $db->delete($tableName);
+                                if (!empty($data['instrument_id'])) {
+                                    $deletedId[] = $data['instrument_id'];
+                                    $db->where('instrument_id', $data['instrument_id']);
+                                    $db->delete($tableName);
+                                }
                             }
                             $id = $db->insert($tableName, $data);
                         } else {
@@ -125,10 +127,14 @@ try {
                             }
                         }
                     } catch (Throwable $e) {
-                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno()));
-                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError()));
-                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery()));
-                        LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+                        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+                        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
+                        LoggerUtility::logError($e->getMessage(), [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
                         continue;
                     }
                 }

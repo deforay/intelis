@@ -3,6 +3,7 @@
 use App\Services\EidService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
 
@@ -28,6 +29,11 @@ try {
     $sampleCodeParams['insertOperation'] = false;
     echo $eidService->getSampleCode($sampleCodeParams);
   }
-} catch (Throwable $exception) {
-  error_log("Error while generating Sample ID : " . $exception->getMessage());
+} catch (Throwable $e) {
+  LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+  LoggerUtility::logError($e->getMessage(), [
+    'file' => $e->getFile(),
+    'line' => $e->getLine(),
+    'trace' => $e->getTraceAsString(),
+  ]);
 }

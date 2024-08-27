@@ -3,6 +3,8 @@
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
+    echo "=========================" . PHP_EOL;
+    echo "Starting results sending" . PHP_EOL;
 }
 
 ini_set('memory_limit', -1);
@@ -337,7 +339,12 @@ try {
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
-} catch (Exception $exc) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

@@ -21,7 +21,6 @@ $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncompleteForm']) != "") {
-     // error_log($_SESSION['vlIncompleteForm']);
 
      $output = [];
 

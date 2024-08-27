@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -24,21 +25,19 @@ $batchService = ContainerRegistry::get(BatchService::class);
 
 $tableName = "batch_details";
 try {
-   // echo '<pre>'; print_r($_POST); die;
+    // echo '<pre>'; print_r($_POST); die;
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
 
-        $namesArr = $_POST['controls']; 
-        
-        foreach($namesArr as $key=>$value)
-        {
-            if($value=="")
-            {
-                $namesArr[$key] = ucwords(str_replace('no of ', '',str_replace('_',' ',$key)));
+        $namesArr = $_POST['controls'];
+
+        foreach ($namesArr as $key => $value) {
+            if ($value == "") {
+                $namesArr[$key] = ucwords(str_replace('no of ', '', str_replace('_', ' ', $key)));
             }
         }
 
-         //Saving names of controls
+        //Saving names of controls
         $controlNames = json_encode($namesArr, JSON_FORCE_OBJECT);
 
         $xplodSortOrders = explode(",", (string) $_POST['sortOrders']);
@@ -89,6 +88,11 @@ try {
         $_SESSION['alertMsg'] = _translate("Samples position in batch saved");
     }
     header("Location:batches.php?type=" . $_POST['type']);
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
