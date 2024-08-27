@@ -246,6 +246,7 @@ try {
             $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
+        $data['sampleDispatchedOn'] = (isset($data['dateDispatchedFromClinicToLab']) && !empty($data['dateDispatchedFromClinicToLab'])) ? $data['dateDispatchedFromClinicToLab'] : $data['sampleDispatchedOn'];
 
         if (isset($data['patientGender']) && trim((string) $data['patientGender']) == 'male') {
             $data['patientPregnant'] = null;
