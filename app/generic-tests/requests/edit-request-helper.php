@@ -376,7 +376,6 @@ try {
      // echo "<pre>";print_r($genericData);die;
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);
-     error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
      $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("Request updated successfully");

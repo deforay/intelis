@@ -145,9 +145,9 @@ try {
                 }
             } catch (Throwable $e) {
                 if ($db->getLastErrno() > 0) {
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
                 }
                 LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                 continue;

@@ -234,8 +234,8 @@ try {
     ];
 
     LoggerUtility::logError($exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);

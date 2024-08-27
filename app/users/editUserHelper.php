@@ -176,8 +176,8 @@ try {
             } catch (Throwable $e) {
                 // Handle the exception
                 LoggerUtility::log("error", $e->getMessage(), [
-                    'file' => __FILE__,
-                    'line' => __LINE__,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
                     'trace' => $e->getTraceAsString(),
                 ]);
             }
@@ -195,8 +195,8 @@ try {
     header("Location:users.php");
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
 }

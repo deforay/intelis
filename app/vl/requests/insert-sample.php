@@ -20,18 +20,18 @@ try {
     echo $vlService->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
-} catch (Throwable $exception) {
+} catch (Throwable $e) {
     // Rollback transaction in case of error
     $db->rollbackTransaction();
     if (!empty($db->getLastError())) {
-        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
-        LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+        LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine() . ":" . $db->getLastErrno() . ":" . $db->getLastError());
+        LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
     }
-    LoggerUtility::log('error', $exception->getFile() . ':' . $exception->getLine()  . ':' .  $exception->getMessage(), [
-        'exception' => $exception,
-        'file' => $exception->getFile(), // File where the error occurred
-        'line' => $exception->getLine(), // Line number of the error
-        'stacktrace' => $exception->getTraceAsString()
+    LoggerUtility::log('error', $e->getFile() . ':' . $e->getLine()  . ':' .  $e->getMessage(), [
+        'exception' => $e,
+        'file' => $e->getFile(), // File where the error occurred
+        'line' => $e->getLine(), // Line number of the error
+        'stacktrace' => $e->getTraceAsString()
     ]);
     echo "0";
 }

@@ -125,9 +125,9 @@ try {
                             }
                         }
                     } catch (Throwable $e) {
-                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno()));
-                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastError()));
-                        LoggerUtility::log('error', (__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery()));
+                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno()));
+                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError()));
+                        LoggerUtility::log('error', ($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery()));
                         LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
                         continue;
                     }

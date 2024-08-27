@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -41,8 +42,12 @@ try {
             }
         }
     }
-    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+
     header("location:generic-testing-reason.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

@@ -2,6 +2,7 @@
 
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -99,9 +100,7 @@ try {
             if (!empty($_POST['sampleType'])) {
                 foreach ($_POST['sampleType'] as $val) {
                     $value = array('sample_type_id' => $val, 'test_type_id' => $lastId);
-                    // echo '<pre>'; print_r($value); die;
                     $db->insert($tableName2, $value);
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                 }
             }
 
@@ -185,6 +184,10 @@ try {
     }
     //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     header("Location:test-type.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
