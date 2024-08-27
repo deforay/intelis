@@ -1,8 +1,9 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
@@ -30,7 +31,10 @@ try {
         }
     }
 } catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
-    error_log('whoops! Something went wrong in scheduled-jobs/run-jobs.php');
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

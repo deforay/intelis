@@ -297,7 +297,7 @@ try {
 		$instrumentId = $platForm[1];
 	}
 
-	
+
 	//Update patient Information in Patients Table
 	$systemPatientCode = $patientsService->savePatient($_POST, 'form_eid');
 
@@ -449,10 +449,9 @@ try {
 			'previousResult' => $getPrevResult['result'],
 			'previousResultStatus' => $getPrevResult['result_status'],
 			'reasonForChange' => $_POST['reasonForChanging']
-	    );
+		);
 
 		$reasonForChanges = json_encode($reasonForChangesArr);
-
 	} else {
 		$eidData['result_modified'] = "no";
 	}
@@ -530,7 +529,6 @@ try {
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	}
 
 	if ($id === true) {
