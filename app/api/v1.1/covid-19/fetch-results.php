@@ -270,7 +270,7 @@ try {
             $rowData[$key]['c19Symptoms'] = $covid19Service->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19Comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19ReasonForTesting'] = $covid19Service->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
-            $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
+            $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id'], true);
         }
     }
 
