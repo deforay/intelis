@@ -181,10 +181,11 @@ try {
   $db->insert($tableName2, $data);
 
   header("Location:eid-manual-results.php");
-} catch (Exception $exc) {
-  LoggerUtility::log("error", $e->getMessage(), [
-    'file' => __FILE__,
-    'line' => __LINE__,
-    'trace' => $e->getTraceAsString(),
+} catch (Exception $e) {
+  LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
+  LoggerUtility::logError($e->getMessage(), [
+    'file' => $e->getFile(),
+    'line' => $e->getLine(),
+    'trace' => $e->getTraceAsString()
   ]);
 }

@@ -447,7 +447,7 @@ try {
                 'status' => 'failed',
                 'action' => 'skipped',
                 'appSampleCode' => $data['appSampleCode'] ?? null,
-                'error' => $db->getLastError()
+                'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
             ];
         }
     }
@@ -485,21 +485,21 @@ try {
     ];
     $db->commitTransaction();
     http_response_code(200);
-} catch (Throwable $exc) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
     http_response_code(500);
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
-    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError() . ":" . $db->getLastQuery());
-    LoggerUtility::log('error', $exc->getMessage(), [
-        'file' => $exc->getFile(),
-        'line' => $exc->getLine(),
-        'trace' => $exc->getTraceAsString()
+    LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
     ]);
 }
 
