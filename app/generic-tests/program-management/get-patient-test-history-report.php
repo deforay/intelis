@@ -34,8 +34,8 @@ try {
     $tableName = "form_generic";
     $primaryKey = "sample_id";
     
-    $aColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
-    $orderColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
+    $aColumns = array('vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
+    $orderColumns = array('vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
 
     /* Indexed column (used for fast and accurate table cardinality) */
     $sIndexColumn = $primaryKey;
