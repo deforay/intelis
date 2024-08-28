@@ -125,7 +125,6 @@ final class ApiService
             }
 
             $response = $this->client->post($url, $options);
-
             return $response->getBody()->getContents();
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");

@@ -34,7 +34,7 @@ final class DateUtility
         return self::parseDate($date) !== null;
     }
 
-    public static function humanReadableDateFormat($date, $includeTime = false, $format = null)
+    public static function humanReadableDateFormat($date, $includeTime = false, $format = null, $withSeconds = false)
     {
         if (!self::isDateValid($date)) {
             return null;
@@ -42,7 +42,11 @@ final class DateUtility
 
         $format = $format ??  $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
-        $format = $includeTime ? $format . " H:i" : $format;
+        if ($withSeconds) {
+            $format = $includeTime ? $format . " H:i:s" : $format;
+        } else {
+            $format = $includeTime ? $format . " H:i" : $format;
+        }
         return Carbon::parse($date)->format($format);
     }
 
