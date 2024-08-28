@@ -109,23 +109,28 @@ final class ApiService
         }
     }
 
-    public function post($url, $payload, $gzip = true): string|null
+    public function post($url, $payload, $gzip = true, $getRawResponse = false): mixed
     {
         $options = [
             RequestOptions::HEADERS => ['Content-Type' => 'application/json; charset=utf-8']
         ];
         try {
+            $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
             if ($gzip) {
-                $compressedPayload = gzencode(JsonUtility::encodeUtf8Json($payload));
+                $compressedPayload = gzencode($payload);
                 $options[RequestOptions::BODY] = $compressedPayload;
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
             } else {
-                $options[RequestOptions::JSON] = $payload;
+                $options[RequestOptions::BODY] = $payload;
             }
-
             $response = $this->client->post($url, $options);
-            return $response->getBody()->getContents();
+
+            if ($getRawResponse === false) {
+                return $response;
+            } else {
+                return $response->getBody()->getContents();
+            }
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
             return null; // Error occurred while making the request
