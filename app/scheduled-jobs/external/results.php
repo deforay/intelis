@@ -131,9 +131,9 @@ try {
             "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true, null, true)
         ];
 
-        $payload = JsonUtility::encodeUtf8Json($payload);
+        //$payload = JsonUtility::encodeUtf8Json($payload);
 
-        $response = $apiService->post(EXTERNAL_RESULTS_RECEIVER_URL, $payload, gzip: false, getRawResponse: true);
+        $response = $apiService->post(EXTERNAL_RESULTS_RECEIVER_URL, $payload, gzip: false);
     }
 } catch (Exception $e) {
     if ($cliMode) {

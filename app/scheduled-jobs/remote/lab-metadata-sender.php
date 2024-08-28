@@ -156,7 +156,7 @@ try {
         $payload["users"] = $users;
     }
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
     $instanceId = $general->getInstanceId();
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
