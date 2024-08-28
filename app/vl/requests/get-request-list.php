@@ -376,19 +376,20 @@ try {
           if (!empty($aRow['batch_code'])) {
                $sampleCodeTooltip[] = _translate("Batch Code") . " : " . $aRow['batch_code'];
           }
+          if($aRow['form_attributes']!=""){
           $formAttributes = json_decode($aRow['form_attributes']);
 
-          if (!empty($formAttributes->storage)) {
-               $storageObj = json_decode($formAttributes->storage);
+               if (!empty($formAttributes->storage) && is_string($formAttributes->storage)) {
+                    $storageObj = json_decode($formAttributes->storage);
 
-               $freezer = $storageObj->storageCode;
-               $rack = $storageObj->rack;
-               $box = $storageObj->box;
-               $position = $storageObj->position;
+                    $freezer = $storageObj->storageCode;
+                    $rack = $storageObj->rack;
+                    $box = $storageObj->box;
+                    $position = $storageObj->position;
 
-               $sampleCodeTooltip[] =  _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
+                    $sampleCodeTooltip[] =  _translate("Freezer") . ' - ' . $freezer . ', ' . _translate("Rack") . ' - ' . $rack . ', ' . _translate("Box") . ' - ' . $box . ', ' . _translate("Position") . ' - ' . $position;
+               }
           }
-
           $sampleCodeTooltip[] = _translate("Request Created On") . " : " . DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
 
 
