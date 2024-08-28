@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -47,8 +48,8 @@ try {
 	header("Location:recommended-corrective-actions.php?testType=" . $_POST['testType']);
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
-		'file' => __FILE__,
-		'line' => __LINE__,
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
 }

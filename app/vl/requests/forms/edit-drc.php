@@ -157,27 +157,27 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span>
+										<td><label for="facilityId">POINT DE COLLECT <span class="mandatory">*</span></label>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="facilityId" id="facilityId" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
-												<?= $facility; ?>
+												<?= $facility; ?> 
 											</select>
 										</td>
 									</tr>
 									<tr>
-										<td><label for="reqClinician">Demandeur </label></td>
+										<td><label for="reqClinician">Demandeur <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="Veuillez saisir le demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="Veuillez saisir le demandeur" value="<?php echo $vlQueryInfo['request_clinician_name']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
+										<td><label for="reqClinicianPhoneNumber">Téléphone <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number isRequired" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="<?php echo $vlQueryInfo['request_clinician_phone_number']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="supportPartner">Partenaire d'appui </label></td>
+										<td><label for="supportPartner">Partenaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" value="< ?php echo $vlQueryInfo['facility_support_partner']; ?>" style="width:100%;"/> -->
-											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
+											<select class="form-control select2 isRequired" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -188,13 +188,13 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<td><label for="">Date de la demande </label></td>
+										<td><label for="">Date de la demande<span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
+											<input type="text" class="form-control date isRequired" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" value="<?php echo $vlQueryInfo['date_test_ordered_by_physician']; ?>" style="width:100%;" />
 										</td>
-										<td><label for="fundingSource">Source de financement </label></td>
+										<td><label for="fundingSource">Source de financement <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2 isRequired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -234,9 +234,9 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 35% !important;">
 											<input type="text" class="form-control isRequired patientId" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" value="<?= ($vlQueryInfo['patient_art_no']); ?>" style="width:100%;" />
 										</td>
-										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>
+										<td style="width: 15% !important;"><label for="">Date de naissance <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
+											<input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate("Please enter date"); ?>" title="Please select date de naissance" onchange="getAge();checkARTInitiationDate();" value="<?= ($vlQueryInfo['patient_dob']); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -250,17 +250,17 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label for="sex">Sexe </label></td>
+										<td style="width: 15% !important;"><label for="sex">Sexe <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
 
-											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+											<select name="gender" id="gender" class="form-control isRequired" title="Please choose gender">
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP </label></td>
+										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
@@ -294,9 +294,9 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 15% !important;"><label>Régime ARV en cours <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();" style="width:100%;">
+											<select class="form-control isRequired" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>" <?php echo ($arv['art_code'] == $vlQueryInfo['current_regimen']) ? 'selected="selected"' : ''; ?>><?php echo $arv['art_code']; ?>
@@ -315,35 +315,35 @@ $storageInfo = $storageService->getLabStorage();
 
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label for="isPatientNew">Si S/ARV </label></td>
+										<td style="width: 15% !important;"><label for="isPatientNew">Si S/ARV <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="isPatientNewYes" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'yes') ? 'checked="checked"' : ''; ?> value="yes" title="Please check Si S/ ARV">
+												<input type="radio" class="isRequired" id="isPatientNewYes" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'yes') ? 'checked="checked"' : ''; ?> value="yes" title="Please check Si S/ ARV">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="isPatientNewNo" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
+												<input type="radio" class="isRequired" id="isPatientNewNo" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
 											</label>
 										</td>
-										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV </label></td>
+										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;" class="du">
-											<input type="text" class="form-control date" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date isRequired" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
 										<td style="width: 15%;">
 											<label for="hasChangedRegimen">Ce patient a-t-il déjà changé de régime de
-												traitement? </label>
+												traitement? <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35%;">
 											<br><label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option" <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 									</tr>
@@ -371,10 +371,10 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-										<td style="width: 15%;"><label for="viralLoadNo">Charge virale N </label>
+										<td style="width: 15%;"><label for="viralLoadNo">Charge virale N <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" value="<?php echo $vlQueryInfo['vl_test_number']; ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" value="<?php echo $vlQueryInfo['vl_test_number']; ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
@@ -444,9 +444,9 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<td><label for="">Date de départ au Labo biomol </label></td>
+										<td><label for="">Date de départ au Labo biomol <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" value="<?php echo $vlQueryInfo['sample_dispatched_datetime']; ?>" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>

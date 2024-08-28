@@ -681,12 +681,14 @@ final class CommonService
                 }
                 $this->db->update('facility_details', $data);
             }
-        } catch (Throwable $exc) {
-            if ($this->db->getLastErrno() > 0) {
-                LoggerUtility::log('error', $this->db->getLastError());
-                LoggerUtility::log('error', $this->db->getLastQuery());
-            }
-            LoggerUtility::log('error', "Error while updating timestamps : " . $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastError());
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastQuery());
+            LoggerUtility::logError("Error while updating timestamps : " . $e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 
@@ -1194,15 +1196,29 @@ final class CommonService
 
     public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
-        $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
-        $allColResult = $this->db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], $tableName]);
-        $columnNames = array_column($allColResult, 'COLUMN_NAME');
+        $tableFieldsAsArray = [];
+        if (!empty($tableName) && $tableName != '') {
+            try {
 
-        // Create an array with all column names set to null
-        $tableFieldsAsArray = array_fill_keys($columnNames, null);
-        if (!empty($unwantedColumns)) {
-            $tableFieldsAsArray = MiscUtility::removeFromAssociativeArray($tableFieldsAsArray, $unwantedColumns);
+                $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
+                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
+                $allColResult = $this->db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], $tableName]);
+                $columnNames = array_column($allColResult, 'COLUMN_NAME');
+
+                // Create an array with all column names set to null
+                $tableFieldsAsArray = array_fill_keys($columnNames, null);
+                if (!empty($unwantedColumns)) {
+                    $tableFieldsAsArray = MiscUtility::removeFromAssociativeArray($tableFieldsAsArray, $unwantedColumns);
+                }
+            } catch (Throwable $e) {
+                $tableFieldsAsArray = [];
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+            }
         }
 
         return $tableFieldsAsArray;

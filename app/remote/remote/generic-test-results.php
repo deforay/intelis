@@ -1,4 +1,5 @@
 <?php
+
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Services\UsersService;
@@ -182,7 +183,7 @@ try {
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime('generic-tests', $facilityIds, $labId);
+    $general->updateResultSyncDateTime('genericTests', $facilityIds, $labId);
 
     $db->commitTransaction();
 } catch (Throwable $e) {

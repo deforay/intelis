@@ -146,8 +146,8 @@ try {
         } catch (Throwable $e) {
             // Handle the exception
             LoggerUtility::log("error", $e->getMessage(), [
-                'file' => __FILE__,
-                'line' => __LINE__,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString(),
             ]);
         }
@@ -163,7 +163,7 @@ try {
 } catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage(), [
         'exception' => $exc->getMessage(),
-        'line' => __LINE__,
-        'file' => __FILE__
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine()
     ]);
 }

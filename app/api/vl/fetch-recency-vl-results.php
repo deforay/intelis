@@ -131,8 +131,8 @@ try {
     ];
     http_response_code(500);
     LoggerUtility::logError($exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);

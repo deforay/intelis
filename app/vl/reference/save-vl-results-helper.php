@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -22,7 +23,7 @@ try {
 	//echo '<pre>'; print_r($_POST); die;
 	if (isset($_POST['resultName']) && trim((string) $_POST['resultName']) != "") {
 		if (!empty($_POST['selectedInstruments'])) {
-			$jsonInstruments = json_encode(explode(',',$_POST['selectedInstruments']), true);
+			$jsonInstruments = json_encode(explode(',', $_POST['selectedInstruments']), true);
 		} else {
 			$jsonInstruments = null;
 		}
@@ -49,8 +50,8 @@ try {
 	header("Location:vl-results.php");
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
-		'file' => __FILE__,
-		'line' => __LINE__,
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
 }

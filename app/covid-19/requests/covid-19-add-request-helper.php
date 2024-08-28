@@ -414,22 +414,21 @@ try {
 	if (!empty($_POST['quickForm']) && $_POST['quickForm'] == "quick") {
 		header("Location:/covid-19/requests/covid-19-quick-add.php");
 	} else {
-		
-		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
-            $cpyReq = $general->getGlobalConfig('covid19_copy_request_save_and_next');
-            if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
-                $_SESSION['covid19Data'] = $covid19Data;
-            }
-            header("Location:/covid-19/requests/covid-19-add-request.php");
-        } else {
-            header("Location:/covid-19/requests/covid-19-requests.php");
-        }
 
+		if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
+			$cpyReq = $general->getGlobalConfig('covid19_copy_request_save_and_next');
+			if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
+				$_SESSION['covid19Data'] = $covid19Data;
+			}
+			header("Location:/covid-19/requests/covid-19-add-request.php");
+		} else {
+			header("Location:/covid-19/requests/covid-19-requests.php");
+		}
 	}
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
-		'file' => __FILE__,
-		'line' => __LINE__,
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
 }

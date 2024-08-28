@@ -500,7 +500,6 @@ try {
 	if (isset($_POST['eidSampleId']) && $_POST['eidSampleId'] != '') {
 		$db->where('eid_id', $_POST['eidSampleId']);
 		$id = $db->update($tableName, $eidData);
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 	}
 
 	if ($id === true) {

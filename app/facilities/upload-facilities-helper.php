@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
@@ -135,8 +136,13 @@ try {
                 }
             } catch (Throwable $e) {
                 $facilityNotAdded[] = $rowData;
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+                error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::log("error", $e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
             }
         }
 

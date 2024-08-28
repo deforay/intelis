@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -48,8 +49,8 @@ try {
 	header("Location:vl-art-code-details.php");
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
-		'file' => __FILE__,
-		'line' => __LINE__,
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
 }

@@ -66,7 +66,7 @@ try {
 
         foreach ($filteredArray as $rowIndex => $rowData) {
 
-            if (empty($rowData['A']) || empty($rowData['B']) || empty($rowData['C']) || empty($rowData['D'])) {
+            if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E'])) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
@@ -77,7 +77,7 @@ try {
                 $_POST['instanceId'] = $instanceId;
             }
             $condition = "sample_code = '" . $rowData['A'] . "'";
-            $condition1 = "storage_code = '" . $rowData['B'] . "'";
+            $condition1 = "storage_code = '" . $rowData['C'] . "'";
 
             $getSample = $general->fetchDataFromTable('form_vl', $condition);
 
@@ -88,11 +88,12 @@ try {
                 if (empty($freezerCheck)) {
                     $data = array(
                         'storage_id' => MiscUtility::generateULID(),
-                        'storage_code'     => $rowData['B'],
+                        'storage_code'     => $rowData['C'],
                         'lab_id'     => $getSample[0]['lab_id'],
                         'storage_status' => "active",
                         'updated_datetime'    => DateUtility::getCurrentDateTime()
                     );
+                    echo '<pre>'; print_r($data); die;
                     $db->insert('lab_storage', $data);
                     $storageId = $data['storage_id'];
                 } else {
@@ -101,12 +102,12 @@ try {
 
                 $formAttributes = json_decode($getSample[0]['form_attributes']);
             } else {
-                $failedRow[] = array($rowData['A'], $rowData['B'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F']);
+                $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
             }
 
             try {
                 if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
-                    $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['B'], "rack" => $rowData['C'], "box" => $rowData['D'], "position" => $rowData['E'], "volume" => $rowData['F']);
+                    $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']);
                     $vlData['form_attributes'] = json_encode($formAttributes);
                     $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
                     $id = $db->update('form_vl', $vlData);

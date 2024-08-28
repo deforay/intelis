@@ -181,8 +181,8 @@ function processAuditTables($db, $fromDbName, $toDbName, $setupTriggers = true)
         } catch (Exception $e) {
             $mysqli->rollback();
             LoggerUtility::log('error', $e->getMessage(), [
-                'file' => __FILE__,
-                'line' => __LINE__,
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'trace' => $e->getTraceAsString()
             ]);
             continue;

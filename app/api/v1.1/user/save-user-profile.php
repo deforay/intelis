@@ -198,8 +198,8 @@ try {
     $payload = JsonUtility::encodeUtf8Json($payload);
 
     LoggerUtility::log("error", "Save User Profile API : " . $exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString(),
     ]);
 }
