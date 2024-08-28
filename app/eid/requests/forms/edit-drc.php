@@ -121,28 +121,28 @@ $storageInfo = $storageService->getLabStorage();
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="province">Province </label><span class="mandatory">*</span></td>
+										<td><label for="province">Province <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
 											</select>
 										</td>
-										<td><label for="district">Zone de Santé </label><span class="mandatory">*</span>
+										<td><label for="district">Zone de Santé <span class="mandatory">*</span></label>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
-										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
+										<td><label for="facilityId">POINT DE COLLECT <span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control isRequired " name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
+											<select class="form-control isRequired" name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
 											</select>
 										</td>
 									</tr>
 									<tr>
-										<td><label for="supportPartner">Partnaire d'appui </label></td>
+										<td><label for="supportPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" style="width:100%;"/> -->
 											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
@@ -154,9 +154,9 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="fundingSource">Source de Financement</label></td>
+										<td><label for="fundingSource">Source de Financement<span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2 isRequired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -165,15 +165,15 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="clinicianName">Demandeur </label></td>
+										<td><label for="clinicianName">Demandeur <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
+											<input type="text" class="form-control isRequired" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" value="<?= $eidInfo['clinician_name']; ?>" />
 										</td>
 									</tr>
 									<tr>
-										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
+										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>" />
+											<input type="text" class="form-control phone-number isRequired" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" style="width:100%;" value="<?= $eidInfo['request_clinician_phone_number']; ?>" />
 										</td>
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -209,23 +209,23 @@ $storageInfo = $storageService->getLabStorage();
 										</th>
 									</tr>
 									<tr>
-										<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) </label></th>
+										<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) <span class="mandatory">*</span></label></th>
 										<td style="width:35%;">
-											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" />
+											<input type="text" class="form-control isRequired" id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['mother_id']); ?>" />
 										</td>
-										<th scope="row" style="width:15%;"><label for="mothersName">Nom </label></th>
+										<th scope="row" style="width:15%;"><label for="mothersName">Nom <span class="mandatory">*</span></label></th>
 										<td style="width:35%;">
-											<input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
+											<input type="text" class="form-control isRequired" id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" value="<?php echo $eidInfo['mother_name'] ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="mothersDob">Date de naissance </label></th>
+										<th scope="row"><label for="mothersDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_dob']); ?>" />
+											<input type="text" class="form-control date isRequired" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['mother_dob']); ?>" />
 										</td>
-										<th scope="row"><label for="mothersMaritalStatus">Etat civil </label></th>
+										<th scope="row"><label for="mothersMaritalStatus">Etat civil <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control " name="mothersMaritalStatus" id="mothersMaritalStatus">
+											<select class="form-control isRequired" name="mothersMaritalStatus" id="mothersMaritalStatus">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='single' <?php echo ($eidInfo['mother_marital_status'] == 'single') ? "selected='selected'" : ""; ?>> Single </option>
 												<option value='married' <?php echo ($eidInfo['mother_marital_status'] == 'married') ? "selected='selected'" : ""; ?>> Married </option>
@@ -246,19 +246,19 @@ $storageInfo = $storageService->getLabStorage();
 										<td>
 											<input type="text" class="form-control isRequired patientId" id="childId" name="childId" placeholder="Code (Patient)" title="Please enter code du enfant" style="width:100%;" value="<?php echo $eidInfo['child_id']; ?>" />
 										</td>
-										<th scope="row"><label for="childName">Nom </label></th>
+										<th scope="row"><label for="childName">Nom <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" />
+											<input type="text" class="form-control isRequired" id="childName" name="childName" placeholder="Nom" title="Please enter nom du enfant" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['child_name']); ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="childDob">Date de naissance </label></th>
+										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
+											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
 										</td>
-										<th scope="row"><label for="childGender">Gender </label></th>
+										<th scope="row"><label for="childGender">Gender <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control " name="childGender" id="childGender">
+											<select class="form-control isRequired" name="childGender" id="childGender">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate("Male"); ?> </option>
 												<option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate("Female"); ?> </option>
@@ -267,8 +267,8 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age en mois</th>
-										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
+										<th scope="row">Age en mois <span class="mandatory">*</span></th>
+										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control isRequired" id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row">Age en semaines</th>
 										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
 									</tr>
@@ -285,42 +285,42 @@ $storageInfo = $storageService->getLabStorage();
 										</th>
 									</tr>
 									<tr>
-										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:</th>
+										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:<span class="mandatory">*</span></th>
 										<td colspan=4>
-											<input type="checkbox" name="motherTreatment[]" value="Nothing" <?php echo in_array('Nothing', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Rien &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated during Pregnancy" <?php echo in_array('ARV Initiated during Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV débutés durant la grossesse
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Nothing" <?php echo in_array('Nothing', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Rien &nbsp;&nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV Initiated during Pregnancy" <?php echo in_array('ARV Initiated during Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV débutés durant la grossesse
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated prior to Pregnancy" <?php echo in_array('ARV Initiated prior to Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV débutés avant la grossesse
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV Initiated prior to Pregnancy" <?php echo in_array('ARV Initiated prior to Pregnancy', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV débutés avant la grossesse
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV at Child Birth" <?php echo in_array('ARV at Child Birth', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV à l’accouchement
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV at Child Birth" <?php echo in_array('ARV at Child Birth', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> ARV à l’accouchement
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Option B plus" <?php echo in_array('Option B plus', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Option B plus <br><br>
-											<input type="checkbox" name="motherTreatment[]" value="AZT/3TC/NVP" <?php echo in_array('AZT/3TC/NVP', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> AZT/3TC/NVP &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="TDF/3TC/EFV" <?php echo in_array('TDF/3TC/EFV', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> TDF/3TC/EFV &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" />
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Option B plus" <?php echo in_array('Option B plus', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Option B plus <br><br>
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="AZT/3TC/NVP" <?php echo in_array('AZT/3TC/NVP', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> AZT/3TC/NVP &nbsp;&nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="TDF/3TC/EFV" <?php echo in_array('TDF/3TC/EFV', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> TDF/3TC/EFV &nbsp;&nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Other" <?php echo in_array('Other', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" />
 											Autres (à préciser): <input class="form-control" style="max-width:200px;display:inline;" disabled="disabled" placeholder="Autres" type="text" name="motherTreatmentOther" id="motherTreatmentOther" value="<?php echo $eidInfo['mother_treatment_other']; ?>" />
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Inconnu
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['mother_treatment']) ? "checked='checked'" : ""; ?> /> Inconnu
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="vertical-align:middle;">CD4</th>
+										<th scope="row" style="vertical-align:middle;">CD4<span class="mandatory">*</span></th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
+												<input type="text" class="form-control isRequired" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
-										<th scope="row" style="vertical-align:middle;">Viral Load</th>
+										<th scope="row" style="vertical-align:middle;">Viral Load<span class="mandatory">*</span></th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control " id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
+												<input type="number" class="form-control isRequired" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>
 										<td style="vertical-align:middle;">- OR -</td>
 										<td style="vertical-align:middle;">
-											<select class="form-control " title="Mother's Viral Load" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad();">
+											<select class="form-control isRequired" title="Mother's Viral Load" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad();">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='tnd' <?php echo ($eidInfo['mother_vl_result'] == 'tnd') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
 												<option value='bdl' <?php echo ($eidInfo['mother_vl_result'] == 'bdl') ? "selected='selected'" : ""; ?>> Below Detection Limit </option>
@@ -344,18 +344,18 @@ $storageInfo = $storageService->getLabStorage();
 										</th>
 									</tr>
 									<tr>
-										<th scope="row">Bébé a reçu:<br>(Cocher tout ce qui est reçu, Rien, ou inconnu)
+										<th scope="row">Bébé a reçu:<br>(Cocher tout ce qui est reçu, Rien, ou inconnu)<span class="mandatory">*</span>
 										</th>
 										<td>
-											<input type="checkbox" name="childTreatment[]" value="Nothing" <?php echo in_array('Nothing', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Rien &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="AZT" <?php echo in_array('AZT', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;AZT &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="NVP" <?php echo in_array('NVP', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Nothing" <?php echo in_array('Nothing', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Rien &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="AZT" <?php echo in_array('AZT', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;AZT &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="NVP" <?php echo in_array('NVP', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;NVP &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
 
-										<th scope="row">Bébé a arrêté allaitement maternel ?</th>
+										<th scope="row">Bébé a arrêté allaitement maternel ?<span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
+											<select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 												<option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?> /> Non </option>
@@ -364,14 +364,14 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (mois) arrêt allaitement :</th>
+										<th scope="row">Age (mois) arrêt allaitement :<span class="mandatory">*</span></th>
 										<td>
-											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
+											<input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
 										</td>
 
-										<th scope="row">Choix d’allaitement de bébé :</th>
+										<th scope="row">Choix d’allaitement de bébé :<span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
+											<select class="form-control isRequired" name="choiceOfFeeding" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Breastfeeding only" <?php echo ($eidInfo['choice_of_feeding'] == 'Breastfeeding only') ? "selected='selected'" : ""; ?>> Allaitement seul </option>
 												<option value="Milk substitute" <?php echo ($eidInfo['choice_of_feeding'] == 'Milk substitute') ? "selected='selected'" : ""; ?>> Substitut de lait </option>
@@ -381,9 +381,9 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Cotrimoxazole donné au bébé?</th>
+										<th scope="row">Cotrimoxazole donné au bébé?<span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="isCotrimoxazoleBeingAdministered" id="isCotrimoxazoleBeingAdministered">
+											<select class="form-control isRequired" name="isCotrimoxazoleBeingAdministered" id="isCotrimoxazoleBeingAdministered">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="no" <?php echo ($eidInfo['is_cotrimoxazole_being_administered_to_the_infant'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 												<option value="Yes, takes CTX everyday" <?php echo ($eidInfo['is_cotrimoxazole_being_administered_to_the_infant'] == 'Yes, takes CTX everyday') ? "selected='selected'" : ""; ?>> Oui, prend
@@ -396,11 +396,6 @@ $storageInfo = $storageService->getLabStorage();
 									</tr>
 								</table>
 
-
-
-
-
-
 								<br><br>
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
@@ -409,21 +404,21 @@ $storageInfo = $storageService->getLabStorage();
 										</th>
 									</tr>
 									<tr>
-										<th scope="row">Date de collecte</th>
+										<th scope="row">Date de collecte <span class="mandatory">*</span></th>
 										<td>
 											<input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Date de collecte" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
 											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 
-										<th scope="row">Tel. du préleveur</th>
+										<th scope="row">Tel. du préleveur <span class="mandatory">*</span></th>
 										<td>
-											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_phone']); ?>" />
+											<input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_phone']); ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="width:15%;"> Type d'échantillon</th>
+										<th scope="row" style="width:15%;"> Type d'échantillon<span class="mandatory">*</span></th>
 										<td style="width:35%;">
-											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Veuillez choisir le type d'échantillon" style="width:100%">
 												<option value="">-- Selecione --</option>
 												<?php foreach ($sampleResult as $name) { ?>
 													<option value="<?php echo $name['sample_id']; ?>" <?php echo ($eidInfo['specimen_type'] == $name['sample_id']) ? "selected='selected'" : ""; ?>><?= $name['sample_name']; ?></option>
@@ -431,15 +426,15 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 
-										<th scope="row" style="width:15%;">Nom du demandeur</th>
+										<th scope="row" style="width:15%;">Nom du demandeur<span class="mandatory">*</span></th>
 										<td style="width:35%;">
-											<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_name']); ?>" />
+											<input class="form-control isRequired" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_name']); ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Raison de la PCR (cocher une):</th>
+										<th scope="row">Raison de la PCR (cocher une):<span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="pcrTestReason" id="pcrTestReason">
+											<select class="form-control isRequired" name="pcrTestReason" id="pcrTestReason">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Nothing" <?php echo ($eidInfo['reason_for_pcr'] == 'Nothing') ? "selected='selected'" : ""; ?>> Rien</option>
 												<option value="First Test for exposed baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First Test for exposed baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé exposé</option>
@@ -459,24 +454,24 @@ $storageInfo = $storageService->getLabStorage();
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué?</th>
+										<th scope="row">Test rapide effectué? <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
+											<select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 												<option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											</select>
 										</td>
 
-										<th scope="row">Si oui, date :</th>
+										<th scope="row">Si oui, date :<span class="mandatory">*</span></th>
 										<td>
-											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
+											<input class="form-control date isRequired" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Résultat test rapide</th>
+										<th scope="row">Résultat test rapide<span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="rapidTestResult" id="rapidTestResult">
+											<select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
 												<option value=''> -- Sélectionner -- </option>
 												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 													<option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?>
@@ -763,7 +758,9 @@ $storageInfo = $storageService->getLabStorage();
 		var motherVlText = $("#motherViralLoadText").val();
 		if (motherVlText != '') {
 			$("#motherViralLoadCopiesPerMl").val('');
+			$("#motherViralLoadCopiesPerMl").removeClass('isRequired');
 		}
+		
 	}
 
 	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
@@ -850,6 +847,8 @@ $storageInfo = $storageService->getLabStorage();
 			//var motherVlText = $("#motherViralLoadText").val();
 			if (motherVl != '') {
 				$("#motherViralLoadText").val('');
+				$("#motherViralLoadText").removeClass('isRequired');
+
 			}
 		});
 

@@ -4,6 +4,8 @@
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once(__DIR__ . "/../../../bootstrap.php");
+    echo "=========================" . PHP_EOL;
+    echo "Starting requests sync" . PHP_EOL;
 }
 
 ini_set('memory_limit', -1);

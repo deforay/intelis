@@ -270,7 +270,7 @@ try {
             $rowData[$key]['c19Symptoms'] = $covid19Service->getCovid19SymptomsByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19Comorbidities'] = $covid19Service->getCovid19ComorbiditiesByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19ReasonForTesting'] = $covid19Service->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
-            $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id']);
+            $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id'], true);
         }
     }
 
@@ -288,12 +288,12 @@ try {
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
     LoggerUtility::logError($exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);

@@ -163,7 +163,6 @@ try {
 
   $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
-  error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
 
   $_SESSION['alertMsg'] = _translate("EID result updated successfully");
   //Add event log
@@ -182,10 +181,11 @@ try {
   $db->insert($tableName2, $data);
 
   header("Location:eid-manual-results.php");
-} catch (Exception $exc) {
-  LoggerUtility::log("error", $e->getMessage(), [
-    'file' => __FILE__,
-    'line' => __LINE__,
-    'trace' => $e->getTraceAsString(),
+} catch (Exception $e) {
+  LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
+  LoggerUtility::logError($e->getMessage(), [
+    'file' => $e->getFile(),
+    'line' => $e->getLine(),
+    'trace' => $e->getTraceAsString()
   ]);
 }

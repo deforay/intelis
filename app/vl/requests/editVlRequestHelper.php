@@ -155,7 +155,7 @@ try {
      $hivDetection = $processedResults['hivDetection'];
      $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
-    /* $reasonForChanges = null;
+     /* $reasonForChanges = null;
      $allChange = [];
      if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
           $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
@@ -171,9 +171,9 @@ try {
           $reasonForChanges = json_encode($allChange);
      }*/
      //set vl test reason
-   
-   // echo $reasonForChanges; die;
-     
+
+     // echo $reasonForChanges; die;
+
 
      if (isset($_POST['reasonForVLTesting']) && trim((string) $_POST['reasonForVLTesting']) != "") {
           if (!is_numeric($_POST['reasonForVLTesting'])) {
@@ -308,20 +308,19 @@ try {
           $vlData['result_modified'] = "yes";
 
           $reasonForChangesArr = array(
-                                   'user' => $_SESSION['userId'] ?? $_POST['userId'],
-                                   'dateOfChange' => DateUtility::getCurrentDateTime(),
-                                   'previousResult' => $getPrevResult['result'],
-                                   'previousResultStatus' => $getPrevResult['result_status'],
-                                   'reasonForChange' => $_POST['reasonForResultChanges']
-                              );
+               'user' => $_SESSION['userId'] ?? $_POST['userId'],
+               'dateOfChange' => DateUtility::getCurrentDateTime(),
+               'previousResult' => $getPrevResult['result'],
+               'previousResultStatus' => $getPrevResult['result_status'],
+               'reasonForChange' => $_POST['reasonForResultChanges']
+          );
 
           $reasonForChanges = json_encode($reasonForChangesArr);
-
      } else {
           $vlData['result_modified'] = "no";
           $reasonForChanges = null;
      }
-     
+
      $vlData['reason_for_result_changes'] = $reasonForChanges ?? null;
 
      $formAttributes = [
@@ -362,7 +361,7 @@ try {
 
      $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
      $vlData['form_attributes'] = $db->func($formAttributes);
-     
+
 
      $vlData['patient_first_name'] = $_POST['patientFirstName'] ?? '';
      $vlData['patient_middle_name'] = $_POST['patientMiddleName'] ?? '';
@@ -433,14 +432,6 @@ try {
      }
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
-     if ($db->getLastErrno() > 0) {
-          LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
-               'exception' => $db->getLastError(),
-               'file' => __FILE__,
-               'line' => __LINE__
-          ]);
-     }
-     //die;
      $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
      if ($id === true) {
           $_SESSION['alertMsg'] = _translate("VL request updated successfully");

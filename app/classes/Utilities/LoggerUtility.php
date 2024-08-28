@@ -44,8 +44,8 @@ final class LoggerUtility
 
         $callerInfo = self::getCallerInfo(1);
 
-        $context['file'] = $callerInfo['file'] ?? $context['file'] ?? '';
-        $context['line'] =  $callerInfo['line'] ?? $context['line'] ?? '';
+        $context['file'] ??= $callerInfo['file'] ?? '';
+        $context['line'] ??= $callerInfo['line'] ?? '';
         $logger->log($level, $message, $context);
     }
 

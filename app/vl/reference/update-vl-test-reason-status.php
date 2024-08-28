@@ -35,8 +35,8 @@ try {
     }
 } catch (Exception $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString(),
     ]);
 }

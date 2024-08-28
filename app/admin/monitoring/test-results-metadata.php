@@ -162,7 +162,6 @@ foreach ($sources as $list) {
                                     <th>
                                         <?php echo _translate("Sample Recieved On"); ?>
                                     </th>
-                                  
                                     <th>
                                         <?php echo _translate("Sample Tested On"); ?>
                                     </th>
@@ -182,8 +181,21 @@ foreach ($sources as $list) {
                                         <?php echo _translate("Manual Result Entry"); ?>
                                     </th>
                                     <th>
+                                        <?php echo _translate("Is Sample Rejected"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Rejection Reason"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Was Result Changed"); ?>
+                                    </th>
+                                    <th>
+                                        <?php echo _translate("Reason for Changing"); ?>
+                                    </th>
+                                    <th>
                                         <?php echo _translate("File Link"); ?>
                                     </th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -233,34 +245,35 @@ foreach ($sources as $list) {
 
 
         $('#sampleTestDate').daterangepicker({
-                locale: {
-                    cancelLabel: "<?= _translate("Clear", true); ?>",
-                    format: 'DD-MMM-YYYY',
-                    separator: ' to ',
-                },
-                startDate: moment().subtract(14, 'days'),
-                endDate: moment(),
-                maxDate: moment(),
-                ranges: {
-                    'Today': [moment(), moment()],
-                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-                    'This Month': [moment().startOf('month'), moment().endOf('month')],
-                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-                    'Current Year To Date': [moment().startOf('year'), moment()]
-                }
-            },
-            function(start, end) {
-                startDate = start.format('YYYY-MM-DD');
-                endDate = end.format('YYYY-MM-DD');
-            });
-
+				locale: {
+					cancelLabel: "<?= _translate("Clear", true); ?>",
+					format: 'DD-MMM-YYYY',
+					separator: ' to ',
+				},
+				showDropdowns: true,
+				alwaysShowCalendars: false,
+				startDate: moment().subtract(28, 'days'),
+				endDate: moment(),
+				maxDate: moment(),
+				ranges: {
+					'Today': [moment(), moment()],
+					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+					'This Month': [moment().startOf('month'), moment().endOf('month')],
+					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+					'Current Year To Date': [moment().startOf('year'), moment()]
+				}
+			},
+			function(start, end) {
+				startDate = start.format('YYYY-MM-DD');
+				endDate = end.format('YYYY-MM-DD');
+			});
         searchRequestData();
     });
 
@@ -306,6 +319,18 @@ foreach ($sources as $list) {
                 {
                     "sClass": "center"
                 }, {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center"
                 },
                 {
@@ -374,7 +399,7 @@ foreach ($sources as $list) {
     function exportTestRequests() {
 
         $.blockUI();
-        $.post("/admin/monitoring/export-samplewise-reports.php", {
+        $.post("/admin/monitoring/export-test-results-report.php", {
                 reqSampleType: $('#requestSampleType').val(),
                 patientInfo: $('#patientInfo').val(),
             },

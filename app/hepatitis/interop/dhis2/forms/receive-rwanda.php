@@ -3,14 +3,14 @@
 // this file is included in /hepatitis/interop/dhis2/hepatitis-receive.php
 
 use App\Interop\Dhis2;
-use App\Utilities\MiscUtility;
 use JsonMachine\Items;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
@@ -23,11 +23,18 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$testRequestsService = new TestRequestsService($db, $general);
+
+$globalConfig = $general->getGlobalConfig();
+$sampleCodeFormat = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
+
 $transactionId = MiscUtility::generateULID();
 $processingErrors = [];
 
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
+
+$uniqueIdsForSampleCodeGeneration = [];
 
 try {
 
@@ -215,11 +222,11 @@ try {
                 continue;
             }
 
-            $formData['sample_collection_date'] = $formData['sample_collection_date'] ?? $enrollmentDate;
+            $formData['sample_collection_date'] ??= $enrollmentDate;
 
             // if this is an old request, then skip
             if (strtotime((string) $formData['sample_collection_date']) < strtotime('-6 months')) {
-                $processingErrors[] = 'Old Hepatitis Request: ' . $uniqueID;
+                $processingErrors[] = "Existing Hepatitis Request: $uniqueID";
                 continue;
             }
 
@@ -287,31 +294,25 @@ try {
 
             $formData['unique_id'] = $uniqueID;
 
-            $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
-            $sampleCodeParams['prefix'] = $formData['hepatitis_test_type'] ?? null;
-            $sampleCodeParams['insertOperation'] = true;
-            $sampleJson = $hepatitisService->getSampleCode($sampleCodeParams);
+            $sampleCollectionDate = DateUtility::humanReadableDateFormat($formData['sample_collection_date'] ?? '');
+            $prefix = $formData['hepatitis_test_type'] ?? 'HEP';
 
-            $sampleData = json_decode((string) $sampleJson, true);
-            if ($general->isSTSInstance()) {
-                $sampleCode = 'remote_sample_code';
-                $sampleCodeKey = 'remote_sample_code_key';
-                $sampleCodeFormat = 'remote_sample_code_format';
-                $formData['remote_sample'] = 'yes';
-            } else {
-                $sampleCode = 'sample_code';
-                $sampleCodeKey = 'sample_code_key';
-                $sampleCodeFormat = 'sample_code_format';
-                $formData['remote_sample'] = 'no';
-            }
-            $formData[$sampleCode] = $sampleData['sampleCode'];
-            $formData[$sampleCodeFormat] = $sampleData['sampleCodeFormat'];
-            $formData[$sampleCodeKey] = $sampleData['sampleCodeKey'];
+            $uniqueIdsForSampleCodeGeneration[] = $uniqueID;
+
+            // Insert into the Code Generation Queue
+            $testRequestsService->addToSampleCodeQueue(
+                $uniqueId,
+                'hepatitis',
+                DateUtility::isoDateFormat($formData['sample_collection_date'] ?? '', true),
+                null,
+                $sampleCodeFormat,
+                $prefix,
+                'collection-site'
+            );
+
+            $formData['remote_sample'] = ($general->isSTSInstance()) ? 'yes' : 'no';
 
             $formData['request_created_by'] = 1;
-
-
 
             $formData['vlsm_instance_id'] = $instanceId;
             $formData['vlsm_country_id'] = 7; // RWANDA
@@ -332,6 +333,12 @@ try {
                 $processedCounter++;
             }
         }
+    }
+
+
+    // For inserted samples, generate sample code
+    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
     }
 
     $responsePayload = json_encode([

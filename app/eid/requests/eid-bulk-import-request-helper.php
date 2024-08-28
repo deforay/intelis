@@ -4,6 +4,7 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -170,6 +171,11 @@ try {
         $_SESSION['alertMsg'] = "Data imported successfully";
     }
     header("Location:/eid/requests/eid-requests.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

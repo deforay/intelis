@@ -102,8 +102,8 @@ try {
     } catch (Exception $e) {
         LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
             'exception' => $db->getLastError(),
-            'file' => __FILE__,
-            'line' => __LINE__
+            'file' => $e->getFile(),
+            'line' => $e->getLine()
         ]);
     }
     if (isset($_POST['gender']) && (trim((string) $_POST['gender']) == 'male' || trim((string) $_POST['gender']) == 'unreported')) {

@@ -2,6 +2,7 @@
 
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
@@ -206,8 +207,12 @@ try {
         }
         $_SESSION['alertMsg'] = _translate("Test type updated successfully");
     }
-    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+
     header("Location:test-type.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Services\GeoLocationsService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
 
 
 if (session_status() == PHP_SESSION_NONE) {
@@ -228,7 +229,6 @@ try {
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
         $id = $db->update($tableName, $tbData);
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     }
 
     if ($id === true) {
@@ -248,6 +248,10 @@ try {
     } else {
         header("Location:/tb/results/tb-manual-results.php");
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

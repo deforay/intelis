@@ -2,13 +2,16 @@
 
 namespace App\Services;
 
-use Exception;
 use Throwable;
 use SAMPLE_STATUS;
+use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
+use App\Services\GeoLocationsService;
 use App\Abstracts\AbstractTestService;
 
 final class TestRequestsService
@@ -119,7 +122,7 @@ final class TestRequestsService
                         } while (!empty($rowData) && $tries < $maxTries);
 
                         if ($tries >= $maxTries) {
-                            throw new Exception("Maximum tries for generating sample code for {$item['unique_id']} exceeded");
+                            throw new SystemException("Maximum tries for generating sample code for {$item['unique_id']} exceeded");
                         }
 
                         $accessType = $item['access_type'] ?? null;
@@ -172,7 +175,7 @@ final class TestRequestsService
         }
     }
 
-    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null, $provinceCode = null)
+    public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)
     {
         $tableName = TestsService::getTestTableName($testType);
 
@@ -191,6 +194,27 @@ final class TestRequestsService
 
                 if ($testType == 'hepatitis') {
                     $prefix = $sampleRow['hepatitis_test_type'] ?? $prefix;
+                } elseif ($testType == 'generic-tests') {
+                    /** @var GenericTestsService $genericTestsService */
+                    $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
+                    $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
+                    $prefix = "T";
+                    if (!empty($testType['testDetails']['test_short_code'])) {
+                        $prefix = $testType['testDetails']['test_short_code'];
+                    }
+                }
+
+                $provinceCode = null;
+
+                // For PNG, we need to get the province code
+                $formId = (int) $this->commonService->getGlobalConfig('vl_form');
+                if ($formId == COUNTRY\PNG) {
+                    /** @var GeoLocationsService $geoService */
+                    $geoService = ContainerRegistry::get(GeoLocationsService::class);
+
+                    if (!empty($sampleRow['province_id'])) {
+                        $provinceCode = $geoService->getProvinceCodeFromId($sampleRow['province_id']);
+                    }
                 }
 
                 $this->addToSampleCodeQueue(

@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -20,7 +21,6 @@ if (isset($_POST['testType']) && $_POST['testType'] == "") {
 
 $table = TestsService::getTestTableName($_POST['testType'] ?? 'vl');
 
-//echo $table; die;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -28,13 +28,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 try {
     if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
-        $value = array(
-            'lab_id'                    => $_POST['assignLab'],
-            'referring_lab_id'          => $_POST['testingLab'],
-            'last_modified_datetime'    => DateUtility::getCurrentDateTime(),
+        $value = [
+            'lab_id' => $_POST['assignLab'],
+            'referring_lab_id' => $_POST['testingLab'],
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync'                 => 0
-        );
+            'data_sync' => 0
+        ];
         /* Update Package details table */
         $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update('package_details', array("lab_id" => $_POST['assignLab']));
@@ -54,6 +54,11 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:view-manifests.php?t=" . ($_POST['testType']));
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }

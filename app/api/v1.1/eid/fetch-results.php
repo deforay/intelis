@@ -229,13 +229,14 @@ try {
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
 
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
         'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);

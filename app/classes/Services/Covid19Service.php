@@ -328,12 +328,29 @@ final class Covid19Service extends AbstractTestService
         return $response;
     }
 
-    public function getCovid19ReasonsDetailsForTestingByFormId($c19Id)
+    public function getCovid19ReasonsDetailsForTestingByFormId($c19Id, $onlyValues = false)
     {
         if (empty($c19Id)) {
             return null;
         }
-        return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", [$c19Id]);
+        /* if (!$onlyValues) {
+            return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", [$c19Id]);
+        } */
+        $result = $this->db->rawQueryOne("
+            SELECT * FROM covid19_reasons_for_testing AS crft 
+            INNER JOIN r_covid19_test_reasons AS rctr ON crft.reasons_id = rctr.test_reason_id 
+            WHERE crft.`covid19_id` = ?
+        ", [$c19Id]);
+        $response = [];
+        if ($result) {
+            foreach (json_decode($result['reason_details'], true) as $row) {
+                $response[] = array(
+                    'reasons_detected' => $result['test_reason_name'],
+                    'reason_details' => $row,
+                );
+            }
+        }
+        return $response;
     }
 
     public function fetchAllDetailsBySampleCode($sampleCode)

@@ -74,20 +74,22 @@ final class HepatitisService extends AbstractTestService
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
                                                 WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
             if ($allData) {
-                return $results;
-            }
-            foreach ($results as $row) {
-                $response[$row['hepatitis_id']][$row['comorbidity_id']] = $row['comorbidity_detected'];
+                $response = $results;
+            } else {
+                foreach ($results as $row) {
+                    $response[$row['hepatitis_id']][$row['comorbidity_id']] = $row['comorbidity_detected'];
+                }
             }
         } else {
 
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_patient_comorbidities
                                                 WHERE `hepatitis_id` = $formId");
             if ($allData) {
-                return $results;
-            }
-            foreach ($results as $row) {
-                $response[$row['comorbidity_id']] = $row['comorbidity_detected'];
+                $response = $results;
+            } else {
+                foreach ($results as $row) {
+                    $response[$row['comorbidity_id']] = $row['comorbidity_detected'];
+                }
             }
         }
         return $response;
@@ -103,24 +105,24 @@ final class HepatitisService extends AbstractTestService
         $response = [];
         // Using this in sync requests/results
         if (is_array($formId)) {
-
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
                                                 WHERE `hepatitis_id` IN (" . implode(",", $formId) . ")");
             if ($allData) {
-                return $results;
-            }
-            foreach ($results as $row) {
-                $response[$row['hepatitis_id']][$row['riskfactors_id']] = $row['riskfactors_detected'];
+                $response = $results;
+            } else {
+                foreach ($results as $row) {
+                    $response[$row['hepatitis_id']][$row['riskfactors_id']] = $row['riskfactors_detected'];
+                }
             }
         } else {
-
             $results = $this->db->rawQuery("SELECT * FROM hepatitis_risk_factors
                                                 WHERE `hepatitis_id` = $formId");
             if ($allData) {
-                return $results;
-            }
-            foreach ($results as $row) {
-                $response[$row['riskfactors_id']] = $row['riskfactors_detected'];
+                $response = $results;
+            } else {
+                foreach ($results as $row) {
+                    $response[$row['riskfactors_id']] = $row['riskfactors_detected'];
+                }
             }
         }
         return $response;
@@ -200,7 +202,6 @@ final class HepatitisService extends AbstractTestService
             $this->db->beginTransaction();
 
             $prefix = $params['prefix'] ?? null;
-            $provinceCode = $params['provinceCode'] ?? null;
             $provinceId = $params['provinceId'] ?? null;
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 

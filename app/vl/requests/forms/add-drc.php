@@ -117,18 +117,18 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td><label for="reqClinician">Demandeur </label></td>
+										<td><label for="reqClinician">Demandeur <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="reqClinician" name="reqClinician" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
-										<td><label for="reqClinicianPhoneNumber">Téléphone </label></td>
+										<td><label for="reqClinicianPhoneNumber">Téléphone <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
+											<input type="text" class="form-control phone-number isRequired" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="<?= _translate("Please enter phone number"); ?>" style="width:100%;" />
 										</td>
-										<td><label for="implementingPartner">Partnaire d'appui </label></td>
+										<td><label for="implementingPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" style="width:100%;"/> -->
-											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
+											<select class="form-control select2 isRequired" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -140,13 +140,13 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td><label for="">Date de la demande </label></td>
+										<td><label for="">Date de la demande <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control date" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" style="width:100%;" />
+											<input type="text" class="form-control date isRequired" id="dateOfDemand" name="dateOfDemand" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de la demande" style="width:100%;" />
 										</td>
-										<td><label for="fundingSource">Source de financement </label></td>
+										<td><label for="fundingSource">Source de financement<span class="mandatory">*</span> </label></td>
 										<td>
-											<select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control isRequired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -191,9 +191,9 @@ $sFormat = '';
 											<input type="text" class="form-control isRequired patientId" id="artNo" name="artNo" placeholder="Code du patient" title="<?= _translate("Please enter the Patient ID"); ?>" onchange="checkPatientDetails('form_vl','patient_art_no',this,null)" />
 											<span class="artNoGroup" id="artNoGroup"></span>
 										</td>
-										<td style="width: 15% !important;"><label for="">Date de naissance </label></td>
+										<td style="width: 15% !important;"><label for="">Date de naissance <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate("Please enter the Date of Birth"); ?>" title="<?= _translate("Please enter the Date of Birth"); ?>" onchange="getAge();checkARTInitiationDate();" />
+											<input type="text" class="form-control date isRequired" id="dob" name="dob" placeholder="<?= _translate("Please enter the Date of Birth"); ?>" title="<?= _translate("Please enter the Date of Birth"); ?>" onchange="getAge();checkARTInitiationDate();" />
 										</td>
 									</tr>
 									<tr>
@@ -208,7 +208,7 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label for="sex">Sexe
+										<td style="width: 15% !important;"><label for="sex">Sexe<span class="mandatory">*</span>
 											</label></td>
 										<td style="width: 35% !important;">
 											<!--<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
@@ -223,15 +223,15 @@ $sFormat = '';
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
 												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
 											</label> -->
-											<select name="gender" id="gender" class="form-control" title="Please choose gender">
+											<select name="gender" id="gender" class="form-control isRequired" title="Please choose gender">
 												<option value=""><?= _translate("-- Select --"); ?></option>
 												<option value="male"><?= _translate("M"); ?></option>
 												<option value="female"><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP </label></td>
+										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
@@ -266,9 +266,9 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label>Régime ARV en cours </label></td>
+										<td style="width: 15% !important;"><label>Régime ARV en cours <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();">
+											<select class="form-control isRequired" name="artRegimen" id="artRegimen" title="Please choose régime ARV en cours" onchange="checkARTRegimenValue();">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($aResult as $arv) { ?>
 													<option value="<?php echo $arv['art_code']; ?>"><?php echo $arv['art_code']; ?></option>
@@ -285,14 +285,14 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td style="width: 15% !important;"><label for="isPatientNew">Si S/ARV </label></td>
+										<td style="width: 15% !important;"><label for="isPatientNew">Si S/ARV <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;"><label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Oui</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="isPatientNewYes" name="isPatientNew" value="yes" title="Please check Si S/ ARV">
+												<input type="radio" class="isRequired" id="isPatientNewYes" name="isPatientNew" value="yes" title="Please check Si S/ ARV">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" id="isPatientNewNo" name="isPatientNew" value="no">
+												<input type="radio" class="isRequired" id="isPatientNewNo" name="isPatientNew" value="no">
 											</label>
 										</td>
 										<td class="du" style="display:none; width: 15% !important;"><label for="">Date du début des ARV
@@ -304,15 +304,15 @@ $sFormat = '';
 									<tr>
 										<td style="width: 15% !important;">
 											<label for="hasChangedRegimen">Ce patient a-t-il déjà changé de régime de
-												traitement? </label>
+												traitement? <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;"><label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option">
 											</label>
 										</td>
 									</tr>
@@ -410,9 +410,9 @@ $sFormat = '';
 										</td>
 									</tr>
 									<tr>
-										<td><label for="">Date de départ au Labo biomol </label></td>
+										<td><label for="">Date de départ au Labo biomol <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control dateTime" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" style="width:100%;" />
+											<input type="text" class="form-control dateTime isRequired" id="sampleDispatchedDate" name="sampleDispatchedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de départ au Labo biomol" style="width:100%;" />
 										</td>
 										<td></td>
 										<td></td>

@@ -1,12 +1,13 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
-use App\Services\EidService;
-use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\GeoLocationsService;
+use App\Services\TestRequestsService;
+use App\Abstracts\AbstractTestService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -14,70 +15,27 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var EidService $eidObj */
-$eidObj = ContainerRegistry::get(EidService::class);
+/** @var GeoLocationsService $geoService */
+$geoService = ContainerRegistry::get(GeoLocationsService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$queryParams = explode(',', (string) $_POST['sampleId']);
-$placeholders = implode(', ', array_fill(0, count($queryParams), '?'));
-try {
+$testType = $_POST['testType'];
+$manifestCode = $_POST['manifestCode'];
 
-    $db->beginTransaction();
-    $sampleQuery = "SELECT eid_id,
-                sample_collection_date,
-                sample_package_code,
-                province_id,
-                sample_code
-                FROM form_eid WHERE eid_id IN ($placeholders)";
-    $sampleResult = $db->rawQuery($sampleQuery, $queryParams);
+$serviceClass = TestsService::getTestServiceClass($testType);
 
-    $_POST['sampleReceivedOn'] = DateUtility::isoDateFormat($_POST['sampleReceivedOn'] ?? '', true);
+/** @var AbstractTestService $testTypeService */
+$testTypeService = ContainerRegistry::get($serviceClass);
 
-    $status = 0;
-    foreach ($sampleResult as $sampleRow) {
+$globalConfig = $general->getGlobalConfig();
+$sampleCodeFormat = $globalConfig['eid_sample_code'] ?? 'MMYY';
+$prefix = $globalConfig['eid_sample_code_prefix'] ?? $testTypeService->shortCode;
 
-        $provinceCode = null;
-        if (!empty($sampleRow['province_id'])) {
-            $provinceQuery = "SELECT * FROM geographical_divisions WHERE geo_id= ?";
-            $provinceResult = $db->rawQueryOne($provinceQuery, [$sampleRow['province_id']]);
-            $provinceCode = $provinceResult['geo_code'];
-        }
-        // ONLY IF SAMPLE ID IS NOT ALREADY GENERATED
-        if (empty($sampleRow['sample_code']) || $sampleRow['sample_code'] == 'null') {
 
-            $sampleCodeParams = [];
-            $sampleCodeParams['sampleCollectionDate'] = DateUtility::humanReadableDateFormat($sampleRow['sample_collection_date'] ?? '');
-            $sampleCodeParams['provinceCode'] = $provinceCode ?? null;
-            $sampleCodeParams['insertOperation'] = true;
-            $sampleJson = $eidObj->getSampleCode($sampleCodeParams);
-            $sampleData = json_decode((string) $sampleJson, true);
+$testRequestsService = new TestRequestsService($db, $general);
 
-            $eidData['sample_code'] = $sampleData['sampleCode'];
-            $eidData['sample_code_format'] = $sampleData['sampleCodeFormat'];
-            $eidData['sample_code_key'] = $sampleData['sampleCodeKey'];
-            $eidData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-            $eidData['data_sync'] = 0;
-            if (!empty($_POST['sampleReceivedOn'])) {
-                $eidData['sample_tested_datetime'] = null;
-                $eidData['sample_received_at_lab_datetime'] = DateUtility::isoDateFormat($_POST['sampleReceivedOn'], true);
-            }
-            $eidData['last_modified_by'] = $_SESSION['userId'];
-            $eidData['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $db->where('eid_id', $sampleRow['eid_id']);
-            $id = $db->update('form_eid', $eidData);
-            if ($id === true) {
-                $status = 1;
-            }
-        }
-    }
-    $db->commitTransaction();
-} catch (Throwable $exception) {
-    $db->rollbackTransaction();
-    error_log("Error while generating Sample Codes : " . $exception->getMessage());
-}
-echo $status;
+echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);

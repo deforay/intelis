@@ -81,20 +81,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td></td>
 									</tr>
 									<tr>
-										<td><label for="province">Province </label><span class="mandatory">*</span></td>
+										<td><label for="province">Province <span class="mandatory">*</span> </label></td>
 										<td>
 											<select class="form-control isRequired" name="province" id="province" title="Please choose province" onchange="getfacilityDetails(this);" style="width:100%;">
 												<?php echo $province; ?>
 											</select>
 										</td>
-										<td><label for="district">Zone de Santé </label><span class="mandatory">*</span>
+										<td><label for="district">Zone de Santé <span class="mandatory">*</span> </label>
 										</td>
 										<td>
 											<select class="form-control isRequired" name="district" id="district" title="Please choose district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
-										<td><label for="facilityId">POINT DE COLLECT </label><span class="mandatory">*</span></td>
+										<td><label for="facilityId">POINT DE COLLECT<span class="mandatory">*</span> </label></td>
 										<td>
 											<select class="form-control isRequired " name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
@@ -102,10 +102,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<td><label for="supportPartner">Partnaire d'appui </label></td>
+										<td><label for="supportPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" style="width:100%;"/> -->
-											<select class="form-control select2" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
+											<select class="form-control select2 isRequired" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($implementingPartnerList as $implementingPartner) {
@@ -115,9 +115,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="fundingSource">Source de Financement</label></td>
+										<td><label for="fundingSource">Source de Financement<span class="mandatory">*</span></label></td>
 										<td>
-											<select class="form-control select2" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
+											<select class="form-control select2 isREquired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
 												foreach ($fundingSourceList as $fundingSource) {
@@ -126,15 +126,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<?php } ?>
 											</select>
 										</td>
-										<td><label for="clinicianName">Demandeur </label></td>
+										<td><label for="clinicianName">Demandeur<span class="mandatory">*</span> </label></td>
 										<td>
-											<input type="text" class="form-control" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
+											<input type="text" class="form-control isRequired" id="clinicianName" name="clinicianName" placeholder="Demandeur" title="<?= _translate("Please enter requesting clinician name"); ?>" style="width:100%;" />
 										</td>
 									</tr>
 									<tr>
-										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien </label></td>
+										<td><label for="reqClinicianPhoneNumber">Demander le numéro de téléphone du clinicien <span class="mandatory">*</span></label></td>
 										<td>
-											<input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
+											<input type="text" class="form-control phone-number isRequired" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" placeholder="Téléphone" title="Veuillez entrer le téléphone" value="" style="width:100%;" />
 										</td>
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
@@ -160,23 +160,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</th>
 									</tr>
 									<tr>
-										<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) </label></th>
+										<th scope="row" style="width:15%;"><label for="mothersId">Code (si applicable) <span class="mandatory">*</span></label></th>
 										<td style="width:35%;">
-											<input type="text" class="form-control " id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" onchange="" />
+											<input type="text" class="form-control isRequired" id="mothersId" name="mothersId" placeholder="Code du mère" title="Please enter code du mère" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row" style="width:15%;"><label for="mothersName">Nom </label></th>
+										<th scope="row" style="width:15%;"><label for="mothersName">Nom <span class="mandatory">*</span></label></th>
 										<td style="width:35%;">
-											<input type="text" class="form-control " id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" onchange="" />
+											<input type="text" class="form-control isRequired" id="mothersName" name="mothersName" placeholder="Nom du mère" title="Please enter nom du mère" style="width:100%;" onchange="" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="mothersDob">Date de naissance </label></th>
+										<th scope="row"><label for="mothersDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control date" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" onchange="" />
+											<input type="text" class="form-control date isRequired" id="mothersDob" name="mothersDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" onchange="" />
 										</td>
-										<th scope="row"><label for="mothersMaritalStatus">Etat civil </label></th>
+										<th scope="row"><label for="mothersMaritalStatus">Etat civil <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control " name="mothersMaritalStatus" id="mothersMaritalStatus">
+											<select class="form-control isRequired" name="mothersMaritalStatus" id="mothersMaritalStatus">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='single'> Single </option>
 												<option value='married'> Married </option>
@@ -197,19 +197,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td>
 											<input type="text" class="form-control isRequired patientId" id="childId" name="childId" placeholder="Code (Patient)" title="Please enter Code de l’enfant " style="width:100%;" onchange="showPatientList();" />
 										</td>
-										<th scope="row"><label for="childName">Nom </label></th>
+										<th scope="row"><label for="childName">Nom<span class="mandatory">*</span> </label></th>
 										<td>
-											<input type="text" class="form-control " id="childName" name="childName" placeholder="Nom" title="Please enter nom" style="width:100%;" onchange="" />
+											<input type="text" class="form-control isRequired" id="childName" name="childName" placeholder="Nom" title="Please enter nom" style="width:100%;" onchange="" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="childDob">Date de naissance </label></th>
+										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
-											<input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" onchange="calculateAgeInMonths();" />
+											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" onchange="calculateAgeInMonths();" />
 										</td>
-										<th scope="row"><label for="childGender">Gender </label></th>
+										<th scope="row"><label for="childGender">Gender <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control " name="childGender" id="childGender">
+											<select class="form-control isRequired" name="childGender" id="childGender">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='male'> <?= _translate("Male"); ?> </option>
 												<option value='female'> <?= _translate("Female"); ?> </option>
@@ -218,8 +218,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age en mois</th>
-										<td><input type="number" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
+										<th scope="row">Age en mois<span class="mandatory">*</span></th>
+										<td><input type="number" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control isRequired" id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row">Age en semaines</th>
 										<td><input type="number" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
 									</tr>
@@ -233,45 +233,45 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</th>
 									</tr>
 									<tr>
-										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:</th>
+										<th scope="row" colspan=2>ARV donnés à la maman pendant la grossesse:<span class="mandatory">*</span></th>
 										<td colspan=4>
-											<input type="checkbox" name="motherTreatment[]" value="Nothing" /> Rien
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Nothing" /> Rien
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated during Pregnancy" /> ARV débutés durant la
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV Initiated during Pregnancy" /> ARV débutés durant la
 											grossesse&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV Initiated prior to Pregnancy" /> ARV débutés avant la
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV Initiated prior to Pregnancy" /> ARV débutés avant la
 											grossesse &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="ARV at Child Birth" /> ARV à l’accouchement
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="ARV at Child Birth" /> ARV à l’accouchement
 											&nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Option B plus" />
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Option B plus" />
 											Option B plus <br><br>
-											<input type="checkbox" name="motherTreatment[]" value="AZT/3TC/NVP" />
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="AZT/3TC/NVP" />
 											AZT/3TC/NVP &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="TDF/3TC/EFV" />
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="TDF/3TC/EFV" />
 											TDF/3TC/EFV &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" />
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Other" onclick="$('#motherTreatmentOther').prop('disabled', function(i, v) { return !v; });" />
 											Autres (à préciser): <input class="form-control" style="max-width:180px;display:inline;" disabled="disabled" placeholder="Autres" type="text" name="motherTreatmentOther" id="motherTreatmentOther" /> &nbsp;&nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="motherTreatment[]" value="Unknown" /> Inconnu
+											<input type="checkbox" class="isRequired" name="motherTreatment[]" value="Unknown" /> Inconnu
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="vertical-align:middle;">CD4</th>
+										<th scope="row" style="vertical-align:middle;">CD4<span class="mandatory">*</span></th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control " id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" />
+												<input type="text" class="form-control isRequired" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
-										<th scope="row" style="vertical-align:middle;">Viral Load</th>
+										<th scope="row" style="vertical-align:middle;">Viral Load<span class="mandatory">*</span></th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control " id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Viral Load" style="width:100%;" onchange="" />
+												<input type="number" class="form-control isRequired" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Viral Load" style="width:100%;" onchange="" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>
 										<td style="vertical-align:middle;">- OR -</td>
 										<td style="vertical-align:middle;">
-											<select class="form-control " name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad()">
+											<select class="form-control isRequired" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad()">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='tnd'> Target Not Detected </option>
 												<option value='bdl'> Below Detection Limit </option>
@@ -294,21 +294,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</th>
 									</tr>
 									<tr>
-										<th scope="row">Bébé a reçu:<br>(Cocher tout ce qui est reçu, Rien, ou inconnu)
+										<th scope="row">Bébé a reçu:<br>(Cocher tout ce qui est reçu, Rien, ou inconnu) <span class="mandatory">*</span>
 										</th>
 										<td>
-											<input type="checkbox" name="childTreatment[]" value="Nothing" />&nbsp;Rien
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Nothing" />&nbsp;Rien
 											&nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="AZT" />&nbsp;AZT
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="AZT" />&nbsp;AZT
 											&nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="NVP" />&nbsp;NVP
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="NVP" />&nbsp;NVP
 											&nbsp; &nbsp;&nbsp;&nbsp;
-											<input type="checkbox" name="childTreatment[]" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
+											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
 
-										<th scope="row">Bébé a arrêté allaitement maternel ?</th>
+										<th scope="row">Bébé a arrêté allaitement maternel ? <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
+											<select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes"> Oui </option>
 												<option value="no"> Non </option>
@@ -317,9 +317,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (mois) arrêt allaitement :</th>
+										<th scope="row">Age (mois) arrêt allaitement : <span class="mandatory">*</span></th>
 										<td>
-											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+											<input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
 										</td>
 
 										<!-- <tr>
@@ -334,9 +334,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 							  </td>
 							</tr> -->
 
-										<th scope="row">Choix d’allaitement de bébé :</th>
+										<th scope="row">Choix d’allaitement de bébé : <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
+											<select class="form-control isRequired" name="choiceOfFeeding" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Breastfeeding only"> Allaitement seul </option>
 												<option value="Milk substitute"> Substitut de lait </option>
@@ -346,9 +346,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Cotrimoxazole donné au bébé?</th>
+										<th scope="row">Cotrimoxazole donné au bébé? <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="isCotrimoxazoleBeingAdministered" id="choiceOfFeeding">
+											<select class="form-control isRequired" name="isCotrimoxazoleBeingAdministered" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="no"> Non </option>
 												<option value="Yes, takes CTX everyday"> Oui, prend CTX chaque jour
@@ -374,15 +374,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 
-										<th scope="row" style="width:15%;">Tel. du préleveur</th>
+										<th scope="row" style="width:15%;">Tel. du préleveur <span class="mandatory">*</span></th>
 										<td style="width:35%;">
-											<input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" />
+											<input class="form-control isRequired" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Tel. du préleveur" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"> Type d'échantillon</th>
+										<th scope="row"> Type d'échantillon <span class="mandatory">*</span></th>
 										<td>
-											<select name="specimenType" id="specimenType" class="form-control" title="Veuillez choisir le type d'échantillon" style="width:100%">
+											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Veuillez choisir le type d'échantillon" style="width:100%">
 												<option value="">-- Selecione --</option>
 												<?php foreach ($sampleResult as $name) { ?>
 													<option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
@@ -390,15 +390,15 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											</select>
 										</td>
 
-										<th scope="row">Nom du demandeur</th>
+										<th scope="row">Nom du demandeur <span class="mandatory">*</span></th>
 										<td>
-											<input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" />
+											<input class="form-control isRequired" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Nom du demandeur" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Raison de la PCR (cocher une):</th>
+										<th scope="row">Raison de la PCR (cocher une): <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="pcrTestReason" id="pcrTestReason">
+											<select class="form-control isRequired" name="pcrTestReason" id="pcrTestReason">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Nothing"> Rien</option>
 												<option value="First Test for exposed baby"> 1st test pour bébé exposé
@@ -419,24 +419,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué?</th>
+										<th scope="row">Test rapide effectué? <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
+											<select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes"> Oui </option>
 												<option value="no"> Non </option>
 											</select>
 										</td>
 
-										<th scope="row">Si oui, date :</th>
+										<th scope="row">Si oui, date : <span class="mandatory">*</span></th>
 										<td>
-											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" />
+											<input class="form-control date isRequired" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Résultat test rapide</th>
+										<th scope="row">Résultat test rapide <span class="mandatory">*</span></th>
 										<td>
-											<select class="form-control" name="rapidTestResult" id="rapidTestResult">
+											<select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
 												<option value=''> -- Sélectionner -- </option>
 												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 													<option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
@@ -744,6 +744,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 		var motherVlText = $("#motherViralLoadText").val();
 		if (motherVlText != '') {
 			$("#motherViralLoadCopiesPerMl").val('');
+			$("#motherViralLoadCopiesPerMl").removeClass('isRequired');
 		}
 	}
 
@@ -781,6 +782,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 			//var motherVlText = $("#motherViralLoadText").val();
 			if (motherVl != '') {
 				$("#motherViralLoadText").val('');
+				$("#motherViralLoadText").removeClass('isRequired');
 			}
 		});
 

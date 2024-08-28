@@ -208,8 +208,8 @@ try {
 	header("Location:covid-19-manual-results.php");
 } catch (Exception $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
-		'file' => __FILE__,
-		'line' => __LINE__,
+		'file' => $e->getFile(),
+		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
 }

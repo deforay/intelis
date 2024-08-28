@@ -8,8 +8,9 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -17,7 +18,7 @@ if (
     !isset(SYSTEM_CONFIG['archive']['enabled']) ||
     SYSTEM_CONFIG['archive']['enabled'] === false
 ) {
-    error_log('Archiving is not enabled. Please enable it in configuration.');
+    LoggerUtility::logError('Archiving is not enabled. Please enable it in configuration.');
     exit;
 }
 
