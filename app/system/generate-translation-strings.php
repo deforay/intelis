@@ -11,7 +11,7 @@ if (php_sapi_name() !== 'cli') {
 }
 
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once __DIR__ . "/../../bootstrap.php";
 
 include_once(ROOT_PATH . DIRECTORY_SEPARATOR . 'fix-scripts/app-menu.php');
 
