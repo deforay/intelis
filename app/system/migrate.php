@@ -18,8 +18,8 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
-if (version_compare(VERSION, '4.4.3', '<')) {
-    exit("This script requires VERSION 4.4.3 or higher. Current version: " . VERSION . "\n");
+if (version_compare(CORE\VERSION, '4.4.3', '<')) {
+    exit("This script requires VERSION 4.4.3 or higher. Current version: " . CORE\VERSION . "\n");
 }
 
 // Define the logs directory path

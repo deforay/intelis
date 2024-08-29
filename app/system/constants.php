@@ -3,7 +3,7 @@
 
 namespace CORE {
     const VERSION = '5.2.9';
-    const SYSTEM_ADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
+    const SYSADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
 }
 
 namespace SAMPLE_STATUS {
