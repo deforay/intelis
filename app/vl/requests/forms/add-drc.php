@@ -240,24 +240,24 @@ $sFormat = '';
 									<tr class="femaleSection" style="display:none;">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
-											<label for="breastfeeding">Allaitante ?</label>
-											<select class="form-control" id="breastfeeding" name="breastfeeding">
+											<label for="breastfeeding">Allaitante ?<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="breastfeeding" name="breastfeeding" title="<?= _translate('Please choose Allaitante'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" value="yes">Oui</option>
 												<option id="breastfeedingNo" value="no">Non</option>
 											</select>
 										</td>
 										<td style="width:15% !important;">
-											<label for="patientPregnant">Ou enceinte ?</label>
-											<select class="form-control" id="pregnant" name="patientPregnant">
+											<label for="pregnant">Ou enceinte ?<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="pregnant" name="patientPregnant" title="<?= _translate('Please choose Ou enceinte'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="pregYes" value="yes">Oui</option>
 												<option id="pregNo" value="no">Non</option>
 											</select>
 										</td>
 										<td class="trimesterSection" style="display:none; width:30% !important;">
-											<label for="trimester">Si Femme enceinte :</label>
-											<select class="form-control" id="trimester" name="trimester">
+											<label for="trimester">Si Femme enceinte :<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="trimester" name="trimester" title="<?= _translate('Please choose Si Femme enceinte'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="trimester1" value="1">Trimestre 1</option>
 												<option id="trimester2" value="2">Trimestre 2</option>
@@ -702,16 +702,38 @@ $sFormat = '';
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps"><?= _translate("PS"); ?> </option>');
-			$(".femaleSection").show();
+			showFemaleSection();
 		} else if ($(this).val() == 'male') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps"><?= _translate("CPS"); ?> </option><option value="msm"><?= _translate("MSM"); ?> </option>');
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		}
 	});
+	function showFemaleSection(){
+		$(".femaleSection").show();
+		addMandatoryField('breastfeeding');
+        addMandatoryField('pregnant');
+	}
+	function hideFemaleSection(){
+		$(".femaleSection").hide();
+		removeMandatoryField('breastfeeding');
+        removeMandatoryField('pregnant');
+		removeMandatoryField('trimester');
+	}
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
+		$('#' + fieldId).val('');
+	}
 	$("#pregnant").change(function() {
 		if ($(this).val() == 'yes') {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		} else {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
 		}
 	});

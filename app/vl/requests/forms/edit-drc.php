@@ -275,7 +275,7 @@ $storageInfo = $storageService->getLabStorage();
 									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
-											<label for="breastfeeding">Allaitante ?</label>
+											<label for="breastfeeding">Allaitante ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
@@ -283,7 +283,7 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 										<td style="width:15% !important;">
-											<label for="patientPregnant">Ou enceinte ?</label>
+											<label for="pregnant">Ou enceinte ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte ">
 												<option value=""> -- Select -- </option>
 												<option id="pregYes" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
@@ -291,7 +291,7 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 										<td class="trimesterSection" style="width:30% !important;">
-											<label for="trimester">Si Femme enceinte :</label>
+											<label for="trimester">Si Femme enceinte :<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre">
 												<option value=""> -- Select -- </option>
 												<option id="trimester1" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
@@ -660,7 +660,7 @@ $storageInfo = $storageService->getLabStorage();
 
 		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
-		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
+		showFemale('<?php echo $femaleSectionDisplay; ?>');
 
 		showTrimesterSection('<?php echo $trimsterDisplay; ?>');
 
@@ -733,22 +733,45 @@ $storageInfo = $storageService->getLabStorage();
         }
     }
 
-	function showFemaleSection(genderProp) {
+	function showFemale(genderProp) {
 		if (genderProp == "none") {
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		} else {
-			$(".femaleSection").show();
+			showFemaleSection();
 		}
+	}
+
+	function showFemaleSection(){
+		$(".femaleSection").show();
+		addMandatoryField('breastfeeding');
+        addMandatoryField('pregnant');
+	}
+	function hideFemaleSection(){
+		$(".femaleSection").hide();
+		removeMandatoryField('breastfeeding');
+        removeMandatoryField('pregnant');
+		removeMandatoryField('trimester');
+	}
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
+		$('#' + fieldId).val('');
 	}
 
 	function showTrimesterSection(trimesterProp) {
 		if (trimesterProp == "none") {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
+			
 		} else {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		}
 	}
-
 
 	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 	//	var startDate = $('#sampleCollectionDate').datetimepicker('getDate');
@@ -879,19 +902,20 @@ $storageInfo = $storageService->getLabStorage();
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
-			$(".femaleSection").show();
+			showFemaleSection();
 		} else if ($(this).val() == 'male') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		}
 	});
 
 	$("#pregnant").change(function() {
 		if ($(this).val() == 'yes') {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		} else {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
 		}
 	});
