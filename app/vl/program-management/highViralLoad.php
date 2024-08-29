@@ -108,6 +108,10 @@ $state = $geolocationService->getProvinces("yes");
 		display: block;
 		padding: 10px 7px;
 	}
+	#myTab li a {
+		text-align: center; /* Center the text */
+		white-space: normal; /* Allow wrapping and line breaks */
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -136,13 +140,13 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("High Viral Load Report"); ?></a></li>
-										<li><a href="#highVlVirologicFailureReport" data-toggle="tab"><?php echo _translate("High VL and Virologic Failure Report"); ?></a></li>
-										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
-										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
-										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
-										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
-										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?></a></li>
+										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("High Viral Load"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#highVlVirologicFailureReport" data-toggle="tab"><?php echo _translate("High VL and Virologic Failure"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing"); ?><br><?php echo _translate("Report"); ?></a></li>
+										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?><br><?php echo _translate("Report"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
