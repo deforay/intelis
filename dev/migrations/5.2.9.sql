@@ -670,3 +670,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'admin', NULL, 'no', 'Test Results Metadata', '/admin/monitoring/test-results-metadata.php', NULL, 'always', 'fa-solid fa-meta', 'no', 'allMenu treeview test-result-metadata-menu', '7', '20', 'active', CURRENT_TIMESTAMP);
 
 UPDATE `privileges` SET `show_mode` = 'always' WHERE `privileges`.`privilege_name` = '/vl/program-management/sample-storage-reports.php';
+
+-- Jeyabanu 28-Aug-2024
+ALTER TABLE `form_vl` ADD `result_sent_to_external` TEXT NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_vl` ADD `result_sent_to_external` TEXT NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `form_vl` ADD `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL AFTER `result_sent_to_external`;
+ALTER TABLE `audit_form_vl` ADD `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL AFTER `result_sent_to_external`;
