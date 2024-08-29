@@ -5,8 +5,6 @@ if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     session_start();
 }
 
-
-
 // Application environment
 defined('APPLICATION_ENV')
     || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
