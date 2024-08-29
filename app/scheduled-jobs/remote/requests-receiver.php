@@ -98,7 +98,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     }
     $columnList = [];
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -249,7 +249,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -382,7 +382,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
@@ -571,7 +571,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
     // die($jsonResponse);
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -744,7 +744,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -893,7 +893,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
     }
     $columnList = [];
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
@@ -1024,7 +1024,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         $payload['manifestCode'] = $manifestCode;
     }
 
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     $columnList = [];
 

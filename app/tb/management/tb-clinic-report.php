@@ -86,6 +86,7 @@ $state = $geolocationService->getProvinces("yes");
 										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
 										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
 										<li><a href="#sampleTestingReport" data-toggle="tab"><?php echo _translate("Sample Testing Report"); ?></a></li>
+										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active">
@@ -484,9 +485,7 @@ $state = $geolocationService->getProvinces("yes");
 														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('stReportFilter');"><span>
-																<?= _translate("Reset"); ?>
-															</span></button>
+													&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													</td>
 												</tr>
 											</table>
@@ -496,6 +495,79 @@ $state = $geolocationService->getProvinces("yes");
 													<p class="highcharts-description">
 													</p>
 											</figure>
+										</div>
+										<div class="tab-pane fade" id="patientTestHistoryFormReport">
+											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+												<tr>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Patient ID"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<input type="text" id="patientId" name="patientId" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient ID'); ?>" style="background:#fff;" />
+													</td>
+													<td style="width: 10%;"><strong>
+															<?php echo _translate("Patient Name"); ?>&nbsp;:
+														</strong></td>
+													<td style="width: 23.33%;">
+														<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
+													</td>
+													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+															&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+															<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+																<?php echo _translate("Export to excel"); ?>
+															</button>
+													</td>
+												</tr>
+											</table>
+											<table aria-describedby="table" id="patientTestHistoryReport" class="table table-bordered table-striped" aria-hidden="true">
+												<thead>
+													<tr>
+														<th>
+															<?php echo _translate("Patient ID"); ?>
+														</th>
+														<th scope="row">
+															<?php echo _translate("Patient Name"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Age"); ?>.
+														</th>
+														<th>
+															<?php echo _translate("DoB"); ?>
+														</th>
+														<th scope="row">
+															<?php echo _translate("Facility Name"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Requesting Clinican"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Sample Collection Date"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Sample Type"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Lab Name"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Sample Tested Date"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Result"); ?>
+														</th>
+														<th>
+															<?php echo _translate("Download PDF"); ?>
+														</th>
+													</tr>
+												</thead>
+												<tbody>
+													<tr>
+														<td colspan="12" class="dataTables_empty">
+															<?php echo _translate("Loading data from server"); ?>
+														</td>
+													</tr>
+												</tbody>
+											</table>
 										</div>
 									</div>
 								</div>
@@ -521,6 +593,7 @@ $state = $geolocationService->getProvinces("yes");
 	var oTableRjtReport = null;
 	var oTablenotAvailReport = null;
 	var oTableincompleteReport = null;
+	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState,#stState").select2({
 			placeholder: "<?php echo _translate("Select Province"); ?>"
@@ -564,7 +637,8 @@ $state = $geolocationService->getProvinces("yes");
 		notAvailReport();
 		incompleteForm();
 		getSampleTestingResult();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select").on("change", function() {
+		patientHistoryReport();
+		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
 			searchExecuted = false;
 		});
 	});
@@ -913,6 +987,83 @@ $state = $geolocationService->getProvinces("yes");
 		$.unblockUI();
 	}
 
+	function patientHistoryReport() {
+		$.blockUI();
+		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ records per page"
+			},
+			"bJQueryUI": false,
+			"bAutoWidth": false,
+			"bInfo": true,
+			"bScrollCollapse": true,
+			//"bStateSave" : true,
+			"bRetrieve": true,
+			"aoColumns": [{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center"
+				},
+				{
+					"sClass": "center",
+					"bSortable": false
+				},
+			],
+			"aaSorting": [
+				[9, "desc"]
+			],
+			"bProcessing": true,
+			"bServerSide": true,
+			"sAjaxSource": "getPatientTestHistoryReport.php",
+			"fnServerData": function(sSource, aoData, fnCallback) {
+				aoData.push({
+					"name": "patientId",
+					"value": $("#patientId").val()
+				});
+				aoData.push({
+					"name": "patientName",
+					"value": $("#patientName").val()
+				});
+				$.ajax({
+					"dataType": 'json',
+					"type": "POST",
+					"url": sSource,
+					"data": aoData,
+					"success": fnCallback
+				});
+			}
+		});
+		$.unblockUI();
+	}
+
 	function searchVlRequestData() {
 		searchExecuted = true;
 		$.blockUI();
@@ -921,6 +1072,7 @@ $state = $geolocationService->getProvinces("yes");
 		oTablenotAvailReport.fnDraw();
 		//incompleteForm();
 		oTableincompleteReport.fnDraw();
+		oTablepatientTestHistoryReport.fnDraw();
 		$.unblockUI();
 	}
 
@@ -1020,7 +1172,25 @@ $state = $geolocationService->getProvinces("yes");
 			});
 	}
 
-
+	function exportPatientTesthistoryInexcel() {
+		if (searchExecuted === false) {
+			searchVlRequestData();
+		}
+		$.blockUI();
+		$.post("/tb/management/tbPatientTesthistoryInExcel.php", {
+				patient_id: $("#patientId").val(),
+				patient_name: $("#patientName").val()
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					$.unblockUI();
+					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
+				} else {
+					$.unblockUI();
+					window.open('/download.php?f=' + data, '_blank');
+				}
+			});
+	}
 
 	function setSampleTestDate(obj) {
 		$(".stDate").val($("#" + obj.id).val());
@@ -1090,6 +1260,28 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			});
 		return currentXHR;
+	}
+
+	function convertResultToPdf(id) {
+		//$.blockUI();
+		<?php
+		$path = '';
+		$path = '/tb/results/generate-result-pdf.php';
+		?>
+		$.post("<?php echo $path; ?>", {
+				source: 'print',
+				id: id
+			},
+			function(data) {
+				if (data == "" || data == null || data == undefined) {
+					$.unblockUI();
+					alert("<?= _translate("Unable to generate download", true); ?>");
+				} else {
+					$.unblockUI();
+					oTablepatientTestHistoryReport.fnDraw();
+					window.open('/download.php?f=' + data, '_blank');
+				}
+			});
 	}
 </script>
 <?php

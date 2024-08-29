@@ -434,7 +434,7 @@ $dataToSync = array_merge(
 $payload['labId'] = $labId;
 
 try {
-    $jsonResponse = $apiService->post($url, $payload);
+    $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 

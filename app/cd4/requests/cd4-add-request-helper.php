@@ -99,10 +99,11 @@ try {
             $id = $db->update($fDetails, $fData);
         }
     } catch (Exception $e) {
-        LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
-            'exception' => $db->getLastError(),
-            'file' => __FILE__,
-            'line' => __LINE__
+        LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
+        LoggerUtility::logError($e->getMessage(), [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
         ]);
     }
     if (isset($_POST['gender']) && trim((string) $_POST['gender']) == 'male') {
@@ -305,7 +306,6 @@ try {
 
     $db->where('cd4_id', $_POST['cd4SampleId']);
     $id = $db->update($tableName, $vlData);
-    //error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
     $db->commitTransaction();
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("CD4 request added successfully");

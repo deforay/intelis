@@ -126,7 +126,7 @@ try {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
     http_response_code(500);

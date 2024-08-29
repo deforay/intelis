@@ -135,10 +135,10 @@ try {
         if (isset($districtInfo['geo_name']) && !empty($districtInfo['geo_name'])) {
             $data['facilityDistrictId'] = $districtInfo['geo_id'];
         } else {
-            $districtData = array(
+            $districtData = [
                 'geo_name' => $data['state'],
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
+            ];
             $db->insert("geographical_divisions", $districtData);
             $lastDistrictId = $db->getInsertId();
             $data['facilityDistrictId'] = $lastDistrictId;
@@ -207,6 +207,8 @@ try {
             ];
 
             $payload = [
+                'facilityName' => $data['facilityName'],
+                'facilityCode' => $data['facilityCode'],
                 'status' => 'success',
                 'timestamp' => time(),
                 'transactionId' => $transactionId,
@@ -214,9 +216,11 @@ try {
         } else {
             $responseData[$rootKey] = [
                 'transactionId' => $transactionId,
+                'facilityName' => $data['facilityName'],
+                'facilityCode' => $data['facilityCode'],
                 'status' => 'failed',
                 'action' => 'skipped',
-                'error' => $db->getLastError()
+                'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
             ];
             $payload = [
                 'status' => 'failed',
@@ -237,7 +241,7 @@ try {
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
     if (!empty($db->getLastError())) {
