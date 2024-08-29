@@ -100,7 +100,7 @@ try {
             "results" => $customTestResultData,
             "Key" => "vlsm-lab-data--",
         ];
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -144,7 +144,7 @@ try {
             "Key" => "vlsm-lab-data--",
         ];
 
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -185,7 +185,7 @@ try {
             "Key" => "vlsm-lab-data--",
         ];
 
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -238,7 +238,7 @@ try {
             "results" => $c19ResultData,
             "Key" => "vlsm-lab-data--",
         ];
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -279,7 +279,7 @@ try {
             "Key" => "vlsm-lab-data--"
         ];
 
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -322,7 +322,7 @@ try {
             "Key" => "vlsm-lab-data--",
         ];
 
-        $jsonResponse = $apiService->post($url, $payload);
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
