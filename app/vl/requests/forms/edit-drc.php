@@ -52,6 +52,13 @@ $aResult = $db->query($aQuery);
 
 
 $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
+$duRequiredClass = ($duVisibility == 'visible') ? 'isRequired' : '';
+$duMandatoryLabel = ($duVisibility == 'visible') ? '<span class="mandatory">*</span>' : '';
+
+$displayArvChangedElement = (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes");
+$arvRequiredClass = $displayArvChangedElement ? 'isRequired' : '';
+$arvMandatoryLabel = $displayArvChangedElement ? '<span class="mandatory">*</span>' : '';
+
 $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'none' : 'block';
 
@@ -326,9 +333,9 @@ $storageInfo = $storageService->getLabStorage();
 												<input type="radio" class="isRequired" id="isPatientNewNo" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
 											</label>
 										</td>
-										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV <?php echo $duMandatoryLabel; ?></label></td>
 										<td style="width: 35% !important;" class="du">
-											<input type="text" class="form-control date isRequired" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date <?php echo $duRequiredClass; ?>" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -347,15 +354,15 @@ $storageInfo = $storageService->getLabStorage();
 											</label>
 										</td>
 									</tr>
-									<tr class="arvChangedElement" style="display:<?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
+									<tr class="arvChangedElement" style="display:<?php echo ($displayArvChangedElement) ? '' : 'none'; ?>;">
 										<td style="width: 15%;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
-												de changement de régime ARV </label></td>
+												de changement de régime ARV <?php echo $arvMandatoryLabel; ?></label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control arvChangedElement" id="reasonForArvRegimenChange" name="reasonForArvRegimenChange" placeholder="Motif de changement de régime ARV" title="Please enter motif de changement de régime ARV" value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>" style="width:100%;" />
+											<input type="text" class="form-control arvChangedElement <?php echo $arvRequiredClass; ?>" id="reasonForArvRegimenChange" name="reasonForArvRegimenChange" placeholder="Motif de changement de régime ARV" title="Please enter motif de changement de régime ARV" value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>" style="width:100%;" />
 										</td>
 										<td style="width: 15%;"><label for="" class="arvChangedElement">Date du changement de régime ARV </label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date arvChangedElement <?php echo $arvRequiredClass; ?>" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -842,7 +849,16 @@ $storageInfo = $storageService->getLabStorage();
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
+			$(".arvChangedElement label").each(function() {
+				if ($(this).find('.mandatory').length === 0) {
+					$(this).append(' <span class="mandatory">*</span>');
+				}
+			});
+			$(".arvChangedElement input").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
+			$(".arvChangedElement label .mandatory").remove();
+			$(".arvChangedElement input").removeClass('isRequired');
+			$(".arvChangedElement input").val('');
 			$(".arvChangedElement").hide();
 		}
 	});
@@ -850,8 +866,15 @@ $storageInfo = $storageService->getLabStorage();
 	$("input:radio[name=isPatientNew]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".du").css("visibility", "visible");
+			if ($(".du label .mandatory").length === 0) {
+				$(".du label").append(' <span class="mandatory">*</span>');
+			}
+			$("#dateOfArtInitiation").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".du").css("visibility", "hidden");
+			$(".du label .mandatory").remove();
+			$("#dateOfArtInitiation").removeClass('isRequired');
+			$("#dateOfArtInitiation").val('');
 		}
 	});
 	$("#gender").change(function() {

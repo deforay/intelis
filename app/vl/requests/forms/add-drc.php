@@ -718,7 +718,12 @@ $sFormat = '';
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
+			$(".arvChangedElement label").append(' <span class="mandatory">*</span>');
+			$(".arvChangedElement input").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
+			$(".arvChangedElement label .mandatory").remove();
+			$(".arvChangedElement input").removeClass('isRequired');
+			$(".arvChangedElement input").val('');
 			$(".arvChangedElement").hide();
 		}
 	});
