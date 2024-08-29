@@ -304,17 +304,17 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="vertical-align:middle;">CD4<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">CD4</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control isRequired" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
+												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
-										<th scope="row" style="vertical-align:middle;">Viral Load<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">Viral Load</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control isRequired" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
+												<input type="number" class="form-control" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>

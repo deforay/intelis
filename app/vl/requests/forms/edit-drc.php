@@ -258,9 +258,9 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
@@ -701,9 +701,30 @@ $storageInfo = $storageService->getLabStorage();
 
 		//$('#sampleCollectionDate').trigger("change");
 
-
 		checkreasonForVLTesting();
+
+		$("#ageInYears").on('input', function() {
+			if ($(this).val()) {
+				// If Age is entered, make DoB non-mandatory
+				makeDOBNonMandatory();
+			} else {
+				// If Age is cleared, make DoB mandatory again
+				makeDOBMandatory();
+			}
+		});
 	});
+
+	function makeDOBNonMandatory() {
+        $("#dob").removeClass('isRequired');
+        $("#dob").closest('td').prev('td').find('label .mandatory').remove();
+    }
+
+    function makeDOBMandatory() {
+        $("#dob").addClass('isRequired');
+        if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
+            $("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
+        }
+    }
 
 	function showFemaleSection(genderProp) {
 		if (genderProp == "none") {

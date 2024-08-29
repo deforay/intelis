@@ -229,9 +229,9 @@ $sFormat = '';
 												<option value="female"><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
@@ -308,11 +308,11 @@ $sFormat = '';
 										</td>
 										<td style="width: 35% !important;"><label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate('Please check changé de régime de traitement'); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate('Please check changé de régime de traitement'); ?>">
 											</label>
 										</td>
 									</tr>
@@ -339,10 +339,10 @@ $sFormat = '';
 												<option value="other">Autre</option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label for="viralLoadNo">Charge virale N </label>
+										<td style="width: 15% !important;"><label for="viralLoadNo">Charge virale N <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" />
+											<input type="text" class="form-control isRequired" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" />
 										</td>
 									</tr>
 									<tr>
@@ -690,8 +690,13 @@ $sFormat = '';
 	$("input:radio[name=isPatientNew]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".du").show();
+			$(".du label").append(' <span class="mandatory">*</span>');
+			$("#dateOfArtInitiation").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".du").hide();
+			$(".du label .mandatory").remove();
+			$("#dateOfArtInitiation").removeClass('isRequired');
+			$("#dateOfArtInitiation").val('');
 		}
 	});
 	$("#gender").change(function() {
@@ -966,7 +971,28 @@ $sFormat = '';
 			placeholder: "Select motif de la demande"
 		});
 
+		$("#ageInYears").on('input', function() {
+			if ($(this).val()) {
+				// If Age is entered, make DoB non-mandatory
+				makeDOBNonMandatory();
+			} else {
+				// If Age is cleared, make DoB mandatory again
+				makeDOBMandatory();
+			}
+		});
 	});
+
+	function makeDOBNonMandatory() {
+        $("#dob").removeClass('isRequired');
+        $("#dob").closest('td').prev('td').find('label .mandatory').remove();
+    }
+
+    function makeDOBMandatory() {
+        $("#dob").addClass('isRequired');
+        if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
+            $("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
+        }
+    }
 
 	function getVlResults(platformInfo) {
 		if (!platformInfo) {
