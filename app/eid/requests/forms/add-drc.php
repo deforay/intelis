@@ -72,7 +72,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" readonly="readonly"/>
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" readonly="readonly" />
 											</td>
 										<?php } ?>
 										<td></td>
@@ -419,7 +419,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué? </th>
+										<th scope="row">Test rapide effectué?</th>
 										<td>
 											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>

@@ -2,10 +2,10 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-use App\Services\StorageService;
 use App\Utilities\DateUtility;
+use App\Services\StorageService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var EidService $eidService */
@@ -51,7 +51,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facilit
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
 $eidInfo['child_treatment'] = isset($eidInfo['child_treatment']) ? explode(",", (string) $eidInfo['child_treatment']) : [];
 
-$formAttributes = json_decode($eidInfo['form_attributes']);
+$formAttributes = json_decode((string) $eidInfo['form_attributes']);
 
 $storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
@@ -454,7 +454,7 @@ $storageInfo = $storageService->getLabStorage();
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué?</th>
+										<th scope="row">Test rapide effectué? </th>
 										<td>
 											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
@@ -760,7 +760,7 @@ $storageInfo = $storageService->getLabStorage();
 			$("#motherViralLoadCopiesPerMl").val('');
 			$("#motherViralLoadCopiesPerMl").removeClass('isRequired');
 		}
-		
+
 	}
 
 	function storageEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
@@ -805,7 +805,7 @@ $storageInfo = $storageService->getLabStorage();
 	}
 
 	$(document).ready(function() {
-        checkCollectionDate('<?php echo $eidInfo['sample_collection_date']; ?>');
+		checkCollectionDate('<?php echo $eidInfo['sample_collection_date']; ?>');
 
 
 		$('#facilityId').select2({

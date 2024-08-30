@@ -72,9 +72,12 @@ $userResult = $db->get("user_details");
 
 if(count($instrumentResult) == 0 || count($userResult) == 0){ 
 	$margin = 'style="margin-top:50px !important;"';
+	$topSide = 'style="top:50px !important;"';
 }
 else{
 	$margin = '';
+	$topSide = 'style="top:0 !important;"';
+
 }
 ?>
 <!DOCTYPE html>
@@ -183,7 +186,7 @@ z-index: 1031;
 				</span>
 			</a>
 
-			<nav class="navbar" style="position:fixed;top:10; width:88%;">
+			<nav class="navbar" style="position:fixed;top:10;left:0;right:0;">
 				<!-- Sidebar toggle button-->
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 					<span class="sr-only">Toggle navigation</span>
@@ -247,7 +250,7 @@ z-index: 1031;
 		</header>
 		
 		<!-- Left side column. contains the logo and sidebar -->
-		<aside class="main-sidebar">
+		<aside class="main-sidebar" <?= $topSide; ?>>
 			<section class="sidebar">
 				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
