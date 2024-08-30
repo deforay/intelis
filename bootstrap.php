@@ -5,10 +5,27 @@ if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     session_start();
 }
 
+// Application environment
+defined('APPLICATION_ENV')
+    || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
+
+// Application paths
 chdir(__DIR__);
 
-require_once(__DIR__ . '/app/system/constants.php');
-require_once(ROOT_PATH . '/vendor/autoload.php');
+defined('ROOT_PATH')
+    || define('ROOT_PATH', realpath(dirname(__FILE__)));
+
+const WEB_ROOT = ROOT_PATH . DIRECTORY_SEPARATOR . 'public';
+const CACHE_PATH = ROOT_PATH . DIRECTORY_SEPARATOR . 'cache';
+const APPLICATION_PATH = ROOT_PATH . DIRECTORY_SEPARATOR . 'app';
+const UPLOAD_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'uploads';
+const TEMP_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary';
+
+
+require_once APPLICATION_PATH . '/system/constants.php';
+require_once __DIR__ . '/app/system/version.php';
+
+require_once ROOT_PATH . '/vendor/autoload.php';
 
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;

@@ -52,6 +52,13 @@ $aResult = $db->query($aQuery);
 
 
 $duVisibility = (trim((string) $vlQueryInfo['is_patient_new']) == "" || trim((string) $vlQueryInfo['is_patient_new']) == "no") ? 'hidden' : 'visible';
+$duRequiredClass = ($duVisibility == 'visible') ? 'isRequired' : '';
+$duMandatoryLabel = ($duVisibility == 'visible') ? '<span class="mandatory">*</span>' : '';
+
+$displayArvChangedElement = (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes");
+$arvRequiredClass = $displayArvChangedElement ? 'isRequired' : '';
+$arvMandatoryLabel = $displayArvChangedElement ? '<span class="mandatory">*</span>' : '';
+
 $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'none' : 'block';
 $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'none' : 'block';
 
@@ -258,9 +265,9 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
@@ -268,7 +275,7 @@ $storageInfo = $storageService->getLabStorage();
 									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
-											<label for="breastfeeding">Allaitante ?</label>
+											<label for="breastfeeding">Allaitante ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="breastfeeding" name="breastfeeding" title="Please check Si allaitante">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" <?php echo (trim((string) $vlQueryInfo['is_patient_breastfeeding']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
@@ -276,7 +283,7 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 										<td style="width:15% !important;">
-											<label for="patientPregnant">Ou enceinte ?</label>
+											<label for="pregnant">Ou enceinte ?<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="pregnant" name="patientPregnant" title="Please check Si Ou enceinte ">
 												<option value=""> -- Select -- </option>
 												<option id="pregYes" <?php echo (trim((string) $vlQueryInfo['is_patient_pregnant']) == "yes") ? 'selected="selected"' : ''; ?> value="yes">Oui</option>
@@ -284,7 +291,7 @@ $storageInfo = $storageService->getLabStorage();
 											</select>
 										</td>
 										<td class="trimesterSection" style="width:30% !important;">
-											<label for="trimester">Si Femme enceinte :</label>
+											<label for="trimester">Si Femme enceinte :<span class="mandatory" style="display:none;">*</span></label>
 											<select class="form-control" id="trimester" name="trimester" title="Please check trimestre">
 												<option value=""> -- Select -- </option>
 												<option id="trimester1" <?php echo (trim((string) $vlQueryInfo['pregnancy_trimester']) == "1") ? 'selected="selected"' : ''; ?> value="1">Trimestre 1</option>
@@ -326,9 +333,9 @@ $storageInfo = $storageService->getLabStorage();
 												<input type="radio" class="isRequired" id="isPatientNewNo" name="isPatientNew" <?php echo ($vlQueryInfo['is_patient_new'] == 'no') ? 'checked="checked"' : ''; ?> value="no">
 											</label>
 										</td>
-										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;" class="du"><label for="">Date du début des ARV <?php echo $duMandatoryLabel; ?></label></td>
 										<td style="width: 35% !important;" class="du">
-											<input type="text" class="form-control date isRequired" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date <?php echo $duRequiredClass; ?>" id="dateOfArtInitiation" name="dateOfArtInitiation" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du début des ARV" value="<?php echo $vlQueryInfo['treatment_initiated_date']; ?>" onchange="checkARTInitiationDate();checkLastVLTestDate();" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -347,15 +354,15 @@ $storageInfo = $storageService->getLabStorage();
 											</label>
 										</td>
 									</tr>
-									<tr class="arvChangedElement" style="display:<?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? '' : 'none'; ?>;">
+									<tr class="arvChangedElement" style="display:<?php echo ($displayArvChangedElement) ? '' : 'none'; ?>;">
 										<td style="width: 15%;"><label for="reasonForArvRegimenChange" class="arvChangedElement">Motif
-												de changement de régime ARV </label></td>
+												de changement de régime ARV <?php echo $arvMandatoryLabel; ?></label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control arvChangedElement" id="reasonForArvRegimenChange" name="reasonForArvRegimenChange" placeholder="Motif de changement de régime ARV" title="Please enter motif de changement de régime ARV" value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>" style="width:100%;" />
+											<input type="text" class="form-control arvChangedElement <?php echo $arvRequiredClass; ?>" id="reasonForArvRegimenChange" name="reasonForArvRegimenChange" placeholder="Motif de changement de régime ARV" title="Please enter motif de changement de régime ARV" value="<?php echo $vlQueryInfo['reason_for_regimen_change']; ?>" style="width:100%;" />
 										</td>
 										<td style="width: 15%;"><label for="" class="arvChangedElement">Date du changement de régime ARV </label></td>
 										<td style="width: 35%;">
-											<input type="text" class="form-control date arvChangedElement" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
+											<input type="text" class="form-control date arvChangedElement <?php echo $arvRequiredClass; ?>" id="dateOfArvRegimenChange" name="dateOfArvRegimenChange" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date du changement de régime ARV" value="<?php echo $vlQueryInfo['regimen_change_date']; ?>" style="width:100%;" />&nbsp;(Jour/Mois/Année)
 										</td>
 									</tr>
 									<tr>
@@ -653,7 +660,7 @@ $storageInfo = $storageService->getLabStorage();
 
 		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
 
-		showFemaleSection('<?php echo $femaleSectionDisplay; ?>');
+		showFemale('<?php echo $femaleSectionDisplay; ?>');
 
 		showTrimesterSection('<?php echo $trimsterDisplay; ?>');
 
@@ -701,26 +708,70 @@ $storageInfo = $storageService->getLabStorage();
 
 		//$('#sampleCollectionDate').trigger("change");
 
-
 		checkreasonForVLTesting();
+
+		$("#ageInYears").on('input', function() {
+			if ($(this).val()) {
+				// If Age is entered, make DoB non-mandatory
+				makeDOBNonMandatory();
+			} else {
+				// If Age is cleared, make DoB mandatory again
+				makeDOBMandatory();
+			}
+		});
 	});
 
-	function showFemaleSection(genderProp) {
+	function makeDOBNonMandatory() {
+        $("#dob").removeClass('isRequired');
+        $("#dob").closest('td').prev('td').find('label .mandatory').remove();
+    }
+
+    function makeDOBMandatory() {
+        $("#dob").addClass('isRequired');
+        if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
+            $("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
+        }
+    }
+
+	function showFemale(genderProp) {
 		if (genderProp == "none") {
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		} else {
-			$(".femaleSection").show();
+			showFemaleSection();
 		}
+	}
+
+	function showFemaleSection(){
+		$(".femaleSection").show();
+		addMandatoryField('breastfeeding');
+        addMandatoryField('pregnant');
+	}
+	function hideFemaleSection(){
+		$(".femaleSection").hide();
+		removeMandatoryField('breastfeeding');
+        removeMandatoryField('pregnant');
+		removeMandatoryField('trimester');
+	}
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
+		$('#' + fieldId).val('');
 	}
 
 	function showTrimesterSection(trimesterProp) {
 		if (trimesterProp == "none") {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
+			
 		} else {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		}
 	}
-
 
 	//$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
 	//	var startDate = $('#sampleCollectionDate').datetimepicker('getDate');
@@ -821,7 +872,16 @@ $storageInfo = $storageService->getLabStorage();
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
+			$(".arvChangedElement label").each(function() {
+				if ($(this).find('.mandatory').length === 0) {
+					$(this).append(' <span class="mandatory">*</span>');
+				}
+			});
+			$(".arvChangedElement input").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
+			$(".arvChangedElement label .mandatory").remove();
+			$(".arvChangedElement input").removeClass('isRequired');
+			$(".arvChangedElement input").val('');
 			$(".arvChangedElement").hide();
 		}
 	});
@@ -829,25 +889,33 @@ $storageInfo = $storageService->getLabStorage();
 	$("input:radio[name=isPatientNew]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".du").css("visibility", "visible");
+			if ($(".du label .mandatory").length === 0) {
+				$(".du label").append(' <span class="mandatory">*</span>');
+			}
+			$("#dateOfArtInitiation").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".du").css("visibility", "hidden");
+			$(".du label .mandatory").remove();
+			$("#dateOfArtInitiation").removeClass('isRequired');
+			$("#dateOfArtInitiation").val('');
 		}
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
-			$(".femaleSection").show();
+			showFemaleSection();
 		} else if ($(this).val() == 'male') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		}
 	});
 
 	$("#pregnant").change(function() {
 		if ($(this).val() == 'yes') {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		} else {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
 		}
 	});

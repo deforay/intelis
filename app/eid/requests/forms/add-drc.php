@@ -255,23 +255,23 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="vertical-align:middle;">CD4<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">CD4</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control isRequired" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" />
+												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" onchange="" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
-										<th scope="row" style="vertical-align:middle;">Viral Load<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">Viral Load</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control isRequired" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Viral Load" style="width:100%;" onchange="" />
+												<input type="number" class="form-control" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Viral Load" style="width:100%;" onchange="" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>
 										<td style="vertical-align:middle;">- OR -</td>
 										<td style="vertical-align:middle;">
-											<select class="form-control isRequired" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad()">
+											<select class="form-control" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad()">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='tnd'> Target Not Detected </option>
 												<option value='bdl'> Below Detection Limit </option>
@@ -419,24 +419,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué? <span class="mandatory">*</span></th>
+										<th scope="row">Test rapide effectué? </th>
 										<td>
-											<select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes"> Oui </option>
 												<option value="no"> Non </option>
 											</select>
 										</td>
 
-										<th scope="row">Si oui, date : <span class="mandatory">*</span></th>
+										<th scope="row">Si oui, date : </th>
 										<td>
-											<input class="form-control date isRequired" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" />
+											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Résultat test rapide <span class="mandatory">*</span></th>
+										<th scope="row">Résultat test rapide </th>
 										<td>
-											<select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
+											<select class="form-control" name="rapidTestResult" id="rapidTestResult">
 												<option value=''> -- Sélectionner -- </option>
 												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 													<option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>

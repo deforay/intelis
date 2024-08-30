@@ -229,9 +229,9 @@ $sFormat = '';
 												<option value="female"><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP <span class="mandatory">*</span></label></td>
+										<td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
-											<select class="form-control isRequired" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
+											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
 											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
@@ -240,24 +240,24 @@ $sFormat = '';
 									<tr class="femaleSection" style="display:none;">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
 										<td style="width:20% !important;">
-											<label for="breastfeeding">Allaitante ?</label>
-											<select class="form-control" id="breastfeeding" name="breastfeeding">
+											<label for="breastfeeding">Allaitante ?<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="breastfeeding" name="breastfeeding" title="<?= _translate('Please choose Allaitante'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="breastfeedingYes" value="yes">Oui</option>
 												<option id="breastfeedingNo" value="no">Non</option>
 											</select>
 										</td>
 										<td style="width:15% !important;">
-											<label for="patientPregnant">Ou enceinte ?</label>
-											<select class="form-control" id="pregnant" name="patientPregnant">
+											<label for="pregnant">Ou enceinte ?<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="pregnant" name="patientPregnant" title="<?= _translate('Please choose Ou enceinte'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="pregYes" value="yes">Oui</option>
 												<option id="pregNo" value="no">Non</option>
 											</select>
 										</td>
 										<td class="trimesterSection" style="display:none; width:30% !important;">
-											<label for="trimester">Si Femme enceinte :</label>
-											<select class="form-control" id="trimester" name="trimester">
+											<label for="trimester">Si Femme enceinte :<span class="mandatory" style="display:none;">*</span></label>
+											<select class="form-control" id="trimester" name="trimester" title="<?= _translate('Please choose Si Femme enceinte'); ?>">
 												<option value=""> -- Select -- </option>
 												<option id="trimester1" value="1">Trimestre 1</option>
 												<option id="trimester2" value="2">Trimestre 2</option>
@@ -308,11 +308,11 @@ $sFormat = '';
 										</td>
 										<td style="width: 35% !important;"><label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate('Please check changé de régime de traitement'); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option">
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate('Please check changé de régime de traitement'); ?>">
 											</label>
 										</td>
 									</tr>
@@ -339,10 +339,10 @@ $sFormat = '';
 												<option value="other">Autre</option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label for="viralLoadNo">Charge virale N </label>
+										<td style="width: 15% !important;"><label for="viralLoadNo">Charge virale N <span class="mandatory">*</span></label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" />
+											<input type="text" class="form-control isRequired" id="viralLoadNo" name="viralLoadNo" placeholder="Charge virale N" title="Please enter charge virale N" />
 										</td>
 									</tr>
 									<tr>
@@ -690,30 +690,62 @@ $sFormat = '';
 	$("input:radio[name=isPatientNew]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".du").show();
+			$(".du label").append(' <span class="mandatory">*</span>');
+			$("#dateOfArtInitiation").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
 			$(".du").hide();
+			$(".du label .mandatory").remove();
+			$("#dateOfArtInitiation").removeClass('isRequired');
+			$("#dateOfArtInitiation").val('');
 		}
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps"><?= _translate("PS"); ?> </option>');
-			$(".femaleSection").show();
+			showFemaleSection();
 		} else if ($(this).val() == 'male') {
 			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps"><?= _translate("CPS"); ?> </option><option value="msm"><?= _translate("MSM"); ?> </option>');
-			$(".femaleSection").hide();
+			hideFemaleSection();
 		}
 	});
+	function showFemaleSection(){
+		$(".femaleSection").show();
+		addMandatoryField('breastfeeding');
+        addMandatoryField('pregnant');
+	}
+	function hideFemaleSection(){
+		$(".femaleSection").hide();
+		removeMandatoryField('breastfeeding');
+        removeMandatoryField('pregnant');
+		removeMandatoryField('trimester');
+	}
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
+		$('#' + fieldId).val('');
+	}
 	$("#pregnant").change(function() {
 		if ($(this).val() == 'yes') {
 			$(".trimesterSection").show();
+			addMandatoryField('trimester');
 		} else {
+			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
 		}
 	});
 	$("input:radio[name=hasChangedRegimen]").click(function() {
 		if ($(this).val() == 'yes') {
 			$(".arvChangedElement").show();
+			$(".arvChangedElement label").append(' <span class="mandatory">*</span>');
+			$(".arvChangedElement input").addClass('isRequired');
 		} else if ($(this).val() == 'no') {
+			$(".arvChangedElement label .mandatory").remove();
+			$(".arvChangedElement input").removeClass('isRequired');
+			$(".arvChangedElement input").val('');
 			$(".arvChangedElement").hide();
 		}
 	});
@@ -966,7 +998,28 @@ $sFormat = '';
 			placeholder: "Select motif de la demande"
 		});
 
+		$("#ageInYears").on('input', function() {
+			if ($(this).val()) {
+				// If Age is entered, make DoB non-mandatory
+				makeDOBNonMandatory();
+			} else {
+				// If Age is cleared, make DoB mandatory again
+				makeDOBMandatory();
+			}
+		});
 	});
+
+	function makeDOBNonMandatory() {
+        $("#dob").removeClass('isRequired');
+        $("#dob").closest('td').prev('td').find('label .mandatory').remove();
+    }
+
+    function makeDOBMandatory() {
+        $("#dob").addClass('isRequired');
+        if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
+            $("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
+        }
+    }
 
 	function getVlResults(platformInfo) {
 		if (!platformInfo) {

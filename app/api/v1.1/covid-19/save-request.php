@@ -593,7 +593,7 @@ try {
                 'status' => 'failed',
                 'action' => 'skipped',
                 'appSampleCode' => $data['appSampleCode'] ?? null,
-                'error' => $db->getLastError()
+                'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
             ];
         }
     }
@@ -639,7 +639,7 @@ try {
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getMessage(),
+        'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
     LoggerUtility::log('error', $exc->getMessage(), [

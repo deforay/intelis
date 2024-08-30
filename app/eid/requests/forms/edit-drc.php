@@ -304,23 +304,23 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row" style="vertical-align:middle;">CD4<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">CD4</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="text" class="form-control isRequired" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
+												<input type="text" class="form-control" id="mothercd4" name="mothercd4" placeholder="CD4" title="CD4" style="width:100%;" value="<?php echo $eidInfo['mother_cd4']; ?>" />
 												<div class="input-group-addon">/mm3</div>
 											</div>
 										</td>
-										<th scope="row" style="vertical-align:middle;">Viral Load<span class="mandatory">*</span></th>
+										<th scope="row" style="vertical-align:middle;">Viral Load</th>
 										<td style="vertical-align:middle;">
 											<div class="input-group">
-												<input type="number" class="form-control isRequired" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
+												<input type="number" class="form-control" id="motherViralLoadCopiesPerMl" name="motherViralLoadCopiesPerMl" placeholder="Viral Load in copies/mL" title="Mother's Viral Load" style="width:100%;" value="<?php echo $eidInfo['mother_vl_result']; ?>" />
 												<div class="input-group-addon">copies/mL</div>
 											</div>
 										</td>
 										<td style="vertical-align:middle;">- OR -</td>
 										<td style="vertical-align:middle;">
-											<select class="form-control isRequired" title="Mother's Viral Load" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad();">
+											<select class="form-control" title="Mother's Viral Load" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad();">
 												<option value=''> -- Sélectionner -- </option>
 												<option value='tnd' <?php echo ($eidInfo['mother_vl_result'] == 'tnd') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
 												<option value='bdl' <?php echo ($eidInfo['mother_vl_result'] == 'bdl') ? "selected='selected'" : ""; ?>> Below Detection Limit </option>
@@ -454,24 +454,24 @@ $storageInfo = $storageService->getLabStorage();
 										<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 									</tr>
 									<tr>
-										<th scope="row">Test rapide effectué? <span class="mandatory">*</span></th>
+										<th scope="row">Test rapide effectué?</th>
 										<td>
-											<select class="form-control isRequired" name="rapidTestPerformed" id="rapidTestPerformed">
+											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 												<option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											</select>
 										</td>
 
-										<th scope="row">Si oui, date :<span class="mandatory">*</span></th>
+										<th scope="row">Si oui, date :</th>
 										<td>
-											<input class="form-control date isRequired" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
+											<input class="form-control date" type="text" name="rapidtestDate" id="rapidtestDate" placeholder="Si oui, date" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rapid_test_date']); ?>" />
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Résultat test rapide<span class="mandatory">*</span></th>
+										<th scope="row">Résultat test rapide</th>
 										<td>
-											<select class="form-control isRequired" name="rapidTestResult" id="rapidTestResult">
+											<select class="form-control" name="rapidTestResult" id="rapidTestResult">
 												<option value=''> -- Sélectionner -- </option>
 												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 													<option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?>
