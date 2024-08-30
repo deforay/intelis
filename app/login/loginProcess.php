@@ -37,6 +37,8 @@ $_SESSION['logged'] = false;
 $systemInfo = $general->getSystemConfig();
 $ipaddress = $general->getClientIpAddress();
 
+
+
 try {
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);
@@ -126,6 +128,7 @@ try {
 
         $modules = $privileges = [];
 
+
         [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
         $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
@@ -146,5 +149,6 @@ try {
     ]);
     $redirect = "/login/login.php";
 }
+
 
 header("Location:" . $redirect);

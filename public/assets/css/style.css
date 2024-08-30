@@ -127,7 +127,7 @@ form table tr td>label,
 
 .main-sidebar {
     position: fixed;
-    top: 0;
+    top: 50px;
     bottom: 0;
     padding-right: 0;
     overflow-y: auto;
