@@ -687,7 +687,7 @@ $remoteUrl = $general->getRemoteURL();
                         diff = diff / (60 * 60 * 24 * 10 * 3);
                         var diffMonths = Math.abs(Math.round(diff));
                         if (diffMonths > 6) {
-                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old"); ?>');
+                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old", escapeText: true); ?>');
                             $('.expiredCollectionDate').show();
                         } else {
                             $('.expiredCollectionDate').hide();
