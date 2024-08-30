@@ -317,9 +317,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (mois) arrêt allaitement : <span class="mandatory">*</span></th>
+										<th scope="row"><label for="ageBreastfeedingStopped">Age (mois) arrêt allaitement : <span class="mandatory" style="display:none;">*</span></label></th>
 										<td>
-											<input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
 										</td>
 
 										<!-- <tr>
@@ -334,9 +334,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 							  </td>
 							</tr> -->
 
-										<th scope="row">Choix d’allaitement de bébé : <span class="mandatory">*</span></th>
+										<th scope="row"><label for="choiceOfFeeding">Choix d’allaitement de bébé : <span class="mandatory" style="display:none;">*</span></label></th>
 										<td>
-											<select class="form-control isRequired" name="choiceOfFeeding" id="choiceOfFeeding">
+											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Breastfeeding only"> Allaitement seul </option>
 												<option value="Milk substitute"> Substitut de lait </option>
@@ -827,5 +827,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 				return markup;
 			}
 		});
+	}
+
+	$("#hasInfantStoppedBreastfeeding").change(function() {
+		if ($(this).val() == 'yes') {
+			addMandatoryField('ageBreastfeedingStopped');
+        	addMandatoryField('choiceOfFeeding');
+		} else {
+			removeMandatoryField('ageBreastfeedingStopped');
+			removeMandatoryField('choiceOfFeeding');
+		}
+	});
+
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
+
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
 	}
 </script>
