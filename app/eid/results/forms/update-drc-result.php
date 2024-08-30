@@ -416,7 +416,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row" colspan=2><strong>Pour enfant de 9 mois ou plus</strong></th>
 								</tr>
 								<tr>
-									<th scope="row">Test rapide effectué?</th>
+									<th scope="row">Test rapide effectué? </th>
 									<td>
 										<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
 											<option value=''> -- Sélectionner -- </option>
@@ -807,5 +807,4 @@ $storageInfo = $storageService->getLabStorage();
 			}
 		});
 	}
-
 </script>
