@@ -135,75 +135,60 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $existingSampleQuery = "SELECT vl_sample_id, sample_code
+                $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
                                         WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if (!empty($existingSampleResult)) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($existingSampleResult)) {
 
-                $removeMoreKeys = [
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'lab_id',
-                    'vl_test_platform',
-                    'sample_received_at_hub_datetime',
-                    'sample_received_at_lab_datetime',
-                    'sample_tested_datetime',
-                    'result_dispatched_datetime',
-                    'is_sample_rejected',
-                    'reason_for_sample_rejection',
-                    'rejection_on',
-                    'result_value_absolute',
-                    'result_value_absolute_decimal',
-                    'result_value_text',
-                    'result',
-                    'result_value_log',
-                    'result_value_hiv_detection',
-                    'reason_for_failure',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'vl_focal_person',
-                    'vl_focal_person_phone_number',
-                    'tested_by',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'lab_tech_comments',
-                    'reason_for_result_changes',
-                    'revised_by',
-                    'revised_on',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'manual_result_entry',
-                    'result_status',
-                    'data_sync',
-                    'result_printed_datetime',
-                    'vl_result_category'
-                ];
+                    $removeMoreKeys = [
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'lab_id',
+                        'vl_test_platform',
+                        'sample_received_at_hub_datetime',
+                        'sample_received_at_lab_datetime',
+                        'sample_tested_datetime',
+                        'result_dispatched_datetime',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection',
+                        'rejection_on',
+                        'result_value_absolute',
+                        'result_value_absolute_decimal',
+                        'result_value_text',
+                        'result',
+                        'result_value_log',
+                        'result_value_hiv_detection',
+                        'reason_for_failure',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'vl_focal_person',
+                        'vl_focal_person_phone_number',
+                        'tested_by',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'lab_tech_comments',
+                        'reason_for_result_changes',
+                        'revised_by',
+                        'revised_on',
+                        'last_modified_by',
+                        'last_modified_datetime',
+                        'manual_result_entry',
+                        'result_status',
+                        'data_sync',
+                        'result_printed_datetime',
+                        'vl_result_category'
+                    ];
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
-                $id = $db->update('form_vl', $request);
-            } else {
-                $request['source_of_request'] = 'vlsts';
-                if (!empty($request['sample_collection_date'])) {
-
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -212,13 +197,38 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
-                    $id = $db->insert('form_vl', $request);
+                    $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
+                    $id = $db->update('form_vl', $request);
+                } else {
+                    $request['source_of_request'] = 'vlsts';
+                    if (!empty($request['sample_collection_date'])) {
+
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+                        $id = $db->insert('form_vl', $request);
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -238,7 +248,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-    $url = $remoteUrl . '/remote/remote/eid-test-requests.php';
+    $url = "$remoteUrl/remote/remote/eid-test-requests.php";
 
     $payload = array(
         'labId' => $labId,
@@ -280,65 +290,51 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
+                //$remoteSampleCodeList[] = $request['remote_sample_code'];
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
+                $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
                             WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if ($existingSampleResult) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if ($existingSampleResult) {
 
-                $removeMoreKeys = [
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'sample_received_at_lab_datetime',
-                    'eid_test_platform',
-                    'import_machine_name',
-                    'sample_tested_datetime',
-                    'is_sample_rejected',
-                    'lab_id',
-                    'result',
-                    'tested_by',
-                    'lab_tech_comments',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'revised_by',
-                    'revised_on',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'result_dispatched_datetime',
-                    'reason_for_changing',
-                    'result_status',
-                    'data_sync',
-                    'reason_for_sample_rejection',
-                    'rejection_on',
-                    'last_modified_by',
-                    'result_printed_datetime',
-                    'last_modified_datetime'
-                ];
+                    $removeMoreKeys = [
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'sample_received_at_lab_datetime',
+                        'eid_test_platform',
+                        'import_machine_name',
+                        'sample_tested_datetime',
+                        'is_sample_rejected',
+                        'lab_id',
+                        'result',
+                        'tested_by',
+                        'lab_tech_comments',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'revised_by',
+                        'revised_on',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'result_dispatched_datetime',
+                        'reason_for_changing',
+                        'result_status',
+                        'data_sync',
+                        'reason_for_sample_rejection',
+                        'rejection_on',
+                        'last_modified_by',
+                        'result_printed_datetime',
+                        'last_modified_datetime'
+                    ];
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('eid_id', $existingSampleResult['eid_id']);
-                $id = $db->update('form_eid', $request);
-            } else {
-                if (!empty($request['sample_collection_date'])) {
-
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -347,14 +343,38 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
+                    $db->where('eid_id', $existingSampleResult['eid_id']);
+                    $id = $db->update('form_eid', $request);
+                } else {
+                    if (!empty($request['sample_collection_date'])) {
 
-                    $id = $db->insert('form_eid', $request);
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+
+                        $id = $db->insert('form_eid', $request);
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -415,72 +435,59 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $db->beginTransaction();
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                //$remoteSampleCodeList[] = $request['remote_sample_code'];
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            //check exist remote
-            $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
+                //check exist remote
+                $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
                                 WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if ($existingSampleResult) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if ($existingSampleResult) {
 
-                $removeMoreKeys = [
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'sample_received_at_lab_datetime',
-                    'lab_id',
-                    'sample_condition',
-                    'lab_technician',
-                    'testing_point',
-                    'is_sample_rejected',
-                    'result',
-                    'result_sent_to_source',
-                    'other_diseases',
-                    'tested_by',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'is_result_authorised',
-                    'authorized_by',
-                    'authorized_on',
-                    'revised_by',
-                    'revised_on',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'reason_for_changing',
-                    'rejection_on',
-                    'result_status',
-                    'data_sync',
-                    'reason_for_sample_rejection',
-                    'last_modified_by',
-                    'result_printed_datetime',
-                    'result_dispatched_datetime',
-                    'last_modified_datetime',
-                    'data_from_comorbidities',
-                    'data_from_symptoms',
-                    'data_from_tests'
-                ];
+                    $removeMoreKeys = [
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'sample_received_at_lab_datetime',
+                        'lab_id',
+                        'sample_condition',
+                        'lab_technician',
+                        'testing_point',
+                        'is_sample_rejected',
+                        'result',
+                        'result_sent_to_source',
+                        'other_diseases',
+                        'tested_by',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'is_result_authorised',
+                        'authorized_by',
+                        'authorized_on',
+                        'revised_by',
+                        'revised_on',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'reason_for_changing',
+                        'rejection_on',
+                        'result_status',
+                        'data_sync',
+                        'reason_for_sample_rejection',
+                        'last_modified_by',
+                        'result_printed_datetime',
+                        'result_dispatched_datetime',
+                        'last_modified_datetime',
+                        'data_from_comorbidities',
+                        'data_from_symptoms',
+                        'data_from_tests'
+                    ];
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('covid19_id', $existingSampleResult['covid19_id']);
-                $db->update('form_covid19', $request);
-                $id = $existingSampleResult['covid19_id'];
-            } else {
-                if (!empty($request['sample_collection_date'])) {
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -489,60 +496,86 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
-                    $db->insert('form_covid19', $request);
-                    $id = $db->getInsertId();
+                    $db->where('covid19_id', $existingSampleResult['covid19_id']);
+                    $db->update('form_covid19', $request);
+                    $id = $existingSampleResult['covid19_id'];
+                } else {
+                    if (!empty($request['sample_collection_date'])) {
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+                        $db->insert('form_covid19', $request);
+                        $id = $db->getInsertId();
+                    }
                 }
-            }
-            // Symptoms
-            if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])) {
-                $db->where('covid19_id', $id);
-                $db->delete("covid19_patient_symptoms");
-                foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
-                    $symptomData = [];
-                    $symptomData["covid19_id"] = $id;
-                    $symptomData["symptom_id"] = $value['symptom_id'];
-                    $symptomData["symptom_detected"] = $value['symptom_detected'];
-                    $symptomData["symptom_details"] = $value['symptom_details'];
-                    $db->insert("covid19_patient_symptoms", $symptomData);
+                // Symptoms
+                if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])) {
+                    $db->where('covid19_id', $id);
+                    $db->delete("covid19_patient_symptoms");
+                    foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
+                        $symptomData = [];
+                        $symptomData["covid19_id"] = $id;
+                        $symptomData["symptom_id"] = $value['symptom_id'];
+                        $symptomData["symptom_detected"] = $value['symptom_detected'];
+                        $symptomData["symptom_details"] = $value['symptom_details'];
+                        $db->insert("covid19_patient_symptoms", $symptomData);
+                    }
                 }
-            }
-            // comorbidities
-            if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])) {
-                $db->where('covid19_id', $id);
-                $db->delete("covid19_patient_comorbidities");
-                foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
-                    $comData = [];
-                    $comData["covid19_id"] = $id;
-                    $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
-                    $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
-                    $db->insert("covid19_patient_comorbidities", $comData);
+                // comorbidities
+                if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])) {
+                    $db->where('covid19_id', $id);
+                    $db->delete("covid19_patient_comorbidities");
+                    foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
+                        $comData = [];
+                        $comData["covid19_id"] = $id;
+                        $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
+                        $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
+                        $db->insert("covid19_patient_comorbidities", $comData);
+                    }
                 }
-            }
-            // sub tests
-            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
-                $db->where('covid19_id', $id);
-                $db->delete("covid19_tests");
-                foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
-                    $covid19TestData = array(
-                        "covid19_id"                => $id,
-                        "facility_id"               => $cdata['facility_id'],
-                        "test_name"                 => $cdata['test_name'],
-                        "tested_by"                 => $cdata['tested_by'],
-                        "sample_tested_datetime"    => $cdata['sample_tested_datetime'],
-                        "testing_platform"          => $cdata['testing_platform'],
-                        "instrument_id"             => $cdata['instrument_id'],
-                        "kit_lot_no"                => $cdata['kit_lot_no'],
-                        "kit_expiry_date"           => $cdata['kit_expiry_date'],
-                        "result"                    => $cdata['result'],
-                        "updated_datetime"          => $cdata['updated_datetime']
-                    );
-                    $db->insert("covid19_tests", $covid19TestData);
+                // sub tests
+                if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
+                    $db->where('covid19_id', $id);
+                    $db->delete("covid19_tests");
+                    foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
+                        $covid19TestData = array(
+                            "covid19_id"                => $id,
+                            "facility_id"               => $cdata['facility_id'],
+                            "test_name"                 => $cdata['test_name'],
+                            "tested_by"                 => $cdata['tested_by'],
+                            "sample_tested_datetime"    => $cdata['sample_tested_datetime'],
+                            "testing_platform"          => $cdata['testing_platform'],
+                            "instrument_id"             => $cdata['instrument_id'],
+                            "kit_lot_no"                => $cdata['kit_lot_no'],
+                            "kit_expiry_date"           => $cdata['kit_expiry_date'],
+                            "result"                    => $cdata['result'],
+                            "updated_datetime"          => $cdata['updated_datetime']
+                        );
+                        $db->insert("covid19_tests", $covid19TestData);
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -610,70 +643,57 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $db->beginTransaction();
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                //$remoteSampleCodeList[] = $request['remote_sample_code'];
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
-            //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            //check exist remote
-            $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
+                //check exist remote
+                $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
                                         WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if ($existingSampleResult) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if ($existingSampleResult) {
 
-                $removeMoreKeys = array(
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'sample_received_at_lab_datetime',
-                    'lab_id',
-                    'sample_condition',
-                    'sample_tested_datetime',
-                    'vl_testing_site',
-                    'is_sample_rejected',
-                    'result',
-                    'hcv_vl_result',
-                    'hbv_vl_result',
-                    'hcv_vl_count',
-                    'hbv_vl_count',
-                    'hepatitis_test_platform',
-                    'import_machine_name',
-                    'is_result_authorised',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'authorized_by',
-                    'authorized_on',
-                    'revised_by',
-                    'revised_on',
-                    'result_status',
-                    'result_sent_to_source',
-                    'data_sync',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'result_printed_datetime',
-                    'result_dispatched_datetime',
-                    'reason_for_vl_test',
-                    'data_from_comorbidities',
-                    'data_from_risks'
-                );
+                    $removeMoreKeys = array(
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'sample_received_at_lab_datetime',
+                        'lab_id',
+                        'sample_condition',
+                        'sample_tested_datetime',
+                        'vl_testing_site',
+                        'is_sample_rejected',
+                        'result',
+                        'hcv_vl_result',
+                        'hbv_vl_result',
+                        'hcv_vl_count',
+                        'hbv_vl_count',
+                        'hepatitis_test_platform',
+                        'import_machine_name',
+                        'is_result_authorised',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'authorized_by',
+                        'authorized_on',
+                        'revised_by',
+                        'revised_on',
+                        'result_status',
+                        'result_sent_to_source',
+                        'data_sync',
+                        'last_modified_by',
+                        'last_modified_datetime',
+                        'result_printed_datetime',
+                        'result_dispatched_datetime',
+                        'reason_for_vl_test',
+                        'data_from_comorbidities',
+                        'data_from_risks'
+                    );
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
-                $db->update('form_hepatitis', $request);
-                $id = $existingSampleResult['hepatitis_id'];
-            } else {
-                if (!empty($request['sample_collection_date'])) {
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -682,41 +702,67 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
+                    $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
+                    $db->update('form_hepatitis', $request);
+                    $id = $existingSampleResult['hepatitis_id'];
+                } else {
+                    if (!empty($request['sample_collection_date'])) {
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
 
-                    $db->insert('form_hepatitis', $request);
-                    $id = $db->getInsertId();
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+
+                        $db->insert('form_hepatitis', $request);
+                        $id = $db->getInsertId();
+                    }
                 }
-            }
 
-            foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
-                $db->where('hepatitis_id', $hepatitisId);
-                $db->delete("hepatitis_risk_factors");
+                foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
+                    $db->where('hepatitis_id', $hepatitisId);
+                    $db->delete("hepatitis_risk_factors");
 
 
-                foreach ($risks as  $riskId => $riskValue) {
-                    $riskFactorsData = [];
-                    $riskFactorsData["hepatitis_id"] = $hepatitisId;
-                    $riskFactorsData["riskfactors_id"] = $riskId;
-                    $riskFactorsData["riskfactors_detected"] = $riskValue;
-                    $db->insert("hepatitis_risk_factors", $riskFactorsData);
+                    foreach ($risks as  $riskId => $riskValue) {
+                        $riskFactorsData = [];
+                        $riskFactorsData["hepatitis_id"] = $hepatitisId;
+                        $riskFactorsData["riskfactors_id"] = $riskId;
+                        $riskFactorsData["riskfactors_detected"] = $riskValue;
+                        $db->insert("hepatitis_risk_factors", $riskFactorsData);
+                    }
                 }
-            }
-            foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
-                $db->where('hepatitis_id', $hepatitisId);
-                $db->delete("hepatitis_patient_comorbidities");
+                foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
+                    $db->where('hepatitis_id', $hepatitisId);
+                    $db->delete("hepatitis_patient_comorbidities");
 
-                foreach ($comorbidities as $comoId => $comoValue) {
-                    $comorbidityData = [];
-                    $comorbidityData["hepatitis_id"] = $hepatitisId;
-                    $comorbidityData["comorbidity_id"] = $comoId;
-                    $comorbidityData["comorbidity_detected"] = $comoValue;
-                    $db->insert('hepatitis_patient_comorbidities', $comorbidityData);
+                    foreach ($comorbidities as $comoId => $comoValue) {
+                        $comorbidityData = [];
+                        $comorbidityData["hepatitis_id"] = $hepatitisId;
+                        $comorbidityData["comorbidity_id"] = $comoId;
+                        $comorbidityData["comorbidity_detected"] = $comoValue;
+                        $db->insert('hepatitis_patient_comorbidities', $comorbidityData);
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -781,69 +827,54 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                //$remoteSampleCodeList[] = $request['remote_sample_code'];
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //$remoteSampleCodeList[] = $request['remote_sample_code'];
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            //check exist remote
-            $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
+                //check exist remote
+                $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
                             WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if ($existingSampleResult) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if ($existingSampleResult) {
 
-                $removeMoreKeys = array(
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'specimen_quality',
-                    'lab_id',
-                    'reason_for_tb_test',
-                    'tests_requested',
-                    'specimen_type',
-                    'sample_collection_date',
-                    'sample_received_at_lab_datetime',
-                    'is_sample_rejected',
-                    'result',
-                    'xpert_mtb_result',
-                    'result_sent_to_source',
-                    'result_dispatched_datetime',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'sample_tested_datetime',
-                    'tested_by',
-                    'rejection_on',
-                    'result_status',
-                    'data_sync',
-                    'reason_for_sample_rejection',
-                    'sample_registered_at_lab',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'last_modified_by',
-                    'lab_technician'
-                );
+                    $removeMoreKeys = array(
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'specimen_quality',
+                        'lab_id',
+                        'reason_for_tb_test',
+                        'tests_requested',
+                        'specimen_type',
+                        'sample_collection_date',
+                        'sample_received_at_lab_datetime',
+                        'is_sample_rejected',
+                        'result',
+                        'xpert_mtb_result',
+                        'result_sent_to_source',
+                        'result_dispatched_datetime',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'sample_tested_datetime',
+                        'tested_by',
+                        'rejection_on',
+                        'result_status',
+                        'data_sync',
+                        'reason_for_sample_rejection',
+                        'sample_registered_at_lab',
+                        'last_modified_by',
+                        'last_modified_datetime',
+                        'last_modified_by',
+                        'lab_technician'
+                    );
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('tb_id', $existingSampleResult['tb_id']);
-                $db->update('form_tb', $request);
-                $id = $existingSampleResult['tb_id'];
-            } else {
-                if (!empty($request['sample_collection_date'])) {
-
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -852,15 +883,40 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
+                    $db->where('tb_id', $existingSampleResult['tb_id']);
+                    $db->update('form_tb', $request);
+                    $id = $existingSampleResult['tb_id'];
+                } else {
+                    if (!empty($request['sample_collection_date'])) {
 
-                    $db->insert('form_tb', $request);
-                    $id = $db->getInsertId();
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+
+                        $db->insert('form_tb', $request);
+                        $id = $db->getInsertId();
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -924,68 +980,53 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $existingSampleQuery = "SELECT cd4_id, sample_code
+                $existingSampleQuery = "SELECT cd4_id, sample_code
                                     FROM form_cd4 AS vl
                                     WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if (!empty($existingSampleResult)) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($existingSampleResult)) {
 
-                $removeMoreKeys = [
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'lab_id',
-                    'cd4_test_platform',
-                    'sample_received_at_hub_datetime',
-                    'sample_received_at_lab_datetime',
-                    'sample_tested_datetime',
-                    'result_dispatched_datetime',
-                    'is_sample_rejected',
-                    'reason_for_sample_rejection',
-                    'rejection_on',
-                    'cd4_result',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'cd4_focal_person',
-                    'cd4_focal_person_phone_number',
-                    'tested_by',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'lab_tech_comments',
-                    'reason_for_result_changes',
-                    'revised_by',
-                    'revised_on',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'manual_result_entry',
-                    'result_status',
-                    'data_sync',
-                    'result_printed_datetime'
-                ];
+                    $removeMoreKeys = [
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'lab_id',
+                        'cd4_test_platform',
+                        'sample_received_at_hub_datetime',
+                        'sample_received_at_lab_datetime',
+                        'sample_tested_datetime',
+                        'result_dispatched_datetime',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection',
+                        'rejection_on',
+                        'cd4_result',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'cd4_focal_person',
+                        'cd4_focal_person_phone_number',
+                        'tested_by',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'lab_tech_comments',
+                        'reason_for_result_changes',
+                        'revised_by',
+                        'revised_on',
+                        'last_modified_by',
+                        'last_modified_datetime',
+                        'manual_result_entry',
+                        'result_status',
+                        'data_sync',
+                        'result_printed_datetime'
+                    ];
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $request['form_attributes'],
-                    'form_attributes',
-                    ['syncTransactionId' => $transactionId]
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-
-                $db->where('cd4_id', $existingSampleResult['cd4_id']);
-                $id = $db->update('form_cd4', $request);
-            } else {
-                $request['source_of_request'] = 'vlsts';
-                if (!empty($request['sample_collection_date'])) {
-
-                    $request['source_of_request'] = "vlsts";
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
                         'form_attributes',
@@ -994,13 +1035,38 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
 
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
-                    $id = $db->insert('form_cd4', $request);
+                    $db->where('cd4_id', $existingSampleResult['cd4_id']);
+                    $id = $db->update('form_cd4', $request);
+                } else {
+                    $request['source_of_request'] = 'vlsts';
+                    if (!empty($request['sample_collection_date'])) {
+
+                        $request['source_of_request'] = "vlsts";
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+                        $id = $db->insert('form_cd4', $request);
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
         if ($cliMode) {
@@ -1014,7 +1080,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
-    $url = $remoteUrl . '/remote/remote/generic-test-requests.php';
+    $url = "$remoteUrl/remote/remote/generic-test-requests.php";
     $payload = [
         'labId' => $labId,
         'module' => 'generic-tests',
@@ -1057,120 +1123,133 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
+            try {
+                $db->beginTransaction();
+                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-            $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-            $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
+                $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
                             FROM form_generic AS vl
                             WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-            $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-            if (!empty($existingSampleResult)) {
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($existingSampleResult)) {
 
-                $removeMoreKeys = array(
-                    'sample_code',
-                    'sample_code_key',
-                    'sample_code_format',
-                    'sample_batch_id',
-                    'lab_id',
-                    'vl_test_platform',
-                    'sample_received_at_hub_datetime',
-                    'sample_received_at_testing_lab_datetime',
-                    'sample_tested_datetime',
-                    'result_dispatched_datetime',
-                    'is_sample_rejected',
-                    'reason_for_sample_rejection',
-                    'rejection_on',
-                    'result',
-                    'result_reviewed_by',
-                    'result_reviewed_datetime',
-                    'tested_by',
-                    'result_approved_by',
-                    'result_approved_datetime',
-                    'lab_tech_comments',
-                    'reason_for_test_result_changes',
-                    'revised_by',
-                    'revised_on',
-                    'last_modified_by',
-                    'last_modified_datetime',
-                    'manual_result_entry',
-                    'result_status',
-                    'data_sync',
-                    'result_printed_datetime',
-                    'data_from_tests'
-                );
+                    $removeMoreKeys = array(
+                        'sample_code',
+                        'sample_code_key',
+                        'sample_code_format',
+                        'sample_batch_id',
+                        'lab_id',
+                        'vl_test_platform',
+                        'sample_received_at_hub_datetime',
+                        'sample_received_at_testing_lab_datetime',
+                        'sample_tested_datetime',
+                        'result_dispatched_datetime',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection',
+                        'rejection_on',
+                        'result',
+                        'result_reviewed_by',
+                        'result_reviewed_datetime',
+                        'tested_by',
+                        'result_approved_by',
+                        'result_approved_datetime',
+                        'lab_tech_comments',
+                        'reason_for_test_result_changes',
+                        'revised_by',
+                        'revised_on',
+                        'last_modified_by',
+                        'last_modified_datetime',
+                        'manual_result_entry',
+                        'result_status',
+                        'data_sync',
+                        'result_printed_datetime',
+                        'data_from_tests'
+                    );
 
-                $request = array_diff_key($request, array_flip($removeMoreKeys));
-
-                $testTypeForm = JsonUtility::jsonToSetString(
-                    $existingSampleResult['test_type_form'],
-                    'test_type_form',
-                    $request['test_type_form'],
-                );
-                $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
-
-                $formAttributes = JsonUtility::jsonToSetString(
-                    $existingSampleResult['form_attributes'],
-                    'form_attributes',
-                    $request['form_attributes'],
-                );
-                $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                $request['is_result_mail_sent'] = 'no';
-                $db->where('sample_id', $existingSampleResult['sample_id']);
-                $id = $db->update('form_generic', $request);
-                $genericId = $existingSampleResult['sample_id'];
-            } else {
-                $request['source_of_request'] = 'vlsts';
-                if (!empty($request['sample_collection_date'])) {
+                    $request = array_diff_key($request, array_flip($removeMoreKeys));
 
                     $testTypeForm = JsonUtility::jsonToSetString(
+                        $existingSampleResult['test_type_form'],
+                        'test_type_form',
                         $request['test_type_form'],
-                        'test_type_form'
                     );
                     $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
                     $formAttributes = JsonUtility::jsonToSetString(
-                        $request['form_attributes'],
+                        $existingSampleResult['form_attributes'],
                         'form_attributes',
-                        ['syncTransactionId' => $transactionId]
+                        $request['form_attributes'],
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] = 'no';
+                    $db->where('sample_id', $existingSampleResult['sample_id']);
+                    $id = $db->update('form_generic', $request);
+                    $genericId = $existingSampleResult['sample_id'];
+                } else {
+                    $request['source_of_request'] = 'vlsts';
+                    if (!empty($request['sample_collection_date'])) {
 
-                    $request['source_of_request'] = "vlsts";
-                    //column data_sync value is 1 equal to data_sync done.value 0 is not done.
-                    $request['data_sync'] = 0;
-                    $id = $db->insert('form_generic', $request);
-                    $genericId = $db->getInsertId();
+                        $testTypeForm = JsonUtility::jsonToSetString(
+                            $request['test_type_form'],
+                            'test_type_form'
+                        );
+                        $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
+
+                        $formAttributes = JsonUtility::jsonToSetString(
+                            $request['form_attributes'],
+                            'form_attributes',
+                            ['syncTransactionId' => $transactionId]
+                        );
+                        $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+                        $request['is_result_mail_sent'] = 'no';
+
+                        $request['source_of_request'] = "vlsts";
+                        //column data_sync value is 1 equal to data_sync done.value 0 is not done.
+                        $request['data_sync'] = 0;
+                        $id = $db->insert('form_generic', $request);
+                        $genericId = $db->getInsertId();
+                    }
                 }
-            }
-            if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
-                $db->where('generic_id', $genericId);
-                $db->delete("generic_test_results");
-                foreach ($remoteData['data_from_tests'] as $genericTestData) {
-                    $db->insert("generic_test_results", array(
-                        "generic_id"                    => $genericId,
-                        "facility_id"                   => $genericTestData['facility_id'],
-                        "sub_test_name"                 => $genericTestData['sub_test_name'],
-                        "final_result_unit"             => $genericTestData['final_result_unit'],
-                        "result_type"                   => $genericTestData['result_type'],
-                        "test_name"                     => $genericTestData['test_name'],
-                        "tested_by"                     => $genericTestData['tested_by'],
-                        "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
-                        "testing_platform"              => $genericTestData['testing_platform'],
-                        "kit_lot_no"                    => $genericTestData['kit_lot_no'],
-                        "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
-                        "result"                        => $genericTestData['result'],
-                        "final_result"                  => $genericTestData['final_result'],
-                        "result_unit"                   => $genericTestData['result_unit'],
-                        "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
-                        "updated_datetime"              => $genericTestData['updated_datetime']
-                    ));
+                if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
+                    $db->where('generic_id', $genericId);
+                    $db->delete("generic_test_results");
+                    foreach ($remoteData['data_from_tests'] as $genericTestData) {
+                        $db->insert("generic_test_results", array(
+                            "generic_id"                    => $genericId,
+                            "facility_id"                   => $genericTestData['facility_id'],
+                            "sub_test_name"                 => $genericTestData['sub_test_name'],
+                            "final_result_unit"             => $genericTestData['final_result_unit'],
+                            "result_type"                   => $genericTestData['result_type'],
+                            "test_name"                     => $genericTestData['test_name'],
+                            "tested_by"                     => $genericTestData['tested_by'],
+                            "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
+                            "testing_platform"              => $genericTestData['testing_platform'],
+                            "kit_lot_no"                    => $genericTestData['kit_lot_no'],
+                            "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
+                            "result"                        => $genericTestData['result'],
+                            "final_result"                  => $genericTestData['final_result'],
+                            "result_unit"                   => $genericTestData['result_unit'],
+                            "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
+                            "updated_datetime"              => $genericTestData['updated_datetime']
+                        ));
+                    }
                 }
-            }
-            if ($id === true) {
-                $counter++;
+                if ($id === true) {
+                    $counter++;
+                }
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
 
@@ -1186,7 +1265,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
 $instanceId = $general->getInstanceId();
 $db->where('vlsm_instance_id', $instanceId);
-$id = $db->update('s_vlsm_instance', array('last_remote_requests_sync' => DateUtility::getCurrentDateTime()));
+$id = $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 
 if (isset($forceSyncModule) && trim((string) $forceSyncModule) != "" && isset($manifestCode) && trim((string) $manifestCode) != "") {
     return 1;
