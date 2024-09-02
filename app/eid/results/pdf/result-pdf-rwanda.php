@@ -125,17 +125,17 @@ if (!empty($result)) {
         $result['child_gender'] = _translate('Unreported');
     }
     $resultApprovedBy  = '';
-     $userRes = [];
-     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
+    $userRes = [];
+    if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+        $resultApprovedBy = $result['approvedBy'];
+        $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+    } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+        $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+        if ($approvedByRes) {
+            $resultApprovedBy = $approvedByRes['user_name'];
+        }
+        $userRes = $approvedByRes;
+    }
 
     $userSignaturePath = null;
     if (!empty($userRes['user_signature'])) {
@@ -358,8 +358,8 @@ if (!empty($result)) {
             $keyFromGlobalConfig = $general->getGlobalConfig('key');
             if (!empty($keyFromGlobalConfig)) {
                 $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
-                $remoteUrl = $general->getRemoteURL();
-                $pdf->write2DBarcode($remoteUrl . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
+                $remoteURL = $general->getRemoteURL();
+                $pdf->write2DBarcode($remoteURL . '/eid/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
             }
         }
         $pdf->lastPage();

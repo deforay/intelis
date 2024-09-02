@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 $timeZone = $_SESSION['APP_TIMEZONE'];
 

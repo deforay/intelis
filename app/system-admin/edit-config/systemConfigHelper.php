@@ -53,7 +53,7 @@ try {
     }
 
     $updatedConfig = [
-        'remoteURL' => $_POST['remoteUrl'] ?? $general->getRemoteUrl(),
+        'remoteURL' => $_POST['remoteURL'] ?? $general->getRemoteUrl(),
         'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
         'modules.eid' => in_array('eid', $modulesToEnable) ? true : false,
         'modules.covid19' => in_array('covid19', $modulesToEnable) ? true : false,

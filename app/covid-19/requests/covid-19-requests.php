@@ -857,14 +857,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	<?php if ($general->isLISInstance()) { ?>
-		let remoteUrl = '<?= $general->getRemoteURL(); ?>';
+		let remoteURL = '<?= $general->getRemoteURL(); ?>';
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({
 				message: "<h3><?php echo _translate("Trying to sync"); ?> " + sampleCode + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=covid19",
 					})

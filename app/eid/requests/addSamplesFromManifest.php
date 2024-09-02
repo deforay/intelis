@@ -262,14 +262,14 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 	/* Remote Syn only package code matches */
 	<?php if ($general->isLISInstance()) { ?>
-		var remoteUrl = '<?php echo $general->getRemoteURL(); ?>';
+		var remoteURL = '<?php echo $general->getRemoteURL(); ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
 				message: "<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>"
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})

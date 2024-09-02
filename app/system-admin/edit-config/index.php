@@ -123,7 +123,7 @@ $globalConfig = $general->getGlobalConfig();
                     <div class="form-group">
                       <label for="timezone" class="col-lg-4 control-label"><?php echo _translate("STS URL"); ?> <span class="mandatory">*</span></label>
                       <div class="col-lg-8">
-                        <input id="remoteUrl" type="text" class="form-control lis-input" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
+                        <input id="remoteURL" type="text" class="form-control lis-input" name="remoteURL" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" />
                       </div>
                     </div>
                   </div>

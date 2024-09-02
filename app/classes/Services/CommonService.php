@@ -39,18 +39,18 @@ final class CommonService
     public function getRemoteURL()
     {
         return $this->fileCache->get('remoteURL', function () {
-            $remoteUrl = SYSTEM_CONFIG['remoteURL'];
-            if ($remoteUrl == '' || empty($remoteUrl)) {
+            $remoteURL = SYSTEM_CONFIG['remoteURL'];
+            if ($remoteURL == '' || empty($remoteURL)) {
                 return null;
             }
 
             // Add https:// if no scheme is present
-            if (!preg_match("~^(?:f|ht)tps?://~i", $remoteUrl)) {
-                $remoteUrl = "https://" . $remoteUrl;
+            if (!preg_match("~^(?:f|ht)tps?://~i", $remoteURL)) {
+                $remoteURL = "https://" . $remoteURL;
             }
 
             // Parse the URL and get the scheme and host
-            $parsedUrl = parse_url($remoteUrl);
+            $parsedUrl = parse_url($remoteURL);
             if (isset($parsedUrl['scheme']) && isset($parsedUrl['host'])) {
                 $baseUrl = $parsedUrl['scheme'] . '://' . $parsedUrl['host'];
 

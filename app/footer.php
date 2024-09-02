@@ -17,7 +17,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 
 if (_isAllowed("sync-history.php")) {
@@ -49,7 +49,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 			</small>
 			<?php
 
-			if (!empty($remoteUrl) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
+			if (!empty($remoteURL) && isset($_SESSION['userName']) && $general->isLISInstance()) { ?>
 
 				<small class="pull-right">
 					<a href="javascript:receiveMetaData();">

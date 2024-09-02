@@ -410,7 +410,7 @@ if (!empty($requestResult)) {
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
-            $remoteUrl = $general->getRemoteURL();
+            $remoteURL = $general->getRemoteURL();
             if (isset($arr['tb_report_qr_code']) && $arr['tb_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (!empty($signResults)) {
@@ -420,7 +420,7 @@ if (!empty($requestResult)) {
                 } else {
                     $h = 148.5;
                 }
-                //$pdf->write2DBarcode($remoteUrl . '/tb/results/view.php?q=' . $viewId . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
+                //$pdf->write2DBarcode($remoteURL . '/tb/results/view.php?q=' . $viewId . '', 'QRCODE,H', 170, $h, 20, 20, [], 'N');
             }
             $pdf->lastPage();
             $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

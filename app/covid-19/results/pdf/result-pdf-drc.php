@@ -455,7 +455,7 @@ if (!empty($requestResult)) {
         if ($result['result'] != '' || ($result['result'] == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
             $viewId = CommonService::encryptViewQRCode($result['unique_id']);
             $pdf->writeHTML($html);
-            $remoteUrl = $general->getRemoteURL();
+            $remoteURL = $general->getRemoteURL();
             if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes') {
                 $h = 175;
                 if (!empty($signResults)) {
@@ -466,8 +466,8 @@ if (!empty($requestResult)) {
                     $h = 160.5;
                 }
                 if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
-                    $remoteUrl = $general->getRemoteURL();
-                    $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
+                    $remoteURL = $general->getRemoteURL();
+                    $pdf->write2DBarcode($remoteURL . '/covid-19/results/view.php?q=' . $viewId, 'QRCODE,H', 170, $h, 20, 20, [], 'N');
                 }
             }
             $pdf->lastPage();

@@ -22,7 +22,7 @@ use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
@@ -36,8 +36,8 @@ $host = $request->getUri()->getHost();
 
 $allowedDomains = [];
 
-if (!empty($remoteUrl)) {
-    $allowedDomains[] = $remoteUrl;
+if (!empty($remoteURL)) {
+    $allowedDomains[] = $remoteURL;
 }
 
 $allowedDomains[] = $host;

@@ -37,15 +37,15 @@ $version = VERSION;
 // putting this into a variable to make this editable
 $systemConfig = SYSTEM_CONFIG;
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
-if (empty($remoteUrl)) {
+if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 try {
     // Checking if the network connection is available
-    if ($apiService->checkConnectivity("$remoteUrl/api/version.php?labId=$labId&version=$version") === false) {
+    if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
         LoggerUtility::log('error', "No network connectivity while trying remote sync.");
         return false;
     }
@@ -93,7 +93,7 @@ try {
             $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['sample_id']);
         }
 
-        $url = "$remoteUrl/remote/remote/generic-test-results.php";
+        $url = "$remoteURL/remote/remote/generic-test-results.php";
 
         $payload = [
             "labId" => $labId,
@@ -136,7 +136,7 @@ try {
 
         $vlLabResult = $db->rawQuery($vlQuery);
 
-        $url = "$remoteUrl/remote/remote/testResults.php";
+        $url = "$remoteURL/remote/remote/testResults.php";
 
         $payload = [
             "labId" => $labId,
@@ -178,7 +178,7 @@ try {
         }
         $eidLabResult = $db->rawQuery($eidQuery);
 
-        $url = "$remoteUrl/remote/remote/eid-test-results.php";
+        $url = "$remoteURL/remote/remote/eid-test-results.php";
         $payload = [
             "labId" => $labId,
             "result" => $eidLabResult,
@@ -232,7 +232,7 @@ try {
             $c19ResultData[$r['unique_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
         }
 
-        $url = "$remoteUrl/remote/remote/covid-19-test-results.php";
+        $url = "$remoteURL/remote/remote/covid-19-test-results.php";
         $payload = [
             "labId" => $labId,
             "results" => $c19ResultData,
@@ -272,7 +272,7 @@ try {
         }
         $hepLabResult = $db->rawQuery($hepQuery);
 
-        $url = "$remoteUrl/remote/remote/hepatitis-test-results.php";
+        $url = "$remoteURL/remote/remote/hepatitis-test-results.php";
         $payload = [
             "labId" => $labId,
             "result" => $hepLabResult,
@@ -314,7 +314,7 @@ try {
 
         $cd4LabResult = $db->rawQuery($cd4Query);
 
-        $url = "$remoteUrl/remote/remote/cd4-test-results.php";
+        $url = "$remoteURL/remote/remote/cd4-test-results.php";
 
         $payload = [
             "labId" => $labId,
