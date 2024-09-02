@@ -18,7 +18,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -30,125 +29,127 @@ try {
     $uploadedFile = $uploadedFiles['storageInfo'];
     $fileName = $uploadedFile->getClientFilename();
 
-    $uploadOption = $_POST['uploadOption'];
+   if(!empty($fileName)){
 
-    $ranNumber = "BULK-LAB-STORAGE-" . MiscUtility::generateRandomString(16);
-    $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-    $fileName = $ranNumber . "." . $extension;
+        $uploadOption = $_POST['uploadOption'];
 
-    $output = [];
+        $ranNumber = "BULK-LAB-STORAGE-" . MiscUtility::generateRandomString(16);
+        $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
+        $fileName = $ranNumber . "." . $extension;
 
-    MiscUtility::makeDirectory(TEMP_PATH);
+        $output = [];
 
-    // Define the target path
-    $targetPath = TEMP_PATH . DIRECTORY_SEPARATOR . $fileName;
+        MiscUtility::makeDirectory(TEMP_PATH);
 
-    // Move the file
-    $uploadedFile->moveTo($targetPath);
+        // Define the target path
+        $targetPath = TEMP_PATH . DIRECTORY_SEPARATOR . $fileName;
 
-    if (0 == $uploadedFile->getError()) {
+        // Move the file
+        $uploadedFile->moveTo($targetPath);
 
-        $spreadsheet = IOFactory::load($targetPath);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
-        $returnArray = [];
-        $resultArray = array_slice($sheetData, 1);
-        $filteredArray = array_filter((array)$resultArray, function ($row) {
-            return array_filter($row); // Remove empty rows
-        });
-        $total = count($filteredArray);
-        $storageNotAdded = [];
+        if (0 == $uploadedFile->getError()) {
 
-        if ($total == 0) {
-            $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
-            header("Location:/vl/requests/upload-storage.php");
-        }
-        $failedRow = array();
+            $spreadsheet = IOFactory::load($targetPath);
+            $sheetData   = $spreadsheet->getActiveSheet();
+            $sheetData   = $sheetData->toArray(null, true, true, true);
+            $returnArray = [];
+            $resultArray = array_slice($sheetData, 1);
+            $filteredArray = array_filter((array)$resultArray, function ($row) {
+                return array_filter($row); // Remove empty rows
+            });
+            $total = count($filteredArray);
+            $storageNotAdded = [];
 
-        foreach ($filteredArray as $rowIndex => $rowData) {
-
-            if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F']) || empty($rowData['G'])) {
+            if ($total == 0) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
+            $failedRow = array();
 
-            $instanceId = '';
-            if (isset($_SESSION['instanceId'])) {
-                $instanceId = $_SESSION['instanceId'];
-                $_POST['instanceId'] = $instanceId;
-            }
-            $condition = "sample_code = '" . $rowData['A'] . "'";
-            $condition1 = "storage_code = '" . $rowData['C'] . "'";
+            foreach ($filteredArray as $rowIndex => $rowData) {
 
-            $getSample = $general->fetchDataFromTable('form_vl', $condition);
-
-
-            if (isset($getSample[0]['sample_code']) && $getSample[0]['sample_code'] != "") {
-                $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
-
-                if (empty($freezerCheck)) {
-                    $data = array(
-                        'storage_id' => MiscUtility::generateULID(),
-                        'storage_code'     => $rowData['C'],
-                        'lab_id'     => $getSample[0]['lab_id'],
-                        'storage_status' => "active",
-                        'updated_datetime'    => DateUtility::getCurrentDateTime()
-                    );
-                    echo '<pre>'; print_r($data); die;
-                    $db->insert('lab_storage', $data);
-                    $storageId = $data['storage_id'];
-                } else {
-                    $storageId = $freezerCheck[0]['storage_id'];
+                if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F']) || empty($rowData['G'])) {
+                    $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
+                    header("Location:/vl/requests/upload-storage.php");
                 }
 
-                $formAttributes = json_decode($getSample[0]['form_attributes']);
-            } else {
-                $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
-            }
+                $instanceId = '';
+                if (isset($_SESSION['instanceId'])) {
+                    $instanceId = $_SESSION['instanceId'];
+                    $_POST['instanceId'] = $instanceId;
+                }
+                $condition = "sample_code = '" . $rowData['A'] . "'";
+                $condition1 = "storage_code = '" . $rowData['C'] . "'";
 
-            try {
-                if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
-                    $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']);
-                    // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
-                    $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                    $vlData['form_attributes'] = $db->func($formAttributesString);
-                    $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
-                    $id = $db->update('form_vl', $vlData);
-                } else {
+                $getSample = $general->fetchDataFromTable('form_vl', $condition);
+
+
+                if (isset($getSample[0]['sample_code']) && $getSample[0]['sample_code'] != "") {
+                    $freezerCheck = $general->fetchDataFromTable('lab_storage', $condition1);
+
+                    if (empty($freezerCheck)) {
+                        $data = array(
+                            'storage_id' => MiscUtility::generateULID(),
+                            'storage_code'     => $rowData['C'],
+                            'lab_id'     => $getSample[0]['lab_id'],
+                            'storage_status' => "active",
+                            'updated_datetime'    => DateUtility::getCurrentDateTime()
+                        );
+                        $db->insert('lab_storage', $data);
+                        $storageId = $data['storage_id'];
+                    } else {
+                        $storageId = $freezerCheck[0]['storage_id'];
+                    }
+                    $formAttributes = json_decode($getSample[0]['form_attributes']);
+                }
+
+                try {
+                    if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
+                        $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']);
+                        // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
+                        $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                        $vlData['form_attributes'] = $db->func($formAttributesString);
+                        $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
+                        $id = $db->update('form_vl', $vlData);
+                    } else {
+                        $storageNotAdded[] = $rowData;
+                        $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
+                    }
+                } catch (Throwable $e) {
                     $storageNotAdded[] = $rowData;
+                    $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
+                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
-            } catch (Throwable $e) {
-                $storageNotAdded[] = $rowData;
-                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-            }
-        }
-
-        $notAdded = count($storageNotAdded);
-        if ($notAdded > 0) {
-
-            $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
-
-            $sheet = $spreadsheet->getActiveSheet();
-
-            foreach ($storageNotAdded as $rowNo => $dataValue) {
-                $rRowCount = $rowNo + 2;
-                $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
             }
 
-            $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-            $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-STORAGE-ROWS.xlsx';
-            $writer->save($filename);
-        }
+            $notAdded = count($storageNotAdded);
+            if ($notAdded > 0) {
 
-        $_SESSION['alertMsg'] = _translate("Lab Storage added successfully");
-    } else {
-        throw new SystemException(_translate("Bulk Storage Import Failed") . " - " . $uploadedFile->getError());
-    }
-    $failedSampleCount = count($failedRow);
-    // echo '<pre>'; print_r($failedRow); die;
-    $failedRow = http_build_query($failedRow);
-    header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
+                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+                $sheet = $spreadsheet->getActiveSheet();
+
+                foreach ($storageNotAdded as $rowNo => $dataValue) {
+                    $rRowCount = $rowNo + 2;
+                    $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
+                }
+
+                $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
+                $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-STORAGE-ROWS.xlsx';
+                $writer->save($filename);
+            }
+
+            $_SESSION['alertMsg'] = _translate("Lab Storage added successfully");
+        } else {
+            throw new SystemException(_translate("Bulk Storage Import Failed") . " - " . $uploadedFile->getError());
+        }
+        $failedSampleCount = count($failedRow);
+        $failedRow = http_build_query($failedRow);
+        header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
+   } else {
+        $_SESSION['alertMsg'] = _translate("Please Upload File");
+        header("Location:/vl/requests/upload-storage.php");
+   }
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }

@@ -24,7 +24,6 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $userResult = $usersService->getAllUsers();
@@ -52,6 +51,7 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 </style>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
+
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -103,7 +103,6 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 									</div>
 								</div>
 
-
 								<div class="form-group">
 									<label for="StorageInfo" class="col-lg-2 control-label">
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
@@ -114,95 +113,72 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 									</div>
 								</div>
 							</div>
-
 						</div>
-
-						
-
 					</div>
-
-
+					<!-- /.box-body -->
+					<div class="box-footer">
+						<input type="hidden" name="selectedUser" id="selectedUser" />
+						<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadStorageForm').submit();return false;">
+							<?php echo _translate("Submit"); ?>
+						</a>
+						<a href="vl-requests.php" class="btn btn-default">
+							<?php echo _translate("Cancel"); ?>
+						</a>
+					</div>
+					<!-- /.box-footer -->
+				</form>
 			</div>
-			<!-- /.box-body -->
-			<div class="box-footer">
-				<input type="hidden" name="selectedUser" id="selectedUser" />
-				<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadStorageForm').submit();return false;">
-					<?php echo _translate("Submit"); ?>
-				</a>
-				<a href="vl-requests.php" class="btn btn-default">
-					<?php echo _translate("Cancel"); ?>
-				</a>
-			</div>
-			<!-- /.box-footer -->
-			</form>
-
 			<div class="box-body">
-			<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-									<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
-									<?php if ($_GET['notAdded'] > 0) { ?>
-										<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
-									<?php } ?>
-								<?php } ?>
-								<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
-						<div class="row">
-
-						<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
-							<thead>
-								<tr>
-									<th><?php echo _translate("Sample Code"); ?></th>
-									<th><?php echo _translate("Freezer Code"); ?></th>
-									<th><?php echo _translate("Rack"); ?></th>
-									<th><?php echo _translate("Box"); ?></th>
-									<th><?php echo _translate("Position"); ?></th>
-									<th><?php echo _translate("Volume(ml)"); ?></th>
-								</tr>
-							</thead>
-							<tbody>
-							
-								<?php
-								if(isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0){
-									
-									for($i=0;$i<$_GET['failedRowCount'];$i++){
-										echo '<tr>';
-										foreach($_GET[$i] as $sample){
-										?>
+				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
+					<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+					<?php if ($_GET['notAdded'] > 0) { ?>
+						<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
+					<?php } ?>
+				<?php } ?>
+				<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
+					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
+						<thead>
+							<tr>
+								<th><?php echo _translate("Sample Code"); ?></th>
+								<th><?php echo _translate("Freezer Code"); ?></th>
+								<th><?php echo _translate("Rack"); ?></th>
+								<th><?php echo _translate("Box"); ?></th>
+								<th><?php echo _translate("Position"); ?></th>
+								<th><?php echo _translate("Volume(ml)"); ?></th>
+							</tr>
+						</thead>
+						<tbody>
+						
+							<?php
+							if(isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0){
 								
-									<td><?php echo $sample; ?></td>
-								
-										<?php
-										}
-										echo '</tr>';
-									}
+								for($i=0;$i<$_GET['failedRowCount'];$i++){
+									echo '<tr>';
+									foreach($_GET[$i] as $sample){ ?>
+								    	<td><?php echo $sample; ?></td>
+									<?php }
+									echo '</tr>';
 								}
-								?>
-								
-							</tbody>
-
-						</table>
-						</div>
-							</div>
+							}
+							?>
+							
+						</tbody>
+					</table>
+			</div>
 			<!-- /.row -->
 		</div>
-
-
-
-
-		
+		<!-- /.box -->
+	</section>
+	<!-- /.content -->
 </div>
-<!-- /.box -->
 
-</section>
-<!-- /.content -->
-</div>
 <script>
-	function getOneCode(codeType, codeValue){
-		
-		if(codeValue != ""){
+	function getOneCode(codeType, codeValue) {
+		if (codeValue != "") {
 			if(codeType=="manifest"){
 				$("#batchCode").prop("readonly",true);
 				$("#manifestCode").prop("readonly",false);
-			}
-			else if(codeType=="batch"){
+			} else if (codeType=="batch") {
 				$("#manifestCode").prop("readonly",true);
 				$("#batchCode").prop("readonly",false);
 			}
@@ -222,51 +198,12 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 					}
 				}
 			});
-		}
-		else{
+		} else {
 			$("#manifestCode").prop("readonly",false);
 			$("#batchCode").prop("readonly",false);
 			window.location.reload();
-
 		}
 	}
-	$(document).ready(function() {
-
-	oTable = $('#facilityDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
-      },
-      "bJQueryUI": false,
-      "bAutoWidth": false,
-      "bInfo": true,
-      "bScrollCollapse": true,
-      "bStateSave": true,
-      "bRetrieve": true,
-      "aaSorting": [2, "asc"],
-      "aoColumns": [{
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        },
-        {
-          "sClass": "center"
-        }
-      ],
-      "bProcessing": true,
-      "bServerSide": true,
-      "sAjaxSource": "getFacilityDetails.php",
-	});
-});
 </script>
 
 <?php
