@@ -2,7 +2,6 @@
 
 
 namespace CORE {
-    const VERSION = '5.2.9';
     const SYSADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
 }
 

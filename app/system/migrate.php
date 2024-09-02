@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/../../bootstrap.php";
 
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
@@ -17,9 +18,11 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+$currentMajorVersion = CommonService::getAppVersion();
+
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
-if (version_compare(CORE\VERSION, '4.4.3', '<')) {
-    exit("This script requires VERSION 4.4.3 or higher. Current version: " . CORE\VERSION . "\n");
+if (version_compare($currentMajorVersion, '4.4.3', '<')) {
+    exit("This script requires VERSION 4.4.3 or higher. Current version: $currentMajorVersion \n");
 }
 
 // Define the logs directory path

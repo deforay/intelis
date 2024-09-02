@@ -36,6 +36,16 @@ final class CommonService
         $this->fileCache = $fileCache;
     }
 
+    public static function getAppVersion($composerFilePath = ROOT_PATH . '/composer.json')
+    {
+        if (!file_exists($composerFilePath)) {
+            return null;
+        }
+
+        $composerContent = json_decode(trim(file_get_contents($composerFilePath)), true);
+        return $composerContent['version'] ?? null;
+    }
+
     public function getRemoteURL()
     {
         return $this->fileCache->get('remoteURL', function () {
