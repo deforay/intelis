@@ -174,7 +174,7 @@ try {
 
   $data = array(
     'user_id' => $_SESSION['userId'],
-    'vl_sample_id' => $_POST['eidSampleId'],
+    'eid_id' => $_POST['eidSampleId'],
     'test_type' => 'eid',
     'updated_datetime' => DateUtility::getCurrentDateTime()
   );

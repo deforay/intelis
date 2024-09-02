@@ -88,7 +88,7 @@ try {
             FROM form_eid as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
-            LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+            LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
     
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
@@ -108,7 +108,7 @@ try {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
-    //$sQuery = $sQuery . ' GROUP BY vl.vl_sample_id';
+    //$sQuery = $sQuery . ' GROUP BY vl.eid_id';
     //echo $sQuery; die;
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
