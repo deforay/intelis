@@ -58,12 +58,13 @@ $activeModules = SystemService::getActiveModules();
                 <div class="box">
                     <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td><strong>
+                            <td style="width:5%;">
+                                <strong>
                                     <?php echo _translate("Test Type"); ?>&nbsp;:
                                 </strong>
                             </td>
-                            <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                            <td style="width:10%;">
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
@@ -96,21 +97,24 @@ $activeModules = SystemService::getActiveModules();
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td><strong>
+                            <td style="width:5%;">
+                                <strong>
                                     <?php echo _translate("Sample Test Date"); ?>&nbsp;:
-                                </strong></td>
-                            <td>
+                                </strong>
+                            </td>
+                            <td style="width:15%;">
                                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                             </td>
-                            <td><strong><?php echo _translate("Sample Code/Batch Code"); ?>&nbsp;:</strong></td>
-                            <td>
-                                <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                            <td style="width:5%;">
+                                <strong><?php echo _translate("Sample ID (or) Batch Code"); ?>&nbsp;:</strong>
+                            </td>
+                            <td style="width:15%;">
+                                <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Sample ID or Batch Code'); ?>" style="background:#fff;" />
                             </td>
                         </tr>
-
                         <tr>
-
-                            <td><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
+                            <td colspan="6">
+                                <button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _translate("Search"); ?>
                                     </span></button>
                                 <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>

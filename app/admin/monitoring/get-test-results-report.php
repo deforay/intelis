@@ -36,7 +36,7 @@ try {
     $testName = TestsService::getTestName($testType);
 
 
-    $rejectionTable = "r_" . $testType . "_sample_rejection_reasons";
+    $rejectionTable = "r_".$testType."_sample_rejection_reasons";
     /*
     * Array of database columns which should be read and sent back to DataTables. Use a space where
     * you want to insert a non-database field (for example a counter or static image)
@@ -203,8 +203,9 @@ else{
         $fileName = $aRow['import_machine_file_name'];
         if (!empty($aRow['import_machine_file_name']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $aRow['import_machine_file_name'])) {
             $a = "/uploads/imported-results" . DIRECTORY_SEPARATOR . $fileName;
-            $row[] = '<a title="' . $fileName . '" href="' . $a . '" download> Download </a>';
-        } else {
+            $row[] = '<a title="'.$fileName.'" href="'.$a.'" download> Download </a>';
+        }
+        else{
             $row[] = $fileName;
         }
         $output['aaData'][] = $row;
