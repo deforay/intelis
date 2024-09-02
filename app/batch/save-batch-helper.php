@@ -121,7 +121,7 @@ try {
             }
         } else {
             if ($batchService->doesBatchCodeExist($_POST['batchCode'])) {
-                $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.");
+                $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.", true);
                 header("Location:batches.php?type=" . $_POST['type']);
             } else {
                 $maxSampleBatchId = $general->getMaxSampleBatchId($testTable);

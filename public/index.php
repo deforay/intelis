@@ -1,6 +1,6 @@
 <?php
 
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
