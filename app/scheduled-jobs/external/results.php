@@ -16,10 +16,13 @@ use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+$transactionId = MiscUtility::generateULID();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -41,7 +44,9 @@ try {
     $db->where("IFNULL(result_sent_to_external, 'no') = 'no'");
     $db->where("result_status", $resultStatus, 'IN');
     $resultSet = $db->get($tableName);
-
+    $numberOfResults = count($resultSet ?? []);
+    $numberSent = 0;
+    $resultsSentSuccesfully = [];
     foreach ($resultSet as $row) {
         $payload = [
             "id" => $row[$primaryKey],
@@ -131,9 +136,21 @@ try {
             "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true, null, true)
         ];
 
-        //$payload = JsonUtility::encodeUtf8Json($payload);
-
+        $payload = JsonUtility::encodeUtf8Json($payload);
         $response = $apiService->post(EXTERNAL_RESULTS_RECEIVER_URL, $payload, gzip: false);
+        if (!empty($response)) {
+            $resultsSentSuccesfully[] = $row['unique_id'];
+            $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, [], $payload, 'json');
+        }
+    }
+    if (!empty($resultsSentSuccesfully)) {
+        $numberSent = count($resultsSentSuccesfully);
+        $db->where($primaryKey, $resultsSentSuccesfully, 'IN');
+        $db->update($tableName, ['result_sent_to_external' => 'yes']);
+    }
+
+    if ($cliMode) {
+        echo "Number of results sent: " . $numberSent . PHP_EOL;
     }
 } catch (Exception $e) {
     if ($cliMode) {
