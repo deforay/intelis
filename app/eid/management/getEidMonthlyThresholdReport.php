@@ -26,8 +26,8 @@ for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
      $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
 }
 
-$tableName = "form_vl";
-$primaryKey = "vl_sample_id";
+$tableName = "form_eid";
+$primaryKey = "eid_id";
 
 $aColumns = array('vl.sample_tested_datetime', 'f.facility_name');
 $orderColumns = array('vl.sample_tested_datetime', 'f.facility_name');

@@ -173,7 +173,6 @@ z-index: 1031;
     </div>
 	<?php } ?>
 	<div class="wrapper">
-	
 
 		<header class="main-header">		
       
