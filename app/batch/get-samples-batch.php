@@ -99,25 +99,25 @@ if (!empty($_POST['testType'])) {
 
 if (!empty($_POST['sampleCollectionDate'])) {
     if (trim((string) $startDate) == trim((string) $endDate)) {
-        $swhere[] = $where[] = ' DATE(sample_collection_date) = "' . $startDate . '"';
+        $swhere[] = $where[] = " DATE(sample_collection_date) = '$startDate' ";
     } else {
-        $swhere[] = $where[] = ' DATE(sample_collection_date) BETWEEN "' . $startDate . '" AND "' . $endDate . '"';
+        $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
     }
 }
 
 if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) != '') {
     if (trim((string) $sampleReceivedStartDate) == trim((string) $sampleReceivedEndDate)) {
-        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) = "' . $sampleReceivedStartDate . '"';
+        $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) = '$sampleReceivedStartDate' ";
     } else {
-        $swhere[] = $where[] = ' DATE(sample_received_at_lab_datetime) BETWEEN "' . $sampleReceivedStartDate . '" AND "' . $sampleReceivedEndDate . '"';
+        $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
     }
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
     if (trim((string) $lastModifiedStartDate) == trim((string) $lastModifiedEndDate)) {
-        $swhere[] = $where[] = ' DATE(last_modified_datetime) = "' . $lastModifiedStartDate . '"';
+        $swhere[] = $where[] = " DATE(last_modified_datetime) = '$lastModifiedStartDate' ";
     } else {
-        $swhere[] = $where[] = ' DATE(last_modified_datetime) BETWEEN "' . $lastModifiedStartDate . '" AND "' . $lastModifiedEndDate . '"';
+        $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
     }
 }
 

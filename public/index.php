@@ -5,7 +5,7 @@ require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use Tuupola\Middleware\CorsMiddleware;
+use App\Middlewares\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
@@ -66,6 +66,7 @@ $middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));
 
 
 // CORS Middleware
+// Add CORS Middleware
 $middlewarePipe->pipe(new CorsMiddleware([
     "origin" => ["*"], // Allow any origin, or specify a list of allowed origins
     "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods

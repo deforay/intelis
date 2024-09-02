@@ -42,8 +42,8 @@ final class CommonService
             return null;
         }
 
-        $composerContent = json_decode(trim(file_get_contents($composerFilePath)), true);
-        return $composerContent['version'] ?? null;
+        $composerJson = trim(file_get_contents($composerFilePath));
+        return JsonUtility::extractJsonData($composerJson, 'version');
     }
 
     public function getRemoteURL()
