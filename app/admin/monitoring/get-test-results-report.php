@@ -96,19 +96,22 @@ try {
 
 
 
-    if ($testType == "covid19") {
-        $joinCond = " LEFT JOIN covid19_tests as ct ON ct.covid19_id=vl.covid19_id
+if($testType=="covid19")
+{
+    $joinCond = " LEFT JOIN covid19_tests as ct ON ct.covid19_id=vl.covid19_id
     LEFT JOIN instruments as ins ON ins.instrument_id=ct.instrument_id";
-    } else {
-        $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
-    }
+}
+else{
+    $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
+}
 
-    if ($testType == "vl" || $testType = "cd4") {
-        $resultChangeColumn = "vl.reason_for_result_changes";
-    } else {
-        $resultChangeColumn = "vl.reason_for_changing";
-    }
-
+if($testType=="vl" || $testType=="cd4")
+{
+    $resultChangeColumn = " vl.reason_for_result_changes";
+}
+else{
+    $resultChangeColumn = " vl.reason_for_changing";
+}
 
     /*
     * SQL queries
@@ -143,16 +146,16 @@ try {
         $sWhere[] = ' DATE(vl.sample_tested_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
     }
     if (isset($_POST['sampleBatchCode']) && trim((string) $_POST['sampleBatchCode']) != '') {
+        $code = $_POST['sampleBatchCode'];
         $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
     }
-
+  
 
     /* Implode all the where fields for filtering the data */
     if (!empty($sWhere)) {
         $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
 
-    //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
@@ -177,7 +180,7 @@ try {
         "calculation" => [],
         "aaData" => []
     );
-
+  
     foreach ($rResult as $key => $aRow) {
 
         $rejectedObj = json_decode($aRow['reason_for_result_changes']);

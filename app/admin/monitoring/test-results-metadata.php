@@ -16,32 +16,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var GeoLocationsService $geolocationService */
-$geolocationService = ContainerRegistry::get(GeoLocationsService::class);
-
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$labNameList = $facilitiesService->getTestingLabs();
-
-$sources = array(
-    'vlsm' => 'VLSM',
-    'vlsts' => 'STS',
-    'app' => 'Tablet',
-    'api' => 'API',
-    'dhis2' => 'DHIS2'
-);
-
 $activeModules = SystemService::getActiveModules();
-$state = $geolocationService->getProvinces("yes");
 
-
-// Src of alert req
-$sources = $general->getSourceOfRequest('form_vl');
-$srcOfReqList = [];
-foreach ($sources as $list) {
-    $srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
-}
 ?>
 <style>
     .select2-selection__choice {
@@ -87,7 +63,7 @@ foreach ($sources as $list) {
                                 </strong>
                             </td>
                             <td>
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
@@ -201,7 +177,7 @@ foreach ($sources as $list) {
                             <tbody>
                                 <tr>
                                     <td colspan="10" class="dataTables_empty">
-                                        <?php echo _translate("Please select the date range and test type to see the source of requests"); ?>
+                                        <?php echo _translate("No data available"); ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -221,27 +197,7 @@ foreach ($sources as $list) {
 <script type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
-        getSourceRequest('vl');
-        getSourcesOfRequestReport();
-
-        $("#srcRequest").val('api');
-        $('#labName').select2({
-            placeholder: "Select Lab to filter"
-        });
-
-        $('#state').select2({
-            placeholder: "Select Province"
-        });
-
-        $('#district').select2({
-            width: '200px',
-            placeholder: "Select District"
-        });
-
-        $('#facilityId').select2({
-            width: '200px',
-            placeholder: "Select Name of the Clinic"
-        });
+        getMetaResultDataReport();
 
 
         $('#sampleTestDate').daterangepicker({
@@ -274,12 +230,13 @@ foreach ($sources as $list) {
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
+            $('#sampleTestDate').val("");
         searchRequestData();
     });
 
 
 
-    function getSourcesOfRequestReport() {
+    function getMetaResultDataReport() {
 
         $.blockUI();
         oTable = $('#testResultReport').dataTable({
@@ -370,26 +327,6 @@ foreach ($sources as $list) {
     }
 
 
-    function getByProvince() {
-        state = $('#state').val();
-        $("#district").html('');
-        $("#facilityId").html('');
-        $("#labName").html('');
-        $.post("/common/get-by-province-id.php", {
-                provinceId: state,
-                districts: true,
-                facilities: true,
-                labs: true,
-            },
-            function(data) {
-                Obj = $.parseJSON(data);
-                $("#district").append(Obj['districts']);
-                $("#facilityId").append(Obj['facilities']);
-                $("#labName").append(Obj['labs']);
-            });
-
-    }
-
     function searchRequestData() {
         $.blockUI();
         oTable.fnDraw();
@@ -413,17 +350,6 @@ foreach ($sources as $list) {
             });
     }
 
-    function getSourceRequest(testType) {
-        $.blockUI();
-        $("#srcRequest").html("");
-        $.post("/admin/monitoring/get-source-request-list.php", {
-                testType: testType,
-            },
-            function(data) {
-                $.unblockUI();
-                $("#srcRequest").html(data);
-            });
-    }
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';
