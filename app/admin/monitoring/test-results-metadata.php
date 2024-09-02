@@ -167,7 +167,7 @@ $activeModules = SystemService::getActiveModules();
                                         <?php echo _translate("Rejection Reason"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Was Result Changed"); ?>
+                                        <?php echo _translate("Was Result Changed?"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Reason for Changing"); ?>

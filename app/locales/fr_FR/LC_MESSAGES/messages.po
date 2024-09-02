@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-09-01 15:30+0530\n"
-"PO-Revision-Date: 2024-09-01 15:31+0530\n"
+"POT-Creation-Date: 2024-09-02 17:33+0530\n"
+"PO-Revision-Date: 2024-09-02 17:33+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -322,7 +322,7 @@ msgstr "Action"
 #: app/admin/monitoring/log-files.php:87
 #: app/admin/monitoring/sources-of-requests.php:180
 #: app/admin/monitoring/sync-status.php:141
-#: app/admin/monitoring/test-results-metadata.php:138
+#: app/admin/monitoring/test-results-metadata.php:142
 #: app/batch/get-samples-batch.php:249 app/batch/get-samples-batch.php:250
 #: app/cd4/management/cd4-clinic-report.php:169
 #: app/cd4/management/cd4-clinic-report.php:274
@@ -472,7 +472,7 @@ msgstr "Rechercher"
 #: app/admin/monitoring/activity-log.php:149
 #: app/admin/monitoring/api-sync-history.php:170
 #: app/admin/monitoring/sources-of-requests.php:305
-#: app/admin/monitoring/test-results-metadata.php:249
+#: app/admin/monitoring/test-results-metadata.php:253
 #: app/batch/add-batch.php:413 app/batch/edit-batch.php:432
 #: app/cd4/management/cd4-clinic-report.php:616
 #: app/cd4/management/cd4-export-data.php:331
@@ -749,7 +749,7 @@ msgstr "Historique de l’API"
 #: app/admin/monitoring/lab-sync-details.php:212
 #: app/admin/monitoring/sources-of-requests.php:127
 #: app/admin/monitoring/sync-status.php:110
-#: app/admin/monitoring/test-results-metadata.php:86 app/batch/batches.php:101
+#: app/admin/monitoring/test-results-metadata.php:87 app/batch/batches.php:101
 #: app/facilities/addFacility.php:341 app/facilities/editFacility.php:370
 #: app/facilities/editFacility.php:993 app/facilities/mapTestType.php:65
 #: app/generic-tests/requests/add-request.php:236
@@ -772,7 +772,7 @@ msgstr "Type de test"
 #: app/admin/monitoring/lab-sync-details.php:144
 #: app/admin/monitoring/sources-of-requests.php:132
 #: app/admin/monitoring/sync-status.php:113
-#: app/admin/monitoring/test-results-metadata.php:90
+#: app/admin/monitoring/test-results-metadata.php:91
 #: app/facilities/facilities.php:86
 msgid "Please select the Test types"
 msgstr "Veuillez sélectionner le projet"
@@ -1460,7 +1460,7 @@ msgstr "-- Sélectionner --"
 #: app/admin/monitoring/lab-sync-details.php:147
 #: app/admin/monitoring/sources-of-requests.php:135
 #: app/admin/monitoring/sync-status.php:116
-#: app/admin/monitoring/test-results-metadata.php:93
+#: app/admin/monitoring/test-results-metadata.php:94
 #: app/eid/requests/forms/add-burkina-faso.php:246
 #: app/eid/requests/forms/edit-burkina-faso.php:259
 #: app/eid/results/forms/update-burkina-faso-result.php:258
@@ -1479,7 +1479,7 @@ msgstr "CHARGE VIRALE"
 #: app/admin/monitoring/lab-sync-details.php:152
 #: app/admin/monitoring/sources-of-requests.php:140
 #: app/admin/monitoring/sync-status.php:119
-#: app/admin/monitoring/test-results-metadata.php:98
+#: app/admin/monitoring/test-results-metadata.php:99
 #: app/classes/Services/TestsService.php:53 app/facilities/addFacility.php:354
 #: app/facilities/addFacility.php:712 app/facilities/addFacility.php:1039
 #: app/facilities/editFacility.php:379 app/facilities/editFacility.php:677
@@ -1494,7 +1494,7 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 #: app/admin/monitoring/lab-sync-details.php:157
 #: app/admin/monitoring/sources-of-requests.php:145
 #: app/admin/monitoring/sync-status.php:122
-#: app/admin/monitoring/test-results-metadata.php:103
+#: app/admin/monitoring/test-results-metadata.php:104
 #: app/classes/Services/TestsService.php:64 app/facilities/addFacility.php:359
 #: app/facilities/addFacility.php:717 app/facilities/addFacility.php:1040
 #: app/facilities/editFacility.php:382 app/facilities/editFacility.php:678
@@ -1513,7 +1513,7 @@ msgstr "COVID-19"
 #: app/admin/monitoring/lab-sync-details.php:162
 #: app/admin/monitoring/sources-of-requests.php:150
 #: app/admin/monitoring/sync-status.php:125
-#: app/admin/monitoring/test-results-metadata.php:108
+#: app/admin/monitoring/test-results-metadata.php:109
 #: app/classes/Services/TestsService.php:75 app/facilities/addFacility.php:364
 #: app/facilities/addFacility.php:722 app/facilities/addFacility.php:1041
 #: app/facilities/editFacility.php:385 app/facilities/editFacility.php:679
@@ -1536,7 +1536,7 @@ msgstr "Hépatite"
 #: app/admin/monitoring/lab-sync-details.php:167
 #: app/admin/monitoring/sources-of-requests.php:155
 #: app/admin/monitoring/sync-status.php:128
-#: app/admin/monitoring/test-results-metadata.php:113
+#: app/admin/monitoring/test-results-metadata.php:114
 #: app/facilities/addFacility.php:369 app/facilities/addFacility.php:727
 #: app/facilities/addFacility.php:1042 app/facilities/editFacility.php:388
 #: app/facilities/editFacility.php:680 app/facilities/editFacility.php:709
@@ -1552,7 +1552,7 @@ msgstr "Tuberculose"
 #: app/admin/monitoring/audit-trail.php:155
 #: app/admin/monitoring/lab-sync-details.php:172
 #: app/admin/monitoring/sources-of-requests.php:160
-#: app/admin/monitoring/test-results-metadata.php:118
+#: app/admin/monitoring/test-results-metadata.php:119
 #: app/cd4/management/cd4-clinic-report.php:68
 #: app/cd4/management/cd4-sample-rejection-report.php:37
 #: app/cd4/management/cd4-sample-status.php:51
@@ -1920,7 +1920,7 @@ msgstr "ID de l'échantillon"
 #: app/vl/reference/add-vl-test-reasons.php:70
 #: app/vl/reference/edit-vl-test-failure-reason.php:67
 #: app/vl/requests/addSamplesFromManifest.php:53
-#: app/vl/requests/upload-storage.php:130
+#: app/vl/requests/upload-storage.php:122
 #: app/vl/result-mail/editTestResultEmailConfig.php:126
 msgid "Submit"
 msgstr "Envoyer"
@@ -2045,7 +2045,7 @@ msgid "Reset"
 msgstr "Réinitialiser"
 
 #: app/admin/monitoring/export-test-results-report.php:35
-#: app/admin/monitoring/test-results-metadata.php:154
+#: app/admin/monitoring/test-results-metadata.php:158
 #: app/batch/add-batch-position.php:101 app/batch/add-batch.php:292
 #: app/batch/edit-batch-position.php:129 app/batch/edit-batch.php:268
 #: app/vl/program-management/sample-storage-reports.php:134
@@ -2053,17 +2053,17 @@ msgstr "Réinitialiser"
 #: app/vl/program-management/storageDataToExcel.php:25
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/sample-storage.php:260
-#: app/vl/requests/upload-storage.php:152
+#: app/vl/requests/upload-storage.php:142
 msgid "Sample Code"
 msgstr "Code d'échantillon"
 
 #: app/admin/monitoring/export-test-results-report.php:36
-#: app/admin/monitoring/test-results-metadata.php:157
+#: app/admin/monitoring/test-results-metadata.php:161
 msgid "Remote Sample Code"
 msgstr "Code d'échantillon prélevé à l'extérieur du labo"
 
 #: app/admin/monitoring/export-test-results-report.php:37
-#: app/admin/monitoring/test-results-metadata.php:160
+#: app/admin/monitoring/test-results-metadata.php:164
 #: app/batch/add-batch.php:227 app/batch/edit-batch.php:221
 #: app/cd4/management/cd4-clinic-report.php:186
 #: app/cd4/management/cd4-clinic-report.php:290
@@ -2257,12 +2257,12 @@ msgid "Sample Collection Date"
 msgstr "Date de prélèvement de l'échantillon"
 
 #: app/admin/monitoring/export-test-results-report.php:38
-#: app/admin/monitoring/test-results-metadata.php:163
+#: app/admin/monitoring/test-results-metadata.php:167
 msgid "Sample Recieved On"
 msgstr "Échantillon reçu le"
 
 #: app/admin/monitoring/export-test-results-report.php:39
-#: app/admin/monitoring/test-results-metadata.php:166
+#: app/admin/monitoring/test-results-metadata.php:170
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
 #: app/generic-tests/program-management/generic-export-data.php:291
@@ -2275,7 +2275,7 @@ msgid "Sample Tested On"
 msgstr "Échantillon testé sur"
 
 #: app/admin/monitoring/export-test-results-report.php:40
-#: app/admin/monitoring/test-results-metadata.php:169
+#: app/admin/monitoring/test-results-metadata.php:173
 #: app/cd4/management/cd4-clinic-report.php:560
 #: app/cd4/management/cd4-export-data.php:230
 #: app/cd4/management/cd4-export-data.php:259
@@ -2399,7 +2399,7 @@ msgid "Result"
 msgstr "Résultat"
 
 #: app/admin/monitoring/export-test-results-report.php:41
-#: app/admin/monitoring/test-results-metadata.php:172
+#: app/admin/monitoring/test-results-metadata.php:176
 #: app/covid-19/management/generate-export-drc.php:44
 #: app/covid-19/requests/forms/edit-cameroon.php:575
 #: app/covid-19/results/forms/update-cameroon-result.php:530
@@ -2424,7 +2424,7 @@ msgid "Tested By"
 msgstr "Nombre d'échantillons testés"
 
 #: app/admin/monitoring/export-test-results-report.php:42
-#: app/admin/monitoring/test-results-metadata.php:175
+#: app/admin/monitoring/test-results-metadata.php:179
 #: app/covid-19/requests/forms/add-cameroon.php:450
 #: app/covid-19/requests/forms/edit-cameroon.php:478
 #: app/covid-19/results/forms/update-cameroon-result.php:431
@@ -2432,7 +2432,7 @@ msgid "Test Platform/Instrument"
 msgstr "Plate-forme d'essai/instrument"
 
 #: app/admin/monitoring/export-test-results-report.php:43
-#: app/admin/monitoring/test-results-metadata.php:178
+#: app/admin/monitoring/test-results-metadata.php:182
 #: app/cd4/results/cd4-failed-results.php:135
 #: app/covid-19/reference/add-covid19-results.php:41
 #: app/covid-19/reference/add-covid19-results.php:43
@@ -2454,19 +2454,19 @@ msgid "Result Status"
 msgstr "Résultat Statut"
 
 #: app/admin/monitoring/export-test-results-report.php:44
-#: app/admin/monitoring/test-results-metadata.php:181
+#: app/admin/monitoring/test-results-metadata.php:185
 msgid "Manual Result Entry"
 msgstr "Saisie manuelle des résultats"
 
 #: app/admin/monitoring/export-test-results-report.php:45
-#: app/admin/monitoring/test-results-metadata.php:184
+#: app/admin/monitoring/test-results-metadata.php:188
 #: app/generic-tests/mail/mail-generic-tests-results.php:244
 #: app/vl/result-mail/editTestResultEmailConfig.php:112
 msgid "Is Sample Rejected"
 msgstr "L'échantillon est-il rejeté"
 
 #: app/admin/monitoring/export-test-results-report.php:46
-#: app/admin/monitoring/test-results-metadata.php:187
+#: app/admin/monitoring/test-results-metadata.php:191
 #: app/cd4/management/cd4-clinic-report.php:265
 #: app/cd4/management/cd4-clinic-report.php:292
 #: app/cd4/management/export-cd4-results.php:32
@@ -2478,7 +2478,7 @@ msgstr "L'échantillon est-il rejeté"
 #: app/covid-19/reference/covid19-sample-rejection-reasons.php:40
 #: app/eid/management/eid-clinic-report.php:268
 #: app/eid/management/eid-clinic-report.php:297
-#: app/eid/management/get-rejected-samples.php:93
+#: app/eid/management/get-rejected-samples.php:94
 #: app/eid/reference/eid-sample-rejection-reasons.php:41
 #: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:43
 #: app/generic-tests/mail/mail-generic-tests-results.php:245
@@ -2515,12 +2515,12 @@ msgid "Rejection Reason"
 msgstr "Motif de rejet"
 
 #: app/admin/monitoring/export-test-results-report.php:47
-#: app/admin/monitoring/test-results-metadata.php:190
+#: app/admin/monitoring/test-results-metadata.php:194
 msgid "Was Result Changed?"
 msgstr "Le résultat a-t-il été modifié ?"
 
 #: app/admin/monitoring/export-test-results-report.php:48
-#: app/admin/monitoring/test-results-metadata.php:193
+#: app/admin/monitoring/test-results-metadata.php:197
 #: app/covid-19/requests/forms/edit-cameroon.php:581
 #: app/covid-19/results/forms/update-cameroon-result.php:536
 #: app/eid/requests/forms/edit-cameroon.php:638
@@ -2529,7 +2529,7 @@ msgid "Reason for Changing"
 msgstr "Raison du changement"
 
 #: app/admin/monitoring/export-test-results-report.php:49
-#: app/admin/monitoring/test-results-metadata.php:196
+#: app/admin/monitoring/test-results-metadata.php:200
 msgid "File Link"
 msgstr "Lien vers le fichier"
 
@@ -3044,7 +3044,7 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: app/eid/management/eid-export-data.php:262
 #: app/eid/management/eid-export-data.php:303
 #: app/eid/management/eidTestingTargetReport.php:226
-#: app/eid/management/get-rejected-samples.php:92
+#: app/eid/management/get-rejected-samples.php:93
 #: app/eid/requests/addSamplesFromManifest.php:93
 #: app/eid/requests/eid-requests.php:293 app/eid/requests/eid-requests.php:451
 #: app/eid/requests/patientModal.php:105
@@ -3186,7 +3186,7 @@ msgstr "Veuillez sélectionner le nom du laboratoire"
 #: app/cd4/management/get-rejected-samples.php:93
 #: app/cd4/requests/cd4-requests.php:454 app/cd4/requests/cd4-requests.php:476
 #: app/covid-19/management/get-rejected-samples.php:78
-#: app/eid/management/get-rejected-samples.php:85
+#: app/eid/management/get-rejected-samples.php:86
 #: app/eid/requests/eid-requests.php:392 app/eid/requests/eid-requests.php:417
 #: app/generic-tests/program-management/get-rejection-result.php:79
 #: app/hepatitis/management/get-rejected-samples.php:93
@@ -3243,7 +3243,7 @@ msgstr "Pas de données disponibles"
 #: app/admin/monitoring/lab-sync-details.php:314
 #: app/admin/monitoring/sources-of-requests.php:482
 #: app/admin/monitoring/sync-status.php:252
-#: app/admin/monitoring/test-results-metadata.php:409
+#: app/admin/monitoring/test-results-metadata.php:413
 #: app/cd4/management/cd4-clinic-report.php:1100
 #: app/cd4/management/cd4-clinic-report.php:1123
 #: app/cd4/management/cd4-clinic-report.php:1146
@@ -3404,7 +3404,7 @@ msgid "Please select source of request"
 msgstr "Veuillez sélectionner le statut"
 
 #: app/admin/monitoring/sources-of-requests.php:207
-#: app/admin/monitoring/test-results-metadata.php:148
+#: app/admin/monitoring/test-results-metadata.php:152
 msgid "Export To Excel"
 msgstr "Exporter vers Excel"
 
@@ -3539,7 +3539,7 @@ msgid "Last Modified On"
 msgstr "Temps de la dernière modification"
 
 #: app/admin/monitoring/sources-of-requests.php:260
-#: app/admin/monitoring/test-results-metadata.php:204
+#: app/admin/monitoring/test-results-metadata.php:208
 msgid ""
 "Please select the date range and test type to see the source of requests"
 msgstr ""
@@ -3567,7 +3567,7 @@ msgstr "État de la synchronisation du laboratoire"
 #: app/eid/management/eid-export-data.php:265
 #: app/eid/management/eid-export-data.php:304
 #: app/eid/management/eidTestingTargetReport.php:195
-#: app/eid/management/get-rejected-samples.php:91
+#: app/eid/management/get-rejected-samples.php:92
 #: app/eid/requests/forms/add-cameroon.php:149
 #: app/eid/requests/forms/edit-cameroon.php:176
 #: app/eid/results/forms/update-cameroon-result.php:164
@@ -3729,7 +3729,7 @@ msgstr "Métadonnées des résultats des tests"
 msgid "Test Results Metadata Report"
 msgstr "Rapport sur les métadonnées des résultats des tests"
 
-#: app/admin/monitoring/test-results-metadata.php:124
+#: app/admin/monitoring/test-results-metadata.php:126
 #: app/cd4/management/cd4-clinic-report.php:95
 #: app/cd4/management/cd4-clinic-report.php:203
 #: app/cd4/management/cd4-export-data.php:117
@@ -3786,7 +3786,7 @@ msgstr "Rapport sur les métadonnées des résultats des tests"
 msgid "Sample Test Date"
 msgstr "Date du test de l'échantillon"
 
-#: app/admin/monitoring/test-results-metadata.php:127
+#: app/admin/monitoring/test-results-metadata.php:130
 #: app/cd4/management/cd4-clinic-report.php:97
 #: app/cd4/management/cd4-clinic-report.php:205
 #: app/cd4/management/cd4-export-data.php:119
@@ -3826,35 +3826,13 @@ msgstr "Date du test de l'échantillon"
 msgid "Select Sample Test Date"
 msgstr "Sélectionner la date du test de l'échantillon"
 
-#: app/admin/monitoring/test-results-metadata.php:129
-msgid "Sample Code/Batch Code"
+#: app/admin/monitoring/test-results-metadata.php:133
+msgid "Sample ID (or) Batch Code"
 msgstr "Code de l'échantillon/Code du lot"
 
-#: app/admin/monitoring/test-results-metadata.php:131
-#: app/cd4/management/cd4-export-data.php:143
-#: app/cd4/requests/cd4-requests.php:244
-#: app/cd4/results/cd4-print-results.php:140
-#: app/cd4/results/cd4-print-results.php:315
-#: app/covid-19/management/covid-19-export-data.php:161
-#: app/covid-19/requests/covid-19-requests.php:176
-#: app/covid-19/results/covid-19-print-results.php:114
-#: app/covid-19/results/covid-19-print-results.php:321
-#: app/eid/management/eid-export-data.php:169
-#: app/eid/requests/eid-requests.php:157
-#: app/eid/results/eid-print-results.php:132
-#: app/eid/results/eid-print-results.php:304
-#: app/hepatitis/management/hepatitis-export-data.php:207
-#: app/hepatitis/requests/hepatitis-requests.php:192
-#: app/hepatitis/results/hepatitis-print-results.php:149
-#: app/hepatitis/results/hepatitis-print-results.php:324
-#: app/tb/management/tb-export-data.php:156 app/tb/requests/tb-requests.php:145
-#: app/tb/results/tb-print-results.php:140
-#: app/tb/results/tb-print-results.php:310
-#: app/vl/program-management/vl-export-data.php:263
-#: app/vl/requests/vl-requests.php:289 app/vl/results/vlPrintResult.php:215
-#: app/vl/results/vlPrintResult.php:472
-msgid "Enter Batch Code"
-msgstr "Saisir le code du lot"
+#: app/admin/monitoring/test-results-metadata.php:136
+msgid "Enter Sample ID or Batch Code"
+msgstr "Saisir l'ID de l'échantillon ou le code du lot"
 
 #: app/api/v1.1/cancel-requests.php:109
 #: app/api/v1.1/covid-19/fetch-results.php:291
@@ -5030,7 +5008,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/vl/requests/forms/add-cameroon.php:712
 #: app/vl/requests/forms/edit-cameroon.php:787
 #: app/vl/requests/sample-storage.php:427
-#: app/vl/requests/upload-storage.php:133
+#: app/vl/requests/upload-storage.php:125
 #: app/vl/result-mail/editTestResultEmailConfig.php:127
 #: app/vl/results/email-results.php:333 app/vl/results/vlResultMail.php:333
 msgid "Cancel"
@@ -5103,7 +5081,7 @@ msgstr "Créer un nouveau batch"
 #: app/covid-19/management/get-rejected-samples.php:89
 #: app/dashboard/getSampleResult.php:755
 #: app/eid/management/eid-sample-testing-report.php:121
-#: app/eid/management/get-rejected-samples.php:95
+#: app/eid/management/get-rejected-samples.php:96
 #: app/generic-tests/program-management/generic-tests-sample-testing-report.php:117
 #: app/generic-tests/program-management/get-rejection-result.php:99
 #: app/hepatitis/management/get-rejected-samples.php:103
@@ -7286,6 +7264,31 @@ msgstr "Enregistré au laboratoire de test"
 msgid "Expired"
 msgstr "Expiré"
 
+#: app/cd4/management/cd4-export-data.php:143
+#: app/cd4/requests/cd4-requests.php:244
+#: app/cd4/results/cd4-print-results.php:140
+#: app/cd4/results/cd4-print-results.php:315
+#: app/covid-19/management/covid-19-export-data.php:161
+#: app/covid-19/requests/covid-19-requests.php:176
+#: app/covid-19/results/covid-19-print-results.php:114
+#: app/covid-19/results/covid-19-print-results.php:321
+#: app/eid/management/eid-export-data.php:169
+#: app/eid/requests/eid-requests.php:157
+#: app/eid/results/eid-print-results.php:132
+#: app/eid/results/eid-print-results.php:304
+#: app/hepatitis/management/hepatitis-export-data.php:207
+#: app/hepatitis/requests/hepatitis-requests.php:192
+#: app/hepatitis/results/hepatitis-print-results.php:149
+#: app/hepatitis/results/hepatitis-print-results.php:324
+#: app/tb/management/tb-export-data.php:156 app/tb/requests/tb-requests.php:145
+#: app/tb/results/tb-print-results.php:140
+#: app/tb/results/tb-print-results.php:310
+#: app/vl/program-management/vl-export-data.php:263
+#: app/vl/requests/vl-requests.php:289 app/vl/results/vlPrintResult.php:215
+#: app/vl/results/vlPrintResult.php:472
+msgid "Enter Batch Code"
+msgstr "Saisir le code du lot"
+
 #: app/cd4/management/cd4-export-data.php:145
 #: app/cd4/requests/cd4-requests.php:248
 #: app/common/reference/funding-sources.php:2
@@ -8671,7 +8674,7 @@ msgstr "Imprimer"
 
 #: app/cd4/management/get-rejected-samples.php:102
 #: app/covid-19/management/get-rejected-samples.php:87
-#: app/eid/management/get-rejected-samples.php:94
+#: app/eid/management/get-rejected-samples.php:95
 #: app/generic-tests/program-management/get-rejection-result.php:96
 #: app/hepatitis/management/get-rejected-samples.php:102
 #: app/tb/management/get-rejected-samples.php:104
@@ -8681,7 +8684,7 @@ msgstr "Catégorie de motif"
 
 #: app/cd4/management/get-rejected-samples.php:138
 #: app/covid-19/management/get-rejected-samples.php:125
-#: app/eid/management/get-rejected-samples.php:130
+#: app/eid/management/get-rejected-samples.php:131
 #: app/generic-tests/configuration/add-test-type.php:174
 #: app/generic-tests/configuration/clone-test-type.php:210
 #: app/generic-tests/configuration/edit-test-type.php:213
@@ -8695,7 +8698,7 @@ msgstr "Exemples de motifs de rejet"
 
 #: app/cd4/management/get-rejected-samples.php:193
 #: app/covid-19/management/get-rejected-samples.php:180
-#: app/eid/management/get-rejected-samples.php:185
+#: app/eid/management/get-rejected-samples.php:186
 #: app/generic-tests/program-management/get-rejection-result.php:207
 #: app/hepatitis/management/get-rejected-samples.php:193
 #: app/tb/management/get-rejected-samples.php:197
@@ -11535,7 +11538,7 @@ msgid "Batch file generated on"
 msgstr "Fichier batch généré sur"
 
 #: app/classes/Helpers/CustomBatchPdfHelper.php:28
-msgid "Batch Code: "
+msgid "Batch Code : "
 msgstr "Code de lot :"
 
 #: app/classes/Helpers/CustomBatchPdfHelper.php:32
@@ -16181,7 +16184,7 @@ msgstr "Veuillez entrer Congélateur"
 #: app/vl/requests/forms/edit-drc.php:490
 #: app/vl/requests/get-request-list.php:390
 #: app/vl/requests/sample-storage.php:284
-#: app/vl/requests/upload-storage.php:154
+#: app/vl/requests/upload-storage.php:144
 #: app/vl/results/forms/update-drc-result.php:468
 msgid "Rack"
 msgstr "Coffret"
@@ -16214,7 +16217,7 @@ msgstr "Veuillez entrer le rack"
 #: app/vl/requests/forms/edit-drc.php:494
 #: app/vl/requests/get-request-list.php:390
 #: app/vl/requests/sample-storage.php:287
-#: app/vl/requests/upload-storage.php:155
+#: app/vl/requests/upload-storage.php:145
 #: app/vl/results/forms/update-drc-result.php:472
 msgid "Box"
 msgstr "Boîte"
@@ -16247,7 +16250,7 @@ msgstr "Veuillez entrer dans la case"
 #: app/vl/requests/forms/edit-drc.php:500
 #: app/vl/requests/get-request-list.php:390
 #: app/vl/requests/sample-storage.php:290
-#: app/vl/requests/upload-storage.php:156
+#: app/vl/requests/upload-storage.php:146
 #: app/vl/results/forms/update-drc-result.php:479
 #: app/vl/results/forms/update-drc-result.php:481
 msgid "Position"
@@ -16882,8 +16885,8 @@ msgstr "Aucune installation n'est associée au type de test sélectionné"
 
 #: app/facilities/upload-facilities-helper.php:65
 #: app/facilities/upload-facilities-helper.php:72
-#: app/vl/requests/upload-storage-helper.php:62
-#: app/vl/requests/upload-storage-helper.php:70
+#: app/vl/requests/upload-storage-helper.php:64
+#: app/vl/requests/upload-storage-helper.php:72
 msgid "Please enter all the mandatory fields in the excel sheet"
 msgstr "Veuillez saisir tous les champs obligatoires dans la feuille Excel"
 
@@ -16900,7 +16903,7 @@ msgid "Upload Facilities in Bulk"
 msgstr "Téléchargement en masse d'installations"
 
 #: app/facilities/upload-facilities.php:104
-#: app/vl/requests/upload-storage.php:141
+#: app/vl/requests/upload-storage.php:133
 msgid "Total number of records in file"
 msgstr "Nombre total d'enregistrements dans le fichier"
 
@@ -16935,12 +16938,12 @@ msgstr ""
 "correspondent"
 
 #: app/facilities/upload-facilities.php:126
-#: app/vl/requests/upload-storage.php:109
+#: app/vl/requests/upload-storage.php:108
 msgid "Upload File"
 msgstr "Charger le fichier"
 
 #: app/facilities/upload-facilities.php:129
-#: app/vl/requests/upload-storage.php:112
+#: app/vl/requests/upload-storage.php:111
 msgid "Click to upload file"
 msgstr "Cliquez pour télécharger le fichier"
 
@@ -19871,15 +19874,15 @@ msgstr ""
 "Veuillez cliquer ici pour ajouter un ou plusieurs instruments avant de "
 "pouvoir commencer à utiliser le LIS"
 
-#: app/header.php:235 app/users/edit-profile.php:37
+#: app/header.php:234 app/users/edit-profile.php:37
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
-#: app/header.php:241 app/system-admin/admin-header.php:117
+#: app/header.php:240 app/system-admin/admin-header.php:117
 msgid "Sign out"
 msgstr "Déconnexion"
 
-#: app/header.php:371 app/support/index.php:105
+#: app/header.php:370 app/support/index.php:105
 #: app/vl/requests/addFacilityModal.php:246
 #: app/vl/requests/facilitiesModal.php:134
 msgid "Unable to load this page or resource"
@@ -24658,13 +24661,13 @@ msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
 #: app/vl/requests/export-sample-storage.php:26
-#: app/vl/requests/upload-storage.php:153
+#: app/vl/requests/upload-storage.php:143
 msgid "Freezer Code"
 msgstr "Code du congélateur"
 
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/sample-storage.php:275
-#: app/vl/requests/upload-storage.php:157
+#: app/vl/requests/upload-storage.php:147
 msgid "Volume(ml)"
 msgstr "Volume (ml)"
 
@@ -25211,7 +25214,7 @@ msgstr "Indiquer la raison de la modification du résultat"
 msgid "Patient Date of Birth"
 msgstr "Date de naissance du patient"
 
-#: app/vl/requests/sample-storage-helper.php:54
+#: app/vl/requests/sample-storage-helper.php:53
 msgid "Sample added to the freezer successfully"
 msgstr "Échantillon ajouté au congélateur avec succès"
 
@@ -25251,13 +25254,17 @@ msgstr "Veuillez sélectionner une machine"
 msgid "Select Lab"
 msgstr "Sélectionner un laboratoire"
 
-#: app/vl/requests/upload-storage-helper.php:141
+#: app/vl/requests/upload-storage-helper.php:142
 msgid "Lab Storage added successfully"
 msgstr "Lab Storage ajouté avec succès"
 
-#: app/vl/requests/upload-storage-helper.php:143
+#: app/vl/requests/upload-storage-helper.php:144
 msgid "Bulk Storage Import Failed"
 msgstr "Échec de l'importation du stockage en vrac"
+
+#: app/vl/requests/upload-storage-helper.php:150
+msgid "Please Upload File"
+msgstr "Veuillez télécharger le fichier"
 
 #: app/vl/requests/upload-storage.php:60
 msgid "Upload Lab Storage in Bulk"
@@ -25271,25 +25278,25 @@ msgstr "Saisir le code du manifeste"
 msgid "Enter sample batch code"
 msgstr "Saisir le code du lot d'échantillons"
 
-#: app/vl/requests/upload-storage.php:112
+#: app/vl/requests/upload-storage.php:111
 msgid "Storage Name"
 msgstr "Nom de l'entrepôt"
 
-#: app/vl/requests/upload-storage.php:113
+#: app/vl/requests/upload-storage.php:112
 msgid "Click here to download the Excel format for uploading storages in bulk"
 msgstr ""
 "Cliquez ici pour télécharger le format Excel pour l'envoi en masse de "
 "stockages"
 
-#: app/vl/requests/upload-storage.php:141
+#: app/vl/requests/upload-storage.php:133
 msgid "Number of Lab Storage added"
 msgstr "Nombre d'entrepôts de laboratoire ajoutés"
 
-#: app/vl/requests/upload-storage.php:141
+#: app/vl/requests/upload-storage.php:133
 msgid "Number of Storages not added"
 msgstr "Nombre de stockages non ajoutés"
 
-#: app/vl/requests/upload-storage.php:146
+#: app/vl/requests/upload-storage.php:138
 msgid "Unable to Upload following Samples"
 msgstr "Impossible de télécharger les échantillons suivants"
 
@@ -25724,6 +25731,9 @@ msgstr ""
 #: public/assets/js/main.js.php:815
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
+
+#~ msgid "Was Result Changed"
+#~ msgstr "Le résultat a-t-il été modifié ?"
 
 #~ msgid "Maximum number of allowed samples for this platform "
 #~ msgstr "Nombre maximum d'échantillons autorisés pour cette plate-forme"
