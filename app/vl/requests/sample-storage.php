@@ -167,7 +167,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td class="labField">
-									<select name="labId" id="labId" class="form-control labSelect" style="width:250px;" onchange="getFreezers(this.value, 'freezerCode');">
+									<select name="labId" id="labId" class="form-control labSelect" style="width:220px;" onchange="getFreezers(this.value, 'freezerCode');">
 										<?php if ($general->isLISInstance()) {
 												echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
 											} else { 
@@ -180,7 +180,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td>
-									<select name="freezerCode" id="freezerCode" class="form-control freezerSelect" style="width:250px;">
+									<select name="freezerCode" id="freezerCode" class="form-control freezerSelect" style="width:220px;">
 										<!-- < ?= $general->generateSelectOptions($storageInfo, $_POST['freezerCode'], '-- Select --') ?> -->
 									</select>
 								</td>
@@ -189,7 +189,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td>
-									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" />
+									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" style="width:220px;"/>
 								</td>
 							</tr>
 							<tr>
@@ -204,7 +204,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										<?php echo _translate("Province/State"); ?> :
 									</strong></td>
 								<td>
-									<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>">
+									<select class="form-control select2-element" id="state" onchange="getByProvince(this.value)" name="state" title="<?php echo _translate('Please select Province/State'); ?>" style="width:220px;">
 										<?= $general->generateSelectOptions($state, $_POST['state'], _translate("-- Select --")); ?>
 									</select>
 								</td>

@@ -10,6 +10,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -66,7 +67,7 @@ try {
 
         foreach ($filteredArray as $rowIndex => $rowData) {
 
-            if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E'])) {
+            if (empty($rowData['A']) || empty($rowData['C']) || empty($rowData['D']) || empty($rowData['E']) || empty($rowData['F']) || empty($rowData['G'])) {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
@@ -108,7 +109,9 @@ try {
             try {
                 if (!isset($formAttributes->storage) && empty($formAttributes->storage)) {
                     $formAttributes->storage = array("storageId" => $storageId, "storageCode" => $rowData['C'], "rack" => $rowData['D'], "box" => $rowData['E'], "position" => $rowData['F'], "volume" => $rowData['G']);
-                    $vlData['form_attributes'] = json_encode($formAttributes);
+                    // Convert the $formAttributes array to a JSON string and set it using JsonUtility::jsonToSetString
+                    $formAttributesString = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                    $vlData['form_attributes'] = $db->func($formAttributesString);
                     $db->where('vl_sample_id', $getSample[0]['vl_sample_id']);
                     $id = $db->update('form_vl', $vlData);
                 } else {
