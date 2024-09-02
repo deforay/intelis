@@ -364,14 +364,14 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
-										<th scope="row">Age (mois) arrêt allaitement :<span class="mandatory">*</span></th>
+										<th scope="row"><label for="ageBreastfeedingStopped">Age (mois) arrêt allaitement : <span class="mandatory" style="display:none;">*</span></label></th>
 										<td>
-											<input type="number" class="form-control isRequired" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
+											<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
 										</td>
 
-										<th scope="row">Choix d’allaitement de bébé :<span class="mandatory">*</span></th>
+										<th scope="row"><label for="choiceOfFeeding">Choix d’allaitement de bébé : <span class="mandatory" style="display:none;">*</span></label></th>
 										<td>
-											<select class="form-control isRequired" name="choiceOfFeeding" id="choiceOfFeeding">
+											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
 												<option value=''> -- Sélectionner -- </option>
 												<option value="Breastfeeding only" <?php echo ($eidInfo['choice_of_feeding'] == 'Breastfeeding only') ? "selected='selected'" : ""; ?>> Allaitement seul </option>
 												<option value="Milk substitute" <?php echo ($eidInfo['choice_of_feeding'] == 'Milk substitute') ? "selected='selected'" : ""; ?>> Substitut de lait </option>
@@ -853,7 +853,32 @@ $storageInfo = $storageService->getLabStorage();
 		});
 
 		storageEditableSelect('freezer', 'storage_code', 'storage_id', 'lab_storage', 'Freezer Code');
-
-
+		checkBreastfeedingStatus();
 	});
+
+	$("#hasInfantStoppedBreastfeeding").change(function() {
+        checkBreastfeedingStatus();
+    });
+
+    function checkBreastfeedingStatus() {
+        var status = $("#hasInfantStoppedBreastfeeding").val();
+        if (status === 'yes') {
+            addMandatoryField('ageBreastfeedingStopped');
+            addMandatoryField('choiceOfFeeding');
+        } else {
+            removeMandatoryField('ageBreastfeedingStopped');
+            removeMandatoryField('choiceOfFeeding');
+        }
+    }
+
+    function addMandatoryField(fieldId) {
+        $('label[for="' + fieldId + '"] .mandatory').show();
+        $('#' + fieldId).addClass('isRequired');
+    }
+
+    function removeMandatoryField(fieldId) {
+        $('label[for="' + fieldId + '"] .mandatory').hide();
+        $('#' + fieldId).removeClass('isRequired');
+    }
+
 </script>

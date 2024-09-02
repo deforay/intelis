@@ -64,20 +64,18 @@ $maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 1
 
 $_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
 
-$db->where("status","active");
-$instrumentResult = $db->get("instruments");
+$db->where("status", "active");
+$instrumentCount = $db->getValue("instruments", "count(*)");
 
 $db->where("role_id != 1 and status = 'active'");
-$userResult = $db->get("user_details");
+$userCount = $db->getValue("user_details", "count(*)");
 
-if(count($instrumentResult) == 0 || count($userResult) == 0){ 
+if ($instrumentCount == 0 || $userCount == 0) {
 	$margin = 'style="margin-top:50px !important;"';
 	$topSide = 'style="top:50px !important;"';
-}
-else{
+} else {
 	$margin = '';
 	$topSide = 'style="top:0 !important;"';
-
 }
 ?>
 <!DOCTYPE html>
@@ -128,49 +126,51 @@ else{
 </head>
 <style>
 	.topBar {
-    margin: 0;
-    padding: 0;
-    border: 0;
-    outline: 0;
-    background: none no-repeat scroll 0 transparent;
-    font-family: arial,helvetica,sans-serif;
-    font-size: 100%;
-    font-style: inherit;
-    font-weight: inherit;
-    letter-spacing: normal;
-    line-height: 10px;
-    display: inline-block!important;
-    left: 0;
-    width: 100%;
-    margin-top: 0;
-    padding-top: 0;
-    clear: both;
-    background-color: #f16e00;
-    text-align: left;
-    overflow: hidden;
-    vertical-align: bottom;
-	position: fixed; 
-top: 0;
-z-index: 1031;
-}
+		margin: 0;
+		padding: 0;
+		border: 0;
+		outline: 0;
+		background: none no-repeat scroll 0 transparent;
+		font-family: arial, helvetica, sans-serif;
+		font-size: 100%;
+		font-style: inherit;
+		font-weight: inherit;
+		letter-spacing: normal;
+		line-height: 10px;
+		display: inline-block !important;
+		left: 0;
+		width: 100%;
+		margin-top: 0;
+		padding-top: 0;
+		clear: both;
+		background-color: #f16e00;
+		text-align: left;
+		overflow: hidden;
+		vertical-align: bottom;
+		position: fixed;
+		top: 0;
+		z-index: 1031;
+	}
 
-.content-header { margin-top:50px; }
-	</style>
+	.content-header {
+		margin-top: 50px;
+	}
+</style>
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?>>
 
-	<?php if(count($instrumentResult) == 0 || count($userResult) == 0){ ?>
-<div class="topBar">
-        <p class="white text-center">
-		<?php if(count($userResult) == 0) { ?>
-			<a href="/users/addUser.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more users before you can start using the system"); ?> </a>
-<?php } ?>
-        <?php if($general->isLisInstance()){ 
-			if(count($instrumentResult) == 0){ ?>
-          &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/instruments/add-instrument.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more instruments before you can start using the LIS"); ?> </a>
-        <?php } } ?>
-                </p>
-    </div>
+	<?php if ($instrumentCount == 0 || $userCount == 0) { ?>
+		<div class="topBar">
+			<p class="white text-center">
+				<?php if ($userCount == 0) { ?>
+					<a href="/users/addUser.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more non-admin users before you can start using the system"); ?> </a>
+				<?php } ?>
+				<?php if ($general->isLisInstance() && $instrumentCount == 0) { ?>
+					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/instruments/add-instrument.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more instruments before you can start using the LIS"); ?> </a>
+				<?php }
+				?>
+			</p>
+		</div>
 	<?php } ?>
 	<div class="wrapper">
 
@@ -190,7 +190,7 @@ z-index: 1031;
 				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
 					<span class="sr-only">Toggle navigation</span>
 				</a>
-				
+
 				<ul class="nav navbar-nav">
 					<li>
 						<a href="javascript:void(0);return false;">
@@ -360,7 +360,7 @@ z-index: 1031;
 			</section>
 			<!-- /.sidebar -->
 		</aside>
-		
+
 		<!-- content-wrapper -->
 		<div id="dDiv" class="dialog">
 			<div style="text-align:center">

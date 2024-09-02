@@ -8,7 +8,7 @@ use App\Services\SystemService;
 use App\Services\GeoLocationsService;
 
 
-$title = _translate("TEst Results Metadata");
+$title = _translate("Test Results Metadata");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
@@ -121,17 +121,17 @@ foreach ($sources as $list) {
                                 </select>
                             </td>
                             <td><strong>
-									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
-									</strong></td>
-								<td>
-									<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
-								</td>
+                                    <?php echo _translate("Sample Test Date"); ?>&nbsp;:
+                                </strong></td>
+                            <td>
+                                <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
+                            </td>
                             <td><strong><?php echo _translate("Sample Code/Batch Code"); ?>&nbsp;:</strong></td>
-								<td>
-									<input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
-								</td>
+                            <td>
+                                <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
+                            </td>
                         </tr>
-                     
+
                         <tr>
 
                             <td><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
@@ -187,7 +187,7 @@ foreach ($sources as $list) {
                                         <?php echo _translate("Rejection Reason"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Was Result Changed"); ?>
+                                        <?php echo _translate("Was Result Changed?"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Reason for Changing"); ?>
@@ -245,35 +245,35 @@ foreach ($sources as $list) {
 
 
         $('#sampleTestDate').daterangepicker({
-				locale: {
-					cancelLabel: "<?= _translate("Clear", true); ?>",
-					format: 'DD-MMM-YYYY',
-					separator: ' to ',
-				},
-				showDropdowns: true,
-				alwaysShowCalendars: false,
-				startDate: moment().subtract(28, 'days'),
-				endDate: moment(),
-				maxDate: moment(),
-				ranges: {
-					'Today': [moment(), moment()],
-					'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
-					'Last 7 Days': [moment().subtract(6, 'days'), moment()],
-					'This Month': [moment().startOf('month'), moment().endOf('month')],
-					'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
-					'Last 30 Days': [moment().subtract(29, 'days'), moment()],
-					'Last 90 Days': [moment().subtract(89, 'days'), moment()],
-					'Last 120 Days': [moment().subtract(119, 'days'), moment()],
-					'Last 180 Days': [moment().subtract(179, 'days'), moment()],
-					'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
-					'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
-					'Current Year To Date': [moment().startOf('year'), moment()]
-				}
-			},
-			function(start, end) {
-				startDate = start.format('YYYY-MM-DD');
-				endDate = end.format('YYYY-MM-DD');
-			});
+                locale: {
+                    cancelLabel: "<?= _translate("Clear", true); ?>",
+                    format: 'DD-MMM-YYYY',
+                    separator: ' to ',
+                },
+                showDropdowns: true,
+                alwaysShowCalendars: false,
+                startDate: moment().subtract(28, 'days'),
+                endDate: moment(),
+                maxDate: moment(),
+                ranges: {
+                    'Today': [moment(), moment()],
+                    'Yesterday': [moment().subtract(1, 'days'), moment().subtract(1, 'days')],
+                    'Last 7 Days': [moment().subtract(6, 'days'), moment()],
+                    'This Month': [moment().startOf('month'), moment().endOf('month')],
+                    'Last Month': [moment().subtract(1, 'month').startOf('month'), moment().subtract(1, 'month').endOf('month')],
+                    'Last 30 Days': [moment().subtract(29, 'days'), moment()],
+                    'Last 90 Days': [moment().subtract(89, 'days'), moment()],
+                    'Last 120 Days': [moment().subtract(119, 'days'), moment()],
+                    'Last 180 Days': [moment().subtract(179, 'days'), moment()],
+                    'Last 12 Months': [moment().subtract(12, 'month').startOf('month'), moment().endOf('month')],
+                    'Previous Year': [moment().subtract(1, 'year').startOf('year'), moment().subtract(1, 'year').endOf('year')],
+                    'Current Year To Date': [moment().startOf('year'), moment()]
+                }
+            },
+            function(start, end) {
+                startDate = start.format('YYYY-MM-DD');
+                endDate = end.format('YYYY-MM-DD');
+            });
         searchRequestData();
     });
 
@@ -360,7 +360,7 @@ foreach ($sources as $list) {
                     "url": sSource,
                     "data": aoData,
                     "success": function(json) {
-                      
+
                         fnCallback(json);
                     }
                 });

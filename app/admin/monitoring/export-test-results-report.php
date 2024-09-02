@@ -31,7 +31,24 @@ $sQuery = $_SESSION['testResultReportsQuery'];
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
-$headings = array('Sample Code', 'Remote Sample Code', 'Sample Collection Date', "Sample Recieved On", "Sample Tested On", "Result", "Tested By", "Test Platform/Instrument", "Result Status", "Manual Result Entry", "Is Sample Rejected", "Rejection Reason", "Was Result Changed","Reason for Changing","File Link");
+$headings = [
+    _translate('Sample Code'),
+    _translate('Remote Sample Code'),
+    _translate('Sample Collection Date'),
+    _translate('Sample Recieved On'),
+    _translate('Sample Tested On'),
+    _translate('Result'),
+    _translate('Tested By'),
+    _translate('Test Platform/Instrument'),
+    _translate('Result Status'),
+    _translate('Manual Result Entry'),
+    _translate('Is Sample Rejected'),
+    _translate('Rejection Reason'),
+    _translate('Was Result Changed?'),
+    _translate('Reason for Changing'),
+    _translate('File Link')
+];
+
 
 $output = [];
 
@@ -39,21 +56,21 @@ $output = [];
 //$start = (count($output)) + 2;
 $colNo = 1;
 $colNum = 1;
-$styleArray = array(
-    'font' => array(
+$styleArray = [
+    'font' => [
         'bold' => true,
         'size' => '13',
-    ),
-    'alignment' => array(
+    ],
+    'alignment' => [
         'horizontal' => Alignment::HORIZONTAL_CENTER,
         'vertical' => Alignment::VERTICAL_CENTER,
-    ),
-    'borders' => array(
-        'outline' => array(
+    ],
+    'borders' => [
+        'outline' => [
             'style' => Border::BORDER_THIN,
-        ),
-    ),
-);
+        ],
+    ],
+];
 $nameValue = '';
 foreach ($_POST as $key => $value) {
     if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {
@@ -102,24 +119,24 @@ $sheet->getStyle('O5:O5')->applyFromArray($styleArray);
 $no = 1;
 foreach ($rResult as $aRow) {
     $rejectedObj = json_decode($aRow['reason_for_result_changes']);
-        $row = [];
-        //$row[] = $aRow['f.facility_name'];
-        $row[] = $aRow['sample_code'];
-        $row[] = $aRow['remote_sample_code'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
-        $row[] = $aRow['result'];
-        $row[] = $aRow['testedByName'];
-        $row[] = $aRow['machine_name'];
-        $row[] = $aRow['status_name'];
-        $row[] = $aRow['manual_result_entry'];
-        $row[] = $aRow['is_sample_rejected'];
-        $row[] = $aRow['rejection_reason_name'];
-        $row[] = $aRow["result_modified"];
-        $row[] = $rejectedObj->reasonForChange;
-        $row[] = $aRow['import_machine_file_name'];
-        //$output['aaData'][] = $row;
+    $row = [];
+    //$row[] = $aRow['f.facility_name'];
+    $row[] = $aRow['sample_code'];
+    $row[] = $aRow['remote_sample_code'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '', true);
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '', true);
+    $row[] = $aRow['result'];
+    $row[] = html_entity_decode($aRow['testedByName'] ?? '');
+    $row[] = html_entity_decode($aRow['machine_name'] ?? '');
+    $row[] = $aRow['status_name'];
+    $row[] = $aRow['manual_result_entry'];
+    $row[] = $aRow['is_sample_rejected'];
+    $row[] = $aRow['rejection_reason_name'];
+    $row[] = $aRow["result_modified"];
+    $row[] = html_entity_decode($rejectedObj->reasonForChange ?? '');
+    $row[] = $aRow['import_machine_file_name'];
+    //$output['aaData'][] = $row;
 
     $output[] = $row;
     $no++;
@@ -128,12 +145,13 @@ foreach ($rResult as $aRow) {
 
 
 foreach ($output as $rowNo => $rowData) {
-    $colNo = 1;
+    //$colNo = 1;
     $rRowCount = $rowNo + 6;
-    foreach ($rowData as $field => $value) {
-        $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
-        $colNo++;
-    }
+    $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+    // foreach ($rowData as $field => $value) {
+    //     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
+    //     $colNo++;
+    // }
 }
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'VLSM-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
