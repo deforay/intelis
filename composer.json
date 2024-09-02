@@ -80,6 +80,7 @@
     },
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 30",
+        "version": "php app/build/generate-version.php",
         "collation": "php maintenance/change-db-collation.php",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
         "interface": "php app/scheduled-jobs/interface.php",

@@ -50,8 +50,8 @@ $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 
-$chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where vl_lab_id = ?', array($id));
-$chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
+//$chkvlLabResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where vl_lab_id = ?', array($id));
+//$chkHcResult = $db->rawQuery('SELECT * from testing_lab_health_facilities_map as vlfm where facility_id = ?', array($id));
 
 $fType = $facilityInfo['facility_type'];
 
@@ -924,18 +924,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	});
 
 	<?php
-	if (count($chkvlLabResult) > 0) {
+	//if (count($chkvlLabResult) > 0) {
 	?>
-		$("select option[data-disable*='10']").prop('disabled', true);
-		$("select option[data-disable*='30']").prop('disabled', true);
-		$("select option[data-disable*='40']").prop('disabled', true);
+	// $("select option[data-disable*='10']").prop('disabled', true);
+	// $("select option[data-disable*='30']").prop('disabled', true);
+	// $("select option[data-disable*='40']").prop('disabled', true);
 	<?php
-	}
-	if (count($chkHcResult) > 0) {
+	//}
+	//if (count($chkHcResult) > 0) {
 	?>
-		$("select option[data-disable*='20']").prop('disabled', true);
+	//$("select option[data-disable*='20']").prop('disabled', true);
 	<?php
-	}
+	//}
 	?>
 
 	function getFacilityUser() {

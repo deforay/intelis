@@ -261,7 +261,6 @@ $remoteUrl = $general->getRemoteURL();
 
     $(document).on('select2:open', (e) => {
         const selectId = e.target.id
-
         $(".select2-search__field[aria-controls='select2-" + selectId + "-results']").each(function(
             key,
             value,
@@ -271,9 +270,10 @@ $remoteUrl = $general->getRemoteURL();
     });
 
 
-    $('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate').on('cancel.daterangepicker', function(ev, picker) {
-        $(this).val('');
-    });
+    jQuery('.daterange,#daterange,#sampleCollectionDate,#sampleTestDate,#printSampleCollectionDate,#printSampleTestDate,#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#hvlSampleTestDate,#printDate,#hvlSampleTestDate')
+        .on('cancel.daterangepicker', function(ev, picker) {
+            $(this).val('');
+        });
 
 
     jQuery('.forceNumeric').on('input', function() {
