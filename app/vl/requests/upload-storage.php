@@ -83,59 +83,64 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 				<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
 					<div class="box-body">
 						<div class="row">
-							<div class="col-md-12">
-
+							<!-- Left side -->
+							<div class="col-md-6 border-right">
 								<div class="form-group">
-									<label for="manifestCode" class="col-lg-2 control-label">
+									<label for="manifestCode" class="col-lg-4">
 										<?= _translate("Manifest Code"); ?> 
 									</label>
-									<div class="col-lg-6">
+									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="<?php echo _translate('Manifest Code'); ?>" title="<?= _translate('Enter Manifest code'); ?>" onchange="getOneCode('manifest',this.value);" />
 									</div>
 								</div>
 
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-2 control-label">
+									<label for="batchCode" class="col-lg-4">
 										<?= _translate("Batch Code"); ?> 
 									</label>
-									<div class="col-lg-6">
+									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?= _translate('Enter sample batch code'); ?>" onchange="getOneCode('batch',this.value);" />
 									</div>
 								</div>
-
+								<a class="btn btn-primary" href="/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
+								<?= _translate("Download Excel Format"); ?></a>
+							</div>
+							<!-- Right side -->
+							<div class="col-md-6">
 								<div class="form-group">
-									<label for="StorageInfo" class="col-lg-2 control-label">
+									<label for="StorageInfo" class="col-lg-4">
 										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
 									</label>
-									<div class="col-lg-8">
+									<div class="col-lg-7">
 										<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
-										<a class="text-primary" style="text-decoration:underline;" href="/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx" download><?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?></a>
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="hidden" name="selectedUser" id="selectedUser" />
+									<div class="col-lg-7">
+										<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadStorageForm').submit();return false;">
+											<?php echo _translate("Submit"); ?>
+										</a>
+										<a href="vl-requests.php" class="btn btn-default">
+											<?php echo _translate("Cancel"); ?>
+										</a>
 									</div>
 								</div>
 							</div>
 						</div>
 					</div>
 					<!-- /.box-body -->
-					<div class="box-footer">
-						<input type="hidden" name="selectedUser" id="selectedUser" />
-						<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadStorageForm').submit();return false;">
-							<?php echo _translate("Submit"); ?>
-						</a>
-						<a href="vl-requests.php" class="btn btn-default">
-							<?php echo _translate("Cancel"); ?>
-						</a>
-					</div>
-					<!-- /.box-footer -->
 				</form>
 			</div>
 			<div class="box-body">
 				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
-					<h3 style="margin-left:100px; color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
+					<h3 style="color:green;"><?= _translate("Total number of records in file"); ?> : <?= $_GET['total']; ?> | <?= _translate("Number of Lab Storage added"); ?> : <?= $addedRecords; ?> | <?= _translate("Number of Storages not added"); ?> : <?= $_GET['notAdded']; ?></h3>
 					<?php if ($_GET['notAdded'] > 0) { ?>
-						<a class="text-danger" style="text-decoration:underline;margin-left:104px; margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
-					<?php } ?>
-				<?php } ?>
-				<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
+						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
+					<?php }
+				} 
+				if (isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0) { ?>
+					<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
 					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
 						<thead>
 							<tr>
@@ -148,22 +153,16 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 							</tr>
 						</thead>
 						<tbody>
-						
-							<?php
-							if(isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0){
-								
-								for($i=0;$i<$_GET['failedRowCount'];$i++){
+							<?php for ($i=0;$i<$_GET['failedRowCount'];$i++) {
 									echo '<tr>';
-									foreach($_GET[$i] as $sample){ ?>
-								    	<td><?php echo $sample; ?></td>
+									foreach ($_GET[$i] as $sample) { ?>
+										<td><?php echo $sample; ?></td>
 									<?php }
 									echo '</tr>';
-								}
-							}
-							?>
-							
+							} ?>
 						</tbody>
 					</table>
+				<?php } ?>
 			</div>
 			<!-- /.row -->
 		</div>
