@@ -44,9 +44,19 @@ try {
     $orderColumns = $aColumns = [
         'vl.sample_code',
         'vl.remote_sample_code',
-        'vl.sample_tested_datetime',
+        'vl.sample_collection_date',
         'vl.sample_received_at_lab_datetime',
-        "vl.$resultColumn"
+        'vl.sample_tested_datetime',
+        "vl.$resultColumn",
+        't_b.user_name',
+        'ins.machine_name',
+        'ts.status_name',
+        'vl.manual_result_entry',
+        'vl.is_sample_rejected',
+        'vl.rs.rejection_reason_name',
+        'result_modified',
+        "$resultChangeColumn",
+        'vl.last_modified_datetime',
     ];
 
     /*
@@ -119,6 +129,7 @@ else{
     */
     $aWhere = '';
     $sQuery = '';
+    
 
     $sQuery = "SELECT
                     vl.sample_code,
@@ -127,7 +138,7 @@ else{
                     vl.sample_tested_datetime,
                     vl.sample_collection_date,
                     vl.remote_sample_code,vl.result_modified,
-                    vl.sample_received_at_lab_datetime,
+                    vl.sample_received_at_lab_datetime,vl.last_modified_datetime,
                     vl.is_sample_rejected,$resultChangeColumn,
                     vl.$resultColumn,rs.rejection_reason_name,
                     ins.machine_name,vl.manual_result_entry,vl.import_machine_file_name
@@ -200,6 +211,7 @@ else{
         $row[] = $aRow['rejection_reason_name'];
         $row[] = $aRow["result_modified"];
         $row[] = $rejectedObj->reasonForChange;
+        $row[] = DateUtility::humanReadableDateFormat($aRow["last_modified_datetime"]);
         $fileName = $aRow['import_machine_file_name'];
         if (!empty($aRow['import_machine_file_name']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $aRow['import_machine_file_name'])) {
             $a = "/uploads/imported-results" . DIRECTORY_SEPARATOR . $fileName;
