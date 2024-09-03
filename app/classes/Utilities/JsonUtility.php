@@ -7,9 +7,17 @@ use App\Utilities\LoggerUtility;
 final class JsonUtility
 {
     // Validate if a string is valid JSON
-    public static function isJSON($string, bool $logError = false): bool
+    public static function isJSON($string, bool $logError = false, $checkUtf8Encoding = false): bool
     {
         if (empty($string) || !is_string($string)) {
+            return false;
+        }
+
+        // Optional check for UTF-8 encoding
+        if ($checkUtf8Encoding && !mb_check_encoding($string, 'UTF-8')) {
+            if ($logError) {
+                LoggerUtility::log('error', 'String is not valid UTF-8.');
+            }
             return false;
         }
 
@@ -20,7 +28,7 @@ final class JsonUtility
         } else {
             if ($logError) {
                 LoggerUtility::log('error', 'JSON decoding error: ' . json_last_error_msg());
-                LoggerUtility::log('error', 'Invalid JSON: ' . $string);
+                LoggerUtility::log('error', "Invalid JSON: $string");
             }
             return false;
         }
@@ -33,8 +41,10 @@ final class JsonUtility
             return array_map([self::class, 'toUtf8'], $input);
         }
         if (is_string($input)) {
-            $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
-            return mb_convert_encoding($input, 'UTF-8', $encoding);
+            if (!mb_check_encoding($input, 'UTF-8')) {
+                $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
+                return mb_convert_encoding($input, 'UTF-8', $encoding);
+            }
         }
         return $input;
     }
@@ -44,9 +54,10 @@ final class JsonUtility
     {
         if (is_null($data)) {
             return '{}';
-        }
-        if (is_array($data) && empty($data)) {
+        } elseif (is_array($data) && empty($data)) {
             return '[]';
+        } elseif (is_string($data) && self::isJSON($data, checkUtf8Encoding: true)) {
+            return $data;
         }
 
         return self::toJSON(self::toUtf8($data));

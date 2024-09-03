@@ -109,7 +109,7 @@ final class ApiService
         }
     }
 
-    public function post($url, $payload, $gzip = false): string|null
+    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false): array|string|null
     {
         $options = [
             RequestOptions::HEADERS => ['Content-Type' => 'application/json; charset=utf-8']
@@ -126,7 +126,15 @@ final class ApiService
             }
 
             $response = $this->client->post($url, $options);
-            return $response->getBody()->getContents();
+            $httpStatusCode = $response->getStatusCode();
+            if ($returnWithStatusCode) {
+                return [
+                    'httpStatusCode' => $httpStatusCode,
+                    'body' => $response->getBody()->getContents()
+                ];
+            } else {
+                return $response->getBody()->getContents();
+            }
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
             return null; // Error occurred while making the request
