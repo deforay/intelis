@@ -24,7 +24,7 @@ final class MiscUtility
         $ids = $sqids->decode($data);
         if (count($ids) == 1) {
             return $ids[0];
-        }else{
+        } else {
             return $ids;
         }
     }
@@ -539,5 +539,47 @@ final class MiscUtility
 
         // If the MAC address was found, return it, otherwise return null
         return $macAddress;
+    }
+    public static function getLockFile($fileName, $lockFileLocation = TEMP_PATH): string
+    {
+        if (file_exists($fileName) || strpos($fileName, DIRECTORY_SEPARATOR) !== false) {
+            $fullPath = realpath($fileName);
+            if ($fullPath === false) {
+                throw new \InvalidArgumentException("Invalid file path provided.");
+            }
+        } else {
+            $fullPath = $fileName;
+        }
+
+        $sanitizedFullPath = preg_replace('/[^A-Za-z0-9_\-]/', '-', $fullPath);
+        return $lockFileLocation . '/' . strtolower($sanitizedFullPath) . '.lock';
+    }
+
+    public static function isLockFileExpired($lockFile, $maxAgeInSeconds = 3600): bool
+    {
+        if (!file_exists($lockFile)) {
+            return false;
+        }
+
+        $fileAge = time() - filemtime($lockFile);
+        return $fileAge > $maxAgeInSeconds;
+    }
+
+
+    public static function deleteLockFile($fileName, $lockFileLocation = TEMP_PATH): bool
+    {
+        $lockFile = self::getLockFile($fileName, $lockFileLocation);
+
+        if (file_exists($lockFile)) {
+            return unlink($lockFile);
+        }
+
+        return false;
+    }
+
+    public static function touchLockFile($fileName, $lockFileLocation = TEMP_PATH): bool
+    {
+        $lockFile = self::getLockFile($fileName, $lockFileLocation);
+        return touch($lockFile);
     }
 }

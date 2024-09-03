@@ -1,16 +1,28 @@
 <?php
 
+// This script is used to send results to an external API for e.g. EMR
+
 $cliMode = php_sapi_name() === 'cli';
 
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
 }
 
-require_once APPLICATION_PATH . '/../configs/config.interop.php';
+if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
+    require_once APPLICATION_PATH . '/../configs/config.interop.php';
+} else {
+    if ($cliMode) {
+        echo "Interop config file is missing." . PHP_EOL;
+    }
+    exit(0);
+}
 
-// ini_set('memory_limit', -1);
-// set_time_limit(0);
-// ini_set('max_execution_time', 300000);
+if (!defined('EXTERNAL_RESULTS_RECEIVER_URL')) {
+    if ($cliMode) {
+        echo "EXTERNAL_RESULTS_RECEIVER_URL constant is not defined in the config." . PHP_EOL;
+    }
+    exit(0);
+}
 
 use App\Services\ApiService;
 use App\Services\TestsService;
@@ -21,6 +33,23 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+$lockFile = MiscUtility::getLockFile(__FILE__);
+
+// Check if the lock file already exists
+if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+    if ($cliMode) {
+        echo "Another instance of the script is already running." . PHP_EOL;
+    }
+    exit;
+}
+
+MiscUtility::touchLockFile(__FILE__); // Create or update the lock file
+
+// ini_set('memory_limit', -1);
+// set_time_limit(0);
+// ini_set('max_execution_time', 300000);
+
 
 $transactionId = MiscUtility::generateULID();
 
@@ -41,6 +70,7 @@ try {
     ];
     $db->where("(result IS NOT NULL AND result != '')
                     OR IFNULL(is_sample_rejected, 'no') = 'yes'");
+    $db->where("app_sample_code IS NOT NULL");
     $db->where("IFNULL(result_sent_to_external, 'no') = 'no'");
     $db->where("result_status", $resultStatus, 'IN');
     $resultSet = $db->get($tableName);
@@ -106,11 +136,11 @@ try {
             "vlFocalPersonPhoneNumber" => (string) $row["vl_focal_person_phone_number"],
             "labId" => (string) $row["lab_id"],
             "testingPlatform" => (string) $row["vl_test_platform"],
-            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true, null, true),
-            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true, null, true),
-            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true, null, true),
-            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true, null, true),
-            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["result_dispatched_datetime"] ?? null, true, null, true),
+            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true),
+            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true),
+            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true),
+            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true),
+            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true),
             "isSampleRejected" => (string) $row["is_sample_rejected"],
             "rejectionReason" => $row["reason_for_sample_rejection"] ?? null,
             "rejectionDate" => DateUtility::humanReadableDateFormat($row["rejection_on"] ?? null),
@@ -118,22 +148,22 @@ try {
             "vlResultDecimal" => (string) $row["result_value_absolute_decimal"],
             "result" => (string) $row["result"],
             "revisedBy" => (string) $row["revised_by"],
-            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true, null, true),
+            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true),
             "reasonForVlResultChanges" => (string) $row["reason_for_result_changes"],
             "vlLog" => (string) $row["result_value_log"],
             "testedBy" => (string) $row["tested_by"],
             "reviewedBy" => (string) $row["result_reviewed_by"],
-            "reviewedOn" => (string) DateUtility::humanReadableDateFormat($row["result_reviewed_datetime"], true, null, true),
+            "reviewedOn" => (string) DateUtility::humanReadableDateFormat($row["result_reviewed_datetime"], true),
             "approvedBy" => (string) $row["result_approved_by"],
-            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true, null, true),
+            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true),
             "labComments" => (string) $row["lab_tech_comments"],
             "resultStatus" => (string) $row["result_status"],
             "fundingSource" => (string) $row["funding_source"],
             "implementingPartner" => (string) $row["implementing_partner"],
-            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true, null, true),
+            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true),
             "patientId" => (string) $row["patient_art_no"],
-            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true, null, true),
-            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true, null, true)
+            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true),
+            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true)
         ];
 
         $payload = JsonUtility::encodeUtf8Json($payload);
@@ -154,7 +184,7 @@ try {
     }
 } catch (Exception $e) {
     if ($cliMode) {
-        echo $e->getFile() . ':' . $e->getLine() . ":" . $e->getMessage();
+        echo "Some or all results could not be sent" . PHP_EOL;
     }
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
@@ -162,4 +192,7 @@ try {
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
+} finally {
+    // Delete the lock file after execution completes
+    MiscUtility::deleteLockFile(__FILE__);
 }
