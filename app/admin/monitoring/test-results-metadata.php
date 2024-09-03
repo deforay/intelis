@@ -58,14 +58,13 @@ $activeModules = SystemService::getActiveModules();
                 <div class="box">
                     <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
-                            <td style="width:5%;">
-                                <strong>
+                            <td><strong>
                                     <?php echo _translate("Test Type"); ?>&nbsp;:
                                 </strong>
                             </td>
-                            <td style="width:10%;">
-                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
-                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+                            <td>
+                                <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
+                                <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
                                         </option>
@@ -97,24 +96,21 @@ $activeModules = SystemService::getActiveModules();
                                     <?php } ?>
                                 </select>
                             </td>
-                            <td style="width:5%;">
-                                <strong>
+                            <td><strong>
                                     <?php echo _translate("Sample Test Date"); ?>&nbsp;:
-                                </strong>
-                            </td>
-                            <td style="width:15%;">
+                                </strong></td>
+                            <td>
                                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                             </td>
-                            <td style="width:5%;">
-                                <strong><?php echo _translate("Sample ID (or) Batch Code"); ?>&nbsp;:</strong>
-                            </td>
-                            <td style="width:15%;">
-                                <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Sample ID or Batch Code'); ?>" style="background:#fff;" />
+                            <td><strong><?php echo _translate("Sample Code/Batch Code"); ?>&nbsp;:</strong></td>
+                            <td>
+                                <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                             </td>
                         </tr>
+
                         <tr>
-                            <td colspan="6">
-                                <button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
+
+                            <td><button onclick="searchData();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _translate("Search"); ?>
                                     </span></button>
                                 <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -173,6 +169,9 @@ $activeModules = SystemService::getActiveModules();
                                         <?php echo _translate("Reason for Changing"); ?>
                                     </th>
                                     <th>
+                                        <?php echo _translate("Last Modified On"); ?>
+                                    </th>
+                                    <th>
                                         <?php echo _translate("File Link"); ?>
                                     </th>
 
@@ -180,8 +179,8 @@ $activeModules = SystemService::getActiveModules();
                             </thead>
                             <tbody>
                                 <tr>
-                                    <td colspan="10" class="dataTables_empty">
-                                        <?php echo _translate("No data available"); ?>
+                                    <td colspan="16" class="dataTables_empty">
+                                        <?php echo _translate("Please select Sample Test Date or Sample code/Batch Code to get result meta data"); ?>
                                     </td>
                                 </tr>
                             </tbody>
@@ -200,10 +199,10 @@ $activeModules = SystemService::getActiveModules();
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     var oTable = null;
+    
     $(document).ready(function() {
-        getMetaResultDataReport();
-
-
+      
+       
         $('#sampleTestDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -235,9 +234,10 @@ $activeModules = SystemService::getActiveModules();
                 endDate = end.format('YYYY-MM-DD');
             });
             $('#sampleTestDate').val("");
-        searchRequestData();
+            if($("#sampleTestDate").val()!="" || $("#sampleBatchCode").val()!=""){
+                getMetaResultDataReport();
+            }
     });
-
 
 
     function getMetaResultDataReport() {
@@ -296,9 +296,12 @@ $activeModules = SystemService::getActiveModules();
                 },
                 {
                     "sClass": "center"
+                },
+                {
+                    "sClass": "center"
                 }
             ],
-            "aaSorting": [10, "desc"],
+            "aaSorting": [14, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-test-results-report.php",
@@ -321,8 +324,9 @@ $activeModules = SystemService::getActiveModules();
                     "url": sSource,
                     "data": aoData,
                     "success": function(json) {
-
+                    if(json!=""){
                         fnCallback(json);
+                    }
                     }
                 });
             }
@@ -332,9 +336,21 @@ $activeModules = SystemService::getActiveModules();
 
 
     function searchRequestData() {
+
         $.blockUI();
-        oTable.fnDraw();
-        $.unblockUI();
+            oTable.fnDraw();
+            $.unblockUI();
+       
+    }
+
+    function searchData(){
+        if($("#sampleTestDate").val()=="" && $("#sampleBatchCode").val()==""){
+            document.location.href = document.location;
+        }
+        else{
+            getMetaResultDataReport();
+            searchRequestData();
+        }
     }
 
     function exportTestRequests() {
