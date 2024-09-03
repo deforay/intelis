@@ -29,7 +29,7 @@ try {
     $uploadedFile = $uploadedFiles['storageInfo'];
     $fileName = $uploadedFile->getClientFilename();
 
-   if(!empty($fileName)){
+    if (!empty($fileName)) {
 
         $uploadOption = $_POST['uploadOption'];
 
@@ -113,11 +113,11 @@ try {
                         $id = $db->update('form_vl', $vlData);
                     } else {
                         $storageNotAdded[] = $rowData;
-                        $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
+                        $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']);
                     }
                 } catch (Throwable $e) {
                     $storageNotAdded[] = $rowData;
-                    $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'],$rowData['G']);
+                    $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']);
                     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
@@ -126,7 +126,7 @@ try {
             $notAdded = count($storageNotAdded);
             if ($notAdded > 0) {
 
-                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
 
                 foreach ($storageNotAdded as $rowNo => $dataValue) {
@@ -146,10 +146,10 @@ try {
         $failedSampleCount = count($failedRow);
         $failedRow = http_build_query($failedRow);
         header("Location:/vl/requests/upload-storage.php?total=$total&notAdded=$notAdded&link=$filename&option=$uploadOption&failedRowCount=$failedSampleCount&$failedRow");
-   } else {
+    } else {
         $_SESSION['alertMsg'] = _translate("Please Upload File");
         header("Location:/vl/requests/upload-storage.php");
-   }
+    }
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }

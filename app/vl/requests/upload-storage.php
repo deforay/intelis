@@ -38,11 +38,11 @@ if (isset($_GET['total'])) {
 	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
 
-$spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+$spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
 
-$sheet = $spreadsheet->getActiveSheet()->removeRow(2,100);
+$sheet = $spreadsheet->getActiveSheet()->removeRow(2, 100);
 $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-$writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+$writer->save(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
 ?>
 <style>
 	.ms-choice {
@@ -87,7 +87,7 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 							<div class="col-md-6 border-right">
 								<div class="form-group">
 									<label for="batchOrManifestCode" class="col-lg-4">
-										<?= _translate("Batch Code (or) Manifest Code"); ?> 
+										<?= _translate("Batch Code (or) Manifest Code"); ?>
 									</label>
 									<div class="col-lg-7">
 										<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" onchange="getOneCode(this.value);" />
@@ -95,8 +95,8 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 								</div>
 								<div class="form-group">
 									<div class="col-lg-7">
-										<a class="btn btn-primary" href="/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
-										<?= _translate("Download Excel Format"); ?></a>
+										<a class="btn btn-primary" href="/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
+											<?= _translate("Download Excel Format"); ?></a>
 									</div>
 								</div>
 							</div>
@@ -133,7 +133,7 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 					<?php if ($_GET['notAdded'] > 0) { ?>
 						<a class="text-danger" style="text-decoration:underline;margin-bottom:10px; font-weight: bold;" href="/temporary/INCORRECT-STORAGE-ROWS.xlsx" download>Download the Excel Sheet with not uploaded storages</a><br><br>
 					<?php }
-				} 
+				}
 				if (isset($_GET['failedRowCount']) && ($_GET['failedRowCount']) > 0) { ?>
 					<h2><?php echo _translate('Unable to Upload following Samples'); ?></h2>
 					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
@@ -148,12 +148,12 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 							</tr>
 						</thead>
 						<tbody>
-							<?php for ($i=0;$i<$_GET['failedRowCount'];$i++) {
-									echo '<tr>';
-									foreach ($_GET[$i] as $sample) { ?>
-										<td><?php echo $sample; ?></td>
-									<?php }
-									echo '</tr>';
+							<?php for ($i = 0; $i < $_GET['failedRowCount']; $i++) {
+								echo '<tr>';
+								foreach ($_GET[$i] as $sample) { ?>
+									<td><?php echo $sample; ?></td>
+							<?php }
+								echo '</tr>';
 							} ?>
 						</tbody>
 					</table>
@@ -170,19 +170,19 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 	function getOneCode(codeValue) {
 		if (codeValue != "") {
 			$.post("/includes/write-samples-storageTemplate.php", {
-				batchOrManifestCodeValue: codeValue
-			},
-			function(data) {
-				if (data != "") {
-					/*if ($("#batchId").val() > 0) {
-						$("#search").html(data);
-						var count = $('#search option').length;
-						$("#unselectedCount").html(count);
-					} else {
-						//$("#sampleDetails").html(data);
-					}*/
-				}
-			});
+					batchOrManifestCodeValue: codeValue
+				},
+				function(data) {
+					if (data != "") {
+						/*if ($("#batchId").val() > 0) {
+							$("#search").html(data);
+							var count = $('#search option').length;
+							$("#unselectedCount").html(count);
+						} else {
+							//$("#sampleDetails").html(data);
+						}*/
+					}
+				});
 		} else {
 			window.location.reload();
 		}

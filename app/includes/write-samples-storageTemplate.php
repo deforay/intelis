@@ -19,15 +19,15 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 if (!empty($_POST['batchOrManifestCodeValue'])) {
-    $condition = ' where pd.package_code like "' . $_POST['batchOrManifestCodeValue'] . '" OR b.batch_code like "' . $_POST['batchOrManifestCodeValue'] .'"';
+    $condition = ' where pd.package_code like "' . $_POST['batchOrManifestCodeValue'] . '" OR b.batch_code like "' . $_POST['batchOrManifestCodeValue'] . '"';
 
-    $query = "SELECT  vl.sample_code,vl.patient_art_no  FROM form_vl as vl 
-                LEFT JOIN package_details as pd ON vl.sample_package_code = pd.package_code 
+    $query = "SELECT  vl.sample_code,vl.patient_art_no  FROM form_vl as vl
+                LEFT JOIN package_details as pd ON vl.sample_package_code = pd.package_code
                 LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id " . $condition;
 
     $sampleResult = $db->rawQuery($query);
 
-    $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+    $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
     $sheet = $spreadsheet->getActiveSheet();
 
     if (!empty($sampleResult)) {
@@ -36,11 +36,11 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
             $rRowCount = $rowNo + 2;
             $sheet->fromArray($data, null, 'A' . $rRowCount);
         }
-    
+
         $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
         $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Storage_Bulk_Upload_Excel_Format.xlsx';
         $writer->save($filename);
-        rename($filename, '/var/www/vlsm/public/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx');
+        rename($filename, '/var/www/vlsm/public/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
         echo $filename;
     } else {
         echo false;
