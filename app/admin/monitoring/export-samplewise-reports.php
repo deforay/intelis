@@ -1,7 +1,4 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -31,8 +28,8 @@ $rResult = $db->rawQuery($sQuery);
 $calcQuery = $_SESSION['samplewiseReportsCalc'];
 $calcResult = $db->rawQuery($calcQuery);
 
-$totalCalculationHeadings = array('No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned');
-$headings = array('LIS Sample ID', 'Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On");
+$totalCalculationHeadings = ['No. of Samples Requested', 'No. of Samples Acknowledged', 'No. of Samples Received at Testing Lab', 'No. of Samples Tested', 'No. of Results Returned'];
+$headings = ['LIS Sample ID', 'Name of the Clinic', 'External ID', "Electronic Test request Date and Time", "STS Sample ID", "Request Acknowledged Date Time", "Samples Received At Lab", "Date Time of Sample added to Batch", "Test Result", "Result Received/Entered Date and Time", "Result Approved Date and Time", "Result Return Date and Time", "Last Modified On"];
 
 $outputCalc = [];
 $output = [];
@@ -41,21 +38,21 @@ $output = [];
 //$start = (count($output)) + 2;
 $colNo = 1;
 $colNum = 1;
-$styleArray = array(
-    'font' => array(
+$styleArray = [
+    'font' => [
         'bold' => true,
         'size' => '13',
-    ),
-    'alignment' => array(
+    ],
+    'alignment' => [
         'horizontal' => Alignment::HORIZONTAL_CENTER,
         'vertical' => Alignment::VERTICAL_CENTER,
-    ),
-    'borders' => array(
-        'outline' => array(
+    ],
+    'borders' => [
+        'outline' => [
             'style' => Border::BORDER_THIN,
-        ),
-    ),
-);
+        ],
+    ],
+];
 $nameValue = '';
 foreach ($_POST as $key => $value) {
     if (trim((string) $value) != '' && trim((string) $value) != '-- Select --') {

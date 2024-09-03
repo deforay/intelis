@@ -1,8 +1,5 @@
 <?php
 
-
-use App\Services\TestsService;
-use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -23,22 +20,20 @@ $general = ContainerRegistry::get(CommonService::class);
 if (empty($_POST['type'])) {
     echo "";
     exit;
-}
-else{
+} else {
     $testType = $_POST['type'];
 }
 $where = "";
-if(isset($_POST['search']) && $_POST['search']!="")
-{
-    $where = " AND batch_code like '%".$_POST['search']."%'";
+if (isset($_POST['search']) && $_POST['search'] != "") {
+    $where = " AND batch_code like '%" . $_POST['search'] . "%'";
 }
 $query = "SELECT batch_code FROM batch_details WHERE test_type='$testType' $where";
 
 $result = $db->rawQuery($query);
 
-$options = array();
+$options = [];
 foreach ($result as $batch) {
-      $options[] = $batch['batch_code'];
+    $options[] = $batch['batch_code'];
 }
 
-echo json_encode( $options );
+echo json_encode($options);

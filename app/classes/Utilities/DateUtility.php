@@ -40,15 +40,23 @@ final class DateUtility
             return null;
         }
 
-        $format = $format ??  $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+        $format = $format ?? $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
-        if ($withSeconds) {
-            $format = $includeTime ? $format . " H:i:s" : $format;
-        } else {
-            $format = $includeTime ? $format . " H:i" : $format;
+        // Check if the format already includes time components
+        $hasTimeComponent = preg_match('/[HhGgis]/', $format);
+
+        // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
+        if ($includeTime && !$hasTimeComponent) {
+            if ($withSeconds) {
+                $format .= " H:i:s";
+            } else {
+                $format .= " H:i";
+            }
         }
+
         return Carbon::parse($date)->format($format);
     }
+
 
     public static function getCurrentDateTime($format = 'Y-m-d H:i:s')
     {

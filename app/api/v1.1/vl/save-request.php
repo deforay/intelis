@@ -218,7 +218,7 @@ try {
             $params['uniqueId'] = $uniqueId;
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
-            $params['accessType'] = $user['access_type'];
+            $params['accessType'] = $roleUser['access_type'] ?? $user['access_type'];
             $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
@@ -227,7 +227,7 @@ try {
             $currentSampleData['id'] = $vlService->insertSample($params);
             $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
-            $data['vlSampleId'] = (int) $currentSampleData['id'];;
+            $data['vlSampleId'] = (int) $currentSampleData['id'];
             if ($data['vlSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [

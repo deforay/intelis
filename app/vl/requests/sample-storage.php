@@ -79,8 +79,8 @@ if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) != '') 
 }
 
 if ($general->isLISInstance() && $arr['vl_lab_id'] != '') {
-		$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
-}else{
+	$sWhere[] = ' s.lab_id = "' . $arr['vl_lab_id'] . '"';
+} else {
 	if (isset($_POST['labId']) && trim((string) $_POST['labId']) != '') {
 		$sWhere[] = ' s.lab_id = "' . $_POST['labId'] . '"';
 	}
@@ -115,7 +115,7 @@ $_SESSION['sampleStorageQuery'] = $vlQuery;
 $vlQueryInfo = $db->rawQuery($vlQuery);
 
 $storageInfo = $storageService->getLabStorage();
-$uniqueId = array();
+$uniqueId = [];
 foreach ($vlQueryInfo as $info) {
 	$uniqueId[] = "'" . $info['unique_id'] . "'";
 }
@@ -123,7 +123,7 @@ foreach ($vlQueryInfo as $info) {
 $sampleUniqueId = implode(',', $uniqueId);
 $currentStorage = "";
 if (!empty($sampleUniqueId)) {
-	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh 
+	$getCurrentStorage = "SELECT sh.*,s.storage_code,s.storage_id FROM lab_storage_history as sh
 	LEFT JOIN lab_storage as s ON s.storage_id=sh.freezer_id WHERE sh.sample_unique_id IN ($sampleUniqueId) ";
 	$currentStorage = $db->rawQuery($getCurrentStorage);
 }
@@ -169,10 +169,10 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 								<td class="labField">
 									<select name="labId" id="labId" class="form-control labSelect" style="width:220px;" onchange="getFreezers(this.value, 'freezerCode');">
 										<?php if ($general->isLISInstance()) {
-												echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
-											} else { 
-												echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
-											} ?>
+											echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
+										} else {
+											echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
+										} ?>
 									</select>
 								</td>
 								<td><strong>
@@ -189,7 +189,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 									</strong>
 								</td>
 								<td>
-									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" style="width:220px;"/>
+									<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" value="<?php if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "") echo str_replace('+', ' ', $_POST['sampleCollectionDate']); ?>" style="width:220px;" />
 								</td>
 							</tr>
 							<tr>
@@ -197,7 +197,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 										<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 									</strong></td>
 								<td>
-									<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" value="<?php //if(isset($_POST['sampleReceivedDate']) && $_POST['sampleReceivedDate']!="") echo str_replace('+',' ',$_POST['sampleReceivedDate']); 
+									<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" value="<?php //if(isset($_POST['sampleReceivedDate']) && $_POST['sampleReceivedDate']!="") echo str_replace('+',' ',$_POST['sampleReceivedDate']);
 																																																															?>" />
 								</td>
 								<td><strong>
@@ -334,13 +334,13 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
 											}
 										*/
-										
+
 
 									?>
 											<tr>
 												<td class="dataTables_empty">
-													<?php echo $vl['sample_code']; 
-													
+													<?php echo $vl['sample_code'];
+
 													?>
 													<input type="hidden" name="sampleUniqueId[<?= $i; ?>]" id="sampleUniqueId<?= $i; ?>" class="form-control" value="<?php echo $vl['unique_id']; ?>" size="5" />
 												</td>
@@ -365,10 +365,10 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												<td class="dataTables_empty labCol">
 													<select type="text" name="lab[<?= $i; ?>]" id="lab[<?= $i; ?>]" class="form-control labSelect" style="width:90px;" onchange="getFreezers(this.value, 'freezer<?= $i; ?>');">
 														<?php if ($general->isLISInstance()) {
-																echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
-															} else { 
-																echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
-															} ?>
+															echo $general->generateSelectOptions($testingLabs, $arr['vl_lab_id'], '-- Select --');
+														} else {
+															echo $general->generateSelectOptions($testingLabs, null, '-- Select --');
+														} ?>
 													</select>
 												</td>
 												<td class="dataTables_empty">
@@ -469,13 +469,13 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 
 		var currentLabId = $('#labId').val();
 		<?php if ($general->isLISInstance()) { ?> // vluser
-			if(currentLabId != ''){
+			if (currentLabId != '') {
 				getFreezers(currentLabId, 'freezerCode'); // Load the freezers for the current lab
 				$('.labField').hide();
 			}
 
-			 // Loop through all form lab dropdowns
-			 $('[id^="lab["]').each(function() {
+			// Loop through all form lab dropdowns
+			$('[id^="lab["]').each(function() {
 				var id = $(this).attr('id');
 				var index = id.match(/\d+/)[0]; // Extract the index from the id
 				var freezerId = 'freezer' + index;
@@ -550,12 +550,12 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 	function getFreezers(labId, freezerSelectId) {
 		$.blockUI();
 		$.post("/vl/program-management/get-freezer-list-by-lab.php", {
-			labId: labId,
-		},
-		function(data) {
-			$.unblockUI();
-			$("#" + freezerSelectId).html(data);
-		});
+				labId: labId,
+			},
+			function(data) {
+				$.unblockUI();
+				$("#" + freezerSelectId).html(data);
+			});
 	}
 
 	function getByProvince(provinceId) {

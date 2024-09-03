@@ -71,6 +71,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
+
+$dateFormat = "d-M-Y H:i:s";
+
 try {
     $tableName = TestsService::getTestTableName('vl');
     $primaryKey = TestsService::getTestPrimaryKeyColumn('vl');
@@ -147,11 +150,11 @@ try {
             "vlFocalPersonPhoneNumber" => $row["vl_focal_person_phone_number"],
             "labId" => $row["lab_id"],
             "testingPlatform" => $row["vl_test_platform"],
-            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true),
-            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true),
-            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true),
-            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true),
-            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true),
+            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true, $dateFormat),
+            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true, $dateFormat),
+            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true, $dateFormat),
+            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true, $dateFormat),
+            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true, $dateFormat),
             "isSampleRejected" => $row["is_sample_rejected"],
             "rejectionReason" => $row["reason_for_sample_rejection"] ?? null,
             "rejectionDate" => DateUtility::humanReadableDateFormat($row["rejection_on"] ?? null),
@@ -159,22 +162,22 @@ try {
             "vlResultDecimal" => $row["result_value_absolute_decimal"],
             "result" => $row["result"],
             "revisedBy" => $row["revised_by"],
-            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true),
+            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true, $dateFormat),
             "reasonForVlResultChanges" => $row["reason_for_result_changes"],
             "vlLog" => $row["result_value_log"],
             "testedBy" => $row["tested_by"],
             "reviewedBy" => $row["result_reviewed_by"],
             "reviewedOn" => DateUtility::humanReadableDateFormat($row["result_reviewed_datetime"], true),
             "approvedBy" => $row["result_approved_by"],
-            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true),
+            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true, $dateFormat),
             "labComments" => $row["lab_tech_comments"],
             "resultStatus" => $row["result_status"],
             "fundingSource" => $row["funding_source"],
             "implementingPartner" => $row["implementing_partner"],
-            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true),
+            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true, $dateFormat),
             "patientId" => $row["patient_art_no"],
-            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true),
-            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true)
+            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true, $dateFormat),
+            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true, $dateFormat)
         ];
 
         //$payload = JsonUtility::encodeUtf8Json($payload);

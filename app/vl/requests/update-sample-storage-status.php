@@ -27,7 +27,7 @@ $getFreezer = $storageService->getStorageByCode($currentStorage[0]);
 $currentFreezerId = $getFreezer['storage_id'];
 
 $currentStorageInfo = $storageService->getFreezerHistoryById($_POST['historyId']);
-$data = array();
+$data = [];
 
 if (is_numeric($_POST['removalReason']) === false) {
     $reasonData = array(
@@ -75,7 +75,7 @@ if (isset($_POST['freezerId']) && $_POST['freezerId'] != "") {
         );
     }
 }
-for($i = 0; $i < count($data); $i++){
+for ($i = 0; $i < count($data); $i++) {
     $save = $db->insert('lab_storage_history', $data[$i]);
 }
 //$save = $db->insertMulti('lab_storage_history', $data);
