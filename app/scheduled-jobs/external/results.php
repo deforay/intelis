@@ -3,9 +3,14 @@
 // This script is used to send results to an external API for e.g. EMR
 
 $cliMode = php_sapi_name() === 'cli';
+$forceRun = false;
 
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
+
+    // Check for the force flag in command-line arguments
+    $options = getopt("f", ["force"]);
+    $forceRun = isset($options['f']) || isset($options['force']);
 }
 
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
@@ -35,6 +40,11 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 $lockFile = MiscUtility::getLockFile(__FILE__);
+
+// If the force flag is set, delete the lock file if it exists
+if ($forceRun && MiscUtility::fileExists($lockFile)) {
+    MiscUtility::deleteLockFile(__FILE__);
+}
 
 // Check if the lock file already exists
 if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
@@ -68,12 +78,13 @@ try {
         SAMPLE_STATUS\REJECTED,
         SAMPLE_STATUS\ACCEPTED
     ];
+
     $db->where("(result IS NOT NULL AND result != '')
                     OR IFNULL(is_sample_rejected, 'no') = 'yes'");
     $db->where("app_sample_code IS NOT NULL");
-    $db->where("IFNULL(result_sent_to_external, 'no') = 'no'");
+    $db->where("IFNULL(result_sent_to_source, 'no') = 'no' OR result_sent_to_source = ''");
     $db->where("result_status", $resultStatus, 'IN');
-    $resultSet = $db->get($tableName);
+    $resultSet = $db->get($tableName, 100);
     $numberOfResults = count($resultSet ?? []);
     $numberSent = 0;
     $resultsSentSuccesfully = [];
@@ -166,17 +177,29 @@ try {
             "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true)
         ];
 
-        $payload = JsonUtility::encodeUtf8Json($payload);
-        $apiResponse = $apiService->post(EXTERNAL_RESULTS_RECEIVER_URL, $payload, gzip: false, returnWithStatusCode: true);
+        //$payload = JsonUtility::encodeUtf8Json($payload);
+        $apiResponse = $apiService->post(url: EXTERNAL_RESULTS_RECEIVER_URL, payload: $payload, gzip: false, returnWithStatusCode: true);
+
         if (!empty($apiResponse['httpStatusCode']) && $apiResponse['httpStatusCode'] === 200) {
             $resultsSentSuccesfully[] = $row['unique_id'];
+        }
+        if ($cliMode) {
+            echo "PATIENT ART NO. : " . $row["patient_art_no"] . PHP_EOL;
+            echo "SAMPLE ID : " . ($row["remote_sample_code"] ?? $row["sample_code"]) . PHP_EOL;
+            echo "RESPONSE : " . JsonUtility::toJSON($apiResponse['body']) . PHP_EOL;
+            echo "_______________________________________________________________________" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, $payload ?? [], $apiResponse['body'] ?? [], 'json');
     }
     if (!empty($resultsSentSuccesfully)) {
         $numberSent = count($resultsSentSuccesfully);
         $db->where($primaryKey, $resultsSentSuccesfully, 'IN');
-        $db->update($tableName, ['result_sent_to_external' => 'yes']);
+        $db->update($tableName, [
+            'result_sent_to_external' => 'yes',
+            'result_sent_to_external_datetime' => DateUtility::getCurrentDateTime(),
+            'result_sent_to_source' => 'yes',
+            'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+        ]);
     }
 
     if ($cliMode) {
