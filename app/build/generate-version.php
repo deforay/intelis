@@ -68,4 +68,4 @@ PHP;
 // Write the new version content to version.php
 file_put_contents($versionFilePath, $versionFileContent);
 
-echo "version.php has been updated to version $newVersion\n";
+echo "version.php has been updated to version " . htmlspecialchars($newVersion) . "\n";

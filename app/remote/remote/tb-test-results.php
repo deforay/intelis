@@ -144,12 +144,12 @@ try {
                     $id = $db->insert($tableName, $lab);
                 }
             } catch (Throwable $e) {
-                if ($db->getLastErrno() > 0) {
-                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
-                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
-                    error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
-                }
-                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 continue;
             }
 

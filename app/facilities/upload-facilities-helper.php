@@ -136,9 +136,8 @@ try {
                 }
             } catch (Throwable $e) {
                 $facilityNotAdded[] = $rowData;
-                error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
-                error_log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
-                LoggerUtility::log("error", $e->getMessage(), [
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
                     'trace' => $e->getTraceAsString(),

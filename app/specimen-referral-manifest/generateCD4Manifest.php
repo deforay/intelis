@@ -7,7 +7,6 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Helpers\ManifestPdfHelper;
 use App\Registries\ContainerRegistry;
-use App\Services\CD4Service;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

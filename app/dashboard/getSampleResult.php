@@ -5,6 +5,7 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -308,9 +309,13 @@ try {
             $statusResult['status'][$statusRow['status_name']][$statusRow['collection_date']] = $statusRow['count'];
         }
     }
-} catch (Exception $e) {
-    error_log($e->getMessage());
-    error_log($e->getTraceAsString());
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
 
 ?>

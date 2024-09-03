@@ -15,6 +15,7 @@ if (php_sapi_name() !== 'cli') {
 require_once(__DIR__ . '/../bootstrap.php');
 
 use App\Utilities\MiscUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -64,7 +65,12 @@ try {
     }
 
     echo "Conversion process completed for database $dbName" . PHP_EOL;
-} catch (Exception $e) {
-    error_log("Conversion failed: " . $e->getMessage());
+} catch (Throwable $e) {
     echo "Conversion process failed for database $dbName. Error: " . $e->getMessage() . "\n";
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
