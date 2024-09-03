@@ -38,11 +38,7 @@ if (isset($_GET['total'])) {
 	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
 
-$spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
-
-$sheet = $spreadsheet->getActiveSheet()->removeRow(2, 100);
-$writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-$writer->save(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
+$filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 ?>
 <style>
 	.ms-choice {
@@ -79,8 +75,6 @@ $writer->save(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx')
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-				<!-- form start -->
-				<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<!-- Left side -->
@@ -90,42 +84,43 @@ $writer->save(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx')
 										<?= _translate("Batch Code (or) Manifest Code"); ?>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" onchange="getOneCode(this.value);" />
+										<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" />
 									</div>
 								</div>
 								<div class="form-group">
-									<div class="col-lg-7">
-										<a class="btn btn-primary" href="/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
-											<?= _translate("Download Excel Format"); ?></a>
+									<div class="col-lg-offset-4 col-lg-5" style="float:left;">
+										<button class="btn btn-primary" onclick="getExcelFormatTemplate();" title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>"><?= _translate("Download Excel Format"); ?></button>
 									</div>
 								</div>
 							</div>
 							<!-- Right side -->
 							<div class="col-md-6">
-								<div class="form-group">
-									<label for="StorageInfo" class="col-lg-4">
-										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
-									</label>
-									<div class="col-lg-7">
-										<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
+								<!-- form start -->
+								<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
+									<div class="form-group">
+										<label for="StorageInfo" class="col-lg-4">
+											<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
+										</label>
+										<div class="col-lg-7">
+											<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
+										</div>
 									</div>
-								</div>
-								<div class="form-group">
-									<input type="hidden" name="selectedUser" id="selectedUser" />
-									<div class="col-lg-7">
-										<a class="btn btn-primary" href="javascript:void(0);" onclick="document.getElementById('uploadStorageForm').submit();return false;">
-											<?php echo _translate("Submit"); ?>
-										</a>
-										<a href="vl-requests.php" class="btn btn-default">
-											<?php echo _translate("Cancel"); ?>
-										</a>
+									<div class="form-group">
+										<input type="hidden" name="selectedUser" id="selectedUser" />
+										<div class="col-lg-7">
+											<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+												<?php echo _translate("Submit"); ?>
+											</a>
+											<a href="vl-requests.php" class="btn btn-default">
+												<?php echo _translate("Cancel"); ?>
+											</a>
+										</div>
 									</div>
-								</div>
+								</form>
 							</div>
 						</div>
 					</div>
 					<!-- /.box-body -->
-				</form>
 			</div>
 			<div class="box-body">
 				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
@@ -167,24 +162,31 @@ $writer->save(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx')
 </div>
 
 <script>
-	function getOneCode(codeValue) {
-		if (codeValue != "") {
+
+	function validateNow() {
+		flag = deforayValidator.init({
+			formId: 'uploadStorageForm'
+		});
+		if (flag) {
+			$.blockUI();
+			document.getElementById('uploadStorageForm').submit();
+		}
+	}
+	function getExcelFormatTemplate(){
+		var batchOrManifestCodeValue = $("#batchOrManifestCode").val();
+		if (batchOrManifestCodeValue != "") {
 			$.post("/includes/write-samples-storageTemplate.php", {
-					batchOrManifestCodeValue: codeValue
+					batchOrManifestCodeValue: batchOrManifestCodeValue
 				},
 				function(data) {
-					if (data != "") {
-						/*if ($("#batchId").val() > 0) {
-							$("#search").html(data);
-							var count = $('#search option').length;
-							$("#unselectedCount").html(count);
-						} else {
-							//$("#sampleDetails").html(data);
-						}*/
+					if (data !== '' && data !== false) {
+						window.location.href = data;
+					} else {
+						window.location.href = '<?php echo $filePath; ?>';
 					}
 				});
 		} else {
-			window.location.reload();
+			window.location.href = '<?php echo $filePath; ?>';
 		}
 	}
 </script>
