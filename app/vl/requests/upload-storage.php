@@ -86,24 +86,19 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 							<!-- Left side -->
 							<div class="col-md-6 border-right">
 								<div class="form-group">
-									<label for="manifestCode" class="col-lg-4">
-										<?= _translate("Manifest Code"); ?> 
+									<label for="batchOrManifestCode" class="col-lg-4">
+										<?= _translate("Batch Code (or) Manifest Code"); ?> 
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="manifestCode" name="manifestCode" placeholder="<?php echo _translate('Manifest Code'); ?>" title="<?= _translate('Enter Manifest code'); ?>" onchange="getOneCode('manifest',this.value);" />
+										<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" onchange="getOneCode(this.value);" />
 									</div>
 								</div>
-
 								<div class="form-group">
-									<label for="batchCode" class="col-lg-4">
-										<?= _translate("Batch Code"); ?> 
-									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="batchCode" name="batchCode" placeholder="<?php echo _translate('Batch Code'); ?>" title="<?= _translate('Enter sample batch code'); ?>" onchange="getOneCode('batch',this.value);" />
+										<a class="btn btn-primary" href="/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
+										<?= _translate("Download Excel Format"); ?></a>
 									</div>
 								</div>
-								<a class="btn btn-primary" href="/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx" download title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>">
-								<?= _translate("Download Excel Format"); ?></a>
 							</div>
 							<!-- Right side -->
 							<div class="col-md-6">
@@ -172,34 +167,23 @@ $writer->save(WEB_ROOT . '/files/storages/Storage_Bulk_Upload_Excel_Format.xlsx'
 </div>
 
 <script>
-	function getOneCode(codeType, codeValue) {
+	function getOneCode(codeValue) {
 		if (codeValue != "") {
-			if(codeType=="manifest"){
-				$("#batchCode").prop("readonly",true);
-				$("#manifestCode").prop("readonly",false);
-			} else if (codeType=="batch") {
-				$("#manifestCode").prop("readonly",true);
-				$("#batchCode").prop("readonly",false);
-			}
-			
 			$.post("/includes/write-samples-storageTemplate.php", {
-				codeType: codeType,
-				codeValue: codeValue
+				batchOrManifestCodeValue: codeValue
 			},
 			function(data) {
 				if (data != "") {
-					if ($("#batchId").val() > 0) {
+					/*if ($("#batchId").val() > 0) {
 						$("#search").html(data);
 						var count = $('#search option').length;
 						$("#unselectedCount").html(count);
 					} else {
 						//$("#sampleDetails").html(data);
-					}
+					}*/
 				}
 			});
 		} else {
-			$("#manifestCode").prop("readonly",false);
-			$("#batchCode").prop("readonly",false);
 			window.location.reload();
 		}
 	}
