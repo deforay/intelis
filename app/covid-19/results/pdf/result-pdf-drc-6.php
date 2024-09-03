@@ -390,8 +390,8 @@ if ($result['result'] != '' || ($result['result'] == '' && $result['result_statu
     $pdf->writeHTML($html);
 
     if (isset($arr['covid19_report_qr_code']) && $arr['covid19_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
-        $remoteUrl = $general->getRemoteURL();
-        $pdf->write2DBarcode($remoteUrl . '/covid-19/results/view.php?q=' . urlencode($viewId), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
+        $remoteURL = $general->getRemoteURL();
+        $pdf->write2DBarcode($remoteURL . '/covid-19/results/view.php?q=' . urlencode($viewId), 'QRCODE,H', 170, 60, 100, 100, [], 'N');
     }
     $pdf->lastPage();
     $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

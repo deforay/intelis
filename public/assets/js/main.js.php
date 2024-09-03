@@ -35,7 +35,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 
 ?>
@@ -86,7 +86,7 @@ $remoteUrl = $general->getRemoteURL();
             url: "/scheduled-jobs/sample-code-generator.php"
         });
     }
-    <?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
+    <?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
         function receiveMetaData() {
@@ -207,11 +207,11 @@ $remoteUrl = $general->getRemoteURL();
 
             // Every 5 mins check if STS is reachable
             (function checkSTSConnection() {
-                if (<?= empty($remoteUrl) ? 1 : 0 ?>) {
+                if (<?= empty($remoteURL) ? 1 : 0 ?>) {
                     $('.is-remote-server-reachable').hide();
                 } else {
                     $.ajax({
-                        url: '<?= $remoteUrl; ?>' + '/api/version.php',
+                        url: '<?= $remoteURL; ?>' + '/api/version.php',
                         cache: false,
                         success: function(data) {
                             $('.is-remote-server-reachable').fadeIn(1000);

@@ -130,15 +130,15 @@ if (!empty($result)) {
      $resultApprovedBy  = '';
      $userRes = [];
      if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
+          $resultApprovedBy = $result['approvedBy'];
+          $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+          if ($approvedByRes) {
+               $resultApprovedBy = $approvedByRes['user_name'];
+          }
+          $userRes = $approvedByRes;
+     }
      $userSignaturePath = null;
 
      if (!empty($userRes['user_signature'])) {
@@ -401,8 +401,8 @@ if (!empty($result)) {
           $pdf->writeHTML($html);
           if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($general->getRemoteURL())) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
-               $remoteUrl = $general->getRemoteURL();
-               $pdf->write2DBarcode($remoteUrl . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
+               $remoteURL = $general->getRemoteURL();
+               $pdf->write2DBarcode($remoteURL . '/vl/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';

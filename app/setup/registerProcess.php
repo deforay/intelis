@@ -28,7 +28,7 @@ $password = $_POST['password'];
 $vlForm = $_POST['vl_form'];
 $timeZone = $_POST['default_time_zone'];
 $locale = $_POST['app_locale'];
-$remoteUrl = $_POST['remoteUrl'];
+$remoteURL = $_POST['remoteURL'];
 $modulesToEnable = $_POST['enabledModules'];
 
 /** @var DatabaseService $db */
@@ -82,7 +82,7 @@ try {
 
         // UPDATING CONFIG FILE
         $updatedConfig = [
-            'remoteURL' => $remoteUrl,
+            'remoteURL' => $remoteURL,
             'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
             'modules.eid' => in_array('eid', $modulesToEnable) ? true : false,
             'modules.covid19' => in_array('covid19', $modulesToEnable) ? true : false,

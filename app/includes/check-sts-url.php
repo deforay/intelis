@@ -14,10 +14,10 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-if (!empty($_POST['remoteUrl'])) {
+if (!empty($_POST['remoteURL'])) {
 
     try {
-        $url = $_POST['remoteUrl'];
+        $url = $_POST['remoteURL'];
         $activeUrlResult = $apiService->checkConnectivity($url);
         echo $activeUrlResult;
     } catch (Exception $e) {
@@ -25,4 +25,3 @@ if (!empty($_POST['remoteUrl'])) {
         LoggerUtility::log('error', $e->getTraceAsString());
     }
 }
-

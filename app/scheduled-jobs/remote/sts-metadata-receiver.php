@@ -69,7 +69,7 @@ if (!empty($_POST)) {
             $request = AppRegistry::get('request');
             $_POST = _sanitizeInput($request->getParsedBody());
             $_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
-            $remoteUrl = $_POST['remoteURL'];
+            $remoteURL = $_POST['remoteURL'];
         } else {
             // Referrer does not match the server host
             //exit('Access denied: Referrer does not match the server host.');
@@ -80,10 +80,10 @@ if (!empty($_POST)) {
         exit(0);
     }
 } else {
-    $remoteUrl = $general->getRemoteURL();
+    $remoteURL = $general->getRemoteURL();
 }
 
-if (empty($remoteUrl)) {
+if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
@@ -167,7 +167,7 @@ $commonDataToSync = [
 ];
 
 // Receive data from STS
-$url = $remoteUrl . '/remote/remote/sts-metadata-sender.php';
+$url = $remoteURL . '/remote/remote/sts-metadata-sender.php';
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = [

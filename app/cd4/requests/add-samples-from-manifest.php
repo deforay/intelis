@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 $title = _translate("Add Samples from Manifest");
 
@@ -240,15 +240,15 @@ $title = _translate("Add Samples from Manifest");
 	}
 
 	/* Remote Syn only package code matches */
-	<?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
-		var remoteUrl = '<?= $remoteUrl; ?>';
+	<?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
+		var remoteURL = '<?= $remoteURL; ?>';
 
 		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
 			$.blockUI({
 				message: '<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
 					})

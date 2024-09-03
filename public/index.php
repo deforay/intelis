@@ -1,11 +1,11 @@
 <?php
 
-require_once(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php');
+require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use Tuupola\Middleware\CorsMiddleware;
+use App\Middlewares\CorsMiddleware;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
@@ -22,7 +22,7 @@ use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
@@ -36,8 +36,8 @@ $host = $request->getUri()->getHost();
 
 $allowedDomains = [];
 
-if (!empty($remoteUrl)) {
-    $allowedDomains[] = $remoteUrl;
+if (!empty($remoteURL)) {
+    $allowedDomains[] = $remoteURL;
 }
 
 $allowedDomains[] = $host;
@@ -66,6 +66,7 @@ $middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));
 
 
 // CORS Middleware
+// Add CORS Middleware
 $middlewarePipe->pipe(new CorsMiddleware([
     "origin" => ["*"], // Allow any origin, or specify a list of allowed origins
     "methods" => ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"], // Allowed HTTP methods

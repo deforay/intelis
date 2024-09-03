@@ -109,11 +109,11 @@ try {
 
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-        $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
 
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);

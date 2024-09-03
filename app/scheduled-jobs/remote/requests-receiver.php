@@ -40,14 +40,14 @@ $version = VERSION;
 
 $systemConfig = SYSTEM_CONFIG;
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
-if (empty($remoteUrl)) {
+if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 
-if ($apiService->checkConnectivity("$remoteUrl/api/version.php?labId=$labId&version=$version") === false) {
+if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
     LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
     return false;
 }
@@ -87,7 +87,7 @@ $request = [];
 $request = [];
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
 
-    $url = $remoteUrl . '/remote/remote/getRequests.php';
+    $url = $remoteURL . '/remote/remote/getRequests.php';
     $payload = array(
         'labId' => $labId,
         'module' => 'vl',
@@ -248,7 +248,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-    $url = "$remoteUrl/remote/remote/eid-test-requests.php";
+    $url = "$remoteURL/remote/remote/eid-test-requests.php";
 
     $payload = array(
         'labId' => $labId,
@@ -393,7 +393,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
-    $url = $remoteUrl . '/remote/remote/covid-19-test-requests.php';
+    $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
     $payload = array(
         'labId' => $labId,
         'module' => 'covid19',
@@ -594,7 +594,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-    $url = $remoteUrl . '/remote/remote/hepatitis-test-requests.php';
+    $url = $remoteURL . '/remote/remote/hepatitis-test-requests.php';
     $payload = array(
         'labId' => $labId,
         'module' => 'hepatitis',
@@ -780,7 +780,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 $request = [];
 //$remoteSampleCodeList = [];
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
-    $url = $remoteUrl . '/remote/remote/tb-test-requests.php';
+    $url = $remoteURL . '/remote/remote/tb-test-requests.php';
     $payload = array(
         'labId' => $labId,
         'module' => 'tb',
@@ -938,7 +938,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 $request = [];
 if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
 
-    $url = $remoteUrl . '/remote/remote/cd4-test-requests.php';
+    $url = $remoteURL . '/remote/remote/cd4-test-requests.php';
     $payload = array(
         'labId' => $labId,
         'module' => 'cd4',
@@ -1080,7 +1080,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
-    $url = "$remoteUrl/remote/remote/generic-test-requests.php";
+    $url = "$remoteURL/remote/remote/generic-test-requests.php";
     $payload = [
         'labId' => $labId,
         'module' => 'generic-tests',

@@ -19,7 +19,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 $title = _translate("View All Requests");
 $hidesrcofreq = false;
@@ -1117,15 +1117,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$("#" + showId).show();
 	}
 
-	<?php if (!empty($remoteUrl) && $general->isLISInstance()) { ?>
-		var remoteUrl = '<?= $remoteUrl; ?>';
+	<?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
+		var remoteURL = '<?= $remoteURL; ?>';
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({
 				message: "<h3><?php echo _translate("Trying to sync"); ?> " + sampleCode + "<br><?php echo _translate("Please wait", true); ?>...</h3>"
 			});
 
-			if (remoteSync && remoteUrl != null && remoteUrl != '') {
+			if (remoteSync && remoteURL != null && remoteURL != '') {
 				var jqxhr = $.ajax({
 						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=cd4",
 					})

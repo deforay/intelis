@@ -248,7 +248,7 @@ $testName = TestsService::getTestTypes();
                   <div style="margin-bottom: 5px" class="input-group lis">
                     <span class="input-group-addon"><em class="fa-solid fa-link"></em></span>
                     <div class="input-group">
-                      <input id="remoteUrl" type="text" class="form-control lis-input" name="remoteUrl" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" value="<?= SYSTEM_CONFIG['remoteURL'] ?? ''; ?>">
+                      <input id="remoteURL" type="text" class="form-control lis-input" name="remoteURL" value="<?= $general->getRemoteUrl(); ?>" placeholder="<?= _translate("STS URL"); ?>" title="<?= _translate("Please enter the STS URL"); ?>" onchange="checkSTSUrl(this.value);" value="<?= $general->getRemoteURL() ?? ''; ?>">
                       <span class="input-group-btn">
                         <button class="btn btn-default" type="button" onclick="getTestingLabs();return false;"><i class="glyphicon glyphicon-refresh"></i></button>
                       </span>
@@ -397,12 +397,12 @@ $testName = TestsService::getTestTypes();
           return false;
         }
         $.post("/includes/check-sts-url.php", {
-            remoteUrl: url,
+            remoteURL: url,
           },
           function(data) {
             if (data != '1') {
               alert("<?= _translate("This STS URL is invalid. Please check and enter a valid STS URL.", true); ?>");
-              $('#remoteUrl').focus();
+              $('#remoteURL').focus();
               return false;
             }
           });
@@ -430,11 +430,11 @@ $testName = TestsService::getTestTypes();
       function getTestingLabs() {
 
         if ($('#instanceType').val() == 'vluser') {
-          if ($('#remoteUrl').val() != "") {
+          if ($('#remoteURL').val() != "") {
             $.blockUI();
 
             $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
-                remoteURL: $('#remoteUrl').val()
+                remoteURL: $('#remoteURL').val()
               },
               function(data) {
                 $.post("/includes/getTestingLabOptions.php",

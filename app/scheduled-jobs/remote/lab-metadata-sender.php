@@ -44,16 +44,16 @@ $systemConfig = SYSTEM_CONFIG;
 
 $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
-if (empty($remoteUrl)) {
+if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
 
 try {
     // Checking if the network connection is available
-    if ($apiService->checkConnectivity("$remoteUrl/api/version.php?labId=$labId&version=$version") === false) {
+    if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
         LoggerUtility::log('error', "No network connectivity while trying remote sync.");
         return false;
     }
@@ -66,7 +66,7 @@ try {
         "x-api-key" => MiscUtility::generateUUID(),
     ];
 
-    $url = "$remoteUrl/remote/remote/lab-metadata-receiver.php";
+    $url = "$remoteURL/remote/remote/lab-metadata-receiver.php";
 
     $lastUpdatedOnCondition = "(updated_datetime > '$lastUpdatedOn' OR updated_datetime IS NULL)";
 

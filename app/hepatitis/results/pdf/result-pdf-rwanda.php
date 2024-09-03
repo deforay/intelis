@@ -458,8 +458,8 @@ if (!empty($requestResult)) {
                 $keyFromGlobalConfig = $general->getGlobalConfig('key');
                 if (!empty($keyFromGlobalConfig)) {
                     $encryptedString = CommonService::encrypt($result['unique_id'], base64_decode((string) $keyFromGlobalConfig));
-                    $remoteUrl = $general->getRemoteURL();
-                    $pdf->write2DBarcode($remoteUrl . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, [], 'N');
+                    $remoteURL = $general->getRemoteURL();
+                    $pdf->write2DBarcode($remoteURL . '/hepatitis/results/view.php?q=' . $encryptedString, 'QRCODE,H', 150, 200, 30, 30, [], 'N');
                 }
             }
             $pdf->lastPage();

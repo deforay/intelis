@@ -12,7 +12,7 @@ use App\Helpers\ResultPDFHelpers\CD4ResultPDFHelper;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$remoteUrl = $general->getRemoteURL();
+$remoteURL = $general->getRemoteURL();
 
 
 if (!empty($result)) {
@@ -388,9 +388,9 @@ if (!empty($result)) {
      $html .= '</table>';
      if (!empty($result['cd4_result'])) {
           $pdf->writeHTML($html);
-          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($remoteUrl)) {
+          if (isset($arr['vl_report_qr_code']) && $arr['vl_report_qr_code'] == 'yes' && !empty($remoteURL)) {
                $viewId = CommonService::encryptViewQRCode($result['unique_id']);
-               $pdf->write2DBarcode($remoteUrl . '/cd4/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
+               $pdf->write2DBarcode($remoteURL . '/cd4/results/view.php?q=' . $viewId, 'QRCODE,H', 150, 170, 30, 30, [], 'N');
           }
           $pdf->lastPage();
           $filename = $pathFront . DIRECTORY_SEPARATOR . 'p' . $page . '.pdf';
