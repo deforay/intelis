@@ -165,25 +165,15 @@ try {
 
 	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-	/*
+/*
  * Output
  */
-	$output = array(
-		"sEcho" => (int) $_POST['sEcho'],
-		"iTotalRecords" => $resultCount,
-		"iTotalDisplayRecords" => $resultCount,
-		"aaData" => []
-	);
-
-	/*
- * Output
- */
-	$output = array(
-		"sEcho" => (int) $_POST['sEcho'],
-		"iTotalRecords" => $iTotal,
-		"iTotalDisplayRecords" => $iFilteredTotal,
-		"aaData" => []
-	);
+$output = array(
+	"sEcho" => (int) $_POST['sEcho'],
+	"iTotalRecords" => $resultCount,
+	"iTotalDisplayRecords" => $resultCount,
+	"aaData" => []
+);
 
 	foreach ($rResult as $aRow) {
 		if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {

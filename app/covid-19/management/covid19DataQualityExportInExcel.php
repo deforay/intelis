@@ -33,7 +33,7 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }
 
-     $resultSe = $db->rawQuery($_SESSION['vlIncompleteForm']);
+     $resultSet = $db->rawQuery($_SESSION['vlIncompleteForm']);
      foreach ($resultSet as $aRow) {
           $row = [];
           //sample collecion date

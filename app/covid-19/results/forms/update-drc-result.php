@@ -100,7 +100,7 @@ foreach ($zResult as $row) {
     $patienZones[$row['patient_zone']] = $row['patient_zone'];
 }
 $patienZones["other"] = "Other";
-$sampleResult = $general->fetchDataFromTable('r_eid_sample_type', "status = 'active'");
+$sampleResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 'active'");
 
 ?>
 

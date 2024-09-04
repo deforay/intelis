@@ -29,7 +29,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 //main query
-//$query = "SELECT vl.sample_code,vl.vl_sample_id,vl.facility_id,f.facility_name,f.facility_code FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
+//$query = "SELECT vl.sample_code,vl.hepatitis_id,vl.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE 1=0 AND is_result_mail_sent ='no' AND vl.result IS NOT NULL AND vl.result!= '' ORDER BY f.facility_name ASC";
 //$result = $db->rawQuery($query);
 $sTypeQuery = "SELECT * FROM r_hepatitis_sample_type WHERE `status`='active'";
 $sTypeResult = $db->rawQuery($sTypeQuery);

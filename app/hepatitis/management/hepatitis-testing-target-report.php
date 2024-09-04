@@ -29,7 +29,7 @@ $tsResult = $db->rawQuery($tsQuery);
 
 //$arr = $general->getGlobalConfig();
 
-$sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
+$sQuery = "SELECT * FROM r_hepatitis_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 
 

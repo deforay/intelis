@@ -77,7 +77,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $row[] = $aRow['labName'];
           $row[] = ($aRow['hcv_vl_result']);
           $row[] = ($aRow['hbv_vl_result']);
-          $vlSampleId[] = $aRow['vl_sample_id'];
+          $vlSampleId[] = $aRow['hepatitis_id'];
           $output[] = $row;
      }
      if ($_POST['markAsComplete'] == 'true') {

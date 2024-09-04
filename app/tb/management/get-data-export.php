@@ -258,7 +258,7 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
      $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
-     //echo $sQuery; die();
+     echo $sQuery; die();
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;

@@ -23,14 +23,14 @@ $uniqueId = $decryptedString;
 
 
 $db->where("unique_id", $uniqueId);
-$res = $db->getOne("form_vl", "vl_sample_id");
+$res = $db->getOne("form_hepatitis", "hepatitis_id");
 
 if (empty($res)) {
     http_response_code(400);
     die("<br><br><br><br><br><br><h1 style='text-align:center;font-family:arial;font-size:1.3em;'>$invalidRequest</h1>");
 }
 
-$id = $res['vl_sample_id'];
+$id = $res['hepatitis_id'];
 ?>
 <style>
     #the-canvas {

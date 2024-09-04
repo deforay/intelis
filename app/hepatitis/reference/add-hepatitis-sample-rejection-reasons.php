@@ -91,7 +91,7 @@ require_once APPLICATION_PATH . '/header.php';
     $(".select2").select2({
       tags: true
     });
-    editableSelect('rejectionType', 'rejection_type', 'r_eid_sample_rejection_reasons', 'Rejection type');
+    editableSelect('rejectionType', 'rejection_type', 'r_hepatitis_sample_rejection_reasons', 'Rejection type');
   });
 
   function validateNow() {

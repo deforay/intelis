@@ -105,7 +105,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
           $row[] = $aRow['result'];
-          $vlSampleId[] = $aRow['vl_sample_id'];
+          $vlSampleId[] = $aRow['covid19_id'];
           $output[] = $row;
      }
      if ($_POST['markAsComplete'] == 'true') {

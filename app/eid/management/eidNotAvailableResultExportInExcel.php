@@ -101,18 +101,13 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
 
     $start = (count($output)) + 2;
     foreach ($output as $rowNo => $rowData) {
-        $colNo = 1;
         $rRowCount = $rowNo + 4;
-        foreach ($rowData as $field => $value) {
-            $sheet->setCellValue(
-                Coordinate::stringFromColumnIndex($colNo) . $rRowCount,
-                html_entity_decode((string) $value)
-            );
-            $colNo++;
-        }
-    }
+        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+   }
+
+
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo $filename;
+    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+    $writer->save($filename);
+    echo base64_encode($filename);
 }
