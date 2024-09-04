@@ -244,12 +244,7 @@ try {
         $row[] = $patientFname . " " . $patientLname;
         $row[] = ($aRow['facility_name']);
         $row[] = $tbResults[$aRow['result']];
-        if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-            $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-        } else {
-            $aRow['last_modified_datetime'] = '';
-        }
-        $row[] = $aRow['last_modified_datetime'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         $row[] = $status;
 
         $output['aaData'][] = $row;

@@ -281,10 +281,9 @@ try {
           }
           $row[] = ($aRow['sample_name']);
           $row[] = $aRow['result'];
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
-          $row[] = $aRow['last_modified_datetime'];
-          $row[] = ($aRow['status_name']);
+          $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
+          $row[] = $aRow['status_name'];
           $row[] = $print;
           $output['aaData'][] = $row;
      }

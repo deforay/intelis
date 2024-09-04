@@ -208,11 +208,6 @@ try {
         } else {
             $aRow['sample_collection_date'] = '';
         }
-        if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-            $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-        } else {
-            $aRow['last_modified_datetime'] = '';
-        }
 
         $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
         $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
@@ -233,7 +228,7 @@ try {
         $row[] = ($aRow['facility_district']);
         $row[] = ($aRow['sample_name']);
         $row[] = $aRow['result'];
-        $row[] = $aRow['last_modified_datetime'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         $row[] = ($aRow['status_name']);
         if ($editRequest) {
             $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Failed result retest") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['sample_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em>' . _translate("Retest") . '</a>';

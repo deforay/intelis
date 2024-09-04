@@ -279,13 +279,8 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['hcv_vl_count'];
     $row[] = $aRow['hbv_vl_count'];
 
-    if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-    } else {
-        $aRow['last_modified_datetime'] = '';
-    }
 
-    $row[] = $aRow['last_modified_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
     $row[] = ($aRow['status_name']);
     $row[] = $print;
     $output['aaData'][] = $row;

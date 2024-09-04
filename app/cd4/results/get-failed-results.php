@@ -212,11 +212,6 @@ try {
         } else {
             $aRow['sample_collection_date'] = '';
         }
-        if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-            $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-        } else {
-            $aRow['last_modified_datetime'] = '';
-        }
 
         $row = [];
 
@@ -238,7 +233,7 @@ try {
         $row[] = ($aRow['facility_state']);
         $row[] = ($aRow['facility_district']);
         $row[] = ($aRow['cd4_result']);
-        $row[] = $aRow['last_modified_datetime'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         $row[] = ($aRow['status_name']);
 
         if ($editRequest) {

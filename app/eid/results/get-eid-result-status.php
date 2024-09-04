@@ -238,12 +238,7 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['mother_name'];
     $row[] = ($aRow['facility_name']);
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
-    if (isset($aRow['last_modified_datetime']) && trim((string) $aRow['last_modified_datetime']) != '' && $aRow['last_modified_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-    } else {
-        $aRow['last_modified_datetime'] = '';
-    }
-    $row[] = $aRow['last_modified_datetime'];
+    $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
     $row[] = $status;
     //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['eid_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
