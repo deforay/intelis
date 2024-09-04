@@ -18,8 +18,7 @@ if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
-    $pages = [];
-    $page = 1;
+   
     foreach ($requestResult as $result) {
 
         $covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";

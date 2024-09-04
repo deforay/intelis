@@ -110,7 +110,8 @@ $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 MiscUtility::makeDirectory($pathFront);
 
 $_SESSION['aliasPage'] = 1;
-
+$pages = [];
+$page = 1;
 foreach ($requestResult as $result) {
     if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
         $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
@@ -131,6 +132,7 @@ foreach ($requestResult as $result) {
     } else {
         require($fileArray[$arr['vl_form']]);
     }
+    $page++;
 }
 if (!empty($pages)) {
     $resultPdf = new PdfConcatenateHelper();

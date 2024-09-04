@@ -103,7 +103,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-$sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
+$sQuery = "SELECT vl.*,b.batch_code,ts.*,imp.*,
             f.facility_name, f.facility_district,f.facility_state,
             l.facility_name as labName,
             l.facility_logo as facilityLogo,

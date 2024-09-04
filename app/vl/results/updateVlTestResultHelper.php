@@ -39,10 +39,13 @@ $txtVal = null;
 $finalResult = null;
 try {
     $instanceId = $general->getInstanceId();
+  
     $testingPlatform = null;
+    $instrumentId = null;
     if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
-        $platForm = explode("##", (string) $_POST['testingPlatform']);
-        $testingPlatform = $platForm[0];
+         $platForm = explode("##", (string) $_POST['testingPlatform']);
+         $testingPlatform = $platForm[0];
+         $instrumentId = $platForm[3];
     }
 
     $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);

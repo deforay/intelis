@@ -21,9 +21,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-$pages = [];
-$page = 1;
-
 if (!empty($result)) {
     $currentTime = DateUtility::getCurrentDateTime();
     $_SESSION['aliasPage'] = $page;
@@ -45,6 +42,8 @@ if (!empty($result)) {
     } else {
         $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
     }
+
+
 
     $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'EARLY INFANT DIAGNOSIS PATIENT REPORT');
     // set document information
