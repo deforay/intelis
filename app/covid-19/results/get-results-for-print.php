@@ -100,7 +100,7 @@ try {
 
 
 
-    $sQuery = "SELECT vl.*,b.*,ts.*,imp.*,
+    $sQuery = "SELECT vl.*,b.batch_code,ts.*,imp.*,
             f.facility_name, f.facility_district,f.facility_state,
             l_f.facility_name as labName,
             s.sample_name as sample_name,
