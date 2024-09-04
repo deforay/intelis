@@ -301,7 +301,7 @@ try {
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
-            'app_sample_code' => $data['appSampleCode'] ?? null,
+            'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'sample_reordered' => $data['sampleReordered'] ?? 'no',
             'facility_id' => $data['facilityId'] ?? null,
             'patient_gender' => $data['patientGender'] ?? null,

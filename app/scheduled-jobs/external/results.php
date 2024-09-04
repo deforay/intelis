@@ -82,10 +82,10 @@ try {
         SAMPLE_STATUS\ACCEPTED
     ];
 
-    $db->where("(result IS NOT NULL AND result != '')
-                    OR IFNULL(is_sample_rejected, 'no') = 'yes'");
+    $db->where("((result IS NOT NULL AND result != '')
+                    OR IFNULL(is_sample_rejected, 'no') = 'yes')");
     $db->where("app_sample_code IS NOT NULL");
-    $db->where("IFNULL(result_sent_to_source, 'no') = 'no' OR result_sent_to_source = ''");
+    $db->where("(IFNULL(result_sent_to_source, 'pending') = 'pending')");
     $db->where("result_status", $resultStatus, 'IN');
     $resultSet = $db->get($tableName, 100);
     $numberOfResults = count($resultSet ?? []);
@@ -145,7 +145,7 @@ try {
             "suspendTreatmentVlValue" => $row["last_vl_result_failure"],
             "reqClinician" => $row["request_clinician_name"],
             "reqClinicianPhoneNumber" => $row["request_clinician_phone_number"],
-            "requestDate" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null),
+            "requestDate" => null,
             "vlFocalPerson" => $row["vl_focal_person"],
             "vlFocalPersonPhoneNumber" => $row["vl_focal_person_phone_number"],
             "labId" => $row["lab_id"],
@@ -189,18 +189,19 @@ try {
         if ($cliMode) {
             echo "PATIENT ART NO. : " . $row["patient_art_no"] . PHP_EOL;
             echo "SAMPLE ID : " . ($row["remote_sample_code"] ?? $row["sample_code"]) . PHP_EOL;
-            echo "RESPONSE : " . JsonUtility::toJSON($apiResponse['body']) . PHP_EOL;
+            echo "HTTP RESPONSE CODE : " . $apiResponse["httpStatusCode"] . PHP_EOL;
+            echo "RESPONSE : " . JsonUtility::prettyJson($apiResponse['body']) . PHP_EOL;
             echo "_______________________________________________________________________" . PHP_EOL;
         }
         $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, $payload ?? [], $apiResponse['body'] ?? [], 'json');
     }
     if (!empty($resultsSentSuccesfully)) {
         $numberSent = count($resultsSentSuccesfully);
-        $db->where($primaryKey, $resultsSentSuccesfully, 'IN');
+        $db->where('unique_id', $resultsSentSuccesfully, 'IN');
         $db->update($tableName, [
             'result_sent_to_external' => 'yes',
             'result_sent_to_external_datetime' => DateUtility::getCurrentDateTime(),
-            'result_sent_to_source' => 'yes',
+            'result_sent_to_source' => 'sent',
             'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
         ]);
     }

@@ -367,7 +367,7 @@ try {
                 'unique_id' => $uniqueId,
                 'test_type' => !empty($data['testType']) ? $data['testType'] : null,
                 'test_type_form' => !empty($testTypeForm) ? $db->func($testTypeForm) : null,
-                'app_sample_code' => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
+                'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
                 'external_sample_code' => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
                 'sample_reordered' => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
                 'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,

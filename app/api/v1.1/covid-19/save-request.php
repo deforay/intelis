@@ -372,7 +372,7 @@ try {
 
         $covid19Data = [
             'vlsm_instance_id' => $data['instanceId'],
-            'app_sample_code' => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'external_sample_code' => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
             'investigator_name' => !empty($data['investigatorName']) ? $data['investigatorName'] : null,
