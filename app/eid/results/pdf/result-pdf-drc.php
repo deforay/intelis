@@ -177,22 +177,20 @@ if (!empty($result)) {
     $messageTextSize = '12px';
     if ($result['result'] != null && trim((string) $result['result']) != '') {
         $resultType = is_numeric($result['result']);
-        if ($result['result'] == 2) {
-            $vlResult = $eidResults[$result['result']];
+        $vlResult = $eidResults[$result['result']];
+        if ($vlResult == 'negative') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
             }
             $showMessage = "";
             $tndMessage = '';
-        } else if ($result['result'] == 3) {
-            $vlResult = $eidResults[$result['result']];
+        } else if ($vlResult == 'positive') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
             }
             $showMessage = '';
             $messageTextSize = '15px';
-        } else if ($result['result'] == 1) {
-            $vlResult = $eidResults[$result['result']];
+        } else if ($vlResult == 'indeterminate') {
             //if (isset($smileyShow) && $smileyShow != '') {
             //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
             //}
