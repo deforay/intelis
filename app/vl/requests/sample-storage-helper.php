@@ -23,7 +23,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 try {
 
-    $data = array();
+    $data = [];
     $cnt = count($_POST['sampleUniqueId']);
     for ($i = 0; $i < $cnt; $i++) {
         if (!empty($_POST['volume'][$i]) && (($_POST['volume'][$i]) > 0) && !empty($_POST['freezer'][$i]) && !empty($_POST['rack'][$i]) && !empty($_POST['box'][$i]) && !empty($_POST['position'][$i])) {

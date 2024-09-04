@@ -64,7 +64,7 @@ try {
                 $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
                 header("Location:/vl/requests/upload-storage.php");
             }
-            $failedRow = array();
+            $failedRow = [];
 
             foreach ($filteredArray as $rowIndex => $rowData) {
 

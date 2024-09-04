@@ -43,6 +43,8 @@ $userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <div class="bs-example bs-example-tabs">
+
+
             <div class="tab">
                 <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                     <?php if (!empty($result['api_params'])) {
@@ -58,9 +60,13 @@ $userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR
             </div>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="request" style="min-height:300px;">
+                    <pre><?= $result['api_url']; ?></pre>
+                    <br>
                     <pre><?= JsonUtility::prettyJson($userRequest); ?></pre>
                 </div>
                 <div class="tab-pane fade in" id="response" style="min-height:300px;">
+                    <pre><?= $result['api_url']; ?></pre>
+                    <br>
                     <pre><?= JsonUtility::prettyJson($userResponse); ?></pre>
                 </div>
             </div>

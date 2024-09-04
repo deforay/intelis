@@ -46,7 +46,7 @@ function getColumns($db, $tableName)
 					FROM INFORMATION_SCHEMA.COLUMNS
 					WHERE TABLE_SCHEMA = ? AND table_name=?
 					ORDER BY ordinal_position";
-	return $db->rawQuery($columnsSql, array(SYSTEM_CONFIG['database']['db'], $tableName));
+	return $db->rawQuery($columnsSql, [SYSTEM_CONFIG['database']['db'], $tableName]);
 }
 
 // function getColumnValues($db, $tableName, $sampleCode)
@@ -64,7 +64,7 @@ function getColumns($db, $tableName)
 // 				LEFT JOIN user_details as approver ON a.result_approved_by = approver.user_id
 // 				LEFT JOIN user_details as riewer ON a.result_reviewed_by = riewer.user_id
 // 				WHERE sample_code = ? OR remote_sample_code = ? OR unique_id like ?";
-// 	return $db->rawQuery($sql, array($sampleCode, $sampleCode, $sampleCode));
+// 	return $db->rawQuery($sql, [$sampleCode, $sampleCode, $sampleCode]);
 // }
 
 function getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiveDbName)
@@ -92,7 +92,7 @@ function getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiv
 	}
 
 	$unionQuery = implode(" UNION ", $queries);
-	return $db->rawQuery($unionQuery, array($sampleCode, $sampleCode, "%$sampleCode%"));
+	return $db->rawQuery($unionQuery, [$sampleCode, $sampleCode, "%$sampleCode%"]);
 }
 
 
@@ -255,10 +255,11 @@ $resultColumn = getColumns($db, $tableName);
 										</tr>
 									</thead>
 									<tbody>
-										<?php
-										for ($i = 0; $i < count($posts); $i++) {
-										?>
-											<tr>
+										<tr>
+											<?php
+											for ($i = 0; $i < count($posts); $i++) {
+											?>
+
 												<?php
 												for ($j = 3; $j < count($colArr); $j++) {
 												?>
@@ -269,13 +270,13 @@ $resultColumn = getColumns($db, $tableName);
 													</td>
 												<?php }
 												?>
-											</tr>
-										<?php
-										}
 
-										?>
+											<?php
+											}
+
+											?>
+										</tr>
 									</tbody>
-
 								</table>
 							<?php } else {
 								echo '<h3 align="center">Records are not available for this sample id. Please enter  valid sample id</h3>';

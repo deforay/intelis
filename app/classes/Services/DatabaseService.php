@@ -307,7 +307,7 @@ final class DatabaseService extends MysqliDb
                 }
 
                 // Generate a unique session key for the count query
-                $countQuerySessionKey = md5($countSql);
+                $countQuerySessionKey = hash('sha256', $countSql);
                 $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
             } else {
                 $count = count($queryResult);
@@ -357,7 +357,7 @@ final class DatabaseService extends MysqliDb
         if ($insertType === 'ignore') {
             $sql = "INSERT IGNORE INTO `$tableName` (`$columns`) VALUES $placeholdersString";
         } elseif ($insertType === 'upsert') {
-            $updatePart = implode(', ', array_map(fn ($col) => "`$col` = VALUES(`$col`)", $updateColumns));
+            $updatePart = implode(', ', array_map(fn($col) => "`$col` = VALUES(`$col`)", $updateColumns));
             $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString ON DUPLICATE KEY UPDATE $updatePart";
         } else {
             $sql = "INSERT INTO `$tableName` (`$columns`) VALUES $placeholdersString";

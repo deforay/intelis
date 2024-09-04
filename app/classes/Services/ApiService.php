@@ -117,23 +117,41 @@ final class ApiService
         try {
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
             if ($gzip) {
-                $compressedPayload = gzencode($payload);
-                $options[RequestOptions::BODY] = $compressedPayload;
+                $payload = gzencode($payload);
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
-            } else {
-                $options[RequestOptions::BODY] = $payload;
             }
 
+
+
+            $options[RequestOptions::BODY] = $payload;
+
+
             $response = $this->client->post($url, $options);
-            $httpStatusCode = $response->getStatusCode();
+
             if ($returnWithStatusCode) {
                 return [
-                    'httpStatusCode' => $httpStatusCode,
+                    'httpStatusCode' => $response->getStatusCode(),
                     'body' => $response->getBody()->getContents()
                 ];
             } else {
                 return $response->getBody()->getContents();
+            }
+        } catch (RequestException $e) {
+            // Extract the response body from the exception, if available
+            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+
+            // Log the error along with the response body
+            $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
+
+            // Return the response body (if available) or null
+            if ($returnWithStatusCode) {
+                return [
+                    'httpStatusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
+                    'body' => $responseBody
+                ];
+            } else {
+                return $responseBody;
             }
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");

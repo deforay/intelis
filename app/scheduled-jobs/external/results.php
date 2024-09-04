@@ -3,9 +3,14 @@
 // This script is used to send results to an external API for e.g. EMR
 
 $cliMode = php_sapi_name() === 'cli';
+$forceRun = false;
 
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
+
+    // Check for the force flag in command-line arguments
+    $options = getopt("f", ["force"]);
+    $forceRun = isset($options['f']) || isset($options['force']);
 }
 
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
@@ -36,6 +41,11 @@ use App\Registries\ContainerRegistry;
 
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
+// If the force flag is set, delete the lock file if it exists
+if ($forceRun && MiscUtility::fileExists($lockFile)) {
+    MiscUtility::deleteLockFile(__FILE__);
+}
+
 // Check if the lock file already exists
 if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
     if ($cliMode) {
@@ -61,6 +71,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
+
+$dateFormat = "d-M-Y H:i:s";
+
 try {
     $tableName = TestsService::getTestTableName('vl');
     $primaryKey = TestsService::getTestPrimaryKeyColumn('vl');
@@ -68,115 +81,128 @@ try {
         SAMPLE_STATUS\REJECTED,
         SAMPLE_STATUS\ACCEPTED
     ];
+
     $db->where("(result IS NOT NULL AND result != '')
                     OR IFNULL(is_sample_rejected, 'no') = 'yes'");
     $db->where("app_sample_code IS NOT NULL");
-    $db->where("IFNULL(result_sent_to_external, 'no') = 'no'");
+    $db->where("IFNULL(result_sent_to_source, 'no') = 'no' OR result_sent_to_source = ''");
     $db->where("result_status", $resultStatus, 'IN');
-    $resultSet = $db->get($tableName);
+    $resultSet = $db->get($tableName, 100);
     $numberOfResults = count($resultSet ?? []);
     $numberSent = 0;
     $resultsSentSuccesfully = [];
     foreach ($resultSet as $row) {
         $payload = [
             "id" => $row[$primaryKey],
-            "formId" => (string) $row["vlsm_country_id"],
-            "uniqueId" => (string) $row["unique_id"],
-            "appSampleCode" => (string) $row["app_sample_code"],
-            "sampleCode" => (string) $row["sample_code"],
-            "remoteSampleCode" => (string) $row["remote_sample_code"],
+            "formId" => $row["vlsm_country_id"],
+            "uniqueId" => $row["unique_id"],
+            "appSampleCode" => $row["app_sample_code"],
+            "sampleCode" => $row["sample_code"],
+            "remoteSampleCode" => $row["remote_sample_code"],
             "sampleCodeTitle" => "",
-            "sampleReordered" => (string) $row["sample_reordered"],
-            "sampleCodeFormat" => (string) $row["remote_sample_code_format"],
-            "facilityId" => (string) $row["facility_id"],
-            "provinceId" => (string) $row["province_id"],
-            "serialNo" => (string) $row["external_sample_code"],
-            "clinicianName" => (string) $row["request_clinician_name"],
-            "clinicanTelephone" => (string) $row["request_clinician_phone_number"],
-            "patientFirstName" => (string) $row["patient_first_name"],
-            "patientMiddleName" => (string) $row["patient_middle_name"],
-            "patientLastName" => (string) $row["patient_last_name"],
-            "patientGender" => (string) $row["patient_gender"],
-            "patientDob" => (string) DateUtility::humanReadableDateFormat($row["patient_dob"]),
-            "ageInYears" => (string) $row["patient_age_in_years"],
-            "ageInMonths" => (string) $row["patient_age_in_months"],
-            "patientPregnant" => (string) $row["is_patient_pregnant"] ?? "N/A",
-            "trimester" => (string) $row["pregnancy_trimester"],
-            "isPatientNew" => (string) $row["is_patient_new"],
-            "breastfeeding" => (string) $row["is_patient_breastfeeding"] ?? "N/A",
-            "patientArtNo" => (string) $row["patient_art_no"],
-            "dateOfArtInitiation" => (string) DateUtility::humanReadableDateFormat($row["treatment_initiated_date"]),
-            "artRegimen" => (string) $row["current_regimen"],
-            "hasChangedRegimen" => (string) $row["has_patient_changed_regimen"],
-            "reasonForArvRegimenChange" => (string) $row["reason_for_regimen_change"],
+            "sampleReordered" => $row["sample_reordered"],
+            "sampleCodeFormat" => $row["remote_sample_code_format"],
+            "facilityId" => $row["facility_id"],
+            "provinceId" => $row["province_id"],
+            "serialNo" => $row["external_sample_code"],
+            "clinicianName" => $row["request_clinician_name"],
+            "clinicanTelephone" => $row["request_clinician_phone_number"],
+            "patientFirstName" => $row["patient_first_name"],
+            "patientMiddleName" => $row["patient_middle_name"],
+            "patientLastName" => $row["patient_last_name"],
+            "patientGender" => $row["patient_gender"],
+            "patientDob" => DateUtility::humanReadableDateFormat($row["patient_dob"]),
+            "ageInYears" => $row["patient_age_in_years"],
+            "ageInMonths" => $row["patient_age_in_months"],
+            "patientPregnant" => $row["is_patient_pregnant"] ?? "N/A",
+            "trimester" => $row["pregnancy_trimester"],
+            "isPatientNew" => $row["is_patient_new"],
+            "breastfeeding" => $row["is_patient_breastfeeding"] ?? "N/A",
+            "patientArtNo" => $row["patient_art_no"],
+            "dateOfArtInitiation" => DateUtility::humanReadableDateFormat($row["treatment_initiated_date"]),
+            "artRegimen" => $row["current_regimen"],
+            "hasChangedRegimen" => $row["has_patient_changed_regimen"],
+            "reasonForArvRegimenChange" => $row["reason_for_regimen_change"],
             "dateOfArvRegimenChange" => DateUtility::humanReadableDateFormat($row["regimen_change_date"] ?? null),
             "regimenInitiatedOn" => DateUtility::humanReadableDateFormat($row["date_of_initiation_of_current_regimen"]),
-            "vlTestReason" => (string) $row["reason_for_vl_testing"],
-            "lastViralLoadResult" => (string) $row["last_viral_load_result"],
+            "vlTestReason" => $row["reason_for_vl_testing"],
+            "lastViralLoadResult" => $row["last_viral_load_result"],
             "lastViralLoadTestDate" => DateUtility::humanReadableDateFormat($row["last_viral_load_date"] ?? null),
             "conservationTemperature" => "",
-            "durationOfConservation" => (string) $row["treatment_duration"],
+            "durationOfConservation" => $row["treatment_duration"],
             "dateOfCompletionOfViralLoad" => DateUtility::humanReadableDateFormat($row["last_viral_load_result"] ?? null),
-            "viralLoadNo" => (string) $row["vl_test_number"],
-            "patientPhoneNumber" => (string) $row["patient_mobile_number"],
-            "receiveSms" => (string) $row["consent_to_receive_sms"],
-            "specimenType" => (string) $row["specimen_type"],
-            "arvAdherence" => (string) $row["arv_adherance_percentage"],
+            "viralLoadNo" => $row["vl_test_number"],
+            "patientPhoneNumber" => $row["patient_mobile_number"],
+            "receiveSms" => $row["consent_to_receive_sms"],
+            "specimenType" => $row["specimen_type"],
+            "arvAdherence" => $row["arv_adherance_percentage"],
             "stViralTesting" => '',
-            "rmTestingLastVLDate" => (string) DateUtility::humanReadableDateFormat($row["last_vl_date_routine"]),
-            "rmTestingVlValue" => (string) $row["last_vl_result_routine"],
+            "rmTestingLastVLDate" => DateUtility::humanReadableDateFormat($row["last_vl_date_routine"]),
+            "rmTestingVlValue" => $row["last_vl_result_routine"],
             "repeatTestingLastVLDate" => DateUtility::humanReadableDateFormat($row["last_vl_date_failure_ac"] ?? null),
-            "repeatTestingVlValue" => (string) $row["last_vl_result_failure_ac"],
+            "repeatTestingVlValue" => $row["last_vl_result_failure_ac"],
             "suspendTreatmentLastVLDate" => DateUtility::humanReadableDateFormat($row["last_vl_date_failure"] ?? null),
-            "suspendTreatmentVlValue" => (string) $row["last_vl_result_failure"],
-            "reqClinician" => (string) $row["request_clinician_name"],
-            "reqClinicianPhoneNumber" => (string) $row["request_clinician_phone_number"],
+            "suspendTreatmentVlValue" => $row["last_vl_result_failure"],
+            "reqClinician" => $row["request_clinician_name"],
+            "reqClinicianPhoneNumber" => $row["request_clinician_phone_number"],
             "requestDate" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null),
-            "vlFocalPerson" => (string) $row["vl_focal_person"],
-            "vlFocalPersonPhoneNumber" => (string) $row["vl_focal_person_phone_number"],
-            "labId" => (string) $row["lab_id"],
-            "testingPlatform" => (string) $row["vl_test_platform"],
-            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true),
-            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true),
-            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true),
-            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true),
-            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true),
-            "isSampleRejected" => (string) $row["is_sample_rejected"],
+            "vlFocalPerson" => $row["vl_focal_person"],
+            "vlFocalPersonPhoneNumber" => $row["vl_focal_person_phone_number"],
+            "labId" => $row["lab_id"],
+            "testingPlatform" => $row["vl_test_platform"],
+            "sampleReceivedAtHubOn" => DateUtility::humanReadableDateFormat($row["sample_received_at_hub_datetime"] ?? null, true, $dateFormat),
+            "sampleReceivedDate" => DateUtility::humanReadableDateFormat($row["sample_received_at_lab_datetime"] ?? null, true, $dateFormat),
+            "sampleTestingDateAtLab" => DateUtility::humanReadableDateFormat($row["sample_tested_datetime"] ?? null, true, $dateFormat),
+            "sampleDispatchedOn" => DateUtility::humanReadableDateFormat($row["sample_dispatched_datetime"] ?? null, true, $dateFormat),
+            "resultDispatchedOn" => DateUtility::humanReadableDateFormat($row["test_requested_on"] ?? null, true, $dateFormat),
+            "isSampleRejected" => $row["is_sample_rejected"],
             "rejectionReason" => $row["reason_for_sample_rejection"] ?? null,
             "rejectionDate" => DateUtility::humanReadableDateFormat($row["rejection_on"] ?? null),
-            "vlResult" => (string) $row["result_value_absolute"],
-            "vlResultDecimal" => (string) $row["result_value_absolute_decimal"],
-            "result" => (string) $row["result"],
-            "revisedBy" => (string) $row["revised_by"],
-            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true),
-            "reasonForVlResultChanges" => (string) $row["reason_for_result_changes"],
-            "vlLog" => (string) $row["result_value_log"],
-            "testedBy" => (string) $row["tested_by"],
-            "reviewedBy" => (string) $row["result_reviewed_by"],
-            "reviewedOn" => (string) DateUtility::humanReadableDateFormat($row["result_reviewed_datetime"], true),
-            "approvedBy" => (string) $row["result_approved_by"],
-            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true),
-            "labComments" => (string) $row["lab_tech_comments"],
-            "resultStatus" => (string) $row["result_status"],
-            "fundingSource" => (string) $row["funding_source"],
-            "implementingPartner" => (string) $row["implementing_partner"],
-            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true),
-            "patientId" => (string) $row["patient_art_no"],
-            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true),
-            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true)
+            "vlResult" => $row["result_value_absolute"],
+            "vlResultDecimal" => $row["result_value_absolute_decimal"],
+            "result" => $row["result"],
+            "revisedBy" => $row["revised_by"],
+            "revisedOn" => DateUtility::humanReadableDateFormat($row["revised_on"] ?? null, true, $dateFormat),
+            "reasonForVlResultChanges" => $row["reason_for_result_changes"],
+            "vlLog" => $row["result_value_log"],
+            "testedBy" => $row["tested_by"],
+            "reviewedBy" => $row["result_reviewed_by"],
+            "reviewedOn" => DateUtility::humanReadableDateFormat($row["result_reviewed_datetime"], true),
+            "approvedBy" => $row["result_approved_by"],
+            "approvedOnDateTime" => DateUtility::humanReadableDateFormat($row["result_approved_datetime"] ?? null, true, $dateFormat),
+            "labComments" => $row["lab_tech_comments"],
+            "resultStatus" => $row["result_status"],
+            "fundingSource" => $row["funding_source"],
+            "implementingPartner" => $row["implementing_partner"],
+            "sampleCollectionDate" => DateUtility::humanReadableDateFormat($row["sample_collection_date"] ?? null, true, $dateFormat),
+            "patientId" => $row["patient_art_no"],
+            "createdAt" => DateUtility::humanReadableDateFormat($row["request_created_datetime"] ?? null, true, $dateFormat),
+            "updatedAt" => DateUtility::humanReadableDateFormat($row["last_modified_datetime"] ?? null, true, $dateFormat)
         ];
 
-        $payload = JsonUtility::encodeUtf8Json($payload);
-        $response = $apiService->post(EXTERNAL_RESULTS_RECEIVER_URL, $payload, gzip: false);
-        if (!empty($response)) {
+        //$payload = JsonUtility::encodeUtf8Json($payload);
+        $apiResponse = $apiService->post(url: EXTERNAL_RESULTS_RECEIVER_URL, payload: $payload, gzip: false, returnWithStatusCode: true);
+
+        if (!empty($apiResponse['httpStatusCode']) && $apiResponse['httpStatusCode'] === 200) {
             $resultsSentSuccesfully[] = $row['unique_id'];
-            $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, [], $payload, 'json');
         }
+        if ($cliMode) {
+            echo "PATIENT ART NO. : " . $row["patient_art_no"] . PHP_EOL;
+            echo "SAMPLE ID : " . ($row["remote_sample_code"] ?? $row["sample_code"]) . PHP_EOL;
+            echo "RESPONSE : " . JsonUtility::toJSON($apiResponse['body']) . PHP_EOL;
+            echo "_______________________________________________________________________" . PHP_EOL;
+        }
+        $general->addApiTracking($transactionId, null, 1, 'external-results', 'vl', EXTERNAL_RESULTS_RECEIVER_URL, $payload ?? [], $apiResponse['body'] ?? [], 'json');
     }
     if (!empty($resultsSentSuccesfully)) {
         $numberSent = count($resultsSentSuccesfully);
         $db->where($primaryKey, $resultsSentSuccesfully, 'IN');
-        $db->update($tableName, ['result_sent_to_external' => 'yes']);
+        $db->update($tableName, [
+            'result_sent_to_external' => 'yes',
+            'result_sent_to_external_datetime' => DateUtility::getCurrentDateTime(),
+            'result_sent_to_source' => 'yes',
+            'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+        ]);
     }
 
     if ($cliMode) {
