@@ -2,6 +2,7 @@
 
 // this file is included in eid/results/generate-result-pdf.php
 
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -19,6 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 
 
@@ -172,22 +177,20 @@ if (!empty($result)) {
     $messageTextSize = '12px';
     if ($result['result'] != null && trim((string) $result['result']) != '') {
         $resultType = is_numeric($result['result']);
-        if ($result['result'] == 'negative') {
-            $vlResult = $eidResults[$result['result']];
+        $vlResult = $eidResults[$result['result']];
+        if ($vlResult == 'negative') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" alt="smile_face"/>';
             }
             $showMessage = "";
             $tndMessage = '';
-        } else if ($result['result'] == 'positive') {
-            $vlResult = $eidResults[$result['result']];
+        } else if ($vlResult == 'positive') {
             if (isset($smileyShow) && $smileyShow != '') {
                 $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" alt="frown_face"/>';
             }
             $showMessage = '';
             $messageTextSize = '15px';
-        } else if ($result['result'] == 'indeterminate') {
-            $vlResult = $eidResults[$result['result']];
+        } else if ($vlResult == 'indeterminate') {
             //if (isset($smileyShow) && $smileyShow != '') {
             //$smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/cross.png" alt="frown_face"/>';
             //}

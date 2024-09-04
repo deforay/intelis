@@ -371,7 +371,7 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'vlsm_country_id' => $formId,
             'unique_id' => $uniqueId,
-            'app_sample_code' => !empty($data['appSampleCode']) ? $data['appSampleCode'] : null,
+            'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'sample_reordered' => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
             'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
             'province_id' => !empty($data['provinceId']) ? $data['provinceId'] : null,

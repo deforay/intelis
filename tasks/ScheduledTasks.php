@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once(__DIR__ . '/../bootstrap.php');
+require_once __DIR__ . '/../bootstrap.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
