@@ -26,7 +26,6 @@ $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();
 
 
-
 if (!empty($result)) {
 
     $signQuery = "SELECT * from lab_report_signatories where lab_id=? AND test_types like '%eid%' AND signatory_status like 'active' ORDER BY display_order ASC";
@@ -100,8 +99,9 @@ if (!empty($result)) {
 
     // set font
     $pdf->SetFont('helvetica', '', 18);
-
+    $pdf->AliasNbPages();
     $pdf->AddPage();
+
     if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
         $result['facility_code'] = '';
     }

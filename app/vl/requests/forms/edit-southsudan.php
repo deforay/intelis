@@ -67,22 +67,24 @@ $rch = '';
 $allChange = [];
 if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
 	$allChange = json_decode((string) $vlQueryInfo['reason_for_result_changes'], true);
+	
 	if (!empty($allChange)) {
 		$rch .= '<h4>Result Changes History</h4>';
 		$rch .= '<table style="width:100%;">';
 		$rch .= '<thead><tr style="border-bottom:2px solid #d3d3d3;"><th style="width:20%;">USER</th><th style="width:60%;">MESSAGE</th><th style="width:20%;text-align:center;">DATE</th></tr></thead>';
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
-		foreach ($allChange as $change) {
+
+	//	foreach ($allChange as $change) {
 			$usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
-			$usrResult = $db->rawQuery($usrQuery, [$change['usr']]);
+			$usrResult = $db->rawQuery($usrQuery, [$allChange['user']]);
 			$name = '';
 			if (isset($usrResult[0]['user_name'])) {
 				$name = ($usrResult[0]['user_name']);
 			}
-			$changedDate = DateUtility::humanReadableDateFormat($change['dtime'] ?? '', true);
-			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-		}
+			$changedDate = DateUtility::humanReadableDateFormat($allChange['dateOfChange'] ?? '', true);
+			$rch .= '<tr><td>' . $name . '</td><td>' . ($allChange['reasonForChange']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
+	//	} 
 		$rch .= '</tbody>';
 		$rch .= '</table>';
 	}
