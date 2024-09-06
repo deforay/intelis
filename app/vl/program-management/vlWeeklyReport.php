@@ -337,7 +337,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
         endDate = end.format('YYYY-MM-DD');
       });
     loadDataTable();
-    //loadFemaleDataTable();
+    loadFemaleDataTable();
   });
 
   function loadDataTable() {
