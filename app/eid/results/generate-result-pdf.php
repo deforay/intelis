@@ -88,7 +88,7 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 } else {
     $searchQuery = $allQuery;
 }
-//echo($searchQuery);die;
+//echo($searchQuery); die;
 $requestResult = $db->query($searchQuery);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
@@ -109,9 +109,10 @@ $randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
 $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
 MiscUtility::makeDirectory($pathFront);
 
-$_SESSION['aliasPage'] = 1;
 $pages = [];
 $page = 1;
+$_SESSION['aliasPage'] = $page;
+
 foreach ($requestResult as $result) {
     if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
         $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
