@@ -132,7 +132,6 @@ foreach ($requestResult as $result) {
     } else {
         require($fileArray[$arr['vl_form']]);
     }
-    $page++;
 }
 if (!empty($pages)) {
     $resultPdf = new PdfConcatenateHelper();

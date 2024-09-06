@@ -20,7 +20,7 @@ if (!empty($requestResult)) {
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
   
-    foreach ($requestResult as $result) {
+    //foreach ($requestResult as $result) {
 
         $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
         $covid19TestInfo = $db->rawQuery($covid19TestQuery);
@@ -502,5 +502,5 @@ if (!empty($requestResult)) {
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
         }
-    }
+    //}
 }

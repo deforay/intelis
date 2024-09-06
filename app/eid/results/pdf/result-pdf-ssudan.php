@@ -1,6 +1,7 @@
 <?php
 
 // this file is included in eid/results/generate-result-pdf.php
+use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -19,6 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
 
 
 if (!empty($result)) {
@@ -171,6 +176,7 @@ if (!empty($result)) {
         $result['child_gender'] = _translate('Unreported');
     }
 
+    $vlResult = '';
     $finalResult = '';
     $smileyContent = '';
     $showMessage = '';
@@ -178,17 +184,14 @@ if (!empty($result)) {
     $messageTextSize = '12px';
     if ($result['result'] != null && trim((string) $result['result']) != '') {
         $resultType = is_numeric($result['result']);
-        if ($result['result'] == 'positive') {
-            $finalResult = $result['result'];
+        $vlResult = $eidResults[$result['result']];
+        if ($vlResult == 'positive') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="smile_face"/>';
-        } else if ($result['result'] == 'negative') {
-            $finalResult = $result['result'];
+        } else if ($vlResult == 'negative') {
             $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-        } else if ($result['result'] == 'indeterminate') {
-            $finalResult = $result['result'];
+        } else if ($vlResult == 'indeterminate') {
             $smileyContent = '';
         } else {
-            $finalResult = $result['result'];
             $smileyContent = '';
         }
     }
@@ -338,7 +341,7 @@ if (!empty($result)) {
     if (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') {
         $finalResult = 'Rejected';
     } else {
-        $finalResult = $eidResults[$result['result']];
+        $finalResult = $vlResult;
     }
 
     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:40px;font-size:18px;font-weight:normal;">&nbsp;&nbsp;Result &nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $finalResult . '</td><td >' . $smileyContent . '</td></tr>';

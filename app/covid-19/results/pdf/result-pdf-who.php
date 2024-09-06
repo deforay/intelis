@@ -28,7 +28,7 @@ if (!empty($requestResult)) {
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
  
-    foreach ($requestResult as $result) {
+    //foreach ($requestResult as $result) {
         $currentTime = DateUtility::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
         if (!isset($result['labName'])) {
@@ -483,5 +483,5 @@ if (!empty($requestResult)) {
                 $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
             }
         }
-    }
+    //}
 }
