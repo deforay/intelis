@@ -1,7 +1,9 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use PHPMailer\PHPMailer\PHPMailer;
 use App\Registries\ContainerRegistry;
@@ -25,16 +27,11 @@ try {
 	$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "support";
 	if (isset($_POST['image']) && trim((string) $_POST['image']) != "" && trim((string) $_POST['supportId']) != "") {
 		$supportId = base64_decode((string) $_POST['supportId']);
-
-		// if (!file_exists($uploadDir) && !is_dir($uploadDir)) {
-		// 	mkdir($uploadDir, 0777, true);
-		// }
-
 		if (
 			!file_exists($uploadDir . DIRECTORY_SEPARATOR . $supportId)
 			&& !is_dir($uploadDir . DIRECTORY_SEPARATOR . $supportId)
 		) {
-			mkdir($uploadDir . DIRECTORY_SEPARATOR . $supportId, 0777, true);
+			MiscUtility::makeDirectory($uploadDir . DIRECTORY_SEPARATOR . $supportId);
 		}
 
 		$data = $_POST['image'];

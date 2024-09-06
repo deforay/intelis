@@ -244,7 +244,12 @@ if (!empty($id)) {
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
+
+        $manifestsPath = TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests";
+        if (!file_exists($manifestsPath) && !is_dir($manifestsPath)) {
+            MiscUtility::makeDirectory($manifestsPath);
+        }
+        $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }
 }

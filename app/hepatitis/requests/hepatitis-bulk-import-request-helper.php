@@ -35,9 +35,8 @@ try {
     $extension = MiscUtility::getFileExtension($fileName);
     $fileName = $ranNumber . "." . $extension;
 
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request", 0777, true);
-    }
+    MiscUtility::makeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . "import-request");
+
     if (move_uploaded_file($_FILES['requestFile']['tmp_name'], TEMP_PATH . DIRECTORY_SEPARATOR . "import-request" . DIRECTORY_SEPARATOR . $fileName)) {
 
         $file_info = new finfo(FILEINFO_MIME); // object oriented approach!

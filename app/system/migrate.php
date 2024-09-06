@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/../../bootstrap.php";
 
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
@@ -19,11 +20,10 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 $currentMajorVersion = CommonService::getAppVersion();
-die;
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
 if (version_compare($currentMajorVersion, '4.4.3', '<')) {
-    exit("This script requires VERSION 4.4.3 or higher. Current version: $currentMajorVersion \n");
+    exit("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars($currentMajorVersion) . "\n");
 }
 
 // Define the logs directory path
@@ -35,7 +35,7 @@ $canLog = false;
 // Check if the directory exists
 if (!file_exists($logsDir)) {
     // Attempt to create the directory
-    if (!mkdir($logsDir, 0755, true)) {
+    if (!MiscUtility::makeDirectory($logsDir)) {
         echo "Failed to create directory: $logsDir\n";
     } else {
         echo "Directory created: $logsDir\n";

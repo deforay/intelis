@@ -1,17 +1,13 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Helpers\ManifestPdfHelper;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -25,6 +21,7 @@ $arr = $general->getGlobalConfig();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+$_GET = _sanitizeInput($request->getQueryParams());
 
 
 $id = base64_decode((string) $_POST['id']);
@@ -45,11 +42,6 @@ if (trim((string) $id) != '') {
 
 
     $labname = $result[0]['lab_name'] ?? "";
-
-    if (!file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests") && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
-    }
-
     $showPatientName = $arr['eid_show_participant_name_in_manifest'];
 
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
@@ -254,7 +246,11 @@ if (trim((string) $id) != '') {
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
+        $manifestsPath = TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests";
+        if (!file_exists($manifestsPath) && !is_dir($manifestsPath)) {
+            MiscUtility::makeDirectory($manifestsPath);
+        }
+        $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }
 }

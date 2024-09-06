@@ -536,7 +536,7 @@ try {
 
                         if (!file_exists($signaturesFolder)) {
                             // make new folder
-                            mkdir($signaturesFolder, 0777, true);
+                            MiscUtility::makeDirectory($signaturesFolder);
                         } else {
                             // in case folder exists, we can delete all old files
                             $images = glob("$signaturesFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);

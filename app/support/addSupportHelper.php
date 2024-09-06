@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
@@ -31,7 +32,7 @@ try {
 		// File upload folder
 		$uploadDir = realpath(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/support");
 		if (!file_exists($uploadDir) && !is_dir($uploadDir)) {
-			mkdir($uploadDir, 0777, true);
+			MiscUtility::makeDirectory($uploadDir);
 		}
 
 
@@ -49,7 +50,8 @@ try {
 
 
 			if (in_array($extension, $allowedExtensions)) {
-				mkdir($uploadDir . DIRECTORY_SEPARATOR . $supportId);
+
+				MiscUtility::makeDirectory($uploadDir . DIRECTORY_SEPARATOR . $supportId);
 				$uploadPath = $uploadDir . DIRECTORY_SEPARATOR . $supportId;
 				if (move_uploaded_file($_FILES["supportFile"]["tmp_name"], $uploadPath . DIRECTORY_SEPARATOR . $imageName)) {
 					$fData = array(

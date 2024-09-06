@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $backupFolder = APPLICATION_PATH . '/../backups';
 if (!is_dir($backupFolder)) {
-    mkdir($backupFolder, 0777, true);
+    MiscUtility::makeDirectory($backupFolder);
 }
 $randomString = MiscUtility::generateRandomString(12);
 $sqlFileName = realpath($backupFolder) . DIRECTORY_SEPARATOR . 'vlsm-' . date("dmYHis") . '-' . $randomString . '.sql';

@@ -165,9 +165,11 @@ final class MiscUtility
     {
         if (is_dir($path)) {
             return true;
+        } elseif (!file_exists($path) && !is_dir($path)) {
+            return mkdir($path, $mode, $recursive);
+        } else {
+            return false;
         }
-
-        return mkdir($path, $mode, $recursive);
     }
 
     public static function generateCsv($headings, $data, $filename, $delimiter = ',', $enclosure = '"')

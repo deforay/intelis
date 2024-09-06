@@ -58,7 +58,7 @@ try {
 
     $resultFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
     if (!file_exists($resultFilePath) && !is_dir($resultFilePath)) {
-        mkdir($resultFilePath, 0777, true);
+        MiscUtility::makeDirectory($resultFilePath);
     }
     $resultFile = realpath($resultFilePath) . DIRECTORY_SEPARATOR . $fileName;
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {

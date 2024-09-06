@@ -33,10 +33,7 @@ try {
     if (trim((string) $_POST['configurationName']) != "") {
         if (!empty($_POST['supportedTests'])) {
             foreach ($_POST['supportedTests'] as $test) {
-                $configDir = __DIR__;
-                if (!file_exists($configDir)) {
-                    mkdir($configDir, 0777, true);
-                }
+                $configDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments";
                 MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
                 $configFile = $configDir . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
                 if (!file_exists($configFile)) {
@@ -108,7 +105,7 @@ try {
             }
         }
         $_SESSION['alertMsg'] = _translate("Instrument updated successfully");
-        $configDir = __DIR__;
+        $configDir = APPLICATION_PATH . DIRECTORY_SEPARATOR . "instruments";
         $configFileVL = $configDir . DIRECTORY_SEPARATOR . "vl" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileEID = $configDir . DIRECTORY_SEPARATOR . "eid" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
         $configFileCovid19 = $configDir . DIRECTORY_SEPARATOR . "covid-19" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
@@ -116,9 +113,8 @@ try {
         $configFileCD4 = $configDir . DIRECTORY_SEPARATOR . "cd4" . DIRECTORY_SEPARATOR . $_POST['configurationFile'];
 
 
-        if (!file_exists($configDir)) {
-            mkdir($configDir, 0777, true);
-        }
+
+        MiscUtility::makeDirectory($configDir . DIRECTORY_SEPARATOR . $test);
 
         if (!file_exists($configFileVL)) {
             $fp = fopen($configFileVL, 'w');

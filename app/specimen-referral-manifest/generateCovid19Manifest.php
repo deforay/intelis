@@ -59,13 +59,6 @@ if (trim((string) $id) != '') {
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    if (
-        !file_exists(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")
-        && !is_dir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests")
-    ) {
-        mkdir(TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests", 0777, true);
-    }
-
     $arr = $general->getGlobalConfig();
     $showPatientName = $arr['covid19_show_participant_name_in_manifest'];
     $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN(?)";
@@ -266,7 +259,11 @@ if (trim((string) $id) != '') {
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'sample-manifests' . DIRECTORY_SEPARATOR . $filename, "F");
+        $manifestsPath = TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests";
+        if (!file_exists($manifestsPath) && !is_dir($manifestsPath)) {
+            MiscUtility::makeDirectory($manifestsPath);
+        }
+        $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }
 }
