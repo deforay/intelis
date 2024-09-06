@@ -66,7 +66,7 @@ try {
 
     echo "Conversion process completed for database $dbName" . PHP_EOL;
 } catch (Throwable $e) {
-    echo "Collation change failed for database $dbName." . PHP_EOL;
+    echo "An error occurred while changing the collation of the database." . PHP_EOL;
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

@@ -11,6 +11,12 @@ use App\Exceptions\SystemException;
 
 final class MiscUtility
 {
+
+    public static function sanitizeFilename($filename, $regex = '/[^a-zA-Z0-9\-]/', $replace = ''): string
+    {
+        return preg_replace($regex, $replace, $filename);
+    }
+
     public static function encode($data)
     {
         $data = !is_array($data) ? [$data] : $data;

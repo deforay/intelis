@@ -27,12 +27,8 @@ try {
 	$uploadDir = UPLOAD_PATH . DIRECTORY_SEPARATOR . "support";
 	if (isset($_POST['image']) && trim((string) $_POST['image']) != "" && trim((string) $_POST['supportId']) != "") {
 		$supportId = base64_decode((string) $_POST['supportId']);
-		if (
-			!file_exists($uploadDir . DIRECTORY_SEPARATOR . $supportId)
-			&& !is_dir($uploadDir . DIRECTORY_SEPARATOR . $supportId)
-		) {
-			MiscUtility::makeDirectory($uploadDir . DIRECTORY_SEPARATOR . $supportId);
-		}
+
+		MiscUtility::makeDirectory($uploadDir . DIRECTORY_SEPARATOR . $supportId);
 
 		$data = $_POST['image'];
 		$fileName = 'screenshot-' . uniqid() . '.png';
