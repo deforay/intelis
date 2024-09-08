@@ -40,7 +40,8 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $transactionId = MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
     $labId = null;

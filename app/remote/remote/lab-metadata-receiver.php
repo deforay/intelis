@@ -34,6 +34,10 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
+
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
+
     $counter = 0;
 
     $labId = null;
@@ -47,9 +51,7 @@ try {
         $tableInfo = [];
         $i = 1;
         foreach ($parsedData as $name => $data) {
-            if ($name === 'transactionId') {
-                $transactionId = $data;
-            } elseif ($name === 'labId') {
+            if ($name === 'labId') {
                 $labId = $data;
             } elseif ($name === 'labStorage') {
                 $tableInfo['primaryKey'][$i] = 'storage_id';

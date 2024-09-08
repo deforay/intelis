@@ -41,7 +41,8 @@ try {
     /** @var UsersService $usersService */
     $usersService = ContainerRegistry::get(UsersService::class);
 
-    $transactionId = MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
@@ -143,7 +144,6 @@ try {
                 } else {
                     $id = $db->insert($tableName, $lab);
                 }
-
 
                 if ($id === true && isset($lab['sample_code'])) {
                     $sampleCodes[] = $lab['sample_code'];

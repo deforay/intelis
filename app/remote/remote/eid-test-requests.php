@@ -41,7 +41,8 @@ try {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
 
-  $transactionId = MiscUtility::generateULID();
+  $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+  $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
   $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
@@ -51,9 +52,9 @@ try {
   $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
   if (!empty($fMapResult)) {
-    $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+    $condition = "(lab_id =$labId OR facility_id IN ($fMapResult))";
   } else {
-    $condition = "lab_id =" . $labId;
+    $condition = "lab_id =$labId";
   }
 
   $sQuery = "SELECT * FROM form_eid WHERE $condition ";

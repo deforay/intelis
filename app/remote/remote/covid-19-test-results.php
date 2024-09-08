@@ -42,8 +42,8 @@ try {
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
-
-    $transactionId = MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $sampleCodes = $facilityIds = [];
 

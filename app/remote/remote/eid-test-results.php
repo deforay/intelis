@@ -46,7 +46,8 @@ try {
     $sampleCodes = $facilityIds = [];
     $labId = null;
 
-    $transactionId = MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 

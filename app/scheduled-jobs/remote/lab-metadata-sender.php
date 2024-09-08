@@ -61,7 +61,6 @@ try {
     $transactionId = MiscUtility::generateULID();
 
     $payload = [
-        "transactionId" => $transactionId,
         "labId" => $labId,
         "x-api-key" => MiscUtility::generateUUID(),
     ];

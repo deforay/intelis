@@ -64,18 +64,19 @@ final class JsonUtility
     }
 
     // Convert data to JSON string
-    public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR): ?string
+    public static function toJSON(mixed $data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): ?string
     {
+        $json = null;
         // Check if the data is already a valid JSON string
         if (is_string($data) && self::isJSON($data)) {
-            return $data;
-        }
-
-        // Convert the data to JSON
-        $json = json_encode($data, $flags);
-        if ($json === false) {
-            LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
-            return null;
+            $json = $data;
+        } elseif (is_array($data)) {
+            // Convert the data to JSON
+            $json = json_encode($data, $flags);
+            if ($json === false) {
+                LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
+                $json = null;
+            }
         }
         return $json;
     }

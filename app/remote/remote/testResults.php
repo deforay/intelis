@@ -14,7 +14,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+require_once dirname(__FILE__) . "/../../../bootstrap.php";
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -39,6 +39,8 @@ try {
     $request = AppRegistry::get('request');
     $jsonResponse = $apiService->getJsonFromRequest($request);
 
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     //remove unwanted columns
     $unwantedColumns = [
@@ -52,7 +54,7 @@ try {
     // Create an array with all column names set to null
     $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $unwantedColumns);
 
-    $transactionId = MiscUtility::generateULID();
+
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
@@ -135,7 +137,6 @@ try {
                     $sResult = $db->rawQueryOne($sQuery, $params);
                     //LoggerUtility::log('info', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
-
 
                 $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;

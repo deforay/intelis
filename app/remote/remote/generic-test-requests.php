@@ -45,9 +45,8 @@ try {
 	$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 	$dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 
-
-
-	$transactionId = MiscUtility::generateULID();
+	$apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+	$transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
 	$counter = 0;
 
@@ -56,9 +55,9 @@ try {
 	$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
 	if (!empty($fMapResult)) {
-		$condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+		$condition = "(lab_id =$labId OR facility_id IN ($fMapResult))";
 	} else {
-		$condition = "lab_id =" . $labId;
+		$condition = "lab_id = $labId";
 	}
 
 
@@ -93,14 +92,13 @@ try {
 		'last_modified_datetime'
 	];
 
-	$general->updateNullColumnsWithDefaults('generic_tests', [
+	$general->updateNullColumnsWithDefaults('form_generic', [
 		'is_result_mail_sent' => 'no',
 		'is_request_mail_sent' => 'no',
 		'is_result_sms_sent' => 'no'
 	]);
 
-	$sQuery = "SELECT * FROM form_generic
-                    WHERE $condition ";
+	$sQuery = "SELECT * FROM form_generic WHERE $condition ";
 
 	if (!empty($data['manifestCode'])) {
 		$sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";

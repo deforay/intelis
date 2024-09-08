@@ -34,9 +34,9 @@ $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
   $db->beginTransaction();
-  $transactionId = MiscUtility::generateULID();
 
-
+  $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+  $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
   $labId = $data['labName'] ?? $data['labId'] ?? null;
 

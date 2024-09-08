@@ -37,7 +37,9 @@ try {
 
 
   $db->beginTransaction();
-  $transactionId = MiscUtility::generateULID();
+
+  $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+  $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);

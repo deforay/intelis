@@ -90,9 +90,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
     $url = "$remoteURL/remote/remote/getRequests.php";
     $payload = [
         'labId' => $labId,
-        'module' => 'vl',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'vl'
     ];
     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -253,9 +251,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 
     $payload = [
         'labId' => $labId,
-        'module' => 'eid',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'eid'
     ];
     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -398,9 +394,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
     $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
     $payload = array(
         'labId' => $labId,
-        'module' => 'covid19',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'covid19'
     );
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -600,9 +594,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
     $url = $remoteURL . '/remote/remote/hepatitis-test-requests.php';
     $payload = array(
         'labId' => $labId,
-        'module' => 'hepatitis',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'hepatitis'
     );
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -787,9 +779,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
     $url = "$remoteURL/remote/remote/tb-test-requests.php";
     $payload = [
         'labId' => $labId,
-        'module' => 'tb',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'tb'
     ];
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -946,9 +936,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
     $url = "$remoteURL/remote/remote/cd4-test-requests.php";
     $payload = [
         'labId' => $labId,
-        'module' => 'cd4',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'cd4'
     ];
     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
@@ -1089,9 +1077,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
     $url = "$remoteURL/remote/remote/generic-test-requests.php";
     $payload = [
         'labId' => $labId,
-        'module' => 'generic-tests',
-        'time' => time(),
-        "instanceId" => $general->getInstanceId()
+        'module' => 'generic-tests'
     ];
     if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;

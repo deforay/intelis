@@ -12,6 +12,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
+
 try {
     $db->beginTransaction();
 
@@ -32,15 +33,16 @@ try {
     }
     $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
-    $transactionId = MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
     if (!empty($fMapResult)) {
-        $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+        $condition = "(lab_id =$labId OR facility_id IN ($fMapResult))";
     } else {
-        $condition = "lab_id =" . $labId;
+        $condition = "lab_id =$labId";
     }
 
 

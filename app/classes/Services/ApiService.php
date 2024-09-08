@@ -2,12 +2,12 @@
 
 namespace App\Services;
 
-use App\Utilities\JsonUtility;
 use Exception;
 use Throwable;
 use GuzzleHttp\Client;
 use GuzzleHttp\Middleware;
 use GuzzleHttp\HandlerStack;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
@@ -23,12 +23,15 @@ final class ApiService
     protected float $jitterFactor;
     protected int $maxRetryDelay;
 
-    public function __construct(?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
+    protected CommonService $commonService;
+
+    public function __construct(?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000, CommonService $commonService)
     {
         $this->maxRetries = $maxRetries;
         $this->delayMultiplier = $delayMultiplier;
         $this->jitterFactor = $jitterFactor;
         $this->maxRetryDelay = $maxRetryDelay;
+        $this->commonService = $commonService;
 
         // Use the injected client if provided, or create a new one
         $this->client = $client ?? $this->createApiClient();
@@ -117,8 +120,9 @@ final class ApiService
 
         $options = [
             RequestOptions::HEADERS => [
-                'X-Request-ID' => MiscUtility::generateUUID(),
+                'X-Request-ID' => MiscUtility::generateULID(),
                 'X-Timestamp'  => time(),
+                'X-Instance-ID' => $this->commonService->getInstanceId(),
                 'Content-Type' => 'application/json; charset=utf-8',
             ]
         ];
@@ -182,11 +186,11 @@ final class ApiService
             //     : fopen($jsonFilePath, 'r');
 
             if ($gzip) {
-                $fileContents = gzencode(file_get_contents($jsonFilePath)); // Gzipped content
-                $fileSize = mb_strlen($fileContents, '8bit'); // Size of gzipped content
+                $fileContents = gzencode(file_get_contents($jsonFilePath));
+                $fileSize = mb_strlen($fileContents, '8bit');
             } else {
-                $fileContents = fopen($jsonFilePath, 'r'); // Stream for non-gzipped content
-                $fileSize = filesize($jsonFilePath); // Size of the file from the file path
+                $fileContents = fopen($jsonFilePath, 'r');
+                $fileSize = filesize($jsonFilePath);
             }
 
             // Prepare file content for multipart
@@ -210,7 +214,8 @@ final class ApiService
             $headers = [
                 'Content-Length' => $fileSize,
                 'X-Timestamp'    => time(),
-                'X-Unique-ID'    => MiscUtility::generateUUID(),
+                'X-Request-ID'    => MiscUtility::generateULID(),
+                'X-Instance-ID' => $this->commonService->getInstanceId()
             ];
 
             // Initialize the options array for multipart form data

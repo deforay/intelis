@@ -23,7 +23,10 @@ $request = AppRegistry::get('request');
 
 try {
     $db->beginTransaction();
-    $transactionId = MiscUtility::generateULID();
+
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
+
     $data = $apiService->getJsonFromRequest($request, true);
 
     $labId = $data['labName'] ?? $data['labId'] ?? null;
@@ -43,9 +46,9 @@ try {
     $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
     if (!empty($fMapResult)) {
-        $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+        $condition = "(lab_id =$labId OR facility_id IN ($fMapResult))";
     } else {
-        $condition = "lab_id =" . $labId;
+        $condition = "lab_id =$labId";
     }
 
     $sQuery = "SELECT * FROM form_hepatitis
