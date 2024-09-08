@@ -141,23 +141,19 @@ try {
                 } else {
                     $id = $db->insert($tableName, $lab);
                 }
+
+                if ($id === true && isset($lab['sample_code'])) {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                }
             } catch (Throwable $e) {
-
-                // $sampleCodes[] = $lab['sample_code'];
-                // $facilityIds[] = $lab['facility_id'];
-
-                //if ($db->getLastErrno() > 0) {
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                //}
-                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 continue;
-            }
-
-            if ($id === true && isset($lab['sample_code'])) {
-                $sampleCodes[] = $lab['sample_code'];
-                $facilityIds[] = $lab['facility_id'];
             }
         }
     }

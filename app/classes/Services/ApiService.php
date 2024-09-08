@@ -23,13 +23,15 @@ final class ApiService
     protected float $jitterFactor;
     protected int $maxRetryDelay;
 
-    public function __construct(int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
+    public function __construct(?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
     {
         $this->maxRetries = $maxRetries;
         $this->delayMultiplier = $delayMultiplier;
         $this->jitterFactor = $jitterFactor;
         $this->maxRetryDelay = $maxRetryDelay;
-        $this->client = $this->createApiClient();
+
+        // Use the injected client if provided, or create a new one
+        $this->client = $client ?? $this->createApiClient();
     }
 
     private function logError(Throwable $e, string $message): void
@@ -80,7 +82,8 @@ final class ApiService
     {
         return function ($retries) {
             $delay = $this->delayMultiplier * (2 ** $retries);
-            $jitter = $this->jitterFactor * random_int(0, 1000) / 1000;
+            //$jitter = $this->jitterFactor * random_int(0, 1000) / 1000;
+            $jitter = random_int(0, (int)($this->jitterFactor * 1000)) / 1000;
             return min($this->maxRetryDelay, $delay * (1 + $jitter));
         };
     }
@@ -111,9 +114,15 @@ final class ApiService
 
     public function post($url, $payload, $gzip = false, $returnWithStatusCode = false): array|string|null
     {
+
         $options = [
-            RequestOptions::HEADERS => ['Content-Type' => 'application/json; charset=utf-8']
+            RequestOptions::HEADERS => [
+                'X-Request-ID' => MiscUtility::generateUUID(),
+                'X-Timestamp'  => time(),
+                'Content-Type' => 'application/json; charset=utf-8',
+            ]
         ];
+
         try {
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
             if ($gzip) {
@@ -122,8 +131,10 @@ final class ApiService
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
             }
 
+            // Correctly set Content-Length based on the payload size in bytes
+            $options[RequestOptions::HEADERS]['Content-Length'] = mb_strlen($payload, '8bit');
 
-
+            // Set the request body
             $options[RequestOptions::BODY] = $payload;
 
 
@@ -165,43 +176,66 @@ final class ApiService
         $multipartData = [];
 
         try {
-            // File content handling
+
+            // $fileContents = $gzip
+            //     ? gzencode(stream_get_contents(fopen($jsonFilePath, 'r')))
+            //     : fopen($jsonFilePath, 'r');
+
             if ($gzip) {
-                // GZip the file content and add to multipart data
-                $multipartData[] = [
-                    'name' => $fileName,
-                    'contents' => gzencode(file_get_contents($jsonFilePath)),
-                    'filename' => basename((string) $jsonFilePath) . '.gz', // adding .gz to indicate gzip
-                ];
+                $fileContents = gzencode(file_get_contents($jsonFilePath)); // Gzipped content
+                $fileSize = mb_strlen($fileContents, '8bit'); // Size of gzipped content
             } else {
-                // Add regular file content to multipart data
+                $fileContents = fopen($jsonFilePath, 'r'); // Stream for non-gzipped content
+                $fileSize = filesize($jsonFilePath); // Size of the file from the file path
+            }
+
+            // Prepare file content for multipart
+            $multipartData = [
+                [
+                    'name'     => $fileName,
+                    'contents' => $fileContents,
+                    'filename' => basename($jsonFilePath) . ($gzip ? '.gz' : ''),
+                ]
+            ];
+
+            // Add additional parameters to multipart data
+            foreach ($params as $name => $value) {
                 $multipartData[] = [
-                    'name' => $fileName,
-                    'contents' => fopen($jsonFilePath, 'r'),
-                    'filename' => basename((string) $jsonFilePath)
+                    'name'     => $name,
+                    'contents' => $value
                 ];
             }
 
-            // Add additional parameters to multipart data
-            foreach ($params as $param) {
-                $multipartData[] = $param;
-            }
+            // Prepare headers
+            $headers = [
+                'Content-Length' => $fileSize,
+                'X-Timestamp'    => time(),
+                'X-Unique-ID'    => MiscUtility::generateUUID(),
+            ];
 
             // Initialize the options array for multipart form data
             $options = [
-                RequestOptions::MULTIPART => $multipartData
+                RequestOptions::MULTIPART => $multipartData,
+                RequestOptions::HEADERS   => $headers
             ];
 
             // Send the request
             $response = $this->client->post($url, $options);
 
             return $response->getBody()->getContents();
+        } catch (RequestException $e) {
+            // Extract the response body from the exception, if available
+            $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
+            $errorCode = $e->getResponse() ? $e->getResponse()->getStatusCode() : 500;
+            // Log the error along with the response body
+            $this->logError($e, "Unable to post to $url. Server responded with $errorCode : " . ($responseBody ?? 'No response body'));
+
+            return $responseBody ?? null;
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
             return null; // Error occurred while making the request
         }
     }
-
 
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {

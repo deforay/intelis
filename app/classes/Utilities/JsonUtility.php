@@ -64,7 +64,7 @@ final class JsonUtility
     }
 
     // Convert data to JSON string
-    public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE): ?string
+    public static function toJSON($data, int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PARTIAL_OUTPUT_ON_ERROR): ?string
     {
         // Check if the data is already a valid JSON string
         if (is_string($data) && self::isJSON($data)) {

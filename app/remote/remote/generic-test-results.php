@@ -163,19 +163,20 @@ try {
                     ];
                     $db->insert("generic_test_results", $customTestData);
                 }
-            } catch (Throwable $e) {
-                if ($db->getLastErrno() > 0) {
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                }
-                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
-                continue;
-            }
 
-            if ($id === true && isset($lab['sample_code'])) {
-                $sampleCodes[] = $lab['sample_code'];
-                $facilityIds[] = $lab['facility_id'];
+
+                if ($id === true && isset($lab['sample_code'])) {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                }
+            } catch (Throwable $e) {
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
+                continue;
             }
         }
     }

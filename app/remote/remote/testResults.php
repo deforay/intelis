@@ -153,16 +153,11 @@ try {
                 }
             } catch (Throwable $e) {
 
-                // $sampleCodes[] = $lab['sample_code'];
-                // $facilityIds[] = $lab['facility_id'];
-
-                if (!empty($db->getLastError()) || $db->getLastErrno() > 0) {
-                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno() . ":" . $db->getLastError());
-                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-                }
-                LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
-                    'line' => __LINE__,
-                    'file' => __FILE__
+                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'trace' => $e->getTraceAsString(),
                 ]);
                 continue;
             }

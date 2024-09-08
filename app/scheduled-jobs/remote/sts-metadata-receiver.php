@@ -114,7 +114,8 @@ $payload = [
     'partnersLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('geographical_divisions'),
     'patientsLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('patients'),
-    "Key"                           => "vlsm-get-remote",
+    'time' => time(),
+    "instanceId" => $general->getInstanceId()
 ];
 
 // This array is used to sync data that we will later receive from the API call

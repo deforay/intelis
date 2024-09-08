@@ -47,9 +47,9 @@ try {
   $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
   if (!empty($fMapResult)) {
-    $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+    $condition = "(lab_id = $labId OR facility_id IN ($fMapResult))";
   } else {
-    $condition = "lab_id = " . $labId;
+    $condition = "lab_id = $labId";
   }
 
   // oldName => newName for existing columns

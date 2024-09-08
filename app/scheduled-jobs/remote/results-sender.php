@@ -98,7 +98,8 @@ try {
         $payload = [
             "labId" => $labId,
             "results" => $customTestResultData,
-            "Key" => "vlsm-lab-data--",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
@@ -141,7 +142,8 @@ try {
         $payload = [
             "labId" => $labId,
             "result" => $vlLabResult,
-            "Key" => "vlsm-lab-data--",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
@@ -182,7 +184,8 @@ try {
         $payload = [
             "labId" => $labId,
             "result" => $eidLabResult,
-            "Key" => "vlsm-lab-data--",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
@@ -236,7 +239,8 @@ try {
         $payload = [
             "labId" => $labId,
             "results" => $c19ResultData,
-            "Key" => "vlsm-lab-data--",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
@@ -276,7 +280,8 @@ try {
         $payload = [
             "labId" => $labId,
             "result" => $hepLabResult,
-            "Key" => "vlsm-lab-data--"
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
@@ -319,7 +324,8 @@ try {
         $payload = [
             "labId" => $labId,
             "result" => $cd4LabResult,
-            "Key" => "vlsm-lab-data--",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);

@@ -143,6 +143,12 @@ try {
                 } else {
                     $id = $db->insert($tableName, $lab);
                 }
+
+
+                if ($id === true && isset($lab['sample_code'])) {
+                    $sampleCodes[] = $lab['sample_code'];
+                    $facilityIds[] = $lab['facility_id'];
+                }
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
@@ -151,11 +157,6 @@ try {
                     'trace' => $e->getTraceAsString(),
                 ]);
                 continue;
-            }
-
-            if ($id === true && isset($lab['sample_code'])) {
-                $sampleCodes[] = $lab['sample_code'];
-                $facilityIds[] = $lab['facility_id'];
             }
         }
     }
