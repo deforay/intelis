@@ -467,4 +467,6 @@ if ($status) {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

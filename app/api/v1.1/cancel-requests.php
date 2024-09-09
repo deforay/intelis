@@ -26,7 +26,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-$origJson = $request->getBody()->getContents();
+//$origJson = $request->getBody()->getContents();
+$origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload");
 }
@@ -119,4 +120,6 @@ try {
 
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'cancel-requests', $input['testType'], $requestUrl, $origJson, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

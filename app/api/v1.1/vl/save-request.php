@@ -511,5 +511,6 @@ $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-r
 
 $general->updateResultSyncDateTime('vl', null, $updatedLabs);
 
-//echo $payload;
+
+//echo $payload
 echo $apiService->sendJsonResponse($payload, $request);

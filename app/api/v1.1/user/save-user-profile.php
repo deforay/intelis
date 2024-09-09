@@ -37,12 +37,9 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = AppRegistry::get('request');
 
-    $origJson = $request->getBody()->getContents();
+    //$origJson = $request->getBody()->getContents();
+    $origJson = $apiService->getJsonFromRequest($request);
 
-    // if (\App\Utilities\JsonUtility::isJSON($origJson) === false) {
-    //     LoggerUtility::log("error", "Invalid JSON Payload : " . $origJson);
-    //     throw new SystemException("Invalid JSON Payload");
-    // }
     $transactionId = MiscUtility::generateULID();
 
     $uploadedFiles = $request->getUploadedFiles();
@@ -206,4 +203,5 @@ try {
 
 $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data ?? []), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
-echo $payload;
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

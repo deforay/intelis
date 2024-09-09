@@ -21,7 +21,12 @@ ini_set('max_execution_time', 20000);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 
-$origJson = $request->getBody()->getContents();
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+//$origJson = $request->getBody()->getContents();
+$origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload");
 }
@@ -39,9 +44,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
 
 $transactionId = MiscUtility::generateULID();
 
@@ -300,5 +302,7 @@ try {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);
 // exit(0);

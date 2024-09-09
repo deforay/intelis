@@ -140,4 +140,6 @@ try {
 
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

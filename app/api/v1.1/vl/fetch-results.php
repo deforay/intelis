@@ -19,15 +19,6 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
-/** @var Slim\Psr7\Request $request */
-$request = AppRegistry::get('request');
-
-$origJson = $request->getBody()->getContents();
-if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload");
-}
-$input = $request->getParsedBody();
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -42,6 +33,16 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var Slim\Psr7\Request $request */
+$request = AppRegistry::get('request');
+
+//$origJson = $request->getBody()->getContents();
+$origJson = $apiService->getJsonFromRequest($request);
+if (JsonUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload");
+}
+$input = $request->getParsedBody();
 
 $user = null;
 
@@ -275,4 +276,6 @@ try {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

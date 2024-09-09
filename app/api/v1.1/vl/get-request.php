@@ -23,7 +23,8 @@ ini_set('max_execution_time', 20000);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 $origJson = "";
-/* $origJson = $request->getBody()->getContents();
+/* //$origJson = $request->getBody()->getContents();
+    $origJson = $apiService->getJsonFromRequest($request);
 if(isset($origJson) && !empty($origJson)){
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
@@ -259,4 +260,6 @@ try {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'get-request', 'vl', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

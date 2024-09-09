@@ -49,7 +49,8 @@ try {
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
-    $origJson = $request->getBody()->getContents();
+    //$origJson = $request->getBody()->getContents();
+    $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
@@ -515,4 +516,6 @@ try {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], _getIteratorCount($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
-echo $payload;
+
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);

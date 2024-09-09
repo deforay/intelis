@@ -53,7 +53,8 @@ try {
     $uniqueIdsForSampleCodeGeneration = [];
 
 
-    $origJson = $request->getBody()->getContents();
+    //$origJson = $request->getBody()->getContents();
+    $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
@@ -552,4 +553,5 @@ $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input
 
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);
 
-echo $payload;
+//echo $payload
+echo $apiService->sendJsonResponse($payload, $request);
