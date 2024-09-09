@@ -209,4 +209,4 @@ try {
     LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage());
 }
 
-echo $apiService->sendJsonResponse($payload);
+echo $apiService->sendJsonResponse($payload, $request);

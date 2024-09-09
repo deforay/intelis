@@ -87,4 +87,4 @@ try {
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 
-echo $apiService->sendJsonResponse($payload);
+echo $apiService->sendJsonResponse($payload, $request);

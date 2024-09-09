@@ -245,16 +245,16 @@ final class ApiService
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
         try {
+            // Check the content encoding of the request body
             $contentEncoding = $request->getHeaderLine('Content-Encoding');
             $jsonData = (string) $request->getBody();
 
+            // Decompress the request body if it's encoded
             if ($contentEncoding === 'gzip') {
-                $jsonData = gzdecode($jsonData) ?: throw new SystemException("Decompression failed");
+                $jsonData = gzdecode($jsonData) ?: throw new SystemException("Gzip decompression failed");
+            } elseif ($contentEncoding === 'deflate') {
+                $jsonData = gzinflate($jsonData) ?: throw new SystemException("Deflate decompression failed");
             }
-
-            // if (!mb_check_encoding($jsonData, 'UTF-8')) {
-            //     $jsonData = mb_convert_encoding($jsonData, 'UTF-8', 'auto');
-            // }
 
             if ($decode) {
                 $decodedJson = json_decode($jsonData, true);
@@ -270,6 +270,7 @@ final class ApiService
             return null;
         }
     }
+
 
 
     /**
@@ -352,7 +353,7 @@ final class ApiService
         }
     }
 
-    public function sendJsonResponse(mixed $payload)
+    public function sendJsonResponse(mixed $payload, ServerRequestInterface $request)
     {
         // Ensure payload is a JSON string
         $jsonPayload = is_array($payload) || is_object($payload) ? JsonUtility::encodeUtf8Json($payload) : $payload;
@@ -363,18 +364,32 @@ final class ApiService
             return null;
         }
 
-        // Gzip compress, assuming $jsonPayload is never null
-        $gzipPayload = gzencode($jsonPayload);
+        // Get 'Accept-Encoding' header to check for supported compression methods
+        $acceptEncoding = $request->getHeaderLine('Accept-Encoding');
 
-        // Check for gzencode errors
-        if ($gzipPayload === false) {
-            // Handle the error
-            return null;
+        // Initialize variables for content encoding and payload
+        $compressedPayload = null;
+        $contentEncoding = null;
+
+        // Gzip or deflate based on client capabilities
+        if (strpos($acceptEncoding, 'gzip') !== false) {
+            $compressedPayload = gzencode($jsonPayload);
+            $contentEncoding = 'gzip';
+        } elseif (strpos($acceptEncoding, 'deflate') !== false) {
+            $compressedPayload = gzdeflate($jsonPayload);
+            $contentEncoding = 'deflate';
+        } else {
+            // No compression supported or requested, send plain JSON
+            $compressedPayload = $jsonPayload;
         }
 
-        header('Content-Encoding: gzip');
-        header('Content-Length: ' . mb_strlen($gzipPayload, '8bit'));
-        return $gzipPayload;
+        // Send headers based on content encoding
+        if ($contentEncoding) {
+            header("Content-Encoding: $contentEncoding");
+            header('Content-Length: ' . mb_strlen($compressedPayload, '8bit'));
+        }
+
+        return $compressedPayload;
     }
 
 
