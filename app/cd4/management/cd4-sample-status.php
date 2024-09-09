@@ -78,18 +78,18 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td>&nbsp;<strong><?php echo _translate("Testing Lab"); ?> &nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>">
+								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 							<td><strong><?php echo _translate("Select Sample Received Date At Lab"); ?> :</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 						<tr>
 							<td><strong><?php echo _translate("Sample Tested Date"); ?> :</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td></td>
 							<td></td>

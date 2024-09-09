@@ -199,7 +199,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control highViralLoadReportFilter" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														<select class="form-control highViralLoadReportFilter" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
@@ -381,7 +381,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control vfvlnsfilters select2 select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
+														<select class="form-control vfvlnsfilters select2 select2-element" id="vfVlnsDistrict" name="vfVlnsDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('vfVlnsfacilityName',this.value)">
 														</select>
 													</td>
 													<td style="width: 10%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
@@ -534,7 +534,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+														<select class="form-control sampleRjtReportFilter select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
@@ -759,7 +759,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select class="form-control notAvailReportFilter select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+														<select class="form-control notAvailReportFilter select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
@@ -1033,24 +1033,24 @@ $state = $geolocationService->getProvinces("yes");
 										<div class="tab-pane fade" id="sampleTestingReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
-													<td style="width: 14%;"><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>
-													<td style="width: 20%;">
+													<td style="width: 23.3%;">
 														<select class="form-control stReportFilter select2 select2-element" id="stState" onchange="getByProvince('stDistrict','stfacilityName',this.value)" name="stState" title="<?php echo _translate('Please select Province/State'); ?>">
 															<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
 														</select>
 													</td>
 
-													<td style="width: 14%;"><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
-													<td style="width: 20%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+													<td style="width: 23.3%;">
+														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 														</select>
 													</td>
-													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
-													<td style="width: 24%;">
+													<td style="width: 10%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
+													<td style="width: 23.3%;">
 														<select class="form-control stReportFilter" id="stfacilityName" name="stfacilityName" multiple="multiple" title="<?php echo _translate('Please select facility name'); ?>" style="width:220px;">
 															<option value=""><?php echo _translate('-- Select --'); ?></option>
 															<?php foreach ($fResult as $name) { ?>
@@ -1059,10 +1059,10 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 												<tr>
-													<td style="width: 14%;"><strong>
+													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Collection Date "); ?>&nbsp;:
 														</strong></td>
-													<td style="width: 20%;">
+													<td style="width: 23.3%;">
 														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">

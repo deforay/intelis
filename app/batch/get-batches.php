@@ -85,8 +85,14 @@ try {
         $testTypeCol = " vl.test_type, ";
     }
 
+    if ($formTable == 'form_cd4') {
+        $resultCondition = "(vl.cd4_result IS NOT NULL AND vl.cd4_result != '')";
+    } else {
+        $resultCondition = "(vl.result IS NOT NULL AND vl.result != '')";
+    }
+
     $sQuery = "SELECT SUM(CASE
-                    WHEN (vl.result IS NOT NULL AND vl.result != '')
+                    WHEN $resultCondition
                     OR IFNULL(vl.is_sample_rejected, 'no') = 'yes'
                     THEN 1 ELSE 0
                 END) as `testcount`,

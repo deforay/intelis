@@ -135,7 +135,7 @@ $state = $geolocationService->getProvinces("yes");
 
 													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
+														<select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('hvlFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
@@ -244,7 +244,7 @@ $state = $geolocationService->getProvinces("yes");
 
 													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
+														<select class="form-control select2-element" id="rjtDistrict" name="rjtDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('rjtFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
@@ -346,7 +346,7 @@ $state = $geolocationService->getProvinces("yes");
 
 													<td><strong><?php echo _translate("District/County"); ?> :</strong></td>
 													<td>
-														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
+														<select class="form-control select2-element" id="noResultDistrict" name="noResultDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('noResultFacilityName',this.value)">
 														</select>
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Facility"); ?>&nbsp;:</strong></td>
@@ -472,7 +472,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("District/County"); ?> :
 														</strong></td>
 													<td style="width: 23%;">
-														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
+														<select class="form-control stReportFilter select2 select2-element" id="stDistrict" name="stDistrict" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict('stfacilityName',this.value)">
 														</select>
 													</td>
 													<td style="width: 14%;"><strong><?php echo _translate("Facility"); ?> :</strong></td>
@@ -600,10 +600,12 @@ $state = $geolocationService->getProvinces("yes");
 	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
 		$("#state,#rjtState,#noResultState,#stState").select2({
-			placeholder: "<?php echo _translate("Select Province"); ?>"
+			placeholder: "<?php echo _translate("Select Province"); ?>",
+			width: '100%'
 		});
 		$("#district,#rjtDistrict,#noResultDistrict,#stDistrict").select2({
-			placeholder: "<?php echo _translate("Select District"); ?>"
+			placeholder: "<?php echo _translate("Select District"); ?>",
+			width: '100%'
 		});
 		$("#hvlFacilityName,#rjtFacilityName,#noResultFacilityName,#stfacilityName").select2({
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
