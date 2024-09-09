@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -13,8 +14,6 @@ use App\Registries\ContainerRegistry;
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 
-$input = $request->getParsedBody();
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -23,6 +22,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+$origJson = $apiService->getJsonFromRequest($request);
+$input = JsonUtility::decodeJson($origJson);
 
 $transactionId = MiscUtility::generateULID();
 
@@ -105,8 +110,7 @@ try {
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
 
-$trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
-
+$trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
 echo $apiService->sendJsonResponse($payload, $request);
