@@ -13,6 +13,7 @@ use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use GuzzleHttp\Exception\RequestException;
+use PhpMyAdmin\SqlParser\Utils\Misc;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ApiService
@@ -25,7 +26,7 @@ final class ApiService
 
     protected CommonService $commonService;
 
-    public function __construct(?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000, CommonService $commonService)
+    public function __construct(CommonService $commonService, ?Client $client = null, int $maxRetries = 3, int $delayMultiplier = 1000, float $jitterFactor = 0.2, int $maxRetryDelay = 10000)
     {
         $this->maxRetries = $maxRetries;
         $this->delayMultiplier = $delayMultiplier;
@@ -247,30 +248,42 @@ final class ApiService
         try {
             // Check the content encoding of the request body
             $contentEncoding = $request->getHeaderLine('Content-Encoding');
-            $jsonData = (string) $request->getBody();
+            $jsonData = (string) ($request->getBody()); // Read the request body
 
             // Decompress the request body if it's encoded
-            if ($contentEncoding === 'gzip') {
-                $jsonData = gzdecode($jsonData) ?: throw new SystemException("Gzip decompression failed");
-            } elseif ($contentEncoding === 'deflate') {
-                $jsonData = gzinflate($jsonData) ?: throw new SystemException("Deflate decompression failed");
+            if ($contentEncoding === 'gzip' || $contentEncoding === 'application/gzip') {
+                $decodedData = gzdecode($jsonData);
+                if ($decodedData === false) {
+                    // Log and handle invalid gzip data
+                    LoggerUtility::log('error', 'Gzip decompression failed, treating as raw JSON');
+                    $decodedData = $jsonData; // Treat it as raw JSON
+                }
+                $jsonData = $decodedData;
+            } elseif ($contentEncoding === 'deflate' || $contentEncoding === 'application/deflate') {
+                $decodedData = gzinflate($jsonData);
+                if ($decodedData === false) {
+                    // Log and handle invalid deflate data
+                    LoggerUtility::log('error', 'Deflate decompression failed, treating as raw JSON');
+                    $decodedData = $jsonData; // Treat it as raw JSON
+                }
+                $jsonData = $decodedData;
             }
 
+            // If decoding is requested, decode the JSON string
             if ($decode) {
                 $decodedJson = json_decode($jsonData, true);
                 if (json_last_error() !== JSON_ERROR_NONE) {
                     throw new SystemException("JSON decoding error: " . json_last_error_msg());
                 }
                 return $decodedJson;
+            } else {
+                return JsonUtility::isJSON($jsonData) ? $jsonData : '{}'; // Ensure valid JSON or return empty object
             }
-
-            return $jsonData;
         } catch (Throwable $e) {
             $this->logError($e, "Unable to retrieve json");
             return null;
         }
     }
-
 
 
     /**
