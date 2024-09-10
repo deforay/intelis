@@ -81,7 +81,7 @@ $state = $geolocationService->getProvinces("yes");
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs">
-										<li class="active"><a href="#highTbReportTable" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
+										<li class="active"><a href="#highTbReport" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
 										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
 										<li><a href="#notAvailReport" data-toggle="tab"><?php echo _translate("Results Not Available Report"); ?></a></li>
 										<li><a href="#incompleteFormReport" data-toggle="tab"><?php echo _translate("Data Quality Check"); ?></a></li>
@@ -89,7 +89,7 @@ $state = $geolocationService->getProvinces("yes");
 										<li><a href="#patientTestHistoryFormReport" data-toggle="tab"><?php echo _translate("Patient Test History"); ?></a></li>
 									</ul>
 									<div id="myTabContent" class="tab-content">
-										<div class="tab-pane fade in active">
+										<div class="tab-pane fade in active" id="highTbReport">
 											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
@@ -640,7 +640,7 @@ $state = $geolocationService->getProvinces("yes");
 		incompleteForm();
 		getSampleTestingResult();
 		patientHistoryReport();
-		$("#highViralLoadReport input, #highViralLoadReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
+		$("#highTbReport input, #highTbReport select, #sampleRjtReport input, #sampleRjtReport select, #notAvailReport input, #notAvailReport select, #incompleteFormReport input, #incompleteFormReport select, #patientTestHistoryFormReport input").on("change", function() {
 			searchExecuted = false;
 		});
 	});

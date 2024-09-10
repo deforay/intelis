@@ -117,7 +117,12 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT vl.*,f.facility_name,fd.facility_name as labName FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+    $sQuery = "SELECT vl.*,f.facility_name,fd.facility_name as labName, rtbr.result as lamResult FROM form_tb as vl 
+        LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+        LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
+        LEFT JOIN r_tb_results as rtbr ON rtbr.result_id = vl.result
+        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type 
+        LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
     if (isset($thresholdLimit) && !empty($thresholdLimit)) {
         $sWhere[] =  " vl.result_status=7 AND vl.result > " . $thresholdLimit;
     }
@@ -248,7 +253,7 @@ try {
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['sample_tested_datetime'];
         $row[] = $aRow['labName'];
-        $row[] = $aRow['result'];
+        $row[] = $aRow['lamResult'];
         $row[] = '';
         /* $row[] = '<select class="form-control" name="status" id=' . $aRow['tb_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
                             <option value=""> -- Select -- </option>
