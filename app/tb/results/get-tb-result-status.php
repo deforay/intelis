@@ -124,7 +124,7 @@ try {
           * SQL queries
           * Get data to display
           */
-    $sQuery = "SELECT * FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+    $sQuery = "SELECT vl.*,b.batch_code,f.facility_name FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
     //echo $sQuery;die;
     $start_date = '';

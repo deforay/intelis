@@ -122,7 +122,7 @@ try {
           * SQL queries
           * Get data to display
           */
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, l.facility_name as labName FROM form_hepatitis as vl
+    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, l.facility_name as labName,b.batch_code,f.facility_name FROM form_hepatitis as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as l ON vl.lab_id=l.facility_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
