@@ -1,9 +1,9 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
-use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -60,7 +60,6 @@ foreach ($testReasonsResultDetails as $row) {
 }
 
 ?>
-   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 <style>
      .table>tbody>tr>td {
@@ -543,7 +542,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       </div>
                                                                  </div> -->
                                                             </div>
-                                                           
+
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _translate('Sample Testing Date'); ?> </label>
@@ -830,45 +829,45 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           <?php } ?>
      });
 
-    function editableSelectClinician(id, _fieldName, table, _placeholder) {
-        $("#" + id).select2({
-            placeholder: _placeholder,
-            minimumInputLength: 0,
-            width: '100%',
-            allowClear: true,
-            id: function(bond) {
-                return bond._id;
-            },
-            ajax: {
-                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
-                url: "/includes/get-data-list-for-generic.php",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        fieldName: _fieldName,
-                        tableName: table,
-                        q: params.term, // search term
-                        page: params.page,
-                        facilityId: $("#facilityId").val(),
-                    };
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data.result,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                //cache: true
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            }
-        });
-    }
+     function editableSelectClinician(id, _fieldName, table, _placeholder) {
+          $("#" + id).select2({
+               placeholder: _placeholder,
+               minimumInputLength: 0,
+               width: '100%',
+               allowClear: true,
+               id: function(bond) {
+                    return bond._id;
+               },
+               ajax: {
+                    placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                    url: "/includes/get-data-list-for-generic.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                         return {
+                              fieldName: _fieldName,
+                              tableName: table,
+                              q: params.term, // search term
+                              page: params.page,
+                              facilityId: $("#facilityId").val(),
+                         };
+                    },
+                    processResults: function(data, params) {
+                         params.page = params.page || 1;
+                         return {
+                              results: data.result,
+                              pagination: {
+                                   more: (params.page * 30) < data.total_count
+                              }
+                         };
+                    },
+                    //cache: true
+               },
+               escapeMarkup: function(markup) {
+                    return markup;
+               }
+          });
+     }
 
 
 
@@ -1345,8 +1344,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                });
      }
 
-   
-    
+
+
      $('#vlRequestFormCameroon').keypress((e) => {
           // Enter key corresponds to number 13
           if (e.which === 13) {
