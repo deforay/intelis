@@ -24,7 +24,7 @@ try {
 
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
-     $testRequestsService->processSampleCodeQueue(maxTries: 5, interval: 5);
+     $testRequestsService->processSampleCodeQueue();
 
      $db->beginReadOnlyTransaction();
 
@@ -376,8 +376,8 @@ try {
           if (!empty($aRow['batch_code'])) {
                $sampleCodeTooltip[] = _translate("Batch Code") . " : " . $aRow['batch_code'];
           }
-          if($aRow['form_attributes']!=""){
-          $formAttributes = json_decode($aRow['form_attributes']);
+          if ($aRow['form_attributes'] != "") {
+               $formAttributes = json_decode($aRow['form_attributes']);
 
                if (!empty($formAttributes->storage) && is_string($formAttributes->storage)) {
                     $storageObj = json_decode($formAttributes->storage);

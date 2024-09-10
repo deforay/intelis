@@ -22,16 +22,14 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
 
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
-     $testRequestsService->processSampleCodeQueue(maxTries: 5, interval: 5);
+     $testRequestsService->processSampleCodeQueue();
 
      $db->beginReadOnlyTransaction();
-
 
      /** @var FacilitiesService $facilitiesService */
      $facilitiesService = ContainerRegistry::get(FacilitiesService::class);

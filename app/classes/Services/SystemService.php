@@ -175,4 +175,39 @@ final class SystemService
         }
         return array_merge($activeModules, array_keys(array_filter(SYSTEM_CONFIG['modules'])));
     }
+
+    public function getServerSettings(): array
+    {
+        return [
+            'memory_limit' => ini_get('memory_limit'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size' => ini_get('post_max_size'),
+            'max_execution_time' => ini_get('max_execution_time'),
+            'max_input_time' => ini_get('max_input_time'),
+            'display_errors' => ini_get('display_errors'),
+            'error_reporting' => ini_get('error_reporting'),
+        ];
+    }
+    public function checkFolderPermissions(): array
+    {
+        // Define folder paths
+        $folders = [
+            'CACHE_PATH' => CACHE_PATH,
+            'UPLOAD_PATH' => UPLOAD_PATH,
+            'TEMP_PATH' => TEMP_PATH,
+            'LOGS_PATH' => ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'
+        ];
+
+        $folderPermissions = [];
+
+        foreach ($folders as $folderName => $folderPath) {
+            $folderPermissions[$folderName] = [
+                'exists' => is_dir($folderPath),
+                'readable' => is_readable($folderPath),
+                'writable' => is_writable($folderPath)
+            ];
+        }
+
+        return $folderPermissions;
+    }
 }

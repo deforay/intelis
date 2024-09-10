@@ -29,7 +29,7 @@ try {
 
      /** @var TestRequestsService $testRequestsService */
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
-     $testRequestsService->processSampleCodeQueue(maxTries: 5, interval: 5);
+     $testRequestsService->processSampleCodeQueue();
 
      $db->beginReadOnlyTransaction();
 

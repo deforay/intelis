@@ -242,7 +242,7 @@ try {
             $currentSampleData = $eidService->insertSample($params, returnSampleData: true);
             $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
-            $data['eidSampleId'] = (int) $currentSampleData['id'];;
+            $data['eidSampleId'] = (int) $currentSampleData['id'];
             if ($data['eidSampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [

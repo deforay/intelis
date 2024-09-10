@@ -83,18 +83,18 @@ try {
         // UPDATING CONFIG FILE
         $updatedConfig = [
             'remoteURL' => $remoteURL,
-            'modules.vl' => in_array('vl', $modulesToEnable) ? true : false,
-            'modules.eid' => in_array('eid', $modulesToEnable) ? true : false,
-            'modules.covid19' => in_array('covid19', $modulesToEnable) ? true : false,
-            'modules.hepatitis' => in_array('hepatitis', $modulesToEnable) ? true : false,
-            'modules.tb' => in_array('tb', $modulesToEnable) ? true : false,
-            'modules.cd4' => in_array('cd4', $modulesToEnable) ? true : false,
-            'modules.generic-tests' => in_array('generic-tests', $modulesToEnable) ? true : false,
-            'database.host' => (isset($_POST['dbHostName']) && !empty($_POST['dbHostName'])) ? $_POST['dbHostName'] : '127.0.0.1',
-            'database.username' => (isset($_POST['dbUserName']) && !empty($_POST['dbUserName'])) ? $_POST['dbUserName'] : 'root',
-            'database.password' => (isset($_POST['dbPassword']) && !empty($_POST['dbPassword'])) ? $_POST['dbPassword'] : 'zaq12345',
-            'database.db' => (isset($_POST['dbName']) && !empty($_POST['dbName'])) ? $_POST['dbName'] : 'vlsm',
-            'database.port' => (isset($_POST['dbPort']) && !empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
+            'modules.vl' => in_array('vl', $modulesToEnable),
+            'modules.eid' => in_array('eid', $modulesToEnable),
+            'modules.covid19' => in_array('covid19', $modulesToEnable),
+            'modules.hepatitis' => in_array('hepatitis', $modulesToEnable),
+            'modules.tb' => in_array('tb', $modulesToEnable),
+            'modules.cd4' => in_array('cd4', $modulesToEnable),
+            'modules.generic-tests' => in_array('generic-tests', $modulesToEnable),
+            'database.host' => (!empty($_POST['dbHostName'])) ? $_POST['dbHostName'] : '127.0.0.1',
+            'database.username' => (!empty($_POST['dbUserName'])) ? $_POST['dbUserName'] : 'root',
+            'database.password' => (!empty($_POST['dbPassword'])) ? $_POST['dbPassword'] : 'zaq12345',
+            'database.db' => (!empty($_POST['dbName'])) ? $_POST['dbName'] : 'vlsm',
+            'database.port' => (!empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
         ];
 
 
@@ -106,7 +106,6 @@ try {
         }
         // Clear the file cache
         (ContainerRegistry::get(FileCacheUtility::class))->clear();
-
 
         $userPassword = $usersService->passwordHash($password);
         $userId = MiscUtility::generateUUID();

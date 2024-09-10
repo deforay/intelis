@@ -247,7 +247,7 @@ try {
 
                     $stringToSearch = preg_quote($sampleCode, '/') . '\^CV\s+(\d+)';
 
-                    $pattern = '/' . $stringToSearch . '/i';
+                    $pattern = "/$stringToSearch/i";
 
                     if (preg_match($pattern, $result['raw_text'], $matches)) {
                         $data['cv_number'] = trim($matches[1]);
