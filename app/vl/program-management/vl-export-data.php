@@ -199,6 +199,7 @@ if ($formId == COUNTRY\CAMEROON) {
 									<option value="<?= SAMPLE_STATUS\PENDING_APPROVAL; ?>"><?php echo _translate("Awaiting Approval"); ?></option>
 									<option value="<?= SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB; ?>"><?php echo _translate("Registered At Testing Lab"); ?></option>
 									<option value="<?= SAMPLE_STATUS\EXPIRED ?>"><?php echo _translate("Expired"); ?></option>
+									<option value="<?= SAMPLE_STATUS\TEST_FAILED ?>"><?php echo _translate("Failed/Invalid"); ?></option>
 								</select>
 							</td>
 

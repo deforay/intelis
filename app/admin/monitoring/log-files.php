@@ -91,6 +91,13 @@ require_once APPLICATION_PATH . '/header.php';
 							</td>
 						</tr>
 					</table>
+
+
+					<div style="text-align: right; margin: 1% 1% 20px;">
+						<button class="btn btn-warning btn-sm" onclick="viewPhpErrorLogs()"><span><?php echo _translate("View PHP Error Logs"); ?></span></button>
+					</div>
+
+
 					<div style="margin-left: 1%; margin-top: 20px;text-align:right;padding:0 1em;">
 						<strong><?= _translate("Current Server Date and Time"); ?> : </strong> <?= DateUtility::getCurrentDateTime('Y-m-d\TH:i:s.uP') ?>
 					</div>
@@ -115,9 +122,10 @@ require_once APPLICATION_PATH . '/header.php';
 <script>
 	let start = 0; // Starting index for logs
 	let loading = false; // Flag to prevent multiple simultaneous AJAX calls
-	let linesPerPage = 3; // Adjust based on what you want per load
 	let hasMoreLogs = true; // Flag to check if there are more logs to load
+	let logType = 'application'; // Default log type is 'application'
 
+	// Function to copy log line to clipboard
 	function copyToClipboard(text, lineNumber) {
 		const tempInput = document.createElement('input');
 		tempInput.style.position = 'absolute';
@@ -128,7 +136,7 @@ require_once APPLICATION_PATH . '/header.php';
 		document.execCommand('copy');
 		document.body.removeChild(tempInput);
 		Toastify({
-			text: "<?= _translate("Copied to clipboard", true); ?>" + " - " + "<?= _translate("Line Number", true); ?>" + " - " + lineNumber,
+			text: "<?= _translate('Copied to clipboard', true); ?>" + " - " + "<?= _translate('Line Number', true); ?>" + " - " + lineNumber,
 			duration: 3000,
 			close: true,
 			gravity: "top",
@@ -137,6 +145,7 @@ require_once APPLICATION_PATH . '/header.php';
 		}).showToast();
 	}
 
+	// Function to bind click events for log lines
 	function bindLogLineClick() {
 		document.querySelectorAll('.logLine').forEach(function(logLine) {
 			logLine.addEventListener('click', function() {
@@ -146,6 +155,7 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 	}
 
+	// Function to reset logs and load them (starting from the first line)
 	function resetAndLoadLogs() {
 		start = 0; // Reset start index
 		hasMoreLogs = true; // Reset log continuation flag
@@ -153,6 +163,7 @@ require_once APPLICATION_PATH . '/header.php';
 		loadLogs(); // Load initial logs
 	}
 
+	// Function to load logs (application or PHP error)
 	function loadLogs() {
 		if (!loading && hasMoreLogs) {
 			loading = true;
@@ -160,35 +171,67 @@ require_once APPLICATION_PATH . '/header.php';
 			$('#logViewer').append('<div class="loading">Loading...</div>');
 
 			$.ajax({
-				url: '/admin/monitoring/get-log-files.php?date=' + $('#userDate').val() + '&start=' + start,
+				url: '/admin/monitoring/get-log-files.php',
+				data: {
+					date: $('#userDate').val(),
+					start: start,
+					log_type: logType // Pass log type to backend
+				},
 				success: function(data) {
 					$('.loading').remove(); // Remove loading indicator
+
+					// If "No more logs" message is found, stop further requests
+					if (data.includes('No more logs')) {
+						hasMoreLogs = false;
+						$('#logViewer').append(data); // Append "No more logs" message
+						return;
+					}
+
 					if (data.trim() === '') {
 						hasMoreLogs = false;
 						if (start === 0) {
-							$('#logViewer').html('<div class="logLine">No logs found.</div>'); // Clear and show no logs if first fetch returns none
+							$('#logViewer').html('<div class="logLine">No logs found.</div>'); // Show no logs if first fetch returns none
 						} else {
-							$('#logViewer').append('<div class="logLine">No more logs.</div>');
+							$('#logViewer').append('<div class="logLine">No more logs.</div>'); // Indicate no more logs
 						}
 					} else {
 						$('#logViewer').append(data);
 						let linesReturned = (data.match(/class='logLine'/g) || []).length;
-						start += linesReturned; // Update the start index based on actual lines returned
-						bindLogLineClick(); // Bind click event to new log lines
+						if (linesReturned === 0) {
+							hasMoreLogs = false; // No more logs to load
+							$('#logViewer').append('<div class="logLine">No more logs.</div>');
+						} else {
+							start += linesReturned; // Update the start index based on actual lines returned
+							bindLogLineClick(); // Bind click event to new log lines
+						}
 					}
 					loading = false;
 				},
 				error: function() {
 					$('.loading').remove();
 					if (start === 0) {
-						$('#logViewer').html('<div class="error">Error loading logs.</div>'); // Clear and show error if first fetch fails
+						$('#logViewer').html('<div class="error">Error loading logs.</div>'); // Show error on first fetch failure
 					} else {
-						$('#logViewer').append('<div class="error">Error loading more logs.</div>');
+						$('#logViewer').append('<div class="error">Error loading more logs.</div>'); // Show error on subsequent fetch failure
 					}
 					loading = false;
 				}
 			});
 		}
+	}
+
+
+
+	// Function to view PHP error logs
+	function viewPhpErrorLogs() {
+		logType = 'php_error'; // Switch log type to PHP error log
+		resetAndLoadLogs(); // Reset and load PHP error logs
+	}
+
+	// Function to view application logs
+	function viewApplicationLogs() {
+		logType = 'application'; // Switch log type to application log
+		resetAndLoadLogs(); // Reset and load application logs
 	}
 
 	$(document).ready(function() {
@@ -200,10 +243,11 @@ require_once APPLICATION_PATH . '/header.php';
 			yearRange: '<?= (date('Y') - 100); ?>:<?= date('Y'); ?>'
 		});
 
-		// Bind the button to reset logs and load new ones
-		$('#viewLogButton').click(resetAndLoadLogs);
+		// Bind the button to reset logs and load new ones for application logs
+		$('#viewLogButton').click(viewApplicationLogs);
 
-		resetAndLoadLogs(); // Load logs when page loads
+		// Load initial application logs on page load
+		viewApplicationLogs();
 
 		// Setup scroll event for infinite scrolling
 		$(window).scroll(function() {

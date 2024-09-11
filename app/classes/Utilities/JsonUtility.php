@@ -52,7 +52,7 @@ final class JsonUtility
     // Encode data to JSON with UTF-8 encoding
     public static function encodeUtf8Json(array|string|null $data): string
     {
-        if (is_null($data)) {
+        if (is_null(value: $data)) {
             return '{}';
         } elseif (is_array($data) && empty($data)) {
             return '[]';
@@ -132,9 +132,9 @@ final class JsonUtility
     }
 
     // Decode JSON string to array or object
-    public static function decodeJson($json, bool $assoc = true): mixed
+    public static function decodeJson($json, bool $returnAssociative = true): mixed
     {
-        $data = json_decode($json, $assoc);
+        $data = json_decode($json, $returnAssociative);
         if (json_last_error() !== JSON_ERROR_NONE) {
             LoggerUtility::log('error', 'Error decoding JSON: ' . json_last_error_msg());
             return null;

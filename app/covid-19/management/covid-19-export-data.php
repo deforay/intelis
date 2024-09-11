@@ -149,11 +149,12 @@ $state = $geolocationService->getProvinces("yes");
 							<td>
 								<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose status'); ?>" onchange="checkSampleCollectionDate();">
 									<option value=""><?php echo _translate("All Status"); ?></option>
-									<option value="7" selected=selected><?php echo _translate("Accepted"); ?></option>
-									<option value="4"><?php echo _translate("Rejected"); ?></option>
-									<option value="8"><?php echo _translate("Awaiting Approval"); ?></option>
-									<option value="6"><?php echo _translate("Registered At Testing Lab"); ?></option>
-									<option value="10"><?php echo _translate("Expired"); ?></option>
+									<option value="<?= SAMPLE_STATUS\ACCEPTED; ?>" selected=selected><?php echo _translate("Accepted"); ?></option>
+									<option value="<?= SAMPLE_STATUS\REJECTED; ?>"><?php echo _translate("Rejected"); ?></option>
+									<option value="<?= SAMPLE_STATUS\PENDING_APPROVAL; ?>"><?php echo _translate("Awaiting Approval"); ?></option>
+									<option value="<?= SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB; ?>"><?php echo _translate("Registered At Testing Lab"); ?></option>
+									<option value="<?= SAMPLE_STATUS\EXPIRED ?>"><?php echo _translate("Expired"); ?></option>
+									<option value="<?= SAMPLE_STATUS\TEST_FAILED ?>"><?php echo _translate("Failed/Invalid"); ?></option>
 								</select>
 							</td>
 							<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
