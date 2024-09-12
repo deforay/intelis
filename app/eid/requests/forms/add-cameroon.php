@@ -495,8 +495,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important;">
                                             <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'yes')? "selected='selected'":"";;?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'no')? "selected='selected'":"";;?>> <?= _translate('No'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'yes')? "selected='selected'":"";?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'no')? "selected='selected'":"";?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>

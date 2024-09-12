@@ -4,6 +4,7 @@ namespace App\Utilities;
 
 use Monolog\Logger;
 use Monolog\Handler\RotatingFileHandler;
+use Monolog\Handler\StreamHandler;
 
 final class LoggerUtility
 {
@@ -13,9 +14,18 @@ final class LoggerUtility
     {
         if (self::$logger === null) {
             self::$logger = new Logger('logger');
-            $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::DEBUG);
-            $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
-            self::$logger->pushHandler($handler);
+
+            try {
+                // Try to use the RotatingFileHandler for logging
+                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::DEBUG);
+                $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
+                self::$logger->pushHandler($handler);
+            } catch (\Exception $e) {
+                // If the logs directory is not writable, fallback to stderr
+                $fallbackHandler = new StreamHandler('php://stderr', Logger::WARNING);
+                self::$logger->pushHandler($fallbackHandler);
+                self::$logger->warning('Log file could not be written to. Fallback to stderr: ' . $e->getMessage());
+            }
         }
         return self::$logger;
     }
@@ -39,7 +49,6 @@ final class LoggerUtility
 
     public static function log($level, $message, array $context = []): void
     {
-
         $logger = self::getLogger();
 
         $callerInfo = self::getCallerInfo(1);

@@ -104,7 +104,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
           * SQL queries
           * Get data to display
           */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS *
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.facility_name,
+               b.batch_code
             FROM form_eid as vl
             INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status

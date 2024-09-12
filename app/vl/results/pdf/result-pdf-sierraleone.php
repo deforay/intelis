@@ -21,8 +21,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 
-$pages = [];
-$page = 1;
+//$pages = [];
+//$page = 1;
 
 if (!empty($result)) {
 

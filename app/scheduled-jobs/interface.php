@@ -6,7 +6,7 @@ if (php_sapi_name() !== 'cli') {
     exit(0);
 }
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once __DIR__ . "/../../bootstrap.php";
 
 use Throwable;
 use App\Services\VlService;
@@ -26,7 +26,6 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
     exit;
 }
 
-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
@@ -39,15 +38,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
-$formId = (int) $general->getGlobalConfig('vl_form');
-
-if (empty($labId)) {
-    LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
-    exit(0);
-}
-
-$lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 
 $mysqlConnected = false;
 $sqliteConnected = false;
@@ -57,7 +47,41 @@ if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CO
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
 
+// Check for a command-line argument for the date
+$lastInterfaceSync = null;
+if (isset($argv[1])) {
+    $input = $argv[1];
+
+    // Check if the input is a valid date in YYYY-MM-DD format
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $input)) {
+        $lastInterfaceSync = $input; // Use provided date as $lastInterfaceSync
+    }
+    // Check if the input is a number (days to subtract from current date)
+    elseif (is_numeric($input)) {
+        $daysToSubtract = (int) $input;
+        $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
+    } else {
+        echo "Invalid input. Please provide a valid date (YYYY-MM-DD) or a number of days." . PHP_EOL;
+        exit(1);
+    }
+} else {
+    // Get the last sync date from the database if a date or number wasn't provided
+    $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
+}
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+$formId = (int) $general->getGlobalConfig('vl_form');
+
+if (empty($labId)) {
+    LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
+    exit(0);
+}
+
 $sqliteDb = null;
+$syncedIds = [];
+$unsyncedIds = [];
+$addedOnValues = []; // Array to store added_on values
+
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
@@ -247,7 +271,7 @@ try {
 
                     $stringToSearch = preg_quote($sampleCode, '/') . '\^CV\s+(\d+)';
 
-                    $pattern = '/' . $stringToSearch . '/i';
+                    $pattern = "/$stringToSearch/i";
 
                     if (preg_match($pattern, $result['raw_text'], $matches)) {
                         $data['cv_number'] = trim($matches[1]);
@@ -267,32 +291,12 @@ try {
                     $data['result_status'] = SAMPLE_STATUS\REJECTED;
                 }
                 $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
-                $vlUpdateId = $db->update('form_vl', $data);
+                $queryStatus = $db->update('form_vl', $data);
                 $numberOfResults++;
                 // $processedResults[] = $result['order_id'];
                 //  $processedResults[] = $result['test_id'];
-                if ($vlUpdateId) {
-                    if ($mysqlConnected) {
-                        $interfaceData = [
-                            'lims_sync_status' => 1,
-                            'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                        ];
-                        $db->connection('interface')->where('id', $result['id']);
-                        $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
-                    }
-
-                    if ($sqliteConnected) {
-                        // Prepare the SQL query
-                        $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
-
-                        // Bind the values to the placeholders in the prepared statement
-                        $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                        $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                        $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
-
-                        // Execute the prepared statement
-                        $stmt->execute();
-                    }
+                if ($queryStatus === true) {
+                    $syncedIds[]  = $result['id'];
                 }
             } elseif (isset($tableInfo['eid_id'])) {
 
@@ -331,31 +335,11 @@ try {
                 ];
 
                 $db->where('eid_id', $tableInfo['eid_id']);
-                $eidUpdateId = $db->update('form_eid', $data);
+                $queryStatus = $db->update('form_eid', $data);
                 $numberOfResults++;
-                // $processedResults[] = $result['order_id'];
-                //  $processedResults[] = $result['test_id'];
-                if ($eidUpdateId) {
-                    if ($mysqlConnected) {
-                        $interfaceData = [
-                            'lims_sync_status' => 1,
-                            'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                        ];
-                        $db->connection('interface')->where('id', $result['id']);
-                        $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
-                    }
-                    if ($sqliteConnected) {
-                        // Prepare the SQL query
-                        $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
 
-                        // Bind the values to the placeholders in the prepared statement
-                        $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                        $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                        $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
-
-                        // Execute the prepared statement
-                        $stmt->execute();
-                    }
+                if ($queryStatus === true) {
+                    $syncedIds[]  = $result['id'];
                 }
             } elseif (isset($tableInfo['covid19_id'])) {
 
@@ -412,62 +396,19 @@ try {
                 ];
 
                 $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
-                $vlUpdateId = $db->update('form_hepatitis', $data);
+                $queryStatus = $db->update('form_hepatitis', $data);
                 $numberOfResults++;
                 // $processedResults[] = $result['order_id'];
                 //  $processedResults[] = $result['test_id'];
-                if ($vlUpdateId) {
-                    if ($mysqlConnected) {
-                        $interfaceData = [
-                            'lims_sync_status' => 1,
-                            'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                        ];
-                        $db->connection('interface')->where('id', $result['id']);
-                        $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
-                    }
-                    if ($sqliteConnected) {
-                        // Prepare the SQL query
-                        $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
-
-                        // Bind the values to the placeholders in the prepared statement
-                        $stmt->bindValue(':lims_sync_status', 1, PDO::PARAM_INT);
-                        $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                        $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
-
-                        // Execute the prepared statement
-                        $stmt->execute();
-                    }
+                if ($queryStatus === true) {
+                    $syncedIds[]  = $result['id'];
                 }
             } else {
-                if ($mysqlConnected) {
-                    $interfaceData = [
-                        'lims_sync_status' => 2,
-                        'lims_sync_date_time' => DateUtility::getCurrentDateTime(),
-                    ];
-                    $db->connection('interface')->where('id', $result['id']);
-                    $interfaceUpdateId = $db->connection('interface')->update('orders', $interfaceData);
-                }
-                if ($sqliteConnected) {
-                    // Prepare the SQL query
-                    $stmt = $sqliteDb->prepare("UPDATE orders SET lims_sync_status = :lims_sync_status, lims_sync_date_time = :lims_sync_date_time WHERE id = :id");
-
-                    // Bind the values to the placeholders in the prepared statement
-                    $stmt->bindValue(':lims_sync_status', 2, PDO::PARAM_INT);
-                    $stmt->bindValue(':lims_sync_date_time', DateUtility::getCurrentDateTime());
-                    $stmt->bindValue(':id', $result['id'], PDO::PARAM_INT);
-
-                    // Execute the prepared statement
-                    $stmt->execute();
-                }
+                $unsyncedIds[] = $result['id'];
             }
 
             if (!empty($result['added_on'])) {
-
-                $data = [
-                    'last_interface_sync' => $result['added_on']
-                ];
-
-                $db->connection('default')->update('s_vlsm_instance', $data);
+                $addedOnValues[] = $result['added_on'];
             }
         }
 
@@ -478,5 +419,70 @@ try {
     }
 } catch (Throwable $e) {
     echo $e->getMessage();
-    LoggerUtility::log('error', $e->getMessage());
+    LoggerUtility::log('error', $e->getMessage(),  [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
+} finally {
+
+    $batchSize = 1000;
+
+    $updateSyncStatus = function ($db, $sqliteDb, $ids, $status, $mysqlConnected, $sqliteConnected) use ($batchSize) {
+        if (!empty($ids)) {
+            $currentDateTime = DateUtility::getCurrentDateTime();
+
+            $totalBatches = ceil(count($ids) / $batchSize);
+
+            for ($i = 0; $i < $totalBatches; $i++) {
+                $batchIds = array_slice($ids, $i * $batchSize, $batchSize);
+
+                // Update MySQL
+                if ($mysqlConnected) {
+                    $interfaceData = [
+                        'lims_sync_status' => $status,
+                        'lims_sync_date_time' => $currentDateTime,
+                    ];
+                    $db->connection('interface')->where('id', $batchIds, 'IN');
+                    $db->connection('interface')->update('orders', $interfaceData);
+                }
+
+                // Update SQLite
+                if ($sqliteConnected) {
+                    $placeholders = implode(',', array_fill(0, count($batchIds), '?'));
+                    $sql = "UPDATE orders
+                        SET lims_sync_status = ?, lims_sync_date_time = ?
+                        WHERE id IN ($placeholders)";
+                    $stmt = $sqliteDb->prepare($sql);
+                    $stmt->bindValue(1, $status, PDO::PARAM_INT);
+                    $stmt->bindValue(2, $currentDateTime);
+
+                    foreach ($batchIds as $index => $id) {
+                        $stmt->bindValue($index + 3, $id, PDO::PARAM_INT);
+                    }
+
+                    $stmt->execute();
+                }
+            }
+        }
+    };
+
+
+    // Update synced IDs
+    $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
+
+    // Update unsynced IDs
+    $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
+
+    // Close SQLite connection
+    if ($sqliteConnected && $sqliteDb !== null) {
+        $sqliteDb = null;
+    }
+
+    if (!empty($addedOnValues)) {
+        $maxAddedOn = max($addedOnValues);
+
+        // Update s_vlsm_instance with the maximum added_on
+        $db->connection('default')->update('s_vlsm_instance', ['last_interface_sync' => $maxAddedOn]);
+    }
 }

@@ -1,7 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 $title = _translate("CD4 | Clinics Report");
@@ -11,6 +12,9 @@ require_once APPLICATION_PATH . '/header.php';
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -516,10 +520,10 @@ $state = $geolocationService->getProvinces("yes");
 													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('patientHistoryFilter');">
 															<span><?= _translate('Reset'); ?></span>
-															</button>
-															<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+														</button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
 															<?php echo _translate("Export to excel"); ?>
-															</button>
+														</button>
 													</td>
 												</tr>
 											</table>

@@ -49,20 +49,21 @@
         "monolog/monolog": "^3.7",
         "league/csv": "^9.15",
         "ifsnop/mysqldump-php": "^2.12",
-        "symfony/console": "^5.4",
+        "symfony/console": "^7.1",
         "gettext/gettext": "^5.7",
         "nesbot/carbon": "^3.3",
         "brick/phonenumber": "^0.6.0",
         "phpmyadmin/sql-parser": "^5.10",
         "nikic/iter": "^2.3",
-        "symfony/cache": "^6.4",
+        "symfony/cache": "^7.1",
         "gregwar/captcha": "^1.2",
         "openspout/openspout": "^4.24",
         "voku/anti-xss": "^4.1",
         "sqids/sqids": "^0.4.1",
         "symfony/yaml": "^6.4",
         "symfony/uid": "^7.1",
-        "symfony/filesystem": "^7.1"
+        "symfony/filesystem": "^7.1",
+        "psr/log": "^3.0"
     },
     "suggest": {
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
@@ -74,9 +75,9 @@
     },
     "config": {},
     "require-dev": {
-        "symfony/var-dumper": "^5.4",
         "kint-php/kint": "^5.1",
-        "squizlabs/php_codesniffer": "*"
+        "squizlabs/php_codesniffer": "*",
+        "symfony/var-dumper": "^7.1"
     },
     "scripts": {
         "cleanup": "php app/scheduled-jobs/cleanup.php 30",

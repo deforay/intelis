@@ -4,10 +4,16 @@ namespace App\Services;
 
 use Whoops\Run;
 use Whoops\Util\Misc;
+use FilesystemIterator;
 use Gettext\Loader\MoLoader;
+use RecursiveIteratorIterator;
 use App\Services\CommonService;
+use RecursiveDirectoryIterator;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
+
 
 final class SystemService
 {
@@ -174,5 +180,83 @@ final class SystemService
             $activeModules = ['admin', 'dashboard', 'common'];
         }
         return array_merge($activeModules, array_keys(array_filter(SYSTEM_CONFIG['modules'])));
+    }
+
+    public function getServerSettings(): array
+    {
+        return [
+            'memory_limit' => ini_get('memory_limit'),
+            'upload_max_filesize' => ini_get('upload_max_filesize'),
+            'post_max_size' => ini_get('post_max_size'),
+            'max_execution_time' => ini_get('max_execution_time'),
+            'max_input_time' => ini_get('max_input_time'),
+            'display_errors' => ini_get('display_errors'),
+            'error_reporting' => ini_get('error_reporting'),
+        ];
+    }
+    public function checkFolderPermissions(): array
+    {
+        // Define folder paths
+        $folders = [
+            'CACHE_PATH' => CACHE_PATH,
+            'UPLOAD_PATH' => UPLOAD_PATH,
+            'TEMP_PATH' => TEMP_PATH,
+            'LOGS_PATH' => ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'
+        ];
+
+        $folderPermissions = [];
+
+        foreach ($folders as $folderName => $folderPath) {
+            $folderPermissions[$folderName] = [
+                'exists' => is_dir($folderPath),
+                'readable' => is_readable($folderPath),
+                'writable' => is_writable($folderPath)
+            ];
+        }
+
+        return $folderPermissions;
+    }
+
+
+    public function diskSpaceUtilization(): array
+    {
+        $filesystem = new Filesystem();
+        $rootDirectory = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'C:/' : '/';
+
+        // Total disk space on the server (Root directory, adjusted for Windows/Linux)
+        $totalSpace = disk_total_space($rootDirectory);
+        $freeSpace = disk_free_space($rootDirectory);
+
+        // Space used by VLSM Application (ROOT_PATH)
+        $vlsmPath = ROOT_PATH;
+        $vlsmUsedSpace = $this->getDirectorySize($filesystem, $vlsmPath);
+
+        // Space used by Web Root Folder (ROOT_PATH . "../")
+        $webRootPath = realpath(ROOT_PATH . DIRECTORY_SEPARATOR . "..");
+        $webRootUsedSpace = $this->getDirectorySize($filesystem, $webRootPath);
+
+        return [
+            'total_server_space' => round($totalSpace / 1073741824, 2) . " GB", // Total server space in GB
+            'free_server_space' => round($freeSpace / 1073741824, 2) . " GB",   // Free space on the server in GB
+            'used_server_space' => round(($totalSpace - $freeSpace) / 1073741824, 2) . " GB", // Used space in GB
+            'vlsm_used_space' => round($vlsmUsedSpace / 1073741824, 2) . " GB", // Space used by VLSM Application in GB
+            'web_root_used_space' => round($webRootUsedSpace / 1073741824, 2) . " GB" // Space used by Web Root Folder in GB
+        ];
+    }
+
+    // Helper function to calculate directory size using Symfony Filesystem
+    protected function getDirectorySize(Filesystem $filesystem, string $dir): int
+    {
+        $size = 0;
+
+        // Ensure the directory exists
+        if ($filesystem->exists($dir)) {
+            // Recursively iterate through the directory and calculate size
+            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)) as $file) {
+                $size += $file->getSize(); // Add file size
+            }
+        }
+
+        return $size;
     }
 }

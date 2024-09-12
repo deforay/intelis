@@ -222,8 +222,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
-									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
-									<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> Clear</a>
+									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;"><?= _translate("Search"); ?> </a>
+									<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> <?= _translate("Clear"); ?></a>
 								</div>
 							</div>
 						</div>
@@ -239,8 +239,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				<div class="box-footer">
 					<input type="hidden" name="selectedSample" id="selectedSample" />
 					<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-					<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
-					<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
+					<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?> </a>
+					<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> <?= _translate(text: "Cancel"); ?></a>
 				</div>
 				<!-- /.box-footer -->
 			</form>

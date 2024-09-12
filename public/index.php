@@ -4,8 +4,8 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Middlewares\CorsMiddleware;
+use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
