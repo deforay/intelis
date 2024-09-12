@@ -346,13 +346,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields">
                                                 <select class="hcvFields result-focus labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
-                                                    <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hcv_vl_result'], '-- Select --'); ?>
+                                                    < ?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hcv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <th scope="row" class="hbvFields"><label for="hbv">HBV VL Result</label></th>
                                             <td class="hbvFields">
                                                 <select class="hbvFields result-focus labSecInput form-control rejected-input" name="hbv" id="hbv" title="Please select the HBV VL Result">
-                                                    <?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
+                                                    < ?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
                                                 </select>
                                             </td>
                                         </tr> -->
