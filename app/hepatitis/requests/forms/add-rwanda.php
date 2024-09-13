@@ -329,20 +329,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th style="width:15%" scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td  style="width:35%"><input class="form-control date rejection-show" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
-                                        <tr>
+                                        <!-- <tr>
                                             <th style="width:15%" scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
                                             <td class="hcvFields" style="width:35%">
                                                 <select class="hcvFields labSecInput form-control rejected-input" name="hcv" id="hcv">
-                                                    <?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
+                                                    < ?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
                                             <th style="width:15%" scope="row" class="hbvFields"><label for="hbv">HBV VL Result</label></th>
                                             <td class="hbvFields" style="width:35%">
                                                 <select class="hbvFields labSecInput form-control rejected-input" name="hbv" id="hbv">
-                                                    <?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
+                                                    < ?= $general->generateSelectOptions($hepatitisResults, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                        </tr>
+                                        </tr> -->
                                         <tr>
                                             <th style="width:15%" scope="row" class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td style="width:35%" class="hcvFields">
