@@ -676,3 +676,6 @@ ALTER TABLE `form_vl` ADD `result_sent_to_external` TEXT NULL DEFAULT NULL AFTER
 ALTER TABLE `audit_form_vl` ADD `result_sent_to_external` TEXT NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `form_vl` ADD `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL AFTER `result_sent_to_external`;
 ALTER TABLE `audit_form_vl` ADD `result_sent_to_external_datetime` TEXT NULL DEFAULT NULL AFTER `result_sent_to_external`;
+
+-- Jeyabanu 12-Sep-2024
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'common-reference', '/admin/monitoring/systemSettings.php', NULL, 'System Settings', NULL, 'always');
