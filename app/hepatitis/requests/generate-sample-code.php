@@ -5,12 +5,6 @@ use App\Registries\AppRegistry;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 
-
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
-
-
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 

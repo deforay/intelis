@@ -17,8 +17,6 @@ use App\Middlewares\SystemAdminAuthMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
-
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 

@@ -1,7 +1,5 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 use App\Services\Covid19Service;
 use App\Utilities\MiscUtility;

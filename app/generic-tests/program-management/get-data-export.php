@@ -9,9 +9,7 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-     session_start();
-}
+
 
 
 /** @var DatabaseService $db */

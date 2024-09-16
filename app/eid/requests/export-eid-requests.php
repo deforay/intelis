@@ -11,9 +11,7 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -37,9 +35,9 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding","Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date","Sample Requestor Phone Number" , "Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)","Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding","Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date","Sample Requestor Phone Number" ,"Is Sample Rejected?", "Freezer","Rack","Box", "Position","Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code","Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
 
 
@@ -48,10 +46,10 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
 }
 
 if ($formId != COUNTRY\CAMEROON) {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Lab Assigned Code")]);
+    $headings = MiscUtility::removeMatchingElements($headings, [_translate("Lab Assigned Code")]);
 }
 if ($formId != COUNTRY\DRC) {
-	$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
+    $headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 }
 
 $no = 1;
@@ -110,15 +108,15 @@ foreach ($resultSet as $aRow) {
     $row[] = $aRow['sample_requestor_phone'];
     $row[] = $sampleRejection;
     if ($formId == COUNTRY\DRC) {
-		$formAttributes = json_decode($aRow['form_attributes']);
-		$storageObj = json_decode($formAttributes->storage);
+        $formAttributes = json_decode($aRow['form_attributes']);
+        $storageObj = json_decode($formAttributes->storage);
 
-		$row[] = $storageObj->storageCode;
-		$row[] = $storageObj->rack;
-		$row[] = $storageObj->box;
-		$row[] = $storageObj->position;
-		$row[] = $storageObj->volume;
-	}
+        $row[] = $storageObj->storageCode;
+        $row[] = $storageObj->rack;
+        $row[] = $storageObj->box;
+        $row[] = $storageObj->position;
+        $row[] = $storageObj->volume;
+    }
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];
     if ($formId == COUNTRY\CAMEROON) {

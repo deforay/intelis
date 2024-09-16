@@ -12,10 +12,6 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        // Start the session if not already started
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
         // Get the requested URI
         $uri = $request->getUri()->getPath();
 

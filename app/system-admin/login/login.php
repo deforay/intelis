@@ -1,7 +1,5 @@
 <?php
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 if (isset($_SESSION['adminUserId'])) {
     header("Location:/system-admin/edit-config/index.php");
 }

@@ -7,9 +7,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 // echo "<pre>";print_r($_POST);die;
 
 /** @var DatabaseService $db */

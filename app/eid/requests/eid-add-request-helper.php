@@ -9,9 +9,7 @@ use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 
 
 /** @var DatabaseService $db */

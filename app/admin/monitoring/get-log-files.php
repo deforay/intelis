@@ -78,7 +78,7 @@ if (file_exists($file)) {
             $logEntries = array_slice($fileContent, $start, $linesPerPage);
             $logEntries = array_reverse($logEntries); // Reverse the order of log entries
             echo "<h4>" . _translate("No data found for the selected date") . " - " . $_GET['date'] . "</h4>";
-            echo "<h4>" . _translate("Showing the most recent log file: ") . basename($recentFile) . "</h4><br>";
+            echo "<h4>" . _translate("Showing the most recent log file") . " : " . basename($recentFile) . "</h4><br>";
 
             foreach ($logEntries as $index => $entry) {
                 $lineNumber = $start + $index + 1; // Calculate line number

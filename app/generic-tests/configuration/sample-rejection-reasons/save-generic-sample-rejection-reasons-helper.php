@@ -6,9 +6,7 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 // echo "<pre>";print_r($_POST);die;
 
 /** @var DatabaseService $db */

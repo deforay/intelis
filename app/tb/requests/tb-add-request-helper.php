@@ -9,9 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 /** @var DatabaseService $db */

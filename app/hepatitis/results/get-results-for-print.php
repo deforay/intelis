@@ -6,9 +6,7 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 $formConfigQuery = "SELECT * FROM `global_config` WHERE `name`='vl_form'";
 $configResult = $db->query($formConfigQuery);

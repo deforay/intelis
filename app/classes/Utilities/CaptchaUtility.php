@@ -10,10 +10,6 @@ final class CaptchaUtility
 
     public function getCaptcha(): void
     {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-
         $phrase = null;
         //if it is development environment, then let us keep it simple
         if (APPLICATION_ENV == "development") {

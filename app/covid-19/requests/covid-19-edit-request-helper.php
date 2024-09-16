@@ -14,9 +14,7 @@ use App\Services\PatientsService;
 use App\Utilities\DateUtility;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -283,7 +281,7 @@ try {
 			'previousResult' => $getPrevResult['result'],
 			'previousResultStatus' => $getPrevResult['result_status'],
 			'reasonForChange' => $_POST['reasonForChanging']
-	    );
+		);
 
 		$reasonForChanges = json_encode($reasonForChangesArr);
 	} else {

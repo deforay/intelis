@@ -6,9 +6,7 @@ use App\Services\DatabaseService;
 use App\Services\TbService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 $formConfigQuery = "SELECT * from global_config where name='vl_form'";

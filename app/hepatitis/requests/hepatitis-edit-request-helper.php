@@ -8,9 +8,7 @@ use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

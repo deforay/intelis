@@ -7,9 +7,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 
 
 /** @var DatabaseService $db */

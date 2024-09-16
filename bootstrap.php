@@ -3,6 +3,15 @@
 if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     session_name('appSession');
 
+    // Set cookie parameters before starting the session
+    session_set_cookie_params([
+        'path' => '/',    // Available in entire domain
+        'domain' => $_SERVER['HTTP_HOST'], // Default to current domain
+        'secure' => true, // Only send cookie over secure connections
+        'httponly' => true, // Only accessible via HTTP protocol, not JavaScript
+        'samesite' => 'Lax' // Strict or Lax recommended
+    ]);
+
     session_start();
 
     // Generate CSRF token if it doesn't exist
@@ -37,10 +46,10 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Dependency Injection
-require_once(APPLICATION_PATH . '/system/di.php');
+require_once APPLICATION_PATH . '/system/di.php';
 
 // Global functions
-require_once(APPLICATION_PATH . '/system/functions.php');
+require_once APPLICATION_PATH . '/system/functions.php';
 
 // Just putting $db and SYSTEM_CONFIG here in case there are
 // some old scripts that are still depending on these.
@@ -79,7 +88,7 @@ set_error_handler(function ($severity, $message, $file, $line) {
 });
 
 set_exception_handler(function ($exception) {
-    LoggerUtility::log('error', $exception->getMessage(), [
+    LoggerUtility::logError($exception->getMessage(), [
         'exception' => $exception,
         'trace' => $exception->getTraceAsString()
     ]);

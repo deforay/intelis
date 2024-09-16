@@ -4,9 +4,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 $tableName = "patients";

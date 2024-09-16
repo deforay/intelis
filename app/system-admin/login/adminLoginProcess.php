@@ -4,9 +4,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 $tableName = "system_admin";

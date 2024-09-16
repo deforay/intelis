@@ -7,9 +7,7 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 
 
 

@@ -9,9 +9,7 @@ use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 $arr = [];
 /** @var DatabaseService $db */

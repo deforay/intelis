@@ -7,9 +7,7 @@ use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

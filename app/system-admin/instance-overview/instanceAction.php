@@ -5,9 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 $tblName = 's_vlsm_instance';

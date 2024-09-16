@@ -11,9 +11,7 @@ use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use PhpOffice\PhpSpreadsheet\Style\Fill;
 
-if (session_status() == PHP_SESSION_NONE) {
-    session_start();
-}
+
 
 
 /** @var DatabaseService $db */

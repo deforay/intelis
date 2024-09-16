@@ -8,12 +8,6 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 
-if (session_status() == PHP_SESSION_NONE) {
-  session_start();
-}
-
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

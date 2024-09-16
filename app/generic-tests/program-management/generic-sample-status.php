@@ -6,9 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\GenericTestsService;
 
-if (session_status() == PHP_SESSION_NONE) {
-	session_start();
-}
+
 $title = _translate("Other Lab Tests | Sample Status Report");
 
 require_once APPLICATION_PATH . '/header.php';
