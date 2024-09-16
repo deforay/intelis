@@ -705,13 +705,14 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                 getMachine(this.value);
             }
         });
+        getMachine($("#eidPlatform").val());
 
     });
 
     function getMachine(value) {
         $.post("/instruments/get-machine-names-by-instrument.php", {
                 instrumentId: value,
-                machine: '',
+                machine: <?php echo !empty($eidInfo['import_machine_name']) ? $eidInfo['import_machine_name'] : '""'; ?>,
                 testType: 'eid'
             },
             function(data) {

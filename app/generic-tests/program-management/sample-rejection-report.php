@@ -9,8 +9,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 /** @var GenericTestsService $facilitiesService */
 $genericService = ContainerRegistry::get(GenericTestsService::class);
-
-
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 

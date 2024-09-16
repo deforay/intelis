@@ -5,6 +5,7 @@ require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 if (!isset($_SESSION['nonce'])) {
     $_SESSION['nonce'] = bin2hex(openssl_random_pseudo_bytes(32));
 }
+$nonce = $_SESSION['nonce'];
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -22,6 +23,7 @@ use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
 
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -35,6 +37,8 @@ $middlewarePipe = new MiddlewarePipe();
 
 $uri = $request->getUri()->getPath();
 
+error_log($uri);
+
 $host = $request->getUri()->getHost();
 
 
@@ -46,7 +50,7 @@ if (!empty($remoteURL)) {
 $allowedDomains = implode(" ", $allowedDomains);
 
 $csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
-//$csp = "default-src 'self'; script-src 'self' 'nonce-{$_SESSION['nonce']}'; style-src 'self' 'nonce-{$_SESSION['nonce']}'; connect-src 'self' $allowedDomains; img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+//$csp = "default-src 'self'; script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'nonce-{$nonce}'; connect-src 'self' $allowedDomains; img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);
     $response = $response->withAddedHeader('Content-Security-Policy', $csp);

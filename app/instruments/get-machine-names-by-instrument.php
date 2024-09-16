@@ -7,8 +7,6 @@ use App\Services\DatabaseService;
 
 
 
-
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -23,20 +21,31 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $tableName = "instruments";
 $importMachineTable = "instrument_machines";
 
-$configId = $_POST['instrumentId'];
 $testType = $_POST['testType'];
 $machineId = $_POST['machine'];
 
-$configQuery = "SELECT instrument_id FROM $tableName WHERE machine_name LIKE ?";
-$configInfo = $db->rawQueryOne($configQuery, [$configId]);
+$platForm = explode("##", (string) $_POST['instrumentId']);
+$machineName = $platForm[0];
+$instrumentId = $platForm[1];
 
 $options = '<option value="">--Select--</option>';
-if (isset($configInfo) && $configInfo != "") {
+
+if ($instrumentId != '') {
     $configMachineQuery = "SELECT * FROM $importMachineTable WHERE instrument_id LIKE ?";
-    $configMachineInfo = $db->rawQuery($configMachineQuery, [$configInfo['instrument_id']]);
+    $configMachineInfo = $db->rawQuery($configMachineQuery, [$instrumentId]);
+} else {
+    $configQuery = "SELECT instrument_id FROM $tableName WHERE machine_name LIKE ?";
+    $configInfo = $db->rawQueryOne($configQuery, [$machineName]);
+    if (isset($configInfo) && $configInfo != "") {
+        $configMachineQuery = "SELECT * FROM $importMachineTable WHERE instrument_id LIKE ?";
+        $configMachineInfo = $db->rawQuery($configMachineQuery, [$configInfo['instrument_id']]);
+    }
+}
+if (!empty($configMachineInfo)) {
     foreach ($configMachineInfo as $machine) {
         $selected = (isset($machineId) && $machine['config_machine_id'] == $machineId) ? "selected='selected'" : "";
         $options .= '<option value="' . $machine['config_machine_id'] . '" ' . $selected . '>' . ($machine['config_machine_name']) . '</option>';
     }
 }
+
 echo $options;
