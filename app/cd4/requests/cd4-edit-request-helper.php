@@ -30,7 +30,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 $request = AppRegistry::get('request');
 
 // Sanitize input
-$_POST = _sanitizeInput($_POST);
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";

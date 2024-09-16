@@ -21,9 +21,7 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-
-// Sanitize input
-$_POST = _sanitizeInput($_POST);
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_cd4";
 $tableName2 = "log_result_updates";

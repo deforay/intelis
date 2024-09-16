@@ -2,13 +2,13 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -24,9 +24,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-
-// Sanitize input
-$_POST = _sanitizeInput($_POST);
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";
@@ -39,13 +37,13 @@ $txtVal = null;
 $finalResult = null;
 try {
     $instanceId = $general->getInstanceId();
-  
+
     $testingPlatform = null;
     $instrumentId = null;
     if (isset($_POST['testingPlatform']) && trim((string) $_POST['testingPlatform']) != '') {
-         $platForm = explode("##", (string) $_POST['testingPlatform']);
-         $testingPlatform = $platForm[0];
-         $instrumentId = $platForm[3];
+        $platForm = explode("##", (string) $_POST['testingPlatform']);
+        $testingPlatform = $platForm[0];
+        $instrumentId = $platForm[3];
     }
 
     $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
@@ -172,44 +170,44 @@ try {
     ];
 
 
-       //For PNG form
-       $pngSpecificFields = [];
-       if (isset($formId) && $formId == '5') {
-  
-            if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
-                 $platForm = explode("##", (string) $_POST['failedTestingTech']);
-                 $_POST['failedTestingTech'] = $platForm[0];
-            }
-  
-  
-            $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
-            $pngSpecificFields['art_cd_date'] = DateUtility::isoDateFormat($_POST['cdDate'] ?? '');
-            $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
-            $pngSpecificFields['sample_to_transport'] = $_POST['typeOfSample'] ?? null;
-            $pngSpecificFields['whole_blood_ml'] = $_POST['wholeBloodOne'] ?? null;
-            $pngSpecificFields['whole_blood_vial'] = $_POST['wholeBloodTwo'] ?? null;
-            $pngSpecificFields['plasma_ml'] = $_POST['plasmaOne'] ?? null;
-            $pngSpecificFields['plasma_vial'] = $_POST['plasmaTwo'] ?? null;
-            $pngSpecificFields['plasma_process_time'] = $_POST['processTime'] ?? null;
-            $pngSpecificFields['plasma_process_tech'] = $_POST['processTech'] ?? null;
-            $pngSpecificFields['sample_collected_by'] = $_POST['collectedBy'] ?? null;
-            $pngSpecificFields['tech_name_png'] = $_POST['techName'] ?? null;
-            $pngSpecificFields['cphl_vl_result'] = $_POST['cphlVlResult'] ?? null;
-            $pngSpecificFields['batch_quality'] = $_POST['batchQuality'] ?? null;
-            $pngSpecificFields['sample_test_quality'] = $_POST['testQuality'] ?? null;
-            $pngSpecificFields['sample_batch_id'] = $_POST['batchNo'] ?? null;
-            $pngSpecificFields['failed_test_date'] = DateUtility::isoDateFormat($_POST['failedTestDate'] ?? '', true);
-            $pngSpecificFields['failed_test_tech'] = $_POST['failedTestingTech'] ?? null;
-            $pngSpecificFields['failed_vl_result'] = $_POST['failedvlResult'] ?? null;
-            $pngSpecificFields['failed_batch_quality'] = $_POST['failedbatchQuality'] ?? null;
-            $pngSpecificFields['failed_sample_test_quality'] = $_POST['failedtestQuality'] ?? null;
-            $pngSpecificFields['failed_batch_id'] = $_POST['failedbatchNo'] ?? null;
-            $pngSpecificFields['qc_tech_name'] = $_POST['qcTechName'] ?? null;
-            $pngSpecificFields['qc_tech_sign'] = $_POST['qcTechSign'] ?? null;
-            $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate'] ?? '');
-            $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
-       }
-       $vlData = array_merge($vlData, $pngSpecificFields);
+    //For PNG form
+    $pngSpecificFields = [];
+    if (isset($formId) && $formId == '5') {
+
+        if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
+            $platForm = explode("##", (string) $_POST['failedTestingTech']);
+            $_POST['failedTestingTech'] = $platForm[0];
+        }
+
+
+        $pngSpecificFields['art_cd_cells'] = $_POST['cdCells'];
+        $pngSpecificFields['art_cd_date'] = DateUtility::isoDateFormat($_POST['cdDate'] ?? '');
+        $pngSpecificFields['who_clinical_stage'] = $_POST['clinicalStage'];
+        $pngSpecificFields['sample_to_transport'] = $_POST['typeOfSample'] ?? null;
+        $pngSpecificFields['whole_blood_ml'] = $_POST['wholeBloodOne'] ?? null;
+        $pngSpecificFields['whole_blood_vial'] = $_POST['wholeBloodTwo'] ?? null;
+        $pngSpecificFields['plasma_ml'] = $_POST['plasmaOne'] ?? null;
+        $pngSpecificFields['plasma_vial'] = $_POST['plasmaTwo'] ?? null;
+        $pngSpecificFields['plasma_process_time'] = $_POST['processTime'] ?? null;
+        $pngSpecificFields['plasma_process_tech'] = $_POST['processTech'] ?? null;
+        $pngSpecificFields['sample_collected_by'] = $_POST['collectedBy'] ?? null;
+        $pngSpecificFields['tech_name_png'] = $_POST['techName'] ?? null;
+        $pngSpecificFields['cphl_vl_result'] = $_POST['cphlVlResult'] ?? null;
+        $pngSpecificFields['batch_quality'] = $_POST['batchQuality'] ?? null;
+        $pngSpecificFields['sample_test_quality'] = $_POST['testQuality'] ?? null;
+        $pngSpecificFields['sample_batch_id'] = $_POST['batchNo'] ?? null;
+        $pngSpecificFields['failed_test_date'] = DateUtility::isoDateFormat($_POST['failedTestDate'] ?? '', true);
+        $pngSpecificFields['failed_test_tech'] = $_POST['failedTestingTech'] ?? null;
+        $pngSpecificFields['failed_vl_result'] = $_POST['failedvlResult'] ?? null;
+        $pngSpecificFields['failed_batch_quality'] = $_POST['failedbatchQuality'] ?? null;
+        $pngSpecificFields['failed_sample_test_quality'] = $_POST['failedtestQuality'] ?? null;
+        $pngSpecificFields['failed_batch_id'] = $_POST['failedbatchNo'] ?? null;
+        $pngSpecificFields['qc_tech_name'] = $_POST['qcTechName'] ?? null;
+        $pngSpecificFields['qc_tech_sign'] = $_POST['qcTechSign'] ?? null;
+        $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate'] ?? '');
+        $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate'] ?? '');
+    }
+    $vlData = array_merge($vlData, $pngSpecificFields);
 
 
     $formAttributes = [

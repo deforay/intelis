@@ -1,5 +1,6 @@
 <?php
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
@@ -26,7 +27,11 @@ if (
 	$db->addConnection('archive', SYSTEM_CONFIG['archive']['database']);
 }
 
-$_POST = _sanitizeInput($_POST);
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $activeModules = SystemService::getActiveModules();
 

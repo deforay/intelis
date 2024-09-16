@@ -1,9 +1,13 @@
 <?php
 
+use App\Registries\AppRegistry;
 use Brick\PhoneNumber\PhoneNumber;
 use Brick\PhoneNumber\PhoneNumberParseException;
 
-$_POST = _sanitizeInput($_POST);
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
 $data = ['isValid' => false];
 

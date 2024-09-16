@@ -9,15 +9,13 @@ use GuzzleHttp\Exception\GuzzleException;
 
 class Dhis2
 {
-	private const DEFAULT_USERNAME = 'admin';
-	private const DEFAULT_PASSWORD = 'district';
 	private const DEFAULT_CONTENT_TYPE = 'application/json';
 	private readonly Client $httpClient;
 	private bool $authenticated = false;
 	private string $contentType;
 	public string $currentRequestUrl;
 
-	public function __construct(string $dhis2url, string $username = self::DEFAULT_USERNAME, string $password = self::DEFAULT_PASSWORD, string $contentType = self::DEFAULT_CONTENT_TYPE)
+	public function __construct(string $dhis2url, string $username, string $password, string $contentType = self::DEFAULT_CONTENT_TYPE)
 	{
 		$this->currentRequestUrl = $dhis2url;
 		$this->contentType = $contentType;
