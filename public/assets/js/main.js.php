@@ -64,13 +64,12 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
-    window.additionalXHRParams = {
-        layout: 0,
-        'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateRandomString(); ?>'
-    };
+    window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
     $.ajaxSetup({
-        headers: window.additionalXHRParams
+        headers: {
+            'X-CSRF-Token': window.csrf_token
+        }
     });
 
     function setCrossLogin() {

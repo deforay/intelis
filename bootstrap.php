@@ -3,12 +3,10 @@
 if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     session_name('appSession');
 
-    // Set a random session ID if no session ID is currently set
-    if (!isset($_COOKIE[session_name()])) {
-        session_id(bin2hex(random_bytes(16)));
-    }
-
     session_start();
+
+    // Generate CSRF token if it doesn't exist
+    $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 }
 
 // Application environment

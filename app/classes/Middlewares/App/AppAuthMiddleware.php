@@ -19,10 +19,15 @@ class AppAuthMiddleware implements MiddlewareInterface
         // Get the requested URI
         $uri = $request->getUri()->getPath();
 
+        // Only store the requested URI if the user is not logged in and it's not already set
+        if (!isset($_SESSION['userId']) && !isset($_SESSION['requestedURI'])) {
+            $queryString = $request->getUri()->getQuery();
+            // Combine path and query string to form the full URI
+            $_SESSION['requestedURI'] = $queryString ? "$uri?$queryString" : $uri;
+        }
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
-        $_SESSION['requestedURI'] = $uri;
 
         $redirect = null;
         if ($this->shouldExcludeFromAuthCheck($request)) {
@@ -53,32 +58,30 @@ class AppAuthMiddleware implements MiddlewareInterface
 
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
-        if (
-            php_sapi_name() === 'cli' ||
-            strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest'
-        ) {
-            $return = true;
-        } else {
-
-            // Check if the URI matches the /remote/* pattern
-            if (fnmatch('/remote/*', $_SESSION['requestedURI'])) {
-                $return = true;
-            } else {
-                $excludedRoutes = [
-                    '/login/login.php',
-                    '/login/loginProcess.php',
-                    '/login/logout.php',
-                    '/setup/index.php',
-                    '/setup/registerProcess.php',
-                    '/setup/registerProcess.php',
-                    '/includes/captcha.php',
-                    '/users/edit-profile-helper.php',
-                    // Add other routes to exclude from the authentication check here
-                ];
-                $return = in_array($_SESSION['requestedURI'], $excludedRoutes, true);
-            }
+        if (php_sapi_name() === 'cli' || strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest') {
+            return true;
         }
 
-        return $return;
+        // Get the current URI from the request (instead of relying on the session here)
+        $uri = $request->getUri()->getPath();
+
+        // Check if the URI starts with '/remote/'
+        if (strpos($uri, '/remote/') === 0) {
+            return true;
+        }
+
+        // Exclude specific routes from authentication check
+        $excludedRoutes = [
+            '/login/login.php',
+            '/login/loginProcess.php',
+            '/login/logout.php',
+            '/setup/index.php',
+            '/setup/registerProcess.php',
+            '/includes/captcha.php',
+            '/users/edit-profile-helper.php',
+            // Add other routes to exclude from the authentication check here
+        ];
+
+        return in_array($uri, $excludedRoutes, true);
     }
 }

@@ -174,8 +174,8 @@ if ($instrumentCount == 0 || $userCount == 0) {
 	<?php } ?>
 	<div class="wrapper">
 
-		<header class="main-header">		
-      
+		<header class="main-header">
+
 			<a href="<?= $_SESSION['landingPage']; ?>" class="logo" style="position:fixed;top:10;">
 				<span class="logo-mini"><strong>
 						<?= $smallLogoName; ?>
@@ -245,9 +245,9 @@ if ($instrumentCount == 0 || $userCount == 0) {
 					</ul>
 				</div>
 			</nav>
-			
+
 		</header>
-		
+
 		<!-- Left side column. contains the logo and sidebar -->
 		<aside class="main-sidebar" <?= $topSide; ?>>
 			<section class="sidebar">

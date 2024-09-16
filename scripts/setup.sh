@@ -216,7 +216,7 @@ apt-get update && apt-get upgrade -y
 
 # Configure any packages that were not fully installed
 echo "Configuring any partially installed packages..."
-sudo dpkg --configure -a
+dpkg --configure -a
 
 # Clean up
 apt-get autoremove -y

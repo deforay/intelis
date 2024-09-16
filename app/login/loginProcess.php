@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -8,7 +9,6 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -130,11 +130,14 @@ try {
 
 
         [$_SESSION['modules'], $_SESSION['privileges']] = $usersService->getAllPrivileges($userRow['role_id']);
-        $_SESSION['landingPage'] = $redirect = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
+        $redirect = $_SESSION['landingPage'] = !empty($userRow['landing_page']) ? $userRow['landing_page'] : '/dashboard/index.php';
 
         if (!empty($_SESSION['forcePasswordReset']) && $_SESSION['forcePasswordReset'] == 1) {
             $redirect = "/users/edit-profile.php";
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
+        } elseif (isset($_SESSION['requestedURI'])) {
+            $redirect = $_SESSION['requestedURI'];
+            unset($_SESSION['requestedURI']);
         }
     } else {
         throw new SystemException(_translate("Please check your login credentials"));
@@ -149,6 +152,4 @@ try {
     ]);
     $redirect = "/login/login.php";
 }
-
-
-header("Location:" . $redirect);
+header("Location:$redirect");

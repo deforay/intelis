@@ -542,6 +542,34 @@ final class CommonService
 
         return "Unknown Browser - " . $userAgent;
     }
+    public static function isAjaxRequest()
+    {
+        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
+            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+    }
+
+    public static function checkCSRF(): void
+    {
+        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['csrf_token'])) {
+            $csrfToken = null;
+
+            if (self::isAjaxRequest()) {
+                // For AJAX requests, check the 'X-CSRF-Token' header
+                if (isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
+                    $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'];
+                }
+            } else {
+                // For regular POST requests, check the 'csrf_token' form field
+                if (isset($_POST['csrf_token'])) {
+                    $csrfToken = $_POST['csrf_token'];
+                }
+            }
+
+            if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
+                throw new SystemException(_translate('Invalid Request token'));
+            }
+        }
+    }
 
 
     // Returns the current Instance ID
