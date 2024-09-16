@@ -24,7 +24,7 @@ require_once APPLICATION_PATH . '/header.php';
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -142,9 +142,9 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 		let testType = "<?= !empty($testType) ? $testType : '' ?>";
 		if (testType != "") {

@@ -2,6 +2,11 @@
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
+if (!isset($_SESSION['nonce'])) {
+    $_SESSION['nonce'] = bin2hex(openssl_random_pseudo_bytes(32));
+}
+$nonce = $_SESSION['nonce'];
+
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Middlewares\CorsMiddleware;
@@ -17,6 +22,8 @@ use App\Middlewares\SystemAdminAuthMiddleware;
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
+
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
@@ -30,34 +37,25 @@ $middlewarePipe = new MiddlewarePipe();
 
 $uri = $request->getUri()->getPath();
 
+error_log($uri);
+
 $host = $request->getUri()->getHost();
 
-$allowedDomains = [];
 
+$allowedDomains = [$host];
 if (!empty($remoteURL)) {
     $allowedDomains[] = $remoteURL;
 }
 
-$allowedDomains[] = $host;
+$allowedDomains = implode(" ", $allowedDomains);
 
-$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self'";
-
-// Adding 'blob:' to img-src directive
-$imgSrcPolicy = "img-src 'self' data: blob:";
-
-foreach ($allowedDomains as $domain) {
-    $csp .= " $domain";
-    $imgSrcPolicy .= " $domain";
-}
-
-$csp .= "; $imgSrcPolicy; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
-
+$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+//$csp = "default-src 'self'; script-src 'self' 'nonce-{$nonce}'; style-src 'self' 'nonce-{$nonce}'; connect-src 'self' $allowedDomains; img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);
     $response = $response->withAddedHeader('Content-Security-Policy', $csp);
     return  $response->withAddedHeader('X-Content-Type-Options', 'nosniff');
 }));
-
 
 // Error Handler Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(ErrorHandlerMiddleware::class));

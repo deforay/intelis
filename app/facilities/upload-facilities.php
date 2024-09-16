@@ -61,7 +61,7 @@ if (isset($_GET['total'])) {
 	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ms-choice {
 		border: 0px solid #aaa;
 	}

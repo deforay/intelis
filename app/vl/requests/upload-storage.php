@@ -40,7 +40,7 @@ if (isset($_GET['total'])) {
 
 $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ms-choice {
 		border: 0px solid #aaa;
 	}
@@ -75,52 +75,52 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 			</div>
 			<!-- /.box-header -->
 			<div class="box-body">
-					<div class="box-body">
-						<div class="row">
-							<!-- Left side -->
-							<div class="col-md-6 border-right">
-								<div class="form-group">
-									<label for="batchOrManifestCode" class="col-lg-4">
-										<?= _translate("Batch Code (or) Manifest Code"); ?>
-									</label>
-									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" />
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-lg-offset-4 col-lg-5" style="float:left;">
-										<button class="btn btn-primary" onclick="getExcelFormatTemplate();" title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>"><?= _translate("Download Excel Format"); ?></button>
-									</div>
+				<div class="box-body">
+					<div class="row">
+						<!-- Left side -->
+						<div class="col-md-6 border-right">
+							<div class="form-group">
+								<label for="batchOrManifestCode" class="col-lg-4">
+									<?= _translate("Batch Code (or) Manifest Code"); ?>
+								</label>
+								<div class="col-lg-7">
+									<input type="text" class="form-control isRequired" id="batchOrManifestCode" name="batchOrManifestCode" placeholder="<?php echo _translate('Batch or Manifest Code'); ?>" title="<?= _translate('Enter Batch or Manifest code'); ?>" />
 								</div>
 							</div>
-							<!-- Right side -->
-							<div class="col-md-6">
-								<!-- form start -->
-								<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
-									<div class="form-group">
-										<label for="StorageInfo" class="col-lg-4">
-											<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
-										</label>
-										<div class="col-lg-7">
-											<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
-										</div>
-									</div>
-									<div class="form-group">
-										<input type="hidden" name="selectedUser" id="selectedUser" />
-										<div class="col-lg-7">
-											<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
-												<?php echo _translate("Submit"); ?>
-											</a>
-											<a href="vl-requests.php" class="btn btn-default">
-												<?php echo _translate("Cancel"); ?>
-											</a>
-										</div>
-									</div>
-								</form>
+							<div class="form-group">
+								<div class="col-lg-offset-4 col-lg-5" style="float:left;">
+									<button class="btn btn-primary" onclick="getExcelFormatTemplate();" title="<?= _translate("Click here to download the Excel format for uploading storages in bulk"); ?>"><?= _translate("Download Excel Format"); ?></button>
+								</div>
 							</div>
 						</div>
+						<!-- Right side -->
+						<div class="col-md-6">
+							<!-- form start -->
+							<form class="form-horizontal" method='post' name='uploadStorageForm' id='uploadStorageForm' autocomplete="off" enctype="multipart/form-data" action="upload-storage-helper.php">
+								<div class="form-group">
+									<label for="StorageInfo" class="col-lg-4">
+										<?= _translate("Upload File"); ?> <span class="mandatory">*</span>
+									</label>
+									<div class="col-lg-7">
+										<input type="file" class="form-control isRequired" id="storageInfo" name="storageInfo" placeholder="<?php echo _translate('Storage Name'); ?>" title="<?= _translate('Click to upload file'); ?>" />
+									</div>
+								</div>
+								<div class="form-group">
+									<input type="hidden" name="selectedUser" id="selectedUser" />
+									<div class="col-lg-7">
+										<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
+											<?php echo _translate("Submit"); ?>
+										</a>
+										<a href="vl-requests.php" class="btn btn-default">
+											<?php echo _translate("Cancel"); ?>
+										</a>
+									</div>
+								</div>
+							</form>
+						</div>
 					</div>
-					<!-- /.box-body -->
+				</div>
+				<!-- /.box-body -->
 			</div>
 			<div class="box-body">
 				<?php if (isset($_GET['total']) && $_GET['total'] > 0) { ?>
@@ -162,7 +162,6 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 </div>
 
 <script>
-
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'uploadStorageForm'
@@ -172,7 +171,8 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 			document.getElementById('uploadStorageForm').submit();
 		}
 	}
-	function getExcelFormatTemplate(){
+
+	function getExcelFormatTemplate() {
 		var batchOrManifestCodeValue = $("#batchOrManifestCode").val();
 		if (batchOrManifestCodeValue != "") {
 			$.post("/includes/write-samples-storageTemplate.php", {

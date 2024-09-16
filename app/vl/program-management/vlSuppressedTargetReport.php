@@ -49,9 +49,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <link href="/assets/css/datepicker.min.css" rel="stylesheet">
 
 
-<script src="/assets/js/bootstrap-datepicker.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/bootstrap-datepicker.min.js"></script>
 
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
   .bluebox,
   .dashboard-stat2 {
     border: 1px solid #3598DC;
@@ -240,14 +240,14 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-accessibility.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
   var startDate = "";
   var endDate = "";
   var oTable = null;

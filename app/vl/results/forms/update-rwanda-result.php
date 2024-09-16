@@ -42,11 +42,11 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 }
 
 $user = '';
-if($facilityResult[0]['contact_person'] != ''){
-     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($facilityResult[0]['contact_person'] != '') {
+	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 
 $stateName = $facilityResult[0]['facility_state'];
@@ -86,7 +86,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 $disable = "disabled = 'disabled'";
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -773,7 +773,7 @@ $disable = "disabled = 'disabled'";
 								<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
 								<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo $vlQueryInfo['reason_for_result_changes']; ?>" />
 								<input type="hidden" name="sampleCode" id="sampleCode" value="<?= ($vlQueryInfo['sample_code']); ?>" />
-					        	<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
+								<input type="hidden" name="artNo" id="artNo" value="<?= ($vlQueryInfo['patient_art_no']); ?>" />
 								<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
 								<a href="vlTestResult.php" class="btn btn-default"> Cancel</a>
 							</div>

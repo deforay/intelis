@@ -41,7 +41,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type='eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -146,12 +146,12 @@ $batResult = $db->rawQuery($batQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-accessibility.js"></script>
 <script>
 	let searchExecuted = false;
 	$(function() {

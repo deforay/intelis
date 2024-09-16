@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     let generateSampleCodeRequest = null;
     let lastSampleCollectionDate = '';
     let lastProvinceCode = '';
@@ -185,5 +185,4 @@
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);
     }
-
 </script>

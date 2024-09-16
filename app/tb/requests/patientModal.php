@@ -26,7 +26,7 @@ $pResult = $db->rawQuery($pQuery);
 ?>
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.content-wrapper {
 		padding: 2%;
 	}
@@ -148,9 +148,9 @@ $pResult = $db->rawQuery($pQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({

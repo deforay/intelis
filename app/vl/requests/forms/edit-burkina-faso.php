@@ -156,7 +156,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
      }
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -339,7 +339,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                        </select>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>">
                                                   <div class="form-group">
                                                        <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline">
@@ -350,7 +350,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                        </label>
                                                   </div>
                                              </div>
-                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
+                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>">
                                                   <div class="form-group">
                                                        <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline">
@@ -393,12 +393,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                        </div>
                                                   </div>
                                                   <?php if ($general->isLISInstance()) { ?>
-                                                  <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group" style=" width: 100%; ">
-                                                       <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> <span class="mandatory">*</span></label>
-                                                            <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group" style=" width: 100%; ">
+                                                                 <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> <span class="mandatory">*</span></label>
+                                                                 <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                            </div>
                                                        </div>
-                                                  </div>
                                                   <?php } ?>
                                              </div>
                                         </div>
@@ -560,7 +560,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                               
+
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
                                                                       <div class="col-lg-7">
@@ -574,7 +574,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="isSampleRejected"><?= _translate("Is Sample Rejected?"); ?></label>
                                                                       <div class="col-lg-7">
@@ -608,7 +608,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 
+
                                                                  <div class="col-md-6 rejectionReason" style="display:none;">
                                                                       <label class="col-lg-5 control-label labels" for="rejectionDate"><?= _translate("Rejection Date"); ?> </label>
                                                                       <div class="col-lg-7">
@@ -623,7 +623,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
                                                                  <div class="col-md-6 vlResult">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/ml)"); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
@@ -641,7 +641,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                
+
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="reviewedBy"><?= _translate("Reviewed By"); ?> <span class="mandatory review-approve-span" style="display: none;">*</span> </label>
                                                                       <div class="col-lg-7">
@@ -766,15 +766,15 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
      ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
 <?php
 
      }
@@ -782,7 +782,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 ?>
 <!-- BARCODESTUFF END -->
 
-<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
      let facilityName = true;

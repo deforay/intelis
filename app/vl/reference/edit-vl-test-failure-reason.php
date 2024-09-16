@@ -76,7 +76,7 @@ $failureReasonInfo = $db->getOne('r_vl_test_failure_reasons');
 <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     $(document).ready(function() {
         $(".select2").select2();
         $(".select2").select2({

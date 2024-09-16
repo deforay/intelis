@@ -265,7 +265,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     $(document).ready(function() {
         getByProvince(<?php echo $patientQueryInfo['patient_province']; ?>);
         $('#province').select2({

@@ -20,7 +20,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 }
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ms-container {
 		width: 100%;
 	}
@@ -137,9 +137,9 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _translate("Enter Field Name", true); ?>'>",

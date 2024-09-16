@@ -65,7 +65,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
     }
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .th-label {
         width: 15%;
     }
@@ -223,23 +223,23 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                         </td>
                                     </tr>
                                     <tr class="femaleSection" style="display:<?php echo ($tbInfo['patient_gender'] == 'female') ? "" : "none" ?>">
-                                        <th scope="row" class="th-label"><?= _translate("Is Patient Pregnant?");?></th>
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Pregnant?"); ?></th>
                                         <td class="td-input">
-                                                <label class="radio-inline">
-                                                    <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo ($tbInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($tbInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?> /> <?= _translate('No'); ?>
-                                                </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" class="" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo ($tbInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" class="" id="pregNo" name="patientPregnant" value="no" <?php echo ($tbInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?> /> <?= _translate('No'); ?>
+                                            </label>
                                         </td>
-                                        <th scope="row" class="th-label"><?= _translate("Is Patient Breastfeeding?");?></th>
+                                        <th scope="row" class="th-label"><?= _translate("Is Patient Breastfeeding?"); ?></th>
                                         <td class="td-input">
-                                                <label class="radio-inline">
-                                                    <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
-                                                </label>
-                                                <label class="radio-inline">
-                                                    <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
-                                                </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                            </label>
+                                            <label class="radio-inline">
+                                                <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($tbInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                            </label>
                                         </td>
                                     </tr>
                                     <tr>
@@ -376,12 +376,12 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                         </td>
                                     </tr>
                                     <?php if ($general->isLISInstance()) { ?>
-                                    <tr>
-                                        <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> <span class="mandatory">*</span></label></th>
-                                        <td class="td-input">
-                                           <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <th scope="row" class="th-label"><label class="label-control" for="sampleReceivedDate"><?= _translate("Date of Reception"); ?> <span class="mandatory">*</span></label></th>
+                                            <td class="td-input">
+                                                <input type="text" value="<?php echo $tbInfo['request_created_datetime']; ?>" class="date-time form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" style="width:100%;" />
+                                            </td>
+                                        </tr>
                                     <?php } ?>
                                 </table>
                             </div>
@@ -555,7 +555,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
     </section>
     <!-- /.content -->
 </div>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     provinceName = true;
     facilityName = true;
 
@@ -731,14 +731,14 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
         checkCollectionDate('<?php echo $tbInfo['sample_collection_date']; ?>');
 
         $("#patientGender").change(function() {
-          if ($(this).val() == 'male' || $(this).val() == 'unreported') {
-               $('.femaleSection').hide();
-               $('input[name="breastfeeding"]').prop('checked', false);
-               $('input[name="patientPregnant"]').prop('checked', false);
-          } else if ($(this).val() == 'female') {
-               $('.femaleSection').show();
-          }
-     });
+            if ($(this).val() == 'male' || $(this).val() == 'unreported') {
+                $('.femaleSection').hide();
+                $('input[name="breastfeeding"]').prop('checked', false);
+                $('input[name="patientPregnant"]').prop('checked', false);
+            } else if ($(this).val() == 'female') {
+                $('.femaleSection').show();
+            }
+        });
 
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {

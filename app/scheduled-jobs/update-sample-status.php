@@ -65,6 +65,8 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
                 ]
             );
 
+            echo $db->getLastQuery();
+
             if ($general->isLISInstance()) {
                 // If sample is Expired but still within the expiry limit, then update it to Received at Testing Lab
                 $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);

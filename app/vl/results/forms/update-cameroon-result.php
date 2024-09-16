@@ -49,11 +49,11 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 }
 
 $user = '';
-if($facilityResult[0]['contact_person'] != ''){
-     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($facilityResult[0]['contact_person'] != '') {
+	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 
 $stateName = $facilityResult[0]['facility_state'];
@@ -156,7 +156,7 @@ foreach ($testReasonsResultDetails as $row) {
 	}
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -318,15 +318,15 @@ foreach ($testReasonsResultDetails as $row) {
 									</select>
 								</div>
 							</div>
-							<?php if($general->isLISInstance()){ ?>
+							<?php if ($general->isLISInstance()) { ?>
 								<div class="row">
 									<div class="col-md-3">
 										<label for="labAssignedCode"><?= _translate('Lab Assigned Code'); ?> </label>
-												<input <?php echo $disable; ?> name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>"  value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
-										</div>
+										<input <?php echo $disable; ?> name="labAssignedCode" id="labAssignedCode" class="form-control" placeholder="<?= _translate('Enter Lab Assigned Code'); ?>" title="<?= _translate('Please enter Lab Assigned Code'); ?>" value="<?= $vlQueryInfo['lab_assigned_code']; ?>" <?php echo $labFieldDisabled; ?>>
 									</div>
 								</div>
-								<?php } ?>
+						</div>
+					<?php } ?>
 					</div>
 					<div class="box box-primary">
 						<div class="box-header with-border">
@@ -595,7 +595,7 @@ foreach ($testReasonsResultDetails as $row) {
 														<input name="cvNumber" id="cvNumber" class="form-control" placeholder="<?= _translate('Enter CV Number'); ?>" title="<?= _translate('Please enter CV Number'); ?>" value="<?= $vlQueryInfo['cv_number']; ?>" <?php echo $labFieldDisabled; ?>>
 													</div>
 												</div>
-												
+
 												<!-- <div class="col-md-6">
 													<label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
 													<div class="col-lg-7">
@@ -613,7 +613,7 @@ foreach ($testReasonsResultDetails as $row) {
 														</select>
 													</div>
 												</div>
-												
+
 											</div>
 											<div class="row">
 												<div class="col-md-6">
@@ -658,7 +658,7 @@ foreach ($testReasonsResultDetails as $row) {
 																	} ?>
 																</optgroup>
 															<?php } ?>
-	
+
 														</select>
 													</div>
 												</div>
@@ -675,7 +675,7 @@ foreach ($testReasonsResultDetails as $row) {
 													<div class="col-lg-7 resultInputContainer">
 														<input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _translate('Viral Load Result'); ?>" title="<?= _translate('Please enter viral load result'); ?>" value="<?= ($vlQueryInfo['result']); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
 														<datalist id="possibleVlResults">
-	
+
 														</datalist>
 													</div>
 												</div>
@@ -768,8 +768,8 @@ foreach ($testReasonsResultDetails as $row) {
 </div>
 </section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;
@@ -1052,19 +1052,19 @@ foreach ($testReasonsResultDetails as $row) {
 			}
 		}
 	}
-	$('#vlRequestFormSudan').keypress((e) => { 
-          // Enter key corresponds to number 13 
-          if (e.which === 13) {
-               e.preventDefault(); 
-               //console.log('form submitted'); 
-               validateNow()     // Trigger the validateNow function
-          } 
-     });
-     // Handle Enter key specifically for select2 elements
-     $(document).on('keydown', '.select2-container--open', function(e) {
-          if (e.which === 13) {
-               e.preventDefault();  // Prevent the default form submission
-               validateNow()  // Trigger the validateNow function
-          }
-     });
+	$('#vlRequestFormSudan').keypress((e) => {
+		// Enter key corresponds to number 13
+		if (e.which === 13) {
+			e.preventDefault();
+			//console.log('form submitted');
+			validateNow() // Trigger the validateNow function
+		}
+	});
+	// Handle Enter key specifically for select2 elements
+	$(document).on('keydown', '.select2-container--open', function(e) {
+		if (e.which === 13) {
+			e.preventDefault(); // Prevent the default form submission
+			validateNow() // Trigger the validateNow function
+		}
+	});
 </script>

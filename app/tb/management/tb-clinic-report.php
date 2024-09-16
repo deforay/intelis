@@ -55,7 +55,7 @@ foreach ($rejectionTypeResult as $type) {
 $state = $geolocationService->getProvinces("yes");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -485,7 +485,7 @@ $state = $geolocationService->getProvinces("yes");
 														<input type="text" id="stSampleCollectionDate" name="stSampleCollectionDate" class="form-control stReportFilter" placeholder="<?= _translate('Select Sample Collection date'); ?>" style="width:220px;background:#fff;" />
 													</td>
 													<td colspan="3">&nbsp;<input type="button" onclick="sampleTestingReport();" value="<?= _translate('Search'); ?>" class="searchBtn btn btn-success btn-sm">
-													&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 													</td>
 												</tr>
 											</table>
@@ -512,10 +512,10 @@ $state = $geolocationService->getProvinces("yes");
 														<input type="text" id="patientName" name="patientName" class="form-control patientHistoryFilter" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
 													</td>
 													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-															&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-															<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
-																<?php echo _translate("Export to excel"); ?>
-															</button>
+														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+															<?php echo _translate("Export to excel"); ?>
+														</button>
 													</td>
 												</tr>
 											</table>
@@ -581,13 +581,13 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-accessibility.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;

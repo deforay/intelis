@@ -321,7 +321,7 @@ try {
 ?>
 
 
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-container .select2-selection--single {
         height: 34px !important;
     }

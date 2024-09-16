@@ -25,7 +25,7 @@ require_once(APPLICATION_PATH . '/header.php');
         </div>
     </section>
 </div>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     $(document).ready(function() {
         $('.sidebar-menu').remove();
     });

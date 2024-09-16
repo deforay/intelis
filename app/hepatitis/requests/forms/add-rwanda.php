@@ -327,7 +327,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 </select>
                                             </td>
                                             <th style="width:15%" scope="row">Rejection Date<span class="mandatory">*</span></th>
-                                            <td  style="width:35%"><input class="form-control date rejection-show" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
+                                            <td style="width:35%"><input class="form-control date rejection-show" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
                                         <!-- <tr>
                                             <th style="width:15%" scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
@@ -349,17 +349,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <input type="text" class="hcvFields labSecInput form-control rejected-input" placeholder="Enter HCV Count" title="Please enter HCV Count" name="hcvCount" id="hcvCount">
                                             </td>
                                             <th scope="row" class="hbvFields"><label for="hbvCount">HBV VL Count</label></th>
-                                            <td style="width:35%" style="width:35% class="hbvFields">
+                                            <td style="width:35%" style="width:35% class=" hbvFields">
                                                 <input type="text" class="hbvFields labSecInput form-control rejected-input" placeholder="Enter HBV Count" title="Please enter HBV Count" name="hbvCount" id="hbvCount">
                                             </td>
                                         </tr>
                                         <tr>
-                                            <td  style="width:15%"><label for="">Testing Platform </label></td>
-                                            <td  style="width:35%"><select name="hepatitisPlatform" id="hepatitisPlatform" class="labSecInput form-control rejected-input" title="Please select the testing platform">
+                                            <td style="width:15%"><label for="">Testing Platform </label></td>
+                                            <td style="width:35%"><select name="hepatitisPlatform" id="hepatitisPlatform" class="labSecInput form-control rejected-input" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                            <td  style="width:15%"><label for="">Machine used to test </label></td>
+                                            <td style="width:15%"><label for="">Machine used to test </label></td>
                                             <td style="width:35%">
                                                 <select name="machineName" id="machineName" class="labSecInput form-control rejected-input" title="Please select the machine name">
                                                     <option value="">-- Select --</option>
@@ -424,7 +424,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

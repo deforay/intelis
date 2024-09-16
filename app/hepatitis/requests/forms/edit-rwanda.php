@@ -140,7 +140,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th style="width:15%">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35%;">
-                                            <input value="<?php echo ($hepatitisInfo['sample_collection_date']); ?>" class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="checkCollectionDate(this.value);"/>
+                                            <input value="<?php echo ($hepatitisInfo['sample_collection_date']); ?>" class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th style="width:15%">DHIS2 Case ID </th>
@@ -436,7 +436,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

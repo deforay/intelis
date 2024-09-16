@@ -1084,7 +1084,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
     </div>
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

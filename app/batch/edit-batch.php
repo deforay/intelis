@@ -100,7 +100,7 @@ $batchQuery = "SELECT * from batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);
-if(!empty($batchInfo[0]['batch_attributes'])){
+if (!empty($batchInfo[0]['batch_attributes'])) {
 	$batchAttribute = json_decode($batchInfo[0]['batch_attributes']);
 	$sortBy = $batchAttribute->sort_by;
 	$sortType = $batchAttribute->sort_type;
@@ -152,7 +152,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -260,22 +260,22 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 				</tr>
 				<tr>
-                    <td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
+					<td><label for="sortBy"><?= _translate("Sort By"); ?></label></td>
 
-                    <td><select class="form-control" id="sortBy" name="sortBy" onchange="">
+					<td><select class="form-control" id="sortBy" name="sortBy" onchange="">
 							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
-                            <option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
-                            <option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
-                            <option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
-                    </select></td>
-                    <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
+							<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
+						</select></td>
+					<td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>
 					<td>
 						<select class="form-control" id="sortType" onchange="">
 							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc">Ascending</option>
 							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc">Descending</option>
 						</select>
-                    </td>
-                </tr>
+					</td>
+				</tr>
 				<tr>
 					<td colspan="4">&nbsp;<input type="button" onclick="getSampleCodeDetails();" value="<?php echo _translate('Filter Samples'); ?>" class="btn btn-success btn-sm">
 						&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("Reset Filters"); ?></span></button>
@@ -314,7 +314,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								</div>
 							</div>
-							
+
 						</div>
 						<?php if ($formId == COUNTRY\CAMEROON) { ?>
 							<div class="row">
@@ -322,7 +322,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<div class="form-group">
 										<label for="machine" class="col-lg-4 control-label"><?php echo _translate("Lab Assigned Batch Code"); ?></label>
 										<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>"/>
+											<input type="text" name="labAssignedBatchCode" id="labAssignedBatchCode" class="form-control" placeholder="<?php echo _translate('Enter Lab Assigned Batch Code'); ?>" value="<?php echo $batchInfo[0]['lab_assigned_batch_code'] ?>" />
 										</div>
 									</div>
 								</div>
@@ -345,10 +345,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="col-md-5">
 								<select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
 									<?php foreach ($result as $key => $sample) {
-										 $labCode = "";
-										 if($sample['lab_assigned_code']!=""){
-											 $labCode = ' - '.$sample['lab_assigned_code'];
-										 }
+										$labCode = "";
+										if ($sample['lab_assigned_code'] != "") {
+											$labCode = ' - ' . $sample['lab_assigned_code'];
+										}
 										if (trim((string) $sample['sample_batch_id']) == $id) { ?>
 											<option value="<?php echo $sample[$refPrimaryColumn]; ?>"><?php echo $sample['sample_code'] . " - " . $sample[$patientIdColumn] . " - " .  ($sample['facility_name']) . $labCode; ?></option>
 									<?php }
@@ -378,11 +378,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var resultSampleArray = [];
@@ -417,8 +417,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 	$(document).ready(function() {
 		$("#facilityName").selectize({
-                plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-        });
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+		});
 		setTimeout(function() {
 			$("#search_rightSelected").trigger('click');
 		}, 10);
@@ -513,7 +513,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				fundingSource: $("#fundingSource").val(),
 				userId: $("#userId").val(),
 				sortBy: $("#sortBy").val(),
-                sortType: $("#sortType").val(),
+				sortType: $("#sortType").val(),
 			},
 			function(data) {
 				if (data != "") {

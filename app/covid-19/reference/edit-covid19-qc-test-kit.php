@@ -135,7 +135,7 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     tableRowId = 2;
 
     function validateNow() {

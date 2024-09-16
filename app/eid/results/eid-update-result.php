@@ -132,7 +132,7 @@ if (!empty($eidInfo['is_encrypted']) && $eidInfo['is_encrypted'] == 'yes') {
 
 ?>
 
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.disabledForm {
 		background: #efefef;
 	}

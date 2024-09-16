@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -29,10 +30,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_test_types', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_test_types', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-							if (_isAllowed("/generic-tests/configuration/add-test-type.php") && $general->isLISInstance() === false) { ?>
-								<a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
+						if (_isAllowed("/generic-tests/configuration/add-test-type.php") && $general->isLISInstance() === false) { ?>
+							<a href="add-test-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -67,7 +68,7 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var oTable = null;
 	$(document).ready(function() {
 		$.blockUI();

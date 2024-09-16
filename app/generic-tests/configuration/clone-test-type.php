@@ -52,7 +52,7 @@ $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map",
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.tooltip-inner {
 		background-color: #fff;
 		color: #000;
@@ -627,7 +627,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
 	testQualCounter = <?php echo count($testResultAttribute['result']); ?>;
 	testQuanCounter = <?php echo count($testResultAttribute['quantitative_result']); ?>;

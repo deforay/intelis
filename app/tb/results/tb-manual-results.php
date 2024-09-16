@@ -63,7 +63,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: black !important;
     }
@@ -213,9 +213,9 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var startDate = "";
     var endDate = "";
     var selectedTests = [];

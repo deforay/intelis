@@ -1,4 +1,4 @@
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.followUp {
 		display: inline-flex;
 		list-style: none;
@@ -379,7 +379,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 									<tr>
 										<th scope="row"><label class="label-control" for="sampleCollectionDate">Date Specimen Collected <span class="mandatory">*</span></label></th>
 										<td>
-											<input class="form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="checkCollectionDate(this.value);"/>
+											<input class="form-control isRequired" value="<?php echo $tbInfo['sample_collection_date']; ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" onchange="checkCollectionDate(this.value);" />
 											<span class="expiredCollectionDate" style="color:red; display:none;"></span>
 										</td>
 										<th scope="row"><label class="label-control" for="specimenType">Specimen Type <span class="mandatory">*</span></label></th>
@@ -649,7 +649,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

@@ -98,7 +98,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 
 $disable = "disabled = 'disabled'";
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	:disabled {
 		background: white;
 	}

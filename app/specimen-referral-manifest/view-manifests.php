@@ -21,7 +21,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.center {
 		text-align: center;
 	}
@@ -167,7 +167,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 			manifestFileName = "generateTBManifest.php";
 		} else if (module == 'cd4') {
 			manifestFileName = "generateCD4Manifest.php";
-		}else if (module == 'generic-tests') {
+		} else if (module == 'generic-tests') {
 			manifestFileName = "generateGenericManifest.php";
 		}
 		//alert(manifestFileName);

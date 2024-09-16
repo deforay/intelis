@@ -56,7 +56,7 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 	$status = $_COOKIE['status'] ?? 'no_result';
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -288,9 +288,9 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];

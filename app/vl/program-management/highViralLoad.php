@@ -51,7 +51,7 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $state = $geolocationService->getProvinces("yes");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -108,9 +108,12 @@ $state = $geolocationService->getProvinces("yes");
 		display: block;
 		padding: 10px 7px;
 	}
+
 	#myTab li a {
-		text-align: center; /* Center the text */
-		white-space: normal; /* Allow wrapping and line breaks */
+		text-align: center;
+		/* Center the text */
+		white-space: normal;
+		/* Allow wrapping and line breaks */
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -1097,10 +1100,10 @@ $state = $geolocationService->getProvinces("yes");
 													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('patientHistoryFilter');">
 															<span><?= _translate('Reset'); ?></span>
-															</button>
-															<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+														</button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
 															<?php echo _translate("Export to excel"); ?>
-															</button>
+														</button>
 													</td>
 												</tr>
 											</table>
@@ -1165,13 +1168,13 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-accessibility.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let searchExecuted = false;
 	var oTableViralLoad = null;
 	var oTableRjtReport = null;
@@ -1892,7 +1895,7 @@ $state = $geolocationService->getProvinces("yes");
 				}
 			});
 	}
-	
+
 	function exportPatientTesthistoryInexcel() {
 		if (searchExecuted === false) {
 			searchVlRequestData();

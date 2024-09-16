@@ -66,7 +66,7 @@ require_once APPLICATION_PATH . '/header.php';
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 		$(".select2").select2();
 		$(".select2").select2({

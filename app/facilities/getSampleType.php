@@ -88,7 +88,7 @@ if (!empty($sampleType)) { ?>
         </tbody>
     </table>
 <?php } ?>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     $(document).ready(function() {
         <?php foreach ($_POST['testType'] as $test) { ?>
             $("#sampleType<?= htmlspecialchars((string) $test); ?>").multipleSelect({

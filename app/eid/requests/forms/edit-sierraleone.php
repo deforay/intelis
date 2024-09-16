@@ -381,7 +381,7 @@ $aResult = $db->query($aQuery);
                                     <tr>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On <span class="mandatory">*</span> </th>
@@ -588,7 +588,7 @@ $aResult = $db->query($aQuery);
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

@@ -121,7 +121,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 }
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ui_tpicker_second_label {
 		display: none !important;
 	}

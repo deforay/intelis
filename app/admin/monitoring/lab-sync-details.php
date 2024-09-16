@@ -58,7 +58,7 @@ $sQuery = "SELECT f.facility_id, f.facility_name,
                 ORDER BY tar.requested_on DESC";
 $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: black !important;
     }
@@ -243,9 +243,9 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var oTable = 0;
     $(document).ready(function() {
         $('#facilityName').select2({

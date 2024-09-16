@@ -411,7 +411,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

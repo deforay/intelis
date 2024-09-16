@@ -100,7 +100,7 @@ function getColumnValues($db, $tableName, $sampleCode, $archiveDbExists, $archiv
 $resultColumn = getColumns($db, $tableName);
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.current {
 		display: block;
 		overflow-x: auto;
@@ -299,10 +299,10 @@ $resultColumn = getColumns($db, $tableName);
 
 
 
-<script src="/assets/js/dataTables.buttons.min.js"></script>
-<script src="/assets/js/jszip.min.js"></script>
-<script src="/assets/js/buttons.html5.min.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dataTables.buttons.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jszip.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/buttons.html5.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	function printString(columnNumber) {
 		// To store result (Excel column name)
 		let columnName = [];

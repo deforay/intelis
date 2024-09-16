@@ -86,8 +86,8 @@ $sResult = $db->rawQuery($sQuery);
   </section>
   <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
   var startDate = "";
   var endDate = "";
@@ -196,7 +196,7 @@ $sResult = $db->rawQuery($sQuery);
     });
 
     $('#userDate').val("");
-		$(".select2").select2();
+    $(".select2").select2();
     loadUserLoginRequestData();
 
   });

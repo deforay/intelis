@@ -321,7 +321,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 	$minPatientIdLength = $arr['generic_min_patient_id_length'];
 }
 ?><!-- Content Wrapper. Contains page content -->
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ui_tpicker_second_label {
 		display: none !important;
 	}
@@ -1085,7 +1085,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 </div>
 </section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script>
 	let provinceName = true;
 	let facilityName = true;

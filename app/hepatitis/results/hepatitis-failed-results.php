@@ -40,7 +40,7 @@ $state = $geolocationService->getProvinces("yes");
 $sQuery = "SELECT * FROM r_hepatitis_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: black !important;
     }
@@ -261,22 +261,22 @@ $sResult = $db->rawQuery($sQuery);
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
     if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-        <script src="/assets/js/DYMO.Label.Framework.js"></script>
-        <script src="/uploads/barcode-formats/dymo-format.js"></script>
-        <script src="/assets/js/dymo-print.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
     <?php
     } else if ($global['bar_code_printing'] == 'zebra-printer') {
     ?>
-        <script src="/assets/js/zebra-browserprint.js.js"></script>
-        <script src="/uploads/barcode-formats/zebra-format.js"></script>
-        <script src="/assets/js/zebra-print.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
+        <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
 <?php
     }
 }
@@ -284,7 +284,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var startDate = "";
     var endDate = "";
     var selectedTests = [];

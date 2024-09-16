@@ -43,7 +43,7 @@ foreach ($pdResult as $provinceName) {
 $cpyReq = $general->getGlobalConfig('eid_copy_request_save_and_next');
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .prevResult {
         margin-right: 5px;
     }
@@ -97,21 +97,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     </tr>
                                     <tr>
                                         <td style="width:25%"><label for="province"><?= _translate('Region'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select province'); ?>"  style="width:100%;" onchange="getfacilityDetails(this);">
+                                            <select class="form-control isRequired" name="province" id="province" title="<?= _translate('Please select province'); ?>" style="width:100%;" onchange="getfacilityDetails(this);">
                                                 <?php echo $province; ?>
                                             </select>
                                         </td>
                                         <td style="width:25%"><label for="district"><?= _translate('District'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired" name="district" id="district" title="Please select district"  style="width:100%;" onchange="getfacilityDistrictwise(this);">
+                                            <select class="form-control isRequired" name="district" id="district" title="Please select district" style="width:100%;" onchange="getfacilityDistrictwise(this);">
                                                 <option value=""> -- Select -- </option>
                                             </select>
                                         </td>
                                         <td style="width:25%">
                                             <label for="facilityId"><?= _translate('Facility'); ?> </label><span class="mandatory">*</span><br>
-                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility"  style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
+                                            <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please select facility" style="width:100%;" onchange="getfacilityProvinceDetails(this),fillFacilityDetails();">
                                                 <option value=""> <?= _translate('-- Select --'); ?> </option>
                                                 <?php foreach ($healthFacilitiesAllColumns as $hFacility) { ?>
-                                                    <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['eidData']['facility_id']) && $_SESSION['eidData']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : '';?>><?php echo $hFacility['facility_name']; ?></option>
+                                                    <option value="<?php echo $hFacility['facility_id']; ?>" data-code="<?php echo $hFacility['facility_code']; ?>" <?php echo (isset($_SESSION['eidData']['facility_id']) && $_SESSION['eidData']['facility_id'] == $hFacility['facility_id']) ? 'selected="selected"' : ''; ?>><?php echo $hFacility['facility_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -129,7 +129,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($fundingSourceList as $fundingSource) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo (isset($_SESSION['eidData']['funding_source']) && $_SESSION['eidData']['funding_source'] == $fundingSource['funding_source_id']) ? 'selected="selected"' : '';?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo (isset($_SESSION['eidData']['funding_source']) && $_SESSION['eidData']['funding_source'] == $fundingSource['funding_source_id']) ? 'selected="selected"' : ''; ?>><?= $fundingSource['funding_source_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -141,7 +141,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php
                                                 foreach ($implementingPartnerList as $implementingPartner) {
                                                 ?>
-                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo (isset($_SESSION['eidData']['implementing_partner']) && $_SESSION['eidData']['implementing_partner'] == $implementingPartner['i_partner_id']) ? 'selected="selected"' : '';?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                    <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo (isset($_SESSION['eidData']['implementing_partner']) && $_SESSION['eidData']['implementing_partner'] == $implementingPartner['i_partner_id']) ? 'selected="selected"' : ''; ?>><?= $implementingPartner['i_partner_name']; ?></option>
                                                 <?php } ?>
                                             </select>
                                         </td>
@@ -186,7 +186,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="calculateAgeInMonths();" />
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" /> <label for="dob"><?= _translate('Unreported'); ?> </label>
 
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
@@ -320,13 +320,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:30% !important">
                                             <select class="form-control isRequired" name="isChildSymptomatic" id="isChildSymptomatic">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_child_symptomatic']) && !empty($_SESSION['eidData']['is_child_symptomatic']) && $_SESSION['eidData']['is_child_symptomatic'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no"  <?php echo (isset($_SESSION['eidData']['is_child_symptomatic']) && !empty($_SESSION['eidData']['is_child_symptomatic']) && $_SESSION['eidData']['is_child_symptomatic'] == 'no') ? 'selected="selected"':'';?>> <?= _translate('No'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_child_symptomatic']) && !empty($_SESSION['eidData']['is_child_symptomatic']) && $_SESSION['eidData']['is_child_symptomatic'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_child_symptomatic']) && !empty($_SESSION['eidData']['is_child_symptomatic']) && $_SESSION['eidData']['is_child_symptomatic'] == 'no') ? 'selected="selected"' : ''; ?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _translate('Date of Weaning?'); ?> </th>
                                         <td style="width:30% !important">
-                                            <input type="text" value="<?php echo $_SESSION['eidData']['date_of_weaning'];?>" class="form-control date" name="dateOfWeaning" id="dateOfWeaning" title="<?= _translate('Enter date of weaning'); ?>" placeholder="<?= _translate('Enter date of weaning'); ?>" />
+                                            <input type="text" value="<?php echo $_SESSION['eidData']['date_of_weaning']; ?>" class="form-control date" name="dateOfWeaning" id="dateOfWeaning" title="<?= _translate('Enter date of weaning'); ?>" placeholder="<?= _translate('Enter date of weaning'); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -334,18 +334,18 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:30% !important">
                                             <select class="form-control" name="wasChildBreastfed" id="wasChildBreastfed">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'no') ? 'selected="selected"':'';?>> <?= _translate('No'); ?> </option>
-                                                <option value="unknown" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'unknown') ? 'selected="selected"':'';?>> <?= _translate('Unknown'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'no') ? 'selected="selected"' : ''; ?>> <?= _translate('No'); ?> </option>
+                                                <option value="unknown" <?php echo (isset($_SESSION['eidData']['was_child_breastfed']) && !empty($_SESSION['eidData']['was_child_breastfed']) && $_SESSION['eidData']['was_child_breastfed'] == 'unknown') ? 'selected="selected"' : ''; ?>> <?= _translate('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _translate('If Yes,'); ?> </th>
                                         <td style="width:30% !important">
                                             <select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="Exclusive" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Exclusive') ? 'selected="selected"':'';?>><?= _translate('Exclusive'); ?></option>
-                                                <option value="Mixed" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Mixed') ? 'selected="selected"':'';?>><?= _translate('Mixed'); ?></option>
-                                                <option value="Exclusive formula feeding" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Exclusive formula feeding') ? 'selected="selected"':'';?>><?= _translate('Exclusive formula feeding'); ?></option>
+                                                <option value="Exclusive" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Exclusive') ? 'selected="selected"' : ''; ?>><?= _translate('Exclusive'); ?></option>
+                                                <option value="Mixed" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Mixed') ? 'selected="selected"' : ''; ?>><?= _translate('Mixed'); ?></option>
+                                                <option value="Exclusive formula feeding" <?php echo (isset($_SESSION['eidData']['choice_of_feeding']) && !empty($_SESSION['eidData']['choice_of_feeding']) && $_SESSION['eidData']['choice_of_feeding'] == 'Exclusive formula feeding') ? 'selected="selected"' : ''; ?>><?= _translate('Exclusive formula feeding'); ?></option>
                                             </select>
                                         </td>
                                     </tr>
@@ -354,13 +354,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:30% !important">
                                             <select class="form-control" name="isChildOnCotrim" id="isChildOnCotrim">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_child_on_cotrim']) && !empty($_SESSION['eidData']['is_child_on_cotrim']) && $_SESSION['eidData']['is_child_on_cotrim'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_child_on_cotrim']) && !empty($_SESSION['eidData']['is_child_on_cotrim']) && $_SESSION['eidData']['is_child_on_cotrim'] == 'no') ? 'selected="selected"':'';?>> <?= _translate('No'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_child_on_cotrim']) && !empty($_SESSION['eidData']['is_child_on_cotrim']) && $_SESSION['eidData']['is_child_on_cotrim'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_child_on_cotrim']) && !empty($_SESSION['eidData']['is_child_on_cotrim']) && $_SESSION['eidData']['is_child_on_cotrim'] == 'no') ? 'selected="selected"' : ''; ?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _translate('If Yes, Date of Initiation'); ?> </th>
                                         <td style="width:30% !important">
-                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['child_started_cotrim_date']);?>" class="form-control date" name="childStartedCotrimDate" id="childStartedCotrimDate" title="<?= _translate('Enter date of Initiation'); ?>" placeholder="<?= _translate('Enter date of Initiation'); ?>" />
+                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['child_started_cotrim_date']); ?>" class="form-control date" name="childStartedCotrimDate" id="childStartedCotrimDate" title="<?= _translate('Enter date of Initiation'); ?>" placeholder="<?= _translate('Enter date of Initiation'); ?>" />
 
                                         </td>
                                     </tr>
@@ -369,13 +369,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:30% !important">
                                             <select class="form-control" name="infantArtStatus" id="infantArtStatus">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['infant_art_status']) && !empty($_SESSION['eidData']['infant_art_status']) && $_SESSION['eidData']['infant_art_status'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['infant_art_status']) && !empty($_SESSION['eidData']['infant_art_status']) && $_SESSION['eidData']['infant_art_status'] == 'no') ? 'selected="selected"':'';?>> <?= _translate('No'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['infant_art_status']) && !empty($_SESSION['eidData']['infant_art_status']) && $_SESSION['eidData']['infant_art_status'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['infant_art_status']) && !empty($_SESSION['eidData']['infant_art_status']) && $_SESSION['eidData']['infant_art_status'] == 'no') ? 'selected="selected"' : ''; ?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row" style="width:16% !important"><?= _translate('If Yes, Date of Initiation'); ?> </th>
                                         <td style="width:30% !important">
-                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['child_started_art_date']);?>" class="form-control date" name="childStartedArtDate" id="childStartedArtDate" title="<?= _translate('Enter date of Initiation'); ?>" placeholder="<?= _translate('Enter date of Initiation'); ?>" />
+                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['child_started_art_date']); ?>" class="form-control date" name="childStartedArtDate" id="childStartedArtDate" title="<?= _translate('Enter date of Initiation'); ?>" placeholder="<?= _translate('Enter date of Initiation'); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -383,20 +383,20 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('No'); ?> </option>
-                                                <option value="unknown" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"':'';?>> <?= _translate('Unknown'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('No'); ?> </option>
+                                                <option value="unknown" <?php echo (isset($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && !empty($_SESSION['eidData']['has_infant_stopped_breastfeeding']) && $_SESSION['eidData']['has_infant_stopped_breastfeeding'] == 'yes') ? 'selected="selected"' : ''; ?>> <?= _translate('Unknown'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Age (months) breastfeeding stopped'); ?> </th>
                                         <td>
-                                            <input type="number" value="<?php echo $_SESSION['eidData']['age_breastfeeding_stopped_in_months'] ?? '';?>" class="form-control" style="max-width:200px;display:inline;" placeholder="<?= _translate('Age (months) breastfeeding stopped'); ?>" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
+                                            <input type="number" value="<?php echo $_SESSION['eidData']['age_breastfeeding_stopped_in_months'] ?? ''; ?>" class="form-control" style="max-width:200px;display:inline;" placeholder="<?= _translate('Age (months) breastfeeding stopped'); ?>" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" />
                                         </td>
                                     </tr>
 
                                     <tr>
                                         <th scope="row"><?= _translate('Requesting Clinician Name'); ?> <i class="fa fa-pen-to-square" aria-hidden="true"></i></th>
-                                        <td> <select value="<?php echo $_SESSION['eidData']['clinician_name'] ?? null;?>" class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Requesting Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>">
+                                        <td> <select value="<?php echo $_SESSION['eidData']['clinician_name'] ?? null; ?>" class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" placeholder="<?= _translate('Requesting Clinician Name'); ?>" title="<?= _translate('Please enter request clinician'); ?>">
                                                 <option value=""> --Choose Request Clinician--</option>
                                             </select>
                                         </td>
@@ -408,24 +408,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <td style="text-align:center;" scope="row"><?= _translate('Serological Test'); ?> </td>
                                         <td colspan="2" style="text-align:center;">
-                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="positive" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'positive') ? 'selected="selected"':'';?>/>&nbsp;&nbsp;<label for="positive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
-                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="negative" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'negative') ? 'selected="selected"':'';?>/>&nbsp;&nbsp;<label for="negative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
-                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'notdone') ? 'selected="selected"':'';?>/>&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
+                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="positive" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'positive') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label for="positive"><?= _translate('Positive'); ?></label>&nbsp;&nbsp;&nbsp;
+                                            <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="negative" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'negative') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label for="negative"><?= _translate('Negative'); ?>&nbsp;&nbsp;&nbsp;
+                                                <input type="radio" class="form-check" name="serologicalTest" id="serologicalTest" value="notdone" <?php echo (isset($_SESSION['eidData']['serological_test']) && !empty($_SESSION['eidData']['serological_test']) && $_SESSION['eidData']['serological_test'] == 'notdone') ? 'selected="selected"' : ''; ?> />&nbsp;&nbsp;<label for="notdone"><?= _translate('Not Done'); ?>&nbsp;&nbsp;&nbsp;
                                         </td>
                                     </tr>
                                     <tr>
                                         <td style="text-align:center;" scope="row"><?= _translate('Previous PCR Tests'); ?> <br><br>PCR 1<br><br><br>PCR2<br><br><br>PCR 3</td>
                                         <td>
                                             <?= _translate('Date of sample collection'); ?><br> <br>
-                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_1_test_date']);?>" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
-                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_21_test_date']);?>" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
-                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_3_test_date']);?>" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
+                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_1_test_date']); ?>" name="pcr1TestDate" id="pcr1TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
+                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_21_test_date']); ?>" name="pcr2TestDate" id="pcr2TestDate" placeholder="<?= _translate('Test date'); ?>" /><br>
+                                            <input class="form-control date" type="text" value="<?php echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['pcr_3_test_date']); ?>" name="pcr3TestDate" id="pcr3TestDate" placeholder="<?= _translate('Test date'); ?>" />
                                         </td>
                                         <td>
                                             <?= _translate('Results'); ?><br><br>
-                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_1_test_result'];?>" name="pcr1TestResult" id="pcr1TestResult" /><br>
-                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_2_test_result'];?>" name="pcr2TestResult" id="pcr1TestResult" /><br>
-                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_3_test_result'];?>" name="pcr3TestResult" id="pcr1TestResult" /><br>
+                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_1_test_result']; ?>" name="pcr1TestResult" id="pcr1TestResult" /><br>
+                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_2_test_result']; ?>" name="pcr2TestResult" id="pcr1TestResult" /><br>
+                                            <input type="text" class="form-control input-sm" value="<?php echo $_SESSION['eidData']['pcr_3_test_result']; ?>" name="pcr3TestResult" id="pcr1TestResult" /><br>
 
                                         </td>
                                         <td><br><br><br>
@@ -438,34 +438,34 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <select class="form-control" name="sampleCollectionReason" id="sampleCollectionReason">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="1st Test for well child born of HIV+ mother" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == '1st Test for well child born of HIV+ mother') ? 'selected="selected"':'';?>><?= _translate('1st Test for well child born of HIV+ mother'); ?></option>
-                                                <option value="1st Test for sick child" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == '1st Test for sick child') ? 'selected="selected"':'';?>><?= _translate('1st Test for sick child'); ?></option>
-                                                <option value="Repeat Testing for 6 weeks after weaning" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat Testing for 6 weeks after weaning') ? 'selected="selected"':'';?>><?= _translate('Repeat Testing for 6 weeks after weaning'); ?></option>
-                                                <option value="Repeat Testing due to loss of 1st sample" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat Testing due to loss of 1st sample') ? 'selected="selected"':'';?>><?= _translate('Repeat Testing due to loss of 1st sample'); ?></option>
-                                                <option value="Repeat due to clinical suspicion following negative 1st test" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat due to clinical suspicion following negative 1st test') ? 'selected="selected"':'';?>><?= _translate('Repeat due to clinical suspicion following negative 1st test'); ?></option>
+                                                <option value="1st Test for well child born of HIV+ mother" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == '1st Test for well child born of HIV+ mother') ? 'selected="selected"' : ''; ?>><?= _translate('1st Test for well child born of HIV+ mother'); ?></option>
+                                                <option value="1st Test for sick child" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == '1st Test for sick child') ? 'selected="selected"' : ''; ?>><?= _translate('1st Test for sick child'); ?></option>
+                                                <option value="Repeat Testing for 6 weeks after weaning" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat Testing for 6 weeks after weaning') ? 'selected="selected"' : ''; ?>><?= _translate('Repeat Testing for 6 weeks after weaning'); ?></option>
+                                                <option value="Repeat Testing due to loss of 1st sample" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat Testing due to loss of 1st sample') ? 'selected="selected"' : ''; ?>><?= _translate('Repeat Testing due to loss of 1st sample'); ?></option>
+                                                <option value="Repeat due to clinical suspicion following negative 1st test" <?php echo (isset($_SESSION['eidData']['sample_collection_reason']) && !empty($_SESSION['eidData']['sample_collection_reason']) && $_SESSION['eidData']['sample_collection_reason'] == 'Repeat due to clinical suspicion following negative 1st test') ? 'selected="selected"' : ''; ?>><?= _translate('Repeat due to clinical suspicion following negative 1st test'); ?></option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Point of Entry'); ?></th>
                                         <td>
                                             <select class="form-control" name="labTestingPoint" id="labTestingPoint" onchange="showTestingPointOther();">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="PMTCT(PT)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'PMTCT(PT)') ? 'selected="selected"':'';?>><?= _translate('PMTCT(PT)'); ?></option>
-                                                <option value="IWC(IC)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'IWC(IC)') ? 'selected="selected"':'';?>> <?= _translate('IWC(IC)'); ?> </option>
-                                                <option value="Hospitalization (HO)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'Hospitalization (HO)') ? 'selected="selected"':'';?>> <?= _translate('Hospitalization (HO)'); ?>' </option>
-                                                <option value="Consultation (CS)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'Consultation (CS)') ? 'selected="selected"':'';?>> <?= _translate('Consultation (CS)'); ?> </option>
-                                                <option value="EPI(PE)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'EPI(PE)') ? 'selected="selected"':'';?>> <?= _translate('EPI(PE)'); ?> </option>
+                                                <option value="PMTCT(PT)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'PMTCT(PT)') ? 'selected="selected"' : ''; ?>><?= _translate('PMTCT(PT)'); ?></option>
+                                                <option value="IWC(IC)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'IWC(IC)') ? 'selected="selected"' : ''; ?>> <?= _translate('IWC(IC)'); ?> </option>
+                                                <option value="Hospitalization (HO)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'Hospitalization (HO)') ? 'selected="selected"' : ''; ?>> <?= _translate('Hospitalization (HO)'); ?>' </option>
+                                                <option value="Consultation (CS)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'Consultation (CS)') ? 'selected="selected"' : ''; ?>> <?= _translate('Consultation (CS)'); ?> </option>
+                                                <option value="EPI(PE)" <?php echo (isset($_SESSION['eidData']['lab_testing_point']) && !empty($_SESSION['eidData']['lab_testing_point']) && $_SESSION['eidData']['lab_testing_point'] == 'EPI(PE)') ? 'selected="selected"' : ''; ?>> <?= _translate('EPI(PE)'); ?> </option>
                                                 <option value="other"><?= _translate('Other'); ?></option>
                                             </select>
                                             <input type="text" name="labTestingPointOther" id="labTestingPointOther" class="form-control" title="<?= _translate('Please specify other point of entry') ?>" placeholder="<?= _translate('Please specify other point of entry') ?>" style="display:none;" />
                                         </td>
                                     </tr>
-                                    <?php if($general->isLISInstance()){ ?>
+                                    <?php if ($general->isLISInstance()) { ?>
 
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
-                                                <td>
-                                                    <input type="text" value="<?php echo $_SESSION['eidData']['lab_assigned_code'];?>" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" onblur='checkNameValidation("form_eid","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)'/>
-                                                </td>
+                                            <td>
+                                                <input type="text" value="<?php echo $_SESSION['eidData']['lab_assigned_code']; ?>" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" onblur='checkNameValidation("form_eid","lab_assigned_code",this,null,"<?php echo _translate("The Lab Assigned Code that you entered already exists.Enter another Lab Assigned Code"); ?>",null)' />
+                                            </td>
                                         </tr>
                                     <?php } ?>
                                 </table>
@@ -480,9 +480,9 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate('Sample Collection Date'); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" value="<?php if(isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'],true); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);"  />
+                                            <input class="form-control dateTime isRequired" value="<?php if (isset($_SESSION['eidData']['sample_collection_date']) && !empty($_SESSION['eidData']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_collection_date'], true); ?>" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
-                                            </td>
+                                        </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Type <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
                                             <select name="specimenType" id="specimenType" class="form-control isRequired" title="Please choose specimen type" style="width:100%">
@@ -495,25 +495,25 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td style="width:35% !important;">
                                             <select class="form-control" name="isSampleRecollected" id="isSampleRecollected">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>
-                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'yes')? "selected='selected'":"";?>> <?= _translate('Yes'); ?> </option>
-                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'no')? "selected='selected'":"";?>> <?= _translate('No'); ?> </option>
+                                                <option value="yes" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'yes') ? "selected='selected'" : ""; ?>> <?= _translate('Yes'); ?> </option>
+                                                <option value="no" <?php echo (isset($_SESSION['eidData']['is_sample_recollected']) && !empty($_SESSION['eidData']['is_sample_recollected']) && $_SESSION['eidData']['is_sample_recollected'] == 'no') ? "selected='selected'" : ""; ?>> <?= _translate('No'); ?> </option>
                                             </select>
                                         </td>
                                         <th scope="row"><?= _translate('Name of health personnel'); ?></th>
                                         <td>
-                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_name'] ?? null;?>" class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" />
+                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_name'] ?? null; ?>" class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="<?= _translate('Requesting Officer'); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_phone'] ?? null;?>"  class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
+                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_phone'] ?? null; ?>" class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
                                         </td>
-                                        <?php if($general->isLISInstance()){ ?>
-                                        <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
-                                        <td>
-                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" value="<?php if(isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'],true); ?>" onchange="" style="width:100%;" />
-                                        </td>
+                                        <?php if ($general->isLISInstance()) { ?>
+                                            <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
+                                            <td>
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" value="<?php if (isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'], true); ?>" onchange="" style="width:100%;" />
+                                            </td>
                                         <?php } ?>
                                     </tr>
                                 </table>
@@ -535,8 +535,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-                                       
-                                           
+
+
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -628,7 +628,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -836,23 +836,21 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         }
     }
 
-    function updateAgeInfo()
-     {
-          var isChecked = $("#ageUnreported").is(":checked");
-          if(isChecked == true){
-               $("#childDob").val("");
-               $("#childAge").val("");
-               $('#childDob').prop('readonly', true);
-               $('#childAge').prop('readonly', true);
-               $('#childDob').removeClass('isRequired');
+    function updateAgeInfo() {
+        var isChecked = $("#ageUnreported").is(":checked");
+        if (isChecked == true) {
+            $("#childDob").val("");
+            $("#childAge").val("");
+            $('#childDob').prop('readonly', true);
+            $('#childAge').prop('readonly', true);
+            $('#childDob').removeClass('isRequired');
 
-          }
-          else{
-               $('#childDob').prop('readonly', false);
-               $('#childAge').prop('readonly', false);
-               $('#childDob').addClass('isRequired');
-          }
-     }
+        } else {
+            $('#childDob').prop('readonly', false);
+            $('#childAge').prop('readonly', false);
+            $('#childDob').addClass('isRequired');
+        }
+    }
 
     $(document).ready(function() {
         editableSelectClinician('clinicianName', 'clinician_name', 'form_eid');
@@ -914,11 +912,12 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                 $('#childStartedArtDate').prop('disabled', false);
             }
         });
-        <?php if(isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes'){ unset($_SESSION['vlData']);?>
+        <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
+            unset($_SESSION['vlData']); ?>
             getfacilityProvinceDetails($('#facilityId'));
         <?php } ?>
     });
-    
+
     function editableSelectClinician(id, _fieldName, table, _placeholder) {
         $("#" + id).select2({
             placeholder: _placeholder,
@@ -960,39 +959,39 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     }
 
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-		var removeDots = obj.value.replace(/\./g, "");
-		removeDots = removeDots.replace(/\,/g, "");
-		//str=obj.value;
-		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+        var removeDots = obj.value.replace(/\./g, "");
+        removeDots = removeDots.replace(/\,/g, "");
+        //str=obj.value;
+        removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
-		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
-				if (data === '1') {
-					alert(alrt);
-					document.getElementById(obj.id).value = "";
-				}
-			});
-	}
+        $.post("/includes/checkDuplicate.php", {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    document.getElementById(obj.id).value = "";
+                }
+            });
+    }
 
-    
-    $('#addEIDRequestForm').keypress((e) => { 
-          // Enter key corresponds to number 13 
-          if (e.which === 13) {
-               e.preventDefault(); 
-               validateNow();     // Trigger the validateNow function
-          } 
-     });
-     // Handle Enter key specifically for select2 elements
-     $(document).on('keydown', '.select2-container--open', function(e) {
-          if (e.which === 13) {
-               e.preventDefault();  // Prevent the default form submission
-               validateNow();  // Trigger the validateNow function
-          }
-     });
+
+    $('#addEIDRequestForm').keypress((e) => {
+        // Enter key corresponds to number 13
+        if (e.which === 13) {
+            e.preventDefault();
+            validateNow(); // Trigger the validateNow function
+        }
+    });
+    // Handle Enter key specifically for select2 elements
+    $(document).on('keydown', '.select2-container--open', function(e) {
+        if (e.which === 13) {
+            e.preventDefault(); // Prevent the default form submission
+            validateNow(); // Trigger the validateNow function
+        }
+    });
 </script>

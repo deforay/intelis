@@ -593,7 +593,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	changeProvince = true;
 	changeFacility = true;
 	provinceName = true;
@@ -832,7 +832,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 	$("#hasInfantStoppedBreastfeeding").change(function() {
 		if ($(this).val() == 'yes') {
 			addMandatoryField('ageBreastfeedingStopped');
-        	addMandatoryField('choiceOfFeeding');
+			addMandatoryField('choiceOfFeeding');
 		} else {
 			removeMandatoryField('ageBreastfeedingStopped');
 			removeMandatoryField('choiceOfFeeding');

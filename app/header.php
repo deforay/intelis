@@ -119,12 +119,12 @@ if ($instrumentCount == 0 || $userCount == 0) {
 	<link href="/assets/css/summernote.min.css" rel="stylesheet">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
-	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
-	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/deforayModal.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
 </head>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.topBar {
 		margin: 0;
 		padding: 0;

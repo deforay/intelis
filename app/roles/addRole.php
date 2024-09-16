@@ -22,7 +22,7 @@ $resourcesQuery = "SELECT module,
 			FROM `resources` WHERE `module` IN ('" . implode("','", $activeModules) . "') GROUP BY `module` ORDER BY `module` ASC";
 $rInfo = $db->query($resourcesQuery);
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.labelName {
 		font-size: 13px;
 	}
@@ -393,7 +393,7 @@ $rInfo = $db->query($resourcesQuery);
 </div>
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 		$("#denyAllPrivileges").trigger('click');
 	});

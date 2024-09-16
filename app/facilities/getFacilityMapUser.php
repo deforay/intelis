@@ -28,9 +28,9 @@ $uResult = $db->rawQuery($uQuery);
         <select name="from[]" id="search" class="form-control" size="8" multiple="multiple">
             <?php
             foreach ($uResult as $uName) {
-                if(!in_array($uName['user_id'], $selectedUserIds)){
+                if (!in_array($uName['user_id'], $selectedUserIds)) {
             ?>
-                <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
+                    <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
             <?php }
             }
             ?>
@@ -48,9 +48,9 @@ $uResult = $db->rawQuery($uQuery);
 
     <div class="col-xs-5">
         <select name="to[]" id="search_to" class="form-control" size="8" multiple="multiple">
-        <?php foreach ($uResult as $uName) {
-                if (isset($selectedUserIds) && in_array($uName['user_id'],$selectedUserIds)) { ?>
-                <option value="<?= $uName['user_id']; ?>" ><?= ($uName['user_name']); ?></option>
+            <?php foreach ($uResult as $uName) {
+                if (isset($selectedUserIds) && in_array($uName['user_id'], $selectedUserIds)) { ?>
+                    <option value="<?= $uName['user_id']; ?>"><?= ($uName['user_name']); ?></option>
             <?php }
             } ?>
         </select>
@@ -58,8 +58,7 @@ $uResult = $db->rawQuery($uQuery);
 
     </div>
 </div>
-<script type="text/javascript">
-
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     function updateCounts($left, $right) {
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);

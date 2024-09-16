@@ -189,7 +189,7 @@ $('#example').DataTable({
 responsive: true
 });
 }); -->
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
   $(document).ready(function() {
     $('#loginAttempts').DataTable({
       responsive: true,

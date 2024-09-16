@@ -41,7 +41,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select --");
 $state = $geolocationService->getProvinces("yes");
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: #000000 !important;
     }
@@ -111,18 +111,18 @@ $state = $geolocationService->getProvinces("yes");
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+                                                    </td>
                                                     <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                  
+
                                                 </tr>
                                                 <tr>
                                                     <td><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
@@ -139,7 +139,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="patientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <tr>
                                                     <td><strong>
@@ -208,10 +208,10 @@ $state = $geolocationService->getProvinces("yes");
                                                 </div>
                                             </span>
                                             <br>
-											<div id="notPrintedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
-													<?php echo _translate("Print Selected Results PDF"); ?>
-											</span></button></div>
+                                            <div id="notPrintedResult" style="display:none;">
+                                                &nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
+                                                        <?php echo _translate("Print Selected Results PDF"); ?>
+                                                    </span></button></div>
 
                                             <table aria-describedby="table" id="notPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
@@ -285,18 +285,18 @@ $state = $geolocationService->getProvinces("yes");
                                                         <input type="text" id="printSampleTestDate" name="printSampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+                                                    </td>
                                                     <td><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td>
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                   
+
 
                                                 </tr>
                                                 <tr>
@@ -314,7 +314,7 @@ $state = $geolocationService->getProvinces("yes");
                                                     <td>
                                                         <input type="text" id="printPatientName" name="patientName" class="form-control" placeholder="<?php echo _translate('Enter Patient Name'); ?>" style="background:#fff;" />
                                                     </td>
-                                                    
+
                                                 </tr>
                                                 <tr>
                                                     <td><strong>
@@ -383,10 +383,10 @@ $state = $geolocationService->getProvinces("yes");
                                                 </div>
                                             </span>
                                             <br>
-											<div id="printedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
-																<?php echo _translate("Print selected Results PDF"); ?>
-															</span></button></div>
+                                            <div id="printedResult" style="display:none;">
+                                                &nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
+                                                        <?php echo _translate("Print selected Results PDF"); ?>
+                                                    </span></button></div>
                                             <table aria-describedby="table" id="alreadyPrintedTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
@@ -430,9 +430,9 @@ $state = $geolocationService->getProvinces("yes");
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var startDate = "";
     var endDate = "";
     var selectedRows = [];
@@ -518,7 +518,7 @@ $state = $geolocationService->getProvinces("yes");
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-            $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
+        $('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
         loadVlRequestData();
         //loadPrintedVlRequestData();
         $(".showhideCheckBox").change(function() {
@@ -684,9 +684,9 @@ $state = $geolocationService->getProvinces("yes");
                     "value": $("#sampleTestDate").val()
                 });
                 aoData.push({
-					"name": "sampleReceivedDate",
-					"value": $("#sampleReceivedDate").val()
-				});
+                    "name": "sampleReceivedDate",
+                    "value": $("#sampleReceivedDate").val()
+                });
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#batchCode").val()
@@ -813,9 +813,9 @@ $state = $geolocationService->getProvinces("yes");
                     "value": $("#printSampleTestDate").val()
                 });
                 aoData.push({
-					"name": "sampleReceivedDate",
-					"value": $("#printSampleReceivedDate").val()
-				});
+                    "name": "sampleReceivedDate",
+                    "value": $("#printSampleReceivedDate").val()
+                });
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#printBatchCode").val()
@@ -918,16 +918,14 @@ $state = $geolocationService->getProvinces("yes");
                         $(".checkPrintedRows").prop('checked', false);
                         $("#checkPrintedRowsData").prop('checked', false);
                     }
-                    if(selectedRows!=""){
+                    if (selectedRows != "") {
                         $("#notPrintedResult").css('display', 'block');
-                    }
-                    else{
+                    } else {
                         $("#notPrintedResult").css('display', 'none');
                     }
-                    if(selectedPrintedRows!=""){
+                    if (selectedPrintedRows != "") {
                         $("#printedResult").css('display', 'block');
-                    }
-                    else{
+                    } else {
                         $("#printedResult").css('display', 'none');
                     }
                     window.open('/download.php?f=' + data, '_blank');
@@ -946,10 +944,9 @@ $state = $geolocationService->getProvinces("yes");
             selectedRowsId.splice($.inArray(obj.id, selectedRowsId), 1);
             $("#checkRowsData").attr("checked", false);
         }
-        if(selectedRows!=""){
+        if (selectedRows != "") {
             $("#notPrintedResult").css('display', 'block');
-        }
-        else{
+        } else {
             $("#notPrintedResult").css('display', 'none');
         }
         $("#checkedRows").val(selectedRows.join());
@@ -966,10 +963,9 @@ $state = $geolocationService->getProvinces("yes");
             selectedPrintedRowsId.splice($.inArray(obj.id, selectedPrintedRowsId), 1);
             $("#checkPrintedRowsData").attr("checked", false);
         }
-        if(selectedPrintedRows!=""){
+        if (selectedPrintedRows != "") {
             $("#printedResult").css('display', 'block');
-        }
-        else{
+        } else {
             $("#printedResult").css('display', 'none');
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
@@ -996,10 +992,9 @@ $state = $geolocationService->getProvinces("yes");
                 $("#status").prop('disabled', true);
             });
         }
-        if(selectedRows!=""){
+        if (selectedRows != "") {
             $("#notPrintedResult").css('display', 'block');
-        }
-        else{
+        } else {
             $("#notPrintedResult").css('display', 'none');
         }
         $("#checkedRows").val(selectedRows.join());
@@ -1026,10 +1021,9 @@ $state = $geolocationService->getProvinces("yes");
                 $("#status").prop('disabled', true);
             });
         }
-        if(selectedPrintedRows!=""){
+        if (selectedPrintedRows != "") {
             $("#printedResult").css('display', 'block');
-        }
-        else{
+        } else {
             $("#printedResult").css('display', 'none');
         }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());

@@ -49,7 +49,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 ?>
 <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -1418,10 +1418,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 
 

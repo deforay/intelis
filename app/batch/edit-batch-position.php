@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\SystemService;
 use App\Services\BatchService;
 use App\Services\TestsService;
@@ -36,7 +37,7 @@ $testType = ($testType == 'covid19') ? 'covid-19' : $testType;
 $title = _translate($testName . " | Edit Batch Position");
 $modules = SYSTEM_CONFIG['modules'];
 $activeModule = SystemService::getActiveModules(true);
-if(isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)){
+if (isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)) {
 	$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
 }
 require_once APPLICATION_PATH . '/header.php';
@@ -57,13 +58,13 @@ if (empty($batchInfo)) {
 $batchAttributes = json_decode((string)$batchInfo['batch_attributes']);
 
 $sby = $batchAttributes->sort_by;
-if(isset($_GET['sortBy'])){
+if (isset($_GET['sortBy'])) {
 	$sby = $_GET['sortBy'];
 	$batchInfo['label_order'] = "";
 }
 
 $stype = $batchAttributes->sort_type;
-if(isset($_GET['sortType'])){
+if (isset($_GET['sortType'])) {
 	$stype = $_GET['sortType'];
 	$batchInfo['label_order'] = "";
 }
@@ -82,7 +83,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 ?>
 
 <!-- HTML and JavaScript -->
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	#sortableRow {
 		list-style-type: none;
 		margin: 0 auto;
@@ -121,35 +122,35 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 				<h4><strong><?= _translate("Batch Code"); ?> :
 						<?php echo (isset($batchInfo['batch_code'])) ? $batchInfo['batch_code'] : ''; ?>
 					</strong></h4>
-					<div class="row">
-						<div class="col-lg-3">
-							<select class="form-control" id="sortBy">
-								<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
-								<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
-								<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
-								<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
-							</select>
-						</div>
-						<div class="col-lg-2">
-							<select class="form-control" id="sortType">
-								<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
-								<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
-							</select>
-						</div>
-						<div class="col-lg-7">
+				<div class="row">
+					<div class="col-lg-3">
+						<select class="form-control" id="sortBy">
+							<option <?= $sortBy == 'requestCreated' ? "selected='selected'" : '' ?> value="requestCreated"><?= _translate("Request Created"); ?></option>
+							<option <?= $sortBy == 'lastModified' ? "selected='selected'" : '' ?> value="lastModified"><?= _translate("Last Modified"); ?></option>
+							<option <?= $sortBy == 'sampleCode' ? "selected='selected'" : '' ?> value="sampleCode"><?= _translate("Sample Code"); ?></option>
+							<option <?= $sortBy == 'labAssignedCode' ? "selected='selected'" : '' ?> value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
+						</select>
+					</div>
+					<div class="col-lg-2">
+						<select class="form-control" id="sortType">
+							<option <?= $sortType == 'asc' ? "selected='selected'" : '' ?> value="asc"><?= _translate("Ascending"); ?></option>
+							<option <?= $sortType == 'desc' ? "selected='selected'" : '' ?> value="desc"><?= _translate("Descending"); ?></option>
+						</select>
+					</div>
+					<div class="col-lg-7">
 						<div class="col-lg-4">
 							<button type="button" class="btn btn-primary pull-right form-control" onclick="changeSampleOrder();return false;">Change Sample Order</button>
 						</div>
-							<div class="col-lg-3">
-								<button type="button" class="btn btn-danger pull-right form-control" onclick="sortBatch();return false;">Reset to Default</button>
-							</div>
-							
+						<div class="col-lg-3">
+							<button type="button" class="btn btn-danger pull-right form-control" onclick="sortBatch();return false;">Reset to Default</button>
 						</div>
-					</div>
 
-					<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers
-					</button>
-				
+					</div>
+				</div>
+
+				<button type="button" id="updateSerialNumbersButton" class="btn btn-primary pull-right" onclick="updateSerialNumbers();return false;">Update Serial Numbers
+				</button>
+
 			</div>
 			<div class="box-body">
 				<form class="form-horizontal" method='post' name='editBatchControlsPosition' id='editBatchControlsPosition' autocomplete="off" action="save-batch-position-helper.php">
@@ -229,12 +230,12 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 	}
 
 	function sortBatch() {
-		conf  = confirm("<?= _translate("Are you sure you want to reset the sorting to default? This will reset all previous changes", true); ?>");
-		if(conf){
-        	let sortType = 'asc'; // Resetting sortType to 'asc'
+		conf = confirm("<?= _translate("Are you sure you want to reset the sorting to default? This will reset all previous changes", true); ?>");
+		if (conf) {
+			let sortType = 'asc'; // Resetting sortType to 'asc'
 			let sortBy = 'sampleCode'; // Resetting sortBy to 'sampleCode'
-			
-        	$("#sortType").val(sortType);
+
+			$("#sortType").val(sortType);
 			$("#sortBy").val(sortBy);
 
 			$("#typeSort").val(sortType);
@@ -250,24 +251,23 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 		}
 	}
 
-	function changeSampleOrder()
-	{
-			sortType = $("#sortType").val();
-			sortBy = $("#sortBy").val();
-			
-        	$("#sortType").val(sortType);
-			$("#sortBy").val(sortBy);
+	function changeSampleOrder() {
+		sortType = $("#sortType").val();
+		sortBy = $("#sortBy").val();
 
-			$("#typeSort").val(sortType);
-			$("#bySort").val(sortBy);
+		$("#sortType").val(sortType);
+		$("#sortBy").val(sortBy);
 
-			let url = new URL(window.location.href);
-			let params = new URLSearchParams(url.search);
-			params.set('sortBy', sortBy);
-			params.set('sortType', sortType);
+		$("#typeSort").val(sortType);
+		$("#bySort").val(sortBy);
 
-			url.search = params.toString();
-			window.location.href = url.toString();
+		let url = new URL(window.location.href);
+		let params = new URLSearchParams(url.search);
+		params.set('sortBy', sortBy);
+		params.set('sortType', sortType);
+
+		url.search = params.toString();
+		window.location.href = url.toString();
 	}
 </script>
 <?php

@@ -109,10 +109,10 @@ if ($general->isLISInstance() && $vlQueryInfo['patient_dob'] == null && $vlQuery
      $ageInfo = "ageUnreported";
 }
 $facilityId = $vlQueryInfo['facility_id'];
-$reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request_clinician_name","request_clinician_name"), true, "facility_id= $facilityId ");
+$reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request_clinician_name", "request_clinician_name"), true, "facility_id= $facilityId ");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -454,15 +454,15 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                   </div>
                                              </div>
                                              <?php if ($general->isLISInstance()) { ?>
-                                             <div class="row">
-                                                  <div class="col-md-3">
-                                                       <div class="form-group">
-                                                            <label class="" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?> </label>
-                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" title="<?= _translate('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> />
+                                                  <div class="row">
+                                                       <div class="col-md-3">
+                                                            <div class="form-group">
+                                                                 <label class="" for="sampleReceivedDate"><?= _translate('Date Sample Received at Testing Lab'); ?> </label>
+                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" title="<?= _translate('Please select sample received date'); ?>" <?php echo $labFieldDisabled; ?> />
+                                                            </div>
                                                        </div>
                                                   </div>
-                                             </div>
-                                             
+
                                              <?php } ?>
                                              <br>
                                              <div class="box box-primary">
@@ -748,7 +748,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                                                 <textarea class="form-control" name="reasonForResultChanges" id="reasonForResultChanges" placeholder="Enter Reason For Result Changes" title="Please enter reason for result changes" style="width:100%;"></textarea>
                                                                            </div>
                                                                       </div>
-											          </div>
+                                                                 </div>
                                                             </div>
                                                        </div>
                                                   <?php } ?>
@@ -798,15 +798,15 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
      ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
 <?php
      }
 }
@@ -886,44 +886,44 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      });
 
      function editableSelectClinician(id, _fieldName, table, _placeholder) {
-        $("#" + id).select2({
-            placeholder: _placeholder,
-            minimumInputLength: 0,
-            width: '100%',
-            allowClear: true,
-            id: function(bond) {
-                return bond._id;
-            },
-            ajax: {
-                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
-                url: "/includes/get-data-list-for-generic.php",
-                dataType: 'json',
-                delay: 250,
-                data: function(params) {
-                    return {
-                        fieldName: _fieldName,
-                        tableName: table,
-                        q: params.term, // search term
-                        page: params.page,
-                        facilityId: $("#facilityId").val(),
-                    };
-                },
-                processResults: function(data, params) {
-                    params.page = params.page || 1;
-                    return {
-                        results: data.result,
-                        pagination: {
-                            more: (params.page * 30) < data.total_count
-                        }
-                    };
-                },
-                //cache: true
-            },
-            escapeMarkup: function(markup) {
-                return markup;
-            }
-        });
-    }
+          $("#" + id).select2({
+               placeholder: _placeholder,
+               minimumInputLength: 0,
+               width: '100%',
+               allowClear: true,
+               id: function(bond) {
+                    return bond._id;
+               },
+               ajax: {
+                    placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                    url: "/includes/get-data-list-for-generic.php",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                         return {
+                              fieldName: _fieldName,
+                              tableName: table,
+                              q: params.term, // search term
+                              page: params.page,
+                              facilityId: $("#facilityId").val(),
+                         };
+                    },
+                    processResults: function(data, params) {
+                         params.page = params.page || 1;
+                         return {
+                              results: data.result,
+                              pagination: {
+                                   more: (params.page * 30) < data.total_count
+                              }
+                         };
+                    },
+                    //cache: true
+               },
+               escapeMarkup: function(markup) {
+                    return markup;
+               }
+          });
+     }
 
 
      function hivDetectionChange() {

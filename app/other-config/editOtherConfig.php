@@ -71,7 +71,7 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
   function validateNow() {
     flag = deforayValidator.init({
       formId: 'editOtherConfigForm'

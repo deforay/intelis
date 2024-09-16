@@ -46,15 +46,15 @@ $skin = "skin-blue";
 
 
 
-	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
 
 	<!-- Latest compiled and minified JavaScript -->
 
-	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-	<script src="/assets/js/deforayModal.js"></script>
-	<script src="/assets/js/jquery.fastconfirm.js"></script>
-	<!--<script type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
-	<style>
+	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/deforayModal.js"></script>
+	<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.fastconfirm.js"></script>
+	<!--<script nonce="<?= $_SESSION['nonce']; ?>"type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
+	<style nonce="<?= $_SESSION['nonce']; ?>">
 		.dataTables_wrapper {
 			position: relative;
 			clear: both;

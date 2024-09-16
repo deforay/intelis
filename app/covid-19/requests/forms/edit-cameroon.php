@@ -78,8 +78,8 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
 $ageInfo = "";
-if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
-     $ageInfo = "ageUnreported";
+if ($covid19Info['patient_dob'] == NULL && $covid19Info['patient_age'] == NULL) {
+    $ageInfo = "ageUnreported";
 }
 
 ?>
@@ -251,10 +251,10 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                         <td>
                                             <input type="text" name="dob" id="dob" value="<?= $covid19Info['patient_dob'] ?>" class="form-control date" placeholder="<?= _translate('Enter DOB'); ?>" title="Enter dob" onchange="getAge();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
 
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if($ageInfo=="ageUnreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Case Age (years)"); ?></th>
-                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" <?php if($ageInfo=="ageUnreported") echo "readonly"; ?> /></td>
+                                        <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="ageInYears" name="ageInYears" placeholder="<?= _translate("Age (in years)"); ?>" title="<?= _translate("Age"); ?>" style="width:100%;" value="<?php echo $covid19Info['patient_age']; ?>" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> /></td>
                                     </tr>
                                     <tr>
                                         <th scope="row"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
@@ -353,7 +353,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate("Sample Collection Date"); ?>" value="<?php echo ($covid19Info['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate("Sample Collection Date"); ?>" value="<?php echo ($covid19Info['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
@@ -379,15 +379,15 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                                 } ?>
                                             </select>
                                         </td>
-                                        <?php if($general->isLISInstance()){ ?>
-                                            <tr>
-                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
-                                            <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate("Please enter sample receipt date"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
-                                            </td>
-                                        </tr>
-                                        <?php } ?>
+                                        <?php if ($general->isLISInstance()) { ?>
+                                    <tr>
+                                        <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
+                                        <td>
+                                            <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate("Please enter sample receipt date"); ?>" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                        </td>
                                     </tr>
+                                <?php } ?>
+                                </tr>
                                 </table>
                             </div>
                         </div>
@@ -417,7 +417,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
                                             </td>
                                         </tr>
                                         <tr>
-                                           
+
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="<?= _translate("Please select a Lab Technician"); ?>" style="width:100%;">
@@ -639,7 +639,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -647,7 +647,7 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
     machineName = true;
     let testCounter = <?php echo (!empty($covid19TestInfo)) ? (count($covid19TestInfo)) : 0; ?>;
     deletedRow = [];
-    
+
 
     function getfacilityDetails(obj) {
         $.blockUI();
@@ -817,22 +817,20 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
         }
     }
 
-    function updateAgeInfo()
-     {
-          var isChecked = $("#ageUnreported").is(":checked");
-          if(isChecked == true){
-               $("#dob").val("");
-               $("#ageInYears").val("");
-               $('#dob').prop('readonly', true);
-               $('#ageInYears').prop('readonly', true);
-               //$('#dob').removeClass('isRequired');
-          }
-          else{
-               $('#dob').prop('readonly', false);
-               $('#ageInYears').prop('readonly', false);
-               //$('#dob').addClass('isRequired');
-          }
-     }
+    function updateAgeInfo() {
+        var isChecked = $("#ageUnreported").is(":checked");
+        if (isChecked == true) {
+            $("#dob").val("");
+            $("#ageInYears").val("");
+            $('#dob').prop('readonly', true);
+            $('#ageInYears').prop('readonly', true);
+            //$('#dob').removeClass('isRequired');
+        } else {
+            $('#dob').prop('readonly', false);
+            $('#ageInYears').prop('readonly', false);
+            //$('#dob').addClass('isRequired');
+        }
+    }
 
     $(document).ready(function() {
         checkCollectionDate('<?php echo $covid19Info['sample_collection_date']; ?>');
@@ -1108,17 +1106,17 @@ if($covid19Info['patient_dob']==NULL && $covid19Info['patient_age']==NULL){
         }
     }
     $('#editCovid19RequestForm').keypress((e) => {
-        // Enter key corresponds to number 13 
+        // Enter key corresponds to number 13
         if (e.which === 13) {
-            e.preventDefault(); 
-            validateNow();     // Trigger the validateNow function
-        } 
+            e.preventDefault();
+            validateNow(); // Trigger the validateNow function
+        }
     });
     // Handle Enter key specifically for select2 elements
     $(document).on('keydown', '.select2-container--open', function(e) {
         if (e.which === 13) {
-            e.preventDefault();  // Prevent the default form submission
-            validateNow();  // Trigger the validateNow function
+            e.preventDefault(); // Prevent the default form submission
+            validateNow(); // Trigger the validateNow function
         }
     });
 </script>

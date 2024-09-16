@@ -44,7 +44,7 @@ foreach ($dir as $fileinfo) {
 }
 sort($fileList);
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.tooltip-inner {
 		background-color: #fff;
 		color: #000;
@@ -556,7 +556,7 @@ sort($fileList);
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	tableRowId = 2;
 
 	$(document).ready(function() {

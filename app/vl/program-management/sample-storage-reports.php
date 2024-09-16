@@ -40,7 +40,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "-- Select --");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -273,7 +273,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedRows = [];

@@ -36,22 +36,22 @@ $sResult = $db->rawQuery($sQuery);
 							<td>
 								<select style="width:100%" class="form-control select2" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>" onchange="viewUser()">
 									<option value="">--Select--</option>
-									<?php foreach($sResult as $data) { ?>
-										<option value="<?php echo $data['user_id']?>"><?php echo $data['user_name']?></option>
+									<?php foreach ($sResult as $data) { ?>
+										<option value="<?php echo $data['user_id'] ?>"><?php echo $data['user_name'] ?></option>
 									<?php } ?>
 								</select>
 							</td>
 						</tr>
 
 					</table>
-					</div>
-					<!-- /.box-header -->
-					
-						<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
-						<div class="box viewUser hide" id="viewUser"></div>
-					
-					<!-- /.box-body -->
-					
+				</div>
+				<!-- /.box-header -->
+
+				<!-- <span><i class="fa fa-trash" style="color: red; background"></i></span> -->
+				<div class="box viewUser hide" id="viewUser"></div>
+
+				<!-- /.box-body -->
+
 				<!-- /.box -->
 			</div>
 			<!-- /.col -->
@@ -60,12 +60,13 @@ $sResult = $db->rawQuery($sQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
 	$(document).ready(function() {
 		$(".select2").select2();
 	});
+
 	function viewUser() {
 		if ($('#userId').val() != "") {
 			$.ajax({
@@ -77,7 +78,7 @@ $sResult = $db->rawQuery($sQuery);
 					$('.viewUser').removeClass('hide');
 				}
 			});
-		}else{
+		} else {
 			$('.viewUser').addClass('hide');
 		}
 	}
@@ -129,7 +130,7 @@ $sResult = $db->rawQuery($sQuery);
 		} catch (error) {
 			console.log(error);
 		}
-  }
+	}
 </script>
 <?php
 require_once(APPLICATION_PATH . '/system-admin/admin-footer.php');

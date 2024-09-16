@@ -55,11 +55,11 @@ $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
 $user = '';
-if($contactPerson != ''){
-     $contactUser = $usersService->getUserInfo($contactPerson);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($contactPerson != '') {
+	$contactUser = $usersService->getUserInfo($contactPerson);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 
 //set reason for changes history
@@ -67,7 +67,7 @@ $rch = '';
 $allChange = [];
 if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for_result_changes'] != '' && $vlQueryInfo['reason_for_result_changes'] != null) {
 	$allChange = json_decode((string) $vlQueryInfo['reason_for_result_changes'], true);
-	
+
 	if (!empty($allChange)) {
 		$rch .= '<h4>Result Changes History</h4>';
 		$rch .= '<table style="width:100%;">';
@@ -75,16 +75,16 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 
-	//	foreach ($allChange as $change) {
-			$usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
-			$usrResult = $db->rawQuery($usrQuery, [$allChange['user']]);
-			$name = '';
-			if (isset($usrResult[0]['user_name'])) {
-				$name = ($usrResult[0]['user_name']);
-			}
-			$changedDate = DateUtility::humanReadableDateFormat($allChange['dateOfChange'] ?? '', true);
-			$rch .= '<tr><td>' . $name . '</td><td>' . ($allChange['reasonForChange']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
-	//	} 
+		//	foreach ($allChange as $change) {
+		$usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
+		$usrResult = $db->rawQuery($usrQuery, [$allChange['user']]);
+		$name = '';
+		if (isset($usrResult[0]['user_name'])) {
+			$name = ($usrResult[0]['user_name']);
+		}
+		$changedDate = DateUtility::humanReadableDateFormat($allChange['dateOfChange'] ?? '', true);
+		$rch .= '<tr><td>' . $name . '</td><td>' . ($allChange['reasonForChange']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
+		//	}
 		$rch .= '</tbody>';
 		$rch .= '</table>';
 	}
@@ -138,7 +138,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 }
 //echo $vlQueryInfo['lab_id']; die;
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -430,24 +430,24 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</select>
 											</div>
 										</div>
-										<?php if($general->isLISInstance()){ ?>
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL)  <span class="mandatory">*</span></label>
-												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
+										<?php if ($general->isLISInstance()) { ?>
+											<div class="col-xs-3 col-md-3">
+												<div class="form-group">
+													<label for="sampleReceivedAtHubOn">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
+													<input type="text" class="form-control dateTime isRequired" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at HUB date" value="<?php echo $vlQueryInfo['sample_received_at_hub_datetime']; ?>" />
+												</div>
 											</div>
-										</div>
 										<?php } ?>
 									</div>
-									<?php if($general->isLISInstance()){ ?>
-									<div class="row">
-										<div class="col-xs-3 col-md-3">
-											<div class="form-group">
-												<label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span> </label>
-												<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+									<?php if ($general->isLISInstance()) { ?>
+										<div class="row">
+											<div class="col-xs-3 col-md-3">
+												<div class="form-group">
+													<label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span> </label>
+													<input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" />
+												</div>
 											</div>
 										</div>
-									</div>
 									<?php } ?>
 								</div>
 								<div class="box box-primary">
@@ -697,7 +697,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													</div>
 												</div>
 											</div>
-											
+
 											<div class="row">
 												<div class="col-md-6">
 													<label for="testingPlatform" class="col-lg-5 control-label">VL Testing Platform <span class="mandatory result-span">*</span></label>
@@ -893,8 +893,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 			</div>
 	</section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;
 

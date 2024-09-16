@@ -238,7 +238,7 @@ $aQuery = "SELECT * from r_vl_art_regimen WHERE art_status = 'active'";
 $aResult = $db->query($aQuery);
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	:disabled {
 		background: white !important;
 	}
@@ -297,7 +297,7 @@ if ($formId == COUNTRY\SOUTH_SUDAN) {
 }
 
 ?>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <?php
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code

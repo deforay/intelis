@@ -81,7 +81,7 @@ $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
 $user = '';
-if($contactPerson != ''){
+if ($contactPerson != '') {
      $contactUser = $usersService->getUserInfo($contactPerson);
      if (!empty($contactUser)) {
           $user = $contactUser['user_name'];
@@ -161,7 +161,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 }
 $disable = "disabled = 'disabled'";
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -343,28 +343,28 @@ $disable = "disabled = 'disabled'";
                                                   </select>
                                              </div>
                                         </div>
-                                        <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
-                                                  <div class="form-group">
-                                                       <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
-                                                       <label class="radio-inline">
-                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
-                                                       </label>
-                                                       <label class="radio-inline">
-                                                            <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
-                                                       </label>
-                                                  </div>
+                                        <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>">
+                                             <div class="form-group">
+                                                  <label for="patientPregnant"><?= _translate('Is Patient Pregnant?'); ?> <span class="mandatory">*</span></label><br>
+                                                  <label class="radio-inline">
+                                                       <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregYes" name="patientPregnant" value="yes" title="<?= _translate('Please check if patient is pregnant'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                       <input type="radio" class="<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "isRequired" : ""; ?>" id="pregNo" name="patientPregnant" value="no" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_pregnant'] == 'no') ? "checked='checked'" : "" ?>> <?= _translate('No'); ?>
+                                                  </label>
                                              </div>
-                                             <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>" >
-                                                  <div class="form-group">
-                                                       <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
-                                                       <label class="radio-inline">
-                                                            <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
-                                                       </label>
-                                                       <label class="radio-inline">
-                                                            <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?> <?php echo $disable; ?>> <?= _translate('No'); ?>
-                                                       </label>
-                                                  </div>
+                                        </div>
+                                        <div class="col-xs-3 col-md-3 femaleSection" style="display:<?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "" : "none" ?>">
+                                             <div class="form-group">
+                                                  <label for="breastfeeding"><?= _translate('Is Patient Breastfeeding?'); ?> <span class="mandatory">*</span></label><br>
+                                                  <label class="radio-inline">
+                                                       <input type="radio" class="" id="breastfeedingYes" name="breastfeeding" value="yes" title="<?= _translate('Please check if patient is breastfeeding'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'yes') ? "checked='checked'" : "" ?>> <?= _translate('Yes'); ?>
+                                                  </label>
+                                                  <label class="radio-inline">
+                                                       <input type="radio" class="" id="breastfeedingNo" name="breastfeeding" value="no" <?php echo ($vlQueryInfo['is_patient_breastfeeding'] == 'no') ? "checked='checked'" : "" ?> <?php echo $disable; ?>> <?= _translate('No'); ?>
+                                                  </label>
                                              </div>
+                                        </div>
                                    </div>
                               </div>
                               <div class="box box-primary">
@@ -399,11 +399,11 @@ $disable = "disabled = 'disabled'";
                                              <?php if ($general->isLISInstance()) { ?>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group" style=" width: 100%; ">
-                                                       <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
+                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?> </label>
                                                             <input type="text" value="<?php echo $vlQueryInfo['sample_received_at_lab_datetime']; ?>" <?php echo $disable; ?> class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
                                                        </div>
                                                   </div>
-                                                  <?php } ?>
+                                             <?php } ?>
 
                                         </div>
                                    </div>
@@ -565,7 +565,7 @@ $disable = "disabled = 'disabled'";
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                         
+
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
@@ -767,15 +767,15 @@ $disable = "disabled = 'disabled'";
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
      ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
 <?php
 
      }
@@ -783,7 +783,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 ?>
 <!-- BARCODESTUFF END -->
 
-<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
      let facilityName = true;

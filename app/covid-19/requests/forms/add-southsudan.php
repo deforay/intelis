@@ -333,13 +333,13 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <th scope="row"></th>
                                         <td></td>
                                     </tr>
-                                    <?php if($general->isLISInstance()){ ?>
-                                    <tr>
-                                        <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span> </label></th>
+                                    <?php if ($general->isLISInstance()) { ?>
+                                        <tr>
+                                            <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span> </label></th>
                                             <td>
                                                 <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" <?php echo (isset($labFieldDisabled) && trim($labFieldDisabled) != '') ? $labFieldDisabled : ''; ?>onchange="" style="width:100%;" />
                                             </td>
-                                    </tr>
+                                        </tr>
                                     <?php } ?>
                                 </table>
                             </div>
@@ -503,11 +503,11 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <td><select name="authorizedBy" id="authorizedBy" class="disabled-field form-control" title="Please choose authorized by" style="width: 100%;">
                                                     <?= $general->generateSelectOptions($labTechniciansResults, null, '-- Select --'); ?>
                                                 </select></td>
-                                                <th scope="row">Authorized on</th>
+                                            <th scope="row">Authorized on</th>
                                             <td><input type="text" name="authorizedOn" id="authorizedOn" class="disabled-field form-control date" placeholder="Authorized on" title="Please select the Authorized On" /></td>
 
                                         </tr>
-                                       
+
                                     </table>
                                 </div>
                             </div>
@@ -724,7 +724,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 </div>
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

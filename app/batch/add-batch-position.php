@@ -56,7 +56,7 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 ?>
 
 <!-- HTML and JavaScript -->
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	#sortableRow {
 		list-style-type: none;
 		margin: 0 auto;
@@ -112,11 +112,11 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 						<div class="col-lg-4">
 							<button type="button" class="btn btn-primary pull-right form-control" onclick="changeSampleOrder();return false;">Change Sample Order</button>
 						</div>
-							<div class="col-lg-3">
-								<button type="button" class="btn btn-danger pull-right form-control" onclick="sortBatch();return false;">Reset to Default</button>
-							</div>
-							
+						<div class="col-lg-3">
+							<button type="button" class="btn btn-danger pull-right form-control" onclick="sortBatch();return false;">Reset to Default</button>
 						</div>
+
+					</div>
 				</div>
 			</div>
 
@@ -196,12 +196,12 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 	}
 
 	function sortBatch() {
-		conf  = confirm("<?= _translate("Are you sure you want to reset the sorting to default? This will reset all previous changes", true); ?>");
-		if(conf){
-        	let sortType = 'asc'; // Resetting sortType to 'asc'
+		conf = confirm("<?= _translate("Are you sure you want to reset the sorting to default? This will reset all previous changes", true); ?>");
+		if (conf) {
+			let sortType = 'asc'; // Resetting sortType to 'asc'
 			let sortBy = 'sampleCode'; // Resetting sortBy to 'sampleCode'
-			
-        	$("#sortType").val(sortType);
+
+			$("#sortType").val(sortType);
 			$("#sortBy").val(sortBy);
 
 			$("#typeSort").val(sortType);
@@ -211,30 +211,29 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 			let params = new URLSearchParams(url.search);
 			params.set('sortBy', sortBy);
 			params.set('sortType', sortType);
-			
+
 			url.search = params.toString();
 			window.location.href = url.toString();
 		}
 	}
 
-	function changeSampleOrder()
-	{
-			sortType = $("#sortType").val();
-			sortBy = $("#sortBy").val();
-			
-        	$("#sortType").val(sortType);
-			$("#sortBy").val(sortBy);
+	function changeSampleOrder() {
+		sortType = $("#sortType").val();
+		sortBy = $("#sortBy").val();
 
-			$("#typeSort").val(sortType);
-			$("#bySort").val(sortBy);
+		$("#sortType").val(sortType);
+		$("#sortBy").val(sortBy);
 
-			let url = new URL(window.location.href);
-			let params = new URLSearchParams(url.search);
-			params.set('sortBy', sortBy);
-			params.set('sortType', sortType);
+		$("#typeSort").val(sortType);
+		$("#bySort").val(sortBy);
 
-			url.search = params.toString();
-			window.location.href = url.toString();
+		let url = new URL(window.location.href);
+		let params = new URLSearchParams(url.search);
+		params.set('sortBy', sortBy);
+		params.set('sortType', sortType);
+
+		url.search = params.toString();
+		window.location.href = url.toString();
 	}
 </script>
 <?php

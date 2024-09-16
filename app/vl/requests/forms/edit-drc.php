@@ -69,7 +69,7 @@ $storageInfo = $storageService->getLabStorage();
 
 ?>
 
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.translate-content {
 		color: #0000FF;
 		font-size: 12.5px;
@@ -168,7 +168,7 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 										<td>
 											<select class="form-control isRequired" name="facilityId" id="facilityId" title="Veuillez choisir le POINT DE COLLECT" onchange="getfacilityProvinceDetails(this);" style="width:100%;">
-												<?= $facility; ?> 
+												<?= $facility; ?>
 											</select>
 										</td>
 									</tr>
@@ -640,8 +640,8 @@ $storageInfo = $storageService->getLabStorage();
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	changeProvince = true;
 	changeFacility = true;
 
@@ -651,7 +651,7 @@ $storageInfo = $storageService->getLabStorage();
 
 
 	$(document).ready(function() {
-        checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
+		checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
 
 		$(".select2").select2();
 		$(".select2").select2({
@@ -722,16 +722,16 @@ $storageInfo = $storageService->getLabStorage();
 	});
 
 	function makeDOBNonMandatory() {
-        $("#dob").removeClass('isRequired');
-        $("#dob").closest('td').prev('td').find('label .mandatory').remove();
-    }
+		$("#dob").removeClass('isRequired');
+		$("#dob").closest('td').prev('td').find('label .mandatory').remove();
+	}
 
-    function makeDOBMandatory() {
-        $("#dob").addClass('isRequired');
-        if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
-            $("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
-        }
-    }
+	function makeDOBMandatory() {
+		$("#dob").addClass('isRequired');
+		if ($("#dob").closest('td').prev('td').find('label .mandatory').length === 0) {
+			$("#dob").closest('td').prev('td').find('label').append(' <span class="mandatory">*</span>');
+		}
+	}
 
 	function showFemale(genderProp) {
 		if (genderProp == "none") {
@@ -741,21 +741,24 @@ $storageInfo = $storageService->getLabStorage();
 		}
 	}
 
-	function showFemaleSection(){
+	function showFemaleSection() {
 		$(".femaleSection").show();
 		addMandatoryField('breastfeeding');
-        addMandatoryField('pregnant');
+		addMandatoryField('pregnant');
 	}
-	function hideFemaleSection(){
+
+	function hideFemaleSection() {
 		$(".femaleSection").hide();
 		removeMandatoryField('breastfeeding');
-        removeMandatoryField('pregnant');
+		removeMandatoryField('pregnant');
 		removeMandatoryField('trimester');
 	}
+
 	function addMandatoryField(fieldId) {
 		$('label[for="' + fieldId + '"] .mandatory').show();
 		$('#' + fieldId).addClass('isRequired');
 	}
+
 	function removeMandatoryField(fieldId) {
 		$('label[for="' + fieldId + '"] .mandatory').hide();
 		$('#' + fieldId).removeClass('isRequired');
@@ -766,7 +769,7 @@ $storageInfo = $storageService->getLabStorage();
 		if (trimesterProp == "none") {
 			removeMandatoryField('trimester');
 			$(".trimesterSection").hide();
-			
+
 		} else {
 			$(".trimesterSection").show();
 			addMandatoryField('trimester');

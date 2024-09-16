@@ -136,11 +136,11 @@ if (isset($vlResult[0]['sample_collection_date']) && trim((string) $vlResult[0][
     </div>
   </section>
 </div>
-<script src="/assets/js/bootstrap.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
   var oTable = null;
   $(document).ready(function() {
     $('.date').datepicker({

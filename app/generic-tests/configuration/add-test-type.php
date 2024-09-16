@@ -13,7 +13,7 @@ $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", ar
 $symptomInfo = $general->getDataByTableAndFields("r_generic_symptoms", array("symptom_id", "symptom_name"), true, "symptom_status='active'");
 $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.tooltip-inner {
 		background-color: #fff;
 		color: #000;
@@ -383,7 +383,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	tableRowId = 2;
 	testQualCounter = 1;
 	testQuanCounter = 1;
@@ -414,8 +414,8 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
 		});
 		$("#testResultUnit").selectize({
-                plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-        });
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+		});
 
 		/*	$('.tag-input-field').on('keyup', function(e) {
 			if (e.key === ',' || e.key === 'Enter') {

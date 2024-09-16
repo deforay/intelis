@@ -40,12 +40,13 @@ $state = $geolocationService->getProvinces("yes");
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
-	.resultPDF{
-		display:none;
+
+	.resultPDF {
+		display: none;
 	}
 </style>
 <!-- Content Wrapper. Contains page content -->
@@ -220,7 +221,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 																<?= _translate('Reset'); ?>
 															</span></button>
-													
+
 														&nbsp;<button class="btn btn-primary btn-sm" onclick="$('#showhide').fadeToggle();return false;"><span>
 																<?php echo _translate("Manage Columns"); ?>
 															</span></button>
@@ -285,9 +286,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</div>
 											</span><br>
 											<div id="notPrintedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
-													<?php echo _translate("Print Selected Results PDF"); ?>
-											</span></button></div>
+												&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
+														<?php echo _translate("Print Selected Results PDF"); ?>
+													</span></button></div>
 
 
 											<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
@@ -450,10 +451,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 													<td>
 														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
 													</td>
-													
+
 												</tr>
 												<tr>
-												<td><strong>
+													<td><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:
 														</strong></td>
 													<td>
@@ -543,9 +544,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</span>
 											<br>
 											<div id="printedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
-																<?php echo _translate("Print selected Results PDF"); ?>
-															</span></button></div>
+												&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
+														<?php echo _translate("Print selected Results PDF"); ?>
+													</span></button></div>
 											<table aria-describedby="table" id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
@@ -623,7 +624,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedRows = [];
@@ -634,7 +635,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	var opTable = null;
 
 	$(document).ready(function() {
-		
+
 		$("#batchCode, #printBatchCode").autocomplete({
 			source: function(request, response) {
 				// Fetch data
@@ -710,8 +711,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-			$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
-			loadVlRequestData();
+		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
+		loadVlRequestData();
 
 		//loadPrintedVlRequestData();
 		$(".showhideCheckBox").change(function() {
@@ -766,8 +767,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function loadVlRequestData() {
 		$.blockUI();
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
-				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
-		<?php } else{ ?>
+			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
+		<?php } else { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
 		<?php } ?>
 		oTable = $('#vlRequestDataTable').dataTable({
@@ -933,9 +934,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	function loadPrintedVlRequestData() {
 		$.blockUI();
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
-				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
-		<?php } else{ ?>
-				sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
+			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
+		<?php } else { ?>
+			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
 		<?php } ?>
 		opTable = $('#printedVlRequestDataTable').dataTable({
 			"oLanguage": {
@@ -1180,18 +1181,16 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						$(".checkPrintedRows").prop('checked', false);
 						$("#checkPrintedRowsData").prop('checked', false);
 					}
-					if(selectedRows!=""){
-                        $("#notPrintedResult").css('display', 'block');
-                    }
-                    else{
-                        $("#notPrintedResult").css('display', 'none');
-                    }
-                    if(selectedPrintedRows!=""){
-                        $("#printedResult").css('display', 'block');
-                    }
-                    else{
-                        $("#printedResult").css('display', 'none');
-                    }
+					if (selectedRows != "") {
+						$("#notPrintedResult").css('display', 'block');
+					} else {
+						$("#notPrintedResult").css('display', 'none');
+					}
+					if (selectedPrintedRows != "") {
+						$("#printedResult").css('display', 'block');
+					} else {
+						$("#printedResult").css('display', 'none');
+					}
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
@@ -1209,10 +1208,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			selectedRowsId.splice($.inArray(obj.id, selectedRowsId), 1);
 			$("#checkRowsData").attr("checked", false);
 		}
-		if(selectedRows!=""){
+		if (selectedRows != "") {
 			$("#notPrintedResult").css('display', 'block');
-		}
-		else{
+		} else {
 			$("#notPrintedResult").css('display', 'none');
 		}
 		$("#checkedRows").val(selectedRows.join());
@@ -1229,10 +1227,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			selectedPrintedRowsId.splice($.inArray(obj.id, selectedPrintedRowsId), 1);
 			$("#checkPrintedRowsData").attr("checked", false);
 		}
-		if(selectedPrintedRowsId!=""){
+		if (selectedPrintedRowsId != "") {
 			$("#printedResult").css('display', 'block');
-		}
-		else{
+		} else {
 			$("#printedResult").css('display', 'none');
 		}
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());
@@ -1258,10 +1255,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				$("#status").prop('disabled', true);
 			});
 		}
-		if(selectedRows!=""){
+		if (selectedRows != "") {
 			$("#notPrintedResult").css('display', 'block');
-		}
-		else{
+		} else {
 			$("#notPrintedResult").css('display', 'none');
 		}
 		$("#checkedRows").val(selectedRows.join());
@@ -1288,10 +1284,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				$("#status").prop('disabled', true);
 			});
 		}
-		if(selectedPrintedRowsId!=""){
+		if (selectedPrintedRowsId != "") {
 			$("#printedResult").css('display', 'block');
-		}
-		else{
+		} else {
 			$("#printedResult").css('display', 'none');
 		}
 		$("#checkedPrintedRows").val(selectedPrintedRows.join());

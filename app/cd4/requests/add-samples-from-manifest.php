@@ -13,7 +13,7 @@ $remoteURL = $general->getRemoteURL();
 $title = _translate("Add Samples from Manifest");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -132,10 +132,10 @@ $title = _translate("Add Samples from Manifest");
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var oTable = null;
 
 	function loadVlRequestData() {

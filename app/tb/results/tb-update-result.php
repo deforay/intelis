@@ -11,7 +11,7 @@ $title = "TB | Edit Request";
 
 require_once APPLICATION_PATH . '/header.php';
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .disabledForm {
         background: #efefef;
     }

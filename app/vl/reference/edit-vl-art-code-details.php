@@ -121,7 +121,7 @@ foreach ($categoryInfo as $category) {
 <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	$(document).ready(function() {
 		$(".select2").select2();
 		$(".select2").select2({

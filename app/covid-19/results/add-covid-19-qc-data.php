@@ -203,7 +203,7 @@ foreach ($pdResult as $provinceName) {
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     $('#labName').select2({
         width: '100%',
         placeholder: "Select testing lab name"

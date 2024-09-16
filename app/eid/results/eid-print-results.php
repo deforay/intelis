@@ -42,7 +42,7 @@ $state = $geolocationService->getProvinces("yes");
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: #000000 !important;
     }
@@ -97,18 +97,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+                                                    </td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="facility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                   
+
                                                 </tr>
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Testing Labs"); ?> :</strong></td>
@@ -201,9 +201,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                 </div>
                                             </span>
                                             <div id="notPrintedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
-													<?php echo _translate("Print Selected Results PDF"); ?>
-											</span></button></div>
+                                                &nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
+                                                        <?php echo _translate("Print Selected Results PDF"); ?>
+                                                    </span></button></div>
                                             <table aria-describedby="table" id="vlRequestDataTables" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
@@ -267,18 +267,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                         <input type="text" id="printSampleTestDate" name="printSampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                                                     </td>
                                                     <td><strong>
-															<?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
-														</strong></td>
-													<td>
-														<input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
-													</td>
+                                                            <?php echo _translate("Sample Received at Lab"); ?>&nbsp;:
+                                                        </strong></td>
+                                                    <td>
+                                                        <input type="text" id="printSampleReceivedDate" name="printSampleReceivedDate" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date'); ?>" readonly style="background:#fff;" />
+                                                    </td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Facility Name"); ?> :</strong></td>
                                                     <td style="width:20%;">
                                                         <select class="form-control" id="printFacility" name="facility" title="<?php echo _translate('Please select facility name'); ?>" multiple="multiple" style="width:100%;">
                                                             <?= $facilitiesDropdown; ?>
                                                         </select>
                                                     </td>
-                                                    
+
 
                                                 </tr>
                                                 <tr>
@@ -296,7 +296,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                     <td style="width:20%;">
                                                         <input type="text" id="printChildName" name="childName" class="form-control" placeholder="<?php echo _translate('Enter Child Name'); ?>" style="background:#fff;" />
                                                     </td>
-                                                   
+
                                                 </tr>
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
@@ -373,9 +373,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                 </div>
                                             </span><br>
                                             <div id="printedResult" style="display:none;">
-											&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
-																<?php echo _translate("Print selected Results PDF"); ?>
-															</span></button></div>
+                                                &nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
+                                                        <?php echo _translate("Print selected Results PDF"); ?>
+                                                    </span></button></div>
                                             <table aria-describedby="table" id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
                                                 <thead>
                                                     <tr>
@@ -425,9 +425,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var startDate = "";
     var endDate = "";
     var selectedRows = [];
@@ -715,9 +715,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "value": $("#sampleTestDate").val()
                 });
                 aoData.push({
-					"name": "sampleReceivedDate",
-					"value": $("#sampleReceivedDate").val()
-				});
+                    "name": "sampleReceivedDate",
+                    "value": $("#sampleReceivedDate").val()
+                });
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#batchCode").val()
@@ -867,9 +867,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     "value": $("#printSampleTestDate").val()
                 });
                 aoData.push({
-					"name": "sampleReceivedDate",
-					"value": $("#printSampleReceivedDate").val()
-				});
+                    "name": "sampleReceivedDate",
+                    "value": $("#printSampleReceivedDate").val()
+                });
                 aoData.push({
                     "name": "batchCode",
                     "value": $("#printBatchCode").val()
@@ -972,16 +972,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         $(".checkPrintedRows").prop('checked', false);
                         $("#checkPrintedRowsData").prop('checked', false);
                     }
-                    if(selectedRows!=""){
+                    if (selectedRows != "") {
                         $("#notPrintedResult").css('display', 'block');
-                    }
-                    else{
+                    } else {
                         $("#notPrintedResult").css('display', 'none');
                     }
-                    if(selectedPrintedRows!=""){
+                    if (selectedPrintedRows != "") {
                         $("#printedResult").css('display', 'block');
-                    }
-                    else{
+                    } else {
                         $("#printedResult").css('display', 'none');
                     }
                     window.open('/download.php?f=' + data, '_blank');
@@ -994,19 +992,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             if ($.inArray(obj.value, selectedRows) == -1) {
                 selectedRows.push(obj.value);
                 selectedRowsId.push(obj.id);
-               
+
             }
         } else {
             selectedRows.splice($.inArray(obj.value, selectedRows), 1);
             selectedRowsId.splice($.inArray(obj.id, selectedRowsId), 1);
             $("#checkRowsData").attr("checked", false);
         }
-        if(selectedRows!=""){
-			$("#notPrintedResult").css('display', 'block');
-		}
-		else{
-			$("#notPrintedResult").css('display', 'none');
-		}
+        if (selectedRows != "") {
+            $("#notPrintedResult").css('display', 'block');
+        } else {
+            $("#notPrintedResult").css('display', 'none');
+        }
         $("#checkedRows").val(selectedRows.join());
     }
 
@@ -1021,12 +1018,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             selectedPrintedRowsId.splice($.inArray(obj.id, selectedPrintedRowsId), 1);
             $("#checkPrintedRowsData").attr("checked", false);
         }
-        if(selectedPrintedRowsId!=""){
-			$("#printedResult").css('display', 'block');
-		}
-		else{
-			$("#printedResult").css('display', 'none');
-		}
+        if (selectedPrintedRowsId != "") {
+            $("#printedResult").css('display', 'block');
+        } else {
+            $("#printedResult").css('display', 'none');
+        }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
 
@@ -1051,12 +1047,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 $("#status").prop('disabled', true);
             });
         }
-        if(selectedRows!=""){
-			$("#notPrintedResult").css('display', 'block');
-		}
-		else{
-			$("#notPrintedResult").css('display', 'none');
-		}
+        if (selectedRows != "") {
+            $("#notPrintedResult").css('display', 'block');
+        } else {
+            $("#notPrintedResult").css('display', 'none');
+        }
         $("#checkedRows").val(selectedRows.join());
     }
 
@@ -1081,12 +1076,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 $("#status").prop('disabled', true);
             });
         }
-        if(selectedPrintedRowsId!=""){
-			$("#printedResult").css('display', 'block');
-		}
-		else{
-			$("#printedResult").css('display', 'none');
-		}
+        if (selectedPrintedRowsId != "") {
+            $("#printedResult").css('display', 'block');
+        } else {
+            $("#printedResult").css('display', 'none');
+        }
         $("#checkedPrintedRows").val(selectedPrintedRows.join());
     }
 

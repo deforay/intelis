@@ -21,7 +21,7 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $state = $geolocationService->getProvinces("yes");
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -115,10 +115,10 @@ $state = $geolocationService->getProvinces("yes");
 													<td> <input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 														&nbsp;<button class="btn btn-danger btn-sm" onclick="resetFilters('patientHistoryFilter');">
 															<span><?= _translate('Reset'); ?></span>
-															</button>
-															<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
+														</button>
+														<button class="btn btn-success btn-sm" type="button" onclick="exportPatientTesthistoryInexcel()"><em class="fa-solid fa-cloud-arrow-down"></em>
 															<?php echo _translate("Export to excel"); ?>
-															</button>
+														</button>
 													</td>
 												</tr>
 											</table>
@@ -184,13 +184,13 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/highcharts-accessibility.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let searchExecuted = false;
 	var oTablepatientTestHistoryReport = null;
 	$(document).ready(function() {
@@ -201,7 +201,7 @@ $state = $geolocationService->getProvinces("yes");
 			placeholder: "<?php echo _translate("Select District"); ?>"
 		});
 		$("#stfacilityName").selectize({
-            plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$('#stSampleCollectionDate').daterangepicker({
 				locale: {

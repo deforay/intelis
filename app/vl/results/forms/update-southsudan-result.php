@@ -46,11 +46,11 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 }
 
 $user = '';
-if($facilityResult[0]['contact_person'] != ''){
-     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($facilityResult[0]['contact_person'] != '') {
+	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 
 $stateName = $facilityResult[0]['facility_state'];
@@ -145,7 +145,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 }
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -915,8 +915,8 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		</div>
 	</section>
 </div>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;

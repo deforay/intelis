@@ -1,4 +1,4 @@
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     let patientSearchTimeout = null;
 
     function showPatientList(patientCode, timeOutDuration) {

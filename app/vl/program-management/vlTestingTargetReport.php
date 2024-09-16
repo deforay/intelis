@@ -46,7 +46,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 
 ?>
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
   .bluebox,
   .dashboard-stat2 {
     border: 1px solid #3598DC;
@@ -250,10 +250,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   </section>
   <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
   var startDate = "";
   var endDate = "";
   var oTable = null;

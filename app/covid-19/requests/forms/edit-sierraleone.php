@@ -343,7 +343,7 @@ $patientProvince = $patientProvinceInfo[0];
                                     <tr>
                                         <th scope="row" style="width:15% !important">Sample Collection Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($covid19Info['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);"/>
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($covid19Info['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important">Sample Dispatched On <span class="mandatory">*</span> </th>
@@ -645,7 +645,7 @@ $patientProvince = $patientProvinceInfo[0];
 </div>
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

@@ -84,7 +84,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
 $disable = "disabled = 'disabled'";
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -616,7 +616,7 @@ $disable = "disabled = 'disabled'";
 														<select name="testingPlatform" id="testingPlatform" class="form-control isRequired" title="Please choose VL Testing Platform" <?php echo $labFieldDisabled; ?>>
 															<option value="">-- Select --</option>
 															<?php foreach ($importResult as $mName) { ?>
-															<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
+																<option value="<?php echo $mName['machine_name'] . '##' . $mName['lower_limit'] . '##' . $mName['higher_limit'] . '##' . $mName['instrument_id']; ?>" <?php echo ($cd4QueryInfo['cd4_test_platform'] == $mName['machine_name']) ? 'selected="selected"' : ''; ?>><?php echo $mName['machine_name']; ?></option>
 															<?php } ?>
 														</select>
 													</div>

@@ -1,4 +1,4 @@
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.followUp {
 		display: inline-flex;
 		list-style: none;
@@ -587,7 +587,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

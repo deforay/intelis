@@ -340,14 +340,14 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <th scope="row"></th>
                                         <td></td>
                                     </tr>
-                                    <?php if($general->isLISInstance()){ ?>
+                                    <?php if ($general->isLISInstance()) { ?>
 
-                                    <tr>
-                                        <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
-                                        <td>
-                                            <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
-                                        </td>
-                                    </tr>
+                                        <tr>
+                                            <th scope="row"><label for="">Sample Received Date <span class="mandatory">*</span></label></th>
+                                            <td>
+                                                <input type="text" class="form-control isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo DateUtility::humanReadableDateFormat($covid19Info['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
+                                            </td>
+                                        </tr>
                                     <?php } ?>
                                 </table>
                             </div>
@@ -600,7 +600,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

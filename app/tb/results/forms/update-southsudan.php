@@ -527,7 +527,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

@@ -67,11 +67,11 @@ if (!isset($facilityResult[0]['facility_district'])) {
 }
 
 $user = '';
-if($facilityResult[0]['contact_person'] != ''){
-     $contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
-     if (!empty($contactUser)) {
-          $user = $contactUser['user_name'];
-     }
+if ($facilityResult[0]['contact_person'] != '') {
+	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	if (!empty($contactUser)) {
+		$user = $contactUser['user_name'];
+	}
 }
 //set reason for changes history
 $rch = '';
@@ -154,7 +154,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 }
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -1024,8 +1024,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	</section>
 </div>
 
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;
 

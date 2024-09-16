@@ -72,10 +72,10 @@ $userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR
             </div>
     </section>
 </div>
-<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
 
-<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/app.min.js"></script>
 <script>
     function openTab(active, inactive) {
         $('#' + active).show();

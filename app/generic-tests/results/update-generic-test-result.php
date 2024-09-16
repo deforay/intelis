@@ -306,7 +306,7 @@ $reasonForChangeArr = explode('##', (string) $genericResultInfo['reason_for_test
 $reasonForChange = $reasonForChangeArr[1];
 ?><!-- Content Wrapper. Contains page content -->
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ms-choice {
 		border: 0px solid #aaa;
 	}
@@ -920,9 +920,9 @@ $reasonForChange = $reasonForChangeArr[1];
 		</div>
 	</section>
 </div>
-<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <script>
 	let provinceName = true;
@@ -1565,8 +1565,8 @@ $reasonForChange = $reasonForChangeArr[1];
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 					$(".multipleSelectize").selectize({
-                        plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-                	});
+						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+					});
 				});
 		} else {
 			removeDynamicForm();

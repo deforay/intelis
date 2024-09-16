@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $activeModules = SystemService::getActiveModules();
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: black !important;
     }
@@ -64,7 +64,7 @@ $activeModules = SystemService::getActiveModules();
                             </td>
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
-                                <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
                                             <?php echo _translate("Viral Load"); ?>
                                         </option>
@@ -195,14 +195,14 @@ $activeModules = SystemService::getActiveModules();
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var oTable = null;
-    
+
     $(document).ready(function() {
-      
-       
+
+
         $('#sampleTestDate').daterangepicker({
                 locale: {
                     cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -233,10 +233,10 @@ $activeModules = SystemService::getActiveModules();
                 startDate = start.format('YYYY-MM-DD');
                 endDate = end.format('YYYY-MM-DD');
             });
-            $('#sampleTestDate').val("");
-            if($("#sampleTestDate").val()!="" || $("#sampleBatchCode").val()!=""){
-                getMetaResultDataReport();
-            }
+        $('#sampleTestDate').val("");
+        if ($("#sampleTestDate").val() != "" || $("#sampleBatchCode").val() != "") {
+            getMetaResultDataReport();
+        }
     });
 
 
@@ -324,9 +324,9 @@ $activeModules = SystemService::getActiveModules();
                     "url": sSource,
                     "data": aoData,
                     "success": function(json) {
-                    if(json!=""){
-                        fnCallback(json);
-                    }
+                        if (json != "") {
+                            fnCallback(json);
+                        }
                     }
                 });
             }
@@ -338,16 +338,15 @@ $activeModules = SystemService::getActiveModules();
     function searchRequestData() {
 
         $.blockUI();
-            oTable.fnDraw();
-            $.unblockUI();
-       
+        oTable.fnDraw();
+        $.unblockUI();
+
     }
 
-    function searchData(){
-        if($("#sampleTestDate").val()=="" && $("#sampleBatchCode").val()==""){
+    function searchData() {
+        if ($("#sampleTestDate").val() == "" && $("#sampleBatchCode").val() == "") {
             document.location.href = document.location;
-        }
-        else{
+        } else {
             getMetaResultDataReport();
             searchRequestData();
         }
@@ -369,7 +368,6 @@ $activeModules = SystemService::getActiveModules();
                 }
             });
     }
-
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

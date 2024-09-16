@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,
@@ -233,7 +233,6 @@ require_once($fileArray[$arr['vl_form']]);
                 }
             });
     }
-
 </script>
 <?php
 

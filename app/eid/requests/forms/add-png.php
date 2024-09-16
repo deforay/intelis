@@ -717,7 +717,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     let changeProvince = true;
     let changeFacility = true;
     let provinceName = true;

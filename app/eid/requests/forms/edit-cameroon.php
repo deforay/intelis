@@ -61,11 +61,11 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
 $specimenTypeResult = $eidService->getEidSampleTypes();
 $ageInfo = "";
-if($eidInfo['child_dob']==NULL && $eidInfo['child_age']==NULL){
-     $ageInfo = "ageUnreported";
+if ($eidInfo['child_dob'] == NULL && $eidInfo['child_age'] == NULL) {
+    $ageInfo = "ageUnreported";
 }
 $facilityId = $eidInfo['facility_id'];
-$reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinician_name","clinician_name"), true, "facility_id= $facilityId ");
+$reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinician_name", "clinician_name"), true, "facility_id= $facilityId ");
 
 ?>
 
@@ -211,11 +211,11 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                     <tr>
                                         <th scope="row"><label for="childDob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if($ageInfo=="ageUnreported") echo "readonly"; ?> />
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if($ageInfo=="ageUnreported") echo "checked='checked'"; ?>/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="<?= _translate('Date of birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> />
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" <?php if ($ageInfo == "ageUnreported") echo "checked='checked'"; ?> /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate('Infant Age (months)'); ?></th>
-                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" <?php if($ageInfo=="ageUnreported") echo "readonly"; ?> /></td>
+                                        <td><input type="number" max=24 maxlength="2" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAge" name="childAge" placeholder="<?= _translate('Age'); ?>" title="<?= _translate('Age'); ?>" style="width:100%;" onchange="" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" <?php if ($ageInfo == "ageUnreported") echo "readonly"; ?> /></td>
 
                                     </tr>
                                     <tr>
@@ -422,7 +422,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         </td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?>  <i class="fa fa-pen-to-square" aria-hidden="true"></i></th>
+                                        <th scope="row"><?= _translate('Requesting Clinician Name'); ?> <i class="fa fa-pen-to-square" aria-hidden="true"></i></th>
                                         <td><select class="form-control editableSelectClinician" id="clinicianName" name="clinicianName" title="<?= _translate('Please enter request clinician'); ?>" value="<?php echo $eidInfo['clinician_name']; ?>">
                                                 <?= $general->generateSelectOptions($reqClinicianList, $eidInfo['clinician_name'], '-- Choose Requesting Clinician --') ?>
                                             </select>
@@ -492,7 +492,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         <tr>
                                             <th scope="row"><label for=""><?= _translate('Lab Assigned Code'); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" onblur="checkNameValidation('form_eid','lab_assigned_code',this,'<?php echo "eid_id##" . $id; ?>','This Lab Assigned Code that you entered already exists.Try another Lab Assigned Code',null)"/>
+                                                <input type="text" class="form-control" id="labAssignedCode" name="labAssignedCode" placeholder="<?= _translate("Enter Lab Assigned Code"); ?>" title="Enter Lab Assigned Code" <?php echo $labFieldDisabled; ?> value="<?php echo $eidInfo['lab_assigned_code']; ?>" onchange="" style="width:100%;" onblur="checkNameValidation('form_eid','lab_assigned_code',this,'<?php echo "eid_id##" . $id; ?>','This Lab Assigned Code that you entered already exists.Try another Lab Assigned Code',null)" />
                                             </td>
                                         </tr>
                                     <?php } ?>
@@ -539,7 +539,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         <td>
                                             <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
-                                        <?php if($general->isLISInstance()){ ?>
+                                        <?php if ($general->isLISInstance()) { ?>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter sample receipt date" value="<?php echo $eidInfo['sample_received_at_lab_datetime']; ?>" onchange="" style="width:100%;" />
@@ -674,7 +674,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -841,21 +841,19 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
         }
     }
 
-    function updateAgeInfo()
-    {
-          var isChecked = $("#ageUnreported").is(":checked");
-          if(isChecked == true){
-               $("#childDob").val("");
-               $("#childAge").val("");
-               $('#childDob').prop('readonly', true);
-               $('#childAge').prop('readonly', true);
-               $('#childDob').removeClass('isRequired');
-          }
-          else{
-               $('#childDob').prop('readonly', false);
-               $('#childAge').prop('readonly', false);
-               $('#childDob').addClass('isRequired');
-          }
+    function updateAgeInfo() {
+        var isChecked = $("#ageUnreported").is(":checked");
+        if (isChecked == true) {
+            $("#childDob").val("");
+            $("#childAge").val("");
+            $('#childDob').prop('readonly', true);
+            $('#childAge').prop('readonly', true);
+            $('#childDob').removeClass('isRequired');
+        } else {
+            $('#childDob').prop('readonly', false);
+            $('#childAge').prop('readonly', false);
+            $('#childDob').addClass('isRequired');
+        }
     }
 
     $(document).ready(function() {
@@ -965,38 +963,38 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
     }
 
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
-		var removeDots = obj.value.replace(/\./g, "");
-		removeDots = removeDots.replace(/\,/g, "");
-		//str=obj.value;
-		removeDots = removeDots.replace(/\s{2,}/g, ' ');
+        var removeDots = obj.value.replace(/\./g, "");
+        removeDots = removeDots.replace(/\,/g, "");
+        //str=obj.value;
+        removeDots = removeDots.replace(/\s{2,}/g, ' ');
 
-		$.post("/includes/checkDuplicate.php", {
-				tableName: tableName,
-				fieldName: fieldName,
-				value: removeDots.trim(),
-				fnct: fnct,
-				format: "html"
-			},
-			function(data) {
-				if (data === '1') {
-					alert(alrt);
-					document.getElementById(obj.id).value = "";
-				}
-			});
-	}
+        $.post("/includes/checkDuplicate.php", {
+                tableName: tableName,
+                fieldName: fieldName,
+                value: removeDots.trim(),
+                fnct: fnct,
+                format: "html"
+            },
+            function(data) {
+                if (data === '1') {
+                    alert(alrt);
+                    document.getElementById(obj.id).value = "";
+                }
+            });
+    }
 
-    $('#editEIDRequestForm').keypress((e) => { 
-          // Enter key corresponds to number 13 
-          if (e.which === 13) {
-               e.preventDefault(); 
-               validateNow();     // Trigger the validateNow function
-          } 
-     });
-     // Handle Enter key specifically for select2 elements
-     $(document).on('keydown', '.select2-container--open', function(e) {
-          if (e.which === 13) {
-               e.preventDefault();  // Prevent the default form submission
-               validateNow();  // Trigger the validateNow function
-          }
-     });
+    $('#editEIDRequestForm').keypress((e) => {
+        // Enter key corresponds to number 13
+        if (e.which === 13) {
+            e.preventDefault();
+            validateNow(); // Trigger the validateNow function
+        }
+    });
+    // Handle Enter key specifically for select2 elements
+    $(document).on('keydown', '.select2-container--open', function(e) {
+        if (e.which === 13) {
+            e.preventDefault(); // Prevent the default form submission
+            validateNow(); // Trigger the validateNow function
+        }
+    });
 </script>

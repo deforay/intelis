@@ -40,7 +40,7 @@ $batchQuery = "SELECT * FROM batch_details WHERE test_type='vl' AND batch_status
 $batchResult = $db->rawQuery($batchQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.ms-container {
 		width: 100%;
 	}
@@ -103,7 +103,7 @@ $batchResult = $db->rawQuery($batchQuery);
 											<option></option>
 											<?php
 											foreach ($facilityResult as $facility) { ?>
-												
+
 												<option data-name="<?php echo $facility['facility_name']; ?>" data-email="<?php echo $facility['facility_emails']; ?>" data-report-email="<?php echo $facility['report_email']; ?>" data-id="<?= $facility['facility_id'] ?>" value="<?php echo base64_encode((string) $facility['facility_id']); ?>"><?php echo ($facility['facility_name']); ?></option>
 											<?php } ?>
 										</select>
@@ -347,11 +347,11 @@ $batchResult = $db->rawQuery($batchQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/jquery.multi-select.js"></script>
-<script src="/assets/js/jquery.quicksearch.js"></script>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	noOfAllowedSamples = 100;
 	var startDate = "";
 	var endDate = "";

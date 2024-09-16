@@ -235,7 +235,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <th scope="row"><label for="dob"><?= _translate('Date of Birth'); ?> <span class="mandatory">*</span></label></th>
                                         <td>
                                             <input type="text" class="form-control date" id="dob" name="dob" placeholder="<?= _translate('Date of Birth'); ?>" title="<?= _translate('Please enter Date of birth'); ?>" style="width:100%;" onchange="getAge();" />
-                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();"/> <label for="dob"><?= _translate('Unreported'); ?> </label>
+                                            <input type="checkbox" name="ageUnreported" id="ageUnreported" onclick="updateAgeInfo();" /> <label for="dob"><?= _translate('Unreported'); ?> </label>
                                         </td>
                                         <th scope="row"><?= _translate("Age (years)"); ?></th>
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control" id="ageInYears" name="ageInYears" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
@@ -338,12 +338,12 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     <tr>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Collection Date"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
+                                            <input class="form-control isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="<?= _translate('Sample Collection Date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true); ?>" onchange="generateSampleCode(); checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important"><?= _translate("Sample Dispatched On"); ?> <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" value="<?php if(isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'],true); ?>"/>
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="<?= _translate('Sample Dispatched On'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_collection_date'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_collection_date'], true); ?>" />
                                         </td>
                                     </tr>
                                     <tr>
@@ -359,19 +359,19 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                 <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) { ?>
                                                     <option value="<?= $element; ?>" <?php echo (isset($_SESSION['covid19Data']['test_number']) && $_SESSION['covid19Data']['test_number'] == $element) ? 'selected="selected"' : ''; ?>><?= $element; ?></option>;
-                                                    <?php
+                                                <?php
                                                 } ?>
                                             </select>
                                         </td>
-                                            </tr>
-                                        <?php if($general->isLISInstance()){ ?>
-                                            <tr>
-                                        <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
+                                    </tr>
+                                    <?php if ($general->isLISInstance()) { ?>
+                                        <tr>
+                                            <th scope="row"><label for=""><?= _translate("Sample Received Date"); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>"  value="<?php if(isset($_SESSION['covid19Data']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_received_at_lab_datetime'],true); ?>"  style="width:100%;" />
+                                                <input type="text" class="form-control" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" value="<?php if (isset($_SESSION['covid19Data']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['covid19Data']['sample_received_at_lab_datetime'], true); ?>" style="width:100%;" />
                                             </td>
                                         </tr>
-                                            <?php } ?>
+                                    <?php } ?>
                                     </tr>
                                 </table>
                             </div>
@@ -401,7 +401,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                             </td>
                                         </tr>
                                         <tr>
-                                            
+
                                             <th scope="row"><label for="labTechnician"><?= _translate("Lab Technician"); ?> </label></th>
                                             <td>
                                                 <select name="labTechnician" id="labTechnician" class="form-control" title="Please select a Lab Technician" style="width:100%;">
@@ -414,10 +414,10 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                                 <select name="testingPoint" id="testingPoint" class="form-control" title="<?= _translate('Please select a Testing Point'); ?>" style="width:100%;">
                                                 </select>
                                             </td>
-                                          
+
                                         </tr>
-                                      <tr>
-                                      <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
+                                        <tr>
+                                            <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
                                                     <option value=''> <?= _translate("-- Select --"); ?> </option>
@@ -438,7 +438,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                             <td><input class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" title="<?= _translate('Please select the Rejection Date'); ?>" /></td>
 
                                         </tr>
-                                       
+
                                         <tr>
                                             <td colspan="4">
                                                 <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
@@ -759,7 +759,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
 </div>
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -1011,22 +1011,20 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
         }
     }
 
-    function updateAgeInfo()
-     {
-          var isChecked = $("#ageUnreported").is(":checked");
-          if(isChecked == true){
-               $("#dob").val("");
-               $("#ageInYears").val("");
-               $('#dob').prop('readonly', true);
-               $('#ageInYears').prop('readonly', true);
-               $('#dob').removeClass('isRequired');
-          }
-          else{
-               $('#dob').prop('readonly', false);
-               $('#ageInYears').prop('readonly', false);
-               $('#dob').addClass('isRequired');
-          }
-     }
+    function updateAgeInfo() {
+        var isChecked = $("#ageUnreported").is(":checked");
+        if (isChecked == true) {
+            $("#dob").val("");
+            $("#ageInYears").val("");
+            $('#dob').prop('readonly', true);
+            $('#ageInYears').prop('readonly', true);
+            $('#dob').removeClass('isRequired');
+        } else {
+            $('#dob').prop('readonly', false);
+            $('#ageInYears').prop('readonly', false);
+            $('#dob').addClass('isRequired');
+        }
+    }
 
     $(document).ready(function() {
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
@@ -1108,21 +1106,22 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
             });
         <?php } ?>
 
-         // BARCODESTUFF END
-         <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
-             //  unset($_SESSION['covid19Data']); ?>
+        // BARCODESTUFF END
+        <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
+            //  unset($_SESSION['covid19Data']); 
+        ?>
             getfacilityProvinceDetails($('#facilityId'));
-            <?php } ?>
+        <?php } ?>
 
     });
 
     function fillFacilityDetails() {
-          $.blockUI();
-          //check facility name
-         
-          $.unblockUI();
+        $.blockUI();
+        //check facility name
+
+        $.unblockUI();
         $("#facilityCode").val($('#facilityId').find(':selected').data('code'));
-     }
+    }
 
     let testCounter = 1;
 
@@ -1263,18 +1262,18 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
             $('.testNameOther' + id).hide();
         }
     }
-    $('#addCovid19RequestForm').keypress((e) => { 
-        // Enter key corresponds to number 13 
+    $('#addCovid19RequestForm').keypress((e) => {
+        // Enter key corresponds to number 13
         if (e.which === 13) {
-            e.preventDefault(); 
-            validateNow();     // Trigger the validateNow function
-        } 
+            e.preventDefault();
+            validateNow(); // Trigger the validateNow function
+        }
     });
     // Handle Enter key specifically for select2 elements
     $(document).on('keydown', '.select2-container--open', function(e) {
         if (e.which === 13) {
-            e.preventDefault();  // Prevent the default form submission
-            validateNow();  // Trigger the validateNow function
+            e.preventDefault(); // Prevent the default form submission
+            validateNow(); // Trigger the validateNow function
         }
     });
 </script>

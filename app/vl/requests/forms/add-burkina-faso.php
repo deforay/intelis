@@ -62,7 +62,7 @@ foreach ($testReasonsResultDetails as $row) {
      }
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -301,12 +301,12 @@ foreach ($testReasonsResultDetails as $row) {
                                                        </div>
                                                   </div>
                                                   <?php if ($general->isLISInstance()) { ?>
-                                                  <div class="col-xs-3 col-md-3">
-                                                       <div class="form-group" style="width: 100%; ">
-                                                            <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?><span class="mandatory">*</span> </label>
-                                                            <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group" style="width: 100%; ">
+                                                                 <label for="sampleReceivedDate"><?= _translate("Date Sample Received at Testing Lab"); ?><span class="mandatory">*</span> </label>
+                                                                 <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                            </div>
                                                        </div>
-                                                  </div>
                                                   <?php } ?>
                                              </div>
                                         </div>
@@ -481,7 +481,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                          
+
                                                             <div class="row">
                                                                  <div class="col-md-6">
                                                                       <label for="testingPlatform" class="col-lg-5 control-label labels"><?= _translate("VL Testing Platform"); ?> </label>
@@ -690,15 +690,15 @@ foreach ($testReasonsResultDetails as $row) {
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-          <script src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script src="/assets/js/dymo-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
      ?>
-          <script src="/assets/js/zebra-browserprint.js.js"></script>
-          <script src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script src="/assets/js/zebra-print.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
 <?php
 
      }
@@ -706,7 +706,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 ?>
 <!-- BARCODESTUFF END -->
 
-<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script>
      let provinceName = true;
      let facilityName = true;

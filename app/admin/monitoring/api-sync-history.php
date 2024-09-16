@@ -19,7 +19,7 @@ foreach ($syncedTypeResults as $synced) {
 	$syncedType[$synced['request_type']] = (str_replace("-", " ", (string) $synced['request_type']));
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -90,7 +90,7 @@ foreach ($syncedTypeResults as $synced) {
 										<option value='tb'>
 											<?php echo _translate("TB"); ?>
 										</option>
-									<?php } 
+									<?php }
 									if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
 										<option value='cd4'>
 											<?php echo _translate("CD4"); ?>
@@ -159,9 +159,9 @@ foreach ($syncedTypeResults as $synced) {
 	</section>
 	<!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	var oTable = null;
 	$(document).ready(function() {
 		loadVlRequestData();

@@ -43,7 +43,7 @@ foreach ($sources as $list) {
     $srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .select2-selection__choice {
         color: black !important;
     }
@@ -224,7 +224,7 @@ foreach ($sources as $list) {
                                     <th>
                                         <?php echo _translate("Electronic Test request Date and Time"); ?>
                                     </th>
-                                   
+
                                     <th>
                                         <?php echo _translate("Request Acknowledged Date Time"); ?>
                                     </th>
@@ -272,9 +272,9 @@ foreach ($sources as $list) {
     </section>
     <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
-<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     var oTable = null;
     $(document).ready(function() {
         getSourceRequest('vl');

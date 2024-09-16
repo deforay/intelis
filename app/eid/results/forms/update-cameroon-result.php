@@ -525,7 +525,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                         </td>
 
                                     <tr>
-                                       
+
                                         <td><label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label> </td>
                                         <td>
                                             <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
@@ -541,7 +541,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                             </select>
                                         </td>
                                     </tr>
-                                  
+
                                     <th scope="row" class="rejected" style="display: none;"><?= _translate('Reason for Rejection'); ?></th>
                                     <td class="rejected" style="display: none;">
                                         <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="<?= _translate('Please choose reason for rejection'); ?>">
@@ -638,7 +638,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -825,19 +825,19 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                 }
             });
     }
-    $('#editEIDRequestForm').keypress((e) => { 
-          // Enter key corresponds to number 13 
-          if (e.which === 13) {
-               e.preventDefault(); 
-               //console.log('form submitted'); 
-               validateNow()     // Trigger the validateNow function
-          } 
-     });
-     // Handle Enter key specifically for select2 elements
-     $(document).on('keydown', '.select2-container--open', function(e) {
-          if (e.which === 13) {
-               e.preventDefault();  // Prevent the default form submission
-               validateNow()  // Trigger the validateNow function
-          }
-     });
+    $('#editEIDRequestForm').keypress((e) => {
+        // Enter key corresponds to number 13
+        if (e.which === 13) {
+            e.preventDefault();
+            //console.log('form submitted');
+            validateNow() // Trigger the validateNow function
+        }
+    });
+    // Handle Enter key specifically for select2 elements
+    $(document).on('keydown', '.select2-container--open', function(e) {
+        if (e.which === 13) {
+            e.preventDefault(); // Prevent the default form submission
+            validateNow() // Trigger the validateNow function
+        }
+    });
 </script>

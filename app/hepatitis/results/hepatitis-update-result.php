@@ -117,7 +117,7 @@ if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 
 	}
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
 	.disabledForm {
 		background: #efefef;
 	}

@@ -16,7 +16,7 @@ require_once APPLICATION_PATH . '/header.php';
 $db = ContainerRegistry::get(DatabaseService::class);
 
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,

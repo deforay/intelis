@@ -104,7 +104,7 @@ $covid19Results = $covid19Service->getCovid19Results();
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     tableRowId = 2;
 
     function validateNow() {

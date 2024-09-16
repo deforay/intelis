@@ -99,7 +99,7 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     function validateNow() {
 
         flag = deforayValidator.init({

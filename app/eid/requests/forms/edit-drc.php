@@ -636,7 +636,7 @@ $storageInfo = $storageService->getLabStorage();
 
 
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
 	changeProvince = true;
 	changeFacility = true;
 	provinceName = true;
@@ -857,28 +857,27 @@ $storageInfo = $storageService->getLabStorage();
 	});
 
 	$("#hasInfantStoppedBreastfeeding").change(function() {
-        checkBreastfeedingStatus();
-    });
+		checkBreastfeedingStatus();
+	});
 
-    function checkBreastfeedingStatus() {
-        var status = $("#hasInfantStoppedBreastfeeding").val();
-        if (status === 'yes') {
-            addMandatoryField('ageBreastfeedingStopped');
-            addMandatoryField('choiceOfFeeding');
-        } else {
-            removeMandatoryField('ageBreastfeedingStopped');
-            removeMandatoryField('choiceOfFeeding');
-        }
-    }
+	function checkBreastfeedingStatus() {
+		var status = $("#hasInfantStoppedBreastfeeding").val();
+		if (status === 'yes') {
+			addMandatoryField('ageBreastfeedingStopped');
+			addMandatoryField('choiceOfFeeding');
+		} else {
+			removeMandatoryField('ageBreastfeedingStopped');
+			removeMandatoryField('choiceOfFeeding');
+		}
+	}
 
-    function addMandatoryField(fieldId) {
-        $('label[for="' + fieldId + '"] .mandatory').show();
-        $('#' + fieldId).addClass('isRequired');
-    }
+	function addMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').show();
+		$('#' + fieldId).addClass('isRequired');
+	}
 
-    function removeMandatoryField(fieldId) {
-        $('label[for="' + fieldId + '"] .mandatory').hide();
-        $('#' + fieldId).removeClass('isRequired');
-    }
-
+	function removeMandatoryField(fieldId) {
+		$('label[for="' + fieldId + '"] .mandatory').hide();
+		$('#' + fieldId).removeClass('isRequired');
+	}
 </script>

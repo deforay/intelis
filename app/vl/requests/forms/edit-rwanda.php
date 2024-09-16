@@ -95,7 +95,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      $rch .= '</table>';
 }
 ?>
-<style>
+<style nonce="<?= $_SESSION['nonce']; ?>">
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -760,7 +760,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      facilityName = true;
      $(document).ready(function() {
           checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
-          
+
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);

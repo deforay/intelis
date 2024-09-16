@@ -964,7 +964,7 @@ $sampleResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 
     <!-- /.content -->
 </div>
 
-<script type="text/javascript">
+<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
