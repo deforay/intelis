@@ -3,6 +3,7 @@
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
+use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("System Settings");
@@ -17,10 +18,43 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
 
+/** @var UsersService $userService */
+$userService = ContainerRegistry::get(UsersService::class);
+
+
 $serverSettings = $systemService->getServerSettings();
 $folderPermissions = $systemService->checkFolderPermissions();
 $diskSpaceUtilization = $systemService->diskSpaceUtilization();
 
+$activeUsers = $userService->getActiveUsers();
+$noOfActiveUsers = count($activeUsers);
+
+$userQry = "SELECT * FROM activity_log WHERE DATE(date_time) = CURDATE()";
+$userResult = $db->rawQuery($userQry);
+$noOfUsersLoggedInToday = count($userResult);
+
+/*echo '<pre>'; print_r($_SESSION['labSyncStatus']); die;
+$labId = $_SESSION['instance']['labId'];
+$sQuery = "SELECT f.facility_id, f.facility_name,
+                    (SELECT MAX(requested_on)
+                        FROM track_api_requests
+                        WHERE request_type = 'requests'
+                        AND facility_id = f.facility_id
+                        GROUP BY facility_id
+                        ORDER BY requested_on DESC) AS request,
+                    (SELECT MAX(requested_on)
+                        FROM track_api_requests
+                        WHERE request_type = 'results'
+                        AND facility_id = f.facility_id
+                        GROUP BY facility_id ORDER BY requested_on DESC) AS results,
+                    tar.test_type, tar.requested_on
+                FROM facility_details AS f
+                JOIN track_api_requests AS tar ON tar.facility_id = f.facility_id
+                WHERE f.facility_id = ?
+                GROUP BY f.facility_id
+                ORDER BY tar.requested_on DESC";
+$labInfo = $db->rawQueryOne($_SESSION['labSyncStatus']);
+echo '<pre>'; print_r($labInfo); die;*/
 
 ?>
 <style>
@@ -48,7 +82,53 @@ $diskSpaceUtilization = $systemService->diskSpaceUtilization();
 	<section class="content">
 		<div class="row">
 
-		
+    <div class="col-md-3">
+<div class="box box-solid box-default">
+<div class="box-header">
+<h3 class="box-title">No. of Active Users</h3>
+</div>
+<div class="box-body">
+<?php echo $noOfActiveUsers; ?>
+</div>
+</div>
+</div>
+<div class="col-md-3">
+<div class="box box-solid box-info">
+<div class="box-header">
+<h3 class="box-title">No. of Users Logged in Today</h3>
+</div>
+<div class="box-body">
+<?php echo $noOfUsersLoggedInToday; ?>
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="box box-solid box-info">
+<div class="box-header">
+<h3 class="box-title">No. of Users Logged in Today</h3>
+</div>
+<div class="box-body">
+The body of the box
+</div>
+</div>
+</div>
+
+<div class="col-md-3">
+<div class="box box-solid box-info">
+<div class="box-header">
+<h3 class="box-title">No. of Users Logged in Today</h3>
+</div>
+<div class="box-body">
+The body of the box
+</div>
+</div>
+</div>
+
+
+
+
+
 				<div class="col-xs-12">
 					<div class="box">
 						<!-- /.box-header -->

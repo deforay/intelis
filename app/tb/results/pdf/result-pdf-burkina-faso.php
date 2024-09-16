@@ -295,7 +295,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SAMPLE TEST DATE") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("RESULT RELEASE DATE") . '</td>';
      $html .= '</tr>';
-     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected';
+     $rejectedStatus = (!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? _translate("Rejected") : _translate("Not Rejected");
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $rejectedStatus . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
@@ -452,7 +452,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table>';
      $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:center;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $html .= '<td style="font-size:10px;text-align:center;">'._translate("Printed on").' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
