@@ -180,7 +180,7 @@ try {
 
     //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
     //echo $sQuery; die;
@@ -208,7 +208,7 @@ try {
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
     }
     $_SESSION['samplewiseReportsCalc'] = $calcValueQuery;

@@ -163,7 +163,7 @@ if (isset($sWhere) && count($sWhere) > 0) {
 	$sQuery = $sQuery . $sWhere;
 }
 if (isset($sOrder) && $sOrder != "") {
-	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 

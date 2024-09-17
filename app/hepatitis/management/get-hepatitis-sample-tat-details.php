@@ -173,7 +173,7 @@ try {
 	}
 	//echo $sQuery; die();
 	if (!empty($sOrder) && $sOrder !== '') {
-		$_SESSION['hepatitisTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+		$_SESSION['hepatitisTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 		$sQuery = $sQuery . " ORDER BY " . $sOrder;
 	}
 

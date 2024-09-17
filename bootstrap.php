@@ -1,22 +1,10 @@
 <?php
 
-if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
-    session_name('appSession');
-
-    // Set cookie parameters before starting the session
-    session_set_cookie_params([
-        'path' => '/',    // Available in entire domain
-        'domain' => $_SERVER['HTTP_HOST'], // Default to current domain
-        'secure' => true, // Only send cookie over secure connections
-        'httponly' => true, // Only accessible via HTTP protocol, not JavaScript
-        'samesite' => 'Lax' // Strict or Lax recommended
-    ]);
-
-    session_start();
-
-    // Generate CSRF token if it doesn't exist
-    $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
-}
+use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Services\SecurityService;
+use App\Registries\ContainerRegistry;
 
 // Application environment
 defined('APPLICATION_ENV')
@@ -34,16 +22,11 @@ const APPLICATION_PATH = ROOT_PATH . DIRECTORY_SEPARATOR . 'app';
 const UPLOAD_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'uploads';
 const TEMP_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary';
 
-
 require_once APPLICATION_PATH . '/system/constants.php';
 require_once __DIR__ . '/app/system/version.php';
 
 require_once ROOT_PATH . '/vendor/autoload.php';
 
-use App\Services\SystemService;
-use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 
 // Dependency Injection
 require_once APPLICATION_PATH . '/system/di.php';
@@ -54,6 +37,8 @@ require_once APPLICATION_PATH . '/system/functions.php';
 // Just putting $db and SYSTEM_CONFIG here in case there are
 // some old scripts that are still depending on these.
 $db = ContainerRegistry::get(DatabaseService::class);
+
+SecurityService::startSession();
 
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));

@@ -33,7 +33,7 @@ try {
 
     $tableName = "form_generic";
     $primaryKey = "sample_id";
-    
+
     $aColumns = array('vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
     $orderColumns = array('vl.patient_id', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
 
@@ -63,7 +63,7 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT  
+    $sQuery = "SELECT
                 vl.sample_id,
                 vl.patient_id,
                 vl.is_encrypted,
@@ -85,7 +85,7 @@ try {
             LEFT JOIN facility_details as fd ON fd.facility_id = vl.lab_id
             LEFT JOIN r_vl_sample_type as s ON s.sample_id = vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id = vl.result_status ";
-    
+
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
@@ -104,7 +104,7 @@ try {
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;
@@ -138,7 +138,7 @@ try {
         $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
 
         $row = [];
-       
+
         $row[] = $aRow['patient_id'];
         $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
         $row[] = $aRow['patient_age_in_years'];

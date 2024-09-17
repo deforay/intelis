@@ -170,7 +170,7 @@ try {
     $sQuery = $sQuery . ' group by vl.covid19_id';
     //echo $sQuery; die();
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['highViralResult'] = $sQuery;

@@ -89,7 +89,7 @@ if (isset($vlfmResult[0]['facilityId'])) {
 $sQuery = $sQuery . ' ' . $sWhere;
 $sQuery = $sQuery . ' GROUP BY p.manifest_code';
 if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 if (isset($sLimit) && isset($sOffset)) {

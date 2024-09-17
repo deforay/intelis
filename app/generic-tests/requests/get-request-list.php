@@ -132,7 +132,7 @@ try {
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
-          $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }
      $_SESSION['genericRequestQuery'] = $sQuery;

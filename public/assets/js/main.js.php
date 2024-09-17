@@ -1,26 +1,26 @@
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/toastify.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/js.cookie.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/select2.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/dayjs.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/dayjs.utc.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/dayjs.timezone.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/app.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/deforayValidation.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/highcharts.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/highcharts-exporting.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/highcharts-offline-exporting.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/summernote.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/selectize.js"></script>
+<script type="text/javascript" src="/assets/js/toastify.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/assets/js/js.cookie.js"></script>
+<script type="text/javascript" src="/assets/js/select2.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.min.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.customParseFormat.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.utc.js"></script>
+<script type="text/javascript" src="/assets/js/dayjs.timezone.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
+<script type="text/javascript" src="/assets/js/summernote.min.js"></script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 <?php
 
 use App\Utilities\MiscUtility;
@@ -36,11 +36,20 @@ $general = ContainerRegistry::get(CommonService::class);
 $systemService = ContainerRegistry::get(SystemService::class);
 
 $remoteURL = $general->getRemoteURL();
-
-
 ?>
 
 <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+    window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
+
+    function addCsrfTokenToForm(form) {
+        if (form.find('input[name="csrf_token"]').length === 0) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'csrf_token',
+                value: window.csrf_token
+            }).appendTo(form);
+        }
+    }
     Highcharts.setOptions({
         chart: {
             style: {
@@ -64,13 +73,14 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
-    window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
-
     $.ajaxSetup({
-        headers: {
-            'X-CSRF-Token': window.csrf_token
+        beforeSend: function(xhr, settings) {
+            if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {
+                xhr.setRequestHeader('X-CSRF-Token', window.csrf_token);
+            }
         }
     });
+
 
     function setCrossLogin() {
         StorageHelper.storeInSessionStorage('crosslogin', 'true');
@@ -703,6 +713,17 @@ $remoteURL = $general->getRemoteURL();
 
         // Call the function on page load
         callSampleCodeGenerator();
+
+        // Add CSRF token to all existing forms
+        $('form').each(function() {
+            addCsrfTokenToForm($(this));
+        });
+
+        // Add CSRF token to forms added in the future
+        // If your application adds forms dynamically via AJAX or other means
+        $(document).on('submit', 'form', function(e) {
+            addCsrfTokenToForm($(this));
+        });
 
         // Set an interval to call the function every minute (60000 milliseconds)
         setInterval(function() {

@@ -155,7 +155,7 @@ try {
 	}
 
 	if (!empty($sOrder) && $sOrder !== '') {
-		$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+		$_SESSION['eidTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 		$sQuery = $sQuery . " ORDER BY " . $sOrder;
 	}
 
@@ -165,15 +165,15 @@ try {
 
 	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-/*
+	/*
  * Output
  */
-$output = array(
-	"sEcho" => (int) $_POST['sEcho'],
-	"iTotalRecords" => $resultCount,
-	"iTotalDisplayRecords" => $resultCount,
-	"aaData" => []
-);
+	$output = array(
+		"sEcho" => (int) $_POST['sEcho'],
+		"iTotalRecords" => $resultCount,
+		"iTotalDisplayRecords" => $resultCount,
+		"aaData" => []
+	);
 
 	foreach ($rResult as $aRow) {
 		if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {

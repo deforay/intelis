@@ -252,7 +252,7 @@ try {
           $sQuery = $sQuery . ' WHERE ' . $sWhere;
      }
      if (!empty($sOrder) && $sOrder !== '') {
-          $_SESSION['covid19RequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $_SESSION['covid19RequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }
      $_SESSION['covid19RequestSearchResultQuery'] = $sQuery;

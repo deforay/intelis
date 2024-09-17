@@ -149,8 +149,8 @@ if (count($sWhere) > 0) {
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
-	//$_SESSION['tbTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
-	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	//$_SESSION['tbTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
+	$sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 $_SESSION['cd4TatData'] = $sQuery;

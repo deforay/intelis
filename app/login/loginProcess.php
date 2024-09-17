@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -40,6 +41,9 @@ $ipaddress = $general->getClientIpAddress();
 
 
 try {
+
+    SecurityService::checkCSRF($request, invalidate: true);
+
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);
 
@@ -47,12 +51,6 @@ try {
         $_POST['password'] = $decryptedPassword;
     }
 
-    if (isset($_POST['csrf_token']) && $_POST['csrf_token'] != $_SESSION['csrf_token']) {
-        // clear/reset token
-        $_SESSION['csrf_token'] = null;
-        unset($_SESSION['csrf_token']);
-        throw new SystemException(_translate("Request expired. Please try to login again."));
-    }
     /* Crosss Login Block End */
 
     if (!empty($_POST['username']) && !empty($_POST['password'])) {

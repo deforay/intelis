@@ -35,7 +35,7 @@ $middlewarePipe = new MiddlewarePipe();
 
 $uri = $request->getUri()->getPath();
 
-$host = $request->getUri()->getHost();
+$host = $request->getUri()->getScheme() . "://" . $request->getUri()->getHost();
 
 
 $allowedDomains = [$host];

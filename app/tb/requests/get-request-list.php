@@ -229,7 +229,7 @@ try {
      }
      // die($sQuery);
      if (!empty($sOrder) && $sOrder !== '') {
-          $_SESSION['tbRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $_SESSION['tbRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }
      $_SESSION['tbRequestSearchResultQuery'] = $sQuery;

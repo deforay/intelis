@@ -144,7 +144,7 @@ if (!empty($sWhere)) {
 	$sQuery = $sQuery . $sWhere;
 }
 if (!empty($sOrder) && $sOrder !== '') {
-	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$_SESSION['vlTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " ORDER BY " . $sOrder;
 }
 

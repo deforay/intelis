@@ -33,7 +33,7 @@ try {
 
     $tableName = "form_tb";
     $primaryKey = "tb_id";
-    
+
     $aColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.requesting_clinician', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
     $orderColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.requesting_clinician', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
 
@@ -64,7 +64,7 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT  
+    $sQuery = "SELECT
                 vl.tb_id,
                 vl.patient_id,
                 vl.is_encrypted,
@@ -106,7 +106,7 @@ try {
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;

@@ -119,7 +119,7 @@ try {
      }
      $sQuery = $sQuery . " ORDER BY vl.last_modified_datetime DESC";
      if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . "," . $sOrder;
      }
 

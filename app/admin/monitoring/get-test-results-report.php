@@ -36,7 +36,7 @@ try {
     $testName = TestsService::getTestName($testType);
 
 
-    $rejectionTable = "r_".$testType."_sample_rejection_reasons";
+    $rejectionTable = "r_" . $testType . "_sample_rejection_reasons";
     /*
     * Array of database columns which should be read and sent back to DataTables. Use a space where
     * you want to insert a non-database field (for example a counter or static image)
@@ -106,22 +106,18 @@ try {
 
 
 
-if($testType=="covid19")
-{
-    $joinCond = " LEFT JOIN covid19_tests as ct ON ct.covid19_id=vl.covid19_id
+    if ($testType == "covid19") {
+        $joinCond = " LEFT JOIN covid19_tests as ct ON ct.covid19_id=vl.covid19_id
     LEFT JOIN instruments as ins ON ins.instrument_id=ct.instrument_id";
-}
-else{
-    $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
-}
+    } else {
+        $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
+    }
 
-if($testType=="vl" || $testType=="cd4")
-{
-    $resultChangeColumn = " vl.reason_for_result_changes";
-}
-else{
-    $resultChangeColumn = " vl.reason_for_changing";
-}
+    if ($testType == "vl" || $testType == "cd4") {
+        $resultChangeColumn = " vl.reason_for_result_changes";
+    } else {
+        $resultChangeColumn = " vl.reason_for_changing";
+    }
 
     /*
     * SQL queries
@@ -129,7 +125,7 @@ else{
     */
     $aWhere = '';
     $sQuery = '';
-    
+
 
     $sQuery = "SELECT
                     vl.sample_code,
@@ -160,7 +156,7 @@ else{
         $code = $_POST['sampleBatchCode'];
         $sWhere[] = " vl.sample_code = '$code' OR b.batch_code = '$code' ";
     }
-  
+
 
     /* Implode all the where fields for filtering the data */
     if (!empty($sWhere)) {
@@ -168,7 +164,7 @@ else{
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
     //echo $sQuery; die;
@@ -191,7 +187,7 @@ else{
         "calculation" => [],
         "aaData" => []
     );
-  
+
     foreach ($rResult as $key => $aRow) {
 
         $rejectedObj = json_decode($aRow['reason_for_result_changes']);
@@ -215,9 +211,8 @@ else{
         $fileName = $aRow['import_machine_file_name'];
         if (!empty($aRow['import_machine_file_name']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $aRow['import_machine_file_name'])) {
             $a = "/uploads/imported-results" . DIRECTORY_SEPARATOR . $fileName;
-            $row[] = '<a title="'.$fileName.'" href="'.$a.'" download> Download </a>';
-        }
-        else{
+            $row[] = '<a title="' . $fileName . '" href="' . $a . '" download> Download </a>';
+        } else {
             $row[] = $fileName;
         }
         $output['aaData'][] = $row;

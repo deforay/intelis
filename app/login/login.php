@@ -163,7 +163,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
-								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
+								<img id="capChaw" width="180px" alt="verification" src="includes/captcha.php" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _translate("Get New Image"); ?></a>
 							</div>
 
@@ -264,13 +264,35 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				$.post("/login/check-login-attempts.php", {
 						loginId: $("#username").val(),
 						format: "html"
-					},
-					function(data) {
-						if (data == 1) {
-							captchaflag = true;
-							$('#captcha').show();
-							$("#challengeResponse").addClass("isRequired");
+					})
+					.done(function(data) {
+						try {
+							// Parse the JSON response
+							const response = JSON.parse(data);
+
+							if (response.captchaRequired) {
+								captchaflag = true;
+								getCaptcha('capChaw');
+								$('#captcha').show();
+								$("#challengeResponse").addClass("isRequired");
+							} else {
+								$('#captcha').hide(); // Hide CAPTCHA if not required
+								$("#challengeResponse").removeClass("isRequired");
+							}
+
+							// Handle any error message in the response
+							if (response.error) {
+								alert(response.error); // Show an error message if any
+							}
+
+						} catch (e) {
+							console.error("Invalid JSON response:", data); // Log invalid JSON for debugging
 						}
+					})
+					.fail(function(jqXHR, textStatus, errorThrown) {
+						// Handle AJAX errors
+						alert("An error occurred while checking login attempts: " + textStatus);
+						console.error("Error details:", errorThrown);
 					});
 			}
 		}

@@ -3,10 +3,10 @@
 namespace App\Services;
 
 use COUNTRY;
-use SAMPLE_STATUS;
 use Exception;
 use Throwable;
 use TCPDFBarcode;
+use SAMPLE_STATUS;
 use TCPDF2DBarcode;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -16,6 +16,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
 use PhpOffice\PhpSpreadsheet\Style\Border;
@@ -507,7 +508,7 @@ final class CommonService
             }
         }
 
-        return "Unknown OS - " . $userAgent;
+        return "Unknown OS - $userAgent";
     }
 
 
@@ -540,37 +541,12 @@ final class CommonService
             }
         }
 
-        return "Unknown Browser - " . $userAgent;
+        return "Unknown Browser - $userAgent";
     }
-    public static function isAjaxRequest()
+    public static function isAjaxRequest(ServerRequest $request): bool
     {
-        return isset($_SERVER['HTTP_X_REQUESTED_WITH']) &&
-            strtolower($_SERVER['HTTP_X_REQUESTED_WITH']) === 'xmlhttprequest';
+        return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
     }
-
-    public static function checkCSRF(): void
-    {
-        if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_SESSION['csrf_token'])) {
-            $csrfToken = null;
-
-            if (self::isAjaxRequest()) {
-                // For AJAX requests, check the 'X-CSRF-Token' header
-                if (isset($_SERVER['HTTP_X_CSRF_TOKEN'])) {
-                    $csrfToken = $_SERVER['HTTP_X_CSRF_TOKEN'];
-                }
-            } else {
-                // For regular POST requests, check the 'csrf_token' form field
-                if (isset($_POST['csrf_token'])) {
-                    $csrfToken = $_POST['csrf_token'];
-                }
-            }
-
-            if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
-                throw new SystemException(_translate('Invalid Request token'));
-            }
-        }
-    }
-
 
     // Returns the current Instance ID
     public function getInstanceId(): ?string

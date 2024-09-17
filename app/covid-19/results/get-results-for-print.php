@@ -226,7 +226,7 @@ try {
         $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
     }
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
 
@@ -279,7 +279,7 @@ try {
         $row[] = ($aRow['facility_district']);
         $row[] = ($aRow['sample_name']);
         $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');       
+        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
         $row[] = ($aRow['status_name']);
         $row[] = $print;
         $output['aaData'][] = $row;

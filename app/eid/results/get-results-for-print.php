@@ -241,7 +241,7 @@ if (!empty($sWhere)) {
 }
 //echo $_SESSION['vlResultQuery'];die;
 if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
 }
 $_SESSION['eidPrintQuery'] = $sQuery;

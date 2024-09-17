@@ -181,7 +181,7 @@ try {
 
     //echo $sQuery; die;
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
@@ -202,7 +202,7 @@ try {
     if ((_isAllowed("/vl/requests/editVlRequest.php"))) {
         $editRequest = true;
     }
-//echo '<pre>'; print_r($rResult); die;
+    //echo '<pre>'; print_r($rResult); die;
     foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
         $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);

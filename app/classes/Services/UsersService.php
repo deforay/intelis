@@ -274,44 +274,6 @@ final class UsersService
         return !empty($result);
     }
 
-    public function sgetAuthToken(?string $token, $userId = null): ?array
-    {
-        $result = $this->getUserByToken($token) ?? null;
-
-        if (!empty($result)) {
-            $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;
-
-            $id = false;
-            $data = [];
-            // Tokens with expiration = 0 are tokens that never expire
-            if ($tokenExpiration > 0 || empty($result['api_token'])) {
-                $today = new DateTime();
-                $lastTokenDate = new DateTime($result['api_token_generated_datetime'] ?? null);
-                if (empty($result['api_token']) || $today->diff($lastTokenDate)->days > $tokenExpiration) {
-                    $data['api_token'] = ApiService::generateAuthToken();
-                    $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
-
-                    $this->db = $this->db->where('user_id', $result['user_id']);
-                    $id = $this->db->update($this->table, $data);
-                }
-            }
-
-            $result['token_updated'] = $id === true && !empty($data);
-            $result['new_token'] = $result['token_updated'] ? $data['api_token'] : null;
-            $result['token'] = $result['api_token'] ?? null;
-        } else {
-            $data['api_token'] = ApiService::generateAuthToken();
-            $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
-            $this->db = $this->db->where('user_id', $userId);
-            $id = $this->db->update($this->table, $data);
-            $result['token'] = $data['api_token'] ?? null;
-        }
-
-        return $result;
-    }
-
-
-
     public function getAuthToken(?string $token, ?string $userId = null): ?array
     {
         $result = $this->getUserByToken($token) ?? null;

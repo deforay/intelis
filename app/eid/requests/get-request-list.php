@@ -266,7 +266,7 @@ try {
      }
      //die($sQuery);
      if (!empty($sOrder) && $sOrder !== '') {
-          $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . " ORDER BY " . $sOrder;
      }
      $_SESSION['eidRequestSearchResultQuery'] = $sQuery;

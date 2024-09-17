@@ -101,11 +101,11 @@ try {
           * Get data to display
           */
      $aWhere = '';
-     $sQuery = "SELECT vl.*, rtbr.result as lamResult FROM form_tb as vl 
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id 
+     $sQuery = "SELECT vl.*, rtbr.result as lamResult FROM form_tb as vl
+          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN r_tb_results as rtbr ON rtbr.result_id = vl.result
-          LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type 
-          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status 
+          LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+          INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
      [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -150,7 +150,7 @@ try {
      $sQuery = $sQuery . ' ' . $sWhere;
      // echo $sQuery;die;
      if (!empty($sOrder) && $sOrder !== '') {
-          $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+          $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
      }
      $_SESSION['vlIncompleteForm'] = $sQuery;

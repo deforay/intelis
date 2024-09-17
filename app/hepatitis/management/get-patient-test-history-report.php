@@ -33,7 +33,7 @@ try {
 
     $tableName = "form_hepatitis";
     $primaryKey = "hepatitis_id";
-    
+
     $aColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.hcv_vl_count', 'vl.hbv_vl_count');
     $orderColumns = array('vl.patient_id', 'vl.patient_name', 'vl.patient_age', 'vl.patient_dob', 'f.facility_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.hcv_vl_count', 'vl.hbv_vl_count');
 
@@ -64,7 +64,7 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT  
+    $sQuery = "SELECT
                 vl.hepatitis_id,
                 vl.patient_id,
                 vl.is_encrypted,
@@ -86,7 +86,7 @@ try {
             LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
-        $sWhere[] = ' vl.hcv_vl_count != "" OR vl.hbv_vl_count != "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+    $sWhere[] = ' vl.hcv_vl_count != "" OR vl.hbv_vl_count != "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_id like "%' . $_POST['patientId'] . '%"';
@@ -104,7 +104,7 @@ try {
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;

@@ -148,7 +148,7 @@ if (!empty($seWhere)) {
 }
 $_SESSION['covid19TATQuery'] = $sQuery;
 if (!empty($sOrder) && $sOrder !== '') {
-	$sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+	$sOrder = preg_replace('/\s+/', ' ', $sOrder);
 	$sQuery = $sQuery . " order by " . $sOrder;
 }
 

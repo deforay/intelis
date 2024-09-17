@@ -138,7 +138,7 @@ try {
     //$sQuery = $sQuery . ' GROUP BY vl.vl_sample_id';
     //echo $sQuery; die;
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['rejectedViralLoadResult'] = $sQuery;

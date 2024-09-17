@@ -32,7 +32,7 @@ try {
 
     $tableName = "form_cd4";
     $primaryKey = "cd4_id";
-    
+
     $aColumns = array('vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.cd4_result');
     $orderColumns = array('vl.patient_art_no', 'vl.patient_first_name', 'vl.patient_age_in_years', 'vl.patient_dob', 'f.facility_name', 'vl.request_clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.cd4_result');
 
@@ -63,7 +63,7 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT  
+    $sQuery = "SELECT
                 vl.cd4_id,
                 vl.patient_art_no,
                 vl.is_encrypted,
@@ -85,14 +85,14 @@ try {
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
-    
+
     $sWhere[] = ' vl.cd4_result is not null AND vl.cd4_result not like "" AND vl.result_status = ' . SAMPLE_STATUS\ACCEPTED;
 
     if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
         $sWhere[] = ' vl.patient_art_no like "%' . $_POST['patientId'] . '%"';
     }
     if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
-            $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -104,7 +104,7 @@ try {
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;

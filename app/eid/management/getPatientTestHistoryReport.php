@@ -30,14 +30,14 @@ try {
 
     /** @var FacilitiesService $facilitiesService */
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-   
+
     /** @var EidService $eidService */
     $eidService = ContainerRegistry::get(EidService::class);
     $eidResults = $eidService->getEidResults();
 
     $tableName = "form_eid";
     $primaryKey = "eid_id";
-    
+
     $aColumns = array('vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 's.sample_name', 'fd.facility_name', "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'vl.result');
     $orderColumns = array('vl.child_id', 'vl.child_name', 'vl.child_age', 'vl.child_dob', 'f.facility_name', 'vl.clinician_name', 'vl.sample_collection_date', 's.sample_name', 'fd.facility_name', 'vl.sample_tested_datetime', 'vl.result');
 
@@ -69,7 +69,7 @@ try {
          * Get data to display
         */
 
-    $sQuery = "SELECT  
+    $sQuery = "SELECT
                 vl.eid_id,
                 vl.is_encrypted,
                 vl.child_id,
@@ -90,14 +90,14 @@ try {
             LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id
             LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
-    
+
     $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
 
     if (isset($_POST['childId']) && $_POST['childId'] != "") {
         $sWhere[] = ' vl.child_id like "%' . $_POST['childId'] . '%"';
     }
     if (isset($_POST['childName']) && $_POST['childName'] != "") {
-            $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
+        $sWhere[] = " CONCAT(COALESCE(vl.child_name,''), COALESCE(vl.child_surname,'')) like '%" . $_POST['childName'] . "%'";
     }
 
     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
@@ -111,7 +111,7 @@ try {
     //$sQuery = $sQuery . ' GROUP BY vl.eid_id';
     //echo $sQuery; die;
     if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/(\v|\s)+/', ' ', $sOrder);
+        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
     }
     $_SESSION['patientTestHistoryResult'] = $sQuery;
@@ -143,7 +143,7 @@ try {
         $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['eid_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
 
         $row = [];
-        
+
         if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
             $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
             $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
