@@ -163,7 +163,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
-								<img id="capChaw" width="180px" alt="verification" src="includes/captcha.php" />
+								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
 								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _translate("Get New Image"); ?></a>
 							</div>
 
@@ -272,8 +272,9 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 							if (response.captchaRequired) {
 								captchaflag = true;
-								getCaptcha('capChaw');
+
 								$('#captcha').show();
+								getCaptcha('capChaw');
 								$("#challengeResponse").addClass("isRequired");
 							} else {
 								$('#captcha').hide(); // Hide CAPTCHA if not required

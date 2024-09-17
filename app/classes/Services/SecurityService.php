@@ -57,26 +57,4 @@ final class SecurityService
             unset($_SESSION['csrf_token_time']);
         }
     }
-    public static function startSession()
-    {
-        if (session_status() == PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
-            session_name('appSession');
-
-            // Set cookie parameters before starting the session
-            session_set_cookie_params([
-                'path' => '/',    // Available in entire domain
-                'domain' => $_SERVER['HTTP_HOST'], // Default to current domain
-                'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on', // Only set secure flag if HTTPS is enabled
-                'httponly' => true, // Only accessible via HTTP protocol, not JavaScript
-                'samesite' => 'Lax' // Strict or Lax
-            ]);
-
-            session_start();
-            // Regenerate session ID to avoid invalid characters or session fixation attacks
-            session_regenerate_id(true);
-
-            // Only invalidate and regenerate if the CSRF token doesn't exist or has expired
-            self::generateCSRF();
-        }
-    }
 }

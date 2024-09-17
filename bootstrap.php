@@ -1,9 +1,27 @@
 <?php
 
+if (session_status() === PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
+
+    session_name('appSession');
+
+    // Set cookie parameters before starting the session
+    session_set_cookie_params([
+        'path' => '/',    // Available in entire domain
+        'domain' => $_SERVER['HTTP_HOST'], // Default to current domain
+        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on', // Only set secure flag if HTTPS is enabled
+        'httponly' => true, // Only accessible via HTTP protocol, not JavaScript
+        'samesite' => 'Lax' // Strict or Lax
+    ]);
+
+    session_start();
+
+    // Generate CSRF token if it doesn't exist
+    $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
+}
+
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 // Application environment
@@ -38,7 +56,6 @@ require_once APPLICATION_PATH . '/system/functions.php';
 // some old scripts that are still depending on these.
 $db = ContainerRegistry::get(DatabaseService::class);
 
-SecurityService::startSession();
 
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
