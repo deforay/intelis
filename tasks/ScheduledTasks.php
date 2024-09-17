@@ -23,7 +23,7 @@ $schedule = new Schedule();
 
 
 // Generate Sample Codes
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/app/scheduled-jobs/sample-code-generator.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php")
     ->everyMinute()
     ->timezone($timeZone)
     ->preventOverlapping()

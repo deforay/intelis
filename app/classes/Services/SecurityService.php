@@ -17,7 +17,6 @@ final class SecurityService
             throw new SystemException(_translate('Invalid Request. Please try again'));
         }
     }
-
     public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
     {
         if ($request->getMethod() === 'POST' && isset($_SESSION['csrf_token'])) {

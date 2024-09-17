@@ -301,7 +301,7 @@ try {
 
             // Insert into the Code Generation Queue
             $testRequestsService->addToSampleCodeQueue(
-                $uniqueId,
+                $uniqueID,
                 'hepatitis',
                 DateUtility::isoDateFormat($formData['sample_collection_date'] ?? '', true),
                 null,
