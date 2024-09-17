@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,

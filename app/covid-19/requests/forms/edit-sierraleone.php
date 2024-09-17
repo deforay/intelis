@@ -645,7 +645,7 @@ $patientProvince = $patientProvinceInfo[0];
 </div>
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

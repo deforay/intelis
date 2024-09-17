@@ -118,7 +118,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .other-comorbidities {
         display: none;
     }
@@ -1172,7 +1172,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         </div>
     </div>
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

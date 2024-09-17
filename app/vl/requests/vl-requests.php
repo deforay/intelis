@@ -97,7 +97,7 @@ if ($formId == COUNTRY\CAMEROON) {
 $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -737,23 +737,23 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/tooltipster.bundle.min.js"></script>
 
 <?php
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
 	if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
+		<script src="/assets/js/DYMO.Label.Framework.js"></script>
+		<script src="/uploads/barcode-formats/dymo-format.js"></script>
+		<script src="/assets/js/dymo-print.js"></script>
 	<?php
 	} else if ($global['bar_code_printing'] == 'zebra-printer') {
 	?>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js"></script>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
-		<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
+		<script src="/assets/js/zebra-browserprint.js"></script>
+		<script src="/uploads/barcode-formats/zebra-format.js"></script>
+		<script src="/assets/js/zebra-print.js"></script>
 <?php
 	}
 }
@@ -761,7 +761,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	let searchExecuted = false;
 	let startDate = "";
 	let endDate = "";

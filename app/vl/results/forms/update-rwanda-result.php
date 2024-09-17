@@ -86,7 +86,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 $disable = "disabled = 'disabled'";
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.table>tbody>tr>td {
 		border-top: none;
 	}

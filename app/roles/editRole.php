@@ -45,7 +45,7 @@ if ($priInfo) {
 	}
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.labelName {
 		font-size: 13px;
 	}
@@ -387,7 +387,7 @@ if ($priInfo) {
 </div>
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	function validateNow() {
 		flag = deforayValidator.init({
 			formId: 'roleEditForm'

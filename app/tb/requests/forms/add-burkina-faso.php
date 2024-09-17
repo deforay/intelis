@@ -45,7 +45,7 @@ $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .th-label {
         width: 15%;
     }
@@ -506,7 +506,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
     </section>
     <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     provinceName = true;
     facilityName = true;
 

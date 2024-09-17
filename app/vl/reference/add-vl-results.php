@@ -161,10 +161,10 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script type="text/javascript">
 	$(document).ready(function() {
 
 		$('#search').multiselect({

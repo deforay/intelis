@@ -5,7 +5,7 @@ $title = _translate("Dashboard");
 require_once APPLICATION_PATH . '/header.php';
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.bluebox,
 	.dashboard-stat2 {
 		border: 1px solid #3598DC;

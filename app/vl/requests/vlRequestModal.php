@@ -21,7 +21,7 @@ $batResult = $db->rawQuery($batQuery);
 <!-- DataTables -->
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
 <link href="/assets/plugins/daterangepicker/daterangepicker.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .content-wrapper {
     padding: 2%;
   }
@@ -30,8 +30,8 @@ $batResult = $db->rawQuery($batQuery);
     text-align: center;
   }
 </style>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
@@ -134,13 +134,13 @@ $batResult = $db->rawQuery($batQuery);
   <!-- /.content -->
 </div>
 <!-- Bootstrap 3.3.6 -->
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
   var startDate = "";
   var endDate = "";
   $(document).ready(function() {

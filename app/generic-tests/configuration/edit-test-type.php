@@ -55,7 +55,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 	$i++;
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.tooltip-inner {
 		background-color: #fff;
 		color: #000;
@@ -647,7 +647,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	tableRowId = <?php echo $i + 1; ?>;
 	var sampleCounter = <?php echo $i; ?>;
 	var otherSectionNames = [];

@@ -40,7 +40,7 @@ if (isset($_GET['total'])) {
 
 $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.ms-choice {
 		border: 0px solid #aaa;
 	}

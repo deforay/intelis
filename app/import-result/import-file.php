@@ -186,7 +186,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 	<!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	function validateNow() {
 		var _filename = $("#configMachineName").find(':selected').data("filename");
 		var _dateformat = $("#configMachineName").find(':selected').data("dateformat");

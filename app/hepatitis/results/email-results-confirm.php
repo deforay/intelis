@@ -39,7 +39,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
    // create new PDF document
 
 ?>
-   <style nonce="<?= $_SESSION['nonce']; ?>">
+   <style>
       .send-mail:hover {
          text-decoration: underline !important;
       }

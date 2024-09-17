@@ -43,7 +43,7 @@ foreach ($pdResult as $provinceName) {
 $cpyReq = $general->getGlobalConfig('eid_copy_request_save_and_next');
 $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select --');
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .prevResult {
         margin-right: 5px;
     }
@@ -628,7 +628,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

@@ -68,7 +68,7 @@ require_once APPLICATION_PATH . '/header.php';
     <!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     function validateNow() {
 
         flag = deforayValidator.init({

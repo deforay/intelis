@@ -83,7 +83,7 @@ $partnerInfo = $db->rawQuery($query, [$id]);
     <!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     function validateNow() {
 
         flag = deforayValidator.init({

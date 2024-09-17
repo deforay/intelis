@@ -92,7 +92,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
 	<link href="/assets/css/deforayModal.css" rel="stylesheet" />
 	<!-- iCheck -->
-	<style nonce="<?= $_SESSION['nonce']; ?>">
+	<style>
 		body {
 			background: #F6F6F6;
 			background: #000;
@@ -107,7 +107,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		}
 	</style>
 
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 </head>
 
 <body class="">
@@ -187,9 +187,9 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<div style="padding:1% 2%;width:100%;position:absolute;bottom:1.5%;color:#fff;background:rgba(0,0,0,0.1);">
 		<small class="pull-right" style="font-weight:bold;">v <?php echo VERSION; ?></small>
 	</div>
-	<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/deforayValidation.js"></script>
-	<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.blockUI.js"></script>
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+	<script src="/assets/js/deforayValidation.js"></script>
+	<script src="/assets/js/jquery.blockUI.js"></script>
+	<script type="text/javascript">
 		window.additionalXHRParams = {
 			layout: 0,
 			'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateRandomString(); ?>'

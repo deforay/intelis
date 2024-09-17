@@ -84,7 +84,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
 $disable = "disabled = 'disabled'";
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.table>tbody>tr>td {
 		border-top: none;
 	}

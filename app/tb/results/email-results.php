@@ -40,7 +40,7 @@ $batchQuery = "SELECT * FROM batch_details WHERE test_type='tb' AND batch_status
 $batchResult = $db->rawQuery($batchQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.ms-container {
 		width: 100%;
 	}
@@ -347,11 +347,11 @@ $batchResult = $db->rawQuery($batchQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/jquery.multi-select.js"></script>
+<script src="/assets/js/jquery.quicksearch.js"></script>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
 	noOfAllowedSamples = 100;
 	var startDate = "";
 	var endDate = "";

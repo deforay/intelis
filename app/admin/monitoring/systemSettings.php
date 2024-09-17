@@ -57,7 +57,7 @@ $labInfo = $db->rawQueryOne($_SESSION['labSyncStatus']);
 echo '<pre>'; print_r($labInfo); die;*/
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .current {
     display: block;
     overflow-x: auto;

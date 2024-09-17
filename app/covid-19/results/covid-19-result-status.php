@@ -36,7 +36,7 @@ foreach ($rejectionTypeResult as $type) {
   $rejectionReason .= '</optgroup>';
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .select2-selection__choice {
     color: black !important;
   }
@@ -197,9 +197,9 @@ foreach ($rejectionTypeResult as $type) {
   </section>
   <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
   var startDate = "";
   var endDate = "";
   var selectedTests = [];

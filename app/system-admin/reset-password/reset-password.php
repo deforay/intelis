@@ -60,8 +60,8 @@ $sResult = $db->rawQuery($sQuery);
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script>
 	$(document).ready(function() {
 		$(".select2").select2();

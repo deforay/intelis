@@ -71,7 +71,7 @@ $disable = "disabled = 'disabled'";
 
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.disabledForm {
 		background: #efefef;
 	}

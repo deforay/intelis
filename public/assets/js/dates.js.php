@@ -1,4 +1,4 @@
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
 
 

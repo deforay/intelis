@@ -57,7 +57,7 @@ $tbResults = $tbService->getTbResults();
 $state = $geolocationService->getProvinces("yes");
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -296,9 +296,9 @@ $state = $geolocationService->getProvinces("yes");
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
 	let searchExecuted = false;
 	var startDate = "";
 	var endDate = "";

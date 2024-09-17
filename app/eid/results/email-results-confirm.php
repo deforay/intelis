@@ -38,7 +38,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
 
 
 ?>
-   <style nonce="<?= $_SESSION['nonce']; ?>">
+   <style>
       .send-mail:hover {
          text-decoration: underline !important;
       }

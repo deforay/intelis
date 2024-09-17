@@ -21,7 +21,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.center {
 		text-align: center;
 	}

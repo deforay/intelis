@@ -58,7 +58,7 @@ $uResult = $db->rawQuery($uQuery);
 
     </div>
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     function updateCounts($left, $right) {
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);

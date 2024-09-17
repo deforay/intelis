@@ -639,7 +639,7 @@ if ($covid19Info['patient_dob'] == NULL && $covid19Info['patient_age'] == NULL) 
     <!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

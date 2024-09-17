@@ -14,7 +14,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.logViewer {
 		/* Hide initially */
 		display: none;
@@ -116,9 +116,9 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/toastify.js"></script>
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/js/toastify.js"></script>
 <script>
 	let start = 0; // Starting index for logs
 	let loading = false; // Flag to prevent multiple simultaneous AJAX calls

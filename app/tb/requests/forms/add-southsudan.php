@@ -485,7 +485,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

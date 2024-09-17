@@ -102,7 +102,7 @@ if (!empty($covid19Info['is_encrypted']) && $covid19Info['is_encrypted'] == 'yes
 }
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.disabledForm {
 		background: #efefef;
 	}

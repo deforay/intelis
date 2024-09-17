@@ -235,7 +235,7 @@ $globalConfig = $general->getGlobalConfig();
     </div>
   </section>
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/selectize.js"></script>
+<script type="text/javascript" src="/assets/js/selectize.js"></script>
 
 <script>
   $(document).ready(function() {

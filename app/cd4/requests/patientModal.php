@@ -52,7 +52,7 @@ $pResult = $db->get("form_cd4 vl", 25, "fd.facility_id,
 <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
 
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.content-wrapper {
 		padding: 2%;
 	}
@@ -203,9 +203,9 @@ $pResult = $db->get("form_cd4 vl", 25, "fd.facility_id,
 	<!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 <script>
 	$(document).ready(function() {
 		$('#patientModalDataTable').DataTable({

@@ -12,7 +12,7 @@ $title = _translate("Add Samples from Manifest");
 require_once APPLICATION_PATH . '/header.php';
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -131,10 +131,10 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	var oTable = null;
 
 	function loadVlRequestData() {

@@ -248,7 +248,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
     <!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
         $('#province').select2({
             placeholder: "<?= _translate('Select Province'); ?>"

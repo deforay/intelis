@@ -18,7 +18,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 <!-- DataTables -->
 <link rel="stylesheet" href="/assets/plugins/datatables/dataTables.bootstrap.css">
 <link href="/assets/css/deforayModal.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.content-wrapper {
 		padding: 2%;
 	}
@@ -41,9 +41,9 @@ $_GET = _sanitizeInput($request->getQueryParams());
 		font-size: 15px;
 	}
 </style>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/deforayModal.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+<script src="/assets/js/deforayModal.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -105,12 +105,12 @@ $_GET = _sanitizeInput($request->getQueryParams());
 	<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"><?= _translate("Unable to load this page or resource"); ?></iframe>
 </div>
 <!-- Bootstrap 3.3.6 -->
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/bootstrap.min.js"></script>
+<script src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/deforayValidation.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript">
 	$(document).ready(function(e) {
 		// Submit form data via Ajax
 		$("#supportForm").on('submit', function(e) {

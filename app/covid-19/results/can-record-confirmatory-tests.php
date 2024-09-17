@@ -48,7 +48,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	$status = $_COOKIE['status'] ?? 'no_result';
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.select2-selection__choice {
 		color: black !important;
 	}
@@ -206,9 +206,9 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];

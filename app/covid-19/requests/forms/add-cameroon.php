@@ -759,7 +759,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
 </div>
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;
@@ -1108,7 +1108,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
 
         // BARCODESTUFF END
         <?php if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
-            //  unset($_SESSION['covid19Data']); 
+            //  unset($_SESSION['covid19Data']);
         ?>
             getfacilityProvinceDetails($('#facilityId'));
         <?php } ?>

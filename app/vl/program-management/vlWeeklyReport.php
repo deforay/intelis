@@ -11,7 +11,7 @@ if ($general->isLISInstance() && isset($_SESSION['instance']['labId'])) {
 $facilityResult = $db->rawQuery($facilityQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .ms-container {
     width: 100%;
   }
@@ -294,9 +294,9 @@ $facilityResult = $db->rawQuery($facilityQuery);
   </section>
   <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
   var startDate = "";
   var endDate = "";
   var oTable = null;

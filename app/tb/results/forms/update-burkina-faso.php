@@ -65,7 +65,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	}
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.th-label {
 		width: 15%;
 	}
@@ -558,7 +558,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

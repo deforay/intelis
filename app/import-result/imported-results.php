@@ -119,7 +119,7 @@ foreach ($rejectionTypeResult as $type) {
 }
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.dataTables_wrapper {
 		position: relative;
 		clear: both;
@@ -354,7 +354,7 @@ foreach ($rejectionTypeResult as $type) {
 	<!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedTests = [];

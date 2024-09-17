@@ -154,7 +154,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 }
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -1024,8 +1024,8 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	</section>
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript">
 	let provinceName = true;
 	let facilityName = true;
 

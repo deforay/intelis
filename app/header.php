@@ -115,16 +115,15 @@ if ($instrumentCount == 0 || $userCount == 0) {
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
 	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
-	<!--<link rel="stylesheet" type="text/css" href="/assets/css/trumbowyg.min.css">-->
-	<link href="/assets/css/summernote.min.css" rel="stylesheet">
+	<link rel="stylesheet" type="text/css" href="/assets/css/summernote.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/deforayModal.js"></script>
-	<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="/assets/js/deforayModal.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
 </head>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.topBar {
 		margin: 0;
 		padding: 0;

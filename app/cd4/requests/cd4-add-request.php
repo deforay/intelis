@@ -77,7 +77,7 @@ if (isset($arr['cd4_min_patient_id_length']) && $arr['cd4_min_patient_id_length'
     $minPatientIdLength = $arr['cd4_min_patient_id_length'];
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .ui_tpicker_second_label {
         display: none !important;
     }
@@ -130,7 +130,7 @@ require_once($fileArray[$formId]);
 
 ?>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
 <?php
 // Common JS functions in a PHP file

@@ -61,7 +61,7 @@ $storageInfo = $storageService->getLabStorage();
 
 ?>
 
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.translate-content {
 		color: #0000FF;
 		font-size: 12.5px;
@@ -625,8 +625,8 @@ $storageInfo = $storageService->getLabStorage();
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript">
 	$(document).ready(function() {
 		$(".select2").select2();
 		$(".select2").select2({

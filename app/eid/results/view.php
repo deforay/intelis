@@ -32,7 +32,7 @@ if (empty($res)) {
 
 $id = $res['eid_id'];
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     #the-canvas {
         border: 1px solid black;
         direction: ltr;
@@ -40,12 +40,12 @@ $id = $res['eid_id'];
         margin-top: 50px;
     }
 </style>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js" integrity="sha512-dw+7hmxlGiOvY3mCnzrPT5yoUwN/MRjVgYV7HGXqsiXnZeqsw1H9n9lsnnPu4kL2nx2bnrjFcuWK+P3lshekwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.14.305/pdf.min.js" integrity="sha512-dw+7hmxlGiOvY3mCnzrPT5yoUwN/MRjVgYV7HGXqsiXnZeqsw1H9n9lsnnPu4kL2nx2bnrjFcuWK+P3lshekwQ==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
 
 <canvas id="the-canvas"></canvas>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     $(document).ready(function() {
         convertSearchResultToPdf(<?php echo ($id); ?>);
     });

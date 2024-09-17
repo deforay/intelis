@@ -1,4 +1,4 @@
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.followUp {
 		display: inline-flex;
 		list-style: none;
@@ -649,7 +649,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 	<!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	provinceName = true;
 	facilityName = true;
 

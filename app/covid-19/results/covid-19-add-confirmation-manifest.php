@@ -21,7 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $packageNo = strtoupper($module) . date('ymd') .  MiscUtility::generateRandomString(6);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .select2-selection__choice {
     color: #000000 !important;
   }
@@ -119,9 +119,9 @@ $packageNo = strtoupper($module) . date('ymd') .  MiscUtility::generateRandomStr
 </section>
 <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/jquery.multi-select.js"></script>
+<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript">
   noOfSamples = 100;
   sortedTitle = [];
   $(document).ready(function() {

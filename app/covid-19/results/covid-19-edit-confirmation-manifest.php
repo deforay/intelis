@@ -39,7 +39,7 @@ $result = $db->rawQuery($query, [$id]);
 
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   .select2-selection__choice {
     color: #000000 !important;
   }
@@ -151,9 +151,9 @@ $result = $db->rawQuery($query, [$id]);
   </section>
   <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.multi-select.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.quicksearch.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/jquery.multi-select.js"></script>
+<script src="/assets/js/jquery.quicksearch.js"></script>
+<script type="text/javascript">
   noOfSamples = 100;
   $(document).ready(function() {
     //getSampleCodeDetails();

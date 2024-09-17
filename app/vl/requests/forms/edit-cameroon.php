@@ -112,7 +112,7 @@ $facilityId = $vlQueryInfo['facility_id'];
 $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request_clinician_name", "request_clinician_name"), true, "facility_id= $facilityId ");
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
      .table>tbody>tr>td {
           border-top: none;
      }
@@ -798,15 +798,15 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
 if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off") {
      if ($global['bar_code_printing'] == 'dymo-labelwriter-450') {
 ?>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/DYMO.Label.Framework.js"></script>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/dymo-format.js"></script>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/dymo-print.js"></script>
+          <script src="/assets/js/DYMO.Label.Framework.js"></script>
+          <script src="/uploads/barcode-formats/dymo-format.js"></script>
+          <script src="/assets/js/dymo-print.js"></script>
      <?php
      } else if ($global['bar_code_printing'] == 'zebra-printer') {
      ?>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-browserprint.js.js"></script>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/uploads/barcode-formats/zebra-format.js"></script>
-          <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/zebra-print.js"></script>
+          <script src="/assets/js/zebra-browserprint.js.js"></script>
+          <script src="/uploads/barcode-formats/zebra-format.js"></script>
+          <script src="/assets/js/zebra-print.js"></script>
 <?php
      }
 }

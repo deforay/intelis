@@ -3,7 +3,7 @@
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
 if (!isset($_SESSION['nonce'])) {
-    $_SESSION['nonce'] = bin2hex(openssl_random_pseudo_bytes(32));
+    $_SESSION['nonce'] = bin2hex(random_bytes(32));
 }
 
 use App\Registries\AppRegistry;
@@ -37,7 +37,6 @@ $uri = $request->getUri()->getPath();
 
 $host = $request->getUri()->getScheme() . "://" . $request->getUri()->getHost();
 
-
 $allowedDomains = [$host];
 if (!empty($remoteURL)) {
     $allowedDomains[] = $remoteURL;
@@ -46,7 +45,7 @@ if (!empty($remoteURL)) {
 $allowedDomains = implode(" ", $allowedDomains);
 
 $csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
-//$csp = "default-src 'self'; script-src 'self' 'nonce-{$_SESSION['nonce']}'; style-src 'self' 'nonce-{$_SESSION['nonce']}'; connect-src 'self' $allowedDomains; img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);
     $response = $response->withAddedHeader('Content-Security-Policy', $csp);

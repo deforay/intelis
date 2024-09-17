@@ -11,7 +11,7 @@ require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
 $instanceValues = "SELECT * FROM s_vlsm_instance";
 $data = $db->rawQuery($instanceValues);
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,
@@ -33,8 +33,8 @@ $data = $db->rawQuery($instanceValues);
     }
 </style>
 <link rel="stylesheet" href="/assets/css/bootstrap.3-3-6.min.css">
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.ajax.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery-ui.js"></script>
+<script src="/assets/js/jquery.ajax.min.js"></script>
+<script src="/assets/js/jquery-ui.js"></script>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->

@@ -127,7 +127,7 @@ $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
 $formId = (int) $general->getGlobalConfig('vl_form');
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.ms-choice,
 	.ms-choice:focus {
 		border: 0px solid #aaa0 !important;
@@ -752,11 +752,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </section>
 <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	var deletedRowVar = [];
 	$(document).ready(function() {
 

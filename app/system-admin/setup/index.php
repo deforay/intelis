@@ -52,7 +52,7 @@ fclose($myfile);
   <link href="/assets/css/deforayModal.css" rel="stylesheet" />
   <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
   <!-- iCheck -->
-  <style nonce="<?= $_SESSION['nonce']; ?>">
+  <style>
     body {
       background: #F6F6F6;
       background: #000;
@@ -63,7 +63,7 @@ fclose($myfile);
     }
   </style>
 
-  <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
 </head>
 
 <body class="">
@@ -112,9 +112,9 @@ fclose($myfile);
       </div>
     </div>
   </div>
-  <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/deforayValidation.js"></script>
-  <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.blockUI.js"></script>
-  <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+  <script src="/assets/js/deforayValidation.js"></script>
+  <script src="/assets/js/jquery.blockUI.js"></script>
+  <script type="text/javascript">
     pwdflag = true;
 
     function validateNow() {

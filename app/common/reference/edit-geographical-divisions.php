@@ -120,7 +120,7 @@ $geoInfo = $db->rawQueryOne($query);
 <!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     function validateNow() {
 
         flag = deforayValidator.init({

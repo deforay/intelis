@@ -265,7 +265,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
    header('location:vlResultMail.php');
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
    .send-mail:hover {
       text-decoration: underline !important;
    }

@@ -8,24 +8,24 @@
 <!-- jQuery UI 1.11.4 -->
 <!--<script nonce="<?= $_SESSION['nonce']; ?>"src="https://code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>-->
 <!-- Resolve conflict in jQuery UI tooltip with Bootstrap tooltip -->
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
+<script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/select2.min.js"></script>
+<script type="text/javascript" src="/assets/js/select2.min.js"></script>
 <!-- Bootstrap 3.3.6 -->
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/js/bootstrap.min.js"></script>
 <!-- DataTables -->
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/datatables/dataTables.bootstrap.min.js"></script>
 
 <!-- AdminLTE App -->
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/app.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/deforayValidation.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/js/app.min.js"></script>
+<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.maskedinput.js"></script>
+<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
 <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
   $(document).ready(function() {
     <?php
     if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") {

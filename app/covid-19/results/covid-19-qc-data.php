@@ -4,7 +4,7 @@ $title = _translate("Enter Covid-19 Result");
 
 require_once APPLICATION_PATH . '/header.php';
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .disabledForm {
         background: #efefef;
     }

@@ -83,7 +83,7 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 ?>
 
 <!-- HTML and JavaScript -->
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	#sortableRow {
 		list-style-type: none;
 		margin: 0 auto;

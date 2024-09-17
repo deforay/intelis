@@ -19,7 +19,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $activeModules = SystemService::getActiveModules();
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .select2-selection__choice {
         color: black !important;
     }
@@ -195,9 +195,9 @@ $activeModules = SystemService::getActiveModules();
     </section>
     <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/moment.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
+<script type="text/javascript">
     var oTable = null;
 
     $(document).ready(function() {

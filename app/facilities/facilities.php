@@ -25,7 +25,7 @@ $activeModules = SystemService::getActiveModules();
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
   /* select {
     width: 400px !important
   } */

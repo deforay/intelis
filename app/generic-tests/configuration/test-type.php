@@ -68,7 +68,7 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	var oTable = null;
 	$(document).ready(function() {
 		$.blockUI();

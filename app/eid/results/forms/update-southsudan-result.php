@@ -510,7 +510,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
 
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
     provinceName = true;

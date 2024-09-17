@@ -156,7 +156,7 @@ foreach ($testReasonsResultDetails as $row) {
 	}
 }
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.table>tbody>tr>td {
 		border-top: none;
 	}
@@ -768,8 +768,8 @@ foreach ($testReasonsResultDetails as $row) {
 </div>
 </section>
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript">
 	let __clone = null;
 	let reason = null;
 	let resultValue = null;

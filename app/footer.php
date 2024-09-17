@@ -82,7 +82,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
 <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	$(document).ready(function() {
 		<?php
 		$alertMsg = $_SESSION['alertMsg'] ?? '';

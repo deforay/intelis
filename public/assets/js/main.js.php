@@ -38,7 +38,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 $remoteURL = $general->getRemoteURL();
 ?>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
     window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
     function addCsrfTokenToForm(form) {

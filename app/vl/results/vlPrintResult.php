@@ -40,7 +40,7 @@ $state = $geolocationService->getProvinces("yes");
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.select2-selection__choice {
 		color: #000000 !important;
 	}
@@ -624,7 +624,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<!-- /.content -->
 </div>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
 	var startDate = "";
 	var endDate = "";
 	var selectedRows = [];

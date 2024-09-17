@@ -38,7 +38,7 @@ $errorMessage = $errorMessage ?? _translate('Sorry, something went wrong. Please
   <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
   <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
 
-  <style nonce="<?= $_SESSION['nonce']; ?>">
+  <style>
     .content-wrapper small {
       font-size: 1.4em !important;
       color: #555;

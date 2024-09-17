@@ -11,7 +11,7 @@ $title = "COVID-19 | Add New Request";
 require_once APPLICATION_PATH . '/header.php';
 
 ?>
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
     .ui_tpicker_second_label,
     .ui_tpicker_second_slider,
     .ui_tpicker_millisec_label,

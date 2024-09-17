@@ -100,9 +100,9 @@ $hcResult = $db->rawQuery($hcQuery);
   </section>
   <!-- /.content -->
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
 
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+<script type="text/javascript">
   jQuery(document).ready(function($) {
     $('#search').multiselect({
       search: {

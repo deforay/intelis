@@ -91,11 +91,11 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
   <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
-  <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.min.js"></script>
-  <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
+  <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 
   <!-- iCheck -->
-  <style nonce="<?= $_SESSION['nonce']; ?>">
+  <style>
     body {
       background: #F6F6F6;
       background: #000;
@@ -476,14 +476,14 @@ $testName = TestsService::getTestTypes();
     </div>
 
 
-    <script nonce="<?= $_SESSION['nonce']; ?>" src="/assets/js/jquery.blockUI.js"></script>
-    <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/select2.min.js"></script>
-    <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/selectize.js"></script>
+    <script src="/assets/js/jquery.blockUI.js"></script>
+    <script type="text/javascript" src="/assets/js/select2.min.js"></script>
+    <script type="text/javascript" src="/assets/js/selectize.js"></script>
 
     <?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
     <?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
 
-    <script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript">
+    <script type="text/javascript">
       let pwdflag = true;
 
       function validateNow() {

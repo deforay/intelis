@@ -314,7 +314,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 
 ?><!-- Content Wrapper. Contains page content -->
 <link rel="stylesheet" href="/assets/css/jquery.multiselect.css" type="text/css" />
-<style nonce="<?= $_SESSION['nonce']; ?>">
+<style>
 	.ms-choice {
 		border: 0px solid #aaa;
 	}
@@ -956,9 +956,9 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 </div>
 </section>
 </div>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script nonce="<?= $_SESSION['nonce']; ?>" type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
+<script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
+<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script>
 	let provinceName = true;
 	let facilityName = true;

@@ -36,7 +36,7 @@ $downloadFile2 = '';
 $selectedSamplesArray = !empty($_POST['selectedSamples']) ? json_decode((string) $_POST['selectedSamples'], true) : [];
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty($selectedSamplesArray)) {
 ?>
-   <style nonce="<?= $_SESSION['nonce']; ?>">
+   <style>
       .send-mail:hover {
          text-decoration: underline !important;
       }
