@@ -260,6 +260,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 
 		function checkLoginAttempts() {
+			captchaflag = false;
+			$('#captcha').hide();
+			$("#challengeResponse").removeClass("isRequired");
+
 			if ($.trim($("#username").val()) != '') {
 				$.post("/login/check-login-attempts.php", {
 						loginId: $("#username").val(),
@@ -272,7 +276,6 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 							if (response.captchaRequired) {
 								captchaflag = true;
-
 								$('#captcha').show();
 								getCaptcha('capChaw');
 								$("#challengeResponse").addClass("isRequired");
@@ -292,7 +295,6 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 					})
 					.fail(function(jqXHR, textStatus, errorThrown) {
 						// Handle AJAX errors
-						alert("An error occurred while checking login attempts: " + textStatus);
 						console.error("Error details:", errorThrown);
 					});
 			}
