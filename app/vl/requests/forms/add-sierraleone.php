@@ -832,7 +832,7 @@ $sFormat = '';
                                                                       <input type="text" value="" class="form-control dateTime" id="approvedOnDateTime" title="Please choose Approved On" name="approvedOnDateTime" placeholder="<?= _translate("Please enter date"); ?>" style="width:100%;" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-4 vlResult">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />

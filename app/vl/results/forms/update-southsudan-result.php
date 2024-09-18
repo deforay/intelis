@@ -861,7 +861,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</div>
 												<div class="row">
 
-													<div class="col-md-6 vlResult">
+													<div class="col-md-6">
 														<label class="col-lg-5 control-label" for="resultDispatchedOn">Date
 															Results Dispatched </label>
 														<div class="col-lg-7">

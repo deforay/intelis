@@ -981,7 +981,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 											</div>
 										</div>
 										<div class="row">
-											<div class="col-md-4 vlResult" style="margin-top: 10px;">
+											<div class="col-md-4" style="margin-top: 10px;">
 												<label class="col-lg-5 control-label" for="resultDispatchedOn">Date Results Dispatched </label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control labSection dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatched Date" title="Please select result dispatched date" value="<?php echo $vlQueryInfo['result_dispatched_datetime']; ?>" />

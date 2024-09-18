@@ -627,7 +627,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                             </div>
                                                             <div class="row">
 
-                                                                 <div class="col-md-6 vlResult">
+                                                                 <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label labels" for="resultDispatchedOn"><?= _translate("Date Results Dispatched"); ?></label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />

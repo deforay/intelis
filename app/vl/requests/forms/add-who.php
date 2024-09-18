@@ -617,7 +617,7 @@ $sFormat = '';
                                                                  </div>
                                                             </div>
                                                             <div class="row">
-                                                                 <div class="col-md-4 vlResult">
+                                                                 <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
@@ -642,7 +642,7 @@ $sFormat = '';
                                                                            </div>
                                                                       </div>
                                                                  <?php } ?>
-                                                                 <div class="col-md-4 vlResult">
+                                                                 <div class="col-md-4">
                                                                       <label class="col-lg-5 control-label labels" for="resultDispatchedOn">Date Results Dispatched</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control dateTime" id="resultDispatchedOn" name="resultDispatchedOn" placeholder="Result Dispatch Date" title="Please select result dispatched date" />
