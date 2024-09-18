@@ -3,8 +3,8 @@
 namespace App\Middlewares;
 
 use Psr\Http\Message\ResponseInterface;
-use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
 use Laminas\Diactoros\Response\RedirectResponse;
 
@@ -18,7 +18,14 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
-        $_SESSION['requestedURI'] = $uri;
+        if (
+            !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
+            strtolower($request->getHeaderLine('X-Requested-With')) !== 'xmlhttprequest'
+        ) {
+            $queryString = $request->getUri()->getQuery();
+            // Combine path and query string to form the full URI
+            $_SESSION['systemAdminrequestedURI'] = $queryString ? "$uri?$queryString" : $uri;
+        }
 
         $redirect = null;
         if ($this->shouldExcludeFromAuthCheck($request)) {

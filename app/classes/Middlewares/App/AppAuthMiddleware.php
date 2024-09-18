@@ -15,15 +15,16 @@ class AppAuthMiddleware implements MiddlewareInterface
         // Get the requested URI
         $uri = $request->getUri()->getPath();
 
-        // // Only store the requested URI if the user is not logged in and it's not already set
-        // if (
-        //     !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
-        //     strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest'
-        // ) {
-        //     $queryString = $request->getUri()->getQuery();
-        //     // Combine path and query string to form the full URI
-        //     $_SESSION['requestedURI'] = $queryString ? "$uri?$queryString" : $uri;
-        // }
+
+        // Only store the requested URI if the user is not logged in and it's not already set
+        if (
+            !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
+            strtolower($request->getHeaderLine('X-Requested-With')) !== 'xmlhttprequest'
+        ) {
+            $queryString = $request->getUri()->getQuery();
+            // Combine path and query string to form the full URI
+            $_SESSION['requestedURI'] = $queryString ? "$uri?$queryString" : $uri;
+        }
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
 
