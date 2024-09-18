@@ -186,9 +186,9 @@ $testName = TestsService::getTestTypes();
       <div class="panel panel-default" style="opacity: 0.98;">
 
         <div style="padding-top:10px;" class="panel-body">
-          <div class="container" style="width:630px;">
+          <div class="container" style="width:100%;">
 
-            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+            <table aria-describedby="table" class="table table-striped" aria-hidden="true" style="width:100%">
               <ta>
                 <tr>
                   <th colspan="5">
@@ -208,27 +208,18 @@ $testName = TestsService::getTestTypes();
                   <th scope="row"><?= _translate("Maximum Time of Execution"); ?></th>
                   <td><?php echo $serverSettings['max_execution_time']; ?></td>
                 </tr>
-                <tr>
-                  <th scope="row"><?= _translate("Max time to parse input data"); ?></th>
-                  <td><?php echo $serverSettings['max_input_time']; ?></td>
-                  <th scope="row"><?= _translate("Config to show Error in web pages"); ?></th>
-                  <td><?php echo $serverSettings['display_errors']; ?></td>
-                </tr>
-                <tr>
-                  <th scope="row"><?= _translate("Specifies which errors are reported"); ?></th>
-                  <td><?php echo $serverSettings['error_reporting']; ?></td>
-                </tr>
             </table>
-            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+            <br><br>
+            <table aria-describedby="table" class="table table-striped" aria-hidden="true" style="width:100%">
               <tr>
                 <th colspan="5">
                   <h3><?= _translate("Folder Permissions"); ?></h3>
                 </th>
               </tr>
               <tr>
-                <th><?= _translate("File Path"); ?></th>
-                <th><?= _translate("Exists"); ?></th>
-                <th><?= _translate("Readable / Writeable"); ?></th>
+                <th><?= _translate("Folder"); ?></th>
+                <th><?= _translate("Exists?"); ?></th>
+                <th><?= _translate("Readable? / Writeable?"); ?></th>
               </tr>
               <tr>
                 <td scope="row"><?php echo CACHE_PATH; ?></td>
@@ -283,7 +274,7 @@ $testName = TestsService::getTestTypes();
 
         <div style="padding-top:10px;" class="panel-body">
 
-          <div class="container" style="width:630px;">
+          <div class="container" style="width:100%;">
             <div class="stepwizard">
               <div class="stepwizard-row setup-panel">
                 <div class="stepwizard-step col-xs-4">
