@@ -47,6 +47,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
             if (empty($expiryDays) || $expiryDays <= 0) {
                 $expiryDays = 365; // by default, we consider samples more than 1 year as expired
             }
+            
             // if sample is not yet tested, then update it to Expired if it is older than expiryDays
             $statusCodes = [
                 SAMPLE_STATUS\ON_HOLD,
