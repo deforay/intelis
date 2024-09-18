@@ -521,24 +521,20 @@ $testName = TestsService::getTestTypes();
 
       function getTestingLabs() {
 
-        if ($('#instanceType').val() == 'vluser') {
-          if ($('#remoteURL').val() != "") {
-            $.blockUI();
-
-            $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
-                remoteURL: $('#remoteURL').val()
-              },
-              function(data) {
-                $.post("/includes/getTestingLabOptions.php",
-                  function(data) {
-                    if (data != 0) {
-                      $("#testingLab").html(data);
-                      $.unblockUI();
-                    }
-                  });
-              });
-
-          }
+        if ($('#instanceType').val() == 'vluser' && $('#remoteURL').val() != "") {
+          $.blockUI();
+          $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
+              remoteURL: $('#remoteURL').val()
+            },
+            function(data) {
+              $.post("/includes/getTestingLabOptions.php",
+                function(data) {
+                  if (data != 0) {
+                    $("#testingLab").html(data);
+                  }
+                  $.unblockUI();
+                });
+            });
         }
       }
 
@@ -547,8 +543,8 @@ $testName = TestsService::getTestTypes();
         $(".lis").hide();
 
         changeLabType($('#instanceType').val());
-        /** for Step form */
 
+        /** For Step form */
         var navListItems = $('div.setup-panel div a'),
           allWells = $('.setup-content'),
           allNextBtn = $('.nextBtn');
