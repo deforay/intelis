@@ -68,7 +68,7 @@ try {
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
-            } else if ($name === 'result') {
+            } elseif ($name === 'result') {
                 $resultData = $data;
             }
         }

@@ -391,7 +391,8 @@ try {
         /* New API changes end */
         $eidData = [
             'vlsm_instance_id' => $instanceId,
-            'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
+            'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
+            'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
             'facility_id' => $data['facilityId'] ?? null,
             'province_id' => $data['provinceId'] ?? null,
             'lab_id' => $data['labId'] ?? null,

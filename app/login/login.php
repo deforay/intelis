@@ -150,7 +150,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 				<div style="padding-top:10px;" class="panel-body">
 					<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-					<form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
+					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>

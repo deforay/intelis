@@ -76,7 +76,7 @@ fclose($myfile);
 
         <div style="padding-top:10px;" class="panel-body">
           <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" role="form" method="post" action="/system-admin/setup/registerProcess.php" onsubmit="validateNow();return false;">
+          <form id="registerForm" name="registerForm" class="form-horizontal" autocomplete="no" method="post" action="/system-admin/setup/registerProcess.php" onsubmit="validateNow();return false;">
             <div style="margin-bottom: 5px" class="input-group">
               <span class="input-group-addon"><em class="fa-solid fa-key"></em></span>
               <input type="text" class="form-control isRequired" id="secretKey" name="secretKey" placeholder="<?= _translate('Secret Key'); ?>" title="" autocomplete="no" />

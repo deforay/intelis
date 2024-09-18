@@ -49,7 +49,6 @@ try {
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
 
     if (JsonUtility::isJSON($origJson) === false) {
@@ -278,7 +277,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $$userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId']
         ];
         /* Reason for VL Result changes */
         $reasonForChanges = null;
@@ -303,7 +302,8 @@ try {
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
-            'app_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
+            'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
+            'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
             'sample_reordered' => $data['sampleReordered'] ?? 'no',
             'facility_id' => $data['facilityId'] ?? null,
             'patient_gender' => $data['patientGender'] ?? null,
@@ -369,7 +369,6 @@ try {
             'request_created_datetime' => DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true),
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'manual_result_entry' => 'yes',
-            'external_sample_code' => $data['serialNo'] ?? null,
             'is_patient_new' => $data['isPatientNew'] ?? null,
             'has_patient_changed_regimen' => $data['hasChangedRegimen'] ?? null,
             'vl_test_number' => $data['viralLoadNo'] ?? null,
@@ -426,7 +425,7 @@ try {
             $vlFulldata['result_status'] = SAMPLE_STATUS\REJECTED;
         }
         $id = false;
-        // print_r($vlFulldata);die;
+
         $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
         if (!empty($data['vlSampleId'])) {
             $db->where('vl_sample_id', $data['vlSampleId']);

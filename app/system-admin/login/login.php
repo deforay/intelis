@@ -53,7 +53,7 @@ $path = '/assets/img/remote-bg.jpg';
 
                 <div style="padding-top:10px;" class="panel-body">
                     <div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-                    <form id="loginForm" name="loginForm" class="form-horizontal" role="form" method="post" action="adminLoginProcess.php" onsubmit="validateNow();return false;">
+                    <form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="adminLoginProcess.php" onsubmit="validateNow();return false;">
                         <div style="margin-bottom: 5px" class="input-group">
                             <span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
                             <input id="login-username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter the user name'); ?>">

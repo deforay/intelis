@@ -4,6 +4,7 @@ use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -14,7 +15,7 @@ $systemService = ContainerRegistry::get(SystemService::class);
 
 
 if ($db->isConnected() === false) {
-  throw new Exception("Database connection failed. Please check your database settings", 500);
+  throw new SystemException("Database connection failed. Please check your database settings", 500);
 }
 
 /** @var CommonService $general */
@@ -22,7 +23,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $serverSettings = $systemService->getServerSettings();
 $folderPermissions = $systemService->checkFolderPermissions();
-$diskSpaceUtilization = $systemService->diskSpaceUtilization();
 
 // Get locale directory list
 $localeLists = $general->getLocaleList(0);
@@ -89,7 +89,6 @@ $testName = TestsService::getTestTypes();
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
   <link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
-  <link href="https://fonts.googleapis.com/css?family=Raleway" rel="stylesheet">
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
@@ -190,21 +189,21 @@ $testName = TestsService::getTestTypes();
           <div class="container" style="width:630px;">
 
             <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-              <tbody>
+              <ta>
                 <tr>
                   <th colspan="5">
-                    <h4><?= _translate("Server Settings"); ?></h4>
+                    <h3><?= _translate("Server Settings"); ?></h3>
                   </th>
                 </tr>
                 <tr>
                   <th scope="row"><?= _translate("Memory Limit"); ?></th>
                   <td>
                     <?php echo $serverSettings['memory_limit']; ?></td>
-                  <th scope="row"><?= _translate("Maximum Uploaded Filesize"); ?></th>
+                  <th scope="row"><?= _translate("Maximum Upload Filesize	"); ?></th>
                   <td><?php echo $serverSettings['upload_max_filesize']; ?></td>
                 </tr>
                 <tr>
-                  <th scope="row"><?= _translate("Maximum size of post data allowed"); ?></th>
+                  <th scope="row"><?= _translate("Maximum POST size"); ?></th>
                   <td><?php echo $serverSettings['post_max_size']; ?></td>
                   <th scope="row"><?= _translate("Maximum Time of Execution"); ?></th>
                   <td><?php echo $serverSettings['max_execution_time']; ?></td>
@@ -219,77 +218,58 @@ $testName = TestsService::getTestTypes();
                   <th scope="row"><?= _translate("Specifies which errors are reported"); ?></th>
                   <td><?php echo $serverSettings['error_reporting']; ?></td>
                 </tr>
-                <tr>
-                  <th colspan="5">
-                    <h4><?= _translate("Folder Permission Settings"); ?></h4>
-                  </th>
-                </tr>
-                <tr>
-                  <th><?= _translate("File Path"); ?></th>
-                  <th><?= _translate("Exists"); ?></th>
-                  <th><?= _translate("Readable / Writeable"); ?></th>
-                </tr>
-                <tr>
-                  <td scope="row"><?php echo CACHE_PATH; ?></td>
-                  <td>
-                    <?php
-                    echo ($folderPermissions['CACHE_PATH']['exists'] == 1) ? "Yes" : "No";
-                    ?>
-                  </td>
-                  <td scope="row"><?php echo ($folderPermissions['CACHE_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                    <?php echo ($folderPermissions['CACHE_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
-                </tr>
-                <tr>
-                  <td scope="row"><?php echo UPLOAD_PATH; ?></td>
-                  <td>
-                    <?php
-                    echo ($folderPermissions['UPLOAD_PATH']['exists'] == 1) ? "Yes" : "No";
-                    ?>
-                  </td>
-                  <td scope="row"><?php echo ($folderPermissions['UPLOAD_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                    <?php echo ($folderPermissions['UPLOAD_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
-                </tr>
-                <tr>
-                  <td scope="row"><?php echo TEMP_PATH; ?></td>
-                  <td>
-                    <?php
-                    echo ($folderPermissions['TEMP_PATH']['exists'] == 1) ? "Yes" : "No";
-                    ?>
-                  </td>
-                  <td scope="row"><?php echo ($folderPermissions['TEMP_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                    <?php echo ($folderPermissions['TEMP_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
-                </tr>
-                <tr>
-                  <td scope="row"><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
-                  <td>
-                    <?php
-                    echo ($folderPermissions['LOGS_PATH']['exists'] == 1) ? "Yes" : "No";
-                    ?>
-                  </td>
-                  <td scope="row"><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                    <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
-                </tr>
-                <tr>
-                  <th colspan="5">
-                    <h4><?= _translate("Disk Space Utilization"); ?></h4>
-                  </th>
-                </tr>
-                <tr>
-                  <th scope="row"><?= _translate("Total Server Memory Space"); ?></th>
-                  <td><?php echo $diskSpaceUtilization['total_server_space']; ?></td>
-                  <th scope="row"><?= _translate("Free Server Memory Space"); ?></th>
-                  <td style="text-align:left"><?php echo $diskSpaceUtilization['free_server_space']; ?></td>
-                </tr>
-                <tr>
-                  <th scope="row"><?= _translate("Used Server Memory Space"); ?></th>
-                  <td><?php echo $diskSpaceUtilization['used_server_space']; ?></td>
-                  <th scope="row"><?= _translate("VLSM used Memory Space"); ?></th>
-                  <td><?php echo $diskSpaceUtilization['vlsm_used_space']; ?></td>
-                </tr>
-                <tr>
-                  <th scope="row"><?= _translate("Web Root Used Memory Space"); ?></th>
-                  <td><?php echo $diskSpaceUtilization['web_root_used_space']; ?></td>
-                </tr>
+            </table>
+            <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
+              <tr>
+                <th colspan="5">
+                  <h3><?= _translate("Folder Permissions"); ?></h3>
+                </th>
+              </tr>
+              <tr>
+                <th><?= _translate("File Path"); ?></th>
+                <th><?= _translate("Exists"); ?></th>
+                <th><?= _translate("Readable / Writeable"); ?></th>
+              </tr>
+              <tr>
+                <td scope="row"><?php echo CACHE_PATH; ?></td>
+                <td>
+                  <?php
+                  echo ($folderPermissions['CACHE_PATH']['exists'] == 1) ? "Yes" : "No";
+                  ?>
+                </td>
+                <td scope="row"><?php echo ($folderPermissions['CACHE_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['CACHE_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+              </tr>
+              <tr>
+                <td scope="row"><?php echo UPLOAD_PATH; ?></td>
+                <td>
+                  <?php
+                  echo ($folderPermissions['UPLOAD_PATH']['exists'] == 1) ? "Yes" : "No";
+                  ?>
+                </td>
+                <td scope="row"><?php echo ($folderPermissions['UPLOAD_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['UPLOAD_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+              </tr>
+              <tr>
+                <td scope="row"><?php echo TEMP_PATH; ?></td>
+                <td>
+                  <?php
+                  echo ($folderPermissions['TEMP_PATH']['exists'] == 1) ? "Yes" : "No";
+                  ?>
+                </td>
+                <td scope="row"><?php echo ($folderPermissions['TEMP_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['TEMP_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+              </tr>
+              <tr>
+                <td scope="row"><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
+                <td>
+                  <?php
+                  echo ($folderPermissions['LOGS_PATH']['exists'] == 1) ? "Yes" : "No";
+                  ?>
+                </td>
+                <td scope="row"><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+              </tr>
               </tbody>
             </table>
           </div>
@@ -321,7 +301,7 @@ $testName = TestsService::getTestTypes();
               </div>
             </div>
 
-            <form role="form" id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
+            <form id="registerForm" name="registerForm" method="post" action="/setup/registerProcess.php" onsubmit="validateNow();return false;">
               <div class="panel panel-primary setup-content" id="step-1">
                 <div class="panel-heading">
                   <h3 class="panel-title"><?= _translate("Database Setup"); ?></h3>
