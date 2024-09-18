@@ -66,21 +66,21 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
                 ]
             );
 
-            // if ($general->isLISInstance()) {
-            //     // If sample is Expired but still within the expiry limit, then update it to Received at Testing Lab
-            //     $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);
-            //     $db->where("result IS NULL OR result like ''");
-            //     $db->where("sample_code IS NOT NULL");
-            //     $db->where("is_sample_rejected = 'no' OR is_sample_rejected IS NULL OR is_sample_rejected = '' ");
-            //     $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) <= $expiryDays");
-            //     $db->update(
-            //         $tableName,
-            //         [
-            //             "result_status" => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-            //             "locked" => "no"
-            //         ]
-            //     );
-            // }
+             if ($general->isLISInstance()) {
+                 // If sample is Expired but still within the expiry limit, then update it to Received at Testing Lab
+                 $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);
+                 $db->where("result IS NULL OR result = ''");
+                 $db->where("sample_code IS NOT NULL");
+                 $db->where("is_sample_rejected = 'no' OR is_sample_rejected IS NULL OR is_sample_rejected = ''");
+                 $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`)) <= $expiryDays");
+                 $db->update(
+                     $tableName,
+                     [
+                        "result_status" => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+                         "locked" => "no"
+                     ]
+                 );
+             }
 
             //LOCKING SAMPLES
             $lockExpiryDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
