@@ -146,12 +146,12 @@ final class ApiService
             $response = $this->client->post($url, $options);
 
             if ($returnWithStatusCode) {
-                return [
+                $apiResponse = [
                     'httpStatusCode' => $response->getStatusCode(),
                     'body' => $response->getBody()->getContents()
                 ];
             } else {
-                return $response->getBody()->getContents();
+                $apiResponse = $response->getBody()->getContents();
             }
         } catch (RequestException $e) {
             // Extract the response body from the exception, if available
@@ -162,17 +162,18 @@ final class ApiService
 
             // Return the response body (if available) or null
             if ($returnWithStatusCode) {
-                return [
+                $apiResponse = [
                     'httpStatusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
                     'body' => $responseBody
                 ];
             } else {
-                return $responseBody;
+                $apiResponse = $responseBody;
             }
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
-            return null; // Error occurred while making the request
+            $apiResponse = null; // Error occurred while making the request
         }
+        return $apiResponse;
     }
 
     public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): ?string
@@ -181,10 +182,6 @@ final class ApiService
         $multipartData = [];
 
         try {
-
-            // $fileContents = $gzip
-            //     ? gzencode(stream_get_contents(fopen($jsonFilePath, 'r')))
-            //     : fopen($jsonFilePath, 'r');
 
             if ($gzip) {
                 $fileContents = gzencode(file_get_contents($jsonFilePath));
@@ -228,7 +225,7 @@ final class ApiService
             // Send the request
             $response = $this->client->post($url, $options);
 
-            return $response->getBody()->getContents();
+            $apiResponse = $response->getBody()->getContents();
         } catch (RequestException $e) {
             // Extract the response body from the exception, if available
             $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
@@ -236,12 +233,14 @@ final class ApiService
             // Log the error along with the response body
             $this->logError($e, "Unable to post to $url. Server responded with $errorCode : " . ($responseBody ?? 'No response body'));
 
-            return $responseBody ?? null;
+            $apiResponse = $responseBody ?? null;
         } catch (Throwable $e) {
             $this->logError($e, "Unable to post to $url");
-            return null; // Error occurred while making the request
+            $apiResponse = null; // Error occurred while making the request
         }
+        return $apiResponse;
     }
+
 
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
