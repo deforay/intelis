@@ -112,7 +112,6 @@ try {
 
             $password = $usersService->passwordHash($_POST['password']);
             $data['password'] = $password;
-            $data['hash_algorithm'] = 'phb';
             $data['force_password_reset'] = 1;
         }
 

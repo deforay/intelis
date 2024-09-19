@@ -95,14 +95,16 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
           $rch .= '<tbody>';
           $allChange = array_reverse($allChange);
           foreach ($allChange as $change) {
-               $usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
-               $usrResult = $db->rawQuery($usrQuery, [$change['usr']]);
-               $name = '';
-               if (isset($usrResult[0]['user_name'])) {
-                    $name = ($usrResult[0]['user_name']);
+               if (isset($change['usr']) && !empty($change['usr'])) {
+                    $usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
+                    $usrResult = $db->rawQuery($usrQuery, [$change['usr']]);
+                    $name = '';
+                    if (isset($usrResult[0]['user_name'])) {
+                         $name = $usrResult[0]['user_name'];
+                    }
+                    $changedDate = DateUtility::humanReadableDateFormat($change['dtime'] ?? '', true);
+                    $rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
                }
-               $changedDate = DateUtility::humanReadableDateFormat($change['dtime'] ?? '', true);
-               $rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
           }
           $rch .= '</tbody>';
           $rch .= '</table>';
@@ -143,15 +145,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
           'HIVNotDetected',
      ];
 
-     $detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
-     if ($detectedMatching !== false) {
-          $vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
-          $vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-     } else {
-          $notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
-          if ($notDetectedMatching !== false) {
-               $vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
-               $vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+     if (!empty($vlQueryInfo['result'])) {
+          $detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+          if ($detectedMatching !== false) {
+               $vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
+               $vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+          } else {
+               $notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+               if ($notDetectedMatching !== false) {
+                    $vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
+                    $vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+               }
           }
      }
 }

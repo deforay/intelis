@@ -5949,7 +5949,6 @@ CREATE TABLE `user_details` (
   `force_password_reset` int(11) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `app_access` varchar(50) DEFAULT 'no',
-  `hash_algorithm` varchar(256) NOT NULL DEFAULT 'sha1',
   `data_sync` int(11) DEFAULT '0',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

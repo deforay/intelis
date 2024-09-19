@@ -112,7 +112,6 @@ try {
     }
 
     if (!empty($post['password'])) {
-        $data['hash_algorithm'] = $post['hashAlgorithm'];
         $data['password'] = $usersService->passwordHash($post['password']);
     }
     if (!empty($post['role'])) {
@@ -144,10 +143,8 @@ try {
     }
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);
-    unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
+    unset($data['login_id'], $data['role_id'], $data['password'], $data['status']);
     if (isset($aRow['user_id']) && !empty($aRow['user_id']) && $aRow['user_id'] != "") {
-        // Unset the fields that should not be updated
-        //unset($data['login_id'], $data['role_id'], $data['password'], $data['hash_algorithm'], $data['status']);
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {

@@ -89,7 +89,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 			$usrResult = $db->rawQuery($usrQuery);
 			$name = '';
 			if (isset($usrResult[0]['user_name'])) {
-				$name = ($usrResult[0]['user_name']);
+				$name = $usrResult[0]['user_name'];
 			}
 			$expStr = explode(" ", (string) $change['dtime']);
 			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];

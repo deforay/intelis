@@ -117,7 +117,6 @@ try {
             'login_id' => $loginId,
             'password' => $userPassword,
             'user_locale' => $locale,
-            'hash_algorithm' => 'phb',
             'role_id' => 1,
             'status' => 'active'
         ];

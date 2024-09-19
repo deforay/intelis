@@ -7,6 +7,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+use App\Exceptions\SystemException;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -40,28 +41,26 @@ try {
     $zip = new ZipArchive();
     $zipStatus = $zip->open($sqlFileName . ".zip", ZipArchive::CREATE);
     if ($zipStatus !== true) {
-        throw new RuntimeException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
+        throw new SystemException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
     }
 
     if (!$zip->setPassword($password . $randomString)) {
-        throw new RuntimeException('Set password failed');
+        throw new SystemException('Set password failed');
     }
 
     // compress file
     $baseName = basename($sqlFileName);
     if (!$zip->addFile($sqlFileName, $baseName)) {
-        throw new RuntimeException(sprintf('Add file failed: %s', $sqlFileName));
+        throw new SystemException(sprintf('Add file failed: %s', $sqlFileName));
     }
 
     // encrypt the file with AES-256
     if (!$zip->setEncryptionName($baseName, ZipArchive::EM_AES_256)) {
-        throw new RuntimeException(sprintf('Set encryption failed: %s', $baseName));
+        throw new SystemException(sprintf('Set encryption failed: %s', $baseName));
     }
 
     $zip->close();
     unlink($sqlFileName);
-
-    //exec("cd $backupFolder && zip -P $password $baseFileName.zip $baseFileName && rm $baseFileName");
 
 
     if (SYSTEM_CONFIG['interfacing']['enabled'] === true) {
@@ -77,22 +76,22 @@ try {
         $zip = new ZipArchive();
         $zipStatus = $zip->open($sqlFileName . ".zip", ZipArchive::CREATE);
         if ($zipStatus !== true) {
-            throw new RuntimeException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
+            throw new SystemException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
         }
 
         if (!$zip->setPassword($password . $randomString)) {
-            throw new RuntimeException('Set password failed');
+            throw new SystemException('Set password failed');
         }
 
         // compress file
         $baseName = basename($sqlFileName);
         if (!$zip->addFile($sqlFileName, $baseName)) {
-            throw new RuntimeException(sprintf('Add file failed: %s', $sqlFileName));
+            throw new SystemException(sprintf('Add file failed: %s', $sqlFileName));
         }
 
         // encrypt the file with AES-256
         if (!$zip->setEncryptionName($baseName, ZipArchive::EM_AES_256)) {
-            throw new RuntimeException(sprintf('Set encryption failed: %s', $baseName));
+            throw new SystemException(sprintf('Set encryption failed: %s', $baseName));
         }
 
         $zip->close();

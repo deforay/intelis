@@ -4,6 +4,7 @@
 
 use App\Interop\Dhis2;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -249,7 +250,11 @@ foreach ($formResults as $row) {
   // echo "</pre>";
 
 
-  $updateData = array('result_sent_to_source' => 'sent');
+  $updateData = array(
+    'result_sent_to_source' => 'sent',
+    'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
+    'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+  );
   $db->where('covid19_id', $row['covid19_id']);
   $db->update('form_covid19', $updateData);
   $counter++;

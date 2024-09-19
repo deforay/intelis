@@ -6,6 +6,7 @@ use App\Interop\Dhis2;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 
 $dhis2 = new Dhis2(DHIS2_URL, DHIS2_USER, DHIS2_PASSWORD);
@@ -236,7 +237,11 @@ foreach ($formResults as $row) {
     }
   }
 
-  $updateData = ['result_sent_to_source' => 'sent'];
+  $updateData = [
+    'result_sent_to_source' => 'sent',
+    'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
+    'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+  ];
   $db->where('hepatitis_id', $row['hepatitis_id']);
   $db->update('form_hepatitis', $updateData);
   $counter++;

@@ -56,8 +56,6 @@ try {
 
         $password = $usersService->passwordHash($_POST['password']);
         $data['password'] = $password;
-        $data['hash_algorithm'] = 'phb';
-
 
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
         if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {

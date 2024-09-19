@@ -4,11 +4,12 @@
 header('Content-Type: application/json');
 
 use App\Interop\Fhir;
-use App\Services\DatabaseService;
 use App\Services\VlService;
+use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
@@ -115,7 +116,11 @@ foreach ($formResults as $row) {
     //echo $general->prettyJson($resp);
 
 
-    $updateData = array('result_sent_to_source' => 'sent');
+    $updateData = [
+        'result_sent_to_source' => 'sent',
+        'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
+        'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+    ];
     $db->where('vl_sample_id', $row['vl_sample_id']);
     $db->update('form_vl', $updateData);
     $counter++;

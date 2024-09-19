@@ -102,7 +102,7 @@ $isGeneXpert = !empty($vlQueryInfo['vl_test_platform']) && (strcasecmp((string) 
 
 if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) && !empty($vlQueryInfo['result'])) {
 	$vlQueryInfo['result'] = trim(str_ireplace((string) $vlQueryInfo['result_value_hiv_detection'], "", (string) $vlQueryInfo['result']));
-} else if ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
+} elseif ($isGeneXpert === true && !empty($vlQueryInfo['result'])) {
 
 	$vlQueryInfo['result_value_hiv_detection'] = null;
 
@@ -131,15 +131,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 		'HIVNotDetected',
 	];
 
-	$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
-	if ($detectedMatching !== false) {
-		$vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
-		$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
-	} else {
-		$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
-		if ($notDetectedMatching !== false) {
-			$vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
-			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+	if (!empty($vlQueryInfo['result'])) {
+		$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+		if ($detectedMatching !== false) {
+			$vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
+			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
+		} else {
+			$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+			if ($notDetectedMatching !== false) {
+				$vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
+				$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";
+			}
 		}
 	}
 }

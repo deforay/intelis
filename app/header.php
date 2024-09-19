@@ -20,10 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 $appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 if ($db->isConnected() === false) {
-	throw new Exception("Database connection failed. Please check your database settings", 500);
+	throw new SystemException("Database connection failed. Please check your database settings", 500);
 }
 
-$_SESSION['modules'] = $_SESSION['modules'] ?? [];
+$_SESSION['modules'] ??= [];
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
@@ -62,7 +62,7 @@ $countryCode = $arr['default_phone_prefix'] ?? '';
 $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;
 $maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
 
-$_SESSION['menuItems'] = $_SESSION['menuItems'] ?? $appMenuService->getMenu();
+$_SESSION['menuItems'] ??= $appMenuService->getMenu();
 
 $db->where("status", "active");
 $instrumentCount = $db->getValue("instruments", "count(*)");
@@ -212,7 +212,8 @@ if ($instrumentCount == 0 || $userCount == 0) {
 						?>
 							<li class="user-menu">
 								<a onclick="setCrossLogin();" href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
-									Recency</a>
+									<?= _translate('Recency'); ?>
+								</a>
 							</li>
 						<?php } ?>
 
