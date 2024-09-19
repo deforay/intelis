@@ -4,10 +4,24 @@ FROM php:8.2-apache AS php-apache
 # Install system dependencies and PHP extensions
 RUN apt-get update && \
     apt-get install -y --no-install-recommends \
-    libzip-dev libjpeg62-turbo-dev libfreetype6-dev \
-    libonig-dev libpng-dev libicu-dev libcurl4-openssl-dev \
-    git zip unzip rsync vim openssl curl acl gettext cron \
-    default-mysql-client && \
+    acl \
+    cron \
+    curl \
+    default-mysql-client \
+    gettext \
+    git \
+    libcurl4-openssl-dev \
+    libfreetype6-dev \
+    libicu-dev \
+    libjpeg62-turbo-dev \
+    libonig-dev \
+    libpng-dev \
+    libzip-dev \
+    openssl \
+    rsync \
+    unzip \
+    vim \
+    zip && \
     apt-get upgrade -y openssl apache2 curl libxml2 && \
     docker-php-ext-configure gd --with-freetype --with-jpeg && \
     docker-php-ext-install pdo_mysql zip mysqli mbstring \

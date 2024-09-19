@@ -86,7 +86,6 @@ final class ApiService
     {
         return function ($retries) {
             $delay = $this->delayMultiplier * (2 ** $retries);
-            //$jitter = $this->jitterFactor * random_int(0, 1000) / 1000;
             $jitter = random_int(0, (int)($this->jitterFactor * 1000)) / 1000;
             return min($this->maxRetryDelay, $delay * (1 + $jitter));
         };
@@ -97,14 +96,8 @@ final class ApiService
     {
         try {
             $response = $this->client->get($url);
-
-            $statusCode = $response->getStatusCode();
-
-            if ($statusCode === 200) {
-                return true; // Successful response
-            } else {
-                return false; // API returned a non-200 status code
-            }
+            $statusCode = (int) $response->getStatusCode();
+            return $statusCode === 200;
         } catch (Throwable $e) {
             LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [
                 'exception' => $e,
@@ -124,6 +117,7 @@ final class ApiService
                 'X-Request-ID' => MiscUtility::generateULID(),
                 'X-Timestamp'  => time(),
                 'X-Instance-ID' => $this->commonService->getInstanceId(),
+                'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
                 'Content-Type' => 'application/json; charset=utf-8',
             ]
         ];
@@ -213,6 +207,7 @@ final class ApiService
                 'Content-Length' => $fileSize,
                 'X-Timestamp'    => time(),
                 'X-Request-ID'    => MiscUtility::generateULID(),
+                'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
                 'X-Instance-ID' => $this->commonService->getInstanceId()
             ];
 
@@ -434,7 +429,7 @@ final class ApiService
         $headerValues = $request->getHeader($key);
         if (empty($headerValues)) {
             return null;
-        } else if (count($headerValues) === 1) {
+        } elseif (count($headerValues) === 1) {
             return $headerValues[0];
         } else {
             return $headerValues;
