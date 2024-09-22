@@ -39,6 +39,10 @@ COPY ./docker/php-apache/app.conf /etc/apache2/sites-enabled/000-default.conf
 # Second stage: web server
 FROM php-apache AS php-web
 
+# Folder Permissions
+RUN setfacl -R -m u:www-data:rwx /var/www/html && \
+    setfacl -dR -m u:www-data:rwx /var/www/html
+
 # Set working directory
 WORKDIR /var/www/html
 
@@ -51,10 +55,6 @@ COPY . .
 # Install project dependencies using Composer
 RUN composer install --no-dev --optimize-autoloader --no-progress && \
     composer dump-autoload --optimize
-
-# Fix permissions
-RUN setfacl -R -m u:www-data:rwx /var/www/html && \
-    setfacl -dR -m u:www-data:rwx /var/www/html
 
 # Use custom entrypoint script for the web server
 COPY ./docker/entrypoint.sh /usr/local/bin/entrypoint.sh
