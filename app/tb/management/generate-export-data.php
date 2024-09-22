@@ -150,6 +150,6 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
-		echo base64_encode($filename);
+		echo urlencode(basename($filename));
 	}
 }

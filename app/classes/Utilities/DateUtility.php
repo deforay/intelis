@@ -40,18 +40,14 @@ final class DateUtility
             return null;
         }
 
-        $format = $format ?? $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+        $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
         // Check if the format already includes time components
         $hasTimeComponent = preg_match('/[HhGgis]/', $format);
 
         // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
         if ($includeTime && !$hasTimeComponent) {
-            if ($withSeconds) {
-                $format .= " H:i:s";
-            } else {
-                $format .= " H:i";
-            }
+            $format .= $withSeconds ? ' H:i:s' : ' H:i';
         }
 
         return Carbon::parse($date)->format($format);
@@ -69,7 +65,7 @@ final class DateUtility
             return null;
         }
 
-        $format = $includeTime ? "Y-m-d H:i:s" : "Y-m-d";
+        $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
         return Carbon::parse($date)->format($format);
     }
 

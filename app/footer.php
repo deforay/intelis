@@ -1,7 +1,6 @@
 <?php
 
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -10,24 +9,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var SystemService $systemService */
-$systemService = ContainerRegistry::get(SystemService::class);
+$remoteURL = $general->getRemoteURL();
 
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
-
-$remoteURL = $general->getRemoteURL();
-
-
-if (_isAllowed("sync-history.php")) {
-	$syncHistory = "/common/reference/sync-history.php";
-} else {
-	$syncHistory = "javascript:void(0);";
-}
-
+// Sync History
+$syncHistory = (_isAllowed("sync-history.php")) ? "/common/reference/sync-history.php" : "javascript:void(0);";
 $syncLatestTime = $general->getLastSTSSyncDateTime();
-
 $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inline;";
 
 ?>
@@ -43,9 +31,8 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 			<small class="text-muted"><a href="javascript:void(0);" onclick="clearCache();" style="font-size:0.8em;"><?= _translate("Clear Cache"); ?></a></small>
 		</div>
 		<div class=" col-lg-4 col-sm-4">
-
 			<small class="pull-right" style="font-weight:bold;">&nbsp;&nbsp;
-				<?php echo "v" . VERSION; ?>
+				<?= "v" . VERSION; ?>
 			</small>
 			<?php
 
@@ -72,15 +59,15 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 		</div>
 	</div>
 	<?php if (!empty($supportEmail)) { ?>
-		<small><a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a></small>
+		<small>
+			<a href="javascript:void(0);" onclick="showModal('/support/index.php?fUrl=<?php echo htmlspecialchars($_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']); ?>', 900, 520);">Support</a>
+		</small>
 	<?php } ?>
-
-
 </footer>
 </div>
 
-<?php require_once(WEB_ROOT . '/assets/js/main.js.php'); ?>
-<?php require_once(WEB_ROOT . '/assets/js/dates.js.php'); ?>
+<?php require_once WEB_ROOT . '/assets/js/main.js.php'; ?>
+<?php require_once WEB_ROOT . '/assets/js/dates.js.php'; ?>
 
 <script type="text/javascript">
 	$(document).ready(function() {

@@ -24,8 +24,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $sQuery = $_SESSION['testResultReportsQuery'];
-//echo $sQuery; die;
-//$rResult = $db->rawQuery($sQuery);
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
@@ -118,7 +116,6 @@ $no = 1;
 foreach ($rResult as $aRow) {
     $rejectedObj = json_decode($aRow['reason_for_result_changes']);
     $row = [];
-    //$row[] = $aRow['f.facility_name'];
     $row[] = $aRow['sample_code'];
     $row[] = $aRow['remote_sample_code'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
@@ -134,22 +131,13 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow["result_modified"];
     $row[] = html_entity_decode($rejectedObj->reasonForChange ?? '');
     $row[] = $aRow['import_machine_file_name'];
-    //$output['aaData'][] = $row;
-
     $output[] = $row;
     $no++;
 }
 
-
-
 foreach ($output as $rowNo => $rowData) {
-    //$colNo = 1;
     $rRowCount = $rowNo + 6;
     $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-    // foreach ($rowData as $field => $value) {
-    //     $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
-    //     $colNo++;
-    // }
 }
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'VLSM-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';

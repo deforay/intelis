@@ -590,4 +590,17 @@ final class MiscUtility
         $lockFile = self::getLockFile($fileName, $lockFileLocation);
         return touch($lockFile);
     }
+
+    /**
+     * Checks if the given string is base64 encoded.
+     *
+     * @param string $data The string to check.
+     * @return bool Returns true if $data is base64 encoded, false otherwise.
+     */
+    public static function isBase64($data)
+    {
+        $decodedData = base64_decode($data, true);
+        // Check if decoding was successful by re-encoding and comparing to original string (ignoring padding)
+        return $decodedData !== false && base64_encode($decodedData) === rtrim($data, "=");
+    }
 }

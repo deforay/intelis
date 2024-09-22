@@ -120,6 +120,6 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 		$writer->save($fileName);
-		echo base64_encode($fileName);
+		echo urlencode(basename($filename));
 	}
 }

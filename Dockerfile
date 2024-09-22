@@ -42,6 +42,9 @@ FROM php-apache AS php-web
 # Set working directory
 WORKDIR /var/www/html
 
+# Switch to www-data user for web tasks
+USER www-data
+
 # Copy the application code to the container
 COPY . .
 

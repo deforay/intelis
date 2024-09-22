@@ -165,7 +165,6 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
-		//$sheet->setTitle('VL Results');
 
 		$sheet->fromArray($headings, null, 'A1'); // Write headings
 		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
@@ -173,6 +172,6 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
-		echo base64_encode($filename);
+		echo urlencode(basename($filename));
 	}
 }

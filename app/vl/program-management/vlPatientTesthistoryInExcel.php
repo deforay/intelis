@@ -60,24 +60,24 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $patientLname = '';
           }
 
-        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-            $patientFname = $general->crypto('decrypt', $patientFname, $key);
-            $patientMname = $general->crypto('decrypt', $patientMname, $key);
-            $patientLname = $general->crypto('decrypt', $patientLname, $key);
-        }
-        $row[] = $aRow['patient_art_no'];
-        $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-        $row[] = $aRow['patient_age_in_years'];
-        $row[] = $aRow['patient_dob'];
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['request_clinician_name']);
-        $row[] = $sampleCollectionDate;
-        $row[] = $aRow['sample_name'];
-        $row[] = $aRow['labName'];
-        $row[] = $sampleTestDate;
-        $row[] = $aRow['result'];
-        $output[] = $row;
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+               $patientFname = $general->crypto('decrypt', $patientFname, $key);
+               $patientMname = $general->crypto('decrypt', $patientMname, $key);
+               $patientLname = $general->crypto('decrypt', $patientLname, $key);
+          }
+          $row[] = $aRow['patient_art_no'];
+          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
+          $row[] = $aRow['patient_age_in_years'];
+          $row[] = $aRow['patient_dob'];
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['request_clinician_name']);
+          $row[] = $sampleCollectionDate;
+          $row[] = $aRow['sample_name'];
+          $row[] = $aRow['labName'];
+          $row[] = $sampleTestDate;
+          $row[] = $aRow['result'];
+          $output[] = $row;
      }
 
      if (isset($_SESSION['patientTestHistoryResultCount']) && $_SESSION['patientTestHistoryResultCount'] > 50000) {
@@ -121,6 +121,6 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo base64_encode($filename);
+          echo urlencode(basename($filename));
      }
 }

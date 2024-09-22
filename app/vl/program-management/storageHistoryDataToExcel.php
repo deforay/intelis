@@ -21,16 +21,16 @@ $key = (string) $general->getGlobalConfig('key');
 
 if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['storageHistoryDataQuery']) != "") {
 
-    $output = [];
-    $headings = [_translate('Patient ID'),_translate('Sample Collection Date'), _translate("Freezer"),_translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Date Out"),_translate("Comments"),_translate("Status"),_translate("Removal Reason")];
+     $output = [];
+     $headings = [_translate('Patient ID'), _translate('Sample Collection Date'), _translate("Freezer"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Date Out"), _translate("Comments"), _translate("Status"), _translate("Removal Reason")];
 
-    $resultSet = $db->rawQuery($_SESSION['storageHistoryDataQuery']);
+     $resultSet = $db->rawQuery($_SESSION['storageHistoryDataQuery']);
      foreach ($resultSet as $aRow) {
           $row = [];
-        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
-        }
-       
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $aRow['patient_art_no'] = $general->crypto('decrypt', $aRow['patient_art_no'], $key);
+          }
+
           $row[] = $aRow['patient_art_no'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date']);
           $row[] = ($aRow['storage_code']);
@@ -45,17 +45,17 @@ if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['stor
           $output[] = $row;
      }
 
-          $excel = new Spreadsheet();
-          $sheet = $excel->getActiveSheet();
+     $excel = new Spreadsheet();
+     $sheet = $excel->getActiveSheet();
 
-          $sheet->fromArray($headings, null, 'A3');
+     $sheet->fromArray($headings, null, 'A3');
 
-          foreach ($output as $rowNo => $rowData) {
-               $rRowCount = $rowNo + 4;
-               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-          }
-          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Storage-History-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save($filename);
-          echo base64_encode($filename);
+     foreach ($output as $rowNo => $rowData) {
+          $rRowCount = $rowNo + 4;
+          $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+     }
+     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Storage-History-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $writer->save($filename);
+     echo urlencode(basename($filename));
 }

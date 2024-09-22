@@ -259,7 +259,7 @@ try {
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
           [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
           if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
-               $sWhere[] =  '  DATE(vl.result_printed_datetime) = "' . $sPrintDate . '"';
+               $sWhere[] =  "  DATE(vl.result_printed_datetime) = '$sPrintDate' ";
           } else {
                $sWhere[] =  "  DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
           }
@@ -359,8 +359,6 @@ try {
           $row[] = $aRow['i_partner_name'] ?? null;
           $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-          //$row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("View") . '" onclick="convertSearchResultToPdf(' . $aRow['vl_sample_id'] . ');"><em class="fa-solid fa-file-lines"></em> ' . _translate("Result PDF") . '</a>';
-
           $output['aaData'][] = $row;
      }
 

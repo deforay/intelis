@@ -103,11 +103,11 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
     foreach ($output as $rowNo => $rowData) {
         $rRowCount = $rowNo + 4;
         $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-   }
+    }
 
 
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save($filename);
-    echo base64_encode($filename);
+    echo urlencode(basename($filename));
 }

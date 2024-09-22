@@ -203,5 +203,5 @@ if (isset($_SESSION['covid19RequestSearchResultQueryCount']) && $_SESSION['covid
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save($filename);
-    echo base64_encode($filename);
+    echo urlencode(basename($filename));
 }

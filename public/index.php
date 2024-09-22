@@ -44,11 +44,14 @@ if (!empty($remoteURL)) {
 
 $allowedDomains = implode(" ", $allowedDomains);
 
-$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+//$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";
+$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains; img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self'; frame-ancestors 'self';";
+
 
 $middlewarePipe->pipe(middleware(function ($request, $handler) use ($csp) {
     $response = $handler->handle($request);
     $response = $response->withAddedHeader('Content-Security-Policy', $csp);
+    $response = $response->withAddedHeader('X-Frame-Options', 'SAMEORIGIN');
     return  $response->withAddedHeader('X-Content-Type-Options', 'nosniff');
 }));
 

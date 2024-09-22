@@ -34,8 +34,6 @@ $headings = ['LIS Sample ID', 'Name of the Clinic', 'External ID', "Electronic T
 $outputCalc = [];
 $output = [];
 
-
-//$start = (count($output)) + 2;
 $colNo = 1;
 $colNum = 1;
 $styleArray = [

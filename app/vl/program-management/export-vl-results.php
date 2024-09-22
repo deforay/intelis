@@ -29,7 +29,6 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 	$output = [];
 	if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
-		//$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Gender"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
 		$headings = array(_translate('S.No.'), _translate("Sample ID"), _translate('Region of sending facility'), _translate('District of sending facility'), _translate('Sending facility'), _translate('Project'), _translate('Existing ART Code'), _translate('Date of Birth'), _translate('Age'), _translate('Patient Name'), _translate('Gender'), _translate('KP'), _translate('Universal Insurance Code'), _translate('Sample Creation Date'), _translate('Sample Created By'), _translate('Sample collection date'), _translate('Sample Type'), _translate('Requested by contact'), _translate('Treatment start date'), _translate("Treatment Protocol"), _translate('ARV Protocol'), _translate('CV Number'), _translate('Batch Code'), _translate('Test Platform'), _translate("Test platform detection limit"), _translate("Sample Tested"), _translate("Date of test"), _translate("Date of result sent to facility"), _translate("Sample Rejected"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Result Value"), _translate("Result Printed Date"), _translate("Result Value Log"),  _translate("Is suppressed"), _translate("Name of reference Lab"), _translate("Sample Reception Date"), _translate("Category of testing site"), _translate("TAT"), _translate("Age Range"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Result Type"), _translate("Observations"));
 	} else {
 
@@ -113,14 +112,15 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		}
 		if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
 			$lineOfTreatment = '';
-			if ($aRow['line_of_treatment'] == 1)
+			if ($aRow['line_of_treatment'] == 1) {
 				$lineOfTreatment = '1st Line';
-			elseif ($aRow['line_of_treatment'] == 2)
+			} elseif ($aRow['line_of_treatment'] == 2) {
 				$lineOfTreatment = '2nd Line';
-			elseif ($aRow['line_of_treatment'] == 3)
+			} elseif ($aRow['line_of_treatment'] == 3) {
 				$lineOfTreatment = '3rd Line';
-			elseif ($aRow['line_of_treatment'] == 'n/a')
+			} elseif ($aRow['line_of_treatment'] == 'n/a') {
 				$lineOfTreatment = 'N/A';
+			}
 			$row[] = $aRow['sample_code'];
 			$row[] = $aRow['facility_state'];
 			$row[] = $aRow['facility_district'];
@@ -153,10 +153,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			} else {
 				$row[] = "";
 			}
-			if ($aRow['sample_tested_datetime'] != "")
-				$row[] = "Yes";
-			else
-				$row[] = "No";
+			$row[] = ($aRow['sample_tested_datetime'] != "") ? "Yes" : "No";
 
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
@@ -271,7 +268,6 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 
 		$excel = new Spreadsheet();
 		$sheet = $excel->getActiveSheet();
-		//$sheet->setTitle('VL Results');
 
 		$sheet->fromArray($headings, null, 'A1'); // Write headings
 		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
@@ -279,6 +275,6 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
-		echo base64_encode($filename);
+		echo urlencode(basename($filename));
 	}
 }

@@ -289,4 +289,4 @@ foreach (range('A', 'O') as $columnID) {
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 $writer->save($filename);
-echo base64_encode($filename);
+echo urlencode(basename($filename));

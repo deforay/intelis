@@ -138,6 +138,6 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
         $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($fileName);
-        echo base64_encode($fileName);
+        echo urlencode(basename($filename));
     }
 }

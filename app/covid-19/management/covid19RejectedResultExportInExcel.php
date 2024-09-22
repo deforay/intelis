@@ -84,6 +84,6 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo base64_encode($filename);
+          echo urlencode(basename($filename));
      }
 }

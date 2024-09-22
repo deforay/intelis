@@ -22,12 +22,12 @@ $key = (string) $general->getGlobalConfig('key');
 if (isset($_SESSION['storageDataQuery']) && trim((string) $_SESSION['storageDataQuery']) != "") {
 
      $output = [];
-     $headings = [_translate("Sample Code"),_translate("Storage Date"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Status")];
+     $headings = [_translate("Sample Code"), _translate("Storage Date"), _translate("Volume of Sample(ml)"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Status")];
 
      $resultSet = $db->rawQuery($_SESSION['storageDataQuery']);
      foreach ($resultSet as $aRow) {
           $row = [];
-        
+
           $row[] = $aRow['sample_code'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'] ?? '', true);
           $row[] = ($aRow['volume']);
@@ -38,17 +38,17 @@ if (isset($_SESSION['storageDataQuery']) && trim((string) $_SESSION['storageData
           $output[] = $row;
      }
 
-          $excel = new Spreadsheet();
-          $sheet = $excel->getActiveSheet();
+     $excel = new Spreadsheet();
+     $sheet = $excel->getActiveSheet();
 
-          $sheet->fromArray($headings, null, 'A3');
+     $sheet->fromArray($headings, null, 'A3');
 
-          foreach ($output as $rowNo => $rowData) {
-               $rRowCount = $rowNo + 4;
-               $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-          }
-          $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Storage-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save($filename);
-          echo base64_encode($filename);
+     foreach ($output as $rowNo => $rowData) {
+          $rRowCount = $rowNo + 4;
+          $sheet->fromArray($rowData, null, 'A' . $rRowCount);
+     }
+     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
+     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Storage-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $writer->save($filename);
+     echo urlencode(basename($filename));
 }
