@@ -154,5 +154,5 @@ if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidReques
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
     $filename = 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    echo urlencode(basename($filename));
 }

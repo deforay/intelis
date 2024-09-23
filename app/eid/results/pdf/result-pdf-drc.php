@@ -99,7 +99,6 @@ if (!empty($result)) {
 
     // set font
     $pdf->SetFont('helvetica', '', 18);
-    $pdf->AliasNbPages();
     $pdf->AddPage();
 
     if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {

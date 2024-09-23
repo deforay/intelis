@@ -150,4 +150,4 @@ foreach ($output as $rowNo => $rowData) {
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
 $filename = 'VLSM-SAMPLEWISE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomNumber(6) . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+echo urlencode(basename($filename));

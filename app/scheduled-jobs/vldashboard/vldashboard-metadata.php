@@ -98,7 +98,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
 try {
 
     foreach ($referenceTables as $table) {
-        if ($data['forceSync'] == true) {
+        if ($data['forceSync'] === true) {
             $createResult = $db->rawQueryOne("SHOW CREATE TABLE `$table`");
             $data[$table]['tableStructure'] = "SET FOREIGN_KEY_CHECKS=0;" . PHP_EOL;
             $data[$table]['tableStructure'] .= "ALTER TABLE `$table` DISABLE KEYS ;" . PHP_EOL;

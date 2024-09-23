@@ -74,21 +74,21 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $excel = new Spreadsheet();
         $sheet = $excel->getActiveSheet();
 
-        $styleArray = array(
-            'font' => array(
+        $styleArray = [
+            'font' => [
                 'bold' => true,
                 'size' => '13',
-            ),
-            'alignment' => array(
+            ],
+            'alignment' => [
                 'horizontal' => Alignment::HORIZONTAL_CENTER,
                 'vertical' => Alignment::VERTICAL_CENTER,
-            ),
-            'borders' => array(
-                'outline' => array(
+            ],
+            'borders' => [
+                'outline' => [
                     'style' => Border::BORDER_THIN,
-                ),
-            ),
-        );
+                ],
+            ],
+        ];
 
         $sheet->mergeCells('A1:AE1');
         $sheet->getStyle('A3:A3')->applyFromArray($styleArray);

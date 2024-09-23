@@ -37,35 +37,35 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
 
      $resultSet = $db->rawQuery($_SESSION['patientTestHistoryResult']);
      foreach ($resultSet as $aRow) {
-        $row = [];
-        //sample collecion date
-        $sampleCollectionDate = '';
-        $sampleTestDate = '';
-        if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", (string) $aRow['sample_collection_date']);
-            $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
-        }
-        if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-            $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
-            $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
-        }
+          $row = [];
+          //sample collecion date
+          $sampleCollectionDate = '';
+          $sampleTestDate = '';
+          if ($aRow['sample_collection_date'] != null && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_collection_date']);
+               $sampleCollectionDate =  date("d-m-Y", strtotime($expStr[0]));
+          }
+          if ($aRow['sample_tested_datetime'] != null && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $aRow['sample_tested_datetime']);
+               $sampleTestDate =  date("d-m-Y", strtotime($expStr[0]));
+          }
 
-        if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
-            $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
-            $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
-        }
-        $row[] = $aRow['child_id'];
-        $row[] = $aRow['child_name'];
-        $row[] = $aRow['child_age'];
-        $row[] = $aRow['child_dob'];
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['clinician_name']);
-        $row[] = $sampleCollectionDate;
-        $row[] = $aRow['sample_name'];
-        $row[] = $aRow['labName'];
-        $row[] = $sampleTestDate;
-        $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
-        $output[] = $row;
+          if (!empty($aRow['is_encrypted']) && $aRow['is_encrypted'] == 'yes') {
+               $aRow['child_id'] = $general->crypto('decrypt', $aRow['child_id'], $key);
+               $aRow['child_name'] = $general->crypto('decrypt', $aRow['child_name'], $key);
+          }
+          $row[] = $aRow['child_id'];
+          $row[] = $aRow['child_name'];
+          $row[] = $aRow['child_age'];
+          $row[] = $aRow['child_dob'];
+          $row[] = ($aRow['facility_name']);
+          $row[] = ($aRow['clinician_name']);
+          $row[] = $sampleCollectionDate;
+          $row[] = $aRow['sample_name'];
+          $row[] = $aRow['labName'];
+          $row[] = $sampleTestDate;
+          $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
+          $output[] = $row;
      }
 
      if (isset($_SESSION['patientTestHistoryResultCount']) && $_SESSION['patientTestHistoryResultCount'] > 50000) {
@@ -109,6 +109,6 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
-          echo base64_encode($filename);
+          echo urlencode(basename($filename));
      }
 }

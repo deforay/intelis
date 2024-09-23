@@ -13,7 +13,6 @@ use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use GuzzleHttp\Exception\RequestException;
-use PhpMyAdmin\SqlParser\Utils\Misc;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class ApiService
