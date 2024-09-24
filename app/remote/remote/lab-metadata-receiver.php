@@ -118,6 +118,7 @@ try {
 
                             $sResult = null;
                             if (!empty($data[$checkColumn])) {
+                                $db->reset();
                                 $db->where($checkColumn, $data[$checkColumn]);
                                 $sResult = $db->getOne($tableName, [$primaryKey]);
                             }

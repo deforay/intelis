@@ -156,4 +156,4 @@ if (!empty($pages)) {
 	MiscUtility::removeDirectory($pathFront);
 }
 
-echo urlencode(basename($resultFilename));
+echo base64_encode(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename);

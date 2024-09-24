@@ -26,13 +26,13 @@ final class UsersService
 
     public function isAllowed(mixed $currentRequest, mixed $privileges = null): bool
     {
-        $privileges = $privileges ?? $_SESSION['privileges'] ?? null;
+        $privileges ??= $_SESSION['privileges'] ?? null;
 
         if (empty($currentRequest) || empty($privileges)) {
             return false;
         }
 
-        $sessionKey = md5(is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
+        $sessionKey = hash('sha256', is_string($currentRequest) ? $currentRequest : $currentRequest->getUri());
 
         // If the result is already stored in the session, return it
         if (isset($_SESSION['acl'][$sessionKey])) {
