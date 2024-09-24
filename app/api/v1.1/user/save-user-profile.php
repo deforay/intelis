@@ -49,7 +49,7 @@ try {
     ini_set('memory_limit', -1);
     set_time_limit(0);
     ini_set('max_execution_time', 20000);
-    $authToken = $apiService->getAuthorizationBearerToken($request);
+    $authToken = ApiService::getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     if (!empty($_REQUEST) && !empty($_REQUEST['post']) && JsonUtility::isJSON($_REQUEST['post'])) {
         $input = _sanitizeInput($_REQUEST);
@@ -201,4 +201,4 @@ try {
 $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($data ?? []), 'save-user', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

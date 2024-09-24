@@ -43,11 +43,11 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $transactionId = MiscUtility::generateULID();
 $formId = (int) $general->getGlobalConfig('vl_form');
-$authToken = $apiService->getAuthorizationBearerToken($request);
+$authToken = ApiService::getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 /* To save the user attributes from API */
 $userAttributes = [];
-foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
+foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
     $userAttributes[$header] = $apiService->getHeader($request, $header);
 }
 $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
@@ -114,12 +114,12 @@ $userResult = $usersService->getActiveUsers($facilityMap, $updatedDateTime);
 $labTechniciansList = [];
 $userList = [];
 foreach ($userResult as $row) {
-    $userList[] = array(
-        'user_id'       => $row['user_id'],
-        'user_name'     => $row['user_name'],
-        'email'         => $row['email'],
-        'phone_number'  => $row['phone_number'],
-    );
+    $userList[] = [
+        'user_id' => $row['user_id'],
+        'user_name' => $row['user_name'],
+        'email' => $row['email'],
+        'phone_number' => $row['phone_number'],
+    ];
     $labTechniciansList[$row['user_id']] = ($row['user_name']);
 }
 
@@ -469,4 +469,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

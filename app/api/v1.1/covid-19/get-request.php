@@ -51,7 +51,7 @@ $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $apiService->getAuthorizationBearerToken($request);
+$authToken = ApiService::getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 
 
@@ -284,4 +284,4 @@ $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? [])
 http_response_code(200);
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

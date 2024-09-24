@@ -359,7 +359,7 @@ final class ApiService
         }
     }
 
-    public function sendJsonResponse(mixed $payload, ServerRequestInterface $request)
+    public static function sendJsonResponse(mixed $payload, ServerRequestInterface $request)
     {
         // Ensure payload is a JSON string
         $jsonPayload = is_array($payload) || is_object($payload) ? JsonUtility::encodeUtf8Json($payload) : $payload;
@@ -369,19 +369,18 @@ final class ApiService
             // Handle the error, maybe log it or set an error message
             return null;
         }
-
-        // Get 'Accept-Encoding' header to check for supported compression methods
-        $acceptEncoding = $request->getHeaderLine('Accept-Encoding');
-
         // Initialize variables for content encoding and payload
         $compressedPayload = null;
         $contentEncoding = null;
 
+        // Get 'Accept-Encoding' header to check for supported compression methods
+        $acceptEncoding = strtolower($request->getHeaderLine('Accept-Encoding'));
+
         // Gzip or deflate based on client capabilities
-        if (strpos($acceptEncoding, 'gzip') !== false) {
+        if (str_contains($acceptEncoding, 'gzip')) {
             $compressedPayload = gzencode($jsonPayload);
             $contentEncoding = 'gzip';
-        } elseif (strpos($acceptEncoding, 'deflate') !== false) {
+        } elseif (str_contains($acceptEncoding, 'deflate')) {
             $compressedPayload = gzdeflate($jsonPayload);
             $contentEncoding = 'deflate';
         } else {
@@ -405,7 +404,7 @@ final class ApiService
      * @param ServerRequestInterface $request The request object.
      * @return string|null Returns the bearer token if present, otherwise null.
      */
-    public function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
+    public static function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
     {
         $authorization = $request->getHeaderLine('Authorization');
         if (preg_match('/bearer\s+(\S+)/i', $authorization, $matches)) {

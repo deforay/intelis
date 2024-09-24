@@ -597,10 +597,14 @@ final class MiscUtility
      * @param string $data The string to check.
      * @return bool Returns true if $data is base64 encoded, false otherwise.
      */
-    public static function isBase64($data)
+    public static function isBase64(string $data): bool
     {
-        $decodedData = base64_decode($data, true);
-        // Check if decoding was successful by re-encoding and comparing to original string (ignoring padding)
-        return $decodedData !== false && base64_encode($decodedData) === rtrim($data, "=");
+        // Ensure the length is a multiple of 4 by adding necessary padding
+        $paddedData = str_pad($data, strlen($data) % 4 === 0 ? strlen($data) : strlen($data) + 4 - (strlen($data) % 4), '=');
+
+        $decodedData = base64_decode($paddedData, true);
+
+        // Check if decoding was successful and if re-encoding matches (ignoring padding)
+        return $decodedData !== false && base64_encode($decodedData) === $paddedData;
     }
 }

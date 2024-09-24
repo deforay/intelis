@@ -169,4 +169,4 @@ try {
     ]);
 }
 
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

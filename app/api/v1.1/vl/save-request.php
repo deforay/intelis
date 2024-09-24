@@ -88,7 +88,7 @@ try {
     $txtVal = null;
     $finalResult = null;
 
-    $authToken = $apiService->getAuthorizationBearerToken($request);
+    $authToken = ApiService::getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -512,4 +512,4 @@ $general->updateResultSyncDateTime('vl', null, $updatedLabs);
 
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

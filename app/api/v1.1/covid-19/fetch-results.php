@@ -50,7 +50,7 @@ $transactionId = MiscUtility::generateULID();
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = $apiService->getAuthorizationBearerToken($request);
+$authToken = ApiService::getAuthorizationBearerToken($request);
 $user = $usersService->getUserByToken($authToken);
 
 
@@ -304,5 +304,5 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'covid19', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);
 // exit(0);

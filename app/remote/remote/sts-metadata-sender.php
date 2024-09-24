@@ -399,4 +399,4 @@ $sql = 'UPDATE facility_details
             WHERE facility_id = ?';
 $db->rawQuery($sql, [DateUtility::getCurrentDateTime(), $labId]);
 
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);

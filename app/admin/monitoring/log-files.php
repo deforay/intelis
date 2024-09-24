@@ -158,6 +158,7 @@ require_once APPLICATION_PATH . '/header.php';
 	// Function to reset logs and load them (starting from the first line)
 	function resetAndLoadLogs() {
 		start = 0; // Reset start index
+		loading = false;
 		hasMoreLogs = true; // Reset log continuation flag
 		$('#logViewer').html(''); // Clear existing logs
 		loadLogs(); // Load initial logs

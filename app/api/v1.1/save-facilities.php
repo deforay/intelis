@@ -80,7 +80,7 @@ try {
     $globalConfig = $general->getGlobalConfig();
     $vlsmSystemConfig = $general->getSystemConfig();
 
-    $authToken = $apiService->getAuthorizationBearerToken($request);
+    $authToken = ApiService::getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
@@ -260,4 +260,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo $apiService->sendJsonResponse($payload, $request);
+echo ApiService::sendJsonResponse($payload, $request);
