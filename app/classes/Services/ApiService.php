@@ -194,11 +194,8 @@ final class ApiService
             ];
 
             // Add additional parameters to multipart data
-            foreach ($params as $name => $value) {
-                $multipartData[] = [
-                    'name'     => $name,
-                    'contents' => $value
-                ];
+            if (!empty($params)) {
+                $multipartData = array_merge($multipartData, $params);
             }
 
             // Prepare headers
