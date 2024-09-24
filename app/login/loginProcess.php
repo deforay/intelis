@@ -103,7 +103,7 @@ try {
         $_SESSION['roleId'] = $userRow['role_id'];
         $_SESSION['accessType'] = $userRow['access_type'];
         $_SESSION['email'] = $userRow['email'];
-        $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'];
+        $_SESSION['forcePasswordReset'] = $userRow['force_password_reset'] ?? 0;
         $_SESSION['facilityMap'] = $facilitiesService->getUserFacilityMap($userRow['user_id']);
         $_SESSION['userLocale'] = $userRow['user_locale'] ?? null;
         $_SESSION['mappedProvinces'] = null;

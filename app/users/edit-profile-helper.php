@@ -89,7 +89,8 @@ try {
 
                 $newPassword = $userModel->passwordHash($_POST['password']);
                 $data['password'] = $newPassword;
-                $data['force_password_reset'] = $_SESSION['forcePasswordReset'] = 0;
+                $data['force_password_reset'] = 0;
+                unset($_SESSION['forcePasswordReset']);
             }
             $db->where('user_id', $userId);
         }

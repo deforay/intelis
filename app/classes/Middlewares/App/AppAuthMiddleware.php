@@ -43,7 +43,7 @@ class AppAuthMiddleware implements MiddlewareInterface
 
             // Redirect to the edit profile page if the user is logged in but needs to change their password
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.", true);
-            if (basename((string) $_SESSION['requestedURI']) !== "edit-profile.php") {
+            if (basename((string) $uri) !== "edit-profile.php") {
                 $redirect = new RedirectResponse('/users/edit-profile.php');
             }
         }
