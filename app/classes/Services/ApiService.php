@@ -129,9 +129,6 @@ final class ApiService
                 $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
             }
 
-            // Correctly set Content-Length based on the payload size in bytes
-            $options[RequestOptions::HEADERS]['Content-Length'] = mb_strlen($payload, '8bit');
-
             // Set the request body
             $options[RequestOptions::BODY] = $payload;
 
@@ -178,10 +175,8 @@ final class ApiService
 
             if ($gzip) {
                 $fileContents = gzencode(file_get_contents($jsonFilePath));
-                $fileSize = mb_strlen($fileContents, '8bit');
             } else {
                 $fileContents = fopen($jsonFilePath, 'r');
-                $fileSize = filesize($jsonFilePath);
             }
 
             // Prepare file content for multipart
@@ -194,13 +189,21 @@ final class ApiService
             ];
 
             // Add additional parameters to multipart data
-            if (!empty($params)) {
+            // Check if params are in ['name' => 'x','contents' => 'y'] format or associative array
+            if (isset($params[0]) && isset($params[0]['name']) && isset($params[0]['contents'])) {
+                // Params are in the ['name' => 'x','contents' => 'y'] format, merge them directly
                 $multipartData = array_merge($multipartData, $params);
+            } else {
+                // Params are in associative array format, handle them as key-value pairs
+                foreach ($params as $name => $value) {
+                    $multipartData[] = [
+                        'name' => $name,
+                        'contents' => $value
+                    ];
+                }
             }
-
             // Prepare headers
             $headers = [
-                'Content-Length' => $fileSize,
                 'X-Timestamp'    => time(),
                 'X-Request-ID'    => MiscUtility::generateULID(),
                 'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
