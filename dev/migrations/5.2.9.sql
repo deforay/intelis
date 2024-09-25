@@ -680,3 +680,9 @@ ALTER TABLE `audit_form_vl` ADD `result_sent_to_external_datetime` TEXT NULL DEF
 -- Jeyabanu 12-Sep-2024
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`)
 VALUES (NULL, 'common-reference', '/admin/monitoring/system-settings.php', NULL, 'System Settings', NULL, 'always');
+
+-- Amit 25-Sep-2024
+UPDATE form_vl set result_status = 5  where result in ('fail%', 'failed');
+UPDATE form_vl set result_status =7 where result is not null and result_status IN (6,10);
+UPDATE form_eid set result_status =7 where result is not null and result_status IN (6,10);
+UPDATE form_covid19 set result_status =7 where result is not null and result_status IN (6,10);
