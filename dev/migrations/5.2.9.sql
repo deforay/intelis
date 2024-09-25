@@ -686,3 +686,4 @@ UPDATE form_vl set result_status = 5  where result in ('fail%', 'failed');
 UPDATE form_vl set result_status =7 where result is not null and result_status IN (6,10);
 UPDATE form_eid set result_status =7 where result is not null and result_status IN (6,10);
 UPDATE form_covid19 set result_status =7 where result is not null and result_status IN (6,10);
+ALTER TABLE `form_cd4` DROP INDEX `sample_code`;

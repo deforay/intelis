@@ -6174,7 +6174,6 @@ ALTER TABLE `failed_result_retest_tracker`
 --
 ALTER TABLE `form_cd4`
   ADD PRIMARY KEY (`cd4_id`),
-  ADD UNIQUE KEY `sample_code` (`sample_code`),
   ADD UNIQUE KEY `remote_sample_code` (`remote_sample_code`),
   ADD UNIQUE KEY `sample_code_2` (`sample_code`,`lab_id`),
   ADD UNIQUE KEY `unique_id` (`unique_id`),
