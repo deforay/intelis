@@ -52,8 +52,6 @@ try {
     $updatedLabs = [];
     $uniqueIdsForSampleCodeGeneration = [];
 
-
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
@@ -65,8 +63,6 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ]);
         $appVersion = iterator_to_array($appVersion)['appVersion'];
-
-
 
         $input = Items::fromString($origJson, [
             'pointer' => '/data',

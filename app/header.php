@@ -186,9 +186,9 @@ if ($instrumentCount == 0 || $userCount == 0) {
 
 			<nav class="navbar" style="position:fixed;top:10;left:0;right:0;">
 				<!-- Sidebar toggle button-->
-				<a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
+				<button class="sidebar-toggle" data-toggle="offcanvas" onKeyDown="if(event.key === 'Enter' || event.key === ' ') { this.click(); }">
 					<span class="sr-only">Toggle navigation</span>
-				</a>
+				</button>
 
 				<ul class="nav navbar-nav">
 					<li>
@@ -201,7 +201,7 @@ if ($instrumentCount == 0 || $userCount == 0) {
 					<li>
 						<?php if ($trainingMode) { ?>
 							<marquee class="trainingMarquee" behavior="scroll" scrollamount="5">
-								<?= ($arr['training_mode_text']); ?>
+								<?= $arr['training_mode_text']; ?>
 							</marquee>
 						<?php } ?>
 					</li>
@@ -254,7 +254,7 @@ if ($instrumentCount == 0 || $userCount == 0) {
 				<?php if (isset($arr['logo']) && trim((string) $arr['logo']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) { ?>
 					<div class="user-panel">
 						<div>
-							<img src="/uploads/logo/<?= $arr['logo']; ?>" alt="Logo Image" style="max-width:120px;">
+							<img src="/uploads/logo/<?= $arr['logo']; ?>" alt="Logo" style="max-width:120px;">
 						</div>
 					</div>
 				<?php } ?>
@@ -366,7 +366,7 @@ if ($instrumentCount == 0 || $userCount == 0) {
 			<div style="text-align:center">
 				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
 			</div>
-			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0">
-				<?= _translate("Unable to load this page or resource"); ?>
+			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>
+			<?= _translate("Unable to load this page or resource"); ?>
 			</iframe>
 		</div>

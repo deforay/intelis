@@ -77,22 +77,18 @@ final class MiscUtility
             return unlink($dirname);
         }
 
-        $dir = dir($dirname);
-        while (false !== ($entry = $dir->read())) {
-            if ($entry == '.' || $entry == '..') {
-                continue;
-            }
-
-            $fullPath = $dirname . DIRECTORY_SEPARATOR . $entry;
-            if (!self::removeDirectory($fullPath)) {
-                $dir->close(); // Close the directory handle if a recursive delete fails.
-                return false;
+        foreach (scandir($dirname) as $entry) {
+            if ($entry !== '.' && $entry !== '..') {
+                $fullPath = $dirname . DIRECTORY_SEPARATOR . $entry;
+                if (!self::removeDirectory($fullPath)) {
+                    return false;
+                }
             }
         }
 
-        $dir->close();
         return rmdir($dirname);
     }
+
 
     //dump the contents of a variable to the error log in a readable format
     public static function dumpToErrorLog($object = null, $useVarDump = true): void
@@ -314,26 +310,20 @@ final class MiscUtility
 
     public static function arrayEmptyStringsToNull(?array $array, bool $convertEmptyJson = false): array
     {
-        if (empty($array)) {
+        if (!$array) {
             return $array;
         }
 
-        foreach ($array as $key => &$value) {
+        foreach ($array as &$value) {
             if (is_array($value)) {
-                if (empty($value)) {
-                    $value = null; // Convert empty arrays to null
-                } else {
-                    // Apply the function recursively if the value is an array
-                    $value = self::arrayEmptyStringsToNull($value, $convertEmptyJson);
-                }
-            } elseif ($value === '' || ($convertEmptyJson && is_string($value) && ($value === '{}' || $value === '[]'))) {
-                // Convert empty strings or empty JSON strings/arrays to null
+                $value = empty($value) ? null : self::arrayEmptyStringsToNull($value, $convertEmptyJson);
+            } elseif ($value === '' || ($convertEmptyJson && in_array($value, ['{}', '[]'], true))) {
                 $value = null;
             }
         }
-        unset($value); // Break the reference after the loop
         return $array;
     }
+
 
     // Generate a UUIDv4 with an optional extra string
     public static function generateUUID($attachExtraString = true): string
@@ -504,50 +494,26 @@ final class MiscUtility
         }
     }
 
-    public static function getMacAddress()
+    public static function getMacAddress(): ?string
     {
-        $macAddress = null;
+        $commands = (strncasecmp(PHP_OS, 'WIN', 3) == 0)
+            ? ['getmac']
+            : ['ifconfig -a', 'ip addr show'];
 
-        // Attempt to get the MAC address on Windows
-        if (strncasecmp(PHP_OS, 'WIN', 3) == 0) {
+        foreach ($commands as $command) {
             $output = [];
-            @exec('getmac', $output);
+            @exec($command, $output);
 
             foreach ($output as $line) {
                 if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
-                    $macAddress = $matches[0];
-                    break;
-                }
-            }
-        }
-        // Attempt to get the MAC address on Linux or Unix
-        else {
-            $output = [];
-            @exec('ifconfig -a', $output);
-
-            foreach ($output as $line) {
-                if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
-                    $macAddress = $matches[0];
-                    break;
-                }
-            }
-
-            if ($macAddress === null) {
-                $output = [];
-                @exec('ip addr show', $output);
-
-                foreach ($output as $line) {
-                    if (preg_match('/([0-9A-F]{2}[:-]){5}([0-9A-F]{2})/i', $line, $matches)) {
-                        $macAddress = $matches[0];
-                        break;
-                    }
+                    return $matches[0]; // Return the MAC address as soon as it's found
                 }
             }
         }
 
-        // If the MAC address was found, return it, otherwise return null
-        return $macAddress;
+        return null; // Return null if no MAC address was found
     }
+
     public static function getLockFile($fileName, $lockFileLocation = TEMP_PATH): string
     {
         if (file_exists($fileName) || strpos($fileName, DIRECTORY_SEPARATOR) !== false) {
