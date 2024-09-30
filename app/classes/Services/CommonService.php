@@ -319,9 +319,10 @@ final class CommonService
             foreach ($optionList as $optId => $optName) {
                 $selectedText = '';
                 if (!empty($selectedOptions)) {
-                    if (is_array($selectedOptions) && in_array($optId, $selectedOptions)) {
-                        $selectedText = "selected='selected'";
-                    } elseif ($optId == $selectedOptions) {
+                    if (
+                        ($optId == $selectedOptions) ||
+                        (is_array($selectedOptions) && in_array($optId, $selectedOptions))
+                    ) {
                         $selectedText = "selected='selected'";
                     }
                 }
