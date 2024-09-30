@@ -23,7 +23,6 @@ $tableName = "form_cd4";
 $primaryKey = "cd4_id";
 
 $vlsmFormId = (int) $general->getGlobalConfig('vl_form');
-$systemType = (string) $general->getSystemConfig('sc_user_type');
 
 
 

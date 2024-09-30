@@ -337,8 +337,8 @@ final class Covid19Service extends AbstractTestService
             return $this->db->rawQueryOne("SELECT * FROM covid19_reasons_for_testing WHERE `covid19_id` = ?", [$c19Id]);
         } */
         $result = $this->db->rawQueryOne("
-            SELECT * FROM covid19_reasons_for_testing AS crft 
-            INNER JOIN r_covid19_test_reasons AS rctr ON crft.reasons_id = rctr.test_reason_id 
+            SELECT * FROM covid19_reasons_for_testing AS crft
+            INNER JOIN r_covid19_test_reasons AS rctr ON crft.reasons_id = rctr.test_reason_id
             WHERE crft.`covid19_id` = ?
         ", [$c19Id]);
         $response = [];
@@ -425,7 +425,7 @@ final class Covid19Service extends AbstractTestService
             }
 
             $formAttributes = [
-                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
             $tesRequestData['form_attributes'] = json_encode($formAttributes);

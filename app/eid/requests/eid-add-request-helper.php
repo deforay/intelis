@@ -456,7 +456,7 @@ try {
 	}
 
 	$formAttributes = [
-		'applicationVersion' => $general->getSystemConfig('sc_version'),
+		'applicationVersion' => $general->getAppVersion(),
 		'ip_address' => $general->getClientIpAddress()
 	];
 

@@ -96,7 +96,7 @@ try {
     $instanceId = $general->getInstanceId();
     $formId = (int) $globalConfig['vl_form'];
 
-    $version = $vlsmSystemConfig['sc_version'];
+    $version =  $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
     foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
@@ -220,7 +220,7 @@ try {
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $roleUser['access_type'] ?? $user['access_type'];
-            $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
+            $params['instanceType'] = $general->getInstanceType();
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 

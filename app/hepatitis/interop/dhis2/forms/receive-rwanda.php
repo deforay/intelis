@@ -128,7 +128,7 @@ try {
     ];
 
 
-    $version = $general->getSystemConfig('sc_version');
+    $version = $general->getAppVersion();
 
     foreach ($trackedEntityInstances as $tracker) {
 

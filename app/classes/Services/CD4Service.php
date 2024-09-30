@@ -107,7 +107,7 @@ final class CD4Service extends AbstractTestService
             }
 
             $formAttributes = [
-                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
 

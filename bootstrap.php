@@ -34,23 +34,26 @@ chdir(__DIR__);
 defined('ROOT_PATH')
     || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
-const WEB_ROOT = ROOT_PATH . DIRECTORY_SEPARATOR . 'public';
-const CACHE_PATH = ROOT_PATH . DIRECTORY_SEPARATOR . 'cache';
-const APPLICATION_PATH = ROOT_PATH . DIRECTORY_SEPARATOR . 'app';
-const UPLOAD_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'uploads';
-const TEMP_PATH = WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary';
+const WEB_ROOT          = ROOT_PATH . DIRECTORY_SEPARATOR . 'public';
+const CACHE_PATH        = ROOT_PATH . DIRECTORY_SEPARATOR . 'cache';
+const APPLICATION_PATH  = ROOT_PATH . DIRECTORY_SEPARATOR . 'app';
+const UPLOAD_PATH       = WEB_ROOT  . DIRECTORY_SEPARATOR . 'uploads';
+const TEMP_PATH         = WEB_ROOT  . DIRECTORY_SEPARATOR . 'temporary';
 
-require_once APPLICATION_PATH . '/system/constants.php';
-require_once __DIR__ . '/app/system/version.php';
-
+// Set up autoloading
 require_once ROOT_PATH . '/vendor/autoload.php';
 
+// Load constants
+require_once __DIR__ . '/app/system/constants.php';
+
+// Load system version
+require_once __DIR__ . '/app/system/version.php';
 
 // Dependency Injection
-require_once APPLICATION_PATH . '/system/di.php';
+require_once __DIR__ . '/app/system/di.php';
 
 // Global functions
-require_once APPLICATION_PATH . '/system/functions.php';
+require_once __DIR__ . '/app/system/functions.php';
 
 // Just putting $db and SYSTEM_CONFIG here in case there are
 // some old scripts that are still depending on these.

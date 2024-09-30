@@ -20,8 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$systemType = $general->getSystemConfig('sc_user_type');
-
 $whereCondition = '';
 if ($general->isSTSInstance() && (!empty($_SESSION['facilityMap']))) {
     $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
@@ -29,10 +27,6 @@ if ($general->isSTSInstance() && (!empty($_SESSION['facilityMap']))) {
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = [];
-// foreach($tsResult as $tsRow){
-//     $sampleStatusArray = $tsRow['status_name'];
-// }
 
 $sampleStatusColors = [];
 

@@ -258,7 +258,7 @@ final class HepatitisService extends AbstractTestService
             }
 
             $formAttributes = [
-                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
             $tesRequestData['form_attributes'] = json_encode($formAttributes);

@@ -37,14 +37,17 @@ final class CommonService
         $this->fileCache = $fileCache;
     }
 
-    public static function getAppVersion($composerFilePath = ROOT_PATH . '/composer.json')
+    public function getAppVersion($composerFilePath = ROOT_PATH . '/composer.json')
     {
-        if (!file_exists($composerFilePath)) {
+        if (!file_exists(filename: $composerFilePath)) {
             return null;
         }
 
-        $composerJson = trim(file_get_contents($composerFilePath));
-        return JsonUtility::extractJsonData($composerJson, 'version');
+        $key = hash('sha256', 'appVersion-' . str_replace(DIRECTORY_SEPARATOR, "---", $composerFilePath));
+        return $this->fileCache->get($key, function () use ($composerFilePath) {
+            $composerJson = trim(file_get_contents($composerFilePath));
+            return JsonUtility::extractJsonData($composerJson, 'version');
+        });
     }
 
     public function getRemoteURL()
@@ -146,11 +149,11 @@ final class CommonService
 
         $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
         if ($condition) {
-            $query .= " WHERE " . $condition;
+            $query .= " WHERE $condition";
         }
 
         if (!empty($group)) {
-            $query .= " GROUP BY " . $group;
+            $query .= " GROUP BY $group";
         }
         $results = $this->db->rawQuery($query);
         if ($option) {

@@ -78,7 +78,6 @@ try {
     $transactionId = MiscUtility::generateULID();
 
     $globalConfig = $general->getGlobalConfig();
-    $vlsmSystemConfig = $general->getSystemConfig();
 
     $authToken = ApiService::getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
@@ -86,10 +85,10 @@ try {
     $responseData = [];
     $instanceId = $general->getInstanceId();
 
-    $version = $vlsmSystemConfig['sc_version'];
+    $version =  $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
+    foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');

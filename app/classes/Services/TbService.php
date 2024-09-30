@@ -224,7 +224,7 @@ final class TbService extends AbstractTestService
                 $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             }
             $formAttributes = [
-                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
             $tesRequestData['form_attributes'] = json_encode($formAttributes);

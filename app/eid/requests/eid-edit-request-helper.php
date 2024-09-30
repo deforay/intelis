@@ -487,7 +487,7 @@ try {
 	// $patientsService->savePatient($_POST, 'form_eid');
 
 	$formAttributes = [
-		'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+		'applicationVersion' => $this->commonService->getAppVersion(),
 		'ip_address' => $this->commonService->getClientIpAddress()
 	];
 	if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {

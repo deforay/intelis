@@ -20,7 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $sarr = $general->getSystemConfig();
 
-if (isset($sarr['sc_user_type']) && $general->isLISInstance() && !empty($sarr['sc_testing_lab_id'])) {
+if ($general->isLISInstance() && !empty($sarr['sc_testing_lab_id'])) {
 	$testingLabs = $facilitiesService->getTestingLabs('covid19', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
 } else {
 	$testingLabs = $facilitiesService->getTestingLabs('covid19');

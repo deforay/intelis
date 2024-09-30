@@ -21,12 +21,6 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $whereCondition = '';
-$configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
-
-$systemType = $general->getSystemConfig('sc_user_type');
-
-$whereCondition = '';
 
 if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
     $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
