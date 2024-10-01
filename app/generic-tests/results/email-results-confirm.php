@@ -7,7 +7,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -140,4 +140,4 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
       }
    </script>
    <?php
-   require_once APPLICATION_PATH . '/footer.php';
+   _includeFooter();

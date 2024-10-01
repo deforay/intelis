@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("Enter VL Result");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -505,4 +505,4 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

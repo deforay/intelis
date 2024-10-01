@@ -2,7 +2,7 @@
 
 $title = _translate("Geographical Divisions");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 use App\Registries\AppRegistry;
@@ -145,4 +145,4 @@ foreach ($geoParentInfo as $type) {
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

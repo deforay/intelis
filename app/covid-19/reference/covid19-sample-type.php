@@ -1,11 +1,13 @@
 <?php
+
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Covid-19 Sample Type");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -43,10 +45,10 @@ require_once APPLICATION_PATH . '/header.php';
 					</span>
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_covid19_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_covid19_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-							if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
-								<a href="add-covid19-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Sample Type"); ?></a>
+						if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) { ?>
+							<a href="add-covid19-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Covid-19 Sample Type"); ?></a>
 						<?php } ?>
 						<!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
 					</div>
@@ -142,4 +144,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

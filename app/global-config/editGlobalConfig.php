@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 $title = _translate("Edit General Configuration");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -1689,4 +1689,4 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		}
 	}
 </script>
-<?php require_once APPLICATION_PATH . '/footer.php'; ?>
+<?php _includeFooter(); ?>

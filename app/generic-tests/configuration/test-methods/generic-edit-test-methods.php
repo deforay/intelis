@@ -5,7 +5,7 @@ use App\Registries\AppRegistry;
 
 $title = _translate("Test Methods");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -117,4 +117,4 @@ $testMethodInfo = $db->query($tQuery);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

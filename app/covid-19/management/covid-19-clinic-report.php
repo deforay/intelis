@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Covid-19 | Clinics Report");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -1294,4 +1294,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

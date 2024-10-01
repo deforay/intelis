@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Print VL Results");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -1363,4 +1363,4 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

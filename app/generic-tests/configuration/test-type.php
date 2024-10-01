@@ -10,7 +10,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = "Test Type Configuration";
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -124,4 +124,4 @@ require_once APPLICATION_PATH . '/header.php';
 	});
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

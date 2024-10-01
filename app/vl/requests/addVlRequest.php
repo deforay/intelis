@@ -1,19 +1,18 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = "VL | Add New Request";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $labFieldDisabled = '';
 
@@ -176,4 +175,6 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
             });
     }
 </script>
-<?php include APPLICATION_PATH . '/footer.php';
+<?php
+
+_includeFooter();

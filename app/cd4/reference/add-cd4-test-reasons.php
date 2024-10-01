@@ -2,7 +2,7 @@
 
 $title = "CD4 Test Reasons";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 $testQuery = "SELECT * from r_cd4_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
@@ -124,4 +124,4 @@ foreach ($testInfo as $test) {
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

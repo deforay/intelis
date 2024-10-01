@@ -5,7 +5,7 @@ use App\Services\FacilitiesService;
 
 $title = _translate("Covid-19 | Sample Rejection Report");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
@@ -160,4 +160,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

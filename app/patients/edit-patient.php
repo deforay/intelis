@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 $title = _translate("Patients");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
@@ -363,4 +363,4 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

@@ -5,7 +5,7 @@ use App\Services\CommonService;
 
 $title = _translate("Lab Storage");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -130,4 +130,4 @@ $general = ContainerRegistry::get(CommonService::class);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

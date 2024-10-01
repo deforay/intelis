@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("Audit Trail");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -412,4 +412,4 @@ $resultColumn = getColumns($db, $tableName);
 	});
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

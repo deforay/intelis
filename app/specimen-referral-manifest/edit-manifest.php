@@ -15,7 +15,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
 $title = "Edit Specimen Referral Manifest";
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -529,4 +529,4 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

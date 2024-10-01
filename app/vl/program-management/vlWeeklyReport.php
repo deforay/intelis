@@ -1,6 +1,6 @@
 <?php
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $facilityQuery = "SELECT * FROM facility_details where facility_type = 2 AND status='active' Order By facility_name";
 
@@ -602,4 +602,4 @@ $facilityResult = $db->rawQuery($facilityQuery);
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

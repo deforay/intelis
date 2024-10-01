@@ -9,7 +9,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = "Implementation Partners";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -125,4 +125,4 @@ $partnerInfo = $db->rawQuery($query, array($id));
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

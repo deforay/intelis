@@ -11,7 +11,7 @@ use App\Services\CommonService;
 
 $title = "Enter EID Result";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -291,4 +291,4 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

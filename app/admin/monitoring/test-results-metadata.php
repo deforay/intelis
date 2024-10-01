@@ -9,7 +9,7 @@ use App\Services\GeoLocationsService;
 
 
 $title = _translate("Test Results Metadata");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -370,4 +370,4 @@ $activeModules = SystemService::getActiveModules();
     }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 
 $title = "Bulk Import Test Requests";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -105,4 +105,4 @@ $fileName = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'co
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

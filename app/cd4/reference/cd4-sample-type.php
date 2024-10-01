@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
@@ -7,7 +8,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("CD4 Sample Type");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -28,10 +29,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_cd4_sample_types', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_cd4_sample_types', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-							  if (_isAllowed("cd4-sample-type.php") && $general->isLISInstance() === false) { ?>
-								<a href="add-cd4-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add CD4 Sample Type"); ?></a>
+						if (_isAllowed("cd4-sample-type.php") && $general->isLISInstance() === false) { ?>
+							<a href="add-cd4-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add CD4 Sample Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -126,4 +127,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

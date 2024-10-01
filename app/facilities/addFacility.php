@@ -8,7 +8,7 @@ use App\Services\UsersService;
 
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -1077,4 +1077,4 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

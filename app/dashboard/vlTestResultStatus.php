@@ -7,7 +7,7 @@ use App\Services\DatabaseService;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -333,5 +333,5 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();
 ?>

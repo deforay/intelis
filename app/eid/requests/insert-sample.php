@@ -3,7 +3,6 @@
 use App\Services\EidService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
@@ -13,11 +12,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 
+$response = "0";
 try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $eidService->insertSample($_POST);
+    $response = $eidService->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $exception) {
@@ -29,5 +29,6 @@ try {
         'line' => $exception->getLine(), // Line number of the error
         'stacktrace' => $exception->getTraceAsString()
     ]);
-    echo "0";
 }
+
+echo $response;

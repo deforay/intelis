@@ -9,7 +9,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = _translate("Recommended Corrective Action");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $testType = 'vl';
 
@@ -136,4 +136,4 @@ $correctiveInfo = $db->rawQuery($query, [$id]);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

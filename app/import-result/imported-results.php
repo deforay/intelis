@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
 $userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
@@ -743,4 +743,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

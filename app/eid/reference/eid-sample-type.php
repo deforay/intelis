@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -6,7 +7,7 @@ use App\Registries\ContainerRegistry;
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("EID Sample Type");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -26,10 +27,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_eid_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_eid_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-							if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
-								<a href="add-eid-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add EID Sample Type"); ?></a>
+						if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
+							<a href="add-eid-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add EID Sample Type"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -124,4 +125,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

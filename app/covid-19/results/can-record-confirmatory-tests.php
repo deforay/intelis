@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 
 $title = "Enter Covid-19 Result";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -393,4 +393,4 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

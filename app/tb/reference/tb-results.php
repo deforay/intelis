@@ -1,11 +1,13 @@
 <?php
+
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("TB Results");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -126,4 +128,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

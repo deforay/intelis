@@ -1,7 +1,7 @@
 <?php
 $title = _translate("Covid-19 Results");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -116,4 +116,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

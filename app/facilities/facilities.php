@@ -8,7 +8,7 @@ use App\Services\SystemService;
 
 $title = _translate("Facilities");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 
@@ -340,4 +340,4 @@ $state = $geolocationService->getProvinces("yes");
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

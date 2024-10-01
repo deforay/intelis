@@ -1,11 +1,13 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("VL Results");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -25,10 +27,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_results', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_results', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-							  if (_isAllowed("vl-art-code-details.php")) { ?>
-								<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Results"); ?></a>
+						if (_isAllowed("vl-art-code-details.php")) { ?>
+							<a href="add-vl-results.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Results"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -68,7 +70,7 @@ require_once APPLICATION_PATH . '/header.php';
 	$(document).ready(function() {
 		$.blockUI();
 
-	
+
 		oTable = $('#sampTypDataTable').DataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
@@ -79,8 +81,7 @@ require_once APPLICATION_PATH . '/header.php';
 			"bScrollCollapse": true,
 			"bStateSave": true,
 			"bRetrieve": true,
-			"aoColumns": [
-				{
+			"aoColumns": [{
 					"sClass": "center dt-control",
 					"bSortable": false
 				},
@@ -118,18 +119,17 @@ require_once APPLICATION_PATH . '/header.php';
 		//oTable.fnSetColumnVis(1, false);
 
 		// Add event listener for opening and closing details
-		oTable.on('click', 'td.dt-control', function (e) {
-    let tr = e.target.closest('tr');
-    let row = oTable.row(tr);
- 
-    if (row.child.isShown()) {
-        // This row is already open - close it
-        row.child.hide();
-    }
-    else {
-        // Open this row
-        row.child(format(row.data())).show();
-    }
+		oTable.on('click', 'td.dt-control', function(e) {
+			let tr = e.target.closest('tr');
+			let row = oTable.row(tr);
+
+			if (row.child.isShown()) {
+				// This row is already open - close it
+				row.child.hide();
+			} else {
+				// Open this row
+				row.child(format(row.data())).show();
+			}
 
 		});
 		$.unblockUI();
@@ -158,23 +158,22 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function format(d) {
 		//alert(d[2]);
-			if(d[2] != null){
+		if (d[2] != null) {
 			var ins = d[2].split(",");
 
-		// `d` is the original data object for the row
-		return (
-			'<dl>' +
-			'<dt>Instruments :</dt>' +
-			'<dd><ul>' +
-			ins.map(i => '<li>'+i+'</li>').join('') +
-			'</ul></dd>' +
-			'</dl>'
-		);
+			// `d` is the original data object for the row
+			return (
+				'<dl>' +
+				'<dt>Instruments :</dt>' +
+				'<dd><ul>' +
+				ins.map(i => '<li>' + i + '</li>').join('') +
+				'</ul></dd>' +
+				'</dl>'
+			);
+		} else {
+			return false;
+		}
 	}
-	else{
-		return false;
-	}
-}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

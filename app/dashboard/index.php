@@ -2,7 +2,7 @@
 
 $title = _translate("Dashboard");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 ?>
 <style>
@@ -1070,4 +1070,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

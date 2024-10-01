@@ -7,7 +7,7 @@ use App\Services\CommonService;
 
 $title = _translate("Hepatitis | View All Requests");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

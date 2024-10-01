@@ -16,7 +16,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $title = _translate("Export Data");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -642,4 +642,4 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

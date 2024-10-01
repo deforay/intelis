@@ -10,7 +10,7 @@ use App\Services\CommonService;
 
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $labFieldDisabled = '';
 
@@ -1829,4 +1829,4 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		}
 	}
 </script>
-<?php require_once APPLICATION_PATH . '/footer.php';
+<?php _includeFooter();

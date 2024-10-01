@@ -1,7 +1,7 @@
 <?php
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 $rejQuery = "SELECT * from r_covid19_symptoms WHERE symptom_status ='active'";
 $rejInfo = $db->query($rejQuery);
 ?>
@@ -122,4 +122,4 @@ $rejInfo = $db->query($rejQuery);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

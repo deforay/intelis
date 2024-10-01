@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("View All Requests");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -644,4 +644,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

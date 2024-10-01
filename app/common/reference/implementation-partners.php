@@ -1,7 +1,7 @@
 <?php
 $title = _translate("Implementation Partners");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -114,4 +114,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

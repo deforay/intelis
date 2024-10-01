@@ -10,7 +10,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = _translate("Log File Viewer") . " - " . _translate("Admin");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 ?>
 <link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
@@ -261,4 +261,4 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

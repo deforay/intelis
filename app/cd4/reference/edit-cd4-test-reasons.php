@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = "CD4 Test Reasons";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -140,4 +140,4 @@ $tstInfo = $db->query($tstQuery);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

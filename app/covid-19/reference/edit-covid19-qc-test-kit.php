@@ -7,7 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -210,4 +210,4 @@ $subResult = json_decode((string) $resultInfo['labels_and_expected_results'], tr
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

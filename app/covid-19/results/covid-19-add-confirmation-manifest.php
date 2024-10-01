@@ -8,7 +8,7 @@ use App\Utilities\MiscUtility;
 
 $title = _translate("Covid-19 | Confirmation Manifest");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 $module = 'C19';
@@ -253,4 +253,4 @@ $packageNo = strtoupper($module) . date('ymd') .  MiscUtility::generateRandomStr
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

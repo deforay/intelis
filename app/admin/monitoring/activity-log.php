@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("User Activity Log");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -228,4 +228,4 @@ foreach ($actions as $list) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

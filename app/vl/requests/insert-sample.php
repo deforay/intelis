@@ -16,12 +16,12 @@ $vlService = ContainerRegistry::get(VlService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
-
+$response = "0";
 try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $vlService->insertSample($_POST);
+    $response = $vlService->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $e) {
@@ -37,5 +37,6 @@ try {
         'line' => $e->getLine(), // Line number of the error
         'stacktrace' => $e->getTraceAsString()
     ]);
-    echo "0";
 }
+
+echo $response;

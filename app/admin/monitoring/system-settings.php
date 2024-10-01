@@ -8,7 +8,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("System Settings");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -283,4 +283,4 @@ $apiTrackResultCount = count($apiTrackResult);
 
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

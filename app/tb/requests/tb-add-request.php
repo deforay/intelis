@@ -9,7 +9,7 @@ use App\Services\UsersService;
 
 $title = "TB | Add New Request";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -212,4 +212,4 @@ require_once($fileArray[$arr['vl_form']]);
 </script>
 <?php
 
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

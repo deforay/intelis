@@ -9,7 +9,7 @@ use App\Services\GeoLocationsService;
 
 
 $title = _translate("Sources of Requests");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -499,4 +499,4 @@ foreach ($sources as $list) {
     }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

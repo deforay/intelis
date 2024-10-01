@@ -15,7 +15,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $title = _translate("Edit User");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');

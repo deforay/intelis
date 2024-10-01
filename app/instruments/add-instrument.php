@@ -9,7 +9,7 @@ use App\Services\FacilitiesService;
 use App\Services\TestsService;
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 $usersService = ContainerRegistry::get(UsersService::class);
 /** @var DatabaseService $db */
@@ -808,4 +808,4 @@ sort($fileList);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

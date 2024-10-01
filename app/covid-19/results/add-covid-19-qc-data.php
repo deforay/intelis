@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\UsersService;
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -357,4 +357,4 @@ foreach ($pdResult as $provinceName) {
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

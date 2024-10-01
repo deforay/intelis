@@ -1,11 +1,13 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Viral Load Sample Rejection Reasons");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -26,10 +28,10 @@ require_once APPLICATION_PATH . '/header.php';
         <div class="box">
           <div class="box-header with-border">
             <?php if ($general->isSTSInstance()) { ?>
-                      <a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_vl_sample_rejection_reasons', base64_decode((string) $keyFromGlobalConfig));?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+              <a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_vl_sample_rejection_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
             <?php }
-                  if (_isAllowed("/vl/reference/vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
-                      <a href="/vl/reference/add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
+            if (_isAllowed("/vl/reference/vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
+              <a href="/vl/reference/add-vl-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Rejection Reasons"); ?></a>
             <?php } ?>
             <!--<button class="btn btn-primary pull-right" style="margin-right: 1%;" onclick="$('#showhide').fadeToggle();return false;"><span>Manage Columns</span></button>-->
           </div>
@@ -130,4 +132,4 @@ require_once APPLICATION_PATH . '/header.php';
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

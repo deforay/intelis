@@ -8,7 +8,7 @@ use App\Services\InstrumentsService;
 
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -240,4 +240,4 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

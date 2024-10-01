@@ -13,7 +13,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $type = $_GET['t'];
 $title = _translate("Import") . " " . strtoupper((string) $type) . " " . _translate("test results from file");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -220,4 +220,4 @@ $lastResult = $db->rawQueryOne($lastQuery);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

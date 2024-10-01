@@ -7,7 +7,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("COVID-19 | Add New Request");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -236,4 +236,4 @@ require_once($fileArray[$arr['vl_form']]);
 </script>
 <?php
 
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

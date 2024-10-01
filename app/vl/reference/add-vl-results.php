@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 
 
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -243,4 +243,4 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

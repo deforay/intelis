@@ -9,7 +9,7 @@ use App\Services\GeoLocationsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -192,4 +192,4 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

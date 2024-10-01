@@ -1,4 +1,5 @@
 <?php
+
 use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -9,7 +10,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
 $title = _translate("Test Failure Reasons");
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -29,10 +30,10 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-								<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_failure_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
-						<?php } 
-							if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php")) { ?>
-								<a href="/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Failure Reason"); ?></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_failure_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+						<?php }
+						if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php")) { ?>
+							<a href="/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Failure Reason"); ?></a>
 						<?php } ?>
 					</div>
 					<!-- /.box-header -->
@@ -140,4 +141,4 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

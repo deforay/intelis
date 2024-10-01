@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("EID | Clinics Report");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 
@@ -1298,4 +1298,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

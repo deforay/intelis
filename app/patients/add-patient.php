@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Patients");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
@@ -354,4 +354,4 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

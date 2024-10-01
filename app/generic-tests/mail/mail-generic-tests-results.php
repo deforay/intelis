@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 
 $title = "Email generic-tests Test Results";
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -541,4 +541,4 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

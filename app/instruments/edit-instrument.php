@@ -9,7 +9,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestsService;
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -919,4 +919,4 @@ $testTypeList = SystemService::getActiveModules(true);
 </script>
 
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

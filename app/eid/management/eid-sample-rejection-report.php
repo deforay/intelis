@@ -5,7 +5,7 @@ use App\Services\FacilitiesService;
 
 $title = _translate("EID | Sample Rejection Report");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 
@@ -158,4 +158,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

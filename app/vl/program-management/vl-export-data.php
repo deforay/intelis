@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Export Data");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -949,4 +949,4 @@ if ($formId == COUNTRY\CAMEROON) {
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

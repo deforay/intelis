@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("TB | Sample Status Report");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -299,4 +299,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

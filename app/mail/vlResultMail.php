@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("Email VL Test Results");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -593,4 +593,4 @@ $batchResult = $db->rawQuery($batchQuery);
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();

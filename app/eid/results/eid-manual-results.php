@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("Enter EID Result");
 
-require_once APPLICATION_PATH . '/header.php';
+_includeHeader();
 
 
 /** @var DatabaseService $db */
@@ -444,4 +444,4 @@ $lastUrl2 = '';
 	}
 </script>
 <?php
-require_once APPLICATION_PATH . '/footer.php';
+_includeFooter();
