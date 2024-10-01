@@ -174,6 +174,7 @@ if (!empty($id)) {
             <br>
             <hr>';
         }
+
         if (isset($bResult['label_order']) && trim((string) $bResult['label_order']) != '') {
             $jsonToArray = json_decode((string) $bResult['label_order'], true);
             $sampleCounter = 1;
@@ -187,6 +188,7 @@ if (!empty($id)) {
                 $sampleCounter = $alphaNumeric[0];
             }
             $a=1;
+           
             for ($j = 0; $j < count($jsonToArray); $j++) {
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $xplodJsonToArray = explode("_", (string) $jsonToArray[$alphaNumeric[$j]]);
@@ -309,7 +311,7 @@ if (!empty($id)) {
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
-
+                      //  echo '<pre>'; print_r($sampleResult); die;
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
@@ -434,8 +436,8 @@ if (!empty($id)) {
                             $resultColumn,
                             $patientIdColumn
                             FROM $table
-                            WHERE sample_batch_id=$id AND $resultColumn IS NULL";
-                        //    echo $sQuery; die;
+                            WHERE sample_batch_id=$id  AND $resultColumn IS NULL";
+                           
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
@@ -446,7 +448,7 @@ if (!empty($id)) {
                 }
                 $sampleCounter = $alphaNumeric[0];
             }
-            $j = 0;
+            $b = 0;
             foreach ($result as $sample) {
 
                 $lotDetails = '';
@@ -487,20 +489,20 @@ if (!empty($id)) {
                     $tbl .= 'Test Result : ' . $sample[$resultColumn] . '<br>';
                 }
                 $tbl .= '</td>';
-               
+             
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
-                    $sampleCounter = $alphaNumeric[($j + 1)];
-                    
+                    $sampleCounter = $alphaNumeric[($b + 1)];
+                    $b++;
                 } else {
                     $sampleCounter++;
                 }
                 if ($sampleCounter % 2 == 0) {
                     $tbl .= '</tr><tr>'; // Close the current row and start a new row
                 }
-                $j++;
             }
             $tbl .= '</tr></table>';
         }
+       // $tbl .= '';
 
         $pdf->writeHTML($tbl);
         $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(12) . '.pdf';

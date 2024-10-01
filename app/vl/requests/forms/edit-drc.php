@@ -15,6 +15,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var StorageService $storageService */
 $storageService = ContainerRegistry::get(StorageService::class);
 
+$arr = $general->getGlobalConfig();
 
 //check remote user
 if ($general->isSTSInstance()) {
@@ -66,6 +67,7 @@ $formAttributes = json_decode($vlQueryInfo['form_attributes']);
 
 $storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
+
 
 ?>
 
