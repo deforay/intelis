@@ -23,8 +23,6 @@ $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
 
 $vlsmFormId = (int) $general->getGlobalConfig('vl_form');
-$systemType = (string) $general->getSystemConfig('sc_user_type');
-
 
 
 $sampleCode = 'sample_code';

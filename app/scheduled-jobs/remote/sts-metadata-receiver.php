@@ -50,8 +50,6 @@ $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
 $systemConfig = SYSTEM_CONFIG;
 
-$systemType = $general->getSystemConfig('sc_user_type');
-
 // only for LIS instances
 if ($general->isLISInstance() === false) {
     exit(0);

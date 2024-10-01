@@ -35,7 +35,6 @@ $vlTestReasonTable = "r_generic_test_reasons";
 $fDetails = "facility_details";
 $vl_result_category = null;
 
-$systemType = $general->getSystemConfig('sc_user_type');
 try {
 
     $mandatoryFields = [

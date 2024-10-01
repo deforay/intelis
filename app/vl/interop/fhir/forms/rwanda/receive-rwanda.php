@@ -91,7 +91,7 @@ try {
     // die;
 
     $transactionId = MiscUtility::generateULID();
-    $version = $general->getSystemConfig('sc_version');
+    $version = $general->getAppVersion();
 
     foreach ($entries as $entry) {
 

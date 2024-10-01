@@ -32,7 +32,6 @@ $fDetails = "facility_details";
 $vl_result_category = null;
 $finalResult = null;
 
-$systemType = $general->getSystemConfig('sc_user_type');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object
@@ -376,7 +375,7 @@ try {
         $vlData['is_encrypted'] = 'yes';
     }
     $formAttributes = [
-        'applicationVersion' => $general->getSystemConfig('sc_version'),
+        'applicationVersion' => $general->getAppVersion(),
         'ip_address' => $general->getClientIpAddress()
     ];
 

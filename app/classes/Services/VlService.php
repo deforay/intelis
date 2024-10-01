@@ -143,13 +143,13 @@ final class VlService extends AbstractTestService
     public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';
-        $params['vlResult'] = $params['vlResult'] ?? $params['result'] ?? null;
-        $params['vlLog'] = $params['vlLog'] ?? $params['result_value_log'] ?? null;
+        $params['vlResult'] ??= $params['result'] ?? null;
+        $params['vlLog'] ??= $params['result_value_log'] ?? null;
         $finalResult = $params['vlResult'];
         $absDecimalVal = $absVal = $logVal = $txtVal = null;
         $hivDetection = $params['hivDetection'] ?? null;
         $resultStatus = $params['result_status'] ?? null;
-        $params['isSampleRejected'] = $params['isSampleRejected'] ?? null;
+        $params['isSampleRejected'] ??= null;
 
         if ($resultStatus == SAMPLE_STATUS\REJECTED || $params['isSampleRejected'] == 'yes') {
             $isRejected = 'yes';
@@ -455,7 +455,7 @@ final class VlService extends AbstractTestService
             }
 
             $formAttributes = [
-                'applicationVersion' => $this->commonService->getSystemConfig('sc_version'),
+                'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
             $tesRequestData['form_attributes'] = json_encode($formAttributes);

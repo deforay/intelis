@@ -19,7 +19,10 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
-$currentMajorVersion = CommonService::getAppVersion();
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$currentMajorVersion = $general->getAppVersion();
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
 if (version_compare($currentMajorVersion, '4.4.3', '<')) {

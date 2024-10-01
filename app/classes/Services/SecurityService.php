@@ -19,29 +19,33 @@ final class SecurityService
     }
     public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
     {
-        if ($request->getMethod() === 'POST' && isset($_SESSION['csrf_token'])) {
-            $csrfToken = null;
-
-            if (CommonService::isAjaxRequest($request)) {
-                $csrfToken = $request->getHeaderLine('X-CSRF-Token') ?? null;
-                $invalidate = false;
-            } else {
-                $csrfToken = $request->getParsedBody()['csrf_token'] ?? null;
-            }
-
-            if (isset($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) { // 1 hour expiration
-                throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
-            }
-            if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
-                throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
-            }
-            // Invalidate the CSRF token if requested
-            if ($invalidate) {
-                // Remove or regenerate the CSRF token after successful validation
-                self::invalidateCSRF();
-                self::generateCSRF();
-            }
+        if ($request->getMethod() !== 'POST' || !isset($_SESSION['csrf_token'])) {
+            return;
         }
+
+        $csrfToken = CommonService::isAjaxRequest($request)
+            ? $request->getHeaderLine('X-CSRF-Token')
+            : $request->getParsedBody()['csrf_token'] ?? null;
+
+        if (isset($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) { // 1 hour expiration
+            self::invalidateAndGenerateCSRF();
+            throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
+        }
+
+        if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
+            self::invalidateAndGenerateCSRF();
+            throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
+        }
+
+        if ($invalidate) {
+            self::invalidateAndGenerateCSRF();
+        }
+    }
+
+    private static function invalidateAndGenerateCSRF(): void
+    {
+        self::invalidateCSRF();
+        self::generateCSRF();
     }
     private static function generateCSRF()
     {

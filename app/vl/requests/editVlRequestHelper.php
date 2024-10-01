@@ -324,7 +324,7 @@ try {
      $vlData['reason_for_result_changes'] = $reasonForChanges ?? null;
 
      $formAttributes = [
-          'applicationVersion' => $general->getSystemConfig('sc_version'),
+          'applicationVersion' => $general->getAppVersion(),
           'ip_address' => $general->getClientIpAddress()
      ];
 

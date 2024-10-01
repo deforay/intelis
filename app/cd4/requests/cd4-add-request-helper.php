@@ -30,7 +30,6 @@ $fDetails = "facility_details";
 
 $finalResult = null;
 
-$systemType = $general->getSystemConfig('sc_user_type');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 // Sanitized values from $request object

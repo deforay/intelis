@@ -103,7 +103,7 @@ try {
 
         $_SESSION['alertMsg'] = _translate("User saved successfully!");
     }
-    $systemType = $general->getSystemConfig('sc_user_type');
+
     if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
         $apiData = $_POST;
         $apiData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS

@@ -1,17 +1,16 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$systemType = $general->getSystemConfig('sc_user_type');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

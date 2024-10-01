@@ -52,8 +52,6 @@ try {
     $updatedLabs = [];
     $uniqueIdsForSampleCodeGeneration = [];
 
-
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
@@ -65,8 +63,6 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ]);
         $appVersion = iterator_to_array($appVersion)['appVersion'];
-
-
 
         $input = Items::fromString($origJson, [
             'pointer' => '/data',
@@ -99,10 +95,10 @@ try {
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $version = $general->getSystemConfig('sc_version');
+    $version = $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
-    foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
+    foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
         $userAttributes[$header] = $apiService->getHeader($request, $header);
     }
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
@@ -234,7 +230,7 @@ try {
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
-            $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
+            $params['instanceType'] = $general->getInstanceType();
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 

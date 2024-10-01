@@ -1,3 +1,7 @@
+.main-header .sidebar-toggle {
+    border: none;
+}
+
 .mandatory,
 .text-danger {
     color: rgb(245, 92, 92);

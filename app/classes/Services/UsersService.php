@@ -129,9 +129,7 @@ final class UsersService
         // Fetch each row from the result set
         foreach ($results as $row) {
             $privileges = json_decode((string) $row['shared_privileges'], true);
-            if (empty($privileges)) {
-                continue;
-            } else {
+            if (!empty($privileges)) {
                 foreach ($privileges as $privilege) {
                     $sharedPrivileges[$privilege] = $row['privilege_name'];
                 }
@@ -241,11 +239,7 @@ final class UsersService
         // if the instance is STS, set access_type to collection-site
         // else set access_type to testing-lab
         if (empty($user['access_type']) || $user['access_type'] == '') {
-            if ($this->commonService->isSTSInstance()) {
-                $user['access_type'] = 'collection-site';
-            } else {
-                $user['access_type'] = 'testing-lab';
-            }
+            $user['access_type'] = ($this->commonService->isSTSInstance()) ? 'collection-site' : 'testing-lab';
         }
         return $user;
     }
@@ -439,7 +433,7 @@ final class UsersService
         $successAttempts = $loginAttempts['successAttempts'] ?? 0;
 
         // Check if the user has failed to login continuously
-        return ($failedAttempts >= 3 && $successAttempts == 0);
+        return $failedAttempts >= 3 && $successAttempts == 0;
     }
 
     public function savePreferences(int $userId, string $page, array $newPreferences): bool

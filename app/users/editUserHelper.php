@@ -137,7 +137,7 @@ try {
         }
         $_SESSION['alertMsg'] = _translate("User updated successfully");
 
-        $systemType = $general->getSystemConfig('sc_user_type');
+
         if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
             $apiData = $_POST;
             $apiData['loginId'] = null;

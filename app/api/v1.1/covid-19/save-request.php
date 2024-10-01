@@ -51,7 +51,6 @@ try {
 
     $uniqueIdsForSampleCodeGeneration = [];
 
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
@@ -98,7 +97,7 @@ try {
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     /* Update form attributes */
-    $version = $general->getSystemConfig('sc_version');
+    $version = $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
     foreach (array('deviceId', 'osVersion', 'ipAddress') as $header) {
@@ -202,11 +201,6 @@ try {
 
             $sQueryWhere = [];
 
-            // if (!empty($data['uniqueId'])) {
-            //     $uniqueId = $data['uniqueId'];
-            //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            // }
-
             if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
@@ -252,7 +246,7 @@ try {
             $params['sampleCollectionDate'] = $sampleCollectionDate;
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
-            $params['instanceType'] = $vlsmSystemConfig['sc_user_type'];
+            $params['instanceType'] = $general->getInstanceType();
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
 
@@ -351,11 +345,11 @@ try {
         $allChange = [];
         if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
             foreach ($data['reasonForResultChanges'] as $row) {
-                $allChange[] = array(
+                $allChange[] = [
                     'usr' => $row['changed_by'],
                     'msg' => $row['reason'],
                     'dtime' => $row['change_datetime']
-                );
+                ];
             }
         }
         if (!empty($allChange)) {
@@ -375,7 +369,6 @@ try {
             'vlsm_instance_id' => $data['instanceId'],
             'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
             'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-            'external_sample_code' => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
             'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
             'investigator_name' => !empty($data['investigatorName']) ? $data['investigatorName'] : null,
             'investigator_phone' => !empty($data['investigatorPhone']) ? $data['investigatorPhone'] : null,
@@ -487,7 +480,7 @@ try {
             $db->where('covid19_id', $data['covid19SampleId']);
             $db->delete("covid19_patient_symptoms");
             $syptomDetections = $data['covid19PatientSymptomsArray'] ?? $data['symptom'];
-            if ((!empty($syptomDetections))) {
+            if (!empty($syptomDetections)) {
                 for ($i = 0; $i < count($syptomDetections); $i++) {
 
                     $data['symptomId'][$i] = $data['symptomId'][$i] ?? $syptomDetections[$i]['id'];
@@ -504,7 +497,6 @@ try {
                         $symptomData["symptom_details"] = (!empty($data['symptomDetails'][$data['symptomId'][$i]])) ? json_encode($data['symptomDetails'][$data['symptomId'][$i]]) : null;
                     }
                     $db->insert("covid19_patient_symptoms", $symptomData);
-                    //LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                 }
             }
         }
@@ -527,7 +519,6 @@ try {
             $reasonData["reasons_detected"] = "yes";
             $reasonData["reason_details"] = json_encode($data['reasonDetails']);
             $db->insert("covid19_reasons_for_testing", $reasonData);
-            //LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
         }
 
         $db->where('covid19_id', $data['covid19SampleId']);
@@ -539,7 +530,6 @@ try {
                 $comorbidityData["comorbidity_id"] = $data['comorbidityId'][$i];
                 $comorbidityData["comorbidity_detected"] = $data['comorbidityDetected'][$i];
                 $db->insert("covid19_patient_comorbidities", $comorbidityData);
-                //LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
             }
         }
         if (isset($data['covid19SampleId']) && $data['covid19SampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
