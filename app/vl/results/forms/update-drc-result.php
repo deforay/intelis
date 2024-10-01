@@ -1,9 +1,9 @@
 <?php
 
 use App\Services\CommonService;
+use App\Services\StorageService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\StorageService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,7 +13,6 @@ $storageService = ContainerRegistry::get(StorageService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 
@@ -826,6 +825,3 @@ $storageInfo = $storageService->getLabStorage();
 		});
 	}
 </script>
-<?php
-//require_once(APPLICATION_PATH.'/footer.php');
-?>

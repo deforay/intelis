@@ -11,16 +11,6 @@ use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
 
-function _includeHeader()
-{
-    require_once APPLICATION_PATH . '/header.php';
-}
-
-function _includeFooter()
-{
-    require_once APPLICATION_PATH . '/footer.php';
-}
-
 function _translate(?string $text, bool $escapeText = false)
 {
     if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] == 'en_US') {
@@ -79,11 +69,8 @@ function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $m
 {
     if ($maxSize === null) {
         $uploadMaxSize = ini_get('upload_max_filesize');
-        if ($uploadMaxSize) {
-            $maxSize = MiscUtility::convertToBytes($uploadMaxSize);
-        } else {
-            $maxSize = MiscUtility::convertToBytes('500M');
-        }
+        $uploadMaxSize = $uploadMaxSize ? trim($uploadMaxSize) : '500M';
+        $maxSize = MiscUtility::convertToBytes($uploadMaxSize);
     }
 
     $sanitizedFiles = [];
