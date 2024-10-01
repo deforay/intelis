@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = _translate("Test Failure Reason");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -123,4 +123,4 @@ $testFailureReasonInfo = $db->query($tQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

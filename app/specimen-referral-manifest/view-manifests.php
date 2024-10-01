@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 $title = "Specimen Referral Manifest";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var UsersService $usersService */
@@ -208,4 +208,4 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 </script>
 <?php
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

@@ -1,7 +1,7 @@
 <?php
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $artQuery = "SELECT DISTINCT art_code, art_id FROM `r_vl_art_regimen` WHERE parent_art = 0";
 $artInfo = $db->query($artQuery);
 $artParent = [];
@@ -143,4 +143,4 @@ foreach ($categoryInfo as $category) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

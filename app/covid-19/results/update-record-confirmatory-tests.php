@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 
 $title = "Enter Covid-19 Result";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -206,4 +206,4 @@ if (isset($forms[$arr['vl_form']])) {
 
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

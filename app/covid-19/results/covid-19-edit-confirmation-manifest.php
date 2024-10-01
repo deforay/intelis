@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = "Covid-19 | Add Batch";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

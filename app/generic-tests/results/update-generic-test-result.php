@@ -7,7 +7,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
@@ -1782,4 +1782,4 @@ $reasonForChange = $reasonForChangeArr[1];
 		}
 	}
 </script>
-<?php _includeFooter();
+<?php require_once APPLICATION_PATH . '/footer.php';

@@ -5,7 +5,7 @@ use App\Registries\AppRegistry;
 
 $title = _translate("Sample Type");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -124,4 +124,4 @@ $sampleTypeInfo = $db->query($tQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

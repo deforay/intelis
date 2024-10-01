@@ -29,7 +29,7 @@ $testName = TestsService::getTestName($_GET['type']);
 
 $title = _translate("Testing Batches") . " | " . $testName;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var UsersService $usersService */
@@ -238,4 +238,4 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 <?php
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

@@ -10,7 +10,7 @@ use App\Services\DatabaseService;
 $db = ContainerRegistry::get(DatabaseService::class);
 $title = _translate("Lab Storage");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -146,4 +146,4 @@ $sInfo = $db->rawQueryOne($sQuery, [$id]);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

@@ -1,7 +1,7 @@
 <?php
 $title = _translate("Manage Result Status");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -510,4 +510,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

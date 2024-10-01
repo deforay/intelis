@@ -7,7 +7,7 @@ use App\Services\CommonService;
 
 $title = _translate("Manage Result Status");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -589,4 +589,4 @@ foreach ($rejectionTypeResult as $type) {
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

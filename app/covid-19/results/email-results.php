@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("Email COVID-19 Test Results");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get('db');
@@ -602,4 +602,4 @@ $batchResult = $db->rawQuery($batchQuery);
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

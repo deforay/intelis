@@ -3,7 +3,7 @@
 
 use App\Registries\AppRegistry;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $rejReaons = $general->getRejectionReasons('vl');
 
 // Sanitized values from $request object
@@ -155,4 +155,4 @@ $rsnInfo = $db->query($rsnQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

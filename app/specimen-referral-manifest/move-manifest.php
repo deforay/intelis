@@ -17,7 +17,7 @@ use App\Services\GenericTestsService;
 
 $title = "Move Manifest";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -456,4 +456,4 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

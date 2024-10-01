@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = _translate("Test Result Units");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -116,4 +116,4 @@ $unitInfo = $db->query($tQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

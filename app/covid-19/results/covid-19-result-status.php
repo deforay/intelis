@@ -1,7 +1,7 @@
 <?php
 $title = _translate("Manage Result Status");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
@@ -508,4 +508,4 @@ foreach ($rejectionTypeResult as $type) {
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

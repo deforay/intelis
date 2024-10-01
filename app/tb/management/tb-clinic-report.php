@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("TB | Clinics Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
@@ -1287,4 +1287,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

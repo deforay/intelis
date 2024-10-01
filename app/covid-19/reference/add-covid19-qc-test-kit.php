@@ -6,7 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -179,4 +179,4 @@ $covid19Results = $covid19Service->getCovid19Results();
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

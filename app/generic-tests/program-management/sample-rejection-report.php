@@ -5,7 +5,7 @@ use App\Services\FacilitiesService;
 use App\Services\GenericTestsService;
 
 $title = _translate("Sample Rejection Report");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var GenericTestsService $facilitiesService */
 $genericService = ContainerRegistry::get(GenericTestsService::class);
@@ -193,4 +193,4 @@ $sampleTypeDetails = $genericService->getGenericSampleTypes();
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

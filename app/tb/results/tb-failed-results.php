@@ -11,7 +11,7 @@ use App\Services\UsersService;
 $title = _translate("TB | View All Requests");
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -618,4 +618,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

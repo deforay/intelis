@@ -11,7 +11,7 @@ use App\Registries\ContainerRegistry;
 
 $title = _translate("Enter VL Result");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var FacilitiesService $facilitiesService */
@@ -393,4 +393,4 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

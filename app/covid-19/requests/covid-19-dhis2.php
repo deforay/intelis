@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 
 $title = "Covid-19 | DHIS2 Requests";
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -395,4 +395,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

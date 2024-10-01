@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use Laminas\Diactoros\ServerRequest;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -1078,4 +1078,4 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

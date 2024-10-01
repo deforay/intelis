@@ -9,7 +9,7 @@ use App\Services\GeoLocationsService;
 
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -1115,4 +1115,4 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

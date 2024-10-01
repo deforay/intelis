@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 
 $title = _translate("Freezer/Storage Reports");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -573,4 +573,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

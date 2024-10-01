@@ -33,7 +33,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
 	$labId = base64_decode((string) $_GET['labId']);
 }
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

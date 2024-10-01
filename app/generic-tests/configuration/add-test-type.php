@@ -6,7 +6,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\CommonService;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $general = ContainerRegistry::get(CommonService::class);
 $generic = ContainerRegistry::get(GenericTestsService::class);
 $sampleTypeInfo = $general->getDataByTableAndFields("r_generic_sample_types", array("sample_type_id", "sample_type_name"), true, "sample_type_status='active'");
@@ -843,4 +843,4 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

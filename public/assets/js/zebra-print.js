@@ -189,7 +189,14 @@ function changePrinter() {
 
 }
 function onPrinterSelected() {
-	selected_printer = available_printers[$('#printers')[0].selectedIndex];
+	const printersElement = $('#printers')[0];
+
+	if (printersElement) {
+		const selectedPrinter = available_printers[printersElement.selectedIndex];
+		// Use selectedPrinter as needed
+	} else {
+		console.error('Printers element not found');
+	}
 }
 function showErrorMessage(text) {
 	$('#main').hide();

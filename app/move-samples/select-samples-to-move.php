@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 
 $title = "Add Sample List";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -429,4 +429,4 @@ foreach ($fResult as $fDetails) {
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

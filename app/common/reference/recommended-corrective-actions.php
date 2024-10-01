@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = _translate("Recommended Corrective Actions");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $testType = 'eid';
 
 
@@ -117,4 +117,4 @@ if (!empty($_GET['testType'])) {
 	});
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

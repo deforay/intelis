@@ -10,7 +10,7 @@ use App\Utilities\DateUtility;
 
 $title = _translate("COVID-19 | Edit Request");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -263,4 +263,4 @@ require_once($fileArray[$arr['vl_form']]);
         <?php } ?>
     }
 </script>
-<?php _includeFooter(); ?>
+<?php require_once APPLICATION_PATH . '/footer.php'; ?>

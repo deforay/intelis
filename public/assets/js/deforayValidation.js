@@ -1,8 +1,6 @@
 // this function helps us to check if a string starts with a specified substring or not
-if (!String.prototype.startsWith) {
-    String.prototype.startsWith = function (str) {
-        return !this.indexOf(str);
-    }
+function startsWith(str, prefix) {
+    return str.indexOf(prefix) === 0;
 }
 
 //function to check if a given element has a particular class or not
@@ -15,9 +13,9 @@ function hasClassName(objElement, strClass) {
         // get uppercase class for comparison purposes
         let strClassUpper = strClass.toUpperCase();
         // find all instances and remove them
-        for (let i = 0; i < arrList.length; i++) {
+        for (let className of arrList) {
             // if class found
-            if (arrList[i].toUpperCase() == strClassUpper) {
+            if (className.toUpperCase() == strClassUpper) {
                 // we found it
                 return true;
             }
@@ -37,8 +35,8 @@ let deforayValidator = {
         let formInputs = jQuery("input[type='text'],input[type='password'],textarea,select");
 
         // change color of inputs on focus
-        for (let i = 0; i < formInputs.length; i++) {
-            formInputs[i].onfocus = function () {
+        for (let input of formInputs) {
+            input.onfocus = function () {
                 this.style.background = "#FFFFFF";
             }
         }
@@ -87,14 +85,11 @@ function isEmail(str, required) {
 }
 // returns true if the string only contains characters 0-9 and is not null
 function isInputNumeric(str, required) {
-    if (required) {
-        if ((str == null || str.length == 0))
-            return false;
-    } else {
-        if (str != "")
-            return !isNaN(parseFloat(str)) && isFinite(str);
+    if (required && (str == null || str.length == 0)) {
+        return false;
+    } else if (str != "") {
+        return !Number.isNaN(parseFloat(str)) && isFinite(str);
     }
-    return true;
 }
 // returns true if the string only contains characters A-Z or a-z
 function isAlpha(str, required) {
@@ -103,8 +98,7 @@ function isAlpha(str, required) {
             return false;
     }
     let re = /[a-zA-Z]/;
-    if (re.test(str)) return true;
-    return false;
+    return re.test(str);
 }
 // returns true if the string only contains characters 0-9 A-Z or a-z
 function isAlphaNum(str, required) {
@@ -114,8 +108,7 @@ function isAlphaNum(str, required) {
     }
     // let re = /[0-9a-zA-Z]/
     let re = /^[0-9A-Za-z]+$/;
-    if (re.test(str)) return true;
-    return false;
+    return re.test(str);
 }
 // returns true if the string only contains characters OTHER THAN 0-9 A-Z or a-z
 function isSymbol(str, required) {
@@ -124,38 +117,28 @@ function isSymbol(str, required) {
             return false;
     }
     let re = /[^0-9a-zA-Z]/;
-    if (re.test(str)) return true;
-    return false;
+    return re.test(str);
 }
 // checks if the string is of a specified minimum length or not
 function minLength(str, len) {
-    if ((str == null || str.length == 0)) return false;
-    if (str.length < len) {
+    if ((str == null || str.length == 0)) {
         return false;
     }
-    else {
-        return true;
-    }
+    return str.length >= len;
 }
 // checks if the string is within a specified maximum length or not
 function maxLength(str, len) {
-    if ((str == null || str.length == 0)) return false;
-    if (str.length > len) {
+    if ((str == null || str.length == 0)) {
         return false;
     }
-    else {
-        return true;
-    }
+    return str.length <= len;
 }
 // checks if the string is exactly equal to the specified length or not
 function exactLength(str, len) {
-    if ((str == null || str.length == 0)) return false;
-    if (str.length == len) {
-        return true;
-    }
-    else {
+    if ((str == null || str.length == 0)) {
         return false;
     }
+    return str.length == len;
 }
 //confirm password validation
 function confirmPassword(name) {
@@ -168,7 +151,6 @@ function isRequiredCheckBox(name) {
     let flag = false;
     let elements = document.getElementsByName(name);
     let size = elements.length;
-    let count = 0;
 
     for (let i = 0; i < size; i++) {
         if (elements[i].checked) {
@@ -280,7 +262,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                     errorMsg = "This field cannot contain alphabets and numbers.";
                 }
             }
-            else if (parts[cCount].startsWith("minLength")) {
+            else if (startsWith(parts[cCount], "minLength")) {
                 innerParts = parts[cCount].split("_");
                 valid = minLength(formInputs[i].value, innerParts[1]);
                 if (elementTitle != null && elementTitle != "") {
@@ -290,7 +272,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                     errorMsg = "Minimum " + innerParts[1] + " characters required";
                 }
             }
-            else if (parts[cCount].startsWith("maxLength")) {
+            else if (startsWith(parts[cCount], "maxLength")) {
                 innerParts = parts[cCount].split("_");
                 valid = maxLength(formInputs[i].value, innerParts[1]);
                 if (elementTitle != null && elementTitle != "") {
@@ -300,7 +282,7 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
                     errorMsg = "More than " + innerParts[1] + " characters not allowed";
                 }
             }
-            else if (parts[cCount].startsWith("exactLength")) {
+            else if (startsWith(parts[cCount], "exactLength")) {
                 innerParts = parts[cCount].split("_");
                 valid = exactLength(formInputs[i].value, innerParts[1]);
                 if (elementTitle != null && elementTitle != "") {
@@ -356,7 +338,7 @@ let dateFormat = function () {
 
         // Passing date through Date applies Date.parse, if necessary
         date = date ? new Date(date) : new Date;
-        if (isNaN(date)) throw SyntaxError("invalid date");
+        if (Number.isNaN(date)) throw SyntaxError("invalid date");
 
         mask = String(dF.masks[mask] || mask || dF.masks["default"]);
 
@@ -414,7 +396,7 @@ let dateFormat = function () {
 
 // Some common format strings
 dateFormat.masks = {
-    "default": "ddd mmm dd yyyy HH:MM:ss",
+    default: "ddd mmm dd yyyy HH:MM:ss",
     shortDate: "m/d/yy",
     mediumDate: "mmm d, yyyy",
     longDate: "mmmm d, yyyy",
@@ -440,7 +422,7 @@ dateFormat.i18n = {
     ]
 };
 
-// For convenience...
-Date.prototype.format = function (mask, utc) {
-    return dateFormat(this, mask, utc);
-};
+// Utility function for formatting dates
+function formatDate(date, mask, utc) {
+    return dateFormat(date, mask, utc);
+}

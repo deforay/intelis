@@ -9,7 +9,7 @@ use App\Services\TbService;
 
 $title = _translate("Export Data");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -653,4 +653,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

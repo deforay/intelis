@@ -4,7 +4,7 @@ use App\Registries\AppRegistry;
 
 $title = "Implementation Partners";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -119,4 +119,4 @@ $partnerInfo = $db->rawQuery($query, [$id]);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

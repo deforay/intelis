@@ -10,7 +10,7 @@ use App\Services\CommonService;
 
 $title = _translate("Enter Covid-19 Result");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -261,4 +261,4 @@ require_once($fileArray[$formId]);
 
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

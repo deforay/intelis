@@ -9,7 +9,7 @@ use App\Utilities\DateUtility;
 
 $title = "TB | Edit Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .disabledForm {
@@ -280,4 +280,4 @@ require_once($fileArray[$arr['vl_form']]);
         <?php } ?>
     }
 </script>
-<?php _includeFooter();
+<?php require_once APPLICATION_PATH . '/footer.php';

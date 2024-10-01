@@ -30,7 +30,7 @@ $patientFirstName = $testTableData['patientFirstName'];
 $patientLastName = $testTableData['patientLastName'];
 $testType = ($_GET['type'] == 'covid19') ? 'covid-19' : $_GET['type'];
 $title = _translate($testName . " | Add Batch Position");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $id = (isset($_GET['id'])) ? base64_decode((string)$_GET['id']) : null;
 if (!isset($id) || trim($id) == '') {
@@ -237,4 +237,4 @@ $contentData = $batchService->generateContent($samplesResult, $batchInfo, $batch
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

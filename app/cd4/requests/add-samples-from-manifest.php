@@ -1,6 +1,6 @@
 <?php
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -302,4 +302,4 @@ $title = _translate("Add Samples from Manifest");
 </script>
 <?php
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

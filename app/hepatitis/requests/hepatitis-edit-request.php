@@ -10,7 +10,7 @@ use App\Utilities\DateUtility;
 
 $title = "Hepatitis | Edit Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -242,4 +242,4 @@ require_once($fileArray[$arr['vl_form']]);
             });
     }
 </script>
-<?php _includeFooter();
+<?php require_once APPLICATION_PATH . '/footer.php';

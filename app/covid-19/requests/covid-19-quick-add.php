@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = "COVID-19 | Add New Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -210,4 +210,4 @@ require_once($fileArray[$arr['vl_form']]);
         $("#patientAge").val(moment().diff(dateOfBirth, 'years'));
     }
 </script>
-<?php _includeFooter();
+<?php require_once APPLICATION_PATH . '/footer.php';

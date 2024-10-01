@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 
 $title = "CD4 | Add New Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 

@@ -5,7 +5,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 $title = _translate("API Sync History");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -249,4 +249,4 @@ foreach ($syncedTypeResults as $synced) {
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

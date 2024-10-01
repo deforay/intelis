@@ -6,7 +6,7 @@ use App\Services\CommonService;
 
 $title = _translate("Lab Storage");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -134,4 +134,4 @@ $labNameList = $facilitiesService->getTestingLabs();
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

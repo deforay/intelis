@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("EID | Sample Status Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -333,4 +333,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

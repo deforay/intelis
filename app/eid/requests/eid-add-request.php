@@ -7,7 +7,7 @@ use App\Registries\ContainerRegistry;
 
 $title = "EID | Add New Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .ui_tpicker_second_label,
@@ -189,4 +189,4 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 
 <?php
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

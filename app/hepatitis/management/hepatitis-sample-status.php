@@ -8,7 +8,7 @@ use App\Services\CommonService;
 
 $title = _translate("Hepatitis | Sample Status Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -300,4 +300,4 @@ $batResult = $db->rawQuery($batQuery);
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

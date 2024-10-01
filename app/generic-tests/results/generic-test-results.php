@@ -9,7 +9,7 @@ use App\Services\GenericTestsService;
 
 $title = _translate("Enter VL Result");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -494,4 +494,4 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

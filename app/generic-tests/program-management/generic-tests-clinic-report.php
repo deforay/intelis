@@ -6,7 +6,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Other Lab Tests | Clinics Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -432,4 +432,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

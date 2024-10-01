@@ -11,7 +11,7 @@ use App\Services\UsersService;
 
 $title = "Enter Hepatitis Result";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -245,4 +245,4 @@ require_once($fileArray[$arr['vl_form']]);
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

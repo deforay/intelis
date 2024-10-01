@@ -9,7 +9,7 @@ use App\Services\GenericTestsService;
 
 $title = _translate("Print VL Results");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -1240,4 +1240,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

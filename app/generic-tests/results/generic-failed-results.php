@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("View All Requests");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 /** @var DatabaseService $db */
@@ -628,4 +628,4 @@ $state = $geolocationService->getProvinces("yes");
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

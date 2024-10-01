@@ -6,7 +6,7 @@ use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -585,4 +585,4 @@ if ($priInfo) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

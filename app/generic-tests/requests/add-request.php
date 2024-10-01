@@ -14,7 +14,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $title = " Add New Test";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 

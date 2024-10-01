@@ -15,7 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $title = _translate("Geographical Divisions");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -156,4 +156,4 @@ $geoInfo = $db->rawQueryOne($query);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

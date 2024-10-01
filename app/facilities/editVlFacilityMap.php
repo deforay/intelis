@@ -3,7 +3,7 @@
 
 use App\Registries\AppRegistry;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -147,4 +147,4 @@ $hcResult = $db->rawQuery($hcQuery);
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

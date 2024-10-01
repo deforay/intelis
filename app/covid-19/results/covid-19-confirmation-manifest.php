@@ -2,7 +2,7 @@
 
 $title = "Add Samples from Manifest";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // $tsQuery = "SELECT * FROM r_sample_status";
 // $tsResult = $db->rawQuery($tsQuery);
@@ -144,4 +144,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	});
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

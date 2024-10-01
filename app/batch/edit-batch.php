@@ -10,7 +10,7 @@ use App\Services\UsersService;
 
 $title = _translate("Edit Batch");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -560,4 +560,4 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

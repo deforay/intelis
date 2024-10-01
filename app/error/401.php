@@ -1,6 +1,6 @@
 <?php
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 
 <!-- Content Wrapper. Contains page content -->

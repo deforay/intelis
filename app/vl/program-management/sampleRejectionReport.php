@@ -4,7 +4,7 @@
 $title = _translate("Sample Rejection Report");
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
@@ -214,4 +214,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

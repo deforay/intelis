@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use Laminas\Diactoros\ServerRequest;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -967,4 +967,4 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

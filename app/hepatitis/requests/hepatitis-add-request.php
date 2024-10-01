@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 
 $title = "Hepatitis | Add New Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -236,4 +236,4 @@ require_once($fileArray[$arr['vl_form']]);
             });
     }
 </script>
-<?php _includeFooter();
+<?php require_once APPLICATION_PATH . '/footer.php';

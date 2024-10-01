@@ -8,7 +8,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 $title = _translate("Sources of Requests");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -257,4 +257,4 @@ $activeModules = SystemService::getActiveModules();
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

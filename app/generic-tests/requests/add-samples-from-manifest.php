@@ -1,6 +1,6 @@
 <?php
 $title = _translate("Add Samples from Manifest");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
 	.select2-selection__choice {
@@ -308,4 +308,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

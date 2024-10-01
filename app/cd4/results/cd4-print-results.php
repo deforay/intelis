@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Print CD4 Results");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='cd4' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -1095,4 +1095,4 @@ $state = $geolocationService->getProvinces("yes");
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

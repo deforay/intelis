@@ -17,7 +17,7 @@ if ($mappingType == 'health-facilities') {
 	$title = "Testing Labs";
 }
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 
 
@@ -224,4 +224,4 @@ _includeHeader();
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

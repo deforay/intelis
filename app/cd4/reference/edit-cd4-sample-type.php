@@ -3,7 +3,7 @@
 
 use App\Registries\AppRegistry;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -115,4 +115,4 @@ $sampleInfo = $db->query($sampleQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

@@ -9,7 +9,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $title = _translate("Add Samples from Manifest");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 ?>
 <style>
@@ -299,4 +299,4 @@ _includeHeader();
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

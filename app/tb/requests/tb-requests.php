@@ -32,7 +32,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
     $facilityId = base64_decode((string) $_GET['facilityId']);
     $labId = base64_decode((string) $_GET['labId']);
 }
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -785,4 +785,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

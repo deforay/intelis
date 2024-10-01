@@ -7,7 +7,7 @@ use App\Services\CommonService;
 
 $title = "VL Quarterly Monitoring Report";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -700,4 +700,4 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

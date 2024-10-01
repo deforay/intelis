@@ -4,7 +4,7 @@ use App\Services\GeoLocationsService;
 use App\Registries\ContainerRegistry;
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
@@ -611,4 +611,4 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

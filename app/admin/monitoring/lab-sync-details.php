@@ -9,7 +9,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
 $title = _translate("Sources of Requests");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -319,4 +319,4 @@ $labInfo = $db->rawQueryOne($sQuery, [$facilityId]);
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

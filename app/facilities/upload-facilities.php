@@ -7,7 +7,7 @@ use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -160,4 +160,4 @@ if (isset($_GET['total'])) {
 </div>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

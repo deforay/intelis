@@ -9,7 +9,7 @@ use App\Services\UsersService;
 
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -416,4 +416,4 @@ foreach ($pdResult as $provinceName) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

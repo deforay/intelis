@@ -33,7 +33,7 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
 	$labId = base64_decode((string) $_GET['labId']);
 }
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
@@ -1351,4 +1351,4 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

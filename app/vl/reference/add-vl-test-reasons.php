@@ -2,7 +2,7 @@
 
 $title = "VL Test Reasons";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $testQuery = "SELECT * from r_vl_test_reasons WHERE parent_reason ='0'";
 $testInfo = $db->query($testQuery);
 foreach ($testInfo as $test) {
@@ -124,4 +124,4 @@ foreach ($testInfo as $test) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

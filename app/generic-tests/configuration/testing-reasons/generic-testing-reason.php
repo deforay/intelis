@@ -1,5 +1,5 @@
 <?php
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -142,4 +142,4 @@ $title = _translate("Other Lab Tests Testing Reasons");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

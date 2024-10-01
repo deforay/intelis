@@ -1,7 +1,7 @@
 <?php
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $otherConfigQuery = "SELECT * from other_config";
 $otherConfigResult = $db->query($otherConfigQuery);
@@ -85,4 +85,4 @@ for ($i = 0; $i < sizeof($otherConfigResult); $i++) {
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

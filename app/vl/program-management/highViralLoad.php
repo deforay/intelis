@@ -7,7 +7,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("VL | Clinics Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -2027,4 +2027,4 @@ $state = $geolocationService->getProvinces("yes");
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

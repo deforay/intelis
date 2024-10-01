@@ -2,7 +2,7 @@
 
 $title = _translate("Enter Covid-19 Result");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <style>
     .disabledForm {
@@ -170,4 +170,4 @@ _includeHeader();
 
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

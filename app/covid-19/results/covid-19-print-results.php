@@ -8,7 +8,7 @@ use App\Services\GeoLocationsService;
 
 $title = _translate("Print Covid-19 Results");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 /** @var DatabaseService $db */
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
@@ -1128,4 +1128,4 @@ $state = $geolocationService->getProvinces("yes");
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

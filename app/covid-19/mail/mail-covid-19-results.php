@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 
 $title = "Email Covid-19 Test Results";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -478,4 +478,4 @@ $batchResult = $db->rawQuery($batchQuery);
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

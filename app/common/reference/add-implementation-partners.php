@@ -2,7 +2,7 @@
 
 $title = _translate("Implementation Partners");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -103,4 +103,4 @@ _includeHeader();
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

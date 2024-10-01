@@ -1,7 +1,7 @@
 <?php
 $title = _translate("VL Control Report");
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -154,4 +154,4 @@ $sResult = $db->rawQuery($sQuery);
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

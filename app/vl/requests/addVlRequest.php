@@ -12,7 +12,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 $title = "VL | Add New Request";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $labFieldDisabled = '';
 
@@ -177,4 +177,4 @@ require_once APPLICATION_PATH . "/vl/vl.js.php";
 </script>
 <?php
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

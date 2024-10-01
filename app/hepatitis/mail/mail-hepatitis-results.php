@@ -2,7 +2,7 @@
 
 $title = "Email Hepatitis Test Results";
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 $configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
 $configResult = $db->rawQuery($configQuery);
 $formId = 0;
@@ -473,4 +473,4 @@ $batchResult = $db->rawQuery($batchQuery);
   }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

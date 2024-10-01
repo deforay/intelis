@@ -1,7 +1,7 @@
 <?php
 
 $title = _translate("COVID-19 | Add New Request");
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -25,4 +25,4 @@ _includeHeader();
     </section>
 </div>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

@@ -40,7 +40,7 @@ $activeModule = SystemService::getActiveModules(true);
 if (isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)) {
 	$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
 }
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $id = isset($_GET['id']) ? base64_decode((string)$_GET['id']) : null;
 
@@ -271,4 +271,4 @@ $content = $batchService->generateContent($samplesResult, $batchInfo, $batchCont
 	}
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

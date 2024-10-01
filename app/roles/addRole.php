@@ -6,7 +6,7 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -595,4 +595,4 @@ $rInfo = $db->query($resourcesQuery);
 </script>
 
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

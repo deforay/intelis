@@ -10,7 +10,7 @@ use App\Services\UsersService;
 $title = _translate("Covid19 | View All Requests");
 
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -573,4 +573,4 @@ $sResult = $db->rawQuery($sQuery);
     }
 </script>
 <?php
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';

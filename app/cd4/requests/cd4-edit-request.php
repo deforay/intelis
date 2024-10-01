@@ -9,7 +9,7 @@ use App\Services\FacilitiesService;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
-_includeHeader();
+require_once APPLICATION_PATH . '/header.php';
 
 $sCode = $labFieldDisabled = '';
 
@@ -219,4 +219,4 @@ require_once($fileArray[$formId]);
 // Why PHP? Because we can use PHP variables in the JS code
 require_once APPLICATION_PATH . "/vl/vl.js.php";
 
-_includeFooter();
+require_once APPLICATION_PATH . '/footer.php';
