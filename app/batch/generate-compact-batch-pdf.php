@@ -95,10 +95,11 @@ if (!empty($id)) {
                         FROM $table
                         WHERE sample_batch_id= ?";
     }
-    // die($dateQuery);
+   // die($dateQuery);
     $dateResult = $db->rawQueryOne($dateQuery, [$id]);
     $resulted = DateUtility::humanReadableDateFormat($dateResult['sample_tested_datetime'] ?? '', true);
     $reviewed = DateUtility::humanReadableDateFormat($dateResult['result_reviewed_datetime'] ?? '', true);
+  
     if (!empty($bResult)) {
         // create new PDF document
         $pdf = new CustomBatchPdfHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -433,7 +434,8 @@ if (!empty($id)) {
                             $resultColumn,
                             $patientIdColumn
                             FROM $table
-                            WHERE sample_batch_id=$id";
+                            WHERE sample_batch_id=$id AND $resultColumn IS NULL";
+                        //    echo $sQuery; die;
             $result = $db->query($sQuery);
             $sampleCounter = 1;
             if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
@@ -485,15 +487,17 @@ if (!empty($id)) {
                     $tbl .= 'Test Result : ' . $sample[$resultColumn] . '<br>';
                 }
                 $tbl .= '</td>';
-                if ($sampleCounter % 2 == 0) {
-                    $tbl .= '</tr><tr>'; // Close the current row and start a new row
-                }
+               
                 if (isset($bResult['position_type']) && $bResult['position_type'] == 'alpha-numeric') {
                     $sampleCounter = $alphaNumeric[($j + 1)];
-                    $J++;
+                    
                 } else {
                     $sampleCounter++;
                 }
+                if ($sampleCounter % 2 == 0) {
+                    $tbl .= '</tr><tr>'; // Close the current row and start a new row
+                }
+                $j++;
             }
             $tbl .= '</tr></table>';
         }
