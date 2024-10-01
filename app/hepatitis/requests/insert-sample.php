@@ -12,12 +12,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var HepatitisService $hepatitisService */
 $hepatitisService = ContainerRegistry::get(HepatitisService::class);
-
+$response = "0";
 try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $hepatitisService->insertSample($_POST);
+    $response = $hepatitisService->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $exception) {
@@ -29,5 +29,6 @@ try {
         'line' => $exception->getLine(), // Line number of the error
         'stacktrace' => $exception->getTraceAsString()
     ]);
-    echo "0";
 }
+
+echo $response;

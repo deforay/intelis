@@ -11,12 +11,12 @@ $covid19Service = ContainerRegistry::get(Covid19Service::class);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
+$response = "0";
 try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $covid19Service->insertSample($_POST);
+    $response = $covid19Service->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $exception) {
@@ -28,5 +28,5 @@ try {
         'line' => $exception->getLine(), // Line number of the error
         'stacktrace' => $exception->getTraceAsString()
     ]);
-    echo "0";
 }
+echo $response;

@@ -418,7 +418,6 @@ try {
         }
     }
 } catch (Throwable $e) {
-    echo $e->getMessage();
     LoggerUtility::log('error', $e->getMessage(),  [
         'file' => $e->getFile(),
         'line' => $e->getLine(),

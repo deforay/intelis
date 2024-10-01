@@ -165,10 +165,8 @@ if (trim((string) $id) != '') {
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
 
 
-        $manifestsPath = TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests";
-        if (!file_exists($manifestsPath) && !is_dir($manifestsPath)) {
-            MiscUtility::makeDirectory($manifestsPath);
-        }
+        $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
+        $filename = MiscUtility::cleanFileName($filename);
         $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }

@@ -440,17 +440,19 @@ desired_post_max_size="post_max_size = 1G"
 desired_upload_max_filesize="upload_max_filesize = 1G"
 desired_memory_limit="memory_limit = $RAM_75_PERCENT"
 desired_strict_mode="session.use_strict_mode = 1"
+desired_max_execution_time="max_execution_time = 300"
 
 for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
     awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
         -v umf="$desired_upload_max_filesize" -v ml="$desired_memory_limit" \
-        -v dsm="$desired_strict_mode" \
+        -v dsm="$desired_strict_mode" -v met="$desired_max_execution_time" \
         '{
         if ($0 ~ /^error_reporting[[:space:]]*=/) {print ";" $0 "\n" er; next}
         if ($0 ~ /^post_max_size[[:space:]]*=/) {print ";" $0 "\n" pms; next}
         if ($0 ~ /^upload_max_filesize[[:space:]]*=/) {print ";" $0 "\n" umf; next}
         if ($0 ~ /^memory_limit[[:space:]]*=/) {print ";" $0 "\n" ml; next}
         if ($0 ~ /^session.use_strict_mode[[:space:]]*=/) {print ";" $0 "\n" dsm; next}
+        if ($0 ~ /^max_execution_time[[:space:]]*=/) {print ";" $0 "\n" met; next}
         print $0
     }' $phpini >temp.ini && mv temp.ini $phpini
 done

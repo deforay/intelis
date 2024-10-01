@@ -63,8 +63,8 @@ if (!empty($id)) {
     $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
-   // $db->where('package_id', $id);
-   // $bResult = $db->getOne('package_details', 'package_code');
+    // $db->where('package_id', $id);
+    // $bResult = $db->getOne('package_details', 'package_code');
 
     if (!empty($bResult)) {
 
@@ -243,16 +243,13 @@ if (!empty($id)) {
         $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Received By : </strong><br>(at ' . $labname . ')</td>';
         $tbl .= '</tr>';
         $tbl .= '</table>';
-        //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
+
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
-      //  $filename = preg_replace('/[^a-zA-Z0-9\-]/', '', $filename);
 
-        $manifestsPath = TEMP_PATH . DIRECTORY_SEPARATOR . "sample-manifests";
-        if (!file_exists($manifestsPath) && !is_dir($manifestsPath)) {
-            MiscUtility::makeDirectory($manifestsPath);
-        }
+        $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
+        $filename = MiscUtility::cleanFileName($filename);
         $pdf->Output($manifestsPath . DIRECTORY_SEPARATOR . $filename, "F");
         echo $filename;
     }

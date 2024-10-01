@@ -186,7 +186,7 @@ try {
         'status' => 'failed',
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'error' => $exc->getLine() . " | " . $exc->getMessage(),
+        'error' => _translate("Something went wrong. Please try again later."),
     ];
 
     $payload = JsonUtility::encodeUtf8Json($payload);

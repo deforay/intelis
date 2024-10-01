@@ -18,12 +18,12 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
-
+$response = "0";
 try {
     // Start transaction
     $db->beginTransaction();
     $_POST['insertOperation'] = true;
-    echo $cd4Service->insertSample($_POST);
+    $response =  $cd4Service->insertSample($_POST);
     // Commit transaction
     $db->commitTransaction();
 } catch (Throwable $exception) {
@@ -40,5 +40,6 @@ try {
         'line' => $exception->getLine(), // Line number of the error
         'stacktrace' => $exception->getTraceAsString()
     ]);
-    echo "0";
 }
+
+echo $response;
