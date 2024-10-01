@@ -65,7 +65,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         $uri = $request->getUri()->getPath();
 
         // Check if the URI starts with '/remote/'
-        if (strpos($uri, '/remote/') === 0) {
+        if (str_starts_with($uri, '/remote/')) {
             return true;
         }
 

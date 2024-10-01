@@ -95,7 +95,7 @@ final class ApiService
     {
         try {
             $response = $this->client->get($url);
-            $statusCode = (int) $response->getStatusCode();
+            $statusCode = $response->getStatusCode();
             return $statusCode === 200;
         } catch (Throwable $e) {
             LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [
@@ -190,7 +190,7 @@ final class ApiService
 
             // Add additional parameters to multipart data
             // Check if params are in ['name' => 'x','contents' => 'y'] format or associative array
-            if (isset($params[0]) && isset($params[0]['name']) && isset($params[0]['contents'])) {
+            if (isset($params[0]['contents']) && isset($params[0]['name'])) {
                 // Params are in the ['name' => 'x','contents' => 'y'] format, merge them directly
                 $multipartData = array_merge($multipartData, $params);
             } else {

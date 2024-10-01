@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use InvalidArgumentException;
 use Throwable;
 use ZipArchive;
 use Sqids\Sqids;
@@ -516,10 +517,10 @@ final class MiscUtility
 
     public static function getLockFile($fileName, $lockFileLocation = TEMP_PATH): string
     {
-        if (file_exists($fileName) || strpos($fileName, DIRECTORY_SEPARATOR) !== false) {
+        if (file_exists($fileName) || str_contains($fileName, DIRECTORY_SEPARATOR)) {
             $fullPath = realpath($fileName);
             if ($fullPath === false) {
-                throw new \InvalidArgumentException("Invalid file path provided.");
+                throw new InvalidArgumentException("Invalid file path provided.");
             }
         } else {
             $fullPath = $fileName;
