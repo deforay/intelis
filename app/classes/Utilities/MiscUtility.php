@@ -2,13 +2,15 @@
 
 namespace App\Utilities;
 
-use InvalidArgumentException;
 use Throwable;
 use ZipArchive;
 use Sqids\Sqids;
-use Symfony\Component\Uid\Uuid;
+use InvalidArgumentException;
 use Symfony\Component\Uid\Ulid;
+use Symfony\Component\Uid\Uuid;
 use App\Exceptions\SystemException;
+use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 final class MiscUtility
 {
@@ -35,6 +37,7 @@ final class MiscUtility
             return $ids;
         }
     }
+
     public static function generateRandomString(int $length = 32): string
     {
         $bytes = ceil($length * 3 / 4);
@@ -58,7 +61,6 @@ final class MiscUtility
         return $result;
     }
 
-
     public static function randomHexColor(): string
     {
         $hexColorPart = function () {
@@ -68,28 +70,41 @@ final class MiscUtility
         return strtoupper($hexColorPart() . $hexColorPart() . $hexColorPart());
     }
 
-    public static function removeDirectory($dirname): bool
+    public static function makeDirectory($path, $mode = 0755, $recursive = true): bool
     {
-        if (!file_exists($dirname)) {
-            return false;
+        $filesystem = new Filesystem();
+
+        if ($filesystem->exists($path)) {
+            return true; // Directory already exists
         }
 
-        if (is_file($dirname) || is_link($dirname)) {
-            return unlink($dirname);
+        try {
+            $filesystem->mkdir($path, $mode); // Handles recursive creation automatically
+            return true;
+        } catch (IOExceptionInterface $exception) {
+            // You can log the exception or handle the error here
+            return false; // Directory creation failed
         }
-
-        foreach (scandir($dirname) as $entry) {
-            if ($entry !== '.' && $entry !== '..') {
-                $fullPath = $dirname . DIRECTORY_SEPARATOR . $entry;
-                if (!self::removeDirectory($fullPath)) {
-                    return false;
-                }
-            }
-        }
-
-        return rmdir($dirname);
     }
 
+
+    public static function removeDirectory($dirname): bool
+    {
+        $filesystem = new Filesystem();
+
+        if (!$filesystem->exists($dirname)) {
+            return false; // Directory doesn't exist, so nothing to remove
+        }
+
+        try {
+            // This handles both files and directories recursively
+            $filesystem->remove($dirname);
+            return true; // Removal was successful
+        } catch (IOExceptionInterface $exception) {
+            // You can log the exception or handle it here if necessary
+            return false; // Removal failed
+        }
+    }
 
     //dump the contents of a variable to the error log in a readable format
     public static function dumpToErrorLog($object = null, $useVarDump = true): void
@@ -130,25 +145,24 @@ final class MiscUtility
 
     public static function fileExists($filePath): bool
     {
-        return !empty($filePath) && file_exists($filePath) && is_file($filePath);
-    }
+        $filesystem = new Filesystem();
 
+        // The exists() method checks if the file exists (whether it's a file or directory)
+        return $filesystem->exists($filePath) && is_file($filePath);
+    }
     public static function imageExists($filePath): bool
     {
+        // Check if the file exists and is a file
         if (!self::fileExists($filePath)) {
             return false;
         }
 
-        // Attempt to obtain image size and type
-        $imageInfo = getimagesize($filePath);
-        if ($imageInfo === false) {
-            return false;
-        }
+        // Suppress errors from getimagesize() in case it's not a valid image
+        $imageInfo = @getimagesize($filePath);
 
-        // Check if the image type is recognized by PHP
-        return isset($imageInfo[2]) && $imageInfo[2] > 0;
+        // Check if getimagesize() was successful and if the image type is valid
+        return $imageInfo !== false && isset($imageInfo[2]) && $imageInfo[2] > 0;
     }
-
 
     public static function getMimeType($file, $allowedMimeTypes)
     {
@@ -162,17 +176,6 @@ final class MiscUtility
         finfo_close($finfo);
 
         return in_array($mime, $allowedMimeTypes) ? $mime : false;
-    }
-
-    public static function makeDirectory($path, $mode = 0755, $recursive = true): bool
-    {
-        if (is_dir($path)) {
-            return true;
-        } elseif (!file_exists($path) && !is_dir($path)) {
-            return mkdir($path, $mode, $recursive);
-        } else {
-            return false;
-        }
     }
 
     public static function generateCsv($headings, $data, $filename, $delimiter = ',', $enclosure = '"')
