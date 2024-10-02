@@ -108,9 +108,8 @@ final class ApiService
         }
     }
 
-    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false): array|string|null
+    public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|\GuzzleHttp\Promise\PromiseInterface
     {
-
         $options = [
             RequestOptions::HEADERS => [
                 'X-Request-ID' => MiscUtility::generateULID(),
@@ -122,6 +121,7 @@ final class ApiService
         ];
 
         try {
+            // Ensure payload is JSON-encoded
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
             if ($gzip) {
                 $payload = gzencode($payload);
@@ -132,39 +132,43 @@ final class ApiService
             // Set the request body
             $options[RequestOptions::BODY] = $payload;
 
+            if ($async) {
+                // Perform an asynchronous request
+                return $this->client->postAsync($url, $options);
+            }
 
+            // Synchronous request
             $response = $this->client->post($url, $options);
 
+            // Process response
             if ($returnWithStatusCode) {
-                $apiResponse = [
+                return [
                     'httpStatusCode' => $response->getStatusCode(),
                     'body' => $response->getBody()->getContents()
                 ];
             } else {
-                $apiResponse = $response->getBody()->getContents();
+                return $response->getBody()->getContents();
             }
         } catch (RequestException $e) {
-            // Extract the response body from the exception, if available
+            // Handle request exceptions
             $responseBody = $e->hasResponse() ? $e->getResponse()->getBody()->getContents() : null;
-
-            // Log the error along with the response body
             $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
 
-            // Return the response body (if available) or null
             if ($returnWithStatusCode) {
-                $apiResponse = [
+                return [
                     'httpStatusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
                     'body' => $responseBody
                 ];
             } else {
-                $apiResponse = $responseBody;
+                return $responseBody;
             }
         } catch (Throwable $e) {
+            // Log other errors
             $this->logError($e, "Unable to post to $url");
-            $apiResponse = null; // Error occurred while making the request
+            return null;
         }
-        return $apiResponse;
     }
+
 
     public function postFile($url, $fileName, $jsonFilePath, $params = [], $gzip = true): ?string
     {

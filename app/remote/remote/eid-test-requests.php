@@ -12,7 +12,6 @@ use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -35,7 +34,6 @@ try {
   $payload = [];
 
   $labId = $data['labName'] ?? $data['labId'] ?? null;
-
 
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);
@@ -65,8 +63,7 @@ try {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
 
-
-  $removeKeys = array(
+  $removeKeys = [
     'sample_code',
     'sample_code_key',
     'sample_code_format',
@@ -95,41 +92,46 @@ try {
     'last_modified_by',
     'result_printed_datetime',
     'last_modified_datetime'
-  );
+  ];
 
   [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
 
   $sampleIds = $facilityIds = [];
-  $counter = 0;
-  if ($resultCount > 0) {
-    $payload = $rResult;
-    // foreach ($rResult as $row) {
-    //   $payload[] = array_diff_key($row, array_flip($removeKeys));
-    // }
 
-    $counter = $resultCount;
+  if ($resultCount > 0) {
     $sampleIds = array_column($rResult, 'eid_id');
     $facilityIds = array_column($rResult, 'facility_id');
-
-    $payload = JsonUtility::encodeUtf8Json($payload);
+    $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'eid', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'eid', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+
+  if (!empty($facilityIds)) {
+    $general->updateTestRequestsSyncDateTime('eid', $facilityIds, $labId);
+  }
 
 
-  $general->updateTestRequestsSyncDateTime('eid', $facilityIds, $labId);
+  if (!empty($sampleIds)) {
+    $updateData = [
+      'data_sync' => 1
+    ];
+    $db->where('eid_id', $sampleIds, 'IN');
+    $db->update('form_eid', $updateData);
+  }
+
+
   $db->commitTransaction();
 } catch (Throwable $e) {
   $db->rollbackTransaction();
 
   $payload = json_encode([]);
 
-  if ($db->getLastErrno() > 0) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+  if ($db->getLastError()) {
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
   }
   throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

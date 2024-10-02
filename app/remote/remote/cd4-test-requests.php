@@ -44,16 +44,13 @@ try {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
 
-
-  $counter = 0;
-
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
   if (!empty($fMapResult)) {
-    $condition = "(lab_id =" . $labId . " OR facility_id IN (" . $fMapResult . "))";
+    $condition = "(lab_id = $labId OR facility_id IN ($fMapResult))";
   } else {
-    $condition = "lab_id = " . $labId;
+    $condition = "lab_id = $labId";
   }
 
   // oldName => newName for existing columns
@@ -93,20 +90,26 @@ try {
 
   $sampleIds = $facilityIds = [];
   if ($resultCount > 0) {
-
-    $payload = $rResult;
-    $counter = $resultCount;
-
     $sampleIds = array_column($rResult, 'cd4_id');
     $facilityIds = array_column($rResult, 'facility_id');
-
     $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'cd4', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
-  $general->updateTestRequestsSyncDateTime('cd4', $facilityIds, $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'cd4', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+
+  if (!empty($facilityIds)) {
+    $general->updateTestRequestsSyncDateTime('cd4', $facilityIds, $labId);
+  }
+
+  if (!empty($sampleIds)) {
+    $updateData = [
+      'data_sync' => 1
+    ];
+    $db->where('cd4_id', $sampleIds, 'IN');
+    $db->update('form_cd4', $updateData);
+  }
 
   $db->commitTransaction();
 } catch (Throwable $e) {

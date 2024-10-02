@@ -6,12 +6,11 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
@@ -34,8 +33,6 @@ $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
 try {
-
-
   $db->beginTransaction();
 
   $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
@@ -91,17 +88,28 @@ try {
 
   $sampleIds = $facilityIds = [];
   if ($resultCount > 0) {
-
     $sampleIds = array_column($rResult, 'vl_sample_id');
     $facilityIds = array_column($rResult, 'facility_id');
-
     $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
   $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
-  $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
+
+  if (!empty($facilityIds)) {
+    $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
+  }
+
+
+  if (!empty($sampleIds)) {
+    $updateData = [
+      'data_sync' => 1
+    ];
+    $db->where('vl_sample_id', $sampleIds, 'IN');
+    $db->update('form_vl', $updateData);
+  }
+
 
   $db->commitTransaction();
 } catch (Throwable $e) {
@@ -109,10 +117,10 @@ try {
 
   $payload = json_encode([]);
 
-  if ($db->getLastErrno() > 0) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+  if ($db->getLastError()) {
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
   }
   throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

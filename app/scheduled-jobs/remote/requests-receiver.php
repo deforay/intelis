@@ -3,7 +3,7 @@
 
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
-    require_once(__DIR__ . "/../../../bootstrap.php");
+    require_once __DIR__ . "/../../../bootstrap.php";
     echo "=========================" . PHP_EOL;
     echo "Starting requests sync" . PHP_EOL;
 }
@@ -68,14 +68,6 @@ if (!empty($forceSyncModule)) {
     $systemConfig['modules'][$forceSyncModule] = true;
 }
 
-/*
- ****************************************************************
- * GENERIC TEST REQUESTS
- ****************************************************************
- */
-$request = [];
-
-
 
 /*
  ****************************************************************
@@ -110,7 +102,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
 
-        $removeKeys = array(
+        $removeKeys = [
             'vl_sample_id',
             'sample_batch_id',
             'result_value_log',
@@ -128,7 +120,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             'request_created_datetime',
             'last_modified_by',
             'data_sync'
-        );
+        ];
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $removeKeys);
 
@@ -221,7 +213,6 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 }
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -245,7 +236,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
   */
 
 $request = [];
-//$remoteSampleCodeList = [];
+
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
     $url = "$remoteURL/remote/remote/eid-test-requests.php";
 
@@ -292,7 +283,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
 
-                //$remoteSampleCodeList[] = $request['remote_sample_code'];
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
@@ -366,7 +356,6 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 }
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -389,7 +378,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
   ****************************************************************
   */
 $request = [];
-//$remoteSampleCodeList = [];
+
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
     $payload = array(
@@ -436,7 +425,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                 $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-                //$remoteSampleCodeList[] = $request['remote_sample_code'];
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
@@ -566,7 +554,6 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -589,19 +576,19 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 ****************************************************************
 */
 $request = [];
-//$remoteSampleCodeList = [];
+
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-    $url = $remoteURL . '/remote/remote/hepatitis-test-requests.php';
-    $payload = array(
+    $url = "$remoteURL/remote/remote/hepatitis-test-requests.php";
+    $payload = [
         'labId' => $labId,
         'module' => 'hepatitis'
-    );
+    ];
     if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && isset($manifestCode) && trim((string) $manifestCode) != "") {
         $payload['manifestCode'] = $manifestCode;
     }
 
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
-    // die($jsonResponse);
+
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         if ($cliMode) {
@@ -642,7 +629,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             try {
                 $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
-                //$remoteSampleCodeList[] = $request['remote_sample_code'];
+
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
@@ -752,7 +739,6 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -774,7 +760,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 ****************************************************************
 */
 $request = [];
-//$remoteSampleCodeList = [];
+
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = "$remoteURL/remote/remote/tb-test-requests.php";
     $payload = [
@@ -825,7 +811,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             try {
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-                //$remoteSampleCodeList[] = $request['remote_sample_code'];
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
@@ -905,7 +890,6 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                 }
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -1054,7 +1038,6 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                 }
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -1071,6 +1054,13 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 }
 
 
+
+/*
+ ****************************************************************
+ * GENERIC TEST REQUESTS
+ ****************************************************************
+ */
+$request = [];
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
@@ -1236,7 +1226,6 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                // LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),

@@ -11,8 +11,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
+use App\Utilities\LoggerUtility;
 
 header('Content-Type: application/json');
 
@@ -21,7 +20,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
 
 try {
   $db->beginTransaction();
@@ -65,11 +63,9 @@ try {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
   [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
-  $response  = $sampleIds = $facilityIds = [];
-  $counter = 0;
+  $sampleIds = $facilityIds = [];
   $response = [];
   if ($resultCount > 0) {
-    $counter = $resultCount;
     $sampleIds = array_column($rResult, 'covid19_id');
     $facilityIds = array_column($rResult, 'facility_id');
 
@@ -83,24 +79,35 @@ try {
       $response[$r['covid19_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
     }
   }
-  $payload = JsonUtility::encodeUtf8Json(array(
+  $payload = JsonUtility::encodeUtf8Json([
     'labId' => $labId,
     'result' => $response,
-  ));
+  ]);
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'covid19', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'covid19', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
-  $general->updateTestRequestsSyncDateTime('covid19', $facilityIds, $labId);
+  if (!empty($facilityIds)) {
+    $general->updateTestRequestsSyncDateTime('covid19', $facilityIds, $labId);
+  }
+
+  if (!empty($sampleIds)) {
+    $updateData = [
+      'data_sync' => 1
+    ];
+    $db->where('covid19_id', $sampleIds, 'IN');
+    $db->update('form_covid19', $updateData);
+  }
+
   $db->commitTransaction();
 } catch (Throwable $e) {
   $db->rollbackTransaction();
 
   $payload = json_encode([]);
 
-  if ($db->getLastErrno() > 0) {
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+  if ($db->getLastError()) {
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
   }
   throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
