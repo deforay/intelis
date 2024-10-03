@@ -161,7 +161,6 @@ try {
 	//Update patient Information in Patients Table
 	$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');
 
-	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$covid19Data = array(
 		'external_sample_code' => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,

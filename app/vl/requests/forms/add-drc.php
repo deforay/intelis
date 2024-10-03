@@ -865,6 +865,9 @@ $sFormat = '';
 	}
 
 	function validateNow() {
+		if ($("#sampleCode").val() == '') {
+			generateSampleCode();
+		}
 		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
 		flag = deforayValidator.init({
 			formId: 'addVlRequestForm'
@@ -910,7 +913,6 @@ $sFormat = '';
 						}
 					}
 				}
-
 			}
 		}
 		if ($.trim(patientArray['patient_art_no']) != '') {

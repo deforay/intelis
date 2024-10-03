@@ -87,7 +87,7 @@ try {
 		$_POST['hcvCount'] = null;
 		$_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
-	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+	} elseif (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
 	}
 

@@ -134,7 +134,6 @@ try {
 	//Update patient Information in Patients Table
 	$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
 
-	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$hepatitisData = array(
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
@@ -199,7 +198,6 @@ try {
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
 	);
 
-	//$db->select('result');
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$getPrevResult = $db->getOne('form_hepatitis');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {

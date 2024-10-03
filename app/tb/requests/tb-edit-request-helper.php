@@ -185,7 +185,7 @@ try {
     //Update patient Information in Patients Table
     $systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
 
-    //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+
 
     $tbData = array(
         'vlsm_instance_id' => $instanceId,
@@ -253,7 +253,7 @@ try {
         'source_of_request' => "web"
     );
 
-    //$db->select('result');
+
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {

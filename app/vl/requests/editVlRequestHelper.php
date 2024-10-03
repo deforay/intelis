@@ -155,40 +155,19 @@ try {
      $hivDetection = $processedResults['hivDetection'];
      $resultStatus = $processedResults['resultStatus'] ?? $resultStatus;
 
-     /* $reasonForChanges = null;
-     $allChange = [];
-     if (isset($_POST['reasonForResultChangesHistory']) && $_POST['reasonForResultChangesHistory'] != '') {
-          $allChange = json_decode(base64_decode((string) $_POST['reasonForResultChangesHistory']), true);
-     }
-     if (isset($_POST['reasonForResultChanges']) && trim((string) $_POST['reasonForResultChanges']) != '') {
-          $allChange[] = array(
-               'usr' => $_SESSION['userId'] ?? $_POST['userId'],
-               'msg' => $_POST['reasonForResultChanges'],
-               'dtime' => DateUtility::getCurrentDateTime()
-          );
-     }
-     if (!empty($allChange)) {
-          $reasonForChanges = json_encode($allChange);
-     }*/
-     //set vl test reason
 
-     // echo $reasonForChanges; die;
-
-
-     if (isset($_POST['reasonForVLTesting']) && trim((string) $_POST['reasonForVLTesting']) != "") {
-          if (!is_numeric($_POST['reasonForVLTesting'])) {
-               $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons WHERE test_reason_name= ?";
-               $reasonResult = $db->rawQueryOne($reasonQuery, [$_POST['reasonForVLTesting']]);
-               if (isset($reasonResult['test_reason_id']) && $reasonResult['test_reason_id'] != '') {
-                    $_POST['reasonForVLTesting'] = $reasonResult['test_reason_id'];
-               } else {
-                    $data = array(
-                         'test_reason_name' => $_POST['reasonForVLTesting'],
-                         'test_reason_status' => 'active'
-                    );
-                    $id = $db->insert('r_vl_test_reasons', $data);
-                    $_POST['reasonForVLTesting'] = $id;
-               }
+     if (isset($_POST['reasonForVLTesting']) && trim((string) $_POST['reasonForVLTesting']) != "" && !is_numeric($_POST['reasonForVLTesting'])) {
+          $reasonQuery = "SELECT test_reason_id FROM r_vl_test_reasons WHERE test_reason_name= ?";
+          $reasonResult = $db->rawQueryOne($reasonQuery, [$_POST['reasonForVLTesting']]);
+          if (isset($reasonResult['test_reason_id']) && $reasonResult['test_reason_id'] != '') {
+               $_POST['reasonForVLTesting'] = $reasonResult['test_reason_id'];
+          } else {
+               $data = [
+                    'test_reason_name' => $_POST['reasonForVLTesting'],
+                    'test_reason_status' => 'active'
+               ];
+               $id = $db->insert('r_vl_test_reasons', $data);
+               $_POST['reasonForVLTesting'] = $id;
           }
      }
 
@@ -196,7 +175,7 @@ try {
           $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
      }
 
-     //$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+
 
      $vlData = array(
           'vlsm_instance_id' => $instanceId,
@@ -428,7 +407,7 @@ try {
           $vlData['patient_last_name'] = $encryptedPatientLastName;
           $vlData['is_encrypted'] = 'yes';
      } else {
-          $vlData['is_encrypted'] = NULL;
+          $vlData['is_encrypted'] = null;
      }
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
