@@ -24,7 +24,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_vl";
 $tableName2 = "log_result_updates";

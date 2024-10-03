@@ -691,3 +691,13 @@ ALTER TABLE `form_cd4` DROP INDEX `sample_code`;
 -- Amit 03-Oct-2024
 UPDATE form_vl SET result = null WHERE result like '';
 UPDATE form_vl SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
+UPDATE form_eid SET result = null WHERE result like '';
+UPDATE form_eid SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
+UPDATE form_covid19 SET result = null WHERE result like '';
+UPDATE form_covid19 SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
+UPDATE form_tb SET result = null WHERE result like '';
+UPDATE form_tb SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
+UPDATE form_cd4 SET cd4_result = null WHERE cd4_result like '';
+UPDATE form_cd4 SET result_status = 6 WHERE result_status = 7 and cd4_result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
+UPDATE form_generic SET result = null WHERE result like '';
+UPDATE form_generic SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';

@@ -29,8 +29,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Sanitize input
-$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";

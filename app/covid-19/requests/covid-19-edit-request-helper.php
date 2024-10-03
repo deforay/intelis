@@ -3,18 +3,15 @@
 ///  if you change anyting in this file make sure Api file for covid 19 update also
 // Path   /vlsm/api/covid-19/v1/update-request.php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Services\ApiService;
+use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\PatientsService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\PatientsService;
-use App\Utilities\DateUtility;
-
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -41,7 +38,8 @@ $testTableName = 'covid19_tests';
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
 
 try {
 	$sarr = $general->getSystemConfig();
