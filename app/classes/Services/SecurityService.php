@@ -32,7 +32,7 @@ final class SecurityService
             throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
         }
 
-        if (!$csrfToken || $csrfToken !== $_SESSION['csrf_token']) {
+        if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
             self::invalidateAndGenerateCSRF();
             throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
         }

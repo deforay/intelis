@@ -682,8 +682,12 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 VALUES (NULL, 'common-reference', '/admin/monitoring/system-settings.php', NULL, 'System Settings', NULL, 'always');
 
 -- Amit 25-Sep-2024
-UPDATE form_vl set result_status = 5  where result in ('fail%', 'failed');
-UPDATE form_vl set result_status =7 where result is not null and result_status IN (6,10);
-UPDATE form_eid set result_status =7 where result is not null and result_status IN (6,10);
-UPDATE form_covid19 set result_status =7 where result is not null and result_status IN (6,10);
+UPDATE form_vl SET result_status = 5  WHERE result in ('fail%', 'failed');
+UPDATE form_vl SET result_status =7 WHERE result is not null and result_status IN (6,10);
+UPDATE form_eid SET result_status =7 WHERE result is not null and result_status IN (6,10);
+UPDATE form_covid19 SET result_status =7 WHERE result is not null and result_status IN (6,10);
 ALTER TABLE `form_cd4` DROP INDEX `sample_code`;
+
+-- Amit 03-Oct-2024
+UPDATE form_vl SET result = null WHERE result like '';
+UPDATE form_vl SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
