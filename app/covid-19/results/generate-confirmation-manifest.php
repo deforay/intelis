@@ -110,7 +110,7 @@ if (trim($id) != '') {
         // create new PDF document
         $pdf = new Covid19ConfirmationManifestPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($arr['logo'], $arr['header'], $labname);
+        $pdf->setHeading($general->getGlobalConfig('logo'), $general->getGlobalConfig('header'), $labname);
 
         // set document information
         $pdf->SetCreator('STS');

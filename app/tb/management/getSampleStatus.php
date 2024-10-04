@@ -23,8 +23,6 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $whereCondition = '';
-$configFormQuery = "SELECT * FROM global_config WHERE `name` ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
 
 $whereCondition = '';
 

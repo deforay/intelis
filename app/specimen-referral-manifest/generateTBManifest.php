@@ -32,16 +32,10 @@ if (trim((string) $id) != '') {
 
 
     $labname = $result[0]['lab_name'] ?? "";
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    $showPatientName = $arr['tb_show_participant_name_in_manifest'];
+
+    $showPatientName = $general->getGlobalConfig('tb_show_participant_name_in_manifest');
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
-    //echo $bQuery;die;
+
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
@@ -49,7 +43,7 @@ if (trim((string) $id) != '') {
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('TB Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($arr['logo'], $arr['header'], $labname);
+        $pdf->setHeading($general->getGlobalConfig('logo'), $general->getGlobalConfig('header'), $labname);
 
         // set document information
         $pdf->SetCreator('STS');

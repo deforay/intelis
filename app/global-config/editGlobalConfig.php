@@ -38,12 +38,6 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 // Get locale directory list
 $localeLists = $general->getLocaleList((int)($arr['vl_form'] ?? 0));
 
-
-$mFieldArray = [];
-if (isset($arr['r_mandatory_fields']) && trim((string) $arr['r_mandatory_fields']) != '') {
-	$mFieldArray = explode(',', (string) $arr['r_mandatory_fields']);
-}
-
 $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 ?>
@@ -1354,49 +1348,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 								</div>
-
-								<!-- <div class="row">
-									<div class="col-md-7">
-										<div class="form-group">
-											<label for="r_mandatory_fields" class="col-lg-4 control-label"><?php echo _translate("Mandatory Fields for COMPLETED Result PDF"); ?>: </label>
-											<div class="col-lg-8">
-												<div class="form-group">
-													<div class="col-md-12">
-														<div class="row">
-															<div class="col-md-12" style="text-align:justify;">
-																<code><?php echo _translate("If any of the selected fields are incomplete, the Result PDF appears with a"); ?> <strong><?php echo _translate("DRAFT"); ?></strong> <?php echo _translate("watermark. Leave right block blank (Deselect All) to disable this"); ?>.</code>
-															</div>
-														</div>
-														<div style="width:100%;margin:10px auto;clear:both;">
-															<a href="#" id="select-all-field" style="float:left;" class="btn btn-info btn-xs"><?php echo _translate("Select All"); ?>&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href="#" id="deselect-all-field" style="float:right;" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;<?php echo _translate("Deselect All"); ?></a>
-														</div><br /><br />
-														<select id="r_mandatory_fields" name="r_mandatory_fields[]" multiple="multiple" class="search readPage">
-															<option value="facility_code" <?php echo (in_array('facility_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Facility Code"); ?></option>
-															<option value="facility_state" <?php echo (in_array('facility_state', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Facility Province"); ?></option>
-															<option value="facility_district" <?php echo (in_array('facility_district', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Facility District"); ?></option>
-															<option value="facility_name" <?php echo (in_array('facility_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Facility Name"); ?></option>
-															<option value="sample_code" <?php echo (in_array('sample_code', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Sample ID"); ?></option>
-															<option value="sample_collection_date" <?php echo (in_array('sample_collection_date', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Sample Collection Date"); ?></option>
-															<option value="patient_art_no" <?php echo (in_array('patient_art_no', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Patient ART No"); ?>.</option>
-															<option value="sample_received_at_lab_datetime" <?php echo (in_array('sample_received_at_lab_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Date Sample Received at Testing Lab"); ?></option>
-															<option value="sample_tested_datetime" <?php echo (in_array('sample_tested_datetime', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Sample Tested Date"); ?></option>
-															<option value="sample_name" <?php echo (in_array('sample_name', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Sample Type"); ?></option>
-															<option value="vl_test_platform" <?php echo (in_array('vl_test_platform', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("VL Testing Platform"); ?></option>
-															<option value="result" <?php echo (in_array('result', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("VL Result"); ?></option>
-															<option value="approvedBy" <?php echo (in_array('approvedBy', $mFieldArray)) ? 'selected="selected"' : ''; ?>><?php echo _translate("Approved By"); ?></option>
-														</select>
-
-													</div>
-
-												</div>
-
-											</div>
-
-										</div>
-
-									</div>
-
-								</div> -->
 
 							</div>
 

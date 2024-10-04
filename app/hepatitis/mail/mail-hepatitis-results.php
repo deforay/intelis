@@ -3,12 +3,7 @@
 $title = "Email Hepatitis Test Results";
 
 require_once APPLICATION_PATH . '/header.php';
-$configQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configResult = $db->rawQuery($configQuery);
-$formId = 0;
-if (isset($configResult[0]['value']) && trim((string) $configResult[0]['value']) != '') {
-  $formId = intval($configResult[0]['value']);
-}
+
 //main query
 $query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where is_result_mail_sent like 'no' AND hepatitis.result IS NOT NULL AND hepatitis.result!= '' ORDER BY f.facility_name ASC";
 $result = $db->rawQuery($query);

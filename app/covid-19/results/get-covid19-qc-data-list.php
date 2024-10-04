@@ -4,17 +4,8 @@
 
 $tableName = "qc_covid19";
 $primaryKey = "qc_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 
-
-$aColumns = array('qc_code', 'testkit_name', 'lot_no', 'expiry_date', 'facility_name', 'user_name', 'qc_tested_datetime', 'qc.updated_datetime');
+$aColumns = ['qc_code', 'testkit_name', 'lot_no', 'expiry_date', 'facility_name', 'user_name', 'qc_tested_datetime', 'qc.updated_datetime'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

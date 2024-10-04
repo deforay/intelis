@@ -9,19 +9,9 @@ use App\Services\GeoLocationsService;
 $title = _translate("Print Hepatitis Results");
 
 require_once APPLICATION_PATH . '/header.php';
-// $tsQuery = "SELECT * FROM r_sample_status";
-// $tsResult = $db->rawQuery($tsQuery);
-// $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-// $configFormResult = $db->rawQuery($configFormQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type ='hepatitis' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
-// $fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-// $fundingSourceList = $db->query($fundingSourceQry);
-// //Implementing partner list
-// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-// $implementingPartnerList = $db->query($implementingPartnerQry);
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

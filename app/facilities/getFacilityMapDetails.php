@@ -18,16 +18,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "testing_lab_health_facilities_map";
 $primaryKey = "facility_map_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
-$aColumns = array('fd.facility_name');
+$aColumns = ['fd.facility_name'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;

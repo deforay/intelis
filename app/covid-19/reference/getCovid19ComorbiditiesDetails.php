@@ -4,15 +4,6 @@
 
 $tableName = "r_covid19_comorbidities";
 $primaryKey = "comorbidity_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 
 $aColumns = array('comorbidity_name', 'comorbidity_status');
 
@@ -78,7 +69,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
          * Get data to display
         */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_covid19_comorbidities";
+$sQuery = "SELECT * FROM r_covid19_comorbidities";
 
 if (!empty($sWhere)) {
     $sWhere = ' where ' . implode(' AND ', $sWhere);
@@ -93,25 +84,19 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
 /*
          * Output
         */
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['comorbidity_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['comorbidity_status'] . '\')">
@@ -123,7 +108,7 @@ foreach ($rResult as $aRow) {
     if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['comorbidity_status']);
+        $row[] = $aRow['comorbidity_status'];
     }
     $output['aaData'][] = $row;
 }

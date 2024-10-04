@@ -1,19 +1,11 @@
 <?php
 
 
-
-//system config
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Utilities\DateUtility;
 
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 $sCode = 'sample_code';
 $configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
 $configResult = $db->query($configQuery);
@@ -24,12 +16,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $aColumns = array('p.manifest_code', 'p.module', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
 $orderColumns = array('p.manifest_id', 'p.module', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime');
-/* Indexed column (used for fast and accurate table cardinality) */
-// $sIndexColumn = "manifest_id";
-// $sTable = "covid19_positive_confirmation_manifest";
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
@@ -95,42 +82,24 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// echo($sQuery);die;
-$rResult = $db->rawQuery($sQuery);
-/* Data set length after filtering */
-$aResultFilterTotal = $db->rawQuery("select p.request_created_datetime ,p.manifest_code,p.manifest_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id $sWhere group by p.manifest_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
 
-/* Total data set length */
-$aResultTotal = $db->rawQuery("select p.request_created_datetime ,p.manifest_code,p.manifest_status,count(vl." . $sCode . ") as sample_code from $tableName vl right join covid19_positive_confirmation_manifest p on vl.positive_test_manifest_id = p.manifest_id where vl.vlsm_country_id ='" . $configResult[0]['value'] . "' $facilityQuery group by p.manifest_id");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = count($aResultTotal);
-/*
- * Output
- */
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 $package = false;
 $edit = false;
-if ((_isAllowed("generate-confirmation-manifest.php"))) {
-    $package = true;
-}
-if ((_isAllowed("covid-19-edit-confirmation-manifest.php"))) {
-    $edit = true;
-}
+
+$package = _isAllowed("generate-confirmation-manifest.php");
+$edit = _isAllowed("covid-19-edit-confirmation-manifest.php");
 
 foreach ($rResult as $aRow) {
-    $humanDate = "";
+
     $printBarcode = '<a href="generate-confirmation-manifest.php?id=' . base64_encode((string) $aRow['manifest_code']) . '" class="btn btn-info btn-xs" style="margin-right: 2px;" title="Print Barcode" target="_blank"><em class="fa-solid fa-barcode"></em> Print Barcode</a>';
-    if (trim((string) $aRow['request_created_datetime']) != "" && $aRow['request_created_datetime'] != '0000-00-00 00:00:00') {
-        $date = $aRow['request_created_datetime'];
-        $humanDate = date("d-M-Y H:i:s", strtotime((string) $date));
-    }
     $disable = '';
     $pointerEvent = '';
     if ($aRow['manifest_status'] == 'dispatch') {
@@ -138,11 +107,10 @@ foreach ($rResult as $aRow) {
         $disable = "disabled";
     }
     $row = [];
-    //$row[] = '<input type="checkbox" name="chkPackage[]" class="chkPackage" id="chkPackage' . $aRow['manifest_id'] . '"  value="' . $aRow['manifest_id'] . '" onclick="checkPackage(this);"  />';
     $row[] = $aRow['manifest_code'];
     $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['sample_code'];
-    $row[] = $humanDate;
+    $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '');
     if ($package || $edit) {
         if ($edit) {
             $editBtn = '<a href="covid-19-edit-confirmation-manifest.php?id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';

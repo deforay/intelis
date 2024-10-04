@@ -1,7 +1,5 @@
 <?php
 
-///  if you change anyting in this file make sure Api file for covid 19 add also
-// Path   /vlsm/api/covid-19/v1/add-request.php
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -38,14 +36,7 @@ $tableName1 = "activity_log";
 $testTableName = 'covid19_tests';
 
 try {
-	//system config
-	$systemConfigQuery = "SELECT * FROM system_config";
-	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = [];
-	// now we create an associative array so that we can easily create view variables
-	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-	}
+
 	$instanceId = '';
 	if (!empty($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

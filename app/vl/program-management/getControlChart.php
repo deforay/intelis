@@ -19,14 +19,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
+
 //date
 $start_date = '';
 $end_date = '';
 if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
     $s_c_date = explode("to", (string) $_POST['sampleTestDate']);
-    //print_r($s_c_date);die;
+
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }

@@ -26,8 +26,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-$configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-$configFormResult = $db->rawQuery($configFormQuery);
+
 $sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 $fQuery = "SELECT * FROM facility_details where status='active' Order By facility_name";

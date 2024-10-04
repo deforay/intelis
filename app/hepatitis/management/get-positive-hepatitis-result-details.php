@@ -18,31 +18,15 @@ $key = (string) $general->getGlobalConfig('key');
 
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
-//config  query
-$configQuery = "SELECT * from global_config";
-$configResult = $db->query($configQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-    $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 
-$thresholdLimit = $arr['viral_load_threshold_limit'];
+$thresholdLimit = $general->getGlobalConfig('viral_load_threshold_limit');
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id',  "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
-} else if ($general->isStandaloneInstance()) {
+} elseif ($general->isStandaloneInstance()) {
     $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
     $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
 }
@@ -103,30 +87,17 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-
-/*
-         * SQL queries
-         * Get data to display
-        */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
+$sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
 $start_date = '';
 $end_date = '';
 
 if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
     $sWhere[] =  ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
 }
-/* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
-		if($_POST['hvlContactStatus']=='all')
-		{
-			$sWhere = $sWhere.' AND (contact_complete_status = "no" OR contact_complete_status="yes" OR contact_complete_status IS NULL OR contact_complete_status="")';
-		}else{
-	    $sWhere = $sWhere.' AND contact_complete_status = "'.$_POST['hvlContactStatus'].'"';
-		}
-	} */
 
 if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) != '') {
     $s_c_date = explode("to", (string) $_POST['hvlSampleTestDate']);
-    //print_r($s_c_date);die;
+
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -184,30 +155,16 @@ $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// error_log($sQuery);
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering
 
-$aResultFilterTotal = $db->rawQuery("SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'  $sWhere group by vl.hepatitis_id order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length
-$aResultTotal =  $db->rawQuery("select COUNT(hepatitis_id) as total FROM form_hepatitis as vl where result_status=7 AND  vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive' AND vlsm_country_id='" . $arr['vl_form'] . "' $dWhere");
-$iTotal = $aResultTotal[0]['total'];*/
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['highViralResultCount'] = $iTotal;
+$_SESSION['highViralResultCount'] = $resultCount;
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 );
 
@@ -246,11 +203,6 @@ foreach ($rResult as $aRow) {
     $row[] =  ($aRow['hcv_vl_result']);
     $row[] =  ($aRow['hbv_vl_result']);
     $row[] = '';
-    /* $row[] = '<select class="form-control" name="status" id=' . $aRow['hepatitis_id'] . ' title="Please select status" onchange="updateStatus(this.id,this.value)">
-                            <option value=""> -- Select -- </option>
-                            <option value="yes" ' . ($aRow['contact_complete_status'] == "yes" ? "selected=selected" : "") . '>Yes</option>
-                            <option value="no" ' . ($aRow['contact_complete_status'] == "no" ? "selected=selected" : "") . '>No</option>
-                        </select>'; */
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

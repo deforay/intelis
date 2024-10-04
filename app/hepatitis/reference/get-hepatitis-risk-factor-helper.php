@@ -1,18 +1,7 @@
 <?php
 
-
-
 $tableName = "r_hepatitis_risk_factors";
 $primaryKey = "riskfactor_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 
 $aColumns = array('riskfactor_name', 'riskfactor_status');
 

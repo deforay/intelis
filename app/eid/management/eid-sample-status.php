@@ -11,17 +11,11 @@ $title = _translate("EID | Sample Status Report");
 require_once APPLICATION_PATH . '/header.php';
 
 
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-// $tsQuery = "SELECT * FROM r_sample_status";
-// $tsResult = $db->rawQuery($tsQuery);
-// $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-// $configFormResult = $db->rawQuery($configFormQuery);
 
 
 /** @var FacilitiesService $facilitiesService */

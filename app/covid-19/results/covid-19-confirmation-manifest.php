@@ -4,25 +4,14 @@ $title = "Add Samples from Manifest";
 
 require_once APPLICATION_PATH . '/header.php';
 
-// $tsQuery = "SELECT * FROM r_sample_status";
-// $tsResult = $db->rawQuery($tsQuery);
-// $configFormQuery = "SELECT * FROM global_config WHERE name ='vl_form'";
-// $configFormResult = $db->rawQuery($configFormQuery);
-// $sQuery = "SELECT * FROM r_covid19_sample_type where status='active'";
-// $sResult = $db->rawQuery($sQuery);
-// $fQuery = "SELECT * FROM facility_details where status='active'";
-// $fResult = $db->rawQuery($fQuery);
-// $batQuery = "SELECT batch_code FROM batch_details where test_type ='covid19' AND batch_status='completed'";
-// $batResult = $db->rawQuery($batQuery);
 ?>
 <style>
 	.select2-selection__choice {
 		color: black !important;
 	}
 </style>
-<!-- Content Wrapper. Contains page content -->
+
 <div class="content-wrapper">
-	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-square-check"></em> Confirmation Test Manifest</h1>
 		<ol class="breadcrumb">
@@ -31,7 +20,6 @@ require_once APPLICATION_PATH . '/header.php';
 		</ol>
 	</section>
 
-	<!-- Main content -->
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
