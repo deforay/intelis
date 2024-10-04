@@ -193,7 +193,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row"><label for="mothersMaritalStatus">Etat civil </label></th>
 									<td>
 										<select class="form-control " name="mothersMaritalStatus" id="mothersMaritalStatus">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value='single' <?php echo ($eidInfo['mother_marital_status'] == 'single') ? "selected='selected'" : ""; ?>> Single </option>
 											<option value='married' <?php echo ($eidInfo['mother_marital_status'] == 'married') ? "selected='selected'" : ""; ?>> Married </option>
 											<option value='cohabitating' <?php echo ($eidInfo['mother_marital_status'] == 'cohabitating') ? "selected='selected'" : ""; ?>> Cohabitating </option>
@@ -226,7 +226,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row"><label for="childGender">Gender </label></th>
 									<td>
 										<select class="form-control " name="childGender" id="childGender">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value='male' <?php echo ($eidInfo['child_gender'] == 'male') ? "selected='selected'" : ""; ?>> <?= _translate("Male"); ?> </option>
 											<option value='female' <?php echo ($eidInfo['child_gender'] == 'female') ? "selected='selected'" : ""; ?>> <?= _translate("Female"); ?> </option>
 											<option value='unreported' <?php echo ($eidInfo['child_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate("Unreported"); ?> </option>
@@ -283,7 +283,7 @@ $storageInfo = $storageService->getLabStorage();
 									<td style="vertical-align:middle;">- OR -</td>
 									<td style="vertical-align:middle;">
 										<select class="form-control " title="Mother's Viral Load" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad();">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value='tnd' <?php echo ($eidInfo['mother_vl_result'] == 'tnd') ? "selected='selected'" : ""; ?>> Target Not Detected </option>
 											<option value='bdl' <?php echo ($eidInfo['mother_vl_result'] == 'bdl') ? "selected='selected'" : ""; ?>> Below Detection Limit </option>
 											<option value='< 20' <?php echo ($eidInfo['mother_vl_result'] == '< 20') ? "selected='selected'" : ""; ?>>
@@ -321,7 +321,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Bébé a arrêté allaitement maternel ?</th>
 									<td>
 										<select class="form-control" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value="yes" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 											<option value="no" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'no') ? "selected='selected'" : ""; ?> /> Non </option>
 											<option value="unknown" <?php echo ($eidInfo['has_infant_stopped_breastfeeding'] == 'unknown') ? "selected='selected'" : ""; ?> /> Inconnu </option>
@@ -333,10 +333,10 @@ $storageInfo = $storageService->getLabStorage();
 									<td>
 										<input type="number" class="form-control" style="max-width:200px;display:inline;" placeholder="Age (mois) arrêt allaitement" type="text" name="ageBreastfeedingStopped" id="ageBreastfeedingStopped" value="<?php echo $eidInfo['age_breastfeeding_stopped_in_months'] ?>" />
 									</td>
-									<th scope="row">Choix d’allaitement de bébé :</th>
+									<th scope="row">Choix d'allaitement de bébé :</th>
 									<td>
 										<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value="Breastfeeding only" <?php echo ($eidInfo['choice_of_feeding'] == 'Breastfeeding only') ? "selected='selected'" : ""; ?>> Allaitement seul </option>
 											<option value="Milk substitute" <?php echo ($eidInfo['choice_of_feeding'] == 'Milk substitute') ? "selected='selected'" : ""; ?>> Substitut de lait </option>
 											<option value="Combination" <?php echo ($eidInfo['choice_of_feeding'] == 'Combination') ? "selected='selected'" : ""; ?>> Mixte </option>
@@ -348,7 +348,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Cotrimoxazole donné au bébé?</th>
 									<td>
 										<select class="form-control" name="isCotrimoxazoleBeingAdministered" id="isCotrimoxazoleBeingAdministered">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value="no" <?php echo ($eidInfo['is_cotrimoxazole_being_administered_to_the_infant'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											<option value="Yes, takes CTX everyday" <?php echo ($eidInfo['is_cotrimoxazole_being_administered_to_the_infant'] == 'Yes, takes CTX everyday') ? "selected='selected'" : ""; ?>> Oui, prend CTX chaque jour </option>
 											<option value="Starting on CTX today" <?php echo ($eidInfo['is_cotrimoxazole_being_administered_to_the_infant'] == 'Starting on CTX today') ? "selected='selected'" : ""; ?>> Commence CTX aujourd’hui </option>
@@ -401,7 +401,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Raison de la PCR (cocher une):</th>
 									<td>
 										<select class="form-control" name="pcrTestReason" id="pcrTestReason">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value="Nothing" <?php echo ($eidInfo['reason_for_pcr'] == 'Nothing') ? "selected='selected'" : ""; ?>> Rien</option>
 											<option value="First Test for exposed baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First Test for exposed baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé exposé</option>
 											<option value="First test for sick baby" <?php echo ($eidInfo['reason_for_pcr'] == 'First test for sick baby') ? "selected='selected'" : ""; ?>> 1st test pour bébé malade</option>
@@ -419,7 +419,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Test rapide effectué? </th>
 									<td>
 										<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<option value="yes" <?php echo ($eidInfo['rapid_test_performed'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 											<option value="no" <?php echo ($eidInfo['rapid_test_performed'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 										</select>
@@ -433,7 +433,7 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Résultat test rapide</th>
 									<td>
 										<select class="form-control" name="rapidTestResult" id="rapidTestResult">
-											<option value=''> -- Sélectionner -- </option>
+											<option value=''><?= _translate("-- Select --"); ?></option>
 											<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 												<option value="<?php echo $eidResultKey; ?>" <?php echo ($eidInfo['rapid_test_result'] == $eidResultKey) ? "selected='selected'" : ""; ?>> <?php echo $eidResultValue; ?> </option>
 											<?php } ?>
@@ -470,7 +470,7 @@ $storageInfo = $storageService->getLabStorage();
 										<th scope="row"><?= _translate("Is Sample Rejected?"); ?> <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="isSampleRejected" title="Veuillez sélectionner si l'échantillon est rejeté ou non?" id="isSampleRejected" onchange="sampleRejection();">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''><?= _translate("-- Select --"); ?></option>
 												<option value="yes" <?php echo ($eidInfo['is_sample_rejected'] == 'yes') ? "selected='selected'" : ""; ?>> Oui </option>
 												<option value="no" <?php echo ($eidInfo['is_sample_rejected'] == 'no') ? "selected='selected'" : ""; ?>> Non </option>
 											</select>
@@ -531,7 +531,7 @@ $storageInfo = $storageService->getLabStorage();
 										<th scope="row">Résultat </label></th>
 										<td>
 											<select class="result-focus form-control isRequired" name="result" id="result" title="Résultat">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''><?= _translate("-- Select --"); ?></option>
 												<option value="positive" <?php echo ($eidInfo['result'] == 'positive') ? "selected='selected'" : ""; ?>> Positif </option>
 												<option value="negative" <?php echo ($eidInfo['result'] == 'negative') ? "selected='selected'" : ""; ?>> Négatif </option>
 												<option value="indeterminate" <?php echo ($eidInfo['result'] == 'indeterminate') ? "selected='selected'" : ""; ?>> Indéterminé </option>

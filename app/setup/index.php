@@ -199,7 +199,7 @@ $testName = TestsService::getTestTypes();
                   <th scope="row"><?= _translate("Memory Limit"); ?></th>
                   <td>
                     <?php echo $serverSettings['memory_limit']; ?></td>
-                  <th scope="row"><?= _translate("Maximum Upload Filesize	"); ?></th>
+                  <th scope="row"><?= _translate("Maximum Upload Filesize"); ?></th>
                   <td><?php echo $serverSettings['upload_max_filesize']; ?></td>
                 </tr>
                 <tr>

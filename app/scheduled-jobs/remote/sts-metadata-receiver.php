@@ -1,25 +1,5 @@
 <?php
 
-// Request STS to send metadata to this instance of LIS
-
-$cliMode = php_sapi_name() === 'cli';
-$forceFlag = false;
-$truncateFlag = false;
-
-if ($cliMode) {
-    require_once(__DIR__ . "/../../../bootstrap.php");
-
-    // Parse CLI arguments
-    $options = getopt('ft', ['force', 'truncate']);
-    if (isset($options['f']) || isset($options['force'])) {
-        $forceFlag = true;
-    }
-    if (isset($options['t']) || isset($options['truncate'])) {
-        $truncateFlag = true;
-    }
-}
-
-
 use JsonMachine\Items;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
@@ -31,6 +11,26 @@ use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
+
+// Request STS to send metadata to this instance of LIS
+
+$cliMode = php_sapi_name() === 'cli';
+$forceFlag = false;
+$truncateFlag = false;
+
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+
+    // Parse CLI arguments
+    $options = getopt('ft', ['force', 'truncate']);
+    if (isset($options['f']) || isset($options['force'])) {
+        $forceFlag = true;
+    }
+    if (isset($options['t']) || isset($options['truncate'])) {
+        $truncateFlag = true;
+    }
+}
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -74,7 +74,6 @@ if (!empty($_POST)) {
             exit(0);
         }
     } else {
-        //exit('Access denied: No referrer.');
         exit(0);
     }
 } else {
@@ -166,7 +165,7 @@ $commonDataToSync = [
 ];
 
 // Receive data from STS
-$url = $remoteURL . '/remote/remote/sts-metadata-sender.php';
+$url = "$remoteURL/remote/remote/sts-metadata-sender.php";
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
     $toSyncTables = [

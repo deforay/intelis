@@ -20,9 +20,9 @@ $general = ContainerRegistry::get(CommonService::class);
 $text = '';
 if (isset($_GET['type']) && $_GET['type'] == 'district') {
     $field = "patient_district";
-} else if (isset($_GET['type']) && $_GET['type'] == 'province') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'province') {
     $field = "patient_province";
-} else if (isset($_GET['type']) && $_GET['type'] == 'zone') {
+} elseif (isset($_GET['type']) && $_GET['type'] == 'zone') {
     $field = "patient_zone";
 }
 
@@ -31,9 +31,9 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
 
     if ($text != "") {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field like '%" . $text . "%' AND $field is not null";
-    } else if ($_GET['zName'] != "") {
+    } elseif ($_GET['zName'] != "") {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_zone like '%" . $_GET['zName'] . "%' AND $field is not null";
-    } else if ($_GET['pName'] != "") {
+    } elseif ($_GET['pName'] != "") {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE patient_province like '%" . $_GET['pName'] . "%' AND $field is not null";
     } else {
         $cQuery = "SELECT DISTINCT $field FROM form_covid19 WHERE $field is not null";
@@ -42,15 +42,15 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
     $echoResult = [];
     if (!empty($cResult)) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$field], "text" => ($row[$field]));
+            $echoResult[] = ["id" => $row[$field], "text" => ($row[$field])];
         }
     } else {
-        $echoResult[] = array("id" => $text, 'text' => $text);
+        $echoResult[] = ["id" => $text, 'text' => $text];
     }
 
     $result = ["result" => $echoResult];
     echo json_encode($result);
-} else if (isset($_POST['pName']) && $_POST['pName'] != "") {
+} elseif (isset($_POST['pName']) && $_POST['pName'] != "") {
     $cQuery = "SELECT DISTINCT patient_zone FROM form_covid19 WHERE patient_province like '%" . $_POST['pName'] . "%' AND patient_zone is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];
@@ -61,7 +61,7 @@ if (!isset($_POST['pName']) && !isset($_POST['zName'])) {
         $option["other"] = "Other";
     }
     echo $general->generateSelectOptions($option, null, '-- Sélectionner --');
-} else if (isset($_POST['zName']) && $_POST['zName'] != "") {
+} elseif (isset($_POST['zName']) && $_POST['zName'] != "") {
     $cQuery = "SELECT DISTINCT patient_district FROM form_covid19 WHERE patient_zone like '%" . $_POST['zName'] . "%' AND patient_district is not null";
     $cResult = $db->rawQuery($cQuery);
     $option = [];

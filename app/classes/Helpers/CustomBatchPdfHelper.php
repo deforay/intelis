@@ -2,13 +2,11 @@
 
 namespace App\Helpers;
 
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use setasign\Fpdi\Tcpdf\Fpdi;
+use App\Utilities\DateUtility;
 
 class CustomBatchPdfHelper extends Fpdi
 {
-
     public ?string $text;
     public ?array $batchDetails;
 
@@ -25,7 +23,7 @@ class CustomBatchPdfHelper extends Fpdi
         // Set font
         $this->SetFont('helvetica', 'B', 8);
         // Page number
-        $text = _translate("Batch Code" . " : " . $this->batchDetails['batch_code']) . ' (' . DateUtility::humanReadableDateFormat($this->batchDetails['request_created_datetime'], true) . ')';
+        $text = _translate("Batch Code") . " : " . $this->batchDetails['batch_code'] . ' (' . DateUtility::humanReadableDateFormat($this->batchDetails['request_created_datetime'], true) . ')';
         if (isset($this->batchDetails['lab_assigned_batch_code']) && !empty($this->batchDetails['lab_assigned_batch_code'])) {
             $text .= ' | ' .  _translate("Lab Assigned Batch Code") . ': ' . $this->batchDetails['lab_assigned_batch_code'];
         }

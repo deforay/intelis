@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-10-03 22:15+0530\n"
-"PO-Revision-Date: 2024-10-03 22:16+0530\n"
+"POT-Creation-Date: 2024-10-04 11:04+0530\n"
+"PO-Revision-Date: 2024-10-04 11:06+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -3731,7 +3731,7 @@ msgid "Memory Limit"
 msgstr "Limite mémoire"
 
 #: app/admin/monitoring/system-settings.php:198 app/setup/index.php:202
-msgid "Maximum Upload Filesize\t"
+msgid "Maximum Upload Filesize"
 msgstr "Taille maximale des fichiers téléchargés"
 
 #: app/admin/monitoring/system-settings.php:202 app/setup/index.php:206
@@ -4979,7 +4979,7 @@ msgid "This batch code already exists.Try another batch code"
 msgstr "Ce code de lot existe déjà. Essayez un autre code"
 
 #: app/batch/add-batch.php:345 app/batch/batches.php:104
-#: app/batch/edit-batch.php:323 app/classes/Helpers/CustomBatchPdfHelper.php:30
+#: app/batch/edit-batch.php:323 app/classes/Helpers/CustomBatchPdfHelper.php:29
 msgid "Lab Assigned Batch Code"
 msgstr "Code de lot attribué au laboratoire"
 
@@ -11637,11 +11637,11 @@ msgstr "Créé Par"
 msgid "Batch file generated on"
 msgstr "Fichier \"batch\" généré sur"
 
-#: app/classes/Helpers/CustomBatchPdfHelper.php:28
+#: app/classes/Helpers/CustomBatchPdfHelper.php:27
 msgid "Batch Code : "
-msgstr "Code de lot :"
+msgstr "Code de lot : "
 
-#: app/classes/Helpers/CustomBatchPdfHelper.php:32
+#: app/classes/Helpers/CustomBatchPdfHelper.php:31
 msgid "Generated on"
 msgstr "Généré le"
 

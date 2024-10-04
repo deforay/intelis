@@ -134,7 +134,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row"><label for="testNumber">Prélévement</label></th>
                                         <td>
                                             <select class="form-control" name="testNumber" id="testNumber" title="Prélévement" style="width:100%;">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php foreach (range(1, 5) as $element) {
                                                     echo '<option value="' . $element . '">' . $element . '</option>';
                                                 } ?>
@@ -210,7 +210,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row"><label for="patientGender">Sexe <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
-                                                <option value=''> -- Sélectionner -- </option>
+                                                <option value=''><?= _translate("-- Select --"); ?></option>
                                                 <option value='male'> Homme </option>
                                                 <option value='female'> Femme </option>
                                                 <option value='other'> Other </option>
@@ -221,7 +221,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row"><label for="isPatientPregnant">Enceinte</label></th>
                                         <td>
                                             <select class="form-control" name="isPatientPregnant" id="isPatientPregnant">
-                                                <option value=''> -- Sélectionner -- </option>
+                                                <option value=''><?= _translate("-- Select --"); ?></option>
                                                 <option value='yes'> Enceinte </option>
                                                 <option value='no'> Pas Enceinte </option>
                                                 <option value='unknown'> Inconnue </option>
@@ -450,7 +450,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="temperatureMeasurementMethod">Température</label></th>
                                         <td style="width:35% !important;">
                                             <select name="temperatureMeasurementMethod" id="temperatureMeasurementMethod" class="form-control" title="Température">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="auxillary">Axillaire</option>
                                                 <option value="oral">Orale</option>
                                                 <option value="rectal">Rectale</option>
@@ -472,7 +472,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width: 15%;"><label for="specimenType"> Type(s) d' échantillon(s) dans le tube (cochez au moins une des cases suivants) <span class="mandatory">*</span></label></th>
                                         <td style="width: 35%;">
                                             <select class="form-control isRequired" id="specimenType" name="specimenType" title="Type(s) d' échantillon(s) dans le tube">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult); ?>
                                             </select>
                                         </td>
@@ -509,7 +509,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="asymptomatic">Asymptomatic <span class="mandatory">*</span></label></th>
                                         <td style="width:35% !important;">
                                             <select name="asymptomatic" id="asymptomatic" class="form-control isRequired" title="Asymptomatic" onchange="asymptomaticFn(this.value);">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -613,7 +613,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="recentHospitalization"></label>Avez-vous été hospitalisé durant les 12 derniers mois? </th>
                                         <td style="width:35% !important;">
                                             <select name="recentHospitalization" id="recentHospitalization" class="form-control" title="Avez-vous été hospitalisé durant les 12 derniers mois? ">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -622,7 +622,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="patientLivesWithChildren"></label>Habitez-vous avec les enfants ?</th>
                                         <td style="width:35% !important;">
                                             <select name="patientLivesWithChildren" id="patientLivesWithChildren" class="form-control" title="Habitez-vous avec les enfants ?">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -634,7 +634,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important"><label for="patientCaresForChildren"></label>Prenez-vous soins des enfants ?</th>
                                         <td style="width:35% !important;">
                                             <select name="patientCaresForChildren" id="patientCaresForChildren" class="form-control" title="prenez-vous soins des enfants ?">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -643,7 +643,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width:15% !important">Avez-vous eu des contacts étroits avec toute personne une maladie similaire a la vôtre durant ces 3 derniers semaines?</th>
                                         <td colspan="3">
                                             <select name="closeContacts" id="closeContacts" class="form-control" title="prenez-vous soins des enfants ?">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -661,7 +661,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Avez-vous voyagé au cours des 14 derniers jours ? </label></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" id="hasRecentTravelHistory" name="hasRecentTravelHistory" title="Avez-vous voyagé au cours des 14 derniers jours ?">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -709,7 +709,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                         <th scope="row" style="width: 15% !important;"><label for="hasRecentTravelHistory">Patiend fume-t-il? </label></th>
                                         <td style="width:35% !important;">
                                             <select class="form-control" id="doesPatientSmoke" name="doesPatientSmoke" title="Patiend fume-t-il?">
-                                                <option value="">--Select--</option>
+                                                <option value=""><?= _translate("-- Select --"); ?></option>
                                                 <option value="yes">Oui</option>
                                                 <option value="no">Non</option>
                                                 <option value="unknown">Inconnu</option>
@@ -736,7 +736,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row"><label for="sampleCondition">Condition de l'échantillon</label></th>
                                             <td>
                                                 <select class="form-control" name="sampleCondition" id="sampleCondition" title="Condition de l'échantillon">
-                                                    <option value=''> -- Sélectionner -- </option>
+                                                    <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                     <option value="adequate"> Adéquat </option>
                                                     <option value="not-adequate"> Non Adéquat </option>
                                                     <option value="autres"> Autres </option>
@@ -746,7 +746,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row"><?= _translate("Is Sample Rejected?"); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected" title="<?= _translate("Is Sample Rejected?"); ?>">
-                                                    <option value="">--Select--</option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <option value="yes">Oui</option>
                                                     <option value="no">Non</option>
                                                 </select>
@@ -756,7 +756,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row" class="show-rejection" style="display:none;">Raison du rejet</th>
                                             <td class="show-rejection" style="display:none;">
                                                 <select class="form-control" name="sampleRejectionReason" id="sampleRejectionReason" title="Raison du rejet">
-                                                    <option value=''> -- Sélectionner -- </option>
+                                                    <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                     <?php echo $rejectionReason; ?>
                                                 </select>
                                             </td>
@@ -779,7 +779,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                             <td class="text-center">1</td>
                                                             <td>
                                                                 <select onchange="otherCovidTestName(this.value,1)" class="form-control test-name-table-input" id="testName1" name="testName[]" title="Veuillez saisir le nom du test pour les lignes 1">
-                                                                    <option value="">--Select--</option>
+                                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                                     <option value="PCR/RT-PCR">PCR/RT-PCR</option>
                                                                     <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option>
                                                                     <option value="GeneXpert">GeneXpert</option>
@@ -792,7 +792,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                                                 <input type="text" name="testDate[]" id="testDate1" class="form-control test-name-table-input dateTime" placeholder="Testé sur" title="Veuillez saisir le test pour la ligne 1" />
                                                             </td>
                                                             <td><select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult1" title="Veuillez sélectionner le résultat pour la ligne 1">
-                                                                    <option value=''> -- Sélectionner -- </option>
+                                                                    <option value=''><?= _translate("-- Select --"); ?></option>
                                                                     <?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?>
                                                                         <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option>
                                                                     <?php } ?>
@@ -824,7 +824,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
                                             <th scope="row" class="other-diseases" style="display: none;"><label for="otherDiseases">Autres maladies<span class="mandatory">*</span></label></th>
                                             <td colspan="3" class="other-diseases" style="display: none;">
                                                 <select name="otherDiseases" id="otherDiseases" class="form-control" title="Autres maladies">
-                                                    <option value="">--Select--</option>
+                                                    <option value=""><?= _translate("-- Select --"); ?></option>
                                                     <optgroup label="Coronavirus">
                                                         <option value="E-Sars-CoV">E-Sars-CoV</option>
                                                         <option value="N-Sars-Cov">N-Sars-Cov</option>
@@ -1540,7 +1540,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
         f.setAttribute("style", "vertical-align:middle");
 
         b.innerHTML = tableRowId;
-        c.innerHTML = '<select onchange="otherCovidTestName(this.value,' + tableRowId + ')" class="form-control test-name-table-input" id="testName' + tableRowId + '" name="testName[]" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '"> <option value="">--Select--</option> <option value="PCR/RT-PCR">PCR/RT-PCR</option> <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option> <option value="GeneXpert">GeneXpert</option> <option value="Rapid Antigen Test">Rapid Antigen Test</option><option value="other">Others</option> </select> <input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control testInputOther' + tableRowId + '" placeholder="Entrez le nom du test ' + tableRowId + '" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '" style="display: none;margin-top: 10px;"/>';
+        c.innerHTML = '<select onchange="otherCovidTestName(this.value,' + tableRowId + ')" class="form-control test-name-table-input" id="testName' + tableRowId + '" name="testName[]" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '"> <option value=""><?= _translate("-- Select --"); ?></option> <option value="PCR/RT-PCR">PCR/RT-PCR</option> <option value="RdRp-SARS Cov-2">RdRp-SARS Cov-2</option> <option value="GeneXpert">GeneXpert</option> <option value="Rapid Antigen Test">Rapid Antigen Test</option><option value="other">Others</option> </select> <input type="text" name="testName[]" id="testName' + tableRowId + '" class="form-control testInputOther' + tableRowId + '" placeholder="Entrez le nom du test ' + tableRowId + '" title="Veuillez saisir le nom du test pour les lignes ' + tableRowId + '" style="display: none;margin-top: 10px;"/>';
         d.innerHTML = '<input type="text" name="testDate[]" id="testDate' + tableRowId + '" class="form-control test-name-table-input dateTime" placeholder="Testé sur"  title="Veuillez sélectionner la Date de l analyse pour la ligne ' + tableRowId + '"/>';
         e.innerHTML = '<select class="form-control test-result test-name-table-input" name="testResult[]" id="testResult' + tableRowId + '" title="Veuillez sélectionner le résultat pour la ligne ' + tableRowId + '"><option value=""><?= _translate("-- Select --"); ?> </option><?php foreach ($covid19Results as $c19ResultKey => $c19ResultValue) { ?> <option value="<?php echo $c19ResultKey; ?>"> <?php echo $c19ResultValue; ?> </option> <?php } ?> </select>';
         f.innerHTML = '<a class="btn btn-xs btn-primary test-name-table" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;<a class="btn btn-xs btn-default test-name-table" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
