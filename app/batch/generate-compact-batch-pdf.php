@@ -259,7 +259,7 @@ if (!empty($id)) {
                             }
                         }
                         if (isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])) {
-                            $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]) . '<br>';
+                            $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]);
                         }
                         $tbl .= '</td>';
 
@@ -311,7 +311,7 @@ if (!empty($id)) {
                         }
 
                         $sampleResult = $db->rawQuery($sampleQuery, [$xplodJsonToArray[1]]);
-                      //  echo '<pre>'; print_r($sampleResult); die;
+                       // echo '<pre>'; print_r($sampleResult);
 
                         $lotDetails = '';
                         $lotExpirationDate = '';
@@ -327,7 +327,7 @@ if (!empty($id)) {
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
 
-                        $tbl .= '<td colspan="2" align="center">';
+                        $tbl .= '<td height="80" align="center">';
                         $tbl .= $a .'.Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
@@ -347,7 +347,7 @@ if (!empty($id)) {
                             }
                         }
                         if (isset($sampleResult[0][$resultColumn]) && !empty($sampleResult[0][$resultColumn])) {
-                            $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]) . '<br>';
+                            $tbl .= 'Test Result : ' . ucwords((string) $sampleResult[0][$resultColumn]);
                         }
 
                         $tbl .= '</td>';
@@ -375,7 +375,7 @@ if (!empty($id)) {
                 }
                 $a++;
             }
-            $tbl .= '</tr></table>';
+            $tbl .= '</tr></table>'; 
         } else {
             $tbl .= '<table border="1" style="width:100%;border-bottom:1px solid black;"><tr nobr="true" style="width:100%;">';
             $noOfInHouseControls = 0;
@@ -503,7 +503,7 @@ if (!empty($id)) {
             $tbl .= '</tr></table>';
         }
        // $tbl .= '';
-
+//echo $tbl; die;
         $pdf->writeHTML($tbl);
         $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(12) . '.pdf';
         $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
