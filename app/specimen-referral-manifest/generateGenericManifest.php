@@ -24,7 +24,6 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
     $id = $_POST['ids'];
 }
 
-
 if (trim((string) $id) != '') {
 
     $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_last_name,'')) as `patient_fullname`,patient_dob,patient_age_in_years,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_generic as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
@@ -32,16 +31,10 @@ if (trim((string) $id) != '') {
 
 
     $labname = $result[0]['lab_name'] ?? "";
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    $showPatientName = (!empty($arr['generic_show_participant_name_in_manifest'])) ? $arr['generic_show_participant_name_in_manifest'] : 'no';
+
+    $showPatientName = $general->getGlobalConfig('generic_show_participant_name_in_manifest') ?? 'no';
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
-    //echo $bQuery;die;
+
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
@@ -49,7 +42,7 @@ if (trim((string) $id) != '') {
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('Lab Tests Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($arr['logo'], $arr['header'], $labname);
+        $pdf->setHeading($general->getGlobalConfig('logo'), $general->getGlobalConfig('header'), $labname);
 
         // set document information
         $pdf->SetCreator('STS');

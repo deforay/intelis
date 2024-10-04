@@ -22,21 +22,6 @@ try {
 
     $db->beginReadOnlyTransaction();
 
-    $formConfigQuery = "SELECT * FROM global_config";
-    $configResult = $db->query($formConfigQuery);
-    $gconfig = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
     $tableName = "form_covid19";

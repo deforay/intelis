@@ -26,21 +26,6 @@ try {
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
 
-     $formConfigQuery = "SELECT * from global_config where name='vl_form'";
-     $configResult = $db->query($formConfigQuery);
-     $arr = [];
-     // now we create an associative array so that we can easily create view variables
-     for ($i = 0; $i < sizeof($configResult); $i++) {
-          $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-     }
-     //system config
-     $systemConfigQuery = "SELECT * from system_config";
-     $systemConfigResult = $db->query($systemConfigQuery);
-     $sarr = [];
-     // now we create an associative array so that we can easily create view variables
-     for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-          $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-     }
      $key = (string) $general->getGlobalConfig('key');
 
      $tableName = "form_hepatitis";
@@ -52,7 +37,7 @@ try {
      $orderColumns = array('vl.sample_code', 'vl.external_sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'vl.last_modified_datetime', 'ts.status_name');
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } else if ($general->isStandaloneInstance()) {
+     } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }

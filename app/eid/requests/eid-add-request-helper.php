@@ -29,14 +29,6 @@ $tableName = "form_eid";
 $tableName1 = "activity_log";
 
 try {
-	//system config
-	$systemConfigQuery = "SELECT * from system_config";
-	$systemConfigResult = $db->query($systemConfigQuery);
-	$sarr = [];
-	// now we create an associative array so that we can easily create view variables
-	for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-		$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-	}
 	$instanceId = '';
 	if (isset($_SESSION['instanceId'])) {
 		$instanceId = $_SESSION['instanceId'];

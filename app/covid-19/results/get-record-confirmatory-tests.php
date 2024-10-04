@@ -1,30 +1,12 @@
 <?php
 
-use App\Services\Covid19Service;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Services\Covid19Service;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
-
-
-
-$formConfigQuery = "SELECT * from global_config where name='vl_form'";
-$configResult = $db->query($formConfigQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-     $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-     $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -256,7 +238,7 @@ if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
                $sWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
           }
      }
-     // $sWhere = $sWhere . " AND vl.vlsm_country_id='" . $arr['vl_form'] . "'";
+
      $dWhere = "WHERE ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
 } else {
      if (trim($sWhere) != '') {

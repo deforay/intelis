@@ -11,15 +11,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = "r_tb_test_reasons";
 $primaryKey = "test_reason_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
-
 
 $aColumns = array('test_reason_name', 'test_reason_status');
 

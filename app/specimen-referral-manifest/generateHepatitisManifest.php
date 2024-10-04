@@ -33,17 +33,9 @@ if (trim((string) $id) != '') {
 
     $labname = $result[0]['lab_name'] ?? "";
 
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    $showPatientName = $arr['hepatitis_show_participant_name_in_manifest'];
+    $showPatientName = $general->getGlobalConfig('hepatitis_show_participant_name_in_manifest');
     $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
-    //echo $bQuery;die;
-    // echo $showPatientName; die;
+
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
@@ -51,7 +43,7 @@ if (trim((string) $id) != '') {
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('Hepatitis Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-        $pdf->setHeading($arr['logo'], $arr['header'], $labname);
+        $pdf->setHeading($general->getGlobalConfig('logo'), $general->getGlobalConfig('header'), $labname);
 
         // set document information
         $pdf->SetCreator('STS');
@@ -64,8 +56,8 @@ if (trim((string) $id) != '') {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont([PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont([PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA]);
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);

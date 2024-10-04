@@ -1,35 +1,16 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
-
-
-
-
-$formConfigQuery = "SELECT * FROM global_config";
-$configResult = $db->query($formConfigQuery);
-$gconfig = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-	$sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-//$whereCondition = '';
+
 $tableName = "form_generic";
 $primaryKey = "sample_id";
 

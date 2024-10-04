@@ -29,31 +29,14 @@ try {
 
     $tableName = "form_eid";
     $primaryKey = "eid_id";
-    //config  query
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
 
-    $thresholdLimit = $arr['viral_load_threshold_limit'];
 
     $sampleCode = 'sample_code';
     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result');
     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result');
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
-    } else if ($general->isStandaloneInstance()) {
+    } elseif ($general->isStandaloneInstance()) {
         $aColumns = array('vl.sample_code', 'f.facility_name', 'vl.child_name', 'vl.child_id', 'vl.caretaker_phone_number', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result');
         $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.child_id', 'vl.child_name', 'vl.caretaker_phone_number', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result');
     }
@@ -119,19 +102,12 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result > " . $thresholdLimit;
+    $sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result like 'positive' ";
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
     }
-    /* if(isset($_POST['hvlContactStatus']) && trim($_POST['hvlContactStatus'])!= ''){
-		if($_POST['hvlContactStatus']=='all')
-		{
-			$sWhere = $sWhere.' AND (contact_complete_status = "no" OR contact_complete_status="yes" OR contact_complete_status IS NULL OR contact_complete_status="")';
-		}else{
-	    $sWhere = $sWhere.' AND contact_complete_status = "'.$_POST['hvlContactStatus'].'"';
-		}
-	} */
+
 
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['hvlSampleTestDate'] ?? '');
     if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) != '') {
@@ -186,19 +162,17 @@ try {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
-    $rResult = $db->rawQuery($sQuery);
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-    $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-    $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-    $_SESSION['highViralResultCount'] = $iTotal;
+    $_SESSION['highViralResultCount'] = $resultCount;
 
     /*
          * Output
         */
     $output = array(
         "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
     );
 

@@ -22,21 +22,6 @@ try {
 
     $db->beginReadOnlyTransaction();
 
-    $formConfigQuery = "SELECT * FROM global_config";
-    $configResult = $db->query($formConfigQuery);
-    $gconfig = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $gconfig[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
     $tableName = "form_cd4";
@@ -51,7 +36,7 @@ try {
 
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
-    } else if ($general->isStandaloneInstance()) {
+    } elseif ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
     }
@@ -70,23 +55,7 @@ try {
         $sLimit = $_POST['iDisplayLength'];
     }
 
-    /*
-* Ordering
-*/
-
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                if (!empty($orderColumns[(int) $_POST['iSortCol_' . $i]]))
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
-
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
     $sWhere = [];
     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -119,10 +88,10 @@ try {
           * Get data to display
           */
 
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.*, ts.status_name, b.batch_code FROM form_cd4 as vl
-          LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-          LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-          LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
+    $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_cd4 as vl
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
     $failedStatusIds = [
         SAMPLE_STATUS\ON_HOLD,
@@ -173,35 +142,32 @@ try {
         $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
     }
 
-    // $sWhere[] =  ' (vl.result_status= 1 OR LOWER(vl.result) IN ("failed", "fail", "invalid"))';
     if (!empty($sWhere)) {
-        $sWhere = ' where ' . implode(' AND ', $sWhere);
-        $sQuery = $sQuery . ' ' . $sWhere;
+        $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+        $sQuery = "$sQuery $sWhere";
     }
 
     if (isset($sOrder) && !empty(trim($sOrder))) {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-        $sQuery = $sQuery . " ORDER BY " . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
     $_SESSION['cd4RequestSearchResultQuery'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
-    //echo $sQuery;die;
-    $rResult = $db->rawQuery($sQuery);
-    $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-    $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-    $_SESSION['cd4RequestSearchResultQueryCount'] = $iTotal;
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-    $output = array(
+    $_SESSION['cd4RequestSearchResultQueryCount'] = $resultCount;
+
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
     $editRequest = false;
-    if ((_isAllowed("/cd4/requests/cd4-edit-request.php"))) {
+    if (_isAllowed("/cd4/requests/cd4-edit-request.php")) {
         $editRequest = true;
     }
 
@@ -230,11 +196,11 @@ try {
         $row[] = $aRow['patient_art_no'];
         $row[] = $aRow['patient_first_name'];
 
-        $row[] = ($aRow['facility_state']);
-        $row[] = ($aRow['facility_district']);
-        $row[] = ($aRow['cd4_result']);
+        $row[] = $aRow['facility_state'];
+        $row[] = $aRow['facility_district'];
+        $row[] = $aRow['cd4_result'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-        $row[] = ($aRow['status_name']);
+        $row[] = $aRow['status_name'];
 
         if ($editRequest) {
             $row[] = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Test Sample Again") . '" onclick="retestSample(\'' . trim(base64_encode((string) $aRow['cd4_id'])) . '\')"><em class="fa-solid fa-arrows-rotate"></em> ' . _translate("Retest") . '</a>';

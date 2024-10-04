@@ -20,14 +20,7 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-//config  query
-$configQuery = "SELECT * from global_config";
-$configResult = $db->query($configQuery);
-$arr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($configResult); $i++) {
-	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-}
+
 $sQuery = "SELECT * FROM r_vl_sample_type where status='active'";
 $sResult = $db->rawQuery($sQuery);
 

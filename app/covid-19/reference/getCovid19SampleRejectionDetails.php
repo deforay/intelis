@@ -1,19 +1,9 @@
 <?php
 
-
-
 $tableName = "r_covid19_sample_rejection_reasons";
 $primaryKey = "rejection_reason_id";
-//system config
-$systemConfigQuery = "SELECT * from system_config";
-$systemConfigResult = $db->query($systemConfigQuery);
-$sarr = [];
-// now we create an associative array so that we can easily create view variables
-for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-    $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-}
 
-$aColumns = array('rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status');
+$aColumns = ['rejection_reason_name', 'rejection_type', 'rejection_reason_code', 'rejection_reason_status'];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -25,8 +15,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
-
-
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -66,47 +54,31 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-
-
 $sQuery = "SELECT * FROM r_covid19_sample_rejection_reasons";
 
 if (!empty($sWhere)) {
-    $sWhere = ' WHERE ' . $sWhere;
-    $sQuery = $sQuery . ' ' . $sWhere;
+    $sQuery = "$sQuery WHERE $sWhere";
 }
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_covid19_sample_rejection_reasons $sWhere order by $sOrder");
-$iFilteredTotal = count($aResultFilterTotal);
-
-/* Total data set length */
-$aResultTotal = $db->rawQuery("select COUNT(rejection_reason_id) as total FROM r_covid19_sample_rejection_reasons");
-// $aResultTotal = $countResult->fetch_row();
-//print_r($aResultTotal);
-$iTotal = $aResultTotal[0]['total'];
-
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 /*
  * Output
  */
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
     $status = '<select class="form-control" name="status[]" id="' . $aRow['rejection_reason_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,\'' . $aRow['rejection_reason_status'] . '\')">
@@ -114,13 +86,13 @@ foreach ($rResult as $aRow) {
                <option value="inactive" ' . ($aRow['rejection_reason_status'] == "inactive" ? "selected=selected" : "") . '>' . _translate("Inactive") . '</option>
                </select><br><br>';
     $row = [];
-    $row[] = ($aRow['rejection_reason_name']);
-    $row[] = ($aRow['rejection_type']);
-    $row[] = ($aRow['rejection_reason_code']);
+    $row[] = $aRow['rejection_reason_name'];
+    $row[] = $aRow['rejection_type'];
+    $row[] = $aRow['rejection_reason_code'];
     if (_isAllowed("covid19-sample-type.php") && $general->isLISInstance() === false) {
         $row[] = $status;
     } else {
-        $row[] = ($aRow['rejection_reason_status']);
+        $row[] = $aRow['rejection_reason_status'];
     }
     $output['aaData'][] = $row;
 }

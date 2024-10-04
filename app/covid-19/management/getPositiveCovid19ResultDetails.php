@@ -26,28 +26,12 @@ try {
 
     $tableName = "form_covid19";
     $primaryKey = "covid19_id";
-    //config  query
-    $configQuery = "SELECT * from global_config";
-    $configResult = $db->query($configQuery);
-    $arr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($configResult); $i++) {
-        $arr[$configResult[$i]['name']] = $configResult[$i]['value'];
-    }
-    //system config
-    $systemConfigQuery = "SELECT * from system_config";
-    $systemConfigResult = $db->query($systemConfigQuery);
-    $sarr = [];
-    // now we create an associative array so that we can easily create view variables
-    for ($i = 0; $i < sizeof($systemConfigResult); $i++) {
-        $sarr[$systemConfigResult[$i]['name']] = $systemConfigResult[$i]['value'];
-    }
 
     $thresholdLimit = $general->getGlobalConfig('viral_load_threshold_limit');
 
     $sampleCode = 'sample_code';
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result');
+    $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
+    $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
     if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
     } elseif ($general->isStandaloneInstance()) {

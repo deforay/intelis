@@ -65,17 +65,7 @@ try {
 
 
 
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
 
@@ -102,8 +92,6 @@ try {
           }
           $sWhere[] = $sWhereSub;
      }
-
-
 
 
      $sQuery = '';
@@ -182,7 +170,7 @@ try {
      }
      if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'result') {
           $sWhere[] = ' vl.result != "" ';
-     } else if (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'noresult') {
+     } elseif (isset($_POST['reqSampleType']) && trim((string) $_POST['reqSampleType']) == 'noresult') {
           $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
      }
      /* Source of request show model conditions */
@@ -225,17 +213,17 @@ try {
      }
      if (!empty($sWhere)) {
           $_SESSION['tbRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE $sWhere";
      }
-     // die($sQuery);
+
      if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['tbRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
      $_SESSION['tbRequestSearchResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
