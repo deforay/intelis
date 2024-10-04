@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_categories', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/test-categories/generic-add-test-categories.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/test-categories/generic-add-test-categories.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/test-categories/generic-add-test-categories.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Categories"); ?></a>
 						<?php } ?>
 					</div>
@@ -44,8 +44,8 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Test Category"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php")) { ?>
-										<th scope="row">Action</th>
+									<?php if (_isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php") && $general->isSTSInstance()) { ?>
+										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -92,14 +92,14 @@ require_once APPLICATION_PATH . '/header.php';
 					"sClass": "center"
 				},
 
-				<?php if (_isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/test-categories/generic-edit-test-categories.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}
 				<?php } ?>
 			],
 			"aaSorting": [
-				[3, "asc"]
+				[2, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,

@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_sample_types', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/sample-types/generic-add-sample-type.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/sample-types/generic-add-sample-type.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/sample-types/generic-add-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Sample Type"); ?></a>
 						<?php } ?>
 					</div>
@@ -45,7 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Sample Type Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php") && $general->isSTSInstance()) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -95,7 +95,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/sample-types/generic-edit-sample-type.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

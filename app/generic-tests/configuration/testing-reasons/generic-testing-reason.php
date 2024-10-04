@@ -33,7 +33,7 @@ $title = _translate("Other Lab Tests Testing Reasons");
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Testing Reason"); ?></a>
 						<?php } ?>
 					</div>
@@ -46,7 +46,7 @@ $title = _translate("Other Lab Tests Testing Reasons");
 									<th scope="row"><?php echo _translate("Test Reason Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php") && $general->isSTSInstance()) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -96,7 +96,7 @@ $title = _translate("Other Lab Tests Testing Reasons");
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

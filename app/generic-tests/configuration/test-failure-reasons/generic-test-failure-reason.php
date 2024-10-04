@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_failure_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Failure Reason"); ?></a>
 						<?php } ?>
 					</div>
@@ -45,7 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Test Failure Reason Code"); ?></th>
 									<th scope="row"><?php echo _translate("Test Failure Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php") && $general->isSTSInstance()) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -95,7 +95,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

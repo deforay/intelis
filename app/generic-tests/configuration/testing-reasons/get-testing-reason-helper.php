@@ -2,12 +2,14 @@
 
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
-
+use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -115,7 +117,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['test_reason_code']);
     $row[] = ucwords((string) $aRow['test_reason_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-    if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php")) {
+    if (_isAllowed("/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php") && $general->isSTSInstance()) {
         $row[] = '<a href="generic-edit-testing-reason.php?id=' . base64_encode((string) $aRow['test_reason_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

@@ -2,11 +2,15 @@
 
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -88,14 +92,12 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 //die($sQuery);
+// echo $sQuery;
 $rResult = $db->rawQuery($sQuery);
 // print_r($rResult);
 /* Data set length after filtering */
-$order = "";
-if (!empty($sOrder) && $sOrder !== '') {
-    $order = "order by $sOrder";
-}
-$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_result_units $sWhere $order");
+
+$aResultFilterTotal = $db->rawQuery("SELECT * FROM r_generic_test_result_units $sWhere order by $sOrder");
 $iFilteredTotal = count($aResultFilterTotal);
 
 /* Total data set length */
@@ -119,7 +121,7 @@ foreach ($rResult as $aRow) {
     $row[] = ($aRow['unit_name']);
     $row[] = ucwords((string) $aRow['unit_status']);
     $row[] = $aRow['updated_datetime'] = DateUtility::humanReadableDateFormat($aRow['updated_datetime'], true);
-    if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) {
+    if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-test-result-units.php") && $general->isSTSInstance()) {
         $row[] = '<a href="generic-edit-test-result-units.php?id=' . base64_encode((string) $aRow['unit_id']) . '" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
     $output['aaData'][] = $row;

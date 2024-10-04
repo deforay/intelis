@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_symptoms', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/symptoms/generic-add-symptoms.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/symptoms/generic-add-symptoms.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/symptoms/generic-add-symptoms.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Symptoms"); ?></a>
 						<?php } ?>
 					</div>
@@ -45,7 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Symptom Code"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php") && $general->isSTSInstance()) { ?>
 										<th scope="row">Action</th>
 									<?php } ?>
 								</tr>
@@ -95,7 +95,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/symptoms/generic-edit-symptoms.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}

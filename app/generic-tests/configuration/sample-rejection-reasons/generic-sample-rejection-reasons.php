@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_sample_rejection_reasons', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $general->isLISInstance() === false) { ?>
+						if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Sample Rejection Reasons"); ?></a>
 						<?php } ?>
 					</div>
@@ -45,7 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Rejection Reason Type"); ?></th>
 									<th scope="row"><?php echo _translate("Rejection Reason Code"); ?></th>
 									<th scope="row"><?php echo _translate("Rejection Reason Status"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $general->isLISInstance() === false) { ?>
+									<?php if (_isAllowed("/generic-tests/configuration/sample-rejection-reasons/generic-edit-sample-rejection-reasons.php") && $general->isSTSInstance()) { ?>
 										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>

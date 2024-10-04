@@ -30,9 +30,9 @@ require_once APPLICATION_PATH . '/header.php';
 				<div class="box">
 					<div class="box-header with-border">
 						<?php if ($general->isSTSInstance()) { ?>
-							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_result_units', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
+							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_symptoms', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/test-result-units/generic-add-test-result-units.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/test-result-units/generic-add-test-result-units.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/test-result-units/generic-add-test-result-units.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Result Units"); ?></a>
 						<?php } ?>
 					</div>
@@ -41,11 +41,11 @@ require_once APPLICATION_PATH . '/header.php';
 						<table aria-describedby="table" id="partnerTable" class="table table-bordered table-striped" aria-hidden="true">
 							<thead>
 								<tr>
-									<th scope="row"><?php echo _translate("Result Unit Name"); ?></th>
-									<th scope="row"><?php echo _translate("Result Unit Status"); ?></th>
+									<th scope="row"><?php echo _translate("Unit Name"); ?></th>
+									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?>
-										<th scope="row">Action</th>
+									<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance()) { ?>
+										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -91,18 +91,19 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php")) { ?> {
+			
+				<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}
 				<?php } ?>
 			],
 			"aaSorting": [
-				[3, "asc"]
+				[2, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-test-result-units-helper.php",
+			"sAjaxSource": "/generic-tests/configuration/test-result-units/get-test-result-units-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',

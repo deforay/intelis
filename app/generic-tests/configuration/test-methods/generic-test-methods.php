@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<?php if ($general->isSTSInstance()) { ?>
 							<a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo $general->encrypt('r_generic_test_methods', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
 						<?php }
-						if (_isAllowed("/generic-tests/configuration/test-methods/generic-add-test-methods.php")) { ?>
+						if (_isAllowed("/generic-tests/configuration/test-methods/generic-add-test-methods.php") && $general->isSTSInstance()) { ?>
 							<a href="/generic-tests/configuration/test-methods/generic-add-test-methods.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Test Methods"); ?></a>
 						<?php } ?>
 					</div>
@@ -44,8 +44,8 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Test Method"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<th scope="row"><?php echo _translate("Updated On"); ?></th>
-									<?php if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php")) { ?>
-										<th scope="row">Action</th>
+									<?php if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php") && $general->isSTSInstance()) { ?>
+										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
 							</thead>
@@ -92,18 +92,18 @@ require_once APPLICATION_PATH . '/header.php';
 					"sClass": "center"
 				},
 
-				<?php if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php")) { ?> {
+				<?php if (_isAllowed("/generic-tests/configuration/test-methods/generic-edit-test-methods.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					}
 				<?php } ?>
 			],
 			"aaSorting": [
-				[3, "asc"]
+				[2, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-test-methods-helper.php",
+			"sAjaxSource": "/generic-tests/configuration/test-methods/get-test-methods-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
