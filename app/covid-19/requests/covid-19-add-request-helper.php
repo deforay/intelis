@@ -5,16 +5,13 @@
 
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
-
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -31,9 +28,10 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
-/* echo "<pre>";
-print_r($_POST);
-die; */
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_covid19";
 $tableName1 = "activity_log";

@@ -1,13 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Registries\ContainerRegistry;
-
-
 
 
 /** @var DatabaseService $db */
@@ -19,8 +18,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
 
-// echo "<pre>";print_r($_POST);die;
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
@@ -132,7 +134,6 @@ try {
 	//Update patient Information in Patients Table
 	$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
 
-	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$hepatitisData = array(
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
@@ -197,7 +198,6 @@ try {
 		'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
 	);
 
-	//$db->select('result');
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$getPrevResult = $db->getOne('form_hepatitis');
 	if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {

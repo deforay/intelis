@@ -3,14 +3,12 @@
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -21,9 +19,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
-
-// echo "<pre>";
-// var_dump($_POST);die;
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 
 $tableName = "form_eid";

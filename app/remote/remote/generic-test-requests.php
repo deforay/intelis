@@ -6,13 +6,12 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 header('Content-Type: application/json');
 
@@ -21,11 +20,15 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var GenericTestsService $generic */
+$generic = ContainerRegistry::get(GenericTestsService::class);
+
 try {
 	$db->beginTransaction();
-
-	/** @var ApiService $apiService */
-	$apiService = ContainerRegistry::get(ApiService::class);
 
 	/** @var Laminas\Diactoros\ServerRequest $request */
 	$request = AppRegistry::get('request');
@@ -41,15 +44,11 @@ try {
 		throw new SystemException('Lab ID is missing in the request', 400);
 	}
 
-
 	$dataSyncInterval = $general->getGlobalConfig('data_sync_interval');
 	$dataSyncInterval = !empty($dataSyncInterval) ? $dataSyncInterval : 30;
 
 	$apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
 	$transactionId = $apiRequestId ?? MiscUtility::generateULID();
-
-	$counter = 0;
-
 
 	$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 	$fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -108,15 +107,11 @@ try {
 
 	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
 
-	$response = $sampleIds = $facilityIds = [];
+	$sampleIds = $facilityIds = [];
 	if ($resultCount > 0) {
-		$payload = $rResult;
-		$counter = $resultCount;
 		$sampleIds = array_column($rResult, 'sample_id');
 		$facilityIds = array_column($rResult, 'facility_id');
 
-		/** @var GenericTestsService $general */
-		$generic = ContainerRegistry::get(GenericTestsService::class);
 		foreach ($rResult as $r) {
 			$response[$r['sample_id']] = $r;
 			$response[$r['sample_id']]['data_from_tests'] = $generic->getTestsByGenericSampleIds($r['sample_id']);
@@ -126,27 +121,32 @@ try {
 		$payload = json_encode([]);
 	}
 
-	if ($resultCount > 0) {
+	$general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
-		$sampleIds = array_column($rResult, 'vl_sample_id');
-		$facilityIds = array_column($rResult, 'facility_id');
-
-		$payload = JsonUtility::encodeUtf8Json($rResult);
-	} else {
-		$payload = json_encode([]);
+	if (!empty($facilityIds)) {
+		$general->updateTestRequestsSyncDateTime('generic', $facilityIds, $labId);
 	}
-	$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'generic-tests', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
-	$general->updateTestRequestsSyncDateTime('generic', $facilityIds, $labId);
+
+
+	if (!empty($sampleIds)) {
+		$updateData = [
+			'data_sync' => 1
+		];
+		$db->where('sample_id', $sampleIds, 'IN');
+		$db->update('form_generic', $updateData);
+	}
+
+
 	$db->commitTransaction();
 } catch (Throwable $e) {
 	$db->rollbackTransaction();
 
 	$payload = json_encode([]);
 
-	if ($db->getLastErrno() > 0) {
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-		error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+	if ($db->getLastError()) {
+		LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+		LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastError());
+		LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
 	}
 	throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

@@ -30,12 +30,12 @@ try {
             if ($_POST['dateOut'][$i] != "") {
                 $dateOut = DateUtility::isoDateFormat($_POST['dateOut'][$i]);
             } else {
-                $dateOut = NULL;
+                $dateOut = null;
             }
-            $data = array(
+            $data = [
                 'test_type' => 'vl',
-                'sample_unique_id'     => $_POST['sampleUniqueId'][$i],
-                'volume'     => $_POST['volume'][$i],
+                'sample_unique_id' => $_POST['sampleUniqueId'][$i],
+                'volume' => $_POST['volume'][$i],
                 'freezer_id' => $_POST['freezer'][$i],
                 'rack' => $_POST['rack'][$i],
                 'box' => $_POST['box'][$i],
@@ -43,9 +43,9 @@ try {
                 'sample_status' => "Added",
                 'date_out' => $dateOut,
                 'comments' => $_POST['comments'][$i],
-                'updated_datetime'    => DateUtility::getCurrentDateTime(),
+                'updated_datetime' => DateUtility::getCurrentDateTime(),
                 'updated_by' => $_SESSION['userId']
-            );
+            ];
             $db->insert('lab_storage_history', $data);
         }
     }

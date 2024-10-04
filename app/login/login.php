@@ -192,7 +192,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<script type="text/javascript">
 		window.additionalXHRParams = {
 			layout: 0,
-			'X-CSRF-Token': '<?php echo $_SESSION['csrf_token'] = $_SESSION['csrf_token'] ?? MiscUtility::generateRandomString(); ?>'
+			'X-CSRF-Token': '<?= $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString(); ?>'
 		};
 
 		$.ajaxSetup({

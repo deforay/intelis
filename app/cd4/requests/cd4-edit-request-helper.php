@@ -29,8 +29,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// Sanitize input
-$_POST = _sanitizeInput($request->getParsedBody());
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_cd4";
 $tableName1 = "activity_log";
@@ -137,24 +136,23 @@ try {
      }
 
      //set cd4 test reason
-     if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "") {
-          if (!is_numeric($_POST['reasonForCD4Testing'])) {
-               if ($_POST['reasonForCD4Testing'] == "other") {
-                    $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
-               }
-               $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
-                          WHERE test_reason_name= ?";
-               $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
-               if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
-                    $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
-               } else {
-                    $data = array(
-                         'test_reason_name' => $_POST['reasonForCD4Testing'],
-                         'test_reason_status' => 'active'
-                    );
-                    $id = $db->insert('r_cd4_test_reasons', $data);
-                    $_POST['reasonForCD4Testing'] = $id;
-               }
+     if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "" && !is_numeric($_POST['reasonForCD4Testing'])) {
+
+          if ($_POST['reasonForCD4Testing'] == "other") {
+               $_POST['reasonForCD4Testing'] = $_POST['newreasonForCD4Testing'];
+          }
+          $reasonQuery = "SELECT test_reason_id FROM r_cd4_test_reasons
+                              WHERE test_reason_name= ?";
+          $reasonResult = $db->rawQuery($reasonQuery, [$_POST['reasonForCD4Testing']]);
+          if (isset($reasonResult[0]['test_reason_id']) && $reasonResult[0]['test_reason_id'] != '') {
+               $_POST['reasonForCD4Testing'] = $reasonResult[0]['test_reason_id'];
+          } else {
+               $data = array(
+                    'test_reason_name' => $_POST['reasonForCD4Testing'],
+                    'test_reason_status' => 'active'
+               );
+               $id = $db->insert('r_cd4_test_reasons', $data);
+               $_POST['reasonForCD4Testing'] = $id;
           }
      }
      //update facility emails
@@ -271,7 +269,6 @@ try {
      ];
 
 
-     //$db->select('result');
      $db->where('cd4_id', $_POST['cd4SampleId']);
      $getPrevResult = $db->getOne('form_cd4');
      if ($getPrevResult['cd4_result'] != "" && $getPrevResult['cd4_result'] != $_POST['cd4_result']) {
@@ -305,7 +302,7 @@ try {
           $vlData['patient_last_name'] = $encryptedPatientLastName;
           $vlData['is_encrypted'] = 'yes';
      } else {
-          $vlData['is_encrypted'] = NULL;
+          $vlData['is_encrypted'] = null;
      }
 
      $db->where('cd4_id', $_POST['cd4SampleId']);

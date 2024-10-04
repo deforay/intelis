@@ -195,7 +195,7 @@ final class VlService extends AbstractTestService
         }
 
 
-        return [
+        $response = [
             'isRejected' => $isRejected,
             'finalResult' => $finalResult,
             'absDecimalVal' => $absDecimalVal,
@@ -205,6 +205,7 @@ final class VlService extends AbstractTestService
             'hivDetection' => $hivDetection,
             'resultStatus' => $resultStatus,
         ];
+        return MiscUtility::arrayEmptyStringsToNull($response);
     }
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array

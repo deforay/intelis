@@ -310,6 +310,7 @@ $tableResult = $db->rawQuery($sQuery);
                 let api = this.api();
                 calculateTableSummary(this, 'all');
             },
+            "sorting": [1, "desc"],
             "footerCallback": function(row, data, start, end, display) {
                 let filter = $("#<?php echo $requestCountDataTable; ?>_filter .input-sm").val();
                 let page = 'all';

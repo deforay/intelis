@@ -61,7 +61,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
 $specimenTypeResult = $eidService->getEidSampleTypes();
 $ageInfo = "";
-if ($eidInfo['child_dob'] == NULL && $eidInfo['child_age'] == NULL) {
+if (empty($eidInfo['child_dob']) && empty($eidInfo['child_age'])) {
     $ageInfo = "ageUnreported";
 }
 $facilityId = $eidInfo['facility_id'];

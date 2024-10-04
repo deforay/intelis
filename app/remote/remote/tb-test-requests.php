@@ -1,7 +1,5 @@
 <?php
 
-require_once(dirname(__FILE__) . "/../../../bootstrap.php");
-
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -56,23 +54,29 @@ try {
 
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
     $response = [];
-    $counter = 0;
     $sampleIds = $facilityIds = [];
     if ($resultCount > 0) {
-        $counter = $resultCount;
-
         $sampleIds = array_column($rResult, 'tb_id');
         $facilityIds = array_column($rResult, 'facility_id');
-
         $response['result'] = $rResult;
     }
 
     $payload = JsonUtility::encodeUtf8Json($response);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'requests', 'tb', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'tb', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
+    if (!empty($facilityIds)) {
+        $general->updateTestRequestsSyncDateTime('tb', $facilityIds, $labId);
+    }
 
-    $general->updateTestRequestsSyncDateTime('tb', $facilityIds, $labId);
+    if (!empty($sampleIds)) {
+        $updateData = [
+            'data_sync' => 1
+        ];
+        $db->where('tb_id', $sampleIds, 'IN');
+        $db->update('form_tb', $updateData);
+    }
+
     $db->commitTransaction();
 } catch (Throwable $e) {
     $db->rollbackTransaction();

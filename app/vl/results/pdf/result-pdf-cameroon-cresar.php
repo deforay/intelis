@@ -233,7 +233,7 @@ if (!empty($result)) {
      $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Age") . " : " . $age . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . _translate("Sex : ") . _translate(str_replace("_", " ", (string) _capitalizeFirstLetter($result['patient_gender']))) . '</td>';
      $html .= '</tr>';
 
-     if ($result['health_insurance_code'] != "" || $result['health_insurance_code'] != NULL) {
+     if ($result['health_insurance_code'] != "" || $result['health_insurance_code'] != null) {
           $html .= '<tr>';
           $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">' . _translate("Health Insurance Code") . " : " . $result['health_insurance_code'] . '</td>';
           $html .= '<td style="line-height:8px;font-size:10px;text-align:left;">&nbsp;</td>';

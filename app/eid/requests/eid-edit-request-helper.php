@@ -2,14 +2,13 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -22,6 +21,12 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $tableName = "form_eid";
 $tableName1 = "activity_log";
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
 
 try {
 	//system config

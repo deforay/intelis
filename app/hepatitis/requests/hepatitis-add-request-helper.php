@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -19,6 +20,12 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $tableName = "form_hepatitis";
 $tableName1 = "activity_log";
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 try {
 	//system config
@@ -80,7 +87,7 @@ try {
 		$_POST['hcvCount'] = null;
 		$_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
-	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
+	} elseif (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
 	}
 

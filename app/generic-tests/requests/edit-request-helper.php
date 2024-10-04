@@ -24,11 +24,12 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
-// echo "<pre>";print_r($_POST);die;
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
+
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
 $tableName = "form_generic";
 $testTableName = "generic_test_results";
 $vlTestReasonTable = "r_generic_test_reasons";

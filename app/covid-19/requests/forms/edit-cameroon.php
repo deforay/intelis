@@ -78,7 +78,7 @@ foreach ($pdResult as $provinceName) {
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
 $ageInfo = "";
-if ($covid19Info['patient_dob'] == NULL && $covid19Info['patient_age'] == NULL) {
+if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
     $ageInfo = "ageUnreported";
 }
 
