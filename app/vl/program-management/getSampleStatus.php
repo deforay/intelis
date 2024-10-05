@@ -104,7 +104,7 @@ if (!empty($sWhere)) {
     $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-//echo $tQuery; die;
+
 $tResult = $db->rawQuery($tQuery);
 
 $sWhere = [];
@@ -123,8 +123,9 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         JOIN facility_details as f ON vl.lab_id=f.facility_id
 
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-if (!empty($whereCondition))
+if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
+}
 
 $sWhere[] = $recencyWhere;
 $sWhere[] = " (vl.result_status = 7) ";
@@ -194,12 +195,12 @@ $tatSampleQuery = "SELECT
         COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberTested',
         COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberReceived',
         DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgTestedDiff,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedDiff,
+        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedTested,
+        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedReceived,
         CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgReceivedPrinted,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgResultPrinted,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgResultPrintedFirstTime
+        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedPrinted,
+        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgTestedPrinted,
+        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgTestedPrintedFirstTime
 
         FROM `$table` AS vl
 
@@ -228,9 +229,6 @@ if (!empty($sWhere)) {
 }
 $tatSampleQuery .= " GROUP BY monthDate ORDER BY sample_tested_datetime ";
 
-// $general->elog($_POST['labName']);
-//LoggerUtility::log('error', $tatSampleQuery);
-
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {
@@ -242,12 +240,12 @@ foreach ($tatResult as $sRow) {
     $result['numberCollected'][$j] = (isset($sRow["numberCollected"]) && $sRow["numberCollected"] > 0 && $sRow["numberCollected"] != null) ? $sRow["numberCollected"] : 'null';
     $result['numberTested'][$j] = (isset($sRow["numberTested"]) && $sRow["numberTested"] > 0 && $sRow["numberTested"] != null) ? $sRow["numberTested"] : 'null';
     $result['numberReceived'][$j] = (isset($sRow["numberReceived"]) && $sRow["numberReceived"] > 0 && $sRow["numberReceived"] != null) ? $sRow["numberReceived"] : 'null';
-    $result['avgResultPrinted'][$j] = (isset($sRow["AvgResultPrinted"]) && $sRow["AvgResultPrinted"] > 0 && $sRow["AvgResultPrinted"] != null) ? $sRow["AvgResultPrinted"] : 'null';
-    $result['avgResultPrintedFirstTime'][$j] = (isset($sRow["AvgResultPrintedFirstTime"]) && $sRow["AvgResultPrintedFirstTime"] > 0 && $sRow["AvgResultPrintedFirstTime"] != null) ? $sRow["AvgResultPrintedFirstTime"] : 'null';
-    $result['sampleTestedDiff'][$j] = (isset($sRow["AvgTestedDiff"]) && $sRow["AvgTestedDiff"] > 0 && $sRow["AvgTestedDiff"] != null) ? round($sRow["AvgTestedDiff"], 2) : 'null';
-    $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgReceivedDiff"]) && $sRow["AvgReceivedDiff"] > 0 && $sRow["AvgReceivedDiff"] != null) ? round($sRow["AvgReceivedDiff"], 2) : 'null';
+    $result['AvgTestedPrinted'][$j] = (isset($sRow["AvgTestedPrinted"]) && $sRow["AvgTestedPrinted"] > 0 && $sRow["AvgTestedPrinted"] != null) ? $sRow["AvgTestedPrinted"] : 'null';
+    $result['AvgTestedPrintedFirstTime'][$j] = (isset($sRow["AvgTestedPrintedFirstTime"]) && $sRow["AvgTestedPrintedFirstTime"] > 0 && $sRow["AvgTestedPrintedFirstTime"] != null) ? $sRow["AvgTestedPrintedFirstTime"] : 'null';
+    $result['sampleTestedDiff'][$j] = (isset($sRow["AvgCollectedTested"]) && $sRow["AvgCollectedTested"] > 0 && $sRow["AvgCollectedTested"] != null) ? round($sRow["AvgCollectedTested"], 2) : 'null';
+    $result['sampleReceivedDiff'][$j] = (isset($sRow["AvgCollectedReceived"]) && $sRow["AvgCollectedReceived"] > 0 && $sRow["AvgCollectedReceived"] != null) ? round($sRow["AvgCollectedReceived"], 2) : 'null';
     $result['sampleReceivedTested'][$j] = (isset($sRow["AvgReceivedTested"]) && $sRow["AvgReceivedTested"] > 0 && $sRow["AvgReceivedTested"] != null) ? round($sRow["AvgReceivedTested"], 2) : 'null';
-    $result['sampleReceivedPrinted'][$j] = (isset($sRow["AvgReceivedPrinted"]) && $sRow["AvgReceivedPrinted"] > 0 && $sRow["AvgReceivedPrinted"] != null) ? round($sRow["AvgReceivedPrinted"], 2) : 'null';
+    $result['sampleReceivedPrinted'][$j] = (isset($sRow["AvgCollectedPrinted"]) && $sRow["AvgCollectedPrinted"] > 0 && $sRow["AvgCollectedPrinted"] != null) ? round($sRow["AvgCollectedPrinted"], 2) : 'null';
     $result['date'][$j] = $sRow["monthDate"];
     $j++;
 }
@@ -538,12 +536,12 @@ foreach ($tatResult as $sRow) {
                     yAxis: 1
                 },
                 <?php
-                if (isset($result['avgResultPrinted'])) {
+                if (isset($result['AvgTestedPrinted'])) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Result - Printed", escapeText: true); ?>",
-                        data: [<?php echo implode(",", $result['avgResultPrinted']); ?>],
+                        name: "<?php echo _translate("Tested - Printed", escapeText: true); ?>",
+                        data: [<?php echo implode(",", $result['AvgTestedPrinted']); ?>],
                         color: '#0f3f6e',
                     },
                 <?php
@@ -588,12 +586,12 @@ foreach ($tatResult as $sRow) {
                     },
                 <?php
                 }
-                if (isset($result['avgResultPrintedFirstTime'])) {
+                if (isset($result['AvgTestedPrintedFirstTime'])) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
                         name: "<?php echo _translate("Collected - Printed First Time", escapeText: true); ?>",
-                        data: [<?php echo implode(",", $result['avgResultPrintedFirstTime']); ?>],
+                        data: [<?php echo implode(",", $result['AvgTestedPrintedFirstTime']); ?>],
                         color: '#000',
                     },
                 <?php
