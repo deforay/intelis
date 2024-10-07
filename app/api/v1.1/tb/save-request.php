@@ -48,22 +48,27 @@ try {
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
-    //$origJson = $request->getBody()->getContents();
+
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
 
-    $appVersion = null;
+    // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
             'pointer' => '/appVersion',
             'decoder' => new ExtJsonDecoder(true)
         ]);
-        $appVersion = iterator_to_array($appVersion)['appVersion'];
 
+        $appVersionArray = iterator_to_array($appVersion);
+        $appVersion = $appVersionArray['appVersion'] ?? null;
+    } catch (PathNotFoundException | Throwable $e) {
+        // If the pointer is not found, appVersion remains null
+        $appVersion = null;
+    }
 
-
+    try {
         $input = Items::fromString($origJson, [
             'pointer' => '/data',
             'decoder' => new ExtJsonDecoder(true)
@@ -71,7 +76,7 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException $ex) {
+    } catch (PathNotFoundException | Throwable $ex) {
         throw new SystemException("Invalid request");
     }
 
@@ -186,10 +191,6 @@ try {
             FROM form_tb ";
             $sQueryWhere = [];
 
-            // if (!empty($data['uniqueId'])) {
-            //     $uniqueId = $data['uniqueId'];
-            //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-            // }
             if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                 $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
             }
@@ -349,7 +350,7 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
         /* Reason for VL Result changes */
         $reasonForChanges = null;

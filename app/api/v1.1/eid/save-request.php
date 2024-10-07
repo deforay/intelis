@@ -56,14 +56,20 @@ try {
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
-    $appVersion = null;
+    // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
             'pointer' => '/appVersion',
             'decoder' => new ExtJsonDecoder(true)
         ]);
-        $appVersion = iterator_to_array($appVersion)['appVersion'];
 
+        $appVersionArray = iterator_to_array($appVersion);
+        $appVersion = $appVersionArray['appVersion'] ?? null;
+    } catch (PathNotFoundException | Throwable $e) {
+        // If the pointer is not found, appVersion remains null
+        $appVersion = null;
+    }
+    try {
         $input = Items::fromString($origJson, [
             'pointer' => '/data',
             'decoder' => new ExtJsonDecoder(true)
@@ -71,7 +77,7 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException $ex) {
+    } catch (PathNotFoundException | Throwable $ex) {
         throw new SystemException("Invalid request");
     }
 

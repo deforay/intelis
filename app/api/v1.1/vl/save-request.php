@@ -54,19 +54,25 @@ try {
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload");
     }
-    $appVersion = null;
+
 
     $updatedLabs = [];
 
-
+    // Attempt to extract appVersion
     try {
         $appVersion = Items::fromString($origJson, [
             'pointer' => '/appVersion',
             'decoder' => new ExtJsonDecoder(true)
         ]);
-        $appVersion = iterator_to_array($appVersion)['appVersion'];
 
+        $appVersionArray = iterator_to_array($appVersion);
+        $appVersion = $appVersionArray['appVersion'] ?? null;
+    } catch (PathNotFoundException | Throwable $e) {
+        // If the pointer is not found, appVersion remains null
+        $appVersion = null;
+    }
 
+    try {
         $input = Items::fromString($origJson, [
             'pointer' => '/data',
             'decoder' => new ExtJsonDecoder(true)
@@ -277,18 +283,18 @@ try {
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
-            'deviceId' => $userAttributes['deviceId']
+            'deviceId' => $userAttributes['deviceId'] ?? null
         ];
         /* Reason for VL Result changes */
         $reasonForChanges = null;
         $allChange = [];
         if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
             foreach ($data['reasonForResultChanges'] as $row) {
-                $allChange[] = array(
+                $allChange[] = [
                     'usr' => $row['changed_by'],
                     'msg' => $row['reason'],
                     'dtime' => $row['change_datetime']
-                );
+                ];
             }
         }
         if (!empty($allChange)) {

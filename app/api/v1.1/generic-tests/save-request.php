@@ -71,7 +71,7 @@ try {
         if (empty($input)) {
             throw new PathNotFoundException();
         }
-    } catch (PathNotFoundException $ex) {
+    } catch (PathNotFoundException | Throwable $ex) {
         throw new SystemException("Invalid request");
     }
 
@@ -340,7 +340,7 @@ try {
                 'applicationVersion' => $version,
                 'apiTransactionId' => $transactionId,
                 'mobileAppVersion' => $appVersion,
-                'deviceId' => $userAttributes['deviceId']
+                'deviceId' => $userAttributes['deviceId'] ?? null
             ];
             $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
 
