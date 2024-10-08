@@ -36,7 +36,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
+    public static function checkCSRF(ServerRequest $request, bool $invalidate = true): void
     {
 
         $method = strtoupper($request->getMethod());
@@ -51,7 +51,7 @@ final class SecurityService
             ?: $request->getParsedBody()['csrf_token'] ?? null;
 
         // Check if CSRF token has expired (1 hour default expiration)
-        if (isset($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) { // 1 hour expiration
+        if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) {
             self::rotateCSRF($request);
             throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
         }
@@ -75,7 +75,7 @@ final class SecurityService
     }
     private static function invalidateCSRF()
     {
-        if (isset($_SESSION['csrf_token'])) {
+        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
             unset($_SESSION['csrf_token']);
             unset($_SESSION['csrf_token_time']);
         }
@@ -83,7 +83,7 @@ final class SecurityService
 
     private static function generateCSRF(): void
     {
-        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
+        if (empty($_SESSION['csrf_token'])) {
             $_SESSION['csrf_token_time'] = time();
             $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
         }
