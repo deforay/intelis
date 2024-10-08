@@ -13,6 +13,7 @@ class AclMiddleware implements MiddlewareInterface
 {
     protected array $excludedUris = [
         '/',
+        '/index.php',
         '/login/login.php',
         '/login/loginProcess.php',
         '/login/logout.php',
@@ -34,6 +35,7 @@ class AclMiddleware implements MiddlewareInterface
         if (
             $this->isExcludedUri($currentURI) ||
             CommonService::isAjaxRequest($request) !== false ||
+            fnmatch('/remote*', $currentURI) ||
             fnmatch('/system-admin*', $currentURI) ||
             fnmatch('/api*', $currentURI) ||
             _isAllowed($currentURI)
