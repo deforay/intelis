@@ -36,7 +36,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = true): void
+    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
     {
 
         $method = strtoupper($request->getMethod());
@@ -44,7 +44,8 @@ final class SecurityService
 
         // Check if method is one of the modifying methods
         if (
-            fnmatch('/remote*', $currentURI) ||
+            fnmatch('/remote/remote/*', $currentURI) ||
+            fnmatch('/api/*', $currentURI) ||
             !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) ||
             !isset($_SESSION['csrf_token'])
         ) {

@@ -30,14 +30,14 @@ class AclMiddleware implements MiddlewareInterface
 
         // SKIP ACL check for excluded URIs
         // SKIP ACL check for AJAX requests (X-Requested-With: XMLHttpRequest)
-        // SKIP ACL check for system-admin and API URLs
+        // SKIP ACL check for system-admin/ remote/remote/ and API URLs
         // ALLOW if the current URI is allowed by ACL
         if (
             $this->isExcludedUri($currentURI) ||
             CommonService::isAjaxRequest($request) !== false ||
-            fnmatch('/remote*', $currentURI) ||
-            fnmatch('/system-admin*', $currentURI) ||
-            fnmatch('/api*', $currentURI) ||
+            fnmatch('/remote/remote/*', $currentURI) ||
+            fnmatch('/system-admin/*', $currentURI) ||
+            fnmatch('/api/*', $currentURI) ||
             _isAllowed($currentURI)
         ) {
             return $handler->handle($request);

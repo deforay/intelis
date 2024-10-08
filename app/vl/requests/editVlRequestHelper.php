@@ -10,6 +10,7 @@ use App\Services\StorageService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
@@ -35,6 +36,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
+
+SecurityService::rotateCSRF($request);
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 

@@ -95,12 +95,12 @@ try {
                     $tableName = $tableInfo['table'][$j];
                     try {
                         if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
-                            if ((in_array($data['instrument_id'], $deletedId)) == false) {
-                                if (!empty($data['instrument_id'])) {
-                                    $deletedId[] = $data['instrument_id'];
-                                    $db->where('instrument_id', $data['instrument_id']);
-                                    $db->delete($tableName);
-                                }
+                            if ((in_array($data['instrument_id'], $deletedId)) === false &&
+                                !empty($data['instrument_id'])
+                            ) {
+                                $deletedId[] = $data['instrument_id'];
+                                $db->where('instrument_id', $data['instrument_id']);
+                                $db->delete($tableName);
                             }
                             $id = $db->insert($tableName, $data);
                         } else {
