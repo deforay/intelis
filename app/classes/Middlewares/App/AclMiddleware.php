@@ -12,6 +12,7 @@ use Psr\Http\Server\RequestHandlerInterface;
 class AclMiddleware implements MiddlewareInterface
 {
     protected array $excludedUris = [
+        '/',
         '/login/login.php',
         '/login/loginProcess.php',
         '/login/logout.php',
