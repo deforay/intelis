@@ -58,12 +58,6 @@ $importResult = $db->query($importQuery);
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
-
 
 // Comorbidity
 $comorbidityData = $hepatitisService->getHepatitisComorbidities();
