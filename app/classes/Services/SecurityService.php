@@ -40,9 +40,14 @@ final class SecurityService
     {
 
         $method = strtoupper($request->getMethod());
+        $currentURI = $request->getUri()->getPath();
 
         // Check if method is one of the modifying methods
-        if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) || !isset($_SESSION['csrf_token'])) {
+        if (
+            fnmatch('/remote*', $currentURI) ||
+            !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) ||
+            !isset($_SESSION['csrf_token'])
+        ) {
             return;
         }
 
