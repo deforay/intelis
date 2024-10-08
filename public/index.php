@@ -8,6 +8,7 @@ if (!isset($_SESSION['nonce'])) {
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SecurityService;
 use App\Middlewares\CorsMiddleware;
 use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -17,7 +18,6 @@ use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use function Laminas\Stratigility\middleware;
 use App\Middlewares\SystemAdminAuthMiddleware;
-
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
@@ -90,7 +90,17 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     return $handler->handle($request);
 }));
 
+
+// Custom Middleware to check CSRF
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    SecurityService::checkCSRF(request: $request, invalidate: true);
+    return $handler->handle($request);
+}));
+
+
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
+
+
 
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);

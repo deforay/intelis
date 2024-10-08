@@ -12,46 +12,66 @@ final class SecurityService
 
     public static function checkContentLength(ServerRequest $request)
     {
-        $contentLength = $request->getHeaderLine('Content-Length');
-        if ($contentLength && strlen($request->getBody()->getContents()) !== (int)$contentLength) {
-            throw new SystemException(_translate('Invalid Request. Please try again'));
-        }
-    }
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
-    {
-        if ($request->getMethod() !== 'POST' || !isset($_SESSION['csrf_token'])) {
+        // Only check Content-Length for POST, PUT, and PATCH requests
+        $method = strtoupper($request->getMethod());
+        if (!in_array($method, ['POST', 'PUT', 'PATCH'])) {
             return;
         }
 
-        $csrfToken = CommonService::isAjaxRequest($request)
-            ? $request->getHeaderLine('X-CSRF-Token')
-            : $request->getParsedBody()['csrf_token'] ?? null;
+        $contentLength = $request->getHeaderLine('Content-Length');
 
-        if (isset($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) { // 1 hour expiration
-            self::invalidateAndGenerateCSRF();
+        // Check for multipart/form-data specifically
+        $contentType = strtolower($request->getHeaderLine('Content-Type'));
+        // For non-multipart forms, compare the length of the body
+        $body = $request->getBody();
+        $bodyContents = $body->getContents();
+        $body->rewind(); // Rewind after reading
+
+        if (
+            !str_contains($contentType, 'multipart/form-data') &&
+            $contentLength &&
+            strlen($bodyContents) !== (int)$contentLength
+        ) {
+            throw new SystemException(_translate('Invalid Request. Please try again.'));
+        }
+    }
+
+    public static function checkCSRF(ServerRequest $request, bool $invalidate = true): void
+    {
+        $method = strtoupper($request->getMethod());
+
+        // Check if method is one of the modifying methods
+        if (!in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) || !isset($_SESSION['csrf_token'])) {
+            return;
+        }
+
+        // Retrieve CSRF token from header or body
+        $csrfToken = $request->getHeaderLine('X-CSRF-Token')
+            ?: $request->getParsedBody()['csrf_token'] ?? null;
+
+        // Check if CSRF token has expired (1 hour default expiration)
+        $tokenTime = $_SESSION['csrf_token_time'] ?? 0;
+        if (time() - $tokenTime > 3600) { // 1 hour expiration
+            self::rotateCSRF($request);
             throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
         }
 
+        // Validate the CSRF token
         if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-            self::invalidateAndGenerateCSRF();
+            self::rotateCSRF($request);
             throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
         }
 
+        // Optionally invalidate and regenerate the CSRF token after successful use
         if ($invalidate) {
-            self::invalidateAndGenerateCSRF();
+            self::rotateCSRF($request);
         }
     }
-
-    private static function invalidateAndGenerateCSRF(): void
+    public static function rotateCSRF($request): void
     {
-        self::invalidateCSRF();
-        self::generateCSRF();
-    }
-    private static function generateCSRF()
-    {
-        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
-            $_SESSION['csrf_token_time'] = time();
-            $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
+        if (CommonService::isAjaxRequest($request) === false) {
+            self::invalidateCSRF();
+            self::generateCSRF();
         }
     }
     private static function invalidateCSRF()
@@ -59,6 +79,14 @@ final class SecurityService
         if (isset($_SESSION['csrf_token'])) {
             unset($_SESSION['csrf_token']);
             unset($_SESSION['csrf_token_time']);
+        }
+    }
+
+    private static function generateCSRF(): void
+    {
+        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
+            $_SESSION['csrf_token_time'] = time();
+            $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
         }
     }
 }

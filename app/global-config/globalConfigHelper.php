@@ -159,19 +159,6 @@ try {
         }
     }
 
-    /*if (isset($_POST['genericTestsTableInResultsPdf']) && trim((string) $_POST['genericTestsTableInResultsPdf']) != "") {
-        $data = array('value' => trim((string) $_POST['genericTestsTableInResultsPdf']));
-        $db->where('name', 'generic_tests_table_in_results_pdf');
-        $id = $db->update("global_config", $data);
-        if ($id) {
-            $db->where('name', 'logo');
-            $db->update("global_config", array(
-                "updated_datetime" => $currentDateTime,
-                "updated_by" => $_SESSION['userId']
-            ));
-        }
-    }*/
-
     $_SESSION['alertMsg'] = _translate("Configuration updated successfully");
 
     //Add event log
@@ -180,7 +167,7 @@ try {
     $resource = 'general-config';
 
     $general->activityLog($eventType, $action, $resource);
-    header("Location:editGlobalConfig.php");
+    header("Location:/global-config/editGlobalConfig.php");
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [

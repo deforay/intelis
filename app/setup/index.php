@@ -191,75 +191,79 @@ $testName = TestsService::getTestTypes();
             <table aria-describedby="table" class="table table-striped" aria-hidden="true" style="width:100%">
               <ta>
                 <tr>
-                  <th colspan="5">
+                  <th scope="col" colspan="5">
                     <h3><?= _translate("Server Settings"); ?></h3>
                   </th>
                 </tr>
                 <tr>
-                  <th scope="row"><?= _translate("Memory Limit"); ?></th>
+                  <th scope="col"><?= _translate("Memory Limit"); ?></th>
                   <td>
                     <?php echo $serverSettings['memory_limit']; ?></td>
-                  <th scope="row"><?= _translate("Maximum Upload Filesize"); ?></th>
+                  <th scope="col"><?= _translate("Maximum Upload Filesize"); ?></th>
                   <td><?php echo $serverSettings['upload_max_filesize']; ?></td>
                 </tr>
                 <tr>
-                  <th scope="row"><?= _translate("Maximum POST size"); ?></th>
+                  <th scope="col"><?= _translate("Maximum POST size"); ?></th>
                   <td><?php echo $serverSettings['post_max_size']; ?></td>
-                  <th scope="row"><?= _translate("Maximum Time of Execution"); ?></th>
+                  <th scope="col"><?= _translate("Maximum Time of Execution"); ?></th>
                   <td><?php echo $serverSettings['max_execution_time']; ?></td>
                 </tr>
             </table>
             <br><br>
             <table aria-describedby="table" class="table table-striped" aria-hidden="true" style="width:100%">
               <tr>
-                <th colspan="5">
+                <th scope="col" colspan="5">
                   <h3><?= _translate("Folder Permissions"); ?></h3>
                 </th>
               </tr>
               <tr>
-                <th><?= _translate("Folder"); ?></th>
-                <th><?= _translate("Exists?"); ?></th>
-                <th><?= _translate("Readable? / Writeable?"); ?></th>
+                <th scope="col"><?= _translate("Folder"); ?></th>
+                <th scope="col"><?= _translate("Exists?"); ?></th>
+                <th scope="col"><?= _translate("Readable? / Writeable?"); ?></th>
               </tr>
               <tr>
-                <td scope="row"><?php echo CACHE_PATH; ?></td>
+                <td><?php echo CACHE_PATH; ?></td>
                 <td>
                   <?php
                   echo ($folderPermissions['CACHE_PATH']['exists'] == 1) ? "Yes" : "No";
                   ?>
                 </td>
-                <td scope="row"><?php echo ($folderPermissions['CACHE_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                  <?php echo ($folderPermissions['CACHE_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+                <td><?php echo ($folderPermissions['CACHE_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['CACHE_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
+                </td>
               </tr>
               <tr>
-                <td scope="row"><?php echo UPLOAD_PATH; ?></td>
+                <td><?php echo UPLOAD_PATH; ?></td>
                 <td>
                   <?php
                   echo ($folderPermissions['UPLOAD_PATH']['exists'] == 1) ? "Yes" : "No";
                   ?>
                 </td>
-                <td scope="row"><?php echo ($folderPermissions['UPLOAD_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                  <?php echo ($folderPermissions['UPLOAD_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+                <td><?php echo ($folderPermissions['UPLOAD_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['UPLOAD_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
+                </td>
               </tr>
               <tr>
-                <td scope="row"><?php echo TEMP_PATH; ?></td>
+                <td><?php echo TEMP_PATH; ?></td>
                 <td>
                   <?php
                   echo ($folderPermissions['TEMP_PATH']['exists'] == 1) ? "Yes" : "No";
                   ?>
                 </td>
-                <td scope="row"><?php echo ($folderPermissions['TEMP_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                  <?php echo ($folderPermissions['TEMP_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+                <td><?php echo ($folderPermissions['TEMP_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['TEMP_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
+                </td>
               </tr>
               <tr>
-                <td scope="row"><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
+                <td><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
                 <td>
                   <?php
                   echo ($folderPermissions['LOGS_PATH']['exists'] == 1) ? "Yes" : "No";
                   ?>
                 </td>
-                <td scope="row"><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                  <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+                <td><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
+                </td>
               </tr>
               </tbody>
             </table>
@@ -332,7 +336,7 @@ $testName = TestsService::getTestTypes();
                     <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
                       <option value=""><?= _translate("-- Select Instance Type --"); ?></option>
                       <option value="vluser" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
-                      <option value="remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
+                      <option value=" remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
                       <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
                     </select>
                   </div>
@@ -492,8 +496,8 @@ $testName = TestsService::getTestTypes();
             remoteURL: url,
           },
           function(data) {
-            if (data != '1') {
-              alert("<?= _translate("This STS URL is invalid. Please check and enter a valid STS URL.", true); ?>");
+            if (data == 0 || data == '0' || data == 'false') {
+              alert("<?= _translate("This STS URL appears to be invalid. Please check and enter a valid STS URL.", true); ?>");
               $('#remoteURL').focus();
               return false;
             }
