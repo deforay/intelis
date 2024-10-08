@@ -44,7 +44,7 @@ $shortName = _translate('Lab Sample Management System');
 
 if ($general->isSTSInstance()) {
   $shortName = 'Sample Tracking';
-  $systemType = "Remote Sample Tracking Module";
+  $systemDisplayName = "Remote Sample Tracking Module";
   $path = '/assets/img/remote-bg.jpg';
 } else {
   $path = '/assets/img/bg.jpg';

@@ -42,9 +42,6 @@ $ipaddress = $general->getClientIpAddress();
 
 try {
 
-    // CSRF Token Rotation
-    SecurityService::rotateCSRF($request);
-
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);
 

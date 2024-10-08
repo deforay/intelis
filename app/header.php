@@ -33,30 +33,22 @@ $trainingMode = isset($arr['training_mode']) && trim((string) $arr['training_mod
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>LIS</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
-$systemType = _translate("Lab Sample Management Module");
+$systemDisplayName = _translate("Lab Sample Management Module");
 $shortName = _translate("Sample Management");
 $shortCode = 'LIS';
 if ($general->isSTSInstance()) {
 	$skin = "skin-red";
-	$systemType = _translate("Remote Sample Tracking Module");
+	$systemDisplayName = _translate("Remote Sample Tracking Module");
 	$logoName = "<span class='fa fa-medkit'></span> STS";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _translate("Sample Tracking");
 	$shortCode = 'STS';
 }
 
-
-$systemType = SYSTEM_CONFIG['instanceName'] ?? $systemType;
-
+$systemDisplayName = SYSTEM_CONFIG['instanceName'] ?? $systemDisplayName;
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-
-
-if (!_isAllowed($request)) {
-	http_response_code(401);
-	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
-}
 
 $countryCode = $arr['default_phone_prefix'] ?? '';
 $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;
@@ -194,7 +186,7 @@ if ($instrumentCount == 0 || $userCount == 0) {
 					<li>
 						<a href="javascript:void(0);return false;">
 							<span style="text-transform: uppercase;font-weight:600;">
-								<?= $systemType; ?>
+								<?= $systemDisplayName; ?>
 							</span>
 						</a>
 					</li>
