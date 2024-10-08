@@ -38,6 +38,7 @@ final class SecurityService
 
     public static function checkCSRF(ServerRequest $request, bool $invalidate = true): void
     {
+
         $method = strtoupper($request->getMethod());
 
         // Check if method is one of the modifying methods
@@ -50,15 +51,13 @@ final class SecurityService
             ?: $request->getParsedBody()['csrf_token'] ?? null;
 
         // Check if CSRF token has expired (1 hour default expiration)
-        $tokenTime = $_SESSION['csrf_token_time'] ?? 0;
-        if (time() - $tokenTime > 3600) { // 1 hour expiration
+        if (isset($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) { // 1 hour expiration
             self::rotateCSRF($request);
             throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
         }
 
         // Validate the CSRF token
         if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-            self::rotateCSRF($request);
             throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
         }
 

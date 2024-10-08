@@ -51,10 +51,10 @@ $systemDisplayName = SYSTEM_CONFIG['instanceName'] ?? $systemDisplayName;
 $request = AppRegistry::get('request');
 
 
-if (!_isAllowed($request)) {
-	http_response_code(401);
-	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
-}
+// if (!_isAllowed($request)) {
+// 	http_response_code(401);
+// 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
+// }
 
 $countryCode = $arr['default_phone_prefix'] ?? '';
 $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;

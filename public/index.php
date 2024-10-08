@@ -94,6 +94,9 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     return $handler->handle($request);
 }));
 
+// TODO : ACL Middleware
+$middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
+
 // Identify the requested resource
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
