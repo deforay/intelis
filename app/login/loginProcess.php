@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -40,6 +41,9 @@ $ipaddress = $general->getClientIpAddress();
 
 
 try {
+
+    // CSRF Token Rotation
+    SecurityService::rotateCSRF($request);
 
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);

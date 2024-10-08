@@ -36,7 +36,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = true): void
+    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
     {
 
         $method = strtoupper($request->getMethod());
