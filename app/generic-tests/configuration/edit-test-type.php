@@ -225,7 +225,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 								<div class="form-group">
 									<label for="symptoms" class="col-lg-4 control-label"><?php echo _translate("Symptoms"); ?></label>
 									<div class="col-lg-7">
-										<select class="form-control" name='symptoms[]' id='symptoms' title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
+										<select name='symptoms[]' id='symptoms' title="<?php echo _translate('Please select the symptoms'); ?>" multiple>
 											<?= $general->generateSelectOptions($symptomInfo, $testSymptomsId, '-- Select --') ?>
 										</select>
 									</div>
@@ -510,7 +510,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 																				<td><input type="text" value="<?php echo $value ?? null; ?>" name="resultConfig[qualitative][expectedResult][<?php echo $key; ?>][<?php echo $ikey; ?>]" class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm" placeholder="Enter the expected result" title="Please enter the expected result" /></td>
 																				<td><input type="text" value="<?php echo $resultsInnerList['resultCode'][$key][$ikey] ?? null; ?>" name="resultConfig[qualitative][resultCode][<?php echo $key; ?>][<?php echo $ikey; ?>]" class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm" placeholder="Enter the result code" title="Please enter the result code" /></td>
 																				<td><input type="text" value="<?php echo $resultsInnerList['sortOrder'][$key][$ikey] ?? null; ?>" name="resultConfig[qualitative][sortOrder][<?php echo $key; ?>][<?php echo $ikey; ?>]" class="form-control qualitative-input-<?php echo $key; ?><?php echo $ikey; ?> input-sm" placeholder="Enter the sort order" title="Please enter the sort order" /></td>
-																				<td style="text-align:center;"><a href="javascript:void(0);" onclick="addQualitativeRow(this, <?php echo $key; ?>,<?php echo ($ikey + 1); ?>);" <?php echo ($ikey == $n) ? '' : 'style="pointer-events:none;"'; ?> class="btn btn-xs btn-info qualitative-insrow-<?php echo $key; ?><?php echo $ikey; ?>"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="removeQualitativeRow(this, <?php echo $key; ?>, <?php echo ($ikey + 1); ?>)" class="btn btn-xs btn-danger" title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td>
+																				<td style="text-align:center;"><a href="javascript:void(0);" onclick="addQualitativeRow(this, <?php echo $key; ?>,<?php echo ($ikey + 1); ?>);"  class="btn btn-xs btn-info qualitative-insrow-<?php echo $key; ?><?php echo $ikey; ?>"><i class="fa-solid fa-plus"></i></a>&nbsp;&nbsp;<a href="javascript:void(0);" onclick="removeQualitativeRow(this, <?php echo $key; ?>, <?php echo ($ikey + 1); ?>)" class="btn btn-xs btn-danger" title="Remove this row completely" alt="Remove this row completely"><i class="fa-solid fa-minus"></i></a></td>
 															</td>
 														</tr>
 												<?php }
@@ -690,7 +690,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 		$("#rejectionReason").select2({
 			placeholder: "<?php echo _translate("Select Rejection Reason"); ?>"
 		});
-		$("#symptoms").select2({
+		$("#symptoms").selectize({
 			placeholder: "<?php echo _translate("Select Symptoms"); ?>"
 		});
 		$("#testResultUnit").selectize({
