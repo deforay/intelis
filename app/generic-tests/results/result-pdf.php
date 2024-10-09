@@ -209,8 +209,8 @@ if (!empty($requestResult)) {
           }
           $sampleReceivedDate = '';
           $sampleReceivedTime = '';
-          if (isset($result['sample_received_at_testing_lab_datetime']) && trim((string) $result['sample_received_at_testing_lab_datetime']) != '' && $result['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-               $expStr = explode(" ", (string) $result['sample_received_at_testing_lab_datetime']);
+          if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+               $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
                $sampleReceivedDate = date('d/M/Y', strtotime($expStr[0]));
                $sampleReceivedTime = $expStr[1];
           }
@@ -436,7 +436,7 @@ if (!empty($requestResult)) {
           $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_type_name']) . '</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
           $html .= '</tr></table>';
-
+          //echo '<pre>'; print_r($genericTestInfo); die;
           if (!empty($genericTestInfo) && $showHideTable == 'yes') {
                $w = 25;
                if (isset($result['sub_tests']) && !empty($result['sub_tests'])) {
@@ -602,7 +602,7 @@ if (!empty($requestResult)) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-               if (MiscUtility::imageExists($reviewedSignaturePath)) {
+               if (!empty($reviewedSignaturePath) && MiscUtility::imageExists($reviewedSignaturePath)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -621,7 +621,7 @@ if (!empty($requestResult)) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-               if (MiscUtility::imageExists($revisedSignaturePath)) {
+               if (!empty($revisedSignaturePath) && MiscUtility::imageExists($revisedSignaturePath)) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -642,7 +642,7 @@ if (!empty($requestResult)) {
 
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (MiscUtility::imageExists(($userSignaturePath))) {
+               if (!empty($userSignaturePath) && MiscUtility::imageExists(($userSignaturePath))) {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -651,7 +651,7 @@ if (!empty($requestResult)) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
                $html .= '</tr>';
           }
-
+          
           if (!empty($result['lab_tech_comments'])) {
 
                $html .= '<tr>';
@@ -679,6 +679,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
+       
           if ($vlResult != '' || ($vlResult == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
                $pdf->writeHTML($html);
                $pdf->lastPage();
