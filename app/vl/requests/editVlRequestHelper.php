@@ -37,8 +37,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-SecurityService::rotateCSRF($request);
-
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 
 $tableName = "form_vl";
