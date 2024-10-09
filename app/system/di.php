@@ -47,6 +47,7 @@ use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
+use App\Middlewares\App\AclMiddleware;
 
 try {
     // Load configuration
@@ -123,6 +124,7 @@ $builder->addDefinitions([
     AppAuthMiddleware::class => DI\autowire(),
     SystemAdminAuthMiddleware::class => DI\autowire(),
     ApiAuthMiddleware::class => DI\autowire(),
+    AclMiddleware::class => DI\autowire(),
     ErrorHandlerMiddleware::class => DI\autowire(),
     ApiErrorHandlingMiddleware::class => DI\autowire(),
     ApiLegacyFallbackMiddleware::class => DI\autowire(),

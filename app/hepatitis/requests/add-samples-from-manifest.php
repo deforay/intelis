@@ -228,7 +228,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if ($("#samplePackageCode").val() != "") {
 			$.blockUI();
 			loadhepatitisRequestData();
-			$.post("/hepatitis/requests/get-remote-manifest-helper.php", {
+			$.post("/hepatitis/requests/getRemoteManifestHelper.php", {
 					samplePackageCode: $("#samplePackageCode").val()
 				},
 				function(data) {

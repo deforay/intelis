@@ -2,7 +2,7 @@
 
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
-    require_once(__DIR__ . "/../../../bootstrap.php");
+    require_once __DIR__ . "/../../../bootstrap.php";
     echo "=========================" . PHP_EOL;
     echo "Starting results sending" . PHP_EOL;
 }

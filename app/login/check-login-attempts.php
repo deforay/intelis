@@ -3,7 +3,6 @@
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
-use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -11,9 +10,6 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 
 try {
-
-	SecurityService::checkContentLength($request);
-	SecurityService::checkCSRF($request);
 
 	$postParams = _sanitizeInput($request->getParsedBody());
 

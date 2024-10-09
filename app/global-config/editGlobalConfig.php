@@ -4,7 +4,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\MiscUtility;
 
 $title = _translate("Edit General Configuration");
 
@@ -35,13 +35,15 @@ for ($i = 0; $i < sizeof($configResult); $i++) {
 	$arr[$configResult[$i]['name']] = $configResult[$i]['value'];
 }
 
+$arr = MiscUtility::arrayEmptyStringsToNull($arr);
+
 // Get locale directory list
 $localeLists = $general->getLocaleList((int)($arr['vl_form'] ?? 0));
 
 $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 ?>
-<link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" />
+<!-- <link href="/assets/css/jasny-bootstrap.min.css" rel="stylesheet" /> -->
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
 	.select2-selection__choice {
@@ -94,8 +96,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Date Format"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
 												<select class="form-control isRequired readPage" name="gui_date_format" id="gui_date_format" title="<?php echo _translate('Please select the date format'); ?>">
-													<option value="d-M-Y" <?php echo ('d-M-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-M-Y'); ?></option>
-													<option value="d-m-Y" <?php echo ('d-m-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-m-Y'); ?></option>
+													<option value="d-M-Y" <?php echo ('d-M-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-M-Y') . " - DD-MMM-YYYY"; ?></option>
+													<option value="d-m-Y" <?php echo ('d-m-Y' == $arr['gui_date_format']) ? "selected='selected'" : "" ?>><?php echo date('d-m-Y') . " - DD-MM-YYYY"; ?></option>
 												</select>
 											</div>
 										</div>
@@ -484,7 +486,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="vl_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="vl_min_patient_id_length" name="vl_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['vl_min_patient_id_length'] == '') ? '' : $arr['vl_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="vl_min_patient_id_length" name="vl_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['vl_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -657,7 +659,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="eid_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="eid_min_patient_id_length" name="eid_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['eid_min_patient_id_length'] == '') ? '' : $arr['eid_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="eid_min_patient_id_length" name="eid_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['eid_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -784,7 +786,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="covid19_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="covid19_min_patient_id_length" name="covid19_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['covid19_min_patient_id_length'] == '') ? '' : $arr['covid19_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="covid19_min_patient_id_length" name="covid19_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['covid19_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -896,7 +898,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="hepatitis_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="hepatitis_min_patient_id_length" name="hepatitis_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['hepatitis_min_patient_id_length'] == '') ? '' : $arr['hepatitis_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="hepatitis_min_patient_id_length" name="hepatitis_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['hepatitis_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -992,7 +994,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="tb_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="tb_min_patient_id_length" name="tb_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['tb_min_patient_id_length'] == '') ? '' : $arr['tb_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="tb_min_patient_id_length" name="tb_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['tb_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -1101,7 +1103,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="cd4_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="cd4_min_patient_id_length" name="cd4_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['cd4_min_patient_id_length'] == '') ? '' : $arr['cd4_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="cd4_min_patient_id_length" name="cd4_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['cd4_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -1199,7 +1201,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											<div class="form-group">
 												<label for="generic_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
 												<div class="col-lg-10">
-													<input type="text" class="form-control forceNumeric isNumeric" id="generic_min_patient_id_length" name="generic_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter patient id min length'); ?>" value="<?php echo ($arr['generic_min_patient_id_length'] == '') ? '' : $arr['generic_min_patient_id_length']; ?>" style="max-width:60px;" />
+													<input type="text" class="form-control forceNumeric isNumeric" id="generic_min_patient_id_length" name="generic_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['generic_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
@@ -1355,6 +1357,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 						<!-- /.box-body -->
 						<div class="box-footer hideFooter">
 							<input type="hidden" class="readPage" name="removedLogoImage" id="removedLogoImage" />
+							<input type="hidden" class="" name="csrf_token" id="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
 							<a href="editGlobalConfig.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 						</div>
@@ -1369,7 +1372,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
+<!-- <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script> -->
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">

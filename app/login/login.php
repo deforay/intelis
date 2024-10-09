@@ -33,16 +33,16 @@ $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();
 
 if (!empty(SYSTEM_CONFIG['instanceName'])) {
-	$systemType = SYSTEM_CONFIG['instanceName'];
+	$systemDisplayName = SYSTEM_CONFIG['instanceName'];
 } else {
-	$systemType = _translate("Lab Sample Management Module");
+	$systemDisplayName = _translate("Lab Sample Management Module");
 }
 
 $shortName = _translate('Sample Management System');
 
 if (isset($_SESSION['instance']['type']) && $general->isSTSInstance()) {
 	$shortName = 'Sample Tracking';
-	$systemType = "Remote Sample Tracking Module";
+	$systemDisplayName = "Remote Sample Tracking Module";
 	$path = '/assets/img/remote-bg.jpg';
 } else {
 	$path = '/assets/img/bg.jpg';
@@ -145,7 +145,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		<div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
 			<div class="panel panel-default" style="opacity: 0.93;">
 				<div class="panel-heading">
-					<div class="panel-title"><?php echo $systemType; ?></div>
+					<div class="panel-title"><?php echo $systemDisplayName; ?></div>
 				</div>
 
 				<div style="padding-top:10px;" class="panel-body">

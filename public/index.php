@@ -8,16 +8,17 @@ if (!isset($_SESSION['nonce'])) {
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SecurityService;
 use App\Middlewares\CorsMiddleware;
 use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
+use App\Middlewares\App\AclMiddleware;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use function Laminas\Stratigility\middleware;
 use App\Middlewares\SystemAdminAuthMiddleware;
-
 use Laminas\HttpHandlerRunner\Emitter\SapiEmitter;
 use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 
@@ -81,16 +82,23 @@ if (fnmatch('/system-admin*', $uri)) {
     $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
 }
 
-// ACL Middleware
-// TODO: Implement ACL Middleware
-
 // Custom Middleware to set the request in the AppRegistry
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
     AppRegistry::set('request', $request);
     return $handler->handle($request);
 }));
 
+// Custom Middleware to check CSRF
+$middlewarePipe->pipe(middleware(function ($request, $handler) {
+    SecurityService::checkCSRF(request: $request);
+    return $handler->handle($request);
+}));
+
+// Identify the requested resource
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
+
+// ACL Middleware
+$middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
 
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);

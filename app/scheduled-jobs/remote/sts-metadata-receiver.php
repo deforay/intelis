@@ -8,6 +8,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
@@ -56,24 +57,18 @@ if ($general->isLISInstance() === false) {
 }
 
 if (!empty($_POST)) {
-    // Check if the referrer is from the same domain
-    if (isset($_SERVER['HTTP_REFERER'])) {
-        $referrerHost = parse_url($_SERVER['HTTP_REFERER'], PHP_URL_HOST);
-        $serverHost = $_SERVER['HTTP_HOST'];
+    try {
+        // Sanitized values from $request object
+        /** @var Laminas\Diactoros\ServerRequest $request */
+        $request = AppRegistry::get('request');
+        SecurityService::checkCSRF($request);
 
-        if ($referrerHost == $serverHost) {
-            // Sanitized values from $request object
-            /** @var Laminas\Diactoros\ServerRequest $request */
-            $request = AppRegistry::get('request');
-            $_POST = _sanitizeInput($request->getParsedBody());
-            $_POST = MiscUtility::arrayEmptyStringsToNull($_POST);
-            $remoteURL = $_POST['remoteURL'];
-        } else {
-            // Referrer does not match the server host
-            //exit('Access denied: Referrer does not match the server host.');
-            exit(0);
-        }
-    } else {
+        $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
+        $forceFlag = $_POST['force'] ?? false;
+        $remoteURL = $_POST['remoteURL'];
+    } catch (Throwable $e) {
+        LoggerUtility::log('error', "Invalid Request. Please try again");
         exit(0);
     }
 } else {
@@ -83,6 +78,11 @@ if (!empty($_POST)) {
 if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
+}
+
+if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
+    LoggerUtility::log('error', "No network connectivity while trying remote sync.");
+    return false;
 }
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');

@@ -617,8 +617,8 @@ final class CommonService
     public function addApiTracking($transactionId, $user, $numberOfRecords, $requestType, $testType, $url = null, $requestData = null, $responseData = null, $format = null, $labId = null, $facilityId = null)
     {
         try {
-            $requestData = JsonUtility::encodeUtf8Json($requestData);
-            $responseData = JsonUtility::encodeUtf8Json($responseData);
+            $requestData = JsonUtility::encodeUtf8Json($requestData ?? '{}');
+            $responseData = JsonUtility::encodeUtf8Json($responseData ?? '{}');
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
             if (!empty($requestData) && $requestData != '[]') {

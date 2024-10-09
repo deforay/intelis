@@ -2,16 +2,17 @@
 
 use App\Services\VlService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -37,6 +38,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
+
+SecurityService::rotateCSRF($request);
 
 $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 

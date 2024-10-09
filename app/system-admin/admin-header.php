@@ -3,7 +3,7 @@
 
 $logoName = "<img src='/assets/img/flask.png' style='margin-top:-5px;max-width:22px;'> <span style=''>VLSM</span>";
 $smallLogoName = "<img src='/assets/img/flask.png'>";
-$systemType = _translate("Viral Load Sample Management");
+$systemDisplayName = _translate("Viral Load Sample Management");
 $skin = "skin-blue";
 
 ?>
@@ -94,7 +94,7 @@ $skin = "skin-blue";
 				</a>
 				<ul class="nav navbar-nav">
 					<li>
-						<a href="javascript:void(0);return false;"><span style="text-transform: uppercase;font-weight:600;"><?php echo $systemType; ?></span></a>
+						<a href="javascript:void(0);return false;"><span style="text-transform: uppercase;font-weight:600;"><?php echo $systemDisplayName; ?></span></a>
 					</li>
 				</ul>
 				<div class="navbar-custom-menu">
