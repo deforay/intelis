@@ -94,17 +94,25 @@ final class ApiService
     public function checkConnectivity(string $url): bool
     {
         try {
-            $response = $this->client->get($url);
+            $options = [
+                RequestOptions::HEADERS => [
+                    'X-Request-ID' => MiscUtility::generateULID(),
+                    'X-Timestamp'  => time(),
+                    'X-Instance-ID' => $this->commonService->getInstanceId(),
+                    'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion()
+                ]
+            ];
+            $response = $this->client->get($url, $options);
             $statusCode = $response->getStatusCode();
             return $statusCode === 200;
         } catch (Throwable $e) {
             LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [
                 'exception' => $e,
-                'file' => $e->getFile(), // File where the error occurred
-                'line' => $e->getLine(), // Line number of the error
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
                 'stacktrace' => $e->getTraceAsString()
             ]);
-            return false; // Error occurred while making the request
+            return false;
         }
     }
 
@@ -112,21 +120,21 @@ final class ApiService
     {
         $options = [
             RequestOptions::HEADERS => [
-                'X-Request-ID' => MiscUtility::generateULID(),
-                'X-Timestamp'  => time(),
-                'X-Instance-ID' => $this->commonService->getInstanceId(),
+                'X-Request-ID'        => MiscUtility::generateULID(),
+                'X-Timestamp'         => time(),
+                'X-Instance-ID'       => $this->commonService->getInstanceId(),
                 'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
-                'Content-Type' => 'application/json; charset=utf-8',
-            ]
+                'Content-Type'        => 'application/json; charset=utf-8',
+            ],
         ];
-
+        $returnPayload = null;
         try {
             // Ensure payload is JSON-encoded
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
             if ($gzip) {
                 $payload = gzencode($payload);
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
-                $options[RequestOptions::HEADERS]['Accept-Encoding'] = 'gzip, deflate';
+                $options[RequestOptions::HEADERS]['Accept-Encoding']  = 'gzip, deflate';
             }
 
             // Set the request body
@@ -134,20 +142,19 @@ final class ApiService
 
             if ($async) {
                 // Perform an asynchronous request
-                return $this->client->postAsync($url, $options);
-            }
-
-            // Synchronous request
-            $response = $this->client->post($url, $options);
-
-            // Process response
-            if ($returnWithStatusCode) {
-                return [
-                    'httpStatusCode' => $response->getStatusCode(),
-                    'body' => $response->getBody()->getContents()
-                ];
+                $returnPayload = $this->client->postAsync($url, $options);
             } else {
-                return $response->getBody()->getContents();
+                // Synchronous request
+                $response     = $this->client->post($url, $options);
+                $responseBody = $response->getBody()->getContents();
+                if ($returnWithStatusCode) {
+                    $returnPayload = [
+                        'httpStatusCode' => $response->getStatusCode(),
+                        'body'           => $responseBody,
+                    ];
+                } else {
+                    $returnPayload = $responseBody;
+                }
             }
         } catch (RequestException $e) {
             // Handle request exceptions
@@ -155,18 +162,20 @@ final class ApiService
             $this->logError($e, "Unable to post to $url. Server responded with: " . ($responseBody ?? 'No response body'));
 
             if ($returnWithStatusCode) {
-                return [
+                $returnPayload = [
                     'httpStatusCode' => $e->getResponse() ? $e->getResponse()->getStatusCode() : 500,
-                    'body' => $responseBody
+                    'body'           => $responseBody,
                 ];
             } else {
-                return $responseBody;
+                $returnPayload = $responseBody;
             }
         } catch (Throwable $e) {
             // Log other errors
             $this->logError($e, "Unable to post to $url");
-            return null;
+            $returnPayload = null;
         }
+
+        return $returnPayload;
     }
 
 

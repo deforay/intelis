@@ -102,7 +102,7 @@ try {
                                 $db->where('instrument_id', $data['instrument_id']);
                                 $db->delete($tableName);
                             }
-                            $id = $db->insert($tableName, $data);
+                            $id = $db->setQueryOption(['IGNORE'])->insert($tableName, $data);
                         } else {
                             if ($tableName == 'user_details' && !empty($data['signature_image_content']) && !empty($data['signature_image_filename'])) {
                                 $signatureImagePathBase = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";

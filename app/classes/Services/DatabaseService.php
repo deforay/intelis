@@ -208,61 +208,35 @@ final class DatabaseService extends MysqliDb
      * @param array|string  $primaryKeys String or Array of primary key column names.
      * @return bool Returns true on success or false on failure.
      */
+
     public function upsert($tableName, array $data, array $updateColumns = [], $primaryKeys = [])
     {
         $this->reset();
-        $keys = array_keys($data);
-        $placeholders = array_fill(0, count($data), '?');
-        $values = array_values($data);
 
+        if (empty($data)) {
+            return false;
+        }
+
+        // Get primary keys, either provided or fetched from the database
         $primaryKeys = $primaryKeys ?: $this->getPrimaryKeys($tableName);
         $primaryKeys = is_array($primaryKeys) ? $primaryKeys : [$primaryKeys];
 
-        $sql = "INSERT INTO `$tableName` (`" . implode('`, `', $keys) . "`) VALUES (" . implode(', ', $placeholders) . ")";
-
+        // Determine columns to update on duplicate key
         if (empty($updateColumns)) {
-            $updateColumns = array_diff($keys, $primaryKeys);  // Default to using all data keys except primary keys
+            $updateColumns = array_diff(array_keys($data), $primaryKeys);
         }
 
-        $updateParts = [];
-        $updateValues = [];
-        foreach ($updateColumns as $key => $column) {
-            if (is_numeric($key)) {
-                // Indexed array, use VALUES() to refer to the value attempted to insert
-                if (in_array($column, $keys) && !in_array($column, $primaryKeys)) {
-                    $updateParts[] = "`$column` = VALUES(`$column`)";
-                }
-            } else {
-                // Associative array, direct assignment from updateColumns
-                if (!in_array($key, $primaryKeys)) {
-                    $updateParts[] = "`$key` = ?";
-                    $updateValues[] = $column;  // Assuming column is the value to update
-                }
+        // Prepare data for updating
+        $updateData = [];
+        foreach ($updateColumns as $column) {
+            if (array_key_exists($column, $data)) {
+                $updateData[$column] = $data[$column];
             }
         }
 
-        if (!empty($updateParts)) {
-            $sql .= " ON DUPLICATE KEY UPDATE " . implode(', ', $updateParts);
-        }
-
-        $stmt = $this->mysqli()->prepare($sql);
-        if (!$stmt) {
-            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
-        }
-
-        $allValues = array_merge($values, $updateValues);
-        $types = str_repeat('s', count($allValues));
-        $stmt->bind_param($types, ...$allValues);
-
-        if ($stmt->execute()) {
-            $stmt->close();
-            return true;
-        } else {
-            $error = $stmt->error;
-            $stmt->close();
-            LoggerUtility::log('error', "Failed to execute upsert: $error");
-            return false;
-        }
+        // Use parent class methods
+        $this->onDuplicate($updateData);
+        return $this->insert($tableName, $data);
     }
 
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
