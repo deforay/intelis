@@ -265,7 +265,6 @@ final class ApiService
                 }
                 $jsonData = $decodedData;
             }
-
             // If decoding is requested, decode the JSON string
             if ($decode) {
                 $decodedJson = json_decode($jsonData, true);
