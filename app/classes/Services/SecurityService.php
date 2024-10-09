@@ -38,20 +38,6 @@ final class SecurityService
 
     public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
     {
-
-        $method = strtoupper($request->getMethod());
-        $currentURI = $request->getUri()->getPath();
-
-        // Check if method is one of the modifying methods
-        if (
-            fnmatch('/remote/remote/*', $currentURI) ||
-            fnmatch('/api/*', $currentURI) ||
-            !in_array($method, ['POST', 'PUT', 'PATCH', 'DELETE']) ||
-            !isset($_SESSION['csrf_token'])
-        ) {
-            return;
-        }
-
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
             ?: $request->getParsedBody()['csrf_token'] ?? null;
