@@ -57,8 +57,6 @@ final class TestRequestsService
         $response = [];
 
         try {
-
-
             if (!empty($uniqueIds)) {
                 $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
                 $this->db->where('unique_id', $uniqueIds, 'IN');
@@ -197,10 +195,10 @@ final class TestRequestsService
                 } elseif ($testType == 'generic-tests') {
                     /** @var GenericTestsService $genericTestsService */
                     $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
-                    $testType = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
+                    $testTypeFields = $genericTestsService->getDynamicFields($sampleRow['sample_id']);
                     $prefix = "T";
-                    if (!empty($testType['testDetails']['test_short_code'])) {
-                        $prefix = $testType['testDetails']['test_short_code'];
+                    if (!empty($testTypeFields['testDetails']['test_short_code'])) {
+                        $prefix = $testTypeFields['testDetails']['test_short_code'];
                     }
                 }
 

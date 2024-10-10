@@ -13,13 +13,15 @@ class CSRFMiddleware implements MiddlewareInterface
 {
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $method = strtoupper($request->getMethod());
+
         $currentURI = $request->getUri()->getPath();
-        $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+
+        $method = strtoupper($request->getMethod());
         // Check if method is one of the modifying methods
+        $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
+
         if (
             php_sapi_name() === 'cli' ||
-            CommonService::isAjaxRequest($request) !== false ||
             fnmatch('/remote/remote/*', $currentURI) ||
             fnmatch('/system-admin/*', $currentURI) ||
             fnmatch('/api/*', $currentURI) ||
