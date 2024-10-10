@@ -57,9 +57,6 @@ require_once __DIR__ . '/app/system/functions.php';
 // some old scripts that are still depending on these.
 $db = ContainerRegistry::get(DatabaseService::class);
 
-// Generate CSRF token
-SecurityService::generateCSRF();
-
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
 

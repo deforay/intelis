@@ -62,18 +62,20 @@ final class SecurityService
     {
         if (CommonService::isAjaxRequest($request) === false) {
             self::invalidateCSRF();
-            self::generateCSRF();
+            self::generateCSRF($request);
         }
     }
-    public static function generateCSRF(): void
+    public static function generateCSRF($request): void
     {
-        $_SESSION['csrf_token_time'] = time();
-        $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString();
+        if (CommonService::isAjaxRequest($request) === false) {
+            $_SESSION['csrf_token_time'] = time();
+            $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString();
+        }
     }
 
     private static function invalidateCSRF()
     {
-        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
+        if (isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
             unset($_SESSION['csrf_token']);
             unset($_SESSION['csrf_token_time']);
         }
