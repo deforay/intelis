@@ -13,8 +13,8 @@ class CSRFMiddleware implements MiddlewareInterface
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
-        // Generate CSRF token
-        SecurityService::generateCSRF($request);
+        // Generate CSRF token if not already set
+        SecurityService::generateCSRF();
 
         $currentURI = $request->getUri()->getPath();
 
