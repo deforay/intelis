@@ -14,14 +14,12 @@ if (session_status() === PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
     ]);
 
     session_start();
-
-    // Generate CSRF token if it doesn't exist
-    $_SESSION['csrf_token'] ??= bin2hex(random_bytes(32));
 }
 
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 // Application environment
@@ -59,6 +57,8 @@ require_once __DIR__ . '/app/system/functions.php';
 // some old scripts that are still depending on these.
 $db = ContainerRegistry::get(DatabaseService::class);
 
+// Generate CSRF token
+SecurityService::generateCSRF();
 
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));

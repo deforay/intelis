@@ -65,19 +65,17 @@ final class SecurityService
             self::generateCSRF();
         }
     }
+    public static function generateCSRF(): void
+    {
+        $_SESSION['csrf_token_time'] = time();
+        $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString();
+    }
+
     private static function invalidateCSRF()
     {
         if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
             unset($_SESSION['csrf_token']);
             unset($_SESSION['csrf_token_time']);
-        }
-    }
-
-    private static function generateCSRF(): void
-    {
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token_time'] = time();
-            $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
         }
     }
 }
