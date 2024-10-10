@@ -127,11 +127,11 @@ if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string
 }
 
 
-if (isset($genericResultInfo['sample_received_at_testing_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_testing_lab_datetime']) != '' && $genericResultInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_testing_lab_datetime']);
-	$genericResultInfo['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($genericResultInfo['sample_received_at_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_lab_datetime']) != '' && $genericResultInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_lab_datetime']);
+	$genericResultInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$genericResultInfo['sample_received_at_testing_lab_datetime'] = '';
+	$genericResultInfo['sample_received_at_lab_datetime'] = '';
 }
 
 
@@ -721,7 +721,7 @@ $reasonForChange = $reasonForChangeArr[1];
 											<label class="col-lg-5 control-label" for="sampleReceivedDate"><?= _translate("Date
 													Sample Received at Testing Lab"); ?> </label>
 											<div class="col-lg-7">
-												<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" title="<?= _translate('Please select sample received date'); ?>" value="<?php echo $genericResultInfo['sample_received_at_testing_lab_datetime']; ?>" />
+												<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate('Sample Received Date'); ?>" title="<?= _translate('Please select sample received date'); ?>" value="<?php echo $genericResultInfo['sample_received_at_lab_datetime']; ?>" />
 											</div>
 										</div>
 										<div class="col-md-6">
@@ -973,8 +973,6 @@ $reasonForChange = $reasonForChangeArr[1];
 				$('#sampleReceivedAtHubOn').val($('#sampleCollectionDate').val());
 			}
 		});
-
-
 
 		autoFillFocalDetails();
 		$("#specimenType").select2({
@@ -1555,7 +1553,11 @@ $reasonForChange = $reasonForChangeArr[1];
 						$('#otherSection input, #otherSection select , #otherSection textarea').attr('disabled', true);
 						$('#otherSection input, #otherSection select , #otherSection textarea').removeClass("isRequired");
 					}
+
+					//finalResultEditableSelect('finalResult1', 'test_results_config', 'test_type_id', 'r_test_types', 'Final Result');
+
 					initDateTimePicker();
+
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1564,6 +1566,9 @@ $reasonForChange = $reasonForChangeArr[1];
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
+
+
+				
 					$(".multipleSelectize").selectize({
 						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 					});
@@ -1780,6 +1785,49 @@ $reasonForChange = $reasonForChangeArr[1];
 					}
 				});
 		}
+	}
+
+
+	function finalResultEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
+		
+		$("#" + id).select2({
+			placeholder: _placeholder,
+			minimumInputLength: 0,
+			width: '100%',
+			allowClear: true,
+			id: function(bond) {
+				console.log(bond);
+				return bond._id;
+			},
+			ajax: {
+				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				url: "/includes/get-data-list-for-generic.php",
+				dataType: 'json',
+				delay: 250,
+				data: function(params) {
+					return {
+						fieldName: _fieldName,
+						fieldId: fieldId,
+						tableName: table,
+						q: params.term, // search term
+						page: params.page,
+					};
+				},
+				processResults: function(data, params) {
+					params.page = params.page || 1;
+					return {
+						results: data.result,
+						pagination: {
+							more: (params.page * 30) < data.total_count
+						}
+					};
+				},
+				//cache: true
+			},
+			escapeMarkup: function(markup) {
+				return markup;
+			}
+		});
 	}
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php';

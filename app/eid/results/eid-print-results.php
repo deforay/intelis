@@ -588,6 +588,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
     function loadVlRequestData() {
         $.blockUI();
+        <?php if ($formId == COUNTRY\CAMEROON) { ?>
+			sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
+		<?php } else { ?>
+			sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
+		<?php } ?>
         oTable = $('#vlRequestDataTables').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
@@ -663,7 +668,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 },
             ],
             "aaSorting": [
-                [<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>, "desc"]
+                [sort, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chk[]");
@@ -740,6 +745,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
     function loadPrintedVlRequestData() {
         $.blockUI();
+        <?php if ($formId == COUNTRY\CAMEROON) { ?>
+			sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
+		<?php } else { ?>
+			sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
+		<?php } ?>
         opTable = $('#printedVlRequestDataTable').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
@@ -814,7 +824,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 },
             ],
             "aaSorting": [
-                [<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>, "desc"]
+                [sort, "desc"]
             ],
             "fnDrawCallback": function() {
                 var checkBoxes = document.getElementsByName("chkPrinted[]");

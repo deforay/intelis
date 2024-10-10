@@ -34,17 +34,22 @@ try {
 
 
      $sampleCode = 'sample_code';
-     $aColumns = ['vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
-     $orderColumns = ['vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name'];
+     $aColumns = ['vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 'vl.lab_assigned_code','f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','vl.lab_assigned_code', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name'];
      if (!empty($_POST['from']) && $_POST['from'] == "enterresult") {
-          $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
-          $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name'];
+          $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','vl.lab_assigned_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+          $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name','vl.lab_assigned_code', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name'];
      }
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
           $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
+     }
+
+     if ($formId != COUNTRY\CAMEROON) {
+          $aColumns = array_values(array_diff($aColumns, ['vl.lab_assigned_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.lab_assigned_code']));
      }
 
      $sOffset = $sLimit = null;
