@@ -8,7 +8,7 @@ use Laminas\Diactoros\ServerRequest;
 
 final class SecurityService
 {
-    public static $expiryTime = 3600; // 30 minutes
+    //public static $expiryTime = 3600; // 60 minutes
     public function __construct() {}
 
     public static function checkContentLength(ServerRequest $request)
@@ -43,11 +43,11 @@ final class SecurityService
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
             ?: $request->getParsedBody()['csrf_token'] ?? null;
 
-        // Check if CSRF token has expired (1 hour default expiration)
-        if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > self::$expiryTime) {
-            self::rotateCSRF();
-            throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
-        }
+        // // Check if CSRF token has expired (1 hour default expiration)
+        // if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > self::$expiryTime) {
+        //     self::rotateCSRF();
+        //     throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
+        // }
 
         // Validate the CSRF token
         if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
