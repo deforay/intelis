@@ -38,6 +38,8 @@ use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
 use App\Services\TestRequestsService;
 use Psr\Container\ContainerInterface;
+use App\Middlewares\App\AclMiddleware;
+use App\Middlewares\App\CSRFMiddleware;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
@@ -47,7 +49,6 @@ use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
-use App\Middlewares\App\AclMiddleware;
 
 try {
     // Load configuration
@@ -125,6 +126,7 @@ $builder->addDefinitions([
     SystemAdminAuthMiddleware::class => DI\autowire(),
     ApiAuthMiddleware::class => DI\autowire(),
     AclMiddleware::class => DI\autowire(),
+    CSRFMiddleware::class => DI\autowire(),
     ErrorHandlerMiddleware::class => DI\autowire(),
     ApiErrorHandlingMiddleware::class => DI\autowire(),
     ApiLegacyFallbackMiddleware::class => DI\autowire(),

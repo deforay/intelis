@@ -495,7 +495,7 @@ try {
                     $symptomData = [];
                     $symptomData["covid19_id"] = $data['covid19SampleId'];
                     $symptomData["symptom_id"] = $data['symptomId'][$i];
-                    $symptomData["symptom_detected"] = $data['symptomDetected'][$i];
+                    $symptomData["symptom_detected"] = $data['symptomDetected'][$i] ?? 'no';
                     if (isset($data['covid19PatientSymptomsArray']) && !empty($data['covid19PatientSymptomsArray'])) {
                         $symptomData["symptom_details"] = $syptomDetections[$i]['detail'] ?? null;
                     } else {

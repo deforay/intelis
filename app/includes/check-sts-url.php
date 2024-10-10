@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 use App\Services\ApiService;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);

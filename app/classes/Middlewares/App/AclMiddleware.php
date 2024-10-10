@@ -33,6 +33,7 @@ class AclMiddleware implements MiddlewareInterface
         // SKIP ACL check for system-admin/ remote/remote/ and API URLs
         // ALLOW if the current URI is allowed by ACL
         if (
+            php_sapi_name() === 'cli' ||
             $this->isExcludedUri($currentURI) ||
             CommonService::isAjaxRequest($request) !== false ||
             fnmatch('/remote/remote/*', $currentURI) ||

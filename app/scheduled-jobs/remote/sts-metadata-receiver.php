@@ -58,15 +58,9 @@ if ($general->isLISInstance() === false) {
 
 if (!empty($_POST)) {
     try {
-        // Sanitized values from $request object
-        /** @var Laminas\Diactoros\ServerRequest $request */
-        $request = AppRegistry::get('request');
-        SecurityService::checkCSRF($request);
-
         $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
-
         $forceFlag = $_POST['force'] ?? false;
-        $remoteURL = $_POST['remoteURL'];
+        $remoteURL = $_POST['remoteURL'] ?? null;
     } catch (Throwable $e) {
         LoggerUtility::log('error', "Invalid Request. Please try again");
         exit(0);
@@ -75,7 +69,7 @@ if (!empty($_POST)) {
     $remoteURL = $general->getRemoteURL();
 }
 
-if (empty($remoteURL)) {
+if (empty($remoteURL) || $remoteURL == '') {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }

@@ -15,6 +15,7 @@ use Laminas\Stratigility\MiddlewarePipe;
 use App\Middlewares\App\AclMiddleware;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
+use App\Middlewares\App\CSRFMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use function Laminas\Stratigility\middleware;
@@ -88,13 +89,10 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     return $handler->handle($request);
 }));
 
-// Custom Middleware to check CSRF
-$middlewarePipe->pipe(middleware(function ($request, $handler) {
-    SecurityService::checkCSRF(request: $request);
-    return $handler->handle($request);
-}));
+// CSRF Middleware
+$middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));
 
-// Identify the requested resource
+// Identify the requested page or resource
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
 // ACL Middleware

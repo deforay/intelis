@@ -69,6 +69,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
+
 	<?php if (!empty($_SESSION['instance']['type']) && $general->isSTSInstance()) { ?>
 		<link rel="apple-touch-icon" sizes="180x180" href="/assets/vlsts-icons/apple-touch-icon.png">
 		<link rel="icon" type="image/png" sizes="32x32" href="/assets/vlsts-icons/favicon-32x32.png">
@@ -190,6 +191,18 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<script src="/assets/js/deforayValidation.js"></script>
 	<script src="/assets/js/jquery.blockUI.js"></script>
 	<script type="text/javascript">
+		let idleTime = 0;
+
+		function resetIdleTimer() {
+			idleTime = 0;
+		}
+
+		function refreshIfIdle() {
+			idleTime++;
+			if (idleTime >= 30) { // 30 minutes
+				location.reload();
+			}
+		}
 		window.additionalXHRParams = {
 			layout: 0,
 			'X-CSRF-Token': '<?= $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString(); ?>'
@@ -243,6 +256,13 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		}
 
 		$(document).ready(function() {
+			// Increment the idle time counter every minute.
+			setInterval(refreshIfIdle, 60000); // 1 minute
+
+			// Zero the idle timer on mouse movement.
+			$(this).mousemove(resetIdleTimer);
+			$(this).keypress(resetIdleTimer);
+
 			<?php if (isset(SYSTEM_CONFIG['recency']) && SYSTEM_CONFIG['recency']['crosslogin']) { ?>
 				if (sessionStorage.getItem("crosslogin") == "true") {
 					<?php $_SESSION['logged'] = false; ?>
