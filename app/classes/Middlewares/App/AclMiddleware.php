@@ -41,16 +41,25 @@ class AclMiddleware implements MiddlewareInterface
         }
 
         $referer = $request->getHeaderLine('Referer');
+        $refererPath = $this->getRefererPath($referer);
         // If current URI is not allowed, check the referer (if it exists and is from the same domain)
         if (
-            empty($referer) ||
+            empty($refererPath) ||
             $this->isSameDomain($request, $referer) === false ||
-            _isAllowed($referer) === false
+            _isAllowed($refererPath) === false
         ) {
             throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page or resource.'), 401);
         }
 
         return $handler->handle($request);
+    }
+
+    protected function getRefererPath($referer): string
+    {
+        $parsedUrl = parse_url($referer);
+        $path = $parsedUrl['path'] ?? '/';
+        $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        return $path . $query;
     }
 
     // Helper function to check if the current URI is in the excluded list
