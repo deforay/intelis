@@ -1,10 +1,9 @@
 #!/bin/bash
 
 # To use this script:
-# cd ~;
-# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
-# sudo chmod u+x upgrade.sh;
-# sudo ./upgrade.sh;
+# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
+# sudo chmod +x /usr/local/bin/intelis-update
+# sudo intelis-update
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -12,16 +11,29 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Initialize flag
+# Initialize flags
 skip_all=false
+vlsm_path=""
 
-# Parse command-line option
-while getopts ":s" opt; do
+# Parse command-line options
+while getopts ":sp:" opt; do
     case $opt in
     s) skip_all=true ;;
+    p) vlsm_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
 done
+
+# Function to check if the provided path is a valid application installation
+is_valid_application_path() {
+    local path=$1
+    # Check for a specific file or directory that should exist in the application installation
+    if [ -f "$path/configs/config.production.php" ] && [ -d "$path/public" ]; then
+        return 0 # Path is valid
+    else
+        return 1 # Path is not valid
+    fi
+}
 
 # Function to log messages
 log_action() {
@@ -109,26 +121,37 @@ current_trap=$(trap -p ERR)
 # Disable the error trap temporarily
 trap - ERR
 
-echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
-read -t 60 vlsm_path
+# Prompt for the LIS path if not provided via the command-line argument
+if [ -z "$vlsm_path" ]; then
+    echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
+    read -t 60 vlsm_path
 
-# Check if read command timed out or no input was provided
-if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
-    vlsm_path="/var/www/vlsm"
-    echo "Using default path: $vlsm_path"
+    # Check if read command timed out or no input was provided
+    if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
+        vlsm_path="/var/www/vlsm"
+        echo "Using default path: $vlsm_path"
+    else
+        echo "LIS path is set to ${vlsm_path}."
+    fi
 else
-    echo "VLSM installation path is set to ${vlsm_path}."
+    echo "LIS path is set to ${vlsm_path}."
+fi
+# Check if the LIS path is valid
+if ! is_valid_application_path "$vlsm_path"; then
+    echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+    log_action "Invalid LIS path specified: $vlsm_path"
+    exit 1
 fi
 
-log_action "VLSM installation path is set to ${vlsm_path}."
+log_action "LIS path is set to ${vlsm_path}."
 
 # Restore the previous error trap
 eval "$current_trap"
 
-# Check if VLSM folder exists
+# Check if LIS folder exists
 if [ ! -d "${vlsm_path}" ]; then
-    echo "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
-    log_action "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
+    echo "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
+    log_action "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
     exit 1
 fi
 
@@ -449,24 +472,24 @@ else
     log_action "Skipping database backup as per user request."
 fi
 
-# Ask the user if they want to backup the VLSM folder
-if ask_yes_no "Do you want to backup the VLSM folder before updating?" "no"; then
-    # Backup Old VLSM Folder
-    echo "Backing up old VLSM folder..."
+# Ask the user if they want to backup the LIS folder
+if ask_yes_no "Do you want to backup the LIS folder before updating?" "no"; then
+    # Backup Old LIS Folder
+    echo "Backing up old LIS folder..."
     timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
     backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
     mkdir -p "${backup_folder}"
     rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
     spinner # This will show the spinner until the above process is completed
-    log_action "VLSM folder backed up to ${backup_folder}"
+    log_action "LIS folder backed up to ${backup_folder}"
 else
-    echo "Skipping VLSM folder backup as per user request."
-    log_action "Skipping VLSM folder backup as per user request."
+    echo "Skipping LIS folder backup as per user request."
+    log_action "Skipping LIS folder backup as per user request."
 fi
 
 rm -rf "${vlsm_path}/run-once"
 
-echo "Downloading VLSM..."
+echo "Downloading LIS..."
 wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
 spinner "${download_pid}" # Start the spinner
@@ -499,7 +522,7 @@ wait ${cp_pid}      # Wait for the copy process to finish
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "VLSM copied to ${vlsm_path}."
+log_action "LIS copied to ${vlsm_path}."
 
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
@@ -629,5 +652,5 @@ service apache2 restart
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
-echo "VLSM update complete."
-log_action "VLSM update complete."
+echo "LIS update complete."
+log_action "LIS update complete."
