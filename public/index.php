@@ -97,7 +97,6 @@ $middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
 // Identify the requested page or resource
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
-
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);
 
