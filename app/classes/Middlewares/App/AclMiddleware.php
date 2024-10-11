@@ -14,13 +14,13 @@ class AclMiddleware implements MiddlewareInterface
     protected array $excludedUris = [
         '/',
         '/index.php',
-        '/login/login.php',
-        '/login/loginProcess.php',
-        '/login/logout.php',
-        '/setup/index.php',
-        '/setup/registerProcess.php',
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
+        '/login/*',
+        '/setup/*',
+        '/remote/remote/*',
+        '/system-admin/*',
+        '/api/*',
         // Add other routes to exclude from the ACL check here
     ];
 
@@ -30,15 +30,11 @@ class AclMiddleware implements MiddlewareInterface
 
         // SKIP ACL check for excluded URIs
         // SKIP ACL check for AJAX requests (X-Requested-With: XMLHttpRequest)
-        // SKIP ACL check for system-admin/ remote/remote/ and API URLs
         // ALLOW if the current URI is allowed by ACL
         if (
             php_sapi_name() === 'cli' ||
             $this->isExcludedUri($currentURI) ||
             CommonService::isAjaxRequest($request) !== false ||
-            fnmatch('/remote/remote/*', $currentURI) ||
-            fnmatch('/system-admin/*', $currentURI) ||
-            fnmatch('/api/*', $currentURI) ||
             _isAllowed($currentURI)
         ) {
             return $handler->handle($request);
@@ -58,9 +54,14 @@ class AclMiddleware implements MiddlewareInterface
     }
 
     // Helper function to check if the current URI is in the excluded list
-    private function isExcludedUri(string $uri): bool
+    protected function isExcludedUri(string $uri): bool
     {
-        return in_array($uri, $this->excludedUris);
+        foreach ($this->excludedUris as $excludedUri) {
+            if (fnmatch($excludedUri, $uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Helper function to check if referer is from the same domain

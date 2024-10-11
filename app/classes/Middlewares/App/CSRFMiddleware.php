@@ -10,6 +10,12 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CSRFMiddleware implements MiddlewareInterface
 {
+    protected array $excludedUris = [
+        '/remote/remote/*',
+        '/system-admin/*',
+        '/api/*',
+        // Add other routes to exclude from the CSRF check here
+    ];
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
 
@@ -24,9 +30,7 @@ class CSRFMiddleware implements MiddlewareInterface
 
         if (
             php_sapi_name() === 'cli' ||
-            fnmatch('/remote/remote/*', $currentURI) ||
-            fnmatch('/system-admin/*', $currentURI) ||
-            fnmatch('/api/*', $currentURI) ||
+            $this->isExcludedUri($currentURI) ||
             !in_array($method, $modifyingMethods) ||
             !isset($_SESSION['csrf_token'])
         ) {
@@ -35,5 +39,15 @@ class CSRFMiddleware implements MiddlewareInterface
             SecurityService::checkCSRF(request: $request);
             return $handler->handle($request);
         }
+    }
+    // Helper function to check if the current URI is in the excluded list
+    protected function isExcludedUri(string $uri): bool
+    {
+        foreach ($this->excludedUris as $excludedUri) {
+            if (fnmatch($excludedUri, $uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -8,7 +8,6 @@ if (!isset($_SESSION['nonce'])) {
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SecurityService;
 use App\Middlewares\CorsMiddleware;
 use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -92,11 +91,12 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 // CSRF Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));
 
+// ACL Middleware
+$middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
+
 // Identify the requested page or resource
 $middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
-// ACL Middleware
-$middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
 
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);
