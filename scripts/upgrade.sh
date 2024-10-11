@@ -15,6 +15,8 @@ fi
 skip_all=false
 vlsm_path=""
 
+log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
+
 # Parse command-line options
 while getopts ":sp:" opt; do
     case $opt in
@@ -38,7 +40,7 @@ is_valid_application_path() {
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logupgrade.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$log_file"
 }
 
 error_handling() {
@@ -112,8 +114,6 @@ if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" 
     echo "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
-
-rm -f ~/logupgrade.log
 
 # Save the current trap settings
 current_trap=$(trap -p ERR)
