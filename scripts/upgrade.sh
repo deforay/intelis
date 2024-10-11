@@ -1,8 +1,7 @@
 #!/bin/bash
 
 # To use this script:
-# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
-# sudo chmod +x /usr/local/bin/intelis-update
+# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
 # sudo intelis-update
 
 # Check if running as root
@@ -131,10 +130,10 @@ if [ -z "$vlsm_path" ]; then
         vlsm_path="/var/www/vlsm"
         echo "Using default path: $vlsm_path"
     else
-        echo "LIS path is set to ${vlsm_path}."
+        echo "LIS path is set to ${vlsm_path}"
     fi
 else
-    echo "LIS path is set to ${vlsm_path}."
+    echo "LIS path is set to ${vlsm_path}"
 fi
 # Check if the LIS path is valid
 if ! is_valid_application_path "$vlsm_path"; then
@@ -143,7 +142,7 @@ if ! is_valid_application_path "$vlsm_path"; then
     exit 1
 fi
 
-log_action "LIS path is set to ${vlsm_path}."
+log_action "LIS path is set to ${vlsm_path}"
 
 # Restore the previous error trap
 eval "$current_trap"
