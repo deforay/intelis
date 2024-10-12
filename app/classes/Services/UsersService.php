@@ -7,6 +7,7 @@ use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use Laminas\Diactoros\ServerRequest;
@@ -56,13 +57,8 @@ final class UsersService
     private function getRequestArray($currentRequest)
     {
         if ($currentRequest instanceof ServerRequest) {
-            $uri = $currentRequest->getUri();
-            $path = $uri->getPath();
-            $query = $uri->getQuery();
-            // Clean up the URI Path for double slashes or dots
-            $path = preg_replace('/([\\/\\.])\\1+/', '$1', $path);
-            $baseFileName = basename($path);
-            $currentRequest = $path . ($query ? '?' . $query : '');
+            $currentRequest = AppRegistry::get('currentRequestURI');
+            $baseFileName = AppRegistry::get('currentRequestBaseName');
         } else {
             $parsedInput = parse_url((string) $currentRequest);
             $path = $parsedInput['path'];

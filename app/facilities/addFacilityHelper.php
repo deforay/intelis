@@ -36,10 +36,6 @@ $healthFacilityTable = "health_facilities";
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
-
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 

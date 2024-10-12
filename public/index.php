@@ -82,8 +82,19 @@ if (fnmatch('/system-admin*', $uri)) {
     $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
 }
 
-// Custom Middleware to set the request in the AppRegistry
+// Custom Middleware to set the current request in the AppRegistry
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
+
+    $uri = $request->getUri();
+    $path = $uri->getPath();
+    $queryString = $uri->getQuery();
+    // Clean up the URI Path for double slashes or dots
+    $path = preg_replace('/([\\/\\.])\\1+/', '$1', $path);
+    $currentURI = $path . ($queryString ? "?$queryString" : '');
+
+    AppRegistry::set('currentRequestBaseName', basename($path));
+    AppRegistry::set('currentRequestURI', $currentURI);
+
     AppRegistry::set('request', $request);
     return $handler->handle($request);
 }));

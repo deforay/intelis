@@ -41,7 +41,6 @@ require_once APPLICATION_PATH . '/header.php';
 									<th scope="row"><?php echo _translate("Result Name"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
 									<?php if (_isAllowed("eid-sample-type.php") && $general->isLISInstance() === false) { ?>
-										<!-- <th scope="row">Action</th> -->
 									<?php } ?>
 								</tr>
 							</thead>

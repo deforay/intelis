@@ -2,6 +2,8 @@
 
 namespace App\Middlewares;
 
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -10,6 +12,13 @@ use Laminas\Diactoros\Response\RedirectResponse;
 
 class SystemAdminAuthMiddleware implements MiddlewareInterface
 {
+    protected array $excludedUris = [
+        '/system-admin/login/login.php',
+        '/system-admin/login/adminLoginProcess.php',
+        '/system-admin/setup/index.php',
+        '/system-admin/setup/registerProcess.php',
+        // Add other routes to exclude from the authentication check here
+    ];
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
         // Get the requested URI
@@ -22,9 +31,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
             strtolower($request->getHeaderLine('X-Requested-With')) !== 'xmlhttprequest'
         ) {
-            $queryString = $request->getUri()->getQuery();
-            // Combine path and query string to form the full URI
-            $_SESSION['systemAdminrequestedURI'] = $queryString ? "$uri?$queryString" : $uri;
+            $_SESSION['systemAdminrequestedURI'] = AppRegistry::get('currentRequestURI');
         }
 
         $redirect = null;
@@ -49,29 +56,15 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
 
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
-        $return = false;
+        // Get the current URI from the request (instead of relying on the session here)
+        $uri = $request->getUri()->getPath();
         if (
-            php_sapi_name() === 'cli' ||
-            strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest'
+            CommonService::isCliRequest() ||
+            CommonService::isAjaxRequest($request) !== false ||
+            CommonService::isExcludedUri($uri, $this->excludedUris) === true
         ) {
-            $return = true;
-        } else {
-
-            // Check if the URI matches the /remote/* pattern
-            if (fnmatch('/remote/*', $_SESSION['requestedURI'])) {
-                $return = true;
-            } else {
-                $excludedRoutes = [
-                    '/system-admin/login/login.php',
-                    '/system-admin/login/adminLoginProcess.php',
-                    '/system-admin/setup/index.php',
-                    '/system-admin/setup/registerProcess.php',
-                    // Add other routes to exclude from the authentication check here
-                ];
-                $return = in_array($_SESSION['requestedURI'], $excludedRoutes, true);
-            }
+            return true;
         }
-
-        return $return;
+        return false;
     }
 }

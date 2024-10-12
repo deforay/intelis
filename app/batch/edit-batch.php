@@ -16,6 +16,7 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
+$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 
 if (empty($_GET['type'])) {
@@ -82,12 +83,6 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $userNameList = $usersService->getAllUsers(null, 'active', 'drop-down');
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
 
