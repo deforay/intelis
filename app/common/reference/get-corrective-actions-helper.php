@@ -13,8 +13,6 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
@@ -48,7 +46,6 @@ try {
     }
 
 
-
     $sOrder = "";
     if (isset($_POST['iSortCol_0'])) {
         $sOrder = "";
@@ -60,8 +57,6 @@ try {
         }
         $sOrder = substr_replace($sOrder, "", -2);
     }
-
-
 
     $sWhere = "";
     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
@@ -87,60 +82,41 @@ try {
         $sWhere .= $sWhereSub;
     }
 
-
-
-
     $sQuery = "SELECT * FROM $tableName";
     if (isset($testType) && $testType != "") {
-        $sWhere = "test_type = '$testType'";
+        $sWhere .= "test_type = '$testType'";
     }
     if (!empty($sWhere)) {
-        $sWhere = ' WHERE ' . $sWhere;
-        $sQuery = $sQuery . ' ' . $sWhere;
+        $sQuery = "$sQuery WHERE $sWhere";
     }
 
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-        $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
 
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
-    //die($sQuery);
-    // echo $sQuery;
-    $rResult = $db->rawQuery($sQuery);
 
-    /* Data set length after filtering */
+    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-    $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
-    $iFilteredTotal = count($aResultFilterTotal);
-
-    /* Total data set length */
-    $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
-    // $aResultTotal = $countResult->fetch_row();
-    //print_r($aResultTotal);
-    $iTotal = $aResultTotal[0]['total'];
-
-    /*
- * Output
- */
-    $output = array(
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
     $editRequest = false;
     if (_isAllowed("/common/reference/edit-recommended-corrective-action.php?testType=vl")) {
         $editRequest = true;
     }
-    //echo $editRequest; die;
+
     foreach ($rResult as $aRow) {
 
         $row = [];
-        $row[] = ($aRow['recommended_corrective_action_name']);
-        $row[] = ($aRow['status']);
+        $row[] = $aRow['recommended_corrective_action_name'];
+        $row[] = $aRow['status'];
 
         if ($editRequest) {
             $edit = '<a href="/common/reference/edit-recommended-corrective-action.php?testType=vl&id=' . base64_encode((string) $aRow[$primaryKey]) .  '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
@@ -157,6 +133,6 @@ try {
     echo JsonUtility::encodeUtf8Json($output);
 
     $db->commitTransaction();
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

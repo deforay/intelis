@@ -3,6 +3,7 @@
 namespace App\Utilities;
 
 use Exception;
+use Throwable;
 use App\Exceptions\SystemException;
 
 /**
@@ -205,7 +206,7 @@ class ImageResizeUtility
 
         try {
             $exif = @exif_read_data($filename);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $exif = null;
         }
 

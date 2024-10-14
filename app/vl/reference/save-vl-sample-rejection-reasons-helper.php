@@ -43,7 +43,7 @@ try {
 		}
 	}
 	header("Location:/vl/reference/vl-sample-rejection-reasons.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),

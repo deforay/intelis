@@ -82,7 +82,7 @@ try {
             $recencyWhere
             GROUP BY vl.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
-} catch (Exception $e) {
+} catch (Throwable $e) {
     LoggerUtility::log('error', $e->getMessage());
 }
 

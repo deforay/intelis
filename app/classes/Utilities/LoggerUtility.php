@@ -2,10 +2,11 @@
 
 namespace App\Utilities;
 
-use Exception;
+
+use Throwable;
 use Monolog\Logger;
-use Monolog\Handler\RotatingFileHandler;
 use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
 
 final class LoggerUtility
 {
@@ -21,7 +22,7 @@ final class LoggerUtility
                 $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Logger::DEBUG);
                 $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
                 self::$logger->pushHandler($handler);
-            } catch (Exception $e) {
+            } catch (Throwable $e) {
                 // If the logs directory is not writable, fallback to stderr
                 $fallbackHandler = new StreamHandler('php://stderr', Logger::WARNING);
                 self::$logger->pushHandler($fallbackHandler);

@@ -19,7 +19,7 @@ if (!empty($_POST['remoteURL'])) {
     try {
         $url = $_POST['remoteURL'];
         echo $apiService->checkConnectivity($url);
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         LoggerUtility::log('error', $e->getMessage());
         LoggerUtility::log('error', $e->getTraceAsString());
     }

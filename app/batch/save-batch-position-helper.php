@@ -89,7 +89,6 @@ try {
     }
     header("Location:batches.php?type=" . $_POST['type']);
 } catch (Throwable $e) {
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),

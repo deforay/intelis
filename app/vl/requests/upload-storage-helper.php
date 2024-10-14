@@ -150,6 +150,6 @@ try {
         $_SESSION['alertMsg'] = _translate("Please Upload File");
         header("Location:/vl/requests/upload-storage.php");
     }
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     throw new SystemException(($exc->getMessage()));
 }

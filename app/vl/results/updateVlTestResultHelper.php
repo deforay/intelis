@@ -289,6 +289,6 @@ try {
     }
 
     header("Location:/vl/results/vlTestResult.php");
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     throw new SystemException($exc->getMessage(), 500, $exc);
 }

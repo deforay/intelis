@@ -20,13 +20,11 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $tableName = "form_vl";
 try {
     $id = $_POST['id'];
-    $status = array(
-        'contact_complete_status' => $_POST['value']
-    );
+    $status = ['contact_complete_status' => $_POST['value']];
     $db->where('vl_sample_id', $id);
     $db->update($tableName, $status);
     $result = $id;
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),

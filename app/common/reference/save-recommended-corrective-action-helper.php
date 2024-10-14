@@ -31,7 +31,7 @@ try {
 			'status' 								=> $_POST['correctiveActionStatus'],
 			'updated_datetime'						=> DateUtility::getCurrentDateTime()
 		);
-		//	echo '<pre>'; print_r($_POST	); die;
+
 		if (isset($_POST['correctiveActionId']) && $_POST['correctiveActionId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['correctiveActionId']));
 			$lastId = $db->update($tableName, $data);
@@ -46,7 +46,7 @@ try {
 		}
 	}
 	header("Location:recommended-corrective-actions.php?testType=" . $_POST['testType']);
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),

@@ -7,10 +7,6 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 
-
-
-
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -42,6 +38,6 @@ try {
 		}
 	}
 	header("Location:funding-sources.php");
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
 	throw new SystemException($exc->getMessage(), 500);
 }

@@ -95,11 +95,11 @@ try {
     try {
         //update facility code
         if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
-            $fData = array('facility_code' => $_POST['facilityCode']);
+            $fData = ['facility_code' => $_POST['facilityCode']];
             $db->where('facility_id', $_POST['facilityId']);
             $id = $db->update($fDetails, $fData);
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
             'exception' => $db->getLastError(),
             'file' => $e->getFile(),
@@ -459,7 +459,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:/vl/requests/vl-requests.php");
     }
-} catch (Exception $e) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), 500, $e);
 }
