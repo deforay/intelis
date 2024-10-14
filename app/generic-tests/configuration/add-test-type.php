@@ -395,7 +395,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 			otherSectionNames.push(section);
 	}
 	$(document).ready(function() {
-		$("#sampleType, #symptoms").selectize({
+		$("#symptoms").selectize({
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$(".auto-complete-tbx").autocomplete({
@@ -405,6 +405,9 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		$('input').tooltip();
 		generateRandomString('1');
 		$("#testingReason").select2({
+			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
+		});
+		$("#sampleType").select2({
 			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
 		$("#testFailureReason").select2({

@@ -920,10 +920,9 @@ $reasonForChange = $reasonForChangeArr[1];
 		</div>
 	</section>
 </div>
+
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
 <script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
-<script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
-
 <script>
 	let provinceName = true;
 	let facilityName = true;
@@ -1554,7 +1553,6 @@ $reasonForChange = $reasonForChangeArr[1];
 						$('#otherSection input, #otherSection select , #otherSection textarea').removeClass("isRequired");
 					}
 
-					//finalResultEditableSelect('finalResult1', 'test_results_config', 'test_type_id', 'r_test_types', 'Final Result');
 
 					initDateTimePicker();
 
@@ -1567,11 +1565,11 @@ $reasonForChange = $reasonForChangeArr[1];
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 
-
 				
 					$(".multipleSelectize").selectize({
 						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 					});
+					
 				});
 		} else {
 			removeDynamicForm();
@@ -1788,46 +1786,6 @@ $reasonForChange = $reasonForChangeArr[1];
 	}
 
 
-	function finalResultEditableSelect(id, _fieldName, fieldId, table, _placeholder) {
-		
-		$("#" + id).select2({
-			placeholder: _placeholder,
-			minimumInputLength: 0,
-			width: '100%',
-			allowClear: true,
-			id: function(bond) {
-				console.log(bond);
-				return bond._id;
-			},
-			ajax: {
-				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
-				url: "/includes/get-data-list-for-generic.php",
-				dataType: 'json',
-				delay: 250,
-				data: function(params) {
-					return {
-						fieldName: _fieldName,
-						fieldId: fieldId,
-						tableName: table,
-						q: params.term, // search term
-						page: params.page,
-					};
-				},
-				processResults: function(data, params) {
-					params.page = params.page || 1;
-					return {
-						results: data.result,
-						pagination: {
-							more: (params.page * 30) < data.total_count
-						}
-					};
-				},
-				//cache: true
-			},
-			escapeMarkup: function(markup) {
-				return markup;
-			}
-		});
-	}
 </script>
+
 <?php require_once APPLICATION_PATH . '/footer.php';
