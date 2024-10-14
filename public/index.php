@@ -8,7 +8,6 @@ if (!isset($_SESSION['nonce'])) {
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SecurityService;
 use App\Middlewares\CorsMiddleware;
 use App\Registries\ContainerRegistry;
 use Laminas\Stratigility\MiddlewarePipe;
@@ -83,8 +82,19 @@ if (fnmatch('/system-admin*', $uri)) {
     $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
 }
 
-// Custom Middleware to set the request in the AppRegistry
+// Custom Middleware to set the current request in the AppRegistry
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
+
+    $uri = $request->getUri();
+    $path = $uri->getPath();
+    $queryString = $uri->getQuery();
+    // Clean up the URI Path for double slashes or dots
+    $path = preg_replace('/([\\/\\.])\\1+/', '$1', $path);
+    $currentURI = $path . ($queryString ? "?$queryString" : '');
+
+    AppRegistry::set('currentRequestBaseName', basename($path));
+    AppRegistry::set('currentRequestURI', $currentURI);
+
     AppRegistry::set('request', $request);
     return $handler->handle($request);
 }));
@@ -92,11 +102,11 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
 // CSRF Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));
 
-// Identify the requested page or resource
-$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
-
 // ACL Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));
+
+// Identify the requested page or resource
+$middlewarePipe->pipe(new RequestHandlerMiddleware(ContainerRegistry::get(LegacyRequestHandler::class)));
 
 // Handle the request and generate the response
 $response = $middlewarePipe->handle($request);

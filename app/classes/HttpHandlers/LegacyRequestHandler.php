@@ -69,10 +69,10 @@ class LegacyRequestHandler implements RequestHandlerInterface
 
         // Resolve the absolute path and ensure it's within the APPLICATION_PATH
         $resolvedPath = realpath(APPLICATION_PATH . DIRECTORY_SEPARATOR . $uri);
-        $resolvedPath = is_dir($resolvedPath) ? $resolvedPath . '/index.php' : $resolvedPath;
+        $resolvedPath = is_dir($resolvedPath) ? "$resolvedPath/index.php" : $resolvedPath;
 
         if (!$resolvedPath || !str_starts_with($resolvedPath, realpath(APPLICATION_PATH)) || !is_readable($resolvedPath)) {
-            LoggerUtility::log('error', 'Invalid Request : ' . $resolvedPath);
+            LoggerUtility::log('error', "Invalid Request : $resolvedPath");
             throw new SystemException(_translate('Sorry! We could not find this page or resource'), 404);
         }
 

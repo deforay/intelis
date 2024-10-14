@@ -1,10 +1,8 @@
 #!/bin/bash
 
 # To use this script:
-# cd ~;
-# wget -O upgrade.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh
-# sudo chmod u+x upgrade.sh;
-# sudo ./upgrade.sh;
+# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
+# sudo intelis-update
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -12,21 +10,48 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Initialize flag
-skip_all=false
+# Initialize flags
+skip_ubuntu_updates=false
+skip_backup=false
+vlsm_path=""
 
-# Parse command-line option
-while getopts ":s" opt; do
+log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
+
+# Parse command-line options
+while getopts ":sbp:" opt; do
     case $opt in
-    s) skip_all=true ;;
+    s) skip_ubuntu_updates=true ;;
+    b) skip_backup=true ;;
+    p) vlsm_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
 done
 
+# Function to check if the provided path is a valid application installation
+is_valid_application_path() {
+    local path=$1
+    # Check for a specific file or directory that should exist in the application installation
+    if [ -f "$path/configs/config.production.php" ] && [ -d "$path/public" ]; then
+        return 0 # Path is valid
+    else
+        return 1 # Path is not valid
+    fi
+}
+
+# Function to convert relative path to absolute path
+to_absolute_path() {
+    local path=$1
+    if [[ "$path" != /* ]]; then
+        # If the path is relative, convert it to an absolute path
+        path="$(pwd)/$path"
+    fi
+    echo "$path"
+}
+
 # Function to log messages
 log_action() {
     local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logupgrade.log
+    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$log_file"
 }
 
 error_handling() {
@@ -101,36 +126,49 @@ if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" 
     exit 1
 fi
 
-rm -f ~/logupgrade.log
-
 # Save the current trap settings
 current_trap=$(trap -p ERR)
 
 # Disable the error trap temporarily
 trap - ERR
 
-echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
-read -t 60 vlsm_path
+# Prompt for the LIS path if not provided via the command-line argument
+if [ -z "$vlsm_path" ]; then
+    echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
+    read -t 60 vlsm_path
 
-# Check if read command timed out or no input was provided
-if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
-    vlsm_path="/var/www/vlsm"
-    echo "Using default path: $vlsm_path"
+    # Check if read command timed out or no input was provided
+    if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
+        vlsm_path="/var/www/vlsm"
+        echo "Using default path: $vlsm_path"
+    else
+        echo "LIS path is set to ${vlsm_path}"
+    fi
 else
-    echo "VLSM installation path is set to ${vlsm_path}."
+    echo "LIS path is set to ${vlsm_path}"
 fi
 
-log_action "VLSM installation path is set to ${vlsm_path}."
+# Convert VLSM path to absolute path
+vlsm_path=$(to_absolute_path "$vlsm_path")
+
+# Check if the LIS path is valid
+if ! is_valid_application_path "$vlsm_path"; then
+    echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+    log_action "Invalid LIS path specified: $vlsm_path"
+    exit 1
+fi
+
+log_action "LIS path is set to ${vlsm_path}"
 
 # Restore the previous error trap
 eval "$current_trap"
 
-# Check if VLSM folder exists
-if [ ! -d "${vlsm_path}" ]; then
-    echo "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
-    log_action "VLSM folder does not exist at ${vlsm_path}. Please first run the setup script."
-    exit 1
-fi
+# # Check if LIS folder exists
+# if [ ! -d "${vlsm_path}" ]; then
+#     echo "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
+#     log_action "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
+#     exit 1
+# fi
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
@@ -305,7 +343,7 @@ fi
 echo "All system checks passed. Continuing with the update..."
 
 # Update Ubuntu Packages
-if [ "$skip_all" = false ]; then
+if [ "$skip_ubuntu_updates" = false ]; then
     echo "Updating Ubuntu packages..."
     apt-get update && apt-get upgrade -y
 fi
@@ -316,14 +354,14 @@ if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; t
 fi
 
 # Configure any packages that were not fully installed
-if [ "$skip_all" = false ]; then
+if [ "$skip_ubuntu_updates" = false ]; then
     echo "Configuring any partially installed packages..."
     sudo dpkg --configure -a
 fi
 
 # Clean up
 apt-get autoremove -y
-if [ "$skip_all" = false ]; then
+if [ "$skip_ubuntu_updates" = false ]; then
     echo "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh
 fi
@@ -394,79 +432,81 @@ backup_database() {
         fi
     done
 }
+if [ "$skip_backup" = false ]; then
 
-# Ask the user if they want to backup the database
-if ask_yes_no "Do you want to backup the database" "no"; then
-    # Ask for MySQL root password
-    echo "Please enter your MySQL root password:"
-    read -s mysql_root_password
+    # Ask the user if they want to backup the database
+    if ask_yes_no "Do you want to backup the database" "no"; then
+        # Ask for MySQL root password
+        echo "Please enter your MySQL root password:"
+        read -s mysql_root_password
 
-    # Ask for the backup location and create it if it doesn't exist
-    read -p "Enter the backup location [press enter to select /var/vlsm-backup/db/]: " backup_location
-    backup_location="${backup_location:-/var/vlsm-backup/db/}"
+        # Ask for the backup location and create it if it doesn't exist
+        read -p "Enter the backup location [press enter to select /var/vlsm-backup/db/]: " backup_location
+        backup_location="${backup_location:-/var/vlsm-backup/db/}"
 
-    # Create the backup directory if it does not exist
-    if [ ! -d "$backup_location" ]; then
-        echo "Backup directory does not exist. Creating it now..."
-        mkdir -p "$backup_location"
-        if [ $? -ne 0 ]; then
-            echo "Failed to create backup directory. Please check your permissions."
-            exit 1
-        fi
-    fi
-
-    # Change to the backup directory
-    cd "$backup_location" || exit
-
-    # List databases and ask for user choice
-    get_databases
-    echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
-    read -r input_selections
-
-    # Convert input selection to array indexes
-    selected_indexes=()
-    if [[ "$input_selections" == "all" ]]; then
-        selected_indexes=("${!databases[@]}")
-    else
-        # Split input by space and comma
-        IFS=', ' read -ra selections <<<"$input_selections"
-
-        for selection in "${selections[@]}"; do
-            if [[ "$selection" =~ ^[0-9]+$ ]]; then
-                # Subtract 1 to convert from human-readable number to zero-indexed array
-                selected_indexes+=($(($selection - 1)))
-            else
-                echo "Invalid selection: $selection. Ignoring."
+        # Create the backup directory if it does not exist
+        if [ ! -d "$backup_location" ]; then
+            echo "Backup directory does not exist. Creating it now..."
+            mkdir -p "$backup_location"
+            if [ $? -ne 0 ]; then
+                echo "Failed to create backup directory. Please check your permissions."
+                exit 1
             fi
-        done
+        fi
+
+        # Change to the backup directory
+        cd "$backup_location" || exit
+
+        # List databases and ask for user choice
+        get_databases
+        echo "Enter the numbers of the databases you want to backup, separated by space or comma, or type 'all' for all databases:"
+        read -r input_selections
+
+        # Convert input selection to array indexes
+        selected_indexes=()
+        if [[ "$input_selections" == "all" ]]; then
+            selected_indexes=("${!databases[@]}")
+        else
+            # Split input by space and comma
+            IFS=', ' read -ra selections <<<"$input_selections"
+
+            for selection in "${selections[@]}"; do
+                if [[ "$selection" =~ ^[0-9]+$ ]]; then
+                    # Subtract 1 to convert from human-readable number to zero-indexed array
+                    selected_indexes+=($(($selection - 1)))
+                else
+                    echo "Invalid selection: $selection. Ignoring."
+                fi
+            done
+        fi
+
+        # Backup the selected databases
+        backup_database "${selected_indexes[@]}"
+        log_action "Database backup completed."
+    else
+        echo "Skipping database backup as per user request."
+        log_action "Skipping database backup as per user request."
     fi
 
-    # Backup the selected databases
-    backup_database "${selected_indexes[@]}"
-    log_action "Database backup completed."
-else
-    echo "Skipping database backup as per user request."
-    log_action "Skipping database backup as per user request."
-fi
-
-# Ask the user if they want to backup the VLSM folder
-if ask_yes_no "Do you want to backup the VLSM folder before updating?" "no"; then
-    # Backup Old VLSM Folder
-    echo "Backing up old VLSM folder..."
-    timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
-    backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
-    mkdir -p "${backup_folder}"
-    rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
-    spinner # This will show the spinner until the above process is completed
-    log_action "VLSM folder backed up to ${backup_folder}"
-else
-    echo "Skipping VLSM folder backup as per user request."
-    log_action "Skipping VLSM folder backup as per user request."
+    # Ask the user if they want to backup the LIS folder
+    if ask_yes_no "Do you want to backup the LIS folder before updating?" "no"; then
+        # Backup Old LIS Folder
+        echo "Backing up old LIS folder..."
+        timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
+        backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
+        mkdir -p "${backup_folder}"
+        rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
+        spinner # This will show the spinner until the above process is completed
+        log_action "LIS folder backed up to ${backup_folder}"
+    else
+        echo "Skipping LIS folder backup as per user request."
+        log_action "Skipping LIS folder backup as per user request."
+    fi
 fi
 
 rm -rf "${vlsm_path}/run-once"
 
-echo "Downloading VLSM..."
+echo "Downloading LIS..."
 wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
 spinner "${download_pid}" # Start the spinner
@@ -499,23 +539,10 @@ wait ${cp_pid}      # Wait for the copy process to finish
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "VLSM copied to ${vlsm_path}."
+log_action "LIS copied to ${vlsm_path}."
 
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
-
-# Run Composer Install as www-data
-echo "Running composer install as www-data user..."
-cd "${vlsm_path}"
-
-sudo -u www-data composer config process-timeout 30000
-
-sudo -u www-data composer clear-cache
-
-sudo -u www-data composer install --no-dev &&
-    sudo -u www-data composer dump-autoload -o
-
-log_action "Composer install completed."
 
 # Check for config.production.php and its content
 config_file="${vlsm_path}/configs/config.production.php"
@@ -545,6 +572,19 @@ fi
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
+
+# Run Composer Install as www-data
+echo "Running composer install as www-data user..."
+cd "${vlsm_path}"
+
+sudo -u www-data composer config process-timeout 30000
+
+sudo -u www-data composer clear-cache
+
+sudo -u www-data composer install --no-dev &&
+    sudo -u www-data composer dump-autoload -o
+
+log_action "Composer install completed."
 
 # Run the database migrations and other post-update tasks
 echo "Running database migrations and other post-update tasks..."
@@ -629,5 +669,5 @@ service apache2 restart
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
-echo "VLSM update complete."
-log_action "VLSM update complete."
+echo "LIS update complete."
+log_action "LIS update complete."

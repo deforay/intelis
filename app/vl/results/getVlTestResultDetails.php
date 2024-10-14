@@ -281,13 +281,13 @@ try {
           }
 
           if (empty($_POST['from']) || $_POST['from'] != "enterresult") {
-               $row[] = ($aRow['facility_state']);
-               $row[] = ($aRow['facility_district']);
+               $row[] = $aRow['facility_state'];
+               $row[] = $aRow['facility_district'];
           }
-          $row[] = ($aRow['sample_name']);
+          $row[] = $aRow['sample_name'];
           $row[] = $aRow['result'];
 
-          $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
+          $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
           $row[] = $print;
           $output['aaData'][] = $row;

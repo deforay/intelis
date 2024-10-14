@@ -13,7 +13,7 @@ use App\Registries\ContainerRegistry;
 
 
 // Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
+/** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 $_GET = _sanitizeInput($request->getQueryParams());
@@ -43,9 +43,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
-
-/** @var Slim\Psr7\Request $request */
-$request = AppRegistry::get('request');
 
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];

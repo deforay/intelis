@@ -40,7 +40,7 @@ $ipaddress = $general->getClientIpAddress();
 
 try {
 
-    SecurityService::rotateCSRF($request);
+    SecurityService::rotateCSRF();
 
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);

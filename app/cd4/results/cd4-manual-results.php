@@ -21,12 +21,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $healthFacilites = $facilitiesService->getHealthFacilities('cd4');
 
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_COOKIE = _sanitizeInput($request->getCookieParams());
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');

@@ -1,12 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\EidService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-
-
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,11 +25,11 @@ $tableName = "form_eid";
 $primaryKey = "eid_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name','vl.lab_assigned_code', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'vl.lab_assigned_code','f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'vl.lab_assigned_code', 'f.facility_state', 'f.facility_district', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
+$orderColumns = array('vl.sample_code', 'vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.child_id', 'vl.child_name', 'vl.mother_id', 'mother_name', 'f.facility_name', 'l_f.facility_name', 'vl.lab_assigned_code', 'f.facility_state', 'f.facility_district', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
-} else if ($general->isStandaloneInstance()) {
+} elseif ($general->isStandaloneInstance()) {
     if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
         unset($aColumns[$key]);
         $aColumns = array_values($aColumns);
@@ -39,14 +37,11 @@ if ($general->isSTSInstance()) {
         $orderColumns = array_values($orderColumns);
     }
 }
-
-
 if ($formId != COUNTRY\CAMEROON) {
     $aColumns = array_values(array_diff($aColumns, ['vl.lab_assigned_code']));
     $orderColumns = array_values(array_diff($orderColumns, ['vl.lab_assigned_code']));
 }
 
-// print_r($orderColumns);die;
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 

@@ -17,6 +17,7 @@ use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use Psr\Http\Message\ServerRequestInterface;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
 
@@ -545,9 +546,25 @@ final class CommonService
 
         return "Unknown Browser - $userAgent";
     }
-    public static function isAjaxRequest(ServerRequest $request): bool
+    public static function isAjaxRequest(ServerRequestInterface|ServerRequest $request): bool
     {
         return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
+    }
+
+    public static function isCliRequest(): bool
+    {
+        return php_sapi_name() === 'cli';
+    }
+
+    // Helper function to check if the current URI is in the excluded list
+    public static function isExcludedUri(string $uri, $excludedUris): bool
+    {
+        foreach ($excludedUris as $excludedUri) {
+            if (fnmatch($excludedUri, $uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     // Returns the current Instance ID

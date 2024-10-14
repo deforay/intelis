@@ -2,9 +2,9 @@
 
 # To use this script:
 # cd ~;
-# wget -O setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/setup.sh
-# sudo chmod u+x setup.sh;
-# sudo ./setup.sh;
+# wget -O intelis-setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/setup.sh
+# sudo chmod u+x intelis-setup.sh;
+# sudo ./intelis-setup.sh;
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
@@ -74,8 +74,8 @@ handle_database_setup_and_import() {
     db_not_empty=$(mysql -u root -p"${mysql_root_password}" -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
 
     if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
-        echo "Renaming existing VLSM database..."
-        log_action "Renaming existing VLSM database..."
+        echo "Renaming existing LIS database..."
+        log_action "Renaming existing LIS database..."
         local todays_date=$(date +%Y%m%d_%H%M%S)
         local new_db_name="vlsm_${todays_date}"
         mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
@@ -155,7 +155,7 @@ current_trap=$(trap -p ERR)
 # Disable the error trap temporarily
 trap - ERR
 
-echo "Enter the VLSM installation path [press enter to select /var/www/vlsm]: "
+echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
 read -t 60 vlsm_path
 
 # Check if read command timed out or no input was provided
@@ -163,10 +163,10 @@ if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
     vlsm_path="/var/www/vlsm"
     echo "Using default path: $vlsm_path"
 else
-    echo "VLSM installation path is set to ${vlsm_path}."
+    echo "LIS installation path is set to ${vlsm_path}."
 fi
 
-log_action "VLSM installation path is set to ${vlsm_path}."
+log_action "LIS installation path is set to ${vlsm_path}."
 
 # Restore the previous error trap
 eval "$current_trap"
@@ -532,15 +532,15 @@ else
     mv composer.phar /usr/local/bin/composer
 fi
 
-# VLSM Setup
-echo "Downloading VLSM..."
+# LIS Setup
+echo "Downloading LIS..."
 wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
 unzip master.zip -d "$temp_dir"
 
-log_action "VLSM downloaded."
+log_action "LIS downloaded."
 
 # backup old code if it exists
 if [ -d "${vlsm_path}" ]; then
@@ -557,7 +557,7 @@ rsync -av "$temp_dir/vlsm-master/" "$vlsm_path/"
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "VLSM copied to ${vlsm_path}."
+log_action "LIS copied to ${vlsm_path}."
 
 # Set proper permissions
 chown -R www-data:www-data "${vlsm_path}"
@@ -613,17 +613,17 @@ else
     log_action "${hostname} entry is already in the hosts file."
 fi
 
-# Ask user if they want to install VLSM as the default host or along with other apps
-read -p "Install VLSM as the default host? (yes for default, no for alongside other apps) [yes/no]: " install_as_default
+# Ask user if they want to install LIS as the default host or along with other apps
+read -p "Install LIS as the default host? (yes for default, no for alongside other apps) [yes/no]: " install_as_default
 install_as_default="${install_as_default:-yes}"
 
 if [ "$install_as_default" = "yes" ]; then
-    echo "Installing VLSM as the default host..."
+    echo "Installing LIS as the default host..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 else
-    echo "Installing VLSM alongside other apps..."
+    echo "Installing LIS alongside other apps..."
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
@@ -656,18 +656,18 @@ cron_job="* * * * * cd ${vlsm_path} && ./cron.sh"
 
 # Check if the cron job already exists
 if ! crontab -l | grep -qF "${cron_job}"; then
-    echo "Adding cron job for VLSM..."
-    log_action "Adding cron job for VLSM..."
+    echo "Adding cron job for LIS..."
+    log_action "Adding cron job for LIS..."
     (
         crontab -l
         echo "${cron_job}"
     ) | crontab -
 else
-    echo "Cron job for VLSM already exists. Skipping."
-    log_action "Cron job for VLSM already exists. Skipping."
+    echo "Cron job for LIS already exists. Skipping."
+    log_action "Cron job for LIS already exists. Skipping."
 fi
 
-# Update VLSM config.production.php with database credentials
+# Update LIS config.production.php with database credentials
 config_file="${vlsm_path}/configs/config.production.php"
 source_file="${vlsm_path}/configs/config.production.dist.php"
 
@@ -706,7 +706,7 @@ fi
 # Prompt for Remote STS URL
 read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
 log_action "Remote STS URL: $remote_sts_url"
-# Update VLSM config.production.php with Remote STS URL if provided
+# Update LIS config.production.php with Remote STS URL if provided
 if [ ! -z "$remote_sts_url" ]; then
 
     # Define desired_sts_url
@@ -784,5 +784,5 @@ fi
 
 service apache2 restart
 
-echo "Setup complete. Proceed to VLSM setup."
-log_action "Setup complete. Proceed to VLSM setup."
+echo "Setup complete. Proceed to LIS setup."
+log_action "Setup complete. Proceed to LIS setup."

@@ -8,6 +8,7 @@ use Laminas\Diactoros\ServerRequest;
 
 final class SecurityService
 {
+    //public static $expiryTime = 3600; // 60 minutes
     public function __construct() {}
 
     public static function checkContentLength(ServerRequest $request)
@@ -42,11 +43,11 @@ final class SecurityService
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
             ?: $request->getParsedBody()['csrf_token'] ?? null;
 
-        // Check if CSRF token has expired (1 hour default expiration)
-        if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > 3600) {
-            self::rotateCSRF($request);
-            throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
-        }
+        // // Check if CSRF token has expired (1 hour default expiration)
+        // if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > self::$expiryTime) {
+        //     self::rotateCSRF();
+        //     throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
+        // }
 
         // Validate the CSRF token
         if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
@@ -54,30 +55,26 @@ final class SecurityService
         }
 
         // Optionally invalidate and regenerate the CSRF token after successful use
-        if ($invalidate) {
-            self::rotateCSRF($request);
+        if (CommonService::isAjaxRequest($request) === false && $invalidate) {
+            self::rotateCSRF();
         }
     }
-    public static function rotateCSRF($request): void
+    public static function rotateCSRF(): void
     {
-        if (CommonService::isAjaxRequest($request) === false) {
-            self::invalidateCSRF();
-            self::generateCSRF();
-        }
+        self::invalidateCSRF();
+        self::generateCSRF();
     }
-    private static function invalidateCSRF()
+    public static function generateCSRF(): void
     {
-        if (!isset($_SESSION['csrf_token']) || time() - ($_SESSION['csrf_token_time'] ?? 0) > 3600) {
-            unset($_SESSION['csrf_token']);
-            unset($_SESSION['csrf_token_time']);
-        }
+        $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString();
+        $_SESSION['csrf_token_time'] = time();
     }
 
-    private static function generateCSRF(): void
+    private static function invalidateCSRF()
     {
-        if (empty($_SESSION['csrf_token'])) {
-            $_SESSION['csrf_token_time'] = time();
-            $_SESSION['csrf_token'] = MiscUtility::generateRandomString();
+        if (isset($_SESSION['csrf_token'])) {
+            unset($_SESSION['csrf_token']);
+            unset($_SESSION['csrf_token_time']);
         }
     }
 }

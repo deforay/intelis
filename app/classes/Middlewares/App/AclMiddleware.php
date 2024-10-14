@@ -4,6 +4,7 @@ namespace App\Middlewares\App;
 
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
+use App\Registries\AppRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -14,42 +15,37 @@ class AclMiddleware implements MiddlewareInterface
     protected array $excludedUris = [
         '/',
         '/index.php',
-        '/login/login.php',
-        '/login/loginProcess.php',
-        '/login/logout.php',
-        '/setup/index.php',
-        '/setup/registerProcess.php',
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
+        '/login/*',
+        '/setup/*',
+        '/remote/remote/*',
+        '/system-admin/*',
+        '/api/*',
         // Add other routes to exclude from the ACL check here
     ];
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $currentURI = $request->getUri()->getPath();
+        $currentURI = AppRegistry::get('currentRequestURI');
 
         // SKIP ACL check for excluded URIs
         // SKIP ACL check for AJAX requests (X-Requested-With: XMLHttpRequest)
-        // SKIP ACL check for system-admin/ remote/remote/ and API URLs
         // ALLOW if the current URI is allowed by ACL
         if (
-            php_sapi_name() === 'cli' ||
-            $this->isExcludedUri($currentURI) ||
-            CommonService::isAjaxRequest($request) !== false ||
-            fnmatch('/remote/remote/*', $currentURI) ||
-            fnmatch('/system-admin/*', $currentURI) ||
-            fnmatch('/api/*', $currentURI) ||
+            $this->shouldExcludeFromAclCheck($request) ||
             _isAllowed($currentURI)
         ) {
             return $handler->handle($request);
         }
 
         $referer = $request->getHeaderLine('Referer');
+        $refererPath = $this->getRefererPath($referer);
         // If current URI is not allowed, check the referer (if it exists and is from the same domain)
         if (
-            empty($referer) ||
+            empty($refererPath) ||
             $this->isSameDomain($request, $referer) === false ||
-            _isAllowed($referer) === false
+            _isAllowed($refererPath) === false
         ) {
             throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page or resource.'), 401);
         }
@@ -57,10 +53,12 @@ class AclMiddleware implements MiddlewareInterface
         return $handler->handle($request);
     }
 
-    // Helper function to check if the current URI is in the excluded list
-    private function isExcludedUri(string $uri): bool
+    protected function getRefererPath($referer): string
     {
-        return in_array($uri, $this->excludedUris);
+        $parsedUrl = parse_url($referer);
+        $path = $parsedUrl['path'] ?? '/';
+        $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
+        return $path . $query;
     }
 
     // Helper function to check if referer is from the same domain
@@ -70,5 +68,19 @@ class AclMiddleware implements MiddlewareInterface
         $refererHost = parse_url($referer, PHP_URL_HOST);
 
         return $currentHost === $refererHost;
+    }
+
+    private function shouldExcludeFromAclCheck(ServerRequestInterface $request): bool
+    {
+        // Get the current URI from the request (instead of relying on the session here)
+        $uri = $request->getUri()->getPath();
+        if (
+            CommonService::isCliRequest() ||
+            CommonService::isAjaxRequest($request) !== false ||
+            CommonService::isExcludedUri($uri, $this->excludedUris) === true
+        ) {
+            return true;
+        }
+        return false;
     }
 }
