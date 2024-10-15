@@ -2,6 +2,7 @@
 
 namespace App\Middlewares\App;
 
+use App\Services\CommonService;
 use App\Services\SecurityService;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
@@ -29,7 +30,7 @@ class CSRFMiddleware implements MiddlewareInterface
         $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
         if (
-            php_sapi_name() === 'cli' ||
+            CommonService::isCliRequest() === true ||
             $this->isExcludedUri($currentURI) ||
             !in_array($method, $modifyingMethods) ||
             !isset($_SESSION['csrf_token'])
