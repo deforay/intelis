@@ -28,7 +28,7 @@ try {
     ];
     $db->where('failure_id', $_POST['id']);
     $result = $db->update($tableName, $status);
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),

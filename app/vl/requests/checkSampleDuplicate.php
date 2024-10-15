@@ -65,7 +65,7 @@ if ($value != '') {
                     $data = 0;
                 }
             }
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }
     }

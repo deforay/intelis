@@ -65,7 +65,7 @@ try {
 		}
 	}
 	header("Location:geographical-divisions-details.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),

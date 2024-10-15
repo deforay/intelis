@@ -425,6 +425,6 @@ try {
           $_SESSION['alertMsg'] = _translate("Please try again later");
      }
      header("Location:/vl/requests/vl-requests.php");
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
      throw new SystemException($exc->getMessage(), 500, $exc);
 }

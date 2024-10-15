@@ -34,6 +34,6 @@ try {
 		}
 	}
 	header("Location:lab-storage.php");
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
 	throw new SystemException($exc->getMessage(), 500);
 }

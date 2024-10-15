@@ -56,7 +56,6 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
 
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
-        // Get the current URI from the request (instead of relying on the session here)
         $uri = $request->getUri()->getPath();
         if (
             CommonService::isCliRequest() ||

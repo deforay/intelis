@@ -2,9 +2,9 @@
 
 namespace App\Middlewares\App;
 
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -72,7 +72,6 @@ class AclMiddleware implements MiddlewareInterface
 
     private function shouldExcludeFromAclCheck(ServerRequestInterface $request): bool
     {
-        // Get the current URI from the request (instead of relying on the session here)
         $uri = $request->getUri()->getPath();
         if (
             CommonService::isCliRequest() ||

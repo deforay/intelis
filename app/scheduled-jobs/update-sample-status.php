@@ -6,7 +6,7 @@ if (php_sapi_name() !== 'cli') {
     exit(0);
 }
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once __DIR__ . "/../../bootstrap.php";
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -21,25 +21,50 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
+foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
 
     try {
-        $tableName = TestsService::getTestTableName($module);
-
-        if ($status === true && !empty($tableName)) {
+        $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
+        if (!empty($tableName)) {
             //FAILED SAMPLES
             if ($module === 'vl') {
-                $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
-                $db->where("result_status != " . SAMPLE_STATUS\REJECTED); // not rejected
-                $db->where("result_status != " . SAMPLE_STATUS\TEST_FAILED); // not already in failed status
-                $db->update(
-                    $tableName,
-                    [
-                        "result_status" => SAMPLE_STATUS\TEST_FAILED,
-                        "data_sync" => 0,
-                        "last_modified_datetime" => DateUtility::getCurrentDateTime()
-                    ]
-                );
+                //FAILED SAMPLES
+                $batchSize = 100;
+                $offset = 0;
+                $statusCodes = [
+                    SAMPLE_STATUS\REJECTED,
+                    SAMPLE_STATUS\TEST_FAILED
+                ];
+                while (true) {
+                    // Fetch a batch of rows
+                    $db->where("result_status", $statusCodes, 'NOT IN');
+                    $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
+                    $db->orderBy("vl_sample_id", "ASC"); // Ensure consistent ordering
+                    $db->pageLimit = $batchSize;
+                    $rows = $db->get($tableName, [$offset, $batchSize], "vl_sample_id");
+
+                    if (empty($rows)) {
+                        // No more rows to process
+                        break;
+                    }
+
+                    // Extract the IDs of the rows to update
+                    $ids = array_column($rows, 'vl_sample_id');
+
+                    // Update the rows in the current batch
+                    $db->where("vl_sample_id", $ids, 'IN');
+                    $db->update(
+                        $tableName,
+                        [
+                            "result_status" => SAMPLE_STATUS\TEST_FAILED,
+                            "data_sync" => 0,
+                            "last_modified_datetime" => DateUtility::getCurrentDateTime()
+                        ]
+                    );
+
+                    // Move to the next batch
+                    $offset += $batchSize;
+                }
             }
 
             //EXPIRING SAMPLES
@@ -57,7 +82,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
             ];
 
             $db->where("result_status", $statusCodes, 'IN');
-            $db->where("(DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays)");
+            $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
             $db->update(
                 $tableName,
                 [
@@ -72,7 +97,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
                 $db->where("(result IS NULL OR result = '')");
                 $db->where("sample_code IS NOT NULL");
                 $db->where("(is_sample_rejected = 'no' OR is_sample_rejected IS NULL OR is_sample_rejected = '')");
-                $db->where("((DATEDIFF(CURRENT_DATE, `sample_collection_date`)) <= $expiryDays)");
+                $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) <= $expiryDays");
                 $db->update(
                     $tableName,
                     [
@@ -83,19 +108,25 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $status) {
             }
 
             //LOCKING SAMPLES
-            $lockExpiryDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
-            if (empty($lockExpiryDays) || $lockExpiryDays <= 0) {
-                $lockExpiryDays = 14;
+            $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
+            if (empty($lockAfterDays) || $lockAfterDays <= 0) {
+                $lockAfterDays = 14;
             }
-            if ($lockExpiryDays != null && $lockExpiryDays >= 0) {
-                $db->where("(result_status = " . SAMPLE_STATUS\REJECTED . " OR result_status = " . SAMPLE_STATUS\ACCEPTED . ")"); // Samples that are Accepted, Rejected
-                $db->where("locked NOT LIKE 'yes'");
-                $db->where("(DATEDIFF(CURRENT_DATE, `last_modified_datetime`)) > $lockExpiryDays");
-                $db->update($tableName, ["locked" => "yes"]);
-            }
+
+            $statusCodes = [
+                SAMPLE_STATUS\REJECTED,
+                SAMPLE_STATUS\ACCEPTED
+            ];
+            $db->where("result_status", $statusCodes, 'IN');
+            $db->where("locked NOT LIKE 'yes'");
+            $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
+            $db->update($tableName, ["locked" => "yes"]);
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         LoggerUtility::logError($e->getMessage(), [
+            'module' => $module,
+            'last_query' => $db->getLastQuery(),
+            'last_db_error' => $db->getLastError(),
             'line' => $e->getLine(),
             'file' => $e->getFile(),
             'trace' => $e->getTraceAsString()

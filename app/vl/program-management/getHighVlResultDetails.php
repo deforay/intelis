@@ -246,6 +246,6 @@ try {
     echo JsonUtility::encodeUtf8Json($output);
 
     $db->commitTransaction();
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

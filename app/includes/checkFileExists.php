@@ -16,15 +16,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
 if (!empty($_POST['fileName'])) {
 
     try {
-        if(file_exists($_POST['fileName'])){
+        if (file_exists($_POST['fileName'])) {
             echo 'exists';
-        }
-        else{
+        } else {
             echo 'not exists';
         }
-    } catch (Exception $e) {
+    } catch (Throwable $e) {
         LoggerUtility::log('error', $e->getMessage());
         LoggerUtility::log('error', $e->getTraceAsString());
     }
 }
-

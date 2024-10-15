@@ -33,7 +33,7 @@ try {
         $db->update($tableName, $status);
         $result = $id[$i];
     }
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),

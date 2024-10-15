@@ -24,6 +24,6 @@ try {
     }
     $_SESSION['alertMsg'] = _translate("Test Result Email Config values updated successfully.");
     header("Location:testResultEmailConfig.php");
-} catch (Exception $exc) {
+} catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage());
 }

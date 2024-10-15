@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
-use Exception;
+
+use Throwable;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -78,7 +79,7 @@ final class StorageService
 
             $this->db->commitTransaction();
             return $save;
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             $this->db->rollbackTransaction();
             throw $e;
         }

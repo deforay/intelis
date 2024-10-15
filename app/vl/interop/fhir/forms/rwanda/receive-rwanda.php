@@ -341,7 +341,7 @@ try {
             $id = $db->insert("form_vl", $data);
             //echo "<h1>" . $id . "</h1>";
             //LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             LoggerUtility::log('error', "Error in Receive Rwanda FHIR Script : " . $db->getLastError() . PHP_EOL);
             throw new SystemException($e->getMessage(), $e->getCode(), $e);
         }

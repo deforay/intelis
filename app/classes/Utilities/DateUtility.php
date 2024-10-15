@@ -2,7 +2,6 @@
 
 namespace App\Utilities;
 
-use Exception;
 use Throwable;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
@@ -120,7 +119,7 @@ final class DateUtility
             foreach ($formats as $format) {
                 try {
                     return Carbon::createFromFormat($format, $dateStr);
-                } catch (Exception $e) {
+                } catch (Throwable $e) {
                     LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
                     continue;
                 }
@@ -128,7 +127,7 @@ final class DateUtility
         }
         try {
             return Carbon::parse($dateStr);
-        } catch (Exception $e) {
+        } catch (Throwable $e) {
             LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
         }
 

@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -30,7 +31,7 @@ try {
         $db->update($tableName, $status);
         $result = $id[$i];
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $exc) {
+    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }
 echo htmlspecialchars((string) $result);

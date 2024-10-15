@@ -80,9 +80,9 @@ try {
             }
         }
     }
-    echo ($id);
+    echo $id;
 }
 //catch exception
-catch (Exception $e) {
+catch (Throwable $e) {
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

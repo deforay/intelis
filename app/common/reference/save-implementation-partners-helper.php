@@ -7,10 +7,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
-
-
-
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -42,7 +38,7 @@ try {
 		}
 	}
 	header("Location:implementation-partners.php");
-} catch (Exception $e) {
+} catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
 		'line' => $e->getLine(),
