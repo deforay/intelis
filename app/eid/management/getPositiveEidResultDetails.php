@@ -102,7 +102,14 @@ try {
          * SQL queries
          * Get data to display
         */
-    $sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result like 'positive' ";
+    //$sQuery = "SELECT vl.*,f.*,s.*,b.*,lab.facility_name as labName FROM form_eid as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id LEFT JOIN r_eid_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.result like 'positive' ";
+
+    $sQuery = "SELECT vl.*,f.facility_name, b.batch_code,fd.facility_name as labName
+    FROM form_eid as vl
+    INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
+    INNER JOIN facility_details as fd ON fd.facility_id=vl.lab_id
+    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
+    WHERE vl.result_status=7 AND vl.result like 'positive' ";
 
     if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != '') {
         $sWhere[] = ' b.batch_code LIKE "%' . $_POST['hvlBatchCode'] . '%"';
