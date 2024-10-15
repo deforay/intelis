@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-
+echo $_SESSION['accessType']; die;
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);

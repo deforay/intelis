@@ -168,7 +168,7 @@ if (!empty($id)) {
             $tbl .= '</tr>
                 <tr>
                     <th style="font-weight: bold;">' . _translate('Printed By') . ' :</th><td>' . $_SESSION['userName'] . '</td>
-                    <th style="font-weight: bold;">' . _translate('Printed On') . ':</th><td colspan="2">' . date("d-M-Y h:i:A") . '</td>
+                    <th style="font-weight: bold;">' . _translate('Printed On') . ':</th><td>' . date("d-M-Y h:i:A") . '</td>
                 </tr>
             </table>
             <br>
@@ -238,7 +238,7 @@ if (!empty($id)) {
 
 
                         $lotDetails = $sampleResult[0]['lot_number'] . $lotExpirationDate;
-                        $tbl .= '<td colspan="2" align="center">';
+                        $tbl .= '<td align="center">';
                         $tbl .= $a .'. Sample ID : ' . $sampleResult[0]['sample_code'] . '<br>';
                         if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                             $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';
@@ -270,7 +270,7 @@ if (!empty($id)) {
                         $label = str_replace("_", " ", (string) $jsonToArray[$alphaNumeric[$j]]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<td colspan="2" align="center">';
+                        $tbl .= '<td align="center">';
                         $tbl .= $label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
@@ -359,7 +359,7 @@ if (!empty($id)) {
                         $label = str_replace("_", " ", (string) $jsonToArray[$j]);
                         $label = str_replace("in house", "In-House", $label);
                         $label = (str_replace("no of ", " ", $label));
-                        $tbl .= '<td colspan="2" align="center">';
+                        $tbl .= '<td align="center">';
                         $tbl .= $a.'.'.$label . '<br>';
                         $tbl .= '<br>';
                         $tbl .= '<br>';
@@ -382,7 +382,7 @@ if (!empty($id)) {
             if (isset($bResult['number_of_in_house_controls']) && $bResult['number_of_in_house_controls'] != '' && $bResult['number_of_in_house_controls'] != null) {
                 $noOfInHouseControls = $bResult['number_of_in_house_controls'];
                 for ($i = 1; $i <= $bResult['number_of_in_house_controls']; $i++) {
-                    $tbl .= '<td colspan="2" align="center">' . _translate('In-House Control') . ' ' . $i . '<br>
+                    $tbl .= '<tdalign="center">' . _translate('In-House Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -398,7 +398,7 @@ if (!empty($id)) {
                 $noOfManufacturerControls = $bResult['number_of_manufacturer_controls'];
                 for ($i = 1; $i <= $bResult['number_of_manufacturer_controls']; $i++) {
                     $sNo = $noOfInHouseControls + $i;
-                    $tbl .= '<td colspan="2" align="center">' . _translate('Manfacturing Control') . ' ' . $i . '<br>
+                    $tbl .= '<td align="center">' . _translate('Manfacturing Control') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -414,7 +414,7 @@ if (!empty($id)) {
                 $noOfCalibrators = $bResult['number_of_calibrators'];
                 for ($i = 1; $i <= $bResult['number_of_calibrators']; $i++) {
                     $sNo = $noOfInHouseControls + $noOfManufacturerControls + $i;
-                    $tbl .= '<td colspan="2" align="center">' . _translate('Calibrator') . ' ' . $i . '<br>
+                    $tbl .= '<td align="center">' . _translate('Calibrator') . ' ' . $i . '<br>
                             <br>
                             <br>
                             <br>
@@ -466,7 +466,7 @@ if (!empty($id)) {
                     $patientIdentifier = trim($patientIdentifier . " " . $patientFirstName . " " . $patientLastName);
                 }
 
-                $tbl .= '<td colspan="2" align="center">';
+                $tbl .= '<td align="center">';
                 $tbl .= 'Sample ID : ' . $sample['sample_code'] . '<br>';
                 if (isset($sampleResult[0]['lab_assigned_code']) && !empty($sampleResult[0]['lab_assigned_code'])) {
                     $tbl .= '(' . $sampleResult[0]['lab_assigned_code'] . ')<br>';

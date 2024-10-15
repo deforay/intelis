@@ -85,13 +85,14 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
-			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['usr'] . "'";
+			echo '<pre>'; print_r($change); die;
+			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['user'] . "'";
 			$usrResult = $db->rawQuery($usrQuery);
 			$name = '';
 			if (isset($usrResult[0]['user_name'])) {
 				$name = $usrResult[0]['user_name'];
 			}
-			$expStr = explode(" ", (string) $change['dtime']);
+			$expStr = explode(" ", (string) $change['dateOfChange']);
 			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		}
