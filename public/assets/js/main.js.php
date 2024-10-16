@@ -23,7 +23,6 @@
 <script type="text/javascript" src="/assets/js/selectize.js"></script>
 <?php
 
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use App\Services\SystemService;

@@ -395,14 +395,16 @@ service mysql restart || {
 
 log_action "MySQL configured."
 
+PHP_VERSION=8.2
+
 # PHP Setup
-echo "Installing PHP 8.2..."
+echo "Installing PHP..."
 
 # Download and install switch-php script
 wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -O /usr/local/bin/switch-php
 chmod u+x /usr/local/bin/switch-php
 
-switch-php 8.2
+switch-php $PHP_VERSION
 
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
@@ -410,18 +412,27 @@ service apache2 restart || {
     exit 1
 }
 
-echo "Configuring PHP 8.2..."
-a2dismod $(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d') -f
-a2enmod php8.2
-update-alternatives --set php /usr/bin/php8.2
-CLI_PHP_INI="/etc/php/8.2/cli/php.ini"
+echo "Configuring PHP..."
+
+# Disable the currently enabled PHP version if it's not the target version
+enabled_php_version=$(ls /etc/apache2/mods-enabled | grep -oP '^php\d\.\d')
+
+if [ -n "$enabled_php_version" ] && [ "$enabled_php_version" != "php$PHP_VERSION" ]; then
+    echo "Disabling PHP $enabled_php_version"
+    a2dismod $enabled_php_version
+else
+    echo "PHP $enabled_php_version is already the target version."
+fi
+a2enmod php$PHP_VERSION
+update-alternatives --set php /usr/bin/php$PHP_VERSION
+CLI_PHP_INI="/etc/php/$PHP_VERSION/cli/php.ini"
 if ! grep -q "apc.enable_cli=1" "$CLI_PHP_INI"; then
     echo "apc.enable_cli=1" | sudo tee -a "$CLI_PHP_INI"
 fi
 
-sudo update-alternatives --set php "/usr/bin/php8.2"
-sudo update-alternatives --set phar "/usr/bin/phar8.2"
-sudo update-alternatives --set phar.phar "/usr/bin/phar.phar8.2"
+sudo update-alternatives --set php "/usr/bin/php$PHP_VERSION"
+sudo update-alternatives --set phar "/usr/bin/phar$PHP_VERSION"
+sudo update-alternatives --set phar.phar "/usr/bin/phar.phar$PHP_VERSION"
 
 service apache2 restart || {
     echo "Failed to restart Apache2. Exiting..."
@@ -442,7 +453,7 @@ desired_memory_limit="memory_limit = $RAM_75_PERCENT"
 desired_strict_mode="session.use_strict_mode = 1"
 desired_max_execution_time="max_execution_time = 300"
 
-for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
+for phpini in /etc/php/$PHP_VERSION/apache2/php.ini /etc/php/$PHP_VERSION/cli/php.ini; do
     awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
         -v umf="$desired_upload_max_filesize" -v ml="$desired_memory_limit" \
         -v dsm="$desired_strict_mode" -v met="$desired_max_execution_time" \
@@ -457,7 +468,7 @@ for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
     }' $phpini >temp.ini && mv temp.ini $phpini
 done
 
-log_action "PHP 8.2 configured."
+log_action "PHP configured."
 
 # phpMyAdmin Setup
 if [ ! -d "/var/www/phpmyadmin" ]; then
