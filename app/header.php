@@ -156,7 +156,10 @@ if ($instrumentCount == 0 || $userCount == 0) {
 
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?>>
 
-	<?php if ($instrumentCount == 0 || $userCount == 0) { ?>
+	<?php if (
+		($general->isLisInstance() && $instrumentCount == 0) ||
+		$userCount == 0
+	) { ?>
 		<div class="topBar">
 			<p class="white text-center">
 				<?php if ($userCount == 0) { ?>
