@@ -6,6 +6,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Utilities\ValidationUtility;
+use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -248,7 +249,7 @@ try {
           'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
           'test_platform' => $testingPlatform,
           'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
-          'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
+          'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
           'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
           'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
           'result_dispatched_datetime' => $_POST['resultDispatchedOn'],
@@ -392,5 +393,11 @@ try {
      }
      header("Location:view-requests.php");
 } catch (Exception $exc) {
-     error_log($exc->getMessage());
+     LoggerUtility::logError($e->getMessage(), [
+          'last_query' => $db->getLastQuery(),
+          'last_db_error' => $db->getLastError(),
+          'line' => $e->getLine(),
+          'file' => $e->getFile(),
+          'trace' => $e->getTraceAsString()
+      ]);
 }
