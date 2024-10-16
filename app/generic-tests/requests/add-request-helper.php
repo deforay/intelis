@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -422,7 +423,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
         header("Location:view-requests.php");
     }
-} catch (Exception $exc) {
+} catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'last_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
@@ -430,4 +431,5 @@ try {
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString()
     ]);
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
