@@ -393,7 +393,7 @@ try {
                 'result_dispatched_datetime' => $data['resultDispatchedOn'],
                 'sample_tested_datetime' => $data['sampleTestedDateTime'] ?? null,
                 'sample_received_at_hub_datetime' => !empty($data['sampleReceivedHubDate']) ? $data['sampleReceivedHubDate'] : null,
-                'sample_received_at_testing_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
+                'sample_received_at_lab_datetime' => !empty($data['sampleReceivedDate']) ? $data['sampleReceivedDate'] : null,
                 'lab_technician' => (!empty($data['labTechnician']) && $data['labTechnician'] != '') ? $data['labTechnician'] : $user['user_id'],
                 'is_sample_rejected' => !empty($data['isSampleRejected']) ? $data['isSampleRejected'] : null,
                 'result' => !empty($data['result']) ? $data['result'] : null,

@@ -146,6 +146,9 @@ $batResult = $db->rawQuery($batQuery);
 		$("#labName").select2({
 			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
+		$("#batchCode").select2({
+			placeholder: "<?php echo _translate("Select Batch Code"); ?>"
+		});
 		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",

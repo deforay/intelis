@@ -74,6 +74,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 				<div class="pull-right" style="font-size:15px;">
 					<?php if (_isAllowed("editGlobalConfig.php") && !isset($_GET['e'])) { ?>
 						<div class="col-sm-6 pull-right">
+							<a href="javascript:void(0);" onclick="exportGeneralConfig();" class="btn btn-success pull-right"> <em class="fa-solid fa-file-excel"></em></em> <?php echo _translate("Export General Config"); ?></a>
+						</div>
+						<div class="col-sm-6 pull-right">
 							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _translate("Edit General Config"); ?></a>
 						</div>
 					<?php } ?>
@@ -1642,5 +1645,6 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 			errorElement.textContent = "";
 		}
 	}
+
 </script>
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>
