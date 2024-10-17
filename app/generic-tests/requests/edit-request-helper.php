@@ -3,10 +3,11 @@
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
-use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -392,12 +393,13 @@ try {
           $_SESSION['alertMsg'] = _translate("Please try again later");
      }
      header("Location:view-requests.php");
-} catch (Exception $exc) {
+} catch (Throwable $e) {
      LoggerUtility::logError($e->getMessage(), [
           'last_query' => $db->getLastQuery(),
           'last_db_error' => $db->getLastError(),
           'line' => $e->getLine(),
           'file' => $e->getFile(),
           'trace' => $e->getTraceAsString()
-      ]);
+     ]);
+     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }

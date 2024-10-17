@@ -40,7 +40,7 @@ final class LoggerUtility
             'file' => '',
             'line' => 0
         ];
-        $index = 1;
+
         if (isset($backtrace[$index])) {
             $callerInfo['file'] = $backtrace[$index]['file'];
             $callerInfo['line'] = $backtrace[$index]['line'];

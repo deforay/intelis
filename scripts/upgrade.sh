@@ -667,6 +667,9 @@ fi
 
 service apache2 restart
 
+echo "Apache Restarted."
+log_action "Apache Restarted."
+
 setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
 
 echo "LIS update complete."

@@ -3,7 +3,9 @@
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -130,7 +132,7 @@ try {
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
         'test_platform' => $testingPlatform,
         'sample_received_at_hub_datetime' => $_POST['sampleReceivedAtHubOn'],
-        'sample_received_at_testing_lab_datetime' => $_POST['sampleReceivedDate'],
+        'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
         'sample_tested_datetime' => $_POST['sampleTestingDateAtLab'],
         'reason_for_testing' => (isset($_POST['reasonForTesting']) && $_POST['reasonForTesting'] != '') ? $_POST['reasonForTesting'] : null,
         'result_dispatched_datetime' => !empty($_POST['resultDispatchedOn']) ? $_POST['resultDispatchedOn'] : null,
@@ -247,7 +249,7 @@ try {
 
     $db->where('sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $dataToUpdate);
-    // var_dump($db->getLastError());die;
+
     $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("Lab Tests results updated successfully");
@@ -262,6 +264,13 @@ try {
     }
 
     header("Location:generic-test-results.php");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'last_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'line' => $e->getLine(),
+        'file' => $e->getFile(),
+        'trace' => $e->getTraceAsString()
+    ]);
+    throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
