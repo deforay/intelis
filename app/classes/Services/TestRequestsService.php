@@ -247,7 +247,7 @@ final class TestRequestsService
             }
 
             $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
-            if ($sampleCodeData !== false) {
+            if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
                 $uniqueIds = array_keys($sampleCodeData);
 
