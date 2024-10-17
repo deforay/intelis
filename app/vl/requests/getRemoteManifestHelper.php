@@ -17,10 +17,15 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $sampleData = [];
-$sampleQuery = 'SELECT vl_sample_id
-                    FROM form_vl
-                    WHERE sample_code IS NULL
-                    AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';
-$sampleResult = $db->rawQuery($sampleQuery, [$_POST['samplePackageCode'], $_POST['samplePackageCode']]);
+
+$sampleCode = $_POST['samplePackageCode'];
+$sampleQuery = "SELECT vl.vl_sample_id
+                    FROM form_vl as vl
+                    WHERE vl.sample_package_code IN (
+                        '$sampleCode',
+                        (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE '$sampleCode')
+                    )";
+                 
+$sampleResult = $db->rawQuery($sampleQuery);
 $sampleData = array_column($sampleResult, 'vl_sample_id');
 echo implode(',', $sampleData);
