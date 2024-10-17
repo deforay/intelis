@@ -41,11 +41,15 @@ final class TestRequestsService
 
     public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5)
     {
+        $isCli = CommonService::isCliRequest();
         if ($parallelProcess === false) {
             $lockFile = TEMP_PATH . '/sample_code_generation.lock';
 
             // Check if another instance is already running
             if (file_exists($lockFile) && (filemtime($lockFile) > (time() - $interval * 2))) {
+                if ($isCli) {
+                    echo 'Another instance of the sample code generation script is already running' . PHP_EOL;
+                }
                 exit(0);
             }
 
@@ -88,6 +92,10 @@ final class TestRequestsService
                         $rowData = $this->db->rawQueryOne($sQuery, [$item['unique_id']]);
 
                         if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
+                            if ($isCli) {
+                                echo "Sample Code {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
+                            }
+                            $this->updateQueueItem($item['id'], 1);
                             continue;
                         }
 
@@ -147,8 +155,7 @@ final class TestRequestsService
                             $this->db->where('unique_id', $item['unique_id']);
                             $this->db->update($formTable, $tesRequestData);
 
-                            $this->db->where('id', $item['id']);
-                            $this->db->update('queue_sample_code_generation', ['processed' => 1]);
+                            $this->updateQueueItem($item['id'], 1);
                         }
 
                         $this->db->commitTransaction();
@@ -171,6 +178,13 @@ final class TestRequestsService
             }
             return $response;
         }
+    }
+
+    private function updateQueueItem($id, $processed)
+    {
+        $data = ['processed' => $processed];
+        $this->db->where('id', $id);
+        return $this->db->update('queue_sample_code_generation', $data);
     }
 
     public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)

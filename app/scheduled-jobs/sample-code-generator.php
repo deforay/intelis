@@ -1,14 +1,17 @@
 <?php
 
-if (php_sapi_name() === 'cli') {
-    require_once(__DIR__ . "/../../bootstrap.php");
-}
-
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 
+if (CommonService::isCliRequest()) {
+    require_once __DIR__ . "/../../bootstrap.php";
+    $options = getopt("f");
+    $parallelProcess = isset($options['f']);
+} else {
+    $parallelProcess = false;
+}
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -21,4 +24,4 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 $maxTries = 5; // Maximum number of tries to generate sample code
 $interval = 5; // Interval in seconds to wait between checks
 
-$testRequestsService->processSampleCodeQueue(maxTries: $maxTries, interval: $interval);
+$testRequestsService->processSampleCodeQueue(parallelProcess: $parallelProcess, maxTries: $maxTries, interval: $interval);
