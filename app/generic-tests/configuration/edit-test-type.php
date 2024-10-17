@@ -50,6 +50,8 @@ $testFailureReasonId = $general->getDataByTableAndFields("generic_test_failure_r
 $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection_reason_map", array("rejection_reason_id", "rejection_reason_id"), true, "test_type_id=$id");
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
+
+ 
 $i = 0;
 foreach ($testResultAttribute['result_type'] as $key => $r) {
 	$i++;
@@ -457,8 +459,9 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 							<div class="col-md-8">
 								<label for="resultUnit" class="col-lg-4 control-label"><?php echo _translate("Test Result Unit"); ?> </label>
 								<div class="col-lg-7">
-									<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
-										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, false) ?>
+									<!--<select class="quantitativeResult" id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='< ?php echo _translate("Enter test result unit"); ?>' title='< ?php echo _translate("Please enter test result unit"); ?>' multiple>-->
+										<select id="testResultUnit" name="resultConfig[test_result_unit][]" placeholder='<?php echo _translate("Enter test result unit"); ?>' title='<?php echo _translate("Please enter test result unit"); ?>' multiple>
+										<?= $general->generateSelectOptions($testResultUnitInfo, $testResultUnitId, true) ?>
 									</select>
 								</div>
 							</div>

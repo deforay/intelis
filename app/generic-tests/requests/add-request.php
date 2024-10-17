@@ -1592,7 +1592,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('.ins-row-' + row + subrow).attr('disabled', true);
           $('.ins-row-' + row + subrow).addClass('disabled');
           testCounter = (subrow + 1);
-          options = $("#finalResult" + row).html();
+          options = $("#resultListQl" + row).html();
           testMethodOptions = $("#testName" + row + (testCounter - 1)).html();
           if ($('.qualitative-field').hasClass('testResultUnit')) {
                unitTest = `<td class="testResultUnit">
