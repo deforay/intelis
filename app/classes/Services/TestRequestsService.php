@@ -177,7 +177,7 @@ final class TestRequestsService
     {
         $tableName = TestsService::getTestTableName($testType);
 
-        $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode'";
+        $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode' OR remote_sample_code = '$manifestCode'";
         $sampleResult = $this->db->rawQuery($sampleQuery);
 
         $status = 0;
