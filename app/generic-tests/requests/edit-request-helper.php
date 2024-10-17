@@ -292,7 +292,7 @@ try {
      }
 
 
-     // echo "<pre>";print_r($_POST);die;
+
      if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
           $finalResult = "";
           if (!empty($_POST['testName'])) {
@@ -301,7 +301,7 @@ try {
                if (isset($_POST['subTestResult']) && !empty($_POST['subTestResult'])) {
                     foreach ($_POST['testName'] as $subTestName => $subTests) {
                          foreach ($subTests as $testKey => $testKitName) {
-                              // die($_POST['finalResult'][$subTestName]);
+
                               if (!empty($testKitName)) {
                                    $testData = array(
                                         'generic_id' => $_POST['vlSampleId'],
@@ -376,7 +376,7 @@ try {
      }
      $genericData['patient_first_name'] = $general->crypto('doNothing', $_POST['patientFirstName'], $genericData['patient_id']);
 
-     // echo "<pre>";print_r($genericData);die;
+
      $db->where('sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $genericData);
      $patientId = (isset($_POST['artNo']) && $_POST['artNo'] != '') ? ' and patient id ' . $_POST['artNo'] : '';

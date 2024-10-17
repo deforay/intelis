@@ -1,12 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -29,7 +27,7 @@ $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl
 $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_type_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
-} else if ($general->isStandaloneInstance()) {
+} elseif ($general->isStandaloneInstance()) {
      if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
           unset($aColumns[$key]);
           $aColumns = array_values($aColumns);
@@ -124,7 +122,7 @@ ts.status_name,
 vl.result_approved_datetime,
 vl.result_reviewed_datetime,
 vl.sample_received_at_hub_datetime,
-vl.sample_received_at_testing_lab_datetime,
+vl.sample_received_at_lab_datetime,
 vl.result_dispatched_datetime,
 vl.result_printed_datetime,
 vl.result_approved_by

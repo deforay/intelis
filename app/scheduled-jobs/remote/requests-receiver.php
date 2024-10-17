@@ -1118,7 +1118,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
-                    $removeMoreKeys = array(
+                    $removeMoreKeys = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -1149,7 +1149,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                         'data_sync',
                         'result_printed_datetime',
                         'data_from_tests'
-                    );
+                    ];
 
                     $request = array_diff_key($request, array_flip($removeMoreKeys));
 
@@ -1199,24 +1199,24 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                     $db->where('generic_id', $genericId);
                     $db->delete("generic_test_results");
                     foreach ($remoteData['data_from_tests'] as $genericTestData) {
-                        $db->insert("generic_test_results", array(
-                            "generic_id"                    => $genericId,
-                            "facility_id"                   => $genericTestData['facility_id'],
-                            "sub_test_name"                 => $genericTestData['sub_test_name'],
-                            "final_result_unit"             => $genericTestData['final_result_unit'],
-                            "result_type"                   => $genericTestData['result_type'],
-                            "test_name"                     => $genericTestData['test_name'],
-                            "tested_by"                     => $genericTestData['tested_by'],
-                            "sample_tested_datetime"        => $genericTestData['sample_tested_datetime'],
-                            "testing_platform"              => $genericTestData['testing_platform'],
-                            "kit_lot_no"                    => $genericTestData['kit_lot_no'],
-                            "kit_expiry_date"               => $genericTestData['kit_expiry_date'],
-                            "result"                        => $genericTestData['result'],
-                            "final_result"                  => $genericTestData['final_result'],
-                            "result_unit"                   => $genericTestData['result_unit'],
-                            "final_result_interpretation"   => $genericTestData['final_result_interpretation'],
-                            "updated_datetime"              => $genericTestData['updated_datetime']
-                        ));
+                        $db->insert("generic_test_results", [
+                            "generic_id" => $genericId,
+                            "facility_id" => $genericTestData['facility_id'],
+                            "sub_test_name" => $genericTestData['sub_test_name'],
+                            "final_result_unit" => $genericTestData['final_result_unit'],
+                            "result_type" => $genericTestData['result_type'],
+                            "test_name" => $genericTestData['test_name'],
+                            "tested_by" => $genericTestData['tested_by'],
+                            "sample_tested_datetime" => $genericTestData['sample_tested_datetime'],
+                            "testing_platform" => $genericTestData['testing_platform'],
+                            "kit_lot_no" => $genericTestData['kit_lot_no'],
+                            "kit_expiry_date" => $genericTestData['kit_expiry_date'],
+                            "result" => $genericTestData['result'],
+                            "final_result" => $genericTestData['final_result'],
+                            "result_unit" => $genericTestData['result_unit'],
+                            "final_result_interpretation" => $genericTestData['final_result_interpretation'],
+                            "updated_datetime" => $genericTestData['updated_datetime']
+                        ]);
                     }
                 }
                 if ($id === true) {

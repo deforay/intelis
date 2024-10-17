@@ -148,6 +148,12 @@ else
     echo "LIS path is set to ${vlsm_path}"
 fi
 
+# Convert relative path to absolute path if necessary
+if [[ "$vlsm_path" != /* ]]; then
+    vlsm_path="$(realpath "$vlsm_path")"
+    echo "Converted to absolute path: $vlsm_path"
+fi
+
 # Convert VLSM path to absolute path
 vlsm_path=$(to_absolute_path "$vlsm_path")
 
@@ -520,7 +526,7 @@ spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -av --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$vlsm_path/"
+rsync -av --ignore-times --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$vlsm_path/"
 
 # Check if rsync command succeeded
 if [ $? -ne 0 ]; then

@@ -4,7 +4,7 @@ $cliMode = php_sapi_name() === 'cli';
 
 $forceFlag = false;
 if ($cliMode) {
-    require_once(__DIR__ . "/../../../bootstrap.php");
+    require_once __DIR__ . "/../../../bootstrap.php";
 
     // Parse CLI arguments
     $options = getopt('f', ['force']);
@@ -161,6 +161,8 @@ try {
     $id = $db->update('s_vlsm_instance', ['last_lab_metadata_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $exc) {
     LoggerUtility::log("error", __FILE__ . ":" . $exc->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString(),

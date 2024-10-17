@@ -1,11 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -30,8 +29,6 @@ $samplesVlOverview = "genericSmplesVlOverview";
 $labAverageTat = "genericLabAverageTat";
 
 $table = "form_generic";
-$tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
-$tsResult = $db->rawQuery($tsQuery);
 
 $sampleStatusColors = [];
 
@@ -46,30 +43,20 @@ $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 //date
-$start_date = '';
-$end_date = '';
-if (!empty($_POST['sampleCollectionDate'])) {
-    $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
-    }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
-    }
-}
+[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+
 $tQuery = "SELECT COUNT(sample_id) as total,status_id,status_name
-    FROM " . $table . " as vl
+    FROM $table as vl
     JOIN r_sample_status as ts ON ts.status_id=vl.result_status
     JOIN facility_details as f ON vl.lab_id=f.facility_id
     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
-if (!empty($whereCondition))
+if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
+}
 
 if (!$general->isSTSInstance()) {
     $sWhere[] = ' result_status !=  ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -78,23 +65,23 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-    $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-    $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+    $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
     $sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
 }
 
 if (!empty($sWhere)) {
-    $tQuery .= " where " . implode(" AND ", $sWhere);
+    $tQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-// echo $tQuery; die;
+
 $tResult = $db->rawQuery($tQuery);
 //get LAB TAT
 if ($start_date == '' && $end_date == '') {
@@ -120,8 +107,7 @@ $tatSampleQuery = "SELECT
         WHERE
         vl.result is not null
         AND vl.result != ''
-        AND DATE(vl.sample_tested_datetime) >= '$start_date'
-        AND DATE(vl.sample_tested_datetime) <= '$end_date'  ";
+        AND DATE(vl.sample_tested_datetime) BETWEEN '$start_date' AND '$end_date'  ";
 
 $sWhere = [];
 if (!empty($whereCondition)) {
@@ -148,8 +134,6 @@ if (!empty($sWhere)) {
 $tatSampleQuery .= " GROUP BY monthDate";
 $tatSampleQuery .= " ORDER BY sample_tested_datetime";
 
-// $general->elog($_POST['labName']);
-// error_log($tatSampleQuery);
 $tatResult = $db->rawQuery($tatSampleQuery);
 $j = 0;
 foreach ($tatResult as $sRow) {
@@ -178,11 +162,6 @@ foreach ($tatResult as $sRow) {
             </div>
         </div>
     </div>
-    <!-- <div class="box">
-        <div class="box-body">
-            <div id="<?php echo $samplesVlOverview; ?>" style="float:right;width:100%;margin: 0 auto;"></div>
-        </div>
-    </div> -->
 </div>
 </div>
 <div class="col-xs-12 labAverageTatDiv">
@@ -199,9 +178,9 @@ foreach ($tatResult as $sRow) {
         var _value = [
             <?php foreach ($tResult as $tRow) {
                 $total += $tRow['total']; ?> {
-                    name: '<?php echo ($tRow['status_name']); ?>',
-                    y: <?php echo ($tRow['total']); ?>,
-                    color: '<?php echo $sampleStatusColors[$tRow['status_id']]; ?>',
+                    name: '<?= $tRow['status_name']; ?>',
+                    y: <?= $tRow['total']; ?>,
+                    color: '<?= $sampleStatusColors[$tRow['status_id']]; ?>',
                     url: '/dashboard/vlTestResultStatus.php?id=<?php echo base64_encode((string) $tRow['status_id']); ?>&d=<?php echo base64_encode((string) $_POST['sampleCollectionDate']); ?>'
                 },
             <?php } ?>
@@ -258,7 +237,7 @@ foreach ($tatResult as $sRow) {
         });
 
     <?php }
-    if (isset($result) && count($result) > 0) { ?>
+    if (!empty($result)) { ?>
         $('#<?php echo $labAverageTat; ?>').highcharts({
             chart: {
                 type: 'line'

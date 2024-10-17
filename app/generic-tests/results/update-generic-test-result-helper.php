@@ -165,7 +165,7 @@ try {
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
         $dataToUpdate['result_status'] = SAMPLE_STATUS\REJECTED;
     }
-    // echo "<pre>";print_r($_POST);die;
+
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '' && ($_POST['isSampleRejected'] == 'no' || $_POST['isSampleRejected'] == '')) {
         $finalResult = "";
         if (!empty($_POST['testName'])) {

@@ -1,13 +1,13 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
+use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
-use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
@@ -356,7 +356,7 @@ try {
         $db->delete($testTableName);
         $genericData['sample_tested_datetime'] = null;
     }
-    // echo "<pre>";print_r($genericData);die;
+
     if (isset($_POST['vlSampleId']) && $_POST['vlSampleId'] != '') {
         $db->where('sample_id', $_POST['vlSampleId']);
         $id = $db->update($tableName, $genericData);
