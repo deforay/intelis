@@ -155,7 +155,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-							<input id="username" type="text" class="form-control isRequired" name="username" value="samy" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
+							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
