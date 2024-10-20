@@ -21,6 +21,7 @@
 <script type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript" src="/assets/js/summernote.min.js"></script>
 <script type="text/javascript" src="/assets/js/selectize.js"></script>
+<script type="text/javascript" src="/assets/js/sqids.min.js"></script>
 <?php
 
 use App\Services\CommonService;

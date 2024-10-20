@@ -345,7 +345,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		$("#selectedSample").val(selVal);
+		const sqids = new Sqids()
+		$("#selectedSample").val(sqids.encode(selVal));
 		if (selVal == "") {
 			alert("<?= _translate("Please select one or more samples", true); ?>");
 			return false;

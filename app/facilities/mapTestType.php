@@ -181,12 +181,14 @@ require_once APPLICATION_PATH . '/header.php';
 
 	function validateNow() {
 
+
+
 		var selVal = [];
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		let selectedFacilities = JSON.stringify(selVal);
-		$("#selectedFacilities").val(selectedFacilities);
+		const sqids = new Sqids()
+		$("#selectedFacilities").val(sqids.encode(selVal));
 		flag = deforayValidator.init({
 			formId: 'facilityTestMapForm'
 		});

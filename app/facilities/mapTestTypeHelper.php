@@ -1,9 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -23,11 +24,12 @@ if ($mappingType == "testing-labs") {
 } else {
     $tableName = "health_facilities";
 }
+
 try {
     if (!empty($_POST)) {
         $db->where('test_type', $testType);
         $db->delete($tableName);
-        $mappedFacilities = json_decode((string) $_POST['selectedFacilities'], true);
+        $mappedFacilities = MiscUtility::desqid($_POST['selectedFacilities']);
         if (!empty($mappedFacilities)) {
 
             foreach ($mappedFacilities as $facility) {

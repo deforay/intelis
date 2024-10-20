@@ -2,6 +2,7 @@
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -29,7 +30,7 @@ $tableName = TestsService::getTestTableName($_POST['module']);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
 
 try {
-    $selectedSample = explode(",", (string) $_POST['selectedSample']);
+    $selectedSample = MiscUtility::desqid($_POST['selectedSample']);
     $uniqueSampleId = array_unique($selectedSample);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
         $data = [
