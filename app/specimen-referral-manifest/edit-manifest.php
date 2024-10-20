@@ -137,8 +137,8 @@ if (!empty($_SESSION['facilityMap'])) {
 
 
 
-$query = $query . " ORDER BY vl.request_created_datetime ASC";
-//echo $query; die;
+$query = "$query ORDER BY vl.request_created_datetime ASC";
+
 $result = $db->rawQuery($query);
 
 $global = $general->getGlobalConfig();

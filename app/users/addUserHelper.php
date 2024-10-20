@@ -34,7 +34,6 @@ $sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png'
 
 
 $tableName = "user_details";
-$tableName2 = "user_facility_map";
 
 $signatureImage = null;
 
@@ -88,15 +87,19 @@ try {
 
 
         if ($id === true && trim((string) $_POST['selectedFacility']) != '') {
-            $selectedFacility = explode(",", (string) $_POST['selectedFacility']);
+            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
-            for ($j = 0; $j <= count($selectedFacility); $j++) {
-                if (isset($uniqueFacilityId[$j])) {
-                    $data = array(
-                        'facility_id' => $selectedFacility[$j],
+            if (!empty($uniqueFacilityId)) {
+                $data = [];
+                foreach ($uniqueFacilityId as $facilityId) {
+                    $data[] = [
+                        'facility_id' => $facilityId,
                         'user_id' => $data['user_id'],
-                    );
-                    $db->insert($tableName2, $data);
+                    ];
+                }
+
+                if (!empty($data)) {
+                    $db->insertMulti('user_facility_map', $data);
                 }
             }
         }

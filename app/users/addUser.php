@@ -470,7 +470,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           $('#search_to option').each(function(i, selected) {
                selVal[i] = $(selected).val();
           });
-          $("#selectedFacility").val(selVal);
+          const sqids = new Sqids()
+          $("#selectedFacility").val(sqids.encode(selVal));
 
 
           flag = deforayValidator.init({

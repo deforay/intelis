@@ -221,13 +221,12 @@ try {
      $_SESSION['cd4ResultQueryCount'] = $resultCount;
 
 
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
-     //echo '<pre>'; print_r($rResult); die;
+     ];
      foreach ($rResult as $aRow) {
           $row = [];
           if (isset($_POST['vlPrint'])) {
