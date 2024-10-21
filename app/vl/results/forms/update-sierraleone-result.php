@@ -1,10 +1,9 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -13,7 +12,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-echo $_SESSION['accessType']; die;
+if (empty($vlQueryInfo)) {
+	$vlQuery = "SELECT * from form_vl where vl_sample_id=?";
+	$vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
+}
+
+
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
@@ -22,9 +26,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $vlQueryInfo['fac
 
 
 //facility details
-if (isset($vlQueryInfo['facility_id']) && $vlQueryInfo['facility_id'] > 0) {
+if (!empty($vlQueryInfo['facility_id'])) {
 	$facilityQuery = "SELECT * FROM facility_details where facility_id= ? AND status='active'";
-	$facilityResult = $db->rawQuery($facilityQuery, array($vlQueryInfo['facility_id']));
+	$facilityResult = $db->rawQuery($facilityQuery, [$vlQueryInfo['facility_id']]);
 }
 if (!isset($facilityResult[0]['facility_code'])) {
 	$facilityResult[0]['facility_code'] = '';

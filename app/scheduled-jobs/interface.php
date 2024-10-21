@@ -293,8 +293,7 @@ try {
                 $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
                 $queryStatus = $db->update('form_vl', $data);
                 $numberOfResults++;
-                // $processedResults[] = $result['order_id'];
-                //  $processedResults[] = $result['test_id'];
+
                 if ($queryStatus === true) {
                     $syncedIds[]  = $result['id'];
                 }
@@ -312,7 +311,7 @@ try {
                     } elseif ((str_contains(strtolower((string)$result['results']), 'detected')) || (str_contains(strtolower((string)$result['results']), 'passed'))) {
                         $eidResult = 'positive';
                     } else {
-                        $eidResult = 'indeterminate';
+                        $eidResult = strtolower((string)$result['results']);
                     }
                 }
 

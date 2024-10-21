@@ -84,7 +84,7 @@ $suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatme
 $suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
 
 $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
-$vlQueryInfo = $db->rawQueryOne($vlQuery, array($id));
+$vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
 if (isset($vlQueryInfo['patient_dob']) && trim((string) $vlQueryInfo['patient_dob']) != '' && $vlQueryInfo['patient_dob'] != '0000-00-00') {
 	$vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob']);
