@@ -137,8 +137,8 @@ if (!empty($_SESSION['facilityMap'])) {
 
 
 
-$query = $query . " ORDER BY vl.request_created_datetime ASC";
-//echo $query; die;
+$query = "$query ORDER BY vl.request_created_datetime ASC";
+
 $result = $db->rawQuery($query);
 
 $global = $general->getGlobalConfig();
@@ -345,7 +345,8 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 		$('#search_to option').each(function(i, selected) {
 			selVal[i] = $(selected).val();
 		});
-		$("#selectedSample").val(selVal);
+		const sqids = new Sqids()
+		$("#selectedSample").val(sqids.encode(selVal));
 		if (selVal == "") {
 			alert("<?= _translate("Please select one or more samples", true); ?>");
 			return false;

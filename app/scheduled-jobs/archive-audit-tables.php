@@ -94,10 +94,6 @@ foreach ($auditTables as $auditTable) {
 
             // Check if there is data to archive
             if ($rowCount > 0) {
-                // // Insert data into the archive database
-                // foreach ($dataToArchive as $row) {
-                //     $db->connection('archive')->insert($auditTable, $row);
-                // }
 
                 // Bulk insert data into the archive database
                 $db->connection('archive')->insertMulti($auditTable, $dataToArchive);

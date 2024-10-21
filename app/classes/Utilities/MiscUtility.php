@@ -20,14 +20,14 @@ final class MiscUtility
         return preg_replace($regex, $replace, $filename);
     }
 
-    public static function encode($data)
+    public static function sqid($data)
     {
         $data = !is_array($data) ? [$data] : $data;
         $sqids = new Sqids('', 10);
         return $sqids->encode($data);
     }
 
-    public static function decode($data)
+    public static function desqid($data)
     {
         $sqids = new Sqids();
         $ids = $sqids->decode($data);

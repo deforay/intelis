@@ -33,7 +33,6 @@ $sharedPrivileges = [
     '/import-result/importedStatistics.php?t=generic-tests' => '/import-result/import-file.php?t=generic-tests',
     '/import-result/importedStatistics.php?t=cd4' => '/import-result/import-file.php?t=cd4',
     '/facilities/mapTestType.php' => '/facilities/addFacility.php',
-    '/facilities/facilityMap.php' => '/facilities/addFacility.php',
     '/facilities/upload-facilities.php' => '/facilities/addFacility.php',
     '/admin/monitoring/lab-sync-details.php' => '/admin/monitoring/sync-status.php',
     '/common/reference/implementation-partners.php' => '/common/reference/geographical-divisions-details.php',

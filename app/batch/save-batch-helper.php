@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -33,46 +34,6 @@ if (isset($_POST['type'])) {
 
 $instrumentId = $_POST['platform'] ?? ($_POST['machine'] ?? null);
 
-// if ($instrumentId != null) {
-//     $testType = ($_POST['type'] == 'covid19') ? 'covid-19' : $_POST['type'];
-//     // get instruments
-//     $db->where("instrument_id", $instrumentId);
-//     $instrument = $db->getOne('instruments');
-//     $configControl = $batchService->getConfigControl($instrumentId);
-
-//     if (!empty($instrument) && !empty($configControl)) {
-//         if (trim((string) $_POST['batchedSamples']) != '') {
-//             $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
-//             $samplesCount = count($selectedSamples);
-//             if ($instrument['max_no_of_samples_in_a_batch'] > 0 && ($instrument['max_no_of_samples_in_a_batch'] < $samplesCount)) {
-//                 $_SESSION['alertMsg'] = _translate("Maximum number of allowed samples for this platform" . " " . $instrument['max_no_of_samples_in_a_batch']);
-//                 header("Location:batches.php?type=" . $_POST['type']);
-//                 exit;
-//             }
-//         }
-
-//         if ($instrument['number_of_in_house_controls'] > 0 && $configControl[$testType]['noHouseCtrl'] > 0 && ($instrument['number_of_in_house_controls'] <  $configControl[$testType]['noHouseCtrl'])) {
-//             $_SESSION['alertMsg'] = _translate("Maximum number of allowed in house controls for this platform" . " " . $instrument['number_of_in_house_controls']);
-//             header("Location:batches.php?type=" . $_POST['type']);
-//             exit;
-//         }
-//         if ($instrument['number_of_manufacturer_controls'] > 0 && $configControl[$testType]['noManufacturerCtrl'] > 0 && ($instrument['number_of_manufacturer_controls'] <  $configControl[$testType]['noManufacturerCtrl'])) {
-//             $_SESSION['alertMsg'] = _translate("Maximum number of allowed manufacturer controls for this platform" . " " . $instrument['number_of_manufacturer_controls']);
-//             header("Location:batches.php?type=" . $_POST['type']);
-//             exit;
-//         }
-//         if ($instrument['number_of_calibrators'] > 0 && $configControl[$testType]['noCalibrators'] > 0 && ($instrument['number_of_calibrators'] <  $configControl[$testType]['noCalibrators'])) {
-//             $_SESSION['alertMsg'] = _translate("Maximum number of allowed calibrators for this platform" . " " . $instrument['number_of_calibrators']);
-//             header("Location:batches.php?type=" . $_POST['type']);
-//             exit;
-//         }
-//     } else {
-//         $_SESSION['alertMsg'] = _translate("Unable to save new Batch. Please try again later.");
-//         header("Location:batches.php?type=" . $_POST['type']);
-//         exit;
-//     }
-// }
-
 $tableName1 = "batch_details";
 try {
 
@@ -96,9 +57,10 @@ try {
                 $db->update($testTable, ['sample_batch_id' => null]);
                 $xplodResultSample = [];
 
-                if (isset($_POST['batchedSamples']) && trim((string) $_POST['batchedSamples']) != "") {
-                    $xplodResultSample = explode(",", (string) $_POST['batchedSamples']);
+                if (isset($_POST['batchedSamples']) && !empty($_POST['batchedSamples'])) {
+                    $xplodResultSample = MiscUtility::desqid($_POST['batchedSamples']);
                 }
+
                 $selectedSamples = [];
                 //Merging disabled samples into existing samples
                 if (!empty($_POST['unbatchedSamples'])) {
@@ -112,8 +74,6 @@ try {
                 }
 
                 $uniqueSampleIds = array_unique($selectedSamples);
-
-                //echo $_POST['positions'];
 
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                 $db->update($testTable, ['sample_batch_id' => $id]);

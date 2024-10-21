@@ -1,9 +1,8 @@
 <?php
 
-use App\Services\DatabaseService;
-use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -146,11 +145,11 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -199,7 +198,6 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['cd4_result'];
      $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
      $row[] = $status;
-     //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['cd4_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
      $output['aaData'][] = $row;
 }

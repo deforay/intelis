@@ -1,9 +1,10 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -42,7 +43,7 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+$id = isset($_GET['id']) ? MiscUtility::desqid((string) $_GET['id']) : null;
 
 
 // get instruments

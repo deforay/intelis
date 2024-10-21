@@ -447,7 +447,8 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
         $('#search_to option').each(function(i, selected) {
             selVal[i] = $(selected).val();
         });
-        $("#batchedSamples").val(selVal);
+        const sqids = new Sqids()
+        $("#batchedSamples").val(sqids.encode(selVal));
         var selected = $("#machine").find('option:selected');
         noOfSamples = selected.data('no-of-samples');
         if (noOfSamples < selVal.length) {

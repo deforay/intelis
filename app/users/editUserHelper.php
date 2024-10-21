@@ -123,15 +123,19 @@ try {
         $delId = $db->delete("user_facility_map");
 
         if ($userId != '' && trim((string) $_POST['selectedFacility']) != '') {
-            $selectedFacility = explode(",", (string) $_POST['selectedFacility']);
+            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility']);
             $uniqueFacilityId = array_unique($selectedFacility);
-            for ($j = 0; $j <= count($uniqueFacilityId); $j++) {
-                if (isset($uniqueFacilityId[$j])) {
-                    $data = array(
-                        'facility_id' => $uniqueFacilityId[$j],
+            if (!empty($uniqueFacilityId)) {
+                $data = [];
+                foreach ($uniqueFacilityId as $facilityId) {
+                    $data[] = [
+                        'facility_id' => $facilityId,
                         'user_id' => $userId,
-                    );
-                    $db->insert("user_facility_map", $data);
+                    ];
+                }
+
+                if (!empty($data)) {
+                    $db->insertMulti("user_facility_map", $data);
                 }
             }
         }

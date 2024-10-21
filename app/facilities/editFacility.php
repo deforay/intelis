@@ -837,17 +837,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		selVal[i] = $(selected).val();
 	});
 	$("#selectedUser").val(selVal);
-	// jQuery(document).ready(function($) {
-	//   $('#search').multiselect({
-	//     search: {
-	//       left: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-	//       right: '<input type="text" name="q" class="form-control" placeholder="Search..." />',
-	//     },
-	//     fireSearch: function(value) {
-	//       return value.length > 2;
-	//     }
-	//   });
-	// });
 
 	function validateNow() {
 		$('.selectize-control, .selectize-dropdown').removeClass('isRequired');

@@ -220,7 +220,6 @@ foreach ($rResult as $aRow) {
     $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
     $row[] = $status;
-    //$row[] = '<a href="updateVlTestResult.php?id=' . base64_encode($aRow['covid19_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result"><em class="fa-solid fa-pen-to-square"></em> Result</a>';
 
     $output['aaData'][] = $row;
 }
