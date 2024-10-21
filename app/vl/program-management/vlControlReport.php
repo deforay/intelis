@@ -4,8 +4,8 @@ $title = _translate("VL Control Report");
 require_once APPLICATION_PATH . '/header.php';
 
 use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -93,12 +93,12 @@ $sResult = $db->rawQuery($sQuery);
   </section>
   <!-- /.content -->
 </div>
-<script src="/assets/js/moment.min.js"></script>
+<script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-offline-exporting.js"></script>
+<script type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";
@@ -134,7 +134,6 @@ $sResult = $db->rawQuery($sQuery);
         endDate = end.format('YYYY-MM-DD');
       });
     $('#sampleTestDate').val("");
-    //loadControlChart();
   });
 
   function loadControlChart() {
@@ -149,7 +148,7 @@ $sResult = $db->rawQuery($sQuery);
         });
       $.unblockUI();
     } else {
-      alert("<?php echo _translate("Please choose Sample Test Date Range and Control Type to generate the report"); ?>");
+      alert("<?php echo _translate("Please choose Sample Test Date Range and Control Type to generate the report", true); ?>");
     }
   }
 </script>

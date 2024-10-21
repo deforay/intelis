@@ -1,9 +1,9 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
-use App\Services\CommonService;
+use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
@@ -11,72 +11,69 @@ use App\Registries\ContainerRegistry;
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
-$_COOKIE = _sanitizeInput($request->getCookieParams());
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
+try {
 
-//date
-$start_date = '';
-$end_date = '';
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-    $s_c_date = explode("to", (string) $_POST['sampleTestDate']);
-
-    if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
-        $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
+    $sWhere = [];
+    if (isset($_POST['cType']) && trim((string) $_POST['cType']) != '') {
+        $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '" ';
     }
-    if (isset($s_c_date[1]) && trim($s_c_date[1]) != "") {
-        $end_date = DateUtility::isoDateFormat(trim($s_c_date[1]));
+    if (!empty($_POST['sampleTestDate'])) {
+        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
+        $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate' ";
     }
-}
 
-$tsQuery = "SELECT DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y') AS sample_tested_datetime,
+    $whereConditions = '';
+    if (!empty($sWhere)) {
+        $whereConditions = "WHERE " . implode(" AND ", $sWhere);
+    }
 
-		SUM(CASE
-			WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN result_value_absolute
-		             ELSE 0
-		           END) AS sumTotal,
-        COUNT(CASE
-			WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN 1
-		             ELSE 0
-		           END) AS countTotal
-        FROM vl_imported_controls as vl";
+    $tsQuery = "SELECT DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y') AS sample_tested_datetime,
+                SUM(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN result_value_absolute
+                        ELSE 0
+                    END) AS sumTotal,
+                COUNT(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN 1
+                        ELSE 0
+                END) AS countTotal
+            FROM vl_imported_controls as vl
+            $whereConditions
+            GROUP BY DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y')";
+    $totalControlResult = $db->rawQuery($tsQuery);
 
-$sWhere = [];
-if (isset($_POST['cType']) && trim((string) $_POST['cType']) != '') {
-    $sWhere[] = ' vl.control_type = "' . $_POST['cType'] . '"';
-}
-if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-    $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $end_date . '"';
-}
+    $sQuery = "SELECT control_id,
+                SUM(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL)
+                        THEN result_value_absolute ELSE 0 END)
+                AS sumTotal
+                FROM vl_imported_controls as vl
+                WHERE $whereConditions GROUP BY control_id";
+    $controlResult = $db->rawQuery($sQuery);
 
-if (!empty($sWhere)) {
-    $sWhere = implode(" AND ", $sWhere);
-}
+    $sumTotal = array_column($controlResult, 'sumTotal');
 
-$tsQuery = $tsQuery . ' where ' . $sWhere . " group by DATE_FORMAT(sample_tested_datetime,'%d-%M-%Y')";
-$totalControlResult = $db->rawQuery($tsQuery);
+    if (!empty($sumTotal)) {
+        $mean = array_sum($sumTotal) / count($sumTotal);
 
-$sQuery = "SELECT SUM(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN result_value_absolute ELSE 0 END) AS sumTotal FROM vl_imported_controls as vl";
-$sQuery = $sQuery . ' where ' . $sWhere . "  group by control_id";
-$controlResult = $db->rawQuery($sQuery);
+        $sd_square = function ($x) use ($mean) {
+            return pow($x - $mean, 2);
+        };
 
-$sumTotal = array_column($controlResult, 'sumTotal');
-if (!empty($sumTotal) && $sumTotal > 0) {
-    $mean = array_sum($sumTotal) / count($sumTotal);
-
-    $sd_square = function ($x) use ($mean) {
-        return pow($x - $mean, 2);
-    };
-
-    $sd = (count($sumTotal) > 1) ? sqrt(array_sum(array_map($sd_square, $sumTotal)) / (count($sumTotal) - 1)) : 0;
-} else {
-    $mean = 0;
-    $sd = 0;
+        $sd = (count($sumTotal) > 1) ? sqrt(array_sum(array_map($sd_square, $sumTotal)) / (count($sumTotal) - 1)) : 0;
+    } else {
+        $mean = 0;
+        $sd = 0;
+    }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
 ?>
 <div id="container" style="height: 400px"></div>
@@ -84,10 +81,10 @@ if (!empty($sumTotal) && $sumTotal > 0) {
     $(function() {
         Highcharts.chart('container', {
             title: {
-                text: "<?php echo _translate("Control Result"); ?>"
+                text: "<?php echo _translate("Control Result", true); ?>"
             },
             subtitle: {
-                text: "<?php echo _translate("Mean"); ?>:<?php echo round($mean, 2); ?>   <?php echo _translate("SD"); ?>:<?php echo round($sd, 2); ?>"
+                text: "<?php echo _translate("Mean", true); ?>:<?= round($mean, 2); ?>   <?= _translate("SD", true); ?>:<?php echo round($sd, 2); ?>"
             },
             xAxis: {
                 categories: [<?php
@@ -98,32 +95,32 @@ if (!empty($sumTotal) && $sumTotal > 0) {
             },
 
             yAxis: {
-                min: <?php echo round($mean - ($sd * 3), 2); ?>,
-                max: <?php echo round($mean + ($sd * 3), 2); ?>,
+                min: <?= round($mean - ($sd * 3), 2); ?>,
+                max: <?= round($mean + ($sd * 3), 2); ?>,
                 title: {
-                    text: "<?php echo _translate("Control Result"); ?>"
+                    text: "<?= _translate("Control Result", true); ?>"
                 },
 
                 plotLines: [{
-                        value: <?php echo round($mean + ($sd * 3), 2); ?>,
+                        value: <?= round($mean + ($sd * 3), 2); ?>,
                         color: 'green',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean + ($sd * 3), 2); ?>
+                            text: <?= round($mean + ($sd * 3), 2); ?>
                         }
                     },
                     {
-                        value: <?php echo round($mean + ($sd * 2), 2); ?>,
+                        value: <?= round($mean + ($sd * 2), 2); ?>,
                         color: 'orange',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean + ($sd * 2), 2); ?>
+                            text: <?= round($mean + ($sd * 2), 2); ?>
                         }
                     },
                     {
-                        value: <?php echo round($mean + ($sd), 2); ?>,
+                        value: <?= round($mean + ($sd), 2); ?>,
                         color: 'red',
                         dashStyle: 'shortdash',
                         width: 2,
@@ -131,36 +128,36 @@ if (!empty($sumTotal) && $sumTotal > 0) {
                             text: <?php echo round($mean + ($sd), 2); ?>
                         }
                     }, {
-                        value: '<?php echo round($mean); ?>',
+                        value: '<?= round($mean); ?>',
                         color: 'yellow',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean); ?>
+                            text: <?= round($mean); ?>
                         }
                     }, {
-                        value: '<?php echo round($mean - ($sd), 2); ?>',
+                        value: '<?= round($mean - ($sd), 2); ?>',
                         color: 'red',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean - ($sd), 2); ?>
+                            text: <?= round($mean - ($sd), 2); ?>
                         }
                     }, {
-                        value: '<?php echo round($mean - ($sd * 2), 2); ?>',
+                        value: '<?= round($mean - ($sd * 2), 2); ?>',
                         color: 'orange',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean - ($sd * 2), 2); ?>
+                            text: <?= round($mean - ($sd * 2), 2); ?>
                         }
                     }, {
-                        value: '<?php echo round($mean - ($sd * 3), 2); ?>',
+                        value: '<?= round($mean - ($sd * 3), 2); ?>',
                         color: 'green',
                         dashStyle: 'shortdash',
                         width: 2,
                         label: {
-                            text: <?php echo round($mean - ($sd * 3), 2); ?>
+                            text: <?= round($mean - ($sd * 3), 2); ?>
                         }
                     }
                 ]

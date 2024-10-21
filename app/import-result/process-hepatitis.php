@@ -57,24 +57,24 @@ try {
             }
 
             if (strtolower($rResult['sample_type']) != 's') {
-                $data = array(
-                    'control_code'                  => $rResult['sample_code'],
-                    'lab_id'                        => $rResult['lab_id'],
-                    'control_type'                  => $rResult['sample_type'],
-                    'lot_number'                    => $rResult['lot_number'],
-                    'lot_expiration_date'           => $rResult['lot_expiration_date'],
-                    'sample_tested_datetime'        => $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
-                    'result'                        => $rResult['result'],
-                    'tested_by'                     => $_POST['testBy'],
-                    'lab_tech_comments'             => $comments,
-                    'result_reviewed_by'            => $rResult['result_reviewed_by'],
-                    'result_reviewed_datetime'      => DateUtility::getCurrentDateTime(),
-                    'result_approved_by'            => $_POST['appBy'],
-                    'result_approved_datetime'      => DateUtility::getCurrentDateTime(),
-                    'vlsm_country_id'               => $arr['vl_form'],
-                    'import_machine_file_name'                     => $rResult['import_machine_file_name'],
-                    'imported_date_time'            => $rResult['result_imported_datetime'],
-                );
+                $data = [
+                    'control_code' => $rResult['sample_code'],
+                    'lab_id' => $rResult['lab_id'],
+                    'control_type' => $rResult['sample_type'],
+                    'lot_number' => $rResult['lot_number'],
+                    'lot_expiration_date' => $rResult['lot_expiration_date'],
+                    'sample_tested_datetime' => $rResult['sample_tested_datetime'] ?? DateUtility::getCurrentDateTime(),
+                    'result' => $rResult['result'],
+                    'tested_by' => $_POST['testBy'],
+                    'lab_tech_comments' => $comments,
+                    'result_reviewed_by' => $rResult['result_reviewed_by'],
+                    'result_reviewed_datetime' => DateUtility::getCurrentDateTime(),
+                    'result_approved_by' => $_POST['appBy'],
+                    'result_approved_datetime' => DateUtility::getCurrentDateTime(),
+                    'vlsm_country_id' => $arr['vl_form'],
+                    'import_machine_file_name' => $rResult['import_machine_file_name'],
+                    'imported_date_time' => $rResult['result_imported_datetime'],
+                ];
                 if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
