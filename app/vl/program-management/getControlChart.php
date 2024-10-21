@@ -64,14 +64,20 @@ $totalControlResult = $db->rawQuery($tsQuery);
 $sQuery = "SELECT SUM(CASE WHEN (result_value_absolute != '' AND result_value_absolute IS NOT NULL) THEN result_value_absolute ELSE 0 END) AS sumTotal FROM vl_imported_controls as vl";
 $sQuery = $sQuery . ' where ' . $sWhere . "  group by control_id";
 $controlResult = $db->rawQuery($sQuery);
-$array = array_map('current', $controlResult);
-$mean = (!empty($array)) ?  (array_sum($array) / count($array)) : 0;
-function sd_square($x, $mean)
-{
-    return pow($x - $mean, 2);
+
+$sumTotal = array_column($controlResult, 'sumTotal');
+if (!empty($sumTotal) && $sumTotal > 0) {
+    $mean = array_sum($sumTotal) / count($sumTotal);
+
+    $sd_square = function ($x) use ($mean) {
+        return pow($x - $mean, 2);
+    };
+
+    $sd = (count($sumTotal) > 1) ? sqrt(array_sum(array_map($sd_square, $sumTotal)) / (count($sumTotal) - 1)) : 0;
+} else {
+    $mean = 0;
+    $sd = 0;
 }
-$sd = (!empty($array) && count($array) > 1) ? 
-      (sqrt(array_sum(array_map("sd_square", $array, array_fill(0, count($array), (array_sum($array) / count($array))))) / (count($array) - 1))) : 0;
 ?>
 <div id="container" style="height: 400px"></div>
 <script>
