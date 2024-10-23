@@ -36,12 +36,6 @@ final class RequestsService
     {
         $this->setTestType($testType);
 
-        $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
-            'is_result_mail_sent' => 'no',
-            'is_request_mail_sent' => 'no',
-            'is_result_sms_sent' => 'no'
-        ]);
-
         [$rResult, $resultCount] = $this->runQuery($labId, $facilityMapResult, $manifestCode);
 
         // Handle specific test types with additional logic
@@ -50,6 +44,13 @@ final class RequestsService
         } elseif ($testType === 'hepatitis') {
             $requestData = $this->returnHepatitisRequests($rResult, $resultCount);
         } elseif ($testType === 'generic-tests') {
+
+
+            $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
+                'is_result_mail_sent' => 'no',
+                'is_request_mail_sent' => 'no',
+                'is_result_sms_sent' => 'no'
+            ]);
             $requestData = $this->returnCustomTestsRequests($rResult, $resultCount);
         } else {
             // Default for other test types
