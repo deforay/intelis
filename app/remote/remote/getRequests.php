@@ -32,6 +32,7 @@ $labId = $data['labName'] ?? $data['labId'] ?? null;
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
+
 try {
   $db->beginTransaction();
 
@@ -43,10 +44,10 @@ try {
   }
 
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-  $fMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
+  $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
-  if (!empty($fMapResult)) {
-    $condition = "(lab_id = $labId OR facility_id IN ($fMapResult))";
+  if (!empty($facilityMapResult)) {
+    $condition = "(lab_id = $labId OR facility_id IN ($facilityMapResult))";
   } else {
     $condition = "lab_id = $labId";
   }

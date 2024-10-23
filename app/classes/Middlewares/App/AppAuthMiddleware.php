@@ -14,7 +14,7 @@ class AppAuthMiddleware implements MiddlewareInterface
 {
 
     // Exclude specific routes from authentication check
-    private $excludedUris = [
+    private array $excludedUris = [
         '/login/login.php',
         '/login/loginProcess.php',
         '/login/logout.php',
@@ -22,7 +22,7 @@ class AppAuthMiddleware implements MiddlewareInterface
         '/setup/registerProcess.php',
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
-        '/remote/remote*'
+        '/remote/*'
         // Add other routes to exclude from the authentication check here
     ];
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

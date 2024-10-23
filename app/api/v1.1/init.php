@@ -428,7 +428,7 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
 // Check if lab tests module active/inactive
 if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig['modules']['generic-tests'] === true) {
 
-    /** @var GenericTestsService $tbService */
+    /** @var GenericTestsService $genericService */
     $genericService = ContainerRegistry::get(GenericTestsService::class);
     $data['genericTests']['specimenTypeList'] = $general->generateSelectOptionsAPI($genericService->getGenericSampleTypes($updatedDateTime));
     $data['genericTests']['resultsList'] = $general->generateSelectOptionsAPI($genericService->getGenericResults(null, $updatedDateTime));

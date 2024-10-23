@@ -12,12 +12,11 @@ use App\Registries\ContainerRegistry;
 
 final class StorageService
 {
-
-    protected ?DatabaseService $db;
     protected string $table = 'lab_storage';
     protected CommonService $commonService;
+    protected DatabaseService $db;
 
-    public function __construct(?DatabaseService $db, ?CommonService $commonService)
+    public function __construct(DatabaseService $db, CommonService $commonService)
     {
         $this->db = $db ?? ContainerRegistry::get(DatabaseService::class);
         $this->commonService = $commonService;

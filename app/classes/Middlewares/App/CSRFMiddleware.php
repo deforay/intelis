@@ -11,8 +11,9 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class CSRFMiddleware implements MiddlewareInterface
 {
-    protected array $excludedUris = [
-        '/remote/remote/*',
+    // Exclude specific routes from CSRF check
+    private array $excludedUris = [
+        '/remote/*',
         '/system-admin/*',
         '/api/*',
         // Add other routes to exclude from the CSRF check here

@@ -59,38 +59,6 @@ try {
 		$condition = "lab_id = $labId";
 	}
 
-
-	$removeKeys = [
-		'sample_code',
-		'sample_code_key',
-		'sample_code_format',
-		'sample_batch_id',
-		'sample_received_at_lab_datetime',
-		'eid_test_platform',
-		'import_machine_name',
-		'sample_tested_datetime',
-		'is_sample_rejected',
-		'lab_id',
-		'result',
-		'tested_by',
-		'lab_tech_comments',
-		'result_approved_by',
-		'result_approved_datetime',
-		'revised_by',
-		'revised_on',
-		'result_reviewed_by',
-		'result_reviewed_datetime',
-		'result_dispatched_datetime',
-		'reason_for_changing',
-		'result_status',
-		'data_sync',
-		'reason_for_sample_rejection',
-		'rejection_on',
-		'last_modified_by',
-		'result_printed_datetime',
-		'last_modified_datetime'
-	];
-
 	$general->updateNullColumnsWithDefaults('form_generic', [
 		'is_result_mail_sent' => 'no',
 		'is_request_mail_sent' => 'no',

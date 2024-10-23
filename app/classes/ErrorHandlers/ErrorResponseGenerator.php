@@ -22,7 +22,10 @@ class ErrorResponseGenerator
             500 => _translate('Internal Server Error'),
             404 => _translate('Not Found'),
             403 => _translate('Forbidden'),
-            401 => _translate('Unauthorized')
+            401 => _translate('Unauthorized'),
+            400 => _translate('Bad Request'),
+            503 => _translate('Service Unavailable'),
+            504 => _translate('Gateway Timeout'),
         ];
     }
 
@@ -39,7 +42,7 @@ class ErrorResponseGenerator
 
         if (
             str_starts_with($request->getUri()->getPath(), '/api/') ||
-            str_starts_with($request->getUri()->getPath(), '/remote/remote/')
+            str_starts_with($request->getUri()->getPath(), '/remote/')
         ) {
             return $this->handleApiErrorResponse($exception, $response, $httpCode);
         }
@@ -112,7 +115,7 @@ class ErrorResponseGenerator
         $errorMessage = (APPLICATION_ENV === 'production')
             ? _translate('Sorry, something went wrong. Please try again later.')
             : $exception->getMessage();
-        require_once(APPLICATION_PATH . '/error/error.php');
+        require_once APPLICATION_PATH . '/error/error.php';
         $responseBody = ob_get_clean();
 
         $response->getBody()->write($responseBody);

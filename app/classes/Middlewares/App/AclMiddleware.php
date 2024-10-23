@@ -12,16 +12,17 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AclMiddleware implements MiddlewareInterface
 {
-    protected array $excludedUris = [
+    // Exclude specific routes from ACL check
+    private array $excludedUris = [
         '/',
         '/index.php',
-        '/includes/captcha.php',
-        '/users/edit-profile-helper.php',
+        '/api/*',
         '/login/*',
         '/setup/*',
-        '/remote/remote/*',
+        '/remote/*',
         '/system-admin/*',
-        '/api/*',
+        '/includes/captcha.php',
+        '/users/edit-profile-helper.php',
         // Add other routes to exclude from the ACL check here
     ];
 

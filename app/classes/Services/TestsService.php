@@ -15,7 +15,7 @@ final class TestsService
 {
     public static function getTestTypes()
     {
-        return [
+        $testTypes = [
             'vl' => [
                 'testName' => _translate('HIV Viral Load'),
                 'testShortCode' => 'VL',
@@ -105,6 +105,23 @@ final class TestsService
                 'serviceClass' => GenericTestsService::class
             ]
         ];
+
+        // Define aliases
+        $aliases = [
+            'custom-tests' => 'generic-tests',
+            'custom-test' => 'generic-tests',
+            'covid-19' => 'covid19',
+            'covid' => 'covid19'
+        ];
+
+        // Resolve aliases
+        foreach ($aliases as $alias => $original) {
+            if (isset($testTypes[$original])) {
+                $testTypes[$alias] = $testTypes[$original];
+            }
+        }
+
+        return $testTypes;
     }
 
     public static function getAllData($testType): array

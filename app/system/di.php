@@ -36,6 +36,7 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
+use App\Services\STS\RequestsService;
 use App\Services\TestRequestsService;
 use Psr\Container\ContainerInterface;
 use App\Middlewares\App\AclMiddleware;
@@ -116,7 +117,8 @@ $builder->addDefinitions([
     ApiService::class => DI\autowire(),
     TestsService::class => DI\autowire(),
     StorageService::class => DI\autowire(),
-    TestRequestsService::class => DI\autowire()
+    TestRequestsService::class => DI\autowire(),
+    RequestsService::class => DI\autowire(),
 ]);
 
 // Middlewares
