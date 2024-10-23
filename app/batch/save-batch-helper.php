@@ -3,12 +3,13 @@
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -34,6 +35,10 @@ if (isset($_POST['type'])) {
 
 $instrumentId = $_POST['platform'] ?? ($_POST['machine'] ?? null);
 
+if (!empty($_POST['batchedSamples'])) {
+    $_POST['batchedSamples'] = MiscUtility::desqid($_POST['batchedSamples']);
+}
+
 $tableName1 = "batch_details";
 try {
 
@@ -55,22 +60,16 @@ try {
             if ($id > 0) {
                 $db->where('sample_batch_id', $id);
                 $db->update($testTable, ['sample_batch_id' => null]);
-                $xplodResultSample = [];
 
-                if (isset($_POST['batchedSamples']) && !empty($_POST['batchedSamples'])) {
-                    $xplodResultSample = MiscUtility::desqid($_POST['batchedSamples']);
-                }
 
-                $selectedSamples = [];
+                $selectedSamples = $_POST['batchedSamples'] ?? [];
                 //Merging disabled samples into existing samples
                 if (!empty($_POST['unbatchedSamples'])) {
-                    if (!empty($xplodResultSample)) {
-                        $selectedSamples = array_unique(array_merge($_POST['unbatchedSamples'], $xplodResultSample));
+                    if (!empty($selectedSamples)) {
+                        $selectedSamples = array_unique(array_merge($_POST['unbatchedSamples'], $selectedSamples));
                     } else {
                         $selectedSamples = $_POST['unbatchedSamples'];
                     }
-                } elseif (!empty($xplodResultSample)) {
-                    $selectedSamples = $xplodResultSample;
                 }
 
                 $uniqueSampleIds = array_unique($selectedSamples);
@@ -110,8 +109,8 @@ try {
                     $lastId = $db->getInsertId();
                 }
 
-                if ($lastId > 0 && trim((string) $_POST['batchedSamples']) != '') {
-                    $selectedSamples = explode(",", (string) $_POST['batchedSamples']);
+                $selectedSamples = $_POST['batchedSamples'] ?? [];
+                if ($lastId > 0 && !empty($selectedSamples)) {
                     $uniqueSampleIds = array_unique($selectedSamples);
                     $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                     $db->update($testTable, ['sample_batch_id' => $lastId]);
@@ -122,7 +121,14 @@ try {
             }
         }
     }
-    // header("Location:batches.php?type=" . $_POST['type']);
-} catch (Exception $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
+    throw new SystemException($e->getMessage(), 500);
 }

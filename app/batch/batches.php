@@ -218,10 +218,24 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					type: '<?php echo $_GET['type']; ?>'
 				},
 				function(data) {
+					let toastMessage = "";
+					let toastColor = "";
 					if (data == 1) {
-						alert("<?= _translate("Batch deleted successfully", true); ?>");
+						toastMessage = "<?= _translate("Batch deleted successfully", true); ?>";
+						toastColor = 'green';
 					} else {
-						alert("<?= _translate("Something went wrong. Please try again later.", true); ?>");
+						toastMessage = "<?= _translate("Something went wrong. Please try again later.", true); ?>";
+						toastColor = 'red';
+					}
+
+					if (toastMessage) {
+						Toastify({
+							text: toastMessage,
+							duration: 3000,
+							style: {
+								background: toastColor
+							}
+						}).showToast();
 					}
 					oTable.fnDraw();
 				});
