@@ -6,17 +6,17 @@ use App\Services\CommonService;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 $keyFromGlobalConfig = $general->getGlobalConfig('key');
-$title = _translate("Viral Load Sample Type");
+$title = _translate("VL Sample Type");
 require_once APPLICATION_PATH . '/header.php';
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->
   <section class="content-header">
-    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Viral Load Sample Type"); ?></h1>
+    <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("VL Sample Types"); ?></h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-      <li class="active"><?php echo _translate("Viral Load Sample Type"); ?></li>
+      <li class="active"><?php echo _translate("VL Sample Types"); ?></li>
     </ol>
   </section>
 
@@ -30,7 +30,7 @@ require_once APPLICATION_PATH . '/header.php';
               <a href="javascript:void(0);" onclick="forceMetadataSync('<?php echo CommonService::encrypt('r_vl_sample_type', base64_decode((string) $keyFromGlobalConfig)); ?>')" class="btn btn-success pull-right" style="margin-left: 10px;"> <em class="fa-solid fa-refresh"></em></a>
             <?php }
             if (_isAllowed("vl-art-code-details.php") && $general->isLISInstance() === false) { ?>
-              <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add Viral Load Sample Type"); ?></a>
+              <a href="add-vl-sample-type.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Add VL Sample Type"); ?></a>
             <?php } ?>
           </div>
           <!-- /.box-header -->

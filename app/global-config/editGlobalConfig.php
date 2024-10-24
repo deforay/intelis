@@ -6,7 +6,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 
-$title = _translate("Edit General Configuration");
+$title = _translate("System Configuration");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -77,7 +77,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 							<a href="javascript:void(0);" onclick="exportGeneralConfig();" class="btn btn-success pull-right"> <em class="fa-solid fa-file-excel"></em></em> <?php echo _translate("Export Config"); ?></a>
 						</div> -->
 						<div class="col-sm-6 pull-right">
-							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _translate("Edit General Config"); ?></a>
+							<a href="editGlobalConfig.php?e=1" class="btn btn-primary pull-right"> <em class="fa-solid fa-pen-to-square"></em></em> <?php echo _translate("Edit System Configuration"); ?></a>
 						</div>
 					<?php } ?>
 					<br>

@@ -10,17 +10,17 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
-$sampleQuery = "SELECT * from r_vl_sample_type where sample_id = $id";
+$sampleQuery = "SELECT * FROM r_vl_sample_type WHERE sample_id = $id";
 $sampleInfo = $db->query($sampleQuery);
 ?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-flask-vial"></em> Edit Viral Load Sample Type</h1>
+        <h1><em class="fa-solid fa-flask-vial"></em> <?= _translate("Edit VL Sample Type"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-            <li class="active">Viral Load Sample Type</li>
+            <li class="active"><?= _translate("VL Sample Type"); ?></li>
         </ol>
     </section>
 

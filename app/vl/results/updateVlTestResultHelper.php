@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Services\SecurityService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -288,7 +289,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
     }
 
-    header("Location:/vl/results/vlTestResult.php");
+    SecurityService::redirect("/vl/results/vlTestResult.php");
 } catch (Throwable $exc) {
     throw new SystemException($exc->getMessage(), 500, $exc);
 }
