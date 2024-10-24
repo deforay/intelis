@@ -7,7 +7,6 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\StorageService;
-use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
 use App\Services\SecurityService;
@@ -63,7 +62,7 @@ try {
      ];
      if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          header("Location:addVlRequest.php");
+          SecurityService::redirect("/vl/requests/addVlRequest.php");
           die;
      }
 
@@ -424,7 +423,7 @@ try {
      } else {
           $_SESSION['alertMsg'] = _translate("Please try again later");
      }
-     header("Location:/vl/requests/vl-requests.php");
+     SecurityService::redirect("/vl/requests/vl-requests.php");
 } catch (Throwable $exc) {
      throw new SystemException($exc->getMessage(), 500, $exc);
 }

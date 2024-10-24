@@ -24,7 +24,9 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => VlService::class
             ],
             'recency' => [
@@ -35,7 +37,9 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => VlService::class
             ],
             'cd4' => [
@@ -46,7 +50,9 @@ final class TestsService
                 'patientId' => 'patient_art_no',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
+                'resultColumn' => 'result_cd4',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_vl_sample_type',
                 'serviceClass' => CD4Service::class
             ],
             'eid' => [
@@ -57,7 +63,9 @@ final class TestsService
                 'patientId' => 'child_id',
                 'patientFirstName' => 'child_name',
                 'patientLastName' => 'child_surname',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_eid_sample_type',
                 'serviceClass' => EidService::class
             ],
             'covid19' => [
@@ -68,7 +76,9 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_covid19_sample_type',
                 'serviceClass' => Covid19Service::class
             ],
             'hepatitis' => [
@@ -79,7 +89,9 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_hepatitis_sample_type',
                 'serviceClass' => HepatitisService::class
             ],
             'tb' => [
@@ -90,7 +102,9 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_name',
                 'patientLastName' => 'patient_surname',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_tb_sample_type',
                 'serviceClass' => TbService::class
             ],
             'generic-tests' => [
@@ -101,7 +115,9 @@ final class TestsService
                 'patientId' => 'patient_id',
                 'patientFirstName' => 'patient_first_name',
                 'patientLastName' => 'patient_last_name',
+                'resultColumn' => 'result',
                 'specimenType' => 'specimen_type',
+                'specimenTypeTable' => 'r_generic_sample_types',
                 'serviceClass' => GenericTestsService::class
             ]
         ];
@@ -167,6 +183,17 @@ final class TestsService
     public static function getSpecimenTypeColumn(string $testType): string
     {
         return self::getTestTypes()[$testType]['specimenType'] ?? throw new InvalidArgumentException("Invalid test type key");
+    }
+
+    public static function getSpecimenTypeTable(string $testType): string
+    {
+        return self::getTestTypes()[$testType]['specimenTypeTable'] ?? throw new InvalidArgumentException("Invalid test type key");
+    }
+
+
+    public static function getResultColumn(string $testType): string
+    {
+        return self::getTestTypes()[$testType]['resultColumn'] ?? throw new InvalidArgumentException("Invalid test type key");
     }
 
     public static function getTestServiceClass(string $testType): string

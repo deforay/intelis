@@ -5,8 +5,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
-
+use App\Services\SecurityService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -37,7 +36,7 @@ try {
 			$general->activityLog('VL Test Failure Reason', $_SESSION['userName'] . ' added new vl test failure reason for ' . $_POST['failureReason'], 'vl-reference');
 		}
 	}
-	header("Location:vl-test-failure-reasons.php");
+	SecurityService::redirect("/vl/reference/vl-test-failure-reasons.php");
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),

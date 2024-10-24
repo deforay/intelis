@@ -1,73 +1,43 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
-use App\Services\FacilitiesService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Services\SecurityService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
-$title = _translate("Edit Batch");
-
-require_once APPLICATION_PATH . '/header.php';
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+$id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 
 
 if (empty($_GET['type'])) {
-	header("Location: /batch/batches.php");
+	SecurityService::redirect("/batch/batches.php");
 }
 
 
 $testType = $_GET['type'];
 $genericTestType = null;
-$title = "Viral Load";
-$refTable = "form_vl";
-$refPrimaryColumn = "vl_sample_id";
-if ($testType == 'vl') {
-	$title = "Viral Load";
-	$refTable = "form_vl";
-	$refPrimaryColumn = "vl_sample_id";
-	$sampleTypeTable = "r_vl_sample_type";
-} elseif ($testType == 'eid') {
-	$title = "Early Infant Diagnosis";
-	$refTable = "form_eid";
-	$refPrimaryColumn = "eid_id";
-	$sampleTypeTable = "r_eid_sample_type";
-} elseif ($testType == 'covid19') {
-	$title = "Covid-19";
-	$refTable = "form_covid19";
-	$refPrimaryColumn = "covid19_id";
-	$sampleTypeTable = "r_covid19_sample_type";
-} elseif ($testType == 'hepatitis') {
-	$title = "Hepatitis";
-	$refTable = "form_hepatitis";
-	$refPrimaryColumn = "hepatitis_id";
-	$sampleTypeTable = "r_hepatitis_sample_type";
-} elseif ($testType == 'tb') {
-	$title = "TB";
-	$refTable = "form_tb";
-	$refPrimaryColumn = "tb_id";
-	$sampleTypeTable = "r_tb_sample_type";
-} elseif ($testType == 'cd4') {
-	$title = "CD4";
-	$refTable = "form_cd4";
-	$refPrimaryColumn = "cd4_id";
-	$sampleTypeTable = "r_cd4_sample_types";
-} elseif ($testType == 'generic-tests') {
-	$title = "Other Lab Tests";
-	$refTable = "form_generic";
-	$refPrimaryColumn = "sample_id";
-	$sampleTypeTable = "r_generic_sample_types";
+
+if ($testType == 'generic-tests') {
 	$genericTestType = !empty($_GET['testType']) ? base64_decode((string) $_GET['testType']) : null;
 }
 
+$testShortCode = TestsService::getTestShortCode($testType);
+$refTable = TestsService::getTestTableName($testType);
+$refPrimaryColumn = TestsService::getTestPrimaryKeyColumn($testType);
+$sampleTypeTable = TestsService::getSpecimenTypeTable($testType);
+$patientIdColumn = TestsService::getPatientIdColumn($testType);
+$resultColumn = TestsService::getResultColumn($testType);
 
+$title = $testShortCode . " | " . _translate("Edit Batch");
+require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -84,14 +54,8 @@ $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-
 $usersService = ContainerRegistry::get(UsersService::class);
 $userNameList = $usersService->getAllUsers(null, 'active', 'drop-down');
 
-$patientIdColumn = TestsService::getPatientIdColumn($_GET['type']);
 
-$resultColumn = 'result';
-if ($_GET['type'] == 'cd4') {
-	$resultColumn = 'cd4_result';
-}
-
-$batchQuery = "SELECT * from batch_details as b_d
+$batchQuery = "SELECT * FROM batch_details as b_d
                     LEFT JOIN instruments as i_c ON i_c.instrument_id=b_d.machine
                     WHERE batch_id=?";
 $batchInfo = $db->rawQuery($batchQuery, [$id]);

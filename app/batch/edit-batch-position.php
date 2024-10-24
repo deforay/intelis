@@ -1,11 +1,12 @@
 <?php
 
-use App\Services\SystemService;
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -45,14 +46,14 @@ require_once APPLICATION_PATH . '/header.php';
 $id = isset($_GET['id']) ? base64_decode((string)$_GET['id']) : null;
 
 if (!isset($id) || trim($id) == '') {
-	header("Location:batches.php?type=$testType");
+	SecurityService::redirect("batches.php?type=$testType");
 	exit;
 }
 
 $batchInfo = $batchService->getBatchInfo($id);
 
 if (empty($batchInfo)) {
-	header("Location:batches.php?type=$testType");
+	SecurityService::redirect("batches.php?type=$testType");
 	exit;
 }
 $batchAttributes = json_decode((string)$batchInfo['batch_attributes']);

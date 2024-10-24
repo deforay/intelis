@@ -5,11 +5,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
-
-
-
-
+use App\Services\SecurityService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -41,7 +37,7 @@ try {
 			$general->activityLog('VL Sample Type details', $_SESSION['userName'] . ' added new sample type for ' . $_POST['sampleName'], 'vl-reference');
 		}
 	}
-	header("Location:vl-sample-type.php");
+	SecurityService::redirect("/vl/reference/vl-sample-type.php");
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),

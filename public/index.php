@@ -71,17 +71,6 @@ $middlewarePipe->pipe(new CorsMiddleware([
     "cache" => 86400, // Cache preflight request for 1 day (in seconds)
 ]));
 
-
-// Auth Middleware
-// Check if the request is for the system admin or not
-if (fnmatch('/system-admin*', $uri)) {
-    // System Admin Authentication Middleware
-    $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
-} else {
-    // For the rest of the requests, apply AppAuthMiddleware
-    $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
-}
-
 // Custom Middleware to set the current request in the AppRegistry
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
 
@@ -98,6 +87,16 @@ $middlewarePipe->pipe(middleware(function ($request, $handler) {
     AppRegistry::set('request', $request);
     return $handler->handle($request);
 }));
+
+// Auth Middleware
+// Check if the request is for the system admin or not
+if (fnmatch('/system-admin*', $uri)) {
+    // System Admin Authentication Middleware
+    $middlewarePipe->pipe(ContainerRegistry::get(SystemAdminAuthMiddleware::class));
+} else {
+    // For the rest of the requests, apply AppAuthMiddleware
+    $middlewarePipe->pipe(ContainerRegistry::get(AppAuthMiddleware::class));
+}
 
 // CSRF Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));

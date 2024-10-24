@@ -27,15 +27,21 @@ final class MiscUtility
         return $sqids->encode($data);
     }
 
-    public static function desqid($data, $returnArray = false)
+    public static function desqid(string $data, bool $returnArray = false)
     {
+        if (empty($data) || $data == '' || !is_string($data)) {
+            return $returnArray ? [] : null;
+        }
+
+        $desqid = null;
         $sqids = new Sqids();
         $ids = $sqids->decode($data);
         if ($returnArray === false && count($ids) == 1) {
-            return $ids[0];
+            $desqid = $ids[0];
         } else {
-            return $ids;
+            $desqid = $ids;
         }
+        return $desqid;
     }
 
     public static function generateRandomString(int $length = 32): string

@@ -3,10 +3,11 @@
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 if (isset($_SESSION['userId'])) {
-	header("Location:/dashboard/index.php");
+	SecurityService::redirect("/dashboard/index.php");
 }
 
 /** @var DatabaseService $db */
@@ -16,6 +17,7 @@ if ($db->isConnected() === false) {
 	throw new Exception("Database connection failed. Please check your database settings", 500);
 }
 
+SecurityService::rotateCSRF();
 
 // If there are NO users, then we need to register the admin user
 // This happens during first setup typically
@@ -276,7 +278,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				unset($_SESSION['alertMsg']);
 			} ?>
 
-checkLoginAttempts();
+			checkLoginAttempts();
 		});
 
 

@@ -40,8 +40,6 @@ $ipaddress = $general->getClientIpAddress();
 
 try {
 
-    SecurityService::rotateCSRF();
-
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);
 
@@ -85,12 +83,10 @@ try {
 
         if (!empty($instanceResult['vlsm_instance_id'])) {
             $_SESSION['instanceId'] = $instanceResult['vlsm_instance_id'];
-            //$_SESSION['instance']['facilityName'] = $instanceResult['instance_facility_name'];
         } else {
             $id = MiscUtility::generateRandomString();
             $db->insert('s_vlsm_instance', ['vlsm_instance_id' => $id]);
             $_SESSION['instanceId'] = $id;
-            //$_SESSION['instance']['facilityName'] = null;
         }
 
         $_SESSION['formId'] = (int) $general->getGlobalConfig('vl_form');
@@ -144,8 +140,8 @@ try {
         'exception' => $exception,
         'file' => $exception->getFile(), // File where the error occurred
         'line' => $exception->getLine(), // Line number of the error
-        //'stacktrace' => $exception->getTraceAsString()
     ]);
     $redirect = "/login/login.php";
 }
-header("Location:$redirect");
+
+SecurityService::redirect($redirect);
