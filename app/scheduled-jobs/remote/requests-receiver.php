@@ -129,7 +129,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
+                $request['recency_vl'] = 'no';
                 $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
                                         WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
