@@ -123,7 +123,7 @@ try {
         $delId = $db->delete("user_facility_map");
 
         if ($userId != '' && trim((string) $_POST['selectedFacility']) != '') {
-            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility']);
+            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
             $uniqueFacilityId = array_unique($selectedFacility);
             if (!empty($uniqueFacilityId)) {
                 $data = [];

@@ -51,7 +51,13 @@ $sQuery = "SELECT * FROM form_covid19 as vl
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['samplePackageCode'])) {
-     $sWhere[] = ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '" ';
+     $samplePackageCode = $_POST['samplePackageCode'];
+     //$sWhere[] = ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '" ';
+     $sWhere[] = " vl.sample_package_code IN
+     (
+         '$samplePackageCode',
+         (SELECT DISTINCT sample_package_code FROM form_covid19 WHERE remote_sample_code LIKE '$samplePackageCode')
+     )";
 }
 
 if (!empty($sWhere)) {

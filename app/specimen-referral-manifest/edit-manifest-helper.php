@@ -32,7 +32,7 @@ $primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
 
 $packageTable = "package_details";
 try {
-    $selectedSample = MiscUtility::desqid($_POST['selectedSample']);
+    $selectedSample = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $uniqueSampleId = array_unique($selectedSample);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSample)) {
 

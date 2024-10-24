@@ -36,7 +36,7 @@ if (isset($_POST['type'])) {
 $instrumentId = $_POST['platform'] ?? ($_POST['machine'] ?? null);
 
 if (!empty($_POST['batchedSamples'])) {
-    $_POST['batchedSamples'] = MiscUtility::desqid($_POST['batchedSamples']);
+    $_POST['batchedSamples'] = MiscUtility::desqid($_POST['batchedSamples'], returnArray: true);
 }
 
 $tableName1 = "batch_details";

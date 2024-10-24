@@ -27,11 +27,11 @@ final class MiscUtility
         return $sqids->encode($data);
     }
 
-    public static function desqid($data)
+    public static function desqid($data, $returnArray = false)
     {
         $sqids = new Sqids();
         $ids = $sqids->decode($data);
-        if (count($ids) == 1) {
+        if ($returnArray === false && count($ids) == 1) {
             return $ids[0];
         } else {
             return $ids;

@@ -10,6 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Services\TestsService;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
@@ -28,6 +29,7 @@ $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
 
 $labId = $data['labName'] ?? $data['labId'] ?? null;
+$testType = $data['module'] ?? 'vl';
 
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
@@ -42,6 +44,12 @@ try {
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
+
+  if($testType != ""){
+    $tableName = TestsService::getTestTableName($testType);
+    $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
+  }
+  
 
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -77,10 +85,15 @@ try {
   }
 
   // Construct the final SQL query
-  $sQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
+  $sQuery = "SELECT $columnSelection FROM $tableName WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
-    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    //$sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code IN
+                  (
+                      '{$data['manifestCode']}',
+                      (SELECT DISTINCT sample_package_code FROM $tableName WHERE remote_sample_code LIKE '{$data['manifestCode']}')
+                  )";
   } else {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
@@ -89,17 +102,17 @@ try {
 
   $sampleIds = $facilityIds = [];
   if ($resultCount > 0) {
-    $sampleIds = array_column($rResult, 'vl_sample_id');
+    $sampleIds = array_column($rResult, $primaryKey);
     $facilityIds = array_column($rResult, 'facility_id');
     $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', $module, $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
   if (!empty($facilityIds)) {
-    $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
+    $general->updateTestRequestsSyncDateTime($module, $facilityIds, $labId);
   }
 
 
@@ -107,8 +120,8 @@ try {
     $updateData = [
       'data_sync' => 1
     ];
-    $db->where('vl_sample_id', $sampleIds, 'IN');
-    $db->update('form_vl', $updateData);
+    $db->where($primaryKey, $sampleIds, 'IN');
+    $db->update($tableName, $updateData);
   }
 
 
