@@ -53,7 +53,7 @@ try {
     ];
     if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-        header("Location:/vl/requests/addVlRequest.php");
+        SecurityService::redirect("/vl/requests/addVlRequest.php");
     }
 
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
@@ -443,9 +443,9 @@ try {
             if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
                 $_SESSION['vlData'] = $vlData;
             }
-            header("Location:/vl/requests/addVlRequest.php");
+            SecurityService::redirect("/vl/requests/addVlRequest.php");
         } else {
-            header("Location:/vl/requests/vl-requests.php");
+            SecurityService::redirect("/vl/requests/vl-requests.php");
         }
     } else {
         $db->rollbackTransaction();
@@ -457,7 +457,7 @@ try {
             ]);
         }
         $_SESSION['alertMsg'] = _translate("Please try again later");
-        header("Location:/vl/requests/vl-requests.php");
+        SecurityService::redirect("/vl/requests/vl-requests.php");
     }
 } catch (Throwable $e) {
     $db->rollbackTransaction();

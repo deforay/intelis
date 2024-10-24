@@ -77,4 +77,15 @@ final class SecurityService
             unset($_SESSION['csrf_token_time']);
         }
     }
+
+    public static function redirect(string $url): void
+    {
+        self::rotateCSRF();
+        if (str_contains(strtolower($url), 'location:')) {
+            header($url);
+        } else {
+            header("Location: $url");
+        }
+        exit;
+    }
 }
