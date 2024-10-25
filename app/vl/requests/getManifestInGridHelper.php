@@ -77,7 +77,13 @@ $sQuery = "SELECT vl.sample_collection_date,
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['samplePackageCode'])) {
-     $sWhere[] = ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '" ';
+     $samplePackageCode = $_POST['samplePackageCode'];
+     //$sWhere[] = ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '" ';
+     $sWhere[] = " vl.sample_package_code IN
+                    (
+                        '$samplePackageCode',
+                        (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE '$samplePackageCode')
+                    )";
 }
 
 if (!empty($sWhere)) {

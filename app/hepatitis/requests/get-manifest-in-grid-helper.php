@@ -92,12 +92,23 @@ $sQuery = "SELECT * FROM form_hepatitis as vl
 if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . $sWhere;
      if (isset($_POST['samplePackageCode']) && $_POST['samplePackageCode'] != '') {
-          $sWhere = $sWhere . ' AND vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
+          $samplePackageCode = $_POST['samplePackageCode'];
+
+          $sWhere = $sWhere . " AND vl.sample_package_code IN
+                    (
+                        '$samplePackageCode',
+                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$samplePackageCode')
+                    )";
      }
 } else {
      if (isset($_POST['samplePackageCode']) && trim((string) $_POST['samplePackageCode']) != '') {
+          $samplePackageCode = $_POST['samplePackageCode'];
           $sWhere = ' WHERE ' . $sWhere;
-          $sWhere = $sWhere . ' vl.sample_package_code LIKE "%' . $_POST['samplePackageCode'] . '%" OR remote_sample_code LIKE "' . $_POST['samplePackageCode'] . '"';
+          $sWhere = $sWhere . " vl.sample_package_code IN
+                    (
+                        '$samplePackageCode',
+                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$samplePackageCode')
+                    )";
      }
 }
 $sFilter = '';

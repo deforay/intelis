@@ -194,7 +194,12 @@ final class TestRequestsService
         try {
             $tableName = TestsService::getTestTableName($testType);
 
-            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode'";
+            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code IN
+                    (
+                        '$manifestCode',
+                        (SELECT DISTINCT sample_package_code FROM $tableName WHERE remote_sample_code LIKE '$manifestCode')
+                    )";
+            
             $sampleResult = $this->db->rawQuery($sampleQuery);
 
             $status = 0;

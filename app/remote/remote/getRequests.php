@@ -10,6 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Services\TestsService;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
@@ -29,6 +30,7 @@ $data = $apiService->getJsonFromRequest($request, true);
 
 $labId = $data['labName'] ?? $data['labId'] ?? null;
 
+
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
 
@@ -42,6 +44,7 @@ try {
   if (empty($labId)) {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
+
 
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -76,11 +79,17 @@ try {
     $columnSelection .= ", $constantValue AS $columnName";
   }
 
+
   // Construct the final SQL query
   $sQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
-    $sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    //$sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
+    $sQuery .= " AND sample_package_code IN
+                  (
+                      '{$data['manifestCode']}',
+                      (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE '{$data['manifestCode']}')
+                  )";
   } else {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
@@ -96,10 +105,10 @@ try {
     $payload = json_encode([]);
   }
 
-  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', 'vl', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+  $general->addApiTracking($transactionId, 'vlsm-system', $resultCount, 'requests', $module, $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
   if (!empty($facilityIds)) {
-    $general->updateTestRequestsSyncDateTime('vl', $facilityIds, $labId);
+    $general->updateTestRequestsSyncDateTime($module, $facilityIds, $labId);
   }
 
 

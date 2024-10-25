@@ -1,15 +1,17 @@
 <?php
 
+use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
-use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Exceptions\SystemException;
+use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use App\Services\UsersService;
-use App\Services\InstrumentsService;
+
 use App\Services\VlService;
 use App\Services\CommonService;
 
@@ -68,7 +70,7 @@ try {
                     $spreadsheet = IOFactory::load($targetPath);
                     $sheetData   = $spreadsheet->getActiveSheet();
                     $sheetData   = $sheetData->toArray(null, true, true, true);
-                
+       
                     $filteredArray = array_filter(array_slice($sheetData, 1), fn($row) => array_filter($row)); // Remove empty rows
 
                     $total = count($filteredArray);
@@ -76,11 +78,11 @@ try {
 
                     if ($total == 0) {
                         $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
-                        header("Location:/vl/program-management/upload-vl-control.php");
+            SecurityService::redirect("/vl/program-management/upload-vl-control.php");
                         exit();
                     }
 
-                    $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);   
+        $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);   
                     $userMapping = array_column($userResult, 'user_id', 'user_name');
 
                     foreach ($filteredArray as $rowIndex => $rowData) {
@@ -155,19 +157,19 @@ try {
                     $_SESSION['alertMsg'] = _translate("Controls added successfully");
                 } else {
                     $_SESSION['alertMsg'] = _translate("Uploaded file column mismatched");
-                    header("Location:/vl/program-management/upload-vl-control.php");
+                    SecurityService::redirect("/vl/program-management/upload-vl-control.php");
                     exit();
                 }
             }
         } else {
             $_SESSION['alertMsg'] = _translate("Please Upload xls, xlsx, csv format only");
-            header("Location:/vl/program-management/upload-vl-control.php");
+            SecurityService::redirect("/vl/program-management/upload-vl-control.php");
             exit();
         }
     } else {
         throw new SystemException(_translate("Bulk Controls Import Failed") . " - " . $uploadedFile->getError());
     }
-    header("Location:/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded&link=$filename");
+    SecurityService::redirect("/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded&link=$filename");
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }

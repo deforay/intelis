@@ -15,32 +15,21 @@ class AppAuthMiddleware implements MiddlewareInterface
 
     // Exclude specific routes from authentication check
     private array $excludedUris = [
-        '/login/login.php',
-        '/login/loginProcess.php',
-        '/login/logout.php',
-        '/setup/index.php',
-        '/setup/registerProcess.php',
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
-        '/remote/*'
+        '/remote/*',
+        '/setup/*',
+        '/login/*',
         // Add other routes to exclude from the authentication check here
     ];
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
+
         // Get the requested URI
         $uri = $request->getUri()->getPath();
 
         // Clean up the URI
         $uri = preg_replace('/([\/.])\1+/', '$1', $uri);
-
-        // Only store the requested URI if the user is not logged in and it's not already set
-        if (
-            !isset($_SESSION['userId']) && !isset($_SESSION['requestedURI']) &&
-            strtolower($request->getHeaderLine('X-Requested-With')) !== 'xmlhttprequest'
-        ) {
-            $_SESSION['requestedURI'] = AppRegistry::get('currentRequestURI');
-        }
-
 
         $redirect = null;
         if ($this->shouldExcludeFromAuthCheck($request)) {
@@ -59,6 +48,11 @@ class AppAuthMiddleware implements MiddlewareInterface
             if (basename((string) $uri) !== "edit-profile.php") {
                 $redirect = new RedirectResponse('/users/edit-profile.php');
             }
+        }
+
+        // Only store the requested URI if the user is not logged in and it's not already set
+        if (empty($_SESSION['userId'])) {
+            $_SESSION['requestedURI'] ??= AppRegistry::get('currentRequestURI');
         }
 
         if (!is_null($redirect)) {

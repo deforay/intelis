@@ -7,10 +7,10 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add Viral Load Sample Type"); ?></h1>
+        <h1><em class="fa-solid fa-flask-vial"></em> <?php echo _translate("Add VL Sample Type"); ?></h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li class="active"><?php echo _translate("Viral Load Sample Type"); ?></li>
+            <li class="active"><?php echo _translate("VL Sample Type"); ?></li>
         </ol>
     </section>
 

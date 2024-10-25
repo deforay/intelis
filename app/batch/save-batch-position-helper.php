@@ -6,6 +6,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -25,7 +26,6 @@ $batchService = ContainerRegistry::get(BatchService::class);
 
 $tableName = "batch_details";
 try {
-    // echo '<pre>'; print_r($_POST); die;
     $labelOrder = '';
     if (isset($_POST['sortOrders']) && trim((string) $_POST['sortOrders']) != '') {
 
@@ -87,7 +87,7 @@ try {
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Batch Samples Position saved successfully.", true);
     }
-    header("Location:batches.php?type=" . $_POST['type']);
+    SecurityService::redirect("batches.php?type=" . $_POST['type']);
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

@@ -75,7 +75,6 @@ if (!empty($forceSyncModule)) {
  ****************************************************************
  */
 
-
 $request = [];
 if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
 
@@ -130,10 +129,10 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
+              
                 $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
-                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                        WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
@@ -286,7 +285,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -381,6 +380,7 @@ $request = [];
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
     $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
+
     $payload = array(
         'labId' => $labId,
         'module' => 'covid19'
@@ -396,7 +396,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
         }
 
         $options = [
-            'pointer' => '/result',
+           // 'pointer' => '/result',
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
@@ -429,7 +429,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
                 //check exist remote
                 $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
-                                WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -579,6 +579,7 @@ $request = [];
 
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
     $url = "$remoteURL/remote/remote/hepatitis-test-requests.php";
+
     $payload = [
         'labId' => $labId,
         'module' => 'hepatitis'
@@ -634,7 +635,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
                 //check exist remote
                 $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
-                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                        WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -763,6 +764,7 @@ $request = [];
 
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
     $url = "$remoteURL/remote/remote/tb-test-requests.php";
+
     $payload = [
         'labId' => $labId,
         'module' => 'tb'
@@ -781,7 +783,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         }
 
         $options = [
-            'pointer' => '/result',
+            //'pointer' => '/result',
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
@@ -815,7 +817,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 
                 //check exist remote
                 $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -918,6 +920,7 @@ $request = [];
 if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
 
     $url = "$remoteURL/remote/remote/cd4-test-requests.php";
+
     $payload = [
         'labId' => $labId,
         'module' => 'cd4'
@@ -965,7 +968,7 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
 
                 $existingSampleQuery = "SELECT cd4_id, sample_code
                                     FROM form_cd4 AS vl
-                                    WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                                    WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
@@ -1114,7 +1117,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
                 $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
                             FROM form_generic AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 

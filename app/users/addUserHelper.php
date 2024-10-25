@@ -82,24 +82,23 @@ try {
         }
 
 
-
         $id = $db->insert($tableName, $data);
 
 
         if ($id === true && trim((string) $_POST['selectedFacility']) != '') {
-            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility']);
+            $selectedFacility = MiscUtility::desqid($_POST['selectedFacility'], returnArray: true);
             $uniqueFacilityId = array_unique($selectedFacility);
             if (!empty($uniqueFacilityId)) {
-                $data = [];
+                $facilityUser = [];
                 foreach ($uniqueFacilityId as $facilityId) {
-                    $data[] = [
+                    $facilityUser[] = [
                         'facility_id' => $facilityId,
                         'user_id' => $data['user_id'],
                     ];
                 }
 
-                if (!empty($data)) {
-                    $db->insertMulti('user_facility_map', $data);
+                if (!empty($facilityUser)) {
+                    $db->insertMulti('user_facility_map', $facilityUser);
                 }
             }
         }

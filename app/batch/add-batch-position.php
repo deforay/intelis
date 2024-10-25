@@ -5,6 +5,7 @@ use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\SecurityService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -34,13 +35,13 @@ require_once APPLICATION_PATH . '/header.php';
 
 $id = (isset($_GET['id'])) ? base64_decode((string)$_GET['id']) : null;
 if (!isset($id) || trim($id) == '') {
-	header("Location:batches.php?type=" . $_GET['type']);
+	SecurityService::redirect("batches.php?type=" . $_GET['type']);
 	exit;
 }
 
 $batchInfo = $batchService->getBatchInfo($id);
 if (empty($batchInfo)) {
-	header("Location:batches.php?type=" . $_GET['type']);
+	SecurityService::redirect("batches.php?type=" . $_GET['type']);
 	exit;
 }
 

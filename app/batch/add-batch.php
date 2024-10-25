@@ -1,10 +1,12 @@
 <?php
 
 use App\Services\BatchService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -14,38 +16,27 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 if (empty($_GET['type'])) {
-    header("Location: /batch/batches.php");
+    SecurityService::redirect("/batch/batches.php");
 }
 
+$testType = $_GET['type'];
 
 $sampleTypeStatus = "status";
 $genericHide = "";
-if (isset($_GET['type']) && $_GET['type'] == 'vl') {
-    $title = "Viral Load";
-    $sampleTypeTable = "r_vl_sample_type";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'eid') {
-    $title = "Early Infant Diagnosis";
-    $sampleTypeTable = "r_eid_sample_type";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'covid19') {
-    $title = "Covid-19";
-    $sampleTypeTable = "r_covid19_sample_type";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'hepatitis') {
-    $title = "Hepatitis";
-    $sampleTypeTable = "r_hepatitis_sample_type";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'tb') {
-    $title = "TB";
-    $sampleTypeTable = "r_tb_sample_type";
-} else if (isset($_GET['type']) && $_GET['type'] == 'cd4') {
-    $title = "CD4";
-    $sampleTypeTable = "r_cd4_sample_types";
-} elseif (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
-    $title = "Other Lab Tests";
-    $sampleTypeTable = "r_generic_sample_types";
+if (isset($_GET['type']) && $_GET['type'] == 'generic-tests') {
     $sampleTypeStatus = "sample_type_status";
     $genericHide = "display:none;";
 }
 
-$title = _translate($title . " | Add Batch");
+
+$testShortCode = TestsService::getTestShortCode($testType);
+$refTable = TestsService::getTestTableName($testType);
+$refPrimaryColumn = TestsService::getTestPrimaryKeyColumn($testType);
+$sampleTypeTable = TestsService::getSpecimenTypeTable($testType);
+$patientIdColumn = TestsService::getPatientIdColumn($testType);
+$resultColumn = TestsService::getResultColumn($testType);
+
+$title = $testShortCode . " | " . _translate("Add Batch");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */

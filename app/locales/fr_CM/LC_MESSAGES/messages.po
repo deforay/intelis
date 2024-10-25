@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-10-21 14:02+0530\n"
-"PO-Revision-Date: 2024-10-21 14:03+0530\n"
+"POT-Creation-Date: 2024-10-24 17:02+0530\n"
+"PO-Revision-Date: 2024-10-24 17:03+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -33,9 +33,9 @@ msgstr "Bienvenue sur la page d’administration"
 #: app/admin/monitoring/sync-status.php:70
 #: app/admin/monitoring/system-settings.php:100
 #: app/admin/monitoring/test-results-metadata.php:46
-#: app/batch/add-batch-position.php:87 app/batch/add-batch.php:138
-#: app/batch/batches.php:54 app/batch/edit-batch-position.php:114
-#: app/batch/edit-batch.php:182
+#: app/batch/add-batch-position.php:88 app/batch/add-batch.php:129
+#: app/batch/batches.php:54 app/batch/edit-batch-position.php:115
+#: app/batch/edit-batch.php:146
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:12
 #: app/cd4/reference/add-cd4-sample-type.php:12
 #: app/cd4/reference/add-cd4-test-reasons.php:18
@@ -233,6 +233,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: app/users/users.php:13 app/vl/program-management/highViralLoad.php:121
 #: app/vl/program-management/sample-storage-reports.php:57
 #: app/vl/program-management/sampleRejectionReport.php:56
+#: app/vl/program-management/upload-vl-control.php:47
 #: app/vl/program-management/vl-sample-status.php:55
 #: app/vl/program-management/vlControlReport.php:37
 #: app/vl/reference/add-vl-art-code-details.php:25
@@ -475,7 +476,7 @@ msgstr "Rechercher"
 #: app/admin/monitoring/api-sync-history.php:170
 #: app/admin/monitoring/sources-of-requests.php:305
 #: app/admin/monitoring/test-results-metadata.php:208
-#: app/batch/add-batch.php:413 app/batch/edit-batch.php:428
+#: app/batch/add-batch.php:404 app/batch/edit-batch.php:392
 #: app/cd4/management/cd4-clinic-report.php:622
 #: app/cd4/management/cd4-export-data.php:332
 #: app/cd4/management/cd4-sample-rejection-report.php:107
@@ -560,7 +561,7 @@ msgstr "Rechercher"
 #: app/vl/program-management/sampleRejectionReport.php:152
 #: app/vl/program-management/vl-export-data.php:588
 #: app/vl/program-management/vl-sample-status.php:218
-#: app/vl/program-management/vlControlReport.php:108
+#: app/vl/program-management/vlControlReport.php:109
 #: app/vl/program-management/vlMonitoringReport.php:327
 #: app/vl/program-management/vlSuppressedTargetReport.php:261
 #: app/vl/program-management/vlTestingTargetReport.php:267
@@ -783,9 +784,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/admin/monitoring/api-sync-history.php:67
 #: app/admin/monitoring/lab-sync-details.php:118
 #: app/admin/monitoring/sources-of-requests.php:96
-#: app/admin/monitoring/sync-status.php:90 app/batch/add-batch.php:189
-#: app/batch/add-batch.php:264 app/batch/edit-batch.php:225
-#: app/batch/edit-batch.php:304 app/cd4/management/cd4-clinic-report.php:106
+#: app/admin/monitoring/sync-status.php:90 app/batch/add-batch.php:180
+#: app/batch/add-batch.php:255 app/batch/edit-batch.php:189
+#: app/batch/edit-batch.php:268 app/cd4/management/cd4-clinic-report.php:106
 #: app/cd4/management/cd4-clinic-report.php:119
 #: app/cd4/management/cd4-clinic-report.php:134
 #: app/cd4/management/cd4-clinic-report.php:155
@@ -1391,6 +1392,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/program-management/highViralLoad.php:1037
 #: app/vl/program-management/highViralLoad.php:1051
 #: app/vl/program-management/sampleRejectionReport.php:93
+#: app/vl/program-management/upload-vl-control.php:93
 #: app/vl/program-management/vl-export-data.php:104
 #: app/vl/program-management/vl-export-data.php:123
 #: app/vl/program-management/vl-export-data.php:165
@@ -1532,7 +1534,7 @@ msgstr "CHARGE VIRALE"
 #: app/admin/monitoring/sources-of-requests.php:140
 #: app/admin/monitoring/sync-status.php:119
 #: app/admin/monitoring/test-results-metadata.php:74
-#: app/classes/Services/TestsService.php:53 app/facilities/addFacility.php:354
+#: app/classes/Services/TestsService.php:59 app/facilities/addFacility.php:354
 #: app/facilities/addFacility.php:712 app/facilities/addFacility.php:1039
 #: app/facilities/editFacility.php:379 app/facilities/editFacility.php:677
 #: app/facilities/editFacility.php:706 app/facilities/editFacility.php:997
@@ -1547,7 +1549,7 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 #: app/admin/monitoring/sources-of-requests.php:145
 #: app/admin/monitoring/sync-status.php:122
 #: app/admin/monitoring/test-results-metadata.php:79
-#: app/classes/Services/TestsService.php:64 app/facilities/addFacility.php:359
+#: app/classes/Services/TestsService.php:72 app/facilities/addFacility.php:359
 #: app/facilities/addFacility.php:717 app/facilities/addFacility.php:1040
 #: app/facilities/editFacility.php:382 app/facilities/editFacility.php:678
 #: app/facilities/editFacility.php:707 app/facilities/editFacility.php:1000
@@ -1566,7 +1568,7 @@ msgstr "COVID-19"
 #: app/admin/monitoring/sources-of-requests.php:150
 #: app/admin/monitoring/sync-status.php:125
 #: app/admin/monitoring/test-results-metadata.php:84
-#: app/classes/Services/TestsService.php:75 app/facilities/addFacility.php:364
+#: app/classes/Services/TestsService.php:85 app/facilities/addFacility.php:364
 #: app/facilities/addFacility.php:722 app/facilities/addFacility.php:1041
 #: app/facilities/editFacility.php:385 app/facilities/editFacility.php:679
 #: app/facilities/editFacility.php:708 app/facilities/editFacility.php:1052
@@ -1609,7 +1611,7 @@ msgstr "Tuberculose"
 #: app/cd4/management/cd4-sample-rejection-report.php:37
 #: app/cd4/management/cd4-sample-status.php:49
 #: app/cd4/management/cd4-testing-target-report.php:177
-#: app/classes/Services/TestsService.php:42 app/facilities/addFacility.php:374
+#: app/classes/Services/TestsService.php:46 app/facilities/addFacility.php:374
 #: app/facilities/addFacility.php:737 app/facilities/addFacility.php:1044
 #: app/facilities/editFacility.php:391 app/facilities/editFacility.php:682
 #: app/facilities/editFacility.php:711 app/facilities/editFacility.php:1055
@@ -1895,7 +1897,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: app/admin/monitoring/audit-trail.php:169 app/batch/edit-batch.php:363
+#: app/admin/monitoring/audit-trail.php:169 app/batch/edit-batch.php:327
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: app/cd4/reference/add-cd4-sample-type.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:70
@@ -1966,6 +1968,7 @@ msgstr "ID de l'échantillon"
 #: app/tb/reference/add-tb-test-reasons.php:75
 #: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:315
 #: app/users/edit-profile.php:129 app/users/editUser.php:399
+#: app/vl/program-management/upload-vl-control.php:120
 #: app/vl/reference/add-vl-art-code-details.php:92
 #: app/vl/reference/add-vl-results.php:148
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:74
@@ -2100,8 +2103,8 @@ msgstr "Réinitialiser"
 
 #: app/admin/monitoring/export-test-results-report.php:31
 #: app/admin/monitoring/test-results-metadata.php:130
-#: app/batch/add-batch-position.php:101 app/batch/add-batch.php:292
-#: app/batch/edit-batch-position.php:130 app/batch/edit-batch.php:263
+#: app/batch/add-batch-position.php:102 app/batch/add-batch.php:283
+#: app/batch/edit-batch-position.php:131 app/batch/edit-batch.php:227
 #: app/vl/program-management/sample-storage-reports.php:134
 #: app/vl/program-management/sample-storage-reports.php:182
 #: app/vl/program-management/storageDataToExcel.php:25
@@ -2118,7 +2121,7 @@ msgstr "Code d'échantillon prélevé à l'extérieur du labo"
 
 #: app/admin/monitoring/export-test-results-report.php:33
 #: app/admin/monitoring/test-results-metadata.php:136
-#: app/batch/add-batch.php:227 app/batch/edit-batch.php:216
+#: app/batch/add-batch.php:218 app/batch/edit-batch.php:180
 #: app/cd4/management/cd4-clinic-report.php:190
 #: app/cd4/management/cd4-clinic-report.php:294
 #: app/cd4/management/cd4-clinic-report.php:309
@@ -3633,6 +3636,7 @@ msgstr "État de la synchronisation du laboratoire"
 #: app/tb/management/tb-export-data.php:274
 #: app/vl/program-management/getRejectionResult.php:90
 #: app/vl/program-management/highViralLoad.php:1131
+#: app/vl/program-management/upload-vl-control.php:78
 #: app/vl/program-management/vl-export-data.php:420
 #: app/vl/program-management/vl-export-data.php:490
 #: app/vl/program-management/vlMonitoringReport.php:226
@@ -4024,21 +4028,21 @@ msgid "Please check your request parameters."
 msgstr "Veuillez vérifier les paramètres de votre demande."
 
 #: app/api/v1.1/user/save-user-profile.php:177
-#: app/api/v1.1/user/save-user-profile.php:189 app/batch/batches.php:224
+#: app/api/v1.1/user/save-user-profile.php:189 app/batch/batches.php:227
 #: app/batch/save-batch-helper.php:84
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
 
-#: app/batch/add-batch-position.php:32
+#: app/batch/add-batch-position.php:33
 msgid " | Add Batch Position"
 msgstr " | Ajouter une position de lot"
 
-#: app/batch/add-batch-position.php:85
+#: app/batch/add-batch-position.php:86
 msgid "Add Batch Controls Position"
 msgstr "Ajouter une position de contrôle de lot"
 
-#: app/batch/add-batch-position.php:88 app/batch/add-batch.php:141
-#: app/batch/edit-batch-position.php:115 app/cd4/results/email-results.php:235
+#: app/batch/add-batch-position.php:89 app/batch/add-batch.php:132
+#: app/batch/edit-batch-position.php:116 app/cd4/results/email-results.php:235
 #: app/covid-19/results/email-results.php:235
 #: app/eid/results/email-results.php:232
 #: app/generic-tests/results/email-results.php:235
@@ -4048,10 +4052,10 @@ msgstr "Ajouter une position de contrôle de lot"
 msgid "Batch"
 msgstr "Lot"
 
-#: app/batch/add-batch-position.php:95 app/batch/add-batch.php:326
-#: app/batch/add-batch.php:329 app/batch/batches.php:99
-#: app/batch/edit-batch-position.php:122 app/batch/edit-batch.php:291
-#: app/batch/edit-batch.php:293 app/cd4/management/cd4-clinic-report.php:103
+#: app/batch/add-batch-position.php:96 app/batch/add-batch.php:317
+#: app/batch/add-batch.php:320 app/batch/batches.php:99
+#: app/batch/edit-batch-position.php:123 app/batch/edit-batch.php:255
+#: app/batch/edit-batch.php:257 app/cd4/management/cd4-clinic-report.php:103
 #: app/cd4/management/cd4-clinic-report.php:211
 #: app/cd4/management/cd4-clinic-report.php:313
 #: app/cd4/management/cd4-clinic-report.php:416
@@ -4225,19 +4229,19 @@ msgstr "Lot"
 msgid "Batch Code"
 msgstr "Code du lot"
 
-#: app/batch/add-batch-position.php:99 app/batch/add-batch.php:290
-#: app/batch/edit-batch-position.php:128 app/batch/edit-batch.php:261
+#: app/batch/add-batch-position.php:100 app/batch/add-batch.php:281
+#: app/batch/edit-batch-position.php:129 app/batch/edit-batch.php:225
 msgid "Request Created"
 msgstr "Demande créée"
 
-#: app/batch/add-batch-position.php:100 app/batch/add-batch.php:241
-#: app/batch/add-batch.php:244 app/batch/add-batch.php:291
-#: app/batch/edit-batch-position.php:129 app/batch/edit-batch.php:262
+#: app/batch/add-batch-position.php:101 app/batch/add-batch.php:232
+#: app/batch/add-batch.php:235 app/batch/add-batch.php:282
+#: app/batch/edit-batch-position.php:130 app/batch/edit-batch.php:226
 msgid "Last Modified"
 msgstr "Dernière modification"
 
-#: app/batch/add-batch-position.php:102 app/batch/add-batch.php:293
-#: app/batch/edit-batch-position.php:131 app/batch/edit-batch.php:264
+#: app/batch/add-batch-position.php:103 app/batch/add-batch.php:284
+#: app/batch/edit-batch-position.php:132 app/batch/edit-batch.php:228
 #: app/eid/management/eid-export-data.php:270
 #: app/eid/management/eid-export-data.php:307
 #: app/eid/requests/eid-requests.php:476
@@ -4263,21 +4267,21 @@ msgstr "Dernière modification"
 msgid "Lab Assigned Code"
 msgstr "Code du Labo"
 
-#: app/batch/add-batch-position.php:107 app/batch/add-batch.php:298
-#: app/batch/edit-batch-position.php:136
+#: app/batch/add-batch-position.php:108 app/batch/add-batch.php:289
+#: app/batch/edit-batch-position.php:137
 msgid "Ascending"
 msgstr "Ascendant"
 
-#: app/batch/add-batch-position.php:108 app/batch/add-batch.php:299
-#: app/batch/edit-batch-position.php:137
+#: app/batch/add-batch-position.php:109 app/batch/add-batch.php:290
+#: app/batch/edit-batch-position.php:138
 msgid "Descending"
 msgstr "Descendant"
 
-#: app/batch/add-batch-position.php:133 app/batch/edit-batch-position.php:166
+#: app/batch/add-batch-position.php:134 app/batch/edit-batch-position.php:167
 msgid "Labels for Controls/Calibrators"
 msgstr "Étiquettes pour les contrôles/étalons"
 
-#: app/batch/add-batch-position.php:199 app/batch/edit-batch-position.php:233
+#: app/batch/add-batch-position.php:200 app/batch/edit-batch-position.php:234
 msgid ""
 "Are you sure you want to reset the sorting to default? This will reset all "
 "previous changes"
@@ -4285,16 +4289,16 @@ msgstr ""
 "Êtes-vous sûr de vouloir rétablir le tri par défaut ? Cela réinitialisera "
 "toutes les modifications précédentes"
 
-#: app/batch/add-batch.php:48
-msgid " | Add Batch"
-msgstr " | Ajouter un lot"
+#: app/batch/add-batch.php:39 app/system/translate-strings.php:123
+msgid "Add Batch"
+msgstr "Ajouter un lot"
 
-#: app/batch/add-batch.php:134
+#: app/batch/add-batch.php:125
 msgid "Create Batch"
 msgstr "Créer un lot"
 
-#: app/batch/add-batch.php:168 app/batch/add-batch.php:177
-#: app/batch/edit-batch.php:191
+#: app/batch/add-batch.php:159 app/batch/add-batch.php:168
+#: app/batch/edit-batch.php:155
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:22
 #: app/cd4/reference/add-cd4-sample-type.php:22
 #: app/cd4/reference/add-cd4-test-reasons.php:28
@@ -4436,6 +4440,7 @@ msgstr "Créer un lot"
 #: app/tb/results/forms/update-southsudan.php:109 app/users/addUser.php:70
 #: app/users/edit-profile.php:49 app/users/editUser.php:108
 #: app/vl/program-management/addContactNotes.php:45
+#: app/vl/program-management/upload-vl-control.php:60
 #: app/vl/reference/add-vl-art-code-details.php:35
 #: app/vl/reference/add-vl-results.php:49
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:22
@@ -4469,13 +4474,13 @@ msgstr "Créer un lot"
 #: app/vl/results/forms/update-drc-result.php:89
 #: app/vl/results/forms/update-png-result.php:162
 #: app/vl/results/forms/update-rwanda-result.php:118
-#: app/vl/results/forms/update-sierraleone-result.php:177
+#: app/vl/results/forms/update-sierraleone-result.php:181
 #: app/vl/results/forms/update-southsudan-result.php:179
 #: app/vl/results/vlResultMail.php:75
 msgid "indicates required fields"
 msgstr "indique les champs obligatoires"
 
-#: app/batch/add-batch.php:184 app/batch/edit-batch.php:301
+#: app/batch/add-batch.php:175 app/batch/edit-batch.php:265
 #: app/covid-19/management/generate-export-drc.php:92
 #: app/covid-19/requests/export-covid19-requests.php:39
 #: app/covid-19/requests/export-covid19-requests.php:41
@@ -4490,11 +4495,12 @@ msgstr "indique les champs obligatoires"
 msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
 
-#: app/batch/add-batch.php:187 app/batch/edit-batch.php:303
+#: app/batch/add-batch.php:178 app/batch/edit-batch.php:267
+#: app/vl/program-management/upload-vl-control.php:91
 msgid "Please choose machine"
 msgstr "Veuillez choisir la machine"
 
-#: app/batch/add-batch.php:204 app/batch/edit-batch.php:194
+#: app/batch/add-batch.php:195 app/batch/edit-batch.php:158
 #: app/cd4/requests/cd4-requests.php:489
 #: app/covid-19/requests/covid-19-requests.php:411
 #: app/eid/requests/eid-requests.php:421 app/facilities/facilities.php:160
@@ -4505,7 +4511,7 @@ msgstr "Veuillez choisir la machine"
 msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
 
-#: app/batch/add-batch.php:211 app/batch/edit-batch.php:198
+#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
 #: app/cd4/management/cd4-clinic-report.php:143
 #: app/cd4/management/cd4-clinic-report.php:251
 #: app/cd4/management/cd4-clinic-report.php:353
@@ -4553,7 +4559,7 @@ msgstr "Afficher la recherche avancée"
 msgid "Facility"
 msgstr "FOSA"
 
-#: app/batch/add-batch.php:214 app/batch/edit-batch.php:200
+#: app/batch/add-batch.php:205 app/batch/edit-batch.php:164
 #: app/cd4/management/cd4-clinic-report.php:145
 #: app/cd4/management/cd4-clinic-report.php:253
 #: app/cd4/management/cd4-clinic-report.php:355
@@ -4654,11 +4660,11 @@ msgstr "FOSA"
 msgid "Please select facility name"
 msgstr "Veuillez sélectionner le nom de la FOSA"
 
-#: app/batch/add-batch.php:218 app/batch/edit-batch.php:204
+#: app/batch/add-batch.php:209 app/batch/edit-batch.php:168
 msgid "Samples Entered By"
 msgstr "Échantillons entrés par"
 
-#: app/batch/add-batch.php:230 app/batch/edit-batch.php:218
+#: app/batch/add-batch.php:221 app/batch/edit-batch.php:182
 #: app/cd4/management/cd4-export-data.php:81
 #: app/cd4/management/cd4-sample-rejection-report.php:52
 #: app/cd4/management/cd4-sample-status.php:64
@@ -4730,23 +4736,23 @@ msgstr "Échantillons entrés par"
 msgid "Select Collection Date"
 msgstr "Sélectionner la date de collecte"
 
-#: app/batch/add-batch.php:233
+#: app/batch/add-batch.php:224
 msgid "Date Sample Receieved at Lab"
 msgstr "Date de réception de l'échantillon au laboratoire"
 
-#: app/batch/add-batch.php:236 app/batch/edit-batch.php:214
+#: app/batch/add-batch.php:227 app/batch/edit-batch.php:178
 msgid "Select Received at Lab Date"
 msgstr "Sélectionner la date de réception au laboratoire"
 
-#: app/batch/add-batch.php:247 app/batch/edit-batch.php:235
+#: app/batch/add-batch.php:238 app/batch/edit-batch.php:199
 msgid "Positions"
 msgstr "Positions"
 
-#: app/batch/add-batch.php:250 app/batch/edit-batch.php:237
+#: app/batch/add-batch.php:241 app/batch/edit-batch.php:201
 msgid "Please select the postion"
 msgstr "Veuillez sélectionner le poste"
 
-#: app/batch/add-batch.php:252 app/batch/edit-batch.php:238
+#: app/batch/add-batch.php:243 app/batch/edit-batch.php:202
 #: app/global-config/editGlobalConfig.php:464
 #: app/global-config/editGlobalConfig.php:637
 #: app/global-config/editGlobalConfig.php:875
@@ -4756,7 +4762,7 @@ msgstr "Veuillez sélectionner le poste"
 msgid "Numeric"
 msgstr "Numérique"
 
-#: app/batch/add-batch.php:255 app/batch/edit-batch.php:239
+#: app/batch/add-batch.php:246 app/batch/edit-batch.php:203
 #: app/global-config/editGlobalConfig.php:465
 #: app/global-config/editGlobalConfig.php:638
 #: app/global-config/editGlobalConfig.php:876
@@ -4766,7 +4772,7 @@ msgstr "Numérique"
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
-#: app/batch/add-batch.php:261 app/batch/edit-batch.php:222
+#: app/batch/add-batch.php:252 app/batch/edit-batch.php:186
 #: app/cd4/management/cd4-clinic-report.php:116
 #: app/cd4/management/cd4-clinic-report.php:224
 #: app/cd4/management/cd4-clinic-report.php:326
@@ -4907,7 +4913,7 @@ msgstr "Alphanumérique"
 msgid "Sample Type"
 msgstr "Type d'échantillon"
 
-#: app/batch/add-batch.php:263 app/batch/edit-batch.php:224
+#: app/batch/add-batch.php:254 app/batch/edit-batch.php:188
 #: app/cd4/management/cd4-clinic-report.php:118
 #: app/cd4/management/cd4-clinic-report.php:226
 #: app/cd4/management/cd4-clinic-report.php:328
@@ -4959,7 +4965,7 @@ msgstr "Type d'échantillon"
 msgid "Please select sample type"
 msgstr "Veuillez sélectionner le type d'échantillon"
 
-#: app/batch/add-batch.php:274 app/cd4/management/cd4-export-data.php:237
+#: app/batch/add-batch.php:265 app/cd4/management/cd4-export-data.php:237
 #: app/cd4/management/cd4-export-data.php:262
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
@@ -4992,23 +4998,23 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 msgid "Funding Source"
 msgstr "Source de financement"
 
-#: app/batch/add-batch.php:287 app/batch/edit-batch.php:258
+#: app/batch/add-batch.php:278 app/batch/edit-batch.php:222
 msgid "Sort By"
 msgstr "Trier par"
 
-#: app/batch/add-batch.php:295 app/batch/edit-batch.php:266
+#: app/batch/add-batch.php:286 app/batch/edit-batch.php:230
 msgid "Sort Type"
 msgstr "Type de tri"
 
-#: app/batch/add-batch.php:305 app/batch/edit-batch.php:275
+#: app/batch/add-batch.php:296 app/batch/edit-batch.php:239
 msgid "Filter Samples"
 msgstr "Filtrer les échantillons"
 
-#: app/batch/add-batch.php:307 app/batch/edit-batch.php:276
+#: app/batch/add-batch.php:298 app/batch/edit-batch.php:240
 msgid "Reset Filters"
 msgstr "Réinitialiser les filtres"
 
-#: app/batch/add-batch.php:310 app/batch/edit-batch.php:278
+#: app/batch/add-batch.php:301 app/batch/edit-batch.php:242
 #: app/cd4/requests/cd4-requests.php:435
 #: app/covid-19/requests/covid-19-requests.php:357
 #: app/eid/requests/eid-requests.php:372
@@ -5019,28 +5025,28 @@ msgstr "Réinitialiser les filtres"
 msgid "Hide Advanced Search Options"
 msgstr "Cacher la recherche avancée"
 
-#: app/batch/add-batch.php:329 app/batch/edit-batch.php:293
+#: app/batch/add-batch.php:320 app/batch/edit-batch.php:257
 msgid "Please enter batch code"
 msgstr "Veuillez saisir le code du lot"
 
-#: app/batch/add-batch.php:329
+#: app/batch/add-batch.php:320
 msgid "This batch code already exists.Try another batch code"
 msgstr "Ce code de lot existe déjà. Essayez un autre code"
 
-#: app/batch/add-batch.php:345 app/batch/batches.php:104
-#: app/batch/edit-batch.php:318 app/classes/Helpers/CustomBatchPdfHelper.php:28
+#: app/batch/add-batch.php:336 app/batch/batches.php:104
+#: app/batch/edit-batch.php:282 app/classes/Helpers/CustomBatchPdfHelper.php:28
 msgid "Lab Assigned Batch Code"
 msgstr "Code de lot attribué au laboratoire"
 
-#: app/batch/add-batch.php:348 app/batch/edit-batch.php:320
+#: app/batch/add-batch.php:339 app/batch/edit-batch.php:284
 msgid "Enter Lab Assigned Batch Code"
 msgstr "Saisir le code de lot attribué par le laboratoire"
 
-#: app/batch/add-batch.php:352
+#: app/batch/add-batch.php:343
 msgid "Automatically select samples for Batch"
 msgstr "Sélection automatique des échantillons pour le lot"
 
-#: app/batch/add-batch.php:367 app/eid/requests/forms/add-burkina-faso.php:460
+#: app/batch/add-batch.php:358 app/eid/requests/forms/add-burkina-faso.php:460
 #: app/generic-tests/requests/add-request.php:726
 #: app/tb/requests/forms/add-burkina-faso.php:495
 #: app/vl/requests/forms/add-burkina-faso.php:674
@@ -5048,7 +5054,7 @@ msgstr "Sélection automatique des échantillons pour le lot"
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
 
-#: app/batch/add-batch.php:368 app/batch/edit-batch.php:364
+#: app/batch/add-batch.php:359 app/batch/edit-batch.php:328
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:75
 #: app/cd4/reference/add-cd4-sample-type.php:57
 #: app/cd4/reference/add-cd4-test-reasons.php:71
@@ -5127,6 +5133,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/tb/results/email-results.php:333
 #: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:316
 #: app/users/edit-profile.php:130 app/users/editUser.php:400
+#: app/vl/program-management/upload-vl-control.php:123
 #: app/vl/reference/add-vl-art-code-details.php:93
 #: app/vl/reference/add-vl-results.php:151
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -5146,7 +5153,7 @@ msgstr "Sauvegarder et Suivant"
 msgid "Cancel"
 msgstr "Annuler"
 
-#: app/batch/add-batch.php:399 app/batch/batches.php:137
+#: app/batch/add-batch.php:390 app/batch/batches.php:137
 #: app/facilities/addFacility.php:799 app/facilities/addFacility.php:886
 #: app/facilities/addFacility.php:1062 app/facilities/editFacility.php:768
 #: app/facilities/editFacility.php:1073
@@ -5159,26 +5166,26 @@ msgstr "Annuler"
 msgid "Select Test Type"
 msgstr "Sélectionnez le Type d'essai"
 
-#: app/batch/add-batch.php:408 app/batch/edit-batch.php:423
+#: app/batch/add-batch.php:399 app/batch/edit-batch.php:387
 msgid "Select User"
 msgstr "Sélectionner un utilisateur"
 
-#: app/batch/add-batch.php:455
+#: app/batch/add-batch.php:446
 msgid ""
 "You have selected more than the allowed number of samples for this platform"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur à celui autorisé "
 "pour cette plate-forme"
 
-#: app/batch/add-batch.php:459
+#: app/batch/add-batch.php:450
 msgid "Please select at least one sample"
 msgstr "Veuillez sélectionner au moins un échantillon"
 
-#: app/batch/add-batch.php:508
+#: app/batch/add-batch.php:499
 msgid "You have to choose a testing platform to proceed"
 msgstr "Vous devez choisir une plateforme d'essaie pour procéder"
 
-#: app/batch/add-batch.php:544 app/batch/edit-batch.php:551
+#: app/batch/add-batch.php:535 app/batch/edit-batch.php:515
 #: app/batch/get-samples-batch.php:230
 msgid "Maximum number of samples allowed for the selected platform"
 msgstr ""
@@ -5247,45 +5254,45 @@ msgstr "Êtes-vous sûr de vouloir supprimer Lot"
 msgid "This action cannot be undone."
 msgstr "Cette action est irréversible."
 
-#: app/batch/batches.php:222
+#: app/batch/batches.php:224
 msgid "Batch deleted successfully"
 msgstr "Suppression de lots réussie"
 
-#: app/batch/edit-batch-position.php:37
+#: app/batch/edit-batch-position.php:38
 msgid " | Edit Batch Position"
 msgstr " | Modifier la position du lot"
 
-#: app/batch/edit-batch-position.php:112
+#: app/batch/edit-batch-position.php:113
 msgid "Edit Batch Controls Position"
 msgstr "Éditer la position des contrôles de lots"
 
-#: app/batch/edit-batch.php:11 app/batch/edit-batch.php:180
+#: app/batch/edit-batch.php:39 app/batch/edit-batch.php:144
 #: app/system/translate-strings.php:124
 msgid "Edit Batch"
 msgstr "Éditer un lot"
 
-#: app/batch/edit-batch.php:293
+#: app/batch/edit-batch.php:257
 msgid "This batch code already exists.Try another code"
 msgstr "Ce code de lot existe déjà, essayez un autre code"
 
-#: app/batch/edit-batch.php:331 app/batch/get-samples-batch.php:190
+#: app/batch/edit-batch.php:295 app/batch/get-samples-batch.php:190
 #: app/facilities/getFacilityMapUser.php:38
 #: app/specimen-referral-manifest/get-samples-for-manifest.php:105
 msgid "Number of unselected samples"
 msgstr "Nombre d'échantillons non sélectionnés"
 
-#: app/batch/edit-batch.php:352 app/batch/get-samples-batch.php:214
+#: app/batch/edit-batch.php:316 app/batch/get-samples-batch.php:214
 #: app/facilities/getFacilityMapUser.php:57
 #: app/specimen-referral-manifest/get-samples-for-manifest.php:128
 msgid "Number of selected samples"
 msgstr "Nombre d'échantillons sélectionnés"
 
-#: app/batch/edit-batch.php:396
+#: app/batch/edit-batch.php:360
 msgid "You have selected more than allowed number of samples"
 msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur au nombre autorisé"
 
-#: app/batch/edit-batch.php:401
+#: app/batch/edit-batch.php:365
 #: app/specimen-referral-manifest/add-manifest.php:268
 #: app/specimen-referral-manifest/edit-manifest.php:351
 msgid "Please select one or more samples"
@@ -5925,7 +5932,7 @@ msgstr "Veuillez choisir le sexe"
 #: app/cd4/requests/cd4-requests.php:289
 #: app/cd4/results/cd4-manual-results.php:156
 #: app/cd4/results/email-results.php:179
-#: app/classes/Utilities/MiscUtility.php:232
+#: app/classes/Utilities/MiscUtility.php:238
 #: app/covid-19/management/covid-19-clinic-report.php:161
 #: app/covid-19/management/covid-19-clinic-report.php:260
 #: app/covid-19/management/covid-19-clinic-report.php:360
@@ -5991,7 +5998,7 @@ msgstr "Homme"
 #: app/cd4/requests/cd4-requests.php:292
 #: app/cd4/results/cd4-manual-results.php:157
 #: app/cd4/results/email-results.php:182
-#: app/classes/Utilities/MiscUtility.php:233
+#: app/classes/Utilities/MiscUtility.php:239
 #: app/covid-19/management/covid-19-clinic-report.php:162
 #: app/covid-19/management/covid-19-clinic-report.php:261
 #: app/covid-19/management/covid-19-clinic-report.php:361
@@ -6058,7 +6065,7 @@ msgstr "Femme"
 #: app/cd4/results/cd4-manual-results.php:158
 #: app/cd4/results/email-results.php:185
 #: app/cd4/results/pdf/result-pdf-rwanda.php:135
-#: app/classes/Utilities/MiscUtility.php:234
+#: app/classes/Utilities/MiscUtility.php:240
 #: app/covid-19/management/covid-19-clinic-report.php:163
 #: app/covid-19/management/covid-19-clinic-report.php:262
 #: app/covid-19/management/covid-19-clinic-report.php:362
@@ -8184,6 +8191,7 @@ msgstr "Labo"
 #: app/hepatitis/management/hepatitis-sample-rejection-report.php:56
 #: app/tb/management/tb-sample-rejection-report.php:54
 #: app/vl/program-management/sampleRejectionReport.php:81
+#: app/vl/program-management/upload-vl-control.php:81
 msgid "Please select lab name"
 msgstr "Veuillez sélectionner le nom du laboratoire"
 
@@ -9881,7 +9889,7 @@ msgstr "Des échantillons de ce manifeste ont été activés"
 #: app/generic-tests/requests/add-request-helper.php:48
 #: app/generic-tests/requests/edit-request-helper.php:52
 #: app/vl/requests/addVlRequestHelper.php:55
-#: app/vl/requests/editVlRequestHelper.php:65
+#: app/vl/requests/editVlRequestHelper.php:64
 msgid "Please enter all mandatory fields to save the test request"
 msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
@@ -9905,8 +9913,8 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: app/hepatitis/results/hepatitis-update-result-helper.php:104
 #: app/patients/save-patient-helper.php:88
 #: app/vl/requests/addVlRequestHelper.php:459
-#: app/vl/requests/editVlRequestHelper.php:425
-#: app/vl/results/updateVlTestResultHelper.php:288
+#: app/vl/requests/editVlRequestHelper.php:424
+#: app/vl/results/updateVlTestResultHelper.php:289
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -11638,9 +11646,9 @@ msgid "INVALID REQUEST"
 msgstr "DEMANDE NON VALIDE"
 
 #: app/classes/ErrorHandlers/ErrorResponseGenerator.php:22
-#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:77
-#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:88
-#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:111
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:80
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:91
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:114
 #: app/error/error.php:9
 msgid "Internal Server Error"
 msgstr "Erreur interne du serveur"
@@ -11657,8 +11665,20 @@ msgstr "Interdit"
 msgid "Unauthorized"
 msgstr "Non autorisé"
 
-#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:90
-#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:113
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:26
+msgid "Bad Request"
+msgstr "Requête erronée"
+
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:27
+msgid "Service Unavailable"
+msgstr "Service non disponible"
+
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:28
+msgid "Gateway Timeout"
+msgstr "Délai d'attente de la passerelle"
+
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:93
+#: app/classes/ErrorHandlers/ErrorResponseGenerator.php:116
 #: app/error/error.php:10
 msgid "Sorry, something went wrong. Please try again later."
 msgstr ""
@@ -11741,17 +11761,17 @@ msgstr ""
 "Désolé, nous n'avons pas pu résoudre cette demande Nous n'avons pas pu "
 "résoudre cette demande"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:50
+#: app/classes/Middlewares/App/AclMiddleware.php:51
 msgid "Sorry"
 msgstr "Désolé"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:50
+#: app/classes/Middlewares/App/AclMiddleware.php:51
 msgid "You do not have permission to access this page or resource."
 msgstr ""
 "Vous n'avez pas l'autorisation d'accéder à cette page ou à cette ressource."
 
-#: app/classes/Middlewares/App/AppAuthMiddleware.php:58
-#: app/login/loginProcess.php:133
+#: app/classes/Middlewares/App/AppAuthMiddleware.php:47
+#: app/login/loginProcess.php:129
 msgid "Please change your password to proceed."
 msgstr "Veuillez modifier votre mot de passe pour continuer."
 
@@ -11767,15 +11787,15 @@ msgstr "Jeton de demande invalide. Veuillez rafraîchir la page et réessayer."
 msgid "HIV Viral Load"
 msgstr "Charge virale du VIH"
 
-#: app/classes/Services/TestsService.php:31
+#: app/classes/Services/TestsService.php:33
 msgid "HIV Recency"
 msgstr "Récence du VIH"
 
-#: app/classes/Services/TestsService.php:86
+#: app/classes/Services/TestsService.php:98
 msgid "Tubercolosis"
 msgstr "Tuberculose"
 
-#: app/classes/Services/TestsService.php:97
+#: app/classes/Services/TestsService.php:111
 msgid "Other Tests"
 msgstr "Autres tests"
 
@@ -13828,7 +13848,7 @@ msgstr "Date de réception"
 #: app/vl/results/forms/update-drc-result.php:435
 #: app/vl/results/forms/update-drc-result.php:456
 #: app/vl/results/forms/update-drc-result.php:491
-#: app/vl/results/forms/update-sierraleone-result.php:864
+#: app/vl/results/forms/update-sierraleone-result.php:868
 #: app/vl/results/forms/update-southsudan-result.php:860
 msgid "Please enter date"
 msgstr "Veuillez saisir la date"
@@ -17215,6 +17235,7 @@ msgstr "Pas de Cartographie des FOSA pour sélection du type de test"
 
 #: app/facilities/upload-facilities-helper.php:65
 #: app/facilities/upload-facilities-helper.php:72
+#: app/vl/program-management/upload-vl-control-helper.php:61
 #: app/vl/requests/upload-storage-helper.php:64
 #: app/vl/requests/upload-storage-helper.php:72
 msgid "Please enter all the mandatory fields in the excel sheet"
@@ -17233,6 +17254,7 @@ msgid "Upload Facilities in Bulk"
 msgstr "Téléchargement en bloc des FOSA"
 
 #: app/facilities/upload-facilities.php:104
+#: app/vl/program-management/upload-vl-control.php:71
 #: app/vl/requests/upload-storage.php:127
 msgid "Total number of records in file"
 msgstr "Nombre total d'enregistrements dans le fichier"
@@ -17266,11 +17288,13 @@ msgid "Update if Facility Name and Facility Code match"
 msgstr "Télécharger si les noms et codes de la FOSA correspondent"
 
 #: app/facilities/upload-facilities.php:126
+#: app/vl/program-management/upload-vl-control.php:104
 #: app/vl/requests/upload-storage.php:102
 msgid "Upload File"
 msgstr "Télécharger le fichier"
 
 #: app/facilities/upload-facilities.php:129
+#: app/vl/program-management/upload-vl-control.php:107
 #: app/vl/requests/upload-storage.php:105
 msgid "Click to upload file"
 msgstr "Cliquez pour télécharger le fichier"
@@ -19294,9 +19318,6 @@ msgid "Enter result"
 msgstr "Saisir le résultat"
 
 #: app/global-config/editGlobalConfig.php:9
-msgid "Edit General Configuration"
-msgstr "Modifier la configuration générale"
-
 #: app/global-config/editGlobalConfig.php:62
 #: app/global-config/editGlobalConfig.php:65
 #: app/system-admin/admin-header.php:140 app/system/translate-strings.php:14
@@ -19304,12 +19325,13 @@ msgid "System Configuration"
 msgstr "Configuration du système"
 
 #: app/global-config/editGlobalConfig.php:77
-msgid "Export General Config"
-msgstr "Exporter la configuration générale"
+msgid "Export Config"
+msgstr "Exporter la configuration"
 
 #: app/global-config/editGlobalConfig.php:80
-msgid "Edit General Config"
-msgstr "Modifier la configuration générale"
+#: app/system-admin/edit-config/index.php:35
+msgid "Edit System Configuration"
+msgstr "Modifier la configuration du système"
 
 #: app/global-config/editGlobalConfig.php:93
 #: app/system-admin/edit-config/index.php:105
@@ -20117,7 +20139,7 @@ msgstr "Saisir le nom du champ"
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: app/header.php:36 app/login/login.php:38
+#: app/header.php:36 app/login/login.php:40
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
@@ -21311,30 +21333,32 @@ msgstr ""
 "fichier est au bon format."
 
 #: app/instruments/instruments.php:11 app/instruments/instruments.php:18
-#: app/system/translate-strings.php:26 app/vl/reference/vl-results.php:43
+#: app/system/translate-strings.php:26
+#: app/vl/program-management/upload-vl-control.php:88
+#: app/vl/reference/vl-results.php:43
 msgid "Instruments"
 msgstr "Instruments"
 
-#: app/login/login.php:41
+#: app/login/login.php:43
 msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
-#: app/login/login.php:68 app/login/login.php:180
+#: app/login/login.php:70 app/login/login.php:182
 #: app/system-admin/login/login.php:68
 msgid "Login"
 msgstr "Connexion"
 
-#: app/login/login.php:158 app/system-admin/login/login.php:59
+#: app/login/login.php:160 app/system-admin/login/login.php:59
 #: app/system-admin/setup/index.php:86 app/users/editUser.php:118
 #: app/users/editUser.php:120 app/users/users.php:30 app/users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
-#: app/login/login.php:158
+#: app/login/login.php:160
 msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
-#: app/login/login.php:163 app/setup/index.php:432
+#: app/login/login.php:165 app/setup/index.php:432
 #: app/system-admin/edit-config/resetPassword.php:36
 #: app/system-admin/edit-config/resetPassword.php:38
 #: app/system-admin/login/login.php:63
@@ -21349,28 +21373,28 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: app/login/login.php:163
+#: app/login/login.php:165
 msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
-#: app/login/login.php:168
+#: app/login/login.php:170
 msgid "Get New Image"
 msgstr "Obtenir une nouvelle image"
 
-#: app/login/login.php:173
+#: app/login/login.php:175
 msgid "Please enter the text from the image"
 msgstr "Veuillez saisir le texte de l'image"
 
-#: app/login/login.php:239
+#: app/login/login.php:241
 msgid "Text you entered from the image is incorrect. Please try again"
 msgstr ""
 "Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer"
 
-#: app/login/login.php:249
+#: app/login/login.php:251
 msgid "Please enter the text from the image to proceed."
 msgstr "Veuillez saisir le texte de l'image pour continuer."
 
-#: app/login/loginProcess.php:62
+#: app/login/loginProcess.php:60
 msgid ""
 "You have exhausted the maximum number of login attempts. Please retry login "
 "after some time."
@@ -21378,7 +21402,7 @@ msgstr ""
 "Vous avez épuisé le nombre maximum de tentatives de connexion. Veuillez "
 "réessayer après un certain temps."
 
-#: app/login/loginProcess.php:78 app/login/loginProcess.php:139
+#: app/login/loginProcess.php:76 app/login/loginProcess.php:135
 #: app/system-admin/login/adminLoginProcess.php:39
 msgid "Please check your login credentials"
 msgstr "Veuillez vérifier vos identifiants de connexion"
@@ -21544,6 +21568,10 @@ msgstr "Les informations sur le patient ont été sauvegardées avec succès"
 #: app/patients/view-patients.php:25
 msgid "Add Patients"
 msgstr "Ajouter des patients"
+
+#: app/remote/requests.php:92
+msgid "Unable to process the request"
+msgstr "Impossible de traiter la demande"
 
 #: app/roles/addRole.php:109 app/roles/addRole.php:116 app/roles/roles.php:27
 msgid "Add Role"
@@ -21967,10 +21995,6 @@ msgstr "URL de l'API"
 #: app/system-admin/edit-config/index.php:8
 msgid "Edit Configuration"
 msgstr "Modifier la configuration"
-
-#: app/system-admin/edit-config/index.php:35
-msgid "Edit System Configuration"
-msgstr "Modifier la configuration du système"
 
 #: app/system-admin/edit-config/index.php:38
 msgid "Manage System Config"
@@ -22753,10 +22777,6 @@ msgstr "Exporter les données CV dans Excel"
 #: app/system/translate-strings.php:122
 msgid "View Batches"
 msgstr "Voir les lots"
-
-#: app/system/translate-strings.php:123
-msgid "Add Batch"
-msgstr "Ajouter un lot"
 
 #: app/system/translate-strings.php:126
 msgid "Print Results"
@@ -23984,7 +24004,7 @@ msgstr ""
 "Type de fichier non valide. Veuillez télécharger le format d'image correct "
 "comme JPG ou JPEG ou PNG"
 
-#: app/users/addUserHelper.php:107
+#: app/users/addUserHelper.php:106
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
@@ -24432,6 +24452,42 @@ msgstr "Sélectionner le congélateur"
 msgid "Volume of Sample(ml)"
 msgstr "Volume de l'échantillon (ml)"
 
+#: app/vl/program-management/upload-vl-control-helper.php:126
+msgid "Controls added successfully"
+msgstr "Contrôles ajoutés avec succès"
+
+#: app/vl/program-management/upload-vl-control-helper.php:128
+msgid "Bulk Controls Import Failed"
+msgstr "Échec de l'importation des contrôles en bloc"
+
+#: app/vl/program-management/upload-vl-control.php:43
+msgid "Upload Controls in Bulk"
+msgstr "Téléchargement de contrôles en masse"
+
+#: app/vl/program-management/upload-vl-control.php:50
+msgid "Controls"
+msgstr "Contrôles"
+
+#: app/vl/program-management/upload-vl-control.php:71
+msgid "Number of Controls added"
+msgstr "Nombre de contrôles ajoutés"
+
+#: app/vl/program-management/upload-vl-control.php:71
+msgid "Number of Controls not added"
+msgstr "Nombre de contrôles non ajoutés"
+
+#: app/vl/program-management/upload-vl-control.php:108
+msgid ""
+"Click here to download the Excel format for uploading vl controls in bulk"
+msgstr ""
+"Cliquez ici pour télécharger le format Excel pour télécharger des contrôles "
+"vl en masse"
+
+#: app/vl/program-management/upload-vl-control.php:141
+#: app/vl/requests/sample-storage.php:467
+msgid "Select Lab"
+msgstr "Sélectionner un laboratoire"
+
 #: app/vl/program-management/vl-export-data.php:424
 msgid "Lab Assigned_code"
 msgstr "Code assigné au laboratoire"
@@ -24459,7 +24515,11 @@ msgstr "Choisissez le type de contrôle"
 msgid "Choose control type"
 msgstr "Choisissez le type de contrôle"
 
-#: app/vl/program-management/vlControlReport.php:151
+#: app/vl/program-management/vlControlReport.php:79
+msgid "Upload Data"
+msgstr "Chargement de données"
+
+#: app/vl/program-management/vlControlReport.php:152
 msgid ""
 "Please choose Sample Test Date Range and Control Type to generate the report"
 msgstr ""
@@ -24739,7 +24799,6 @@ msgid "Add Viral Load Sample Rejection Reasons"
 msgstr "Ajouter les motifs du rejet de l'échantillon de charge virale"
 
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:13
-#: app/vl/reference/vl-sample-rejection-reasons.php:9
 #: app/vl/reference/vl-sample-rejection-reasons.php:17
 #: app/vl/reference/vl-sample-rejection-reasons.php:20
 msgid "Viral Load Sample Rejection Reasons"
@@ -24747,14 +24806,14 @@ msgstr "Motifs du rejet de l'échantillon de charge virale"
 
 #: app/vl/reference/add-vl-sample-type.php:10
 #: app/vl/reference/vl-sample-type.php:33
-msgid "Add Viral Load Sample Type"
-msgstr "Ajouter un type d'échantillon de charge virale"
+msgid "Add VL Sample Type"
+msgstr "Ajouter un type d'échantillon VL"
 
 #: app/vl/reference/add-vl-sample-type.php:13
-#: app/vl/reference/vl-sample-type.php:9 app/vl/reference/vl-sample-type.php:16
-#: app/vl/reference/vl-sample-type.php:19
-msgid "Viral Load Sample Type"
-msgstr "Type d'échantillon de la CV"
+#: app/vl/reference/edit-vl-sample-type.php:23
+#: app/vl/reference/vl-sample-type.php:9
+msgid "VL Sample Type"
+msgstr "Type d'échantillon VL"
 
 #: app/vl/reference/add-vl-test-failure-reason.php:10
 msgid "Add VL Test Failure Reasons"
@@ -24804,40 +24863,41 @@ msgstr "Ajouter les raisons du test VL"
 msgid "VL Test Reasons"
 msgstr "Raisons du test VL"
 
+#: app/vl/reference/edit-vl-sample-type.php:20
+msgid "Edit VL Sample Type"
+msgstr "Modifier le type d'échantillon VL"
+
 #: app/vl/reference/edit-vl-test-failure-reason.php:20
 msgid "Edit VL Test Failure Reasons"
 msgstr "Modifier les motifs de l'échec du test VL"
 
-#: app/vl/reference/save-vl-art-code-details-helper.php:43
+#: app/vl/reference/save-vl-art-code-details-helper.php:39
 msgid "Art Code details saved successfully"
 msgstr "Les détails du code TARV ont été enregistrés avec succès"
 
-#: app/vl/reference/save-vl-results-helper.php:44
+#: app/vl/reference/save-vl-results-helper.php:42
 msgid "VL Results details saved successfully"
 msgstr "Les détails des résultats de CV ont été sauvegardés avec succès"
 
-#: app/vl/reference/save-vl-sample-rejection-reasons-helper.php:41
+#: app/vl/reference/save-vl-sample-rejection-reasons-helper.php:40
 msgid "VL Sample Rejection Reasons details added successfully"
 msgstr ""
 "Les détails des motifs du rejet de l'échantillon VL ont été ajoutés avec "
 "succès"
 
-#: app/vl/reference/save-vl-sample-type-helper.php:40
+#: app/vl/reference/save-vl-sample-type-helper.php:36
 msgid "VL Sample details saved successfully"
 msgstr "Les détails de l'échantillon CV ont été sauvegardés avec succès"
 
-#: app/vl/reference/save-vl-test-failure-reason-helper.php:36
+#: app/vl/reference/save-vl-test-failure-reason-helper.php:35
 msgid "VL Test Failure Reason Saved Successfully"
 msgstr "Motifs de l'échec du test VL Sauvegardé avec succès"
 
-#: app/vl/reference/save-vl-test-reasons-helper.php:37
+#: app/vl/reference/save-vl-test-reasons-helper.php:35
 msgid "VL Test Reason details saved successfully"
 msgstr "les details de raisons de test CV ont été sauvegardés avec succès"
 
 #: app/vl/reference/vl-art-code-details.php:9
-msgid "Viral Load Art Code Details"
-msgstr "Details code TARV de la CV"
-
 #: app/vl/reference/vl-art-code-details.php:19
 msgid "VL ART Regimen"
 msgstr "VL Régime ART"
@@ -24850,9 +24910,18 @@ msgstr "Ajouter un protocole ARV, CV"
 msgid "Viral Load Results"
 msgstr "Résultats de la charge virale"
 
+#: app/vl/reference/vl-sample-rejection-reasons.php:9
+msgid "VL Sample Rejection Reasons"
+msgstr "Raisons du rejet de l'échantillon VL"
+
 #: app/vl/reference/vl-sample-rejection-reasons.php:34
 msgid "Add VL Sample Rejection Reasons"
 msgstr "Ajouter les motifs du rejet de l'échantillon CV"
+
+#: app/vl/reference/vl-sample-type.php:16
+#: app/vl/reference/vl-sample-type.php:19
+msgid "VL Sample Types"
+msgstr "Types d'échantillons VL"
 
 #: app/vl/reference/vl-test-failure-reasons.php:33
 msgid "Add VL Test Reason"
@@ -24866,7 +24935,7 @@ msgstr "Motif de l'échec"
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: app/vl/requests/editVlRequestHelper.php:417
+#: app/vl/requests/editVlRequestHelper.php:416
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -25456,10 +25525,6 @@ msgstr "Date de sortie"
 msgid "Please select machine"
 msgstr "Veuillez sélectionner une machine"
 
-#: app/vl/requests/sample-storage.php:467
-msgid "Select Lab"
-msgstr "Sélectionner un laboratoire"
-
 #: app/vl/requests/upload-storage-helper.php:142
 msgid "Lab Storage added successfully"
 msgstr "Lab Storage ajouté avec succès"
@@ -25582,7 +25647,7 @@ msgstr "Résultat de la charge virale (copiesl/ml)"
 msgid "Log Value"
 msgstr "Valeur logarithmique"
 
-#: app/vl/result-mail/editTestResultEmailConfigHelper.php:25
+#: app/vl/result-mail/editTestResultEmailConfigHelper.php:26
 msgid "Test Result Email Config values updated successfully."
 msgstr "Configuration des résultats par e-mail et SMS mise à jour avec succès."
 
@@ -25858,7 +25923,7 @@ msgstr ""
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: app/vl/results/updateVlTestResultHelper.php:273
+#: app/vl/results/updateVlTestResultHelper.php:274
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -25952,6 +26017,24 @@ msgstr ""
 #: public/assets/js/main.js.php:835
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
+
+#~ msgid " | Add Batch"
+#~ msgstr " | Ajouter un lot"
+
+#~ msgid "Edit General Configuration"
+#~ msgstr "Modifier la configuration générale"
+
+#~ msgid "Edit General Config"
+#~ msgstr "Modifier la configuration générale"
+
+#~ msgid "Add Viral Load Sample Type"
+#~ msgstr "Ajouter un type d'échantillon de charge virale"
+
+#~ msgid "Viral Load Sample Type"
+#~ msgstr "Type d'échantillon de la CV"
+
+#~ msgid "Viral Load Art Code Details"
+#~ msgstr "Details code TARV de la CV"
 
 #~ msgid "Batch Code : "
 #~ msgstr "Code de lot : "
@@ -26376,9 +26459,6 @@ msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
 
 #~ msgid "Not Recorded"
 #~ msgstr "Pas enregistré"
-
-#~ msgid "Control"
-#~ msgstr "Contrôle"
 
 #~ msgid "Sample Collection Date cannot be grater than Today Date"
 #~ msgstr ""

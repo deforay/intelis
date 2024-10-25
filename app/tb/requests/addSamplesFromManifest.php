@@ -191,7 +191,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('#sampleId').val(data);
 					} else {
 						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'covid19');
+							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'tb');
 						<?php } ?>
 					}
 				});

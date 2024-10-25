@@ -18,8 +18,14 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $sampleData = [];
-$sampleQuery = 'SELECT covid19_id FROM form_covid19 WHERE sample_code IS NULL AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';
-$sampleResult = $db->rawQuery($sampleQuery, [$_POST['samplePackageCode'], $_POST['samplePackageCode']]);
+$sampleCode = $_POST['samplePackageCode'];
+$sampleQuery = "SELECT covid.covid19_id FROM form_covid19 as covid WHERE covid.sample_package_code IN
+                    (
+                        '$sampleCode',
+                        (SELECT DISTINCT sample_package_code FROM form_covid19 WHERE remote_sample_code LIKE '$sampleCode')
+                    )";
+
+$sampleResult = $db->rawQuery($sampleQuery);
 
 $sampleData = array_column($sampleResult, 'covid19_id');
 echo implode(',', $sampleData);

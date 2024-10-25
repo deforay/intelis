@@ -17,8 +17,15 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $sampleData = [];
-$sampleQuery = 'SELECT hepatitis_id FROM form_hepatitis
-                    WHERE sample_code IS NULL AND (sample_package_code LIKE ? OR remote_sample_code LIKE ?)';
-$sampleResult = $db->rawQuery($sampleQuery, [$_POST['samplePackageCode'], $_POST['samplePackageCode']]);
+$sampleCode = $_POST['samplePackageCode'];
+$sampleQuery = "SELECT vl.hepatitis_id
+                    FROM form_hepatitis as vl
+                    WHERE vl.sample_package_code IN
+                    (
+                        '$sampleCode',
+                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$sampleCode')
+                    )";
+
+$sampleResult = $db->rawQuery($sampleQuery);
 $sampleData = array_column($sampleResult, 'hepatitis_id');
 echo implode(',', $sampleData);
