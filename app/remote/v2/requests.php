@@ -28,10 +28,9 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var RequestsService $stsRequestsService */
 $stsRequestsService = ContainerRegistry::get(RequestsService::class);
 
-$authToken = ApiService::getAuthorizationBearerToken($request);
-
 /** @var TokensService $stsTokensService */
 $stsTokensService = ContainerRegistry::get(TokensService::class);
+
 
 $payload = [];
 
@@ -40,6 +39,13 @@ try {
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
+
+    $authToken = ApiService::getAuthorizationBearerToken($request);
+
+    $bearerToken = $stsTokensService->getAuthorizationBearerToken($request);
+    $apiService->setBearerToken($bearerToken);
+
+
     $data = $apiService->getJsonFromRequest($request, true);
 
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');

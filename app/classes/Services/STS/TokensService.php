@@ -72,4 +72,16 @@ final class TokensService
 
         return false;
     }
+
+    public function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
+    {
+        $authorization = $request->getHeaderLine('Authorization');
+
+        if (preg_match('/^Bearer\s+(\S+)$/i', $authorization, $matches)) {
+            return $matches[1];
+        }
+
+        return null;
+    }
 }
+
