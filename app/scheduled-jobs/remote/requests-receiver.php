@@ -14,6 +14,7 @@ ini_set('max_execution_time', 300000);
 
 use JsonMachine\Items;
 use App\Services\ApiService;
+use GuzzleHttp\Promise\Utils;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -51,8 +52,6 @@ if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&vers
     LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
     return false;
 }
-$arr = $general->getGlobalConfig();
-
 
 //get remote data
 if (empty($labId)) {
@@ -68,38 +67,75 @@ if (!empty($forceSyncModule)) {
     $systemConfig['modules'][$forceSyncModule] = true;
 }
 
+$stsBearerToken = $general->getSTSToken();
+
+$apiService->setBearerToken($stsBearerToken);
+
+$basePayload = [
+    'labId' => $labId,
+    'transactionId' => $transactionId
+];
+
+$promises = [];
+
+// Record the start time of the entire process
+$startTime = microtime(true);
+
+$responsePayload = [];
+foreach ($systemConfig['modules'] as $module => $status) {
+    if ($status === true) {
+        $basePayload['testType'] = $module;
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) != "") {
+            $basePayload['manifestCode'] = $manifestCode;
+        }
+        $promises[$module] = $apiService->post(
+            "$remoteURL/remote/v2/requests.php",
+            $basePayload,
+            gzip: true,
+            async: true
+        )->then(function ($response) use (&$responsePayload, $module, $cliMode) {
+            $responsePayload[$module] = $response->getBody()->getContents();
+            if ($cliMode) {
+                echo "Response for $module received at: " . microtime(true) . PHP_EOL;
+            }
+        })->otherwise(function ($reason) use ($module, $cliMode) {
+            if ($cliMode) {
+                echo "STS Request sync for $module failed: " . $reason . PHP_EOL;
+            }
+            LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
+        });
+    }
+}
+
+// Wait for all promises to settle
+Utils::settle($promises)->wait();
+
+// Record the end time of the entire process
+$endTime = microtime(true);
+
+// Print the total execution time
+echo "Total requests download time: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
+
 
 /*
- ****************************************************************
- * HIV VL TEST REQUESTS
- ****************************************************************
- */
-
-$request = [];
-if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-
-    $url = "$remoteURL/remote/remote/getRequests.php";
-    $payload = [
-        'labId' => $labId,
-        'module' => 'vl'
-    ];
-    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-    $columnList = [];
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+****************************************************************
+* HIV VL TEST REQUESTS
+****************************************************************
+*/
+try {
+    $request = [];
+    if (!empty($responsePayload['vl']) && $responsePayload['vl'] != '[]' && JsonUtility::isJSON($responsePayload['vl'])) {
 
         if ($cliMode) {
-            echo "Syncing data for HIV VL" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for HIV VL" . PHP_EOL;
         }
 
         $options = [
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['vl'], $options);
 
         $removeKeys = [
             'vl_sample_id',
@@ -126,13 +162,14 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
+                $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-              
+
                 $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
-                                        WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
@@ -210,6 +247,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 if ($id === true) {
                     $counter++;
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
@@ -221,44 +259,41 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter VL record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $responsePayload['vl'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
 
-
 /*
-  ****************************************************************
-  *  EID TEST REQUESTS
-  ****************************************************************
-  */
+****************************************************************
+*  EID TEST REQUESTS
+****************************************************************
+*/
 
-$request = [];
-
-if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-    $url = "$remoteURL/remote/remote/eid-test-requests.php";
-
-    $payload = [
-        'labId' => $labId,
-        'module' => 'eid'
-    ];
-    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+try {
+    $request = [];
+    if (!empty($responsePayload['eid']) && $responsePayload['eid'] != '[]' && JsonUtility::isJSON($responsePayload['eid'])) {
 
         if ($cliMode) {
-            echo "Syncing data for EID" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for EID" . PHP_EOL;
         }
 
         $options = [
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['eid'], $options);
 
         $removeKeys = [
             'eid_id',
@@ -285,7 +320,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
-                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -353,7 +388,11 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
                 if ($id === true) {
                     $counter++;
                 }
+                $db->commitTransaction();
+
+                echo $db->getLastQuery();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -364,42 +403,40 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter EID record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $responsePayload['eid'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
-
-
 /*
-  ****************************************************************
-  *  COVID-19 TEST REQUESTS
-  ****************************************************************
-  */
-$request = [];
+****************************************************************
+*  COVID-19 TEST REQUESTS
+****************************************************************
+*/
 
-if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
-    $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
-
-    $payload = array(
-        'labId' => $labId,
-        'module' => 'covid19'
-    );
-    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && isset($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+try {
+    $request = [];
+    if (!empty($responsePayload['covid19']) && $responsePayload['covid19'] != '[]' && JsonUtility::isJSON($responsePayload['covid19'])) {
 
         if ($cliMode) {
-            echo "Syncing data for Covid-19" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for Covid-19" . PHP_EOL;
         }
 
         $options = [
-           // 'pointer' => '/result',
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['covid19'], $options);
 
         $removeKeys = [
             'covid19_id',
@@ -429,7 +466,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 
                 //check exist remote
                 $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
-                                WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                                WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -531,19 +568,19 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
                     $db->where('covid19_id', $id);
                     $db->delete("covid19_tests");
                     foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
-                        $covid19TestData = array(
-                            "covid19_id"                => $id,
-                            "facility_id"               => $cdata['facility_id'],
-                            "test_name"                 => $cdata['test_name'],
-                            "tested_by"                 => $cdata['tested_by'],
-                            "sample_tested_datetime"    => $cdata['sample_tested_datetime'],
-                            "testing_platform"          => $cdata['testing_platform'],
-                            "instrument_id"             => $cdata['instrument_id'],
-                            "kit_lot_no"                => $cdata['kit_lot_no'],
-                            "kit_expiry_date"           => $cdata['kit_expiry_date'],
-                            "result"                    => $cdata['result'],
-                            "updated_datetime"          => $cdata['updated_datetime']
-                        );
+                        $covid19TestData = [
+                            "covid19_id" => $id,
+                            "facility_id" => $cdata['facility_id'],
+                            "test_name" => $cdata['test_name'],
+                            "tested_by" => $cdata['tested_by'],
+                            "sample_tested_datetime" => $cdata['sample_tested_datetime'],
+                            "testing_platform" => $cdata['testing_platform'],
+                            "instrument_id" => $cdata['instrument_id'],
+                            "kit_lot_no" => $cdata['kit_lot_no'],
+                            "kit_expiry_date" => $cdata['kit_expiry_date'],
+                            "result" => $cdata['result'],
+                            "updated_datetime" => $cdata['updated_datetime']
+                        ];
                         $db->insert("covid19_tests", $covid19TestData);
                     }
                 }
@@ -563,44 +600,41 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter Covid-19 record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $responsePayload['covid19'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
-
 
 /*
 ****************************************************************
 * Hepatitis TEST REQUESTS
 ****************************************************************
 */
-$request = [];
 
-if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-    $url = "$remoteURL/remote/remote/hepatitis-test-requests.php";
-
-    $payload = [
-        'labId' => $labId,
-        'module' => 'hepatitis'
-    ];
-    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && isset($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+try {
+    $request = [];
+    if (!empty($responsePayload['hepatitis']) && $responsePayload['hepatitis'] != '[]' && JsonUtility::isJSON($responsePayload['hepatitis'])) {
 
         if ($cliMode) {
-            echo "Syncing data for Hepatitis" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for Hepatitis" . PHP_EOL;
         }
 
         $options = [
-            'pointer' => '/result',
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['hepatitis'], $options);
 
 
         $removeKeys = [
@@ -635,11 +669,11 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 
                 //check exist remote
                 $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
-                                        WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
-                    $removeMoreKeys = array(
+                    $removeMoreKeys = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -674,7 +708,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
                         'reason_for_vl_test',
                         'data_from_comorbidities',
                         'data_from_risks'
-                    );
+                    ];
 
                     $request = array_diff_key($request, array_flip($removeMoreKeys));
 
@@ -749,44 +783,41 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter Hepatitis record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $responsePayload['hepatitis'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
-
 /*
 ****************************************************************
 * TB TEST REQUESTS
 ****************************************************************
 */
-$request = [];
 
-if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
-    $url = "$remoteURL/remote/remote/tb-test-requests.php";
-
-    $payload = [
-        'labId' => $labId,
-        'module' => 'tb'
-    ];
-    if (isset($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && isset($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+try {
+    $request = [];
+    if (!empty($responsePayload['tb']) && $responsePayload['tb'] != '[]' && JsonUtility::isJSON($responsePayload['tb'])) {
 
 
         if ($cliMode) {
-            echo "Syncing data for TB" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for TB" . PHP_EOL;
         }
 
         $options = [
-            //'pointer' => '/result',
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['tb'], $options);
 
 
         $removeKeys = [
@@ -811,13 +842,14 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
+                $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
                 $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
-                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
@@ -890,7 +922,9 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
                 if ($id === true) {
                     $counter++;
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -901,47 +935,42 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter TB record(s)" . PHP_EOL;
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $payload, $responsePayload['tb'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
 
 
 /*
- ****************************************************************
- * CD4 TEST REQUESTS
- ****************************************************************
- */
-
-
-$request = [];
-if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
-
-    $url = "$remoteURL/remote/remote/cd4-test-requests.php";
-
-    $payload = [
-        'labId' => $labId,
-        'module' => 'cd4'
-    ];
-    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-    $columnList = [];
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+****************************************************************
+* CD4 TEST REQUESTS
+****************************************************************
+*/
+try {
+    $request = [];
+    if (!empty($responsePayload['cd4']) && $responsePayload['cd4'] != '[]' && JsonUtility::isJSON($responsePayload['cd4'])) {
 
         if ($cliMode) {
-            echo "Syncing data for CD4" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for CD4" . PHP_EOL;
         }
 
         $options = [
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['cd4'], $options);
 
         $removeKeys = [
             'cd4_id',
@@ -962,13 +991,14 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
         $counter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
+                $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 $existingSampleQuery = "SELECT cd4_id, sample_code
                                     FROM form_cd4 AS vl
-                                    WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                                    WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
@@ -1039,7 +1069,9 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
                 if ($id === true) {
                     $counter++;
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -1050,48 +1082,41 @@ if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] ==
             }
         }
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter CD4 record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $responsePayload['cd4'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
-
-
-
 /*
- ****************************************************************
- * GENERIC TEST REQUESTS
- ****************************************************************
- */
-$request = [];
-
-if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
-
-    $url = "$remoteURL/remote/remote/generic-test-requests.php";
-    $payload = [
-        'labId' => $labId,
-        'module' => 'generic-tests'
-    ];
-    if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($manifestCode) && trim((string) $manifestCode) != "") {
-        $payload['manifestCode'] = $manifestCode;
-    }
-
-    $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-    $columnList = [];
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+****************************************************************
+* GENERIC TEST REQUESTS
+****************************************************************
+*/
+try {
+    $request = [];
+    if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] != '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
 
         if ($cliMode) {
-            echo "Syncing data for Custom Tests" . PHP_EOL;
+            echo "=========================" . PHP_EOL;
+            echo "Processing for Custom Tests" . PHP_EOL;
         }
 
         $options = [
+            'pointer' => '/requests',
             'decoder' => new ExtJsonDecoder(true)
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
+        $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
 
-        $removeKeys = array(
+        $removeKeys = [
             'sample_id',
             'sample_batch_id',
             'result',
@@ -1103,7 +1128,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
             'result_approved_by',
             'result_approved_datetime',
             'data_sync'
-        );
+        ];
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
 
@@ -1117,7 +1142,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
 
                 $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
                             FROM form_generic AS vl
-                            WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
+                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
@@ -1129,7 +1154,7 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
                         'lab_id',
                         'vl_test_platform',
                         'sample_received_at_hub_datetime',
-                        'sample_received_at_lab_datetime',
+                        'sample_received_at_testing_lab_datetime',
                         'sample_tested_datetime',
                         'result_dispatched_datetime',
                         'is_sample_rejected',
@@ -1239,14 +1264,21 @@ if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']
         }
 
         if ($cliMode) {
-            echo "Synced $counter records" . PHP_EOL;
+            echo "Synced $counter Custom Tests record(s)" . PHP_EOL;
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $responsePayload['generic-tests'], 'json', $labId);
     }
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'exception' => $e,
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'stacktrace' => $e->getTraceAsString()
+    ]);
 }
-
-
 
 $instanceId = $general->getInstanceId();
 $db->where('vlsm_instance_id', $instanceId);

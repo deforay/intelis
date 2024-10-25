@@ -573,6 +573,10 @@ final class CommonService
     {
         return $this->db->getValue("s_vlsm_instance", "vlsm_instance_id");
     }
+    public function getSTSToken(): ?string
+    {
+        return $this->db->getValue("s_vlsm_instance", "sts_token");
+    }
 
     public function getInstanceType(): ?string
     {
