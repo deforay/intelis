@@ -77,7 +77,7 @@ try {
 
 
                 $data = array(
-                    'vlsm_instance_id'                      => $instanceId['vlsm_instance_id'],
+                    'vlsm_instance_id'                      => $instanceId,
                     'sample_code'                           => $rowData['A'],
                     'unique_id'                             => MiscUtility::generateULID(),
                     'vlsm_country_id'                       => $arr['vl_form'],
@@ -152,14 +152,14 @@ try {
                     $db->update($tableName, $data);
                 }
 
-                $testData[0]['testRequest']     = $rowData['AA'];
-                $testData[0]['testDate']        = $rowData['AB'];
-                $testData[0]['testingPlatform'] = $rowData['AC'];
-                $testData[0]['testResult']      = $rowData['AD'];
-                $testData[1]['testRequest']     = $rowData['AE'];
-                $testData[1]['testDate']        = $rowData['AF'];
-                $testData[1]['testingPlatform'] = $rowData['AG'];
-                $testData[1]['testResult']      = $rowData['AH'];
+                $testData[0]['testRequest']     = $rowData['BC'];
+                $testData[0]['testDate']        = $rowData['BD'];
+                $testData[0]['testingPlatform'] = $rowData['BE'];
+                $testData[0]['testResult']      = $rowData['BF'];
+                $testData[1]['testRequest']     = $rowData['BG'];
+                $testData[1]['testDate']        = $rowData['BH'];
+                $testData[1]['testingPlatform'] = $rowData['BI'];
+                $testData[1]['testResult']      = $rowData['BJ'];
                 if (!empty($testData)) {
                     /* Delete if already exist */
                     $db->where('covid19_id', $lastId);

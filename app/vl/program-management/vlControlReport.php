@@ -46,7 +46,10 @@ $sResult = $db->rawQuery($sQuery);
     <div class="row">
       <div class="col-xs-12">
         <div class="box">
-          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:80%;">
+          <div class="box-header with-border">
+            <a href="upload-vl-control.php" class="btn btn-primary pull-right" > <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
+          </div>
+          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;width:80%;">
             <tr>
               <td><strong>
                   <?php echo _translate("Sample Tested Date"); ?>&nbsp;

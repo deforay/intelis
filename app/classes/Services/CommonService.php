@@ -360,11 +360,13 @@ final class CommonService
 
     public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
     {
-        if (!empty($condition) && $condition != '') {
-            $this->db->where($condition);
-        }
-        $this->db->where($fieldname, $fieldValue);
-        return $this->db->getValue($tablename, $fieldname);
+        return once(function () use ($tablename, $fieldname, $fieldValue, $condition) {
+            $query = "SELECT * FROM $tablename WHERE $fieldname = ?";
+            if (!empty($condition) && $condition != '') {
+                $query .= " AND $condition";
+            }
+            return $this->db->rawQueryOne($query, [$fieldValue]);
+        });
     }
 
     public function getRejectionReasons($testType): array

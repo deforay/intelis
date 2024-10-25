@@ -135,9 +135,7 @@ try {
       $db->insert('lab_storage', $d);
     } else {
       $storageId = $_POST['freezer'];
-      $condition = " storage_id = '$freezerCheck'";
-      $freezerInfo = $general->getDataByTableAndFields('lab_storage', array('storage_code'), false, $condition);
-      $freezerCode = $freezerInfo[0]['storage_code'];
+      $freezerCode = $freezerCheck['storage_code'];
     }
 
     $formAttributes['storage'] = [
