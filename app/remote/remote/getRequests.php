@@ -29,7 +29,7 @@ $request = AppRegistry::get('request');
 $data = $apiService->getJsonFromRequest($request, true);
 
 $labId = $data['labName'] ?? $data['labId'] ?? null;
-$testType = $data['module'] ?? 'vl';
+
 
 $payload = [];
 $dataSyncInterval = $general->getGlobalConfig('data_sync_interval') ?? 30;
@@ -45,11 +45,6 @@ try {
     throw new SystemException('Lab ID is missing in the request', 400);
   }
 
-  if($testType != ""){
-    $tableName = TestsService::getTestTableName($testType);
-    $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
-  }
-  
 
   $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
   $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
@@ -84,15 +79,16 @@ try {
     $columnSelection .= ", $constantValue AS $columnName";
   }
 
+
   // Construct the final SQL query
-  $sQuery = "SELECT $columnSelection FROM $tableName WHERE $condition";
+  $sQuery = "SELECT $columnSelection FROM form_vl WHERE $condition";
 
   if (!empty($data['manifestCode'])) {
     //$sQuery .= " AND sample_package_code like '" . $data['manifestCode'] . "'";
     $sQuery .= " AND sample_package_code IN
                   (
                       '{$data['manifestCode']}',
-                      (SELECT DISTINCT sample_package_code FROM $tableName WHERE remote_sample_code LIKE '{$data['manifestCode']}')
+                      (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE '{$data['manifestCode']}')
                   )";
   } else {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
@@ -102,7 +98,7 @@ try {
 
   $sampleIds = $facilityIds = [];
   if ($resultCount > 0) {
-    $sampleIds = array_column($rResult, $primaryKey);
+    $sampleIds = array_column($rResult, 'vl_sample_id');
     $facilityIds = array_column($rResult, 'facility_id');
     $payload = JsonUtility::encodeUtf8Json($rResult);
   } else {
@@ -120,8 +116,8 @@ try {
     $updateData = [
       'data_sync' => 1
     ];
-    $db->where($primaryKey, $sampleIds, 'IN');
-    $db->update($tableName, $updateData);
+    $db->where('vl_sample_id', $sampleIds, 'IN');
+    $db->update('form_vl', $updateData);
   }
 
 

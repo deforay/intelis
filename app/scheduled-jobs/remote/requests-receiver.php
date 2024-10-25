@@ -129,7 +129,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-                $request['recency_vl'] = 'no';
+              
                 $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
                                         WHERE (remote_sample_code=? OR sample_code=?) AND lab_id=?";
@@ -237,7 +237,7 @@ if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === 
 $request = [];
 
 if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = "$remoteURL/remote/remote/eid-test-requests.php";
 
     $payload = [
         'labId' => $labId,
@@ -379,8 +379,7 @@ if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] ==
 $request = [];
 
 if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covid19'] === true) {
-    //$url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = $remoteURL . '/remote/remote/covid-19-test-requests.php';
 
     $payload = array(
         'labId' => $labId,
@@ -579,7 +578,7 @@ if (isset($systemConfig['modules']['covid19']) && $systemConfig['modules']['covi
 $request = [];
 
 if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['hepatitis'] === true) {
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = "$remoteURL/remote/remote/hepatitis-test-requests.php";
 
     $payload = [
         'labId' => $labId,
@@ -764,7 +763,7 @@ if (isset($systemConfig['modules']['hepatitis']) && $systemConfig['modules']['he
 $request = [];
 
 if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = "$remoteURL/remote/remote/tb-test-requests.php";
 
     $payload = [
         'labId' => $labId,
@@ -920,7 +919,7 @@ if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === 
 $request = [];
 if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
 
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = "$remoteURL/remote/remote/cd4-test-requests.php";
 
     $payload = [
         'labId' => $labId,
@@ -1068,7 +1067,7 @@ $request = [];
 
 if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
 
-    $url = "$remoteURL/remote/remote/getRequests.php";
+    $url = "$remoteURL/remote/remote/generic-test-requests.php";
     $payload = [
         'labId' => $labId,
         'module' => 'generic-tests'
