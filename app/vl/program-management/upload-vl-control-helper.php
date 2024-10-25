@@ -11,7 +11,6 @@ use App\Exceptions\SystemException;
 use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-
 use App\Services\VlService;
 use App\Services\CommonService;
 
@@ -78,11 +77,11 @@ try {
 
                     if ($total == 0) {
                         $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
-            SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+                        SecurityService::redirect("/vl/program-management/upload-vl-control.php");
                         exit();
                     }
 
-        $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);   
+                    $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
                     $userMapping = array_column($userResult, 'user_id', 'user_name');
 
                     foreach ($filteredArray as $rowIndex => $rowData) {

@@ -80,7 +80,7 @@ $formatFilePath = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR
 										<?= _translate("Lab Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-5">
-										<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select lab name'); ?>">
+										<select class="form-control isRequired" id="labName" name="labName" title="<?php echo _translate('Please select lab name'); ?>">
 											<?= $testingLabsDropdown; ?>
 										</select>
 									</div>
