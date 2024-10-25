@@ -733,6 +733,8 @@ UPDATE `privileges` SET `shared_privileges` = '[\"/vl/program-management/upload-
 ALTER TABLE `facility_details` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `facility_type`, ADD `sts_token_expiry` DATETIME NULL DEFAULT NULL AFTER `sts_token`;
 
 
+-- Jeyabanu 
+ALTER TABLE `s_vlsm_instance` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `instance_facility_logo`
 
 -- END OF VERSION --
 -- END OF VERSION --
