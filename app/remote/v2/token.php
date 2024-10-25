@@ -7,8 +7,8 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Registries\ContainerRegistry;
 use App\Services\STS\TokensService;
+use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
 
@@ -28,10 +28,6 @@ $payload = [];
 
 try {
 
-
-
-
-
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
     $data = $apiService->getJsonFromRequest($request, true);
@@ -41,17 +37,20 @@ try {
 
     $labId = $data['labId'] ?? null;
 
-
-
-
-
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
-} catch (Throwable $e) {
 
+    $token = $stsTokensService->createAndStoreToken($labId);
 
     $payload = [
+        'status' => 'success',
+        'token' => $token
+    ];
+} catch (Throwable $e) {
+
+    $payload = [
+        'status' => 'error',
         'error' => _translate('Unable to process the request')
     ];
 

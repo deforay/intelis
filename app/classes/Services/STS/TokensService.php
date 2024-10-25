@@ -31,9 +31,17 @@ final class TokensService
     }
     public function createAndStoreToken(int $facilityId, int $expiryInDays = 90): string
     {
-        $token = self::generateToken();
+        // Calculate the new expiry time
         $tokenExpiry = date('Y-m-d H:i:s', strtotime("+$expiryInDays days"));
 
+        // Check if a token already exists for this facility
+        $this->db->where('facility_id', $facilityId);
+        $existingToken = $this->db->getValue($this->facilitiesTable, 'sts_token');
+
+        // If token exists, keep it; otherwise, generate a new one
+        $token = $existingToken ?? self::generateToken();
+
+        // Update the token and expiry in the database
         $this->db->where('facility_id', $facilityId);
         $this->db->update(
             $this->facilitiesTable,
@@ -45,6 +53,7 @@ final class TokensService
 
         return $token;
     }
+
 
     public function validateToken(string $token, int $facilityId): bool
     {

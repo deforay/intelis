@@ -1,5 +1,6 @@
 <?php
 //get data from STS send to requesting LIS instance
+
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -302,7 +303,13 @@ if (!empty($data['facilityLastModified'])) {
     $condition = "updated_datetime > '" . $data['facilityLastModified'] . "'";
     $signatureCondition = "added_on > '" . $data['facilityLastModified'] . "'";
 }
-$response['facilities'] = $general->fetchDataFromTable('facility_details', $condition);
+
+// Facilities
+$response['facilities'] = iter\toArray(iter\map(function ($facility) {
+    unset($facility['sts_token'], $facility['sts_token_expiry']);
+    return $facility;
+}, $general->fetchDataFromTable('facility_details', $condition)));
+
 
 $updatedFacilities = [];
 if (!empty($response['facilities'])) {
