@@ -43,7 +43,7 @@ $reasonForFailure = $vlService->getReasonForFailure();
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? MiscUtility::desqid($_GET['id']) : null;
+$id = isset($_GET['id']) ? MiscUtility::desqid($_GET['id']) : null;
 
 
 // get instruments

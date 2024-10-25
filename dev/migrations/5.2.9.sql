@@ -722,6 +722,28 @@ UPDATE form_generic SET is_sample_rejected = null WHERE is_sample_rejected like 
 ALTER TABLE form_generic CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
 UPDATE form_generic SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
-
 -- Jeyabanu 07-Oct-2024
 ALTER TABLE `form_generic` CHANGE `sample_received_at_testing_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL;
+
+-- Brindha 22-Oct-2024
+UPDATE `privileges` SET `shared_privileges` = '[\"/vl/program-management/upload-vl-control.php\"]' WHERE `privileges`.`privilege_name` = '/vl/program-management/vlControlReport.php';
+
+
+-- Amit 25-Oct-2024
+ALTER TABLE `facility_details` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `facility_type`, ADD `sts_token_expiry` DATETIME NULL DEFAULT NULL AFTER `sts_token`;
+
+
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+

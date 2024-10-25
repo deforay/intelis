@@ -36,7 +36,6 @@ use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\STS\RequestsService;
 use App\Services\TestRequestsService;
 use Psr\Container\ContainerInterface;
 use App\Middlewares\App\AclMiddleware;
@@ -50,6 +49,8 @@ use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
+use App\Services\STS\TokensService as STSTokensService;
+use App\Services\STS\RequestsService as STSRequestsService;
 
 try {
     // Load configuration
@@ -118,7 +119,8 @@ $builder->addDefinitions([
     TestsService::class => DI\autowire(),
     StorageService::class => DI\autowire(),
     TestRequestsService::class => DI\autowire(),
-    RequestsService::class => DI\autowire(),
+    STSRequestsService::class => DI\autowire(),
+    STSTokensService::class => DI\autowire(),
 ]);
 
 // Middlewares
