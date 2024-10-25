@@ -207,31 +207,6 @@ final class MiscUtility
         fclose($handle);
         return $filename;
     }
-
-    public static function generateCsvRow($handle, $row, $delimiter = ',', $enclosure = '"')
-    {
-        if ($handle) {
-            fputcsv($handle, $row, $delimiter, $enclosure);
-        }
-    }
-
-    public static function initializeCsv($filename, $headings, $delimiter = ',', $enclosure = '"')
-    {
-        $handle = fopen($filename, 'w'); // Open file for writing
-
-        // Write the headings
-        if (!empty($headings)) {
-            self::generateCsvRow($handle, $headings, $delimiter, $enclosure);
-        }
-
-        return $handle;
-    }
-
-    public static function finalizeCsv($handle)
-    {
-        fclose($handle);
-    }
-
     public static function getGenderFromString(?string $gender)
     {
         return match (strtolower($gender)) {

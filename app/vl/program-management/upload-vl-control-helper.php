@@ -11,6 +11,8 @@ use App\Exceptions\SystemException;
 use App\Services\InstrumentsService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
+use App\Services\VlService;
+use App\Services\CommonService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -19,6 +21,12 @@ $usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var InstrumentsService $instrumentsService */
 $instrumentsService = ContainerRegistry::get(InstrumentsService::class);
+
+/** @var VlService $vlService */
+$vlService = ContainerRegistry::get(VlService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -37,6 +45,7 @@ try {
     $ranNumber = "BULK-CONTROLS-" . strtoupper(MiscUtility::generateRandomString(16));
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
+    $allowedExtensions = array('xls', 'xlsx', 'csv');
 
     MiscUtility::makeDirectory(TEMP_PATH);
 
@@ -46,84 +55,116 @@ try {
     // Move the file
     $uploadedFile->moveTo($targetPath);
 
+    $formatFilePath = WEB_ROOT . DIRECTORY_SEPARATOR . 'files' . DIRECTORY_SEPARATOR . 'controls' . DIRECTORY_SEPARATOR . 'VL_Controls_Bulk_Upload_Excel_Format.xlsx';
+
     if (0 == $uploadedFile->getError()) {
 
-        $spreadsheet = IOFactory::load($targetPath);
-        $sheetData   = $spreadsheet->getActiveSheet();
-        $sheetData   = $sheetData->toArray(null, true, true, true);
+        if (in_array($extension, $allowedExtensions)) {
 
-        $filteredArray = array_filter(array_slice($sheetData, 1), fn($row) => array_filter($row)); // Remove empty rows
+            if (file_exists($targetPath) && file_exists($formatFilePath)) {
+                $validate = $general->validateUploadedFile($targetPath, $formatFilePath);
 
-        $total = count($filteredArray);
-        $facilityNotAdded = [];
+                if ($validate) {
 
-        if ($total == 0) {
-            $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
+                    $spreadsheet = IOFactory::load($targetPath);
+                    $sheetData   = $spreadsheet->getActiveSheet();
+                    $sheetData   = $sheetData->toArray(null, true, true, true);
+       
+                    $filteredArray = array_filter(array_slice($sheetData, 1), fn($row) => array_filter($row)); // Remove empty rows
+
+                    $total = count($filteredArray);
+                    $facilityNotAdded = [];
+
+                    if ($total == 0) {
+                        $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
+                        SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+                        exit();
+                    }
+
+                    $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
+                    $userMapping = array_column($userResult, 'user_id', 'user_name');
+
+                    foreach ($filteredArray as $rowIndex => $rowData) {
+
+                        if (empty($rowData['A']) || empty($rowData['B']) || empty($rowData['F']) || empty($rowData['G']) || empty($rowData['H'])) {
+                            $facilityNotAdded[] = $rowData;
+                            continue;
+                        }
+
+                        try {
+
+                            $controlCode = MiscUtility::generateULID();
+                            $testedBy = !empty(trim($rowData['E'])) ? ($userMapping[trim($rowData['E'])] ?? null) : null;
+                            $instrumentInfo = $instrumentsService->getSingleInstrument($machineName);
+                            $importMachineFileName = $instrumentInfo['import_machine_file_name'] ?? '';
+
+                            $params = [
+                                'vlResult' => $rowData['H'],
+                            ];
+                            $processedResults = $vlService->processViralLoadResultFromForm($params);
+                            $absVal = $processedResults['absVal'];
+                            $logVal = $processedResults['logVal'];
+                            $txtVal = $processedResults['txtVal'];
+                            $absDecimalVal = $processedResults['absDecimalVal'];
+                            $result = $processedResults['finalResult'];
+
+                            $data = [
+                                'control_code' => $controlCode,
+                                'lab_id'       => $labName,
+                                'batch_id'     => trim($rowData['A']) ?? null,
+                                'control_type' => trim($rowData['B']) ?? null,
+                                'lot_number'   => trim($rowData['C']) ?? null,
+                                'lot_expiration_date'    => trim($rowData['D']) ?? null,
+                                'tested_by'    => ($testedBy),
+                                'sample_tested_datetime' => !empty($rowData['F']) ? DateUtility::isoDateFormat($rowData['F'], true) : null,
+                                'is_sample_rejected'     => trim($rowData['G']) ?? null,
+                                'result_value_absolute'  => $absVal,
+                                'result_value_log'       => $logVal,
+                                'result_value_text'      => $txtVal,
+                                'result_value_absolute_decimal' => $absDecimalVal,
+                                'result'                 => $result,
+                                'import_machine_file_name' => $importMachineFileName
+                            ];
+
+                            $db->insert('vl_imported_controls', $data);
+                        } catch (Throwable $e) {
+                            $facilityNotAdded[] = $rowData;
+                            LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                            LoggerUtility::logError($e->getMessage(), [
+                                'file' => $e->getFile(),
+                                'line' => $e->getLine(),
+                                'trace' => $e->getTraceAsString(),
+                            ]);
+                        }
+                    }
+
+                    $notAdded = count($facilityNotAdded);
+                    if ($notAdded > 0) {
+
+                        $spreadsheet = IOFactory::load(WEB_ROOT . '/files/controls/VL_Controls_Bulk_Upload_Excel_Format.xlsx');
+                        $sheet = $spreadsheet->getActiveSheet();
+
+                        foreach ($facilityNotAdded as $rowNo => $dataValue) {
+                            $rRowCount = $rowNo + 2;
+                            $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
+                        }
+
+                        $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
+                        $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-CONTROLS-ROWS.xlsx';
+                        $writer->save($filename);
+                    }
+                    $_SESSION['alertMsg'] = _translate("Controls added successfully");
+                } else {
+                    $_SESSION['alertMsg'] = _translate("Uploaded file column mismatched");
+                    SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+                    exit();
+                }
+            }
+        } else {
+            $_SESSION['alertMsg'] = _translate("Please Upload xls, xlsx, csv format only");
             SecurityService::redirect("/vl/program-management/upload-vl-control.php");
             exit();
         }
-
-        $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
-        $userMapping = array_column($userResult, 'user_id', 'user_name');
-
-        foreach ($filteredArray as $rowIndex => $rowData) {
-
-            if (empty($rowData['A']) || empty($rowData['B']) || empty($rowData['F']) || empty($rowData['G']) || empty($rowData['H'])) {
-                $facilityNotAdded[] = $rowData;
-                continue;
-            }
-
-            try {
-
-                $controlCode = MiscUtility::generateULID();
-                $testedBy = !empty(trim($rowData['E'])) ? ($userMapping[trim($rowData['E'])] ?? null) : null;
-                $instrumentInfo = $instrumentsService->getSingleInstrument($machineName);
-                $importMachineFileName = $instrumentInfo['import_machine_file_name'] ?? '';
-
-                $data = [
-                    'control_code' => $controlCode,
-                    'lab_id'       => $labName,
-                    'batch_id'     => trim($rowData['A']) ?? null,
-                    'control_type' => trim($rowData['B']) ?? null,
-                    'lot_number'   => trim($rowData['C']) ?? null,
-                    'lot_expiration_date' => trim($rowData['D']) ?? null,
-                    'tested_by'    => ($testedBy),
-                    'sample_tested_datetime' => !empty($rowData['F']) ? DateUtility::isoDateFormat($rowData['F'], true) : null,
-                    'is_sample_rejected' => trim($rowData['G']) ?? null,
-                    'result'       => trim($rowData['H']) ?? null,
-                    'import_machine_file_name' => $importMachineFileName
-                ];
-
-                $db->insert('vl_imported_controls', $data);
-            } catch (Throwable $e) {
-                $facilityNotAdded[] = $rowData;
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                LoggerUtility::logError($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
-            }
-        }
-
-        $notAdded = count($facilityNotAdded);
-        if ($notAdded > 0) {
-
-            $spreadsheet = IOFactory::load(WEB_ROOT . '/files/controls/VL_Controls_Bulk_Upload_Excel_Format.xlsx');
-
-            $sheet = $spreadsheet->getActiveSheet();
-
-            foreach ($facilityNotAdded as $rowNo => $dataValue) {
-                $rRowCount = $rowNo + 2;
-                $sheet->fromArray($dataValue, null, 'A' . $rRowCount);
-            }
-
-            $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-            $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-CONTROLS-ROWS.xlsx';
-            $writer->save($filename);
-        }
-
-        $_SESSION['alertMsg'] = _translate("Controls added successfully");
     } else {
         throw new SystemException(_translate("Bulk Controls Import Failed") . " - " . $uploadedFile->getError());
     }

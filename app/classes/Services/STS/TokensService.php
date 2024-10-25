@@ -55,6 +55,7 @@ final class TokensService
         return $token;
     }
 
+
     public function validateToken(string $token, int $facilityId): bool
     {
         $this->db->where('facility_id', $facilityId);

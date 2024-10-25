@@ -20,6 +20,7 @@ use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 final class CommonService
@@ -1301,5 +1302,45 @@ final class CommonService
 
         // Execute the update query
         $this->db->rawQuery($updateQuery);
+    }
+
+    public static function validateUploadedFile($uploadedFilePath, $formatFilePath)
+    {
+        // Load the uploaded Excel file
+        $uploadedSpreadsheet = IOFactory::load($uploadedFilePath);
+
+        // Load the template Excel file
+        $templateSpreadsheet = IOFactory::load($formatFilePath);
+
+        // Get the first sheet of the uploaded file
+        $uploadedSheet = $uploadedSpreadsheet->getSheet(0);
+
+        // Get the first sheet of the template file
+        $templateSheet = $templateSpreadsheet->getSheet(0);
+
+        // Extract headers from both sheets for comparison
+        $uploadedHeaders = $uploadedSheet->rangeToArray('A1:Z1')[0];  // Adjust range as needed
+        $templateHeaders = $templateSheet->rangeToArray('A1:Z1')[0];  // Adjust range as needed
+
+        // Normalize headers for case-insensitive comparison and remove spaces/newlines
+        $normalizedUploadedHeaders = array_map(function ($header) {
+            return strtolower(preg_replace('/\s+/', '', $header));
+        }, $uploadedHeaders);
+
+        $normalizedTemplateHeaders = array_map(function ($header) {
+            return strtolower(preg_replace('/\s+/', '', $header));
+        }, $templateHeaders);
+
+        // Compare the column headers
+        if ($normalizedUploadedHeaders !== $normalizedTemplateHeaders) {
+            // The column headers do not match the template
+            return false;
+        }
+
+        // Compare additional formatting, data types, or any other specific requirements
+        // ...
+
+        // If all checks pass, return true
+        return true;
     }
 }
