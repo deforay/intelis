@@ -11,6 +11,7 @@ use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
+use App\Services\STS\TokensService;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -25,6 +26,9 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GeoLocationsService $geolocation */
 $geolocation = ContainerRegistry::get(GeoLocationsService::class);
+
+/** @var TokensService $stsTokensService */
+$stsTokensService = ContainerRegistry::get(TokensService::class);
 
 /* For reference we define the table names */
 $facilityTable = "facility_details";
@@ -126,8 +130,13 @@ try {
 			'status' => 'active'
 		];
 
+
 		$db->insert('facility_details', $data);
 		$lastId = $db->getInsertId();
+
+		if($data['facility_type'] == 2){
+			$stsTokensService->createAndStoreToken($lastId);
+		}
 
 		$facilityAttributes = [];
 		if (!empty($_POST['allowResultUpload'])) {

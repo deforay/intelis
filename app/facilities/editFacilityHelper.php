@@ -10,6 +10,8 @@ use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
+use App\Services\STS\TokensService;
+use App\Services\FacilitiesService;
 
 
 /** @var DatabaseService $db */
@@ -20,6 +22,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var GeoLocationsService $geolocation */
 $geolocation = ContainerRegistry::get(GeoLocationsService::class);
+
+/** @var FacilitiesService $geolocation */
+$facilityService = ContainerRegistry::get(FacilitiesService::class);
+
+/** @var TokensService $stsTokensService */
+$stsTokensService = ContainerRegistry::get(TokensService::class);
+
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -283,6 +292,13 @@ try {
 		$db->where('facility_id', $facilityId);
 		$id = $db->update('facility_details', $data);
 
+
+		if($data['facility_type'] == 2){
+			$facilityInfo = $facilityService->getFacilityById($facilityId);
+			if($facilityInfo['sts_token'] == "" || $facilityInfo['sts_token'] == NULL){
+				$stsTokensService->createAndStoreToken($facilityId);
+			}
+		}
 
 
 		// Uploading signatories
