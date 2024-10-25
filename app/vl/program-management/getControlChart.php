@@ -48,7 +48,7 @@ try {
                         THEN result_value_absolute ELSE 0 END)
                 AS sumTotal
                 FROM vl_imported_controls as vl
-                WHERE $whereConditions GROUP BY control_id";
+                $whereConditions GROUP BY control_id";
     $controlResult = $db->rawQuery($sQuery);
 
     $sumTotal = array_column($controlResult, 'sumTotal');
