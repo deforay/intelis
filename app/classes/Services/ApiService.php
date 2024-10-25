@@ -22,6 +22,7 @@ final class ApiService
     protected int $delayMultiplier;
     protected float $jitterFactor;
     protected int $maxRetryDelay;
+    protected ?string $bearerToken = null;
 
     protected CommonService $commonService;
 
@@ -45,6 +46,11 @@ final class ApiService
             'line' => $e->getLine(),
             'stacktrace' => $e->getTraceAsString()
         ]);
+    }
+
+    public function setBearerToken(string $bearerToken): void
+    {
+        $this->bearerToken = $bearerToken;
     }
 
     public static function generateAuthToken(): string
@@ -127,6 +133,12 @@ final class ApiService
                 'Content-Type'        => 'application/json; charset=utf-8',
             ],
         ];
+
+        // Add Authorization header if a bearer token is provided
+        if (!empty($this->bearerToken) && $this->bearerToken != '') {
+            $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
+        }
+
         $returnPayload = null;
         try {
             // Ensure payload is JSON-encoded

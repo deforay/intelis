@@ -10,6 +10,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 use App\Services\STS\RequestsService;
 
@@ -27,6 +28,11 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var RequestsService $stsRequestsService */
 $stsRequestsService = ContainerRegistry::get(RequestsService::class);
 
+$authToken = ApiService::getAuthorizationBearerToken($request);
+
+/** @var TokensService $stsTokensService */
+$stsTokensService = ContainerRegistry::get(TokensService::class);
+
 $payload = [];
 
 try {
@@ -43,6 +49,10 @@ try {
 
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
+    }
+
+    if (!$stsTokensService->validateToken($authToken, $labId)) {
+        throw new SystemException('Invalid token', 401);
     }
 
     $testType = $data['testType'] ?? null;

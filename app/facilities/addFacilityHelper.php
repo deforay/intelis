@@ -134,7 +134,7 @@ try {
 		$db->insert('facility_details', $data);
 		$lastId = $db->getInsertId();
 
-		if($data['facility_type'] == 2){
+		if ($data['facility_type'] == 2) {
 			$stsTokensService->createAndStoreToken($lastId);
 		}
 
@@ -208,18 +208,18 @@ try {
 			foreach ($_POST['testType'] as $testType) {
 				// Mapping facility as a Health Facility
 				if (isset($_POST['facilityType']) && $_POST['facilityType'] == 1) {
-					$db->insert($healthFacilityTable, array(
+					$db->insert($healthFacilityTable, [
 						'test_type' => $testType,
 						'facility_id' => $lastId,
 						'updated_datetime' => DateUtility::getCurrentDateTime()
-					));
+					]);
 					// Mapping facility as a Testing Lab
 				} elseif (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) {
-					$testTypeData = array(
+					$testTypeData = [
 						'test_type' => $testType,
 						'facility_id' => $lastId,
 						'updated_datetime' => DateUtility::getCurrentDateTime()
-					);
+					];
 					if (!empty($_POST['availablePlatforms'])) {
 						$attributes['platforms'] = $_POST['availablePlatforms'];
 					}
@@ -234,10 +234,10 @@ try {
 		if ($lastId > 0 && trim((string) $_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
 			for ($j = 0; $j < count($selectedUser); $j++) {
-				$uData = array(
+				$uData = [
 					'user_id' => $selectedUser[$j],
 					'facility_id' => $lastId,
-				);
+				];
 				$db->insert($vlUserFacilityMapTable, $uData);
 			}
 		}
@@ -270,8 +270,9 @@ try {
 						"added_on" => DateUtility::getCurrentDateTime()
 					];
 
-					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures');
-					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
+
+					$pathname = MiscUtility::buildSafePath(UPLOAD_PATH, ['labs', $lastId, 'signatures']) . DIRECTORY_SEPARATOR;
+
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = MiscUtility::generateRandomString(12) . ".";
 					$imageName = $imageName . $extension;

@@ -6,12 +6,12 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Services\STS\TokensService;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 use App\Utilities\ImageResizeUtility;
-use App\Services\STS\TokensService;
-use App\Services\FacilitiesService;
 
 
 /** @var DatabaseService $db */
@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var GeoLocationsService $geolocation */
 $geolocation = ContainerRegistry::get(GeoLocationsService::class);
 
-/** @var FacilitiesService $geolocation */
+/** @var FacilitiesService $facilityService */
 $facilityService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var TokensService $stsTokensService */
@@ -292,14 +292,12 @@ try {
 		$db->where('facility_id', $facilityId);
 		$id = $db->update('facility_details', $data);
 
-
-		if($data['facility_type'] == 2){
+		if ($data['facility_type'] == 2) {
 			$facilityInfo = $facilityService->getFacilityById($facilityId);
-			if($facilityInfo['sts_token'] == "" || $facilityInfo['sts_token'] == NULL){
+			if ($facilityInfo['sts_token'] == "" || $facilityInfo['sts_token'] == NULL) {
 				$stsTokensService->createAndStoreToken($facilityId);
 			}
 		}
-
 
 		// Uploading signatories
 		if (!empty($sanitizedSignature) && !empty($_POST['signName'])) {
@@ -316,8 +314,7 @@ try {
 						"added_on" => DateUtility::getCurrentDateTime()
 					];
 
-					MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures');
-					$pathname = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . 'signatures' . DIRECTORY_SEPARATOR;
+					$pathname = MiscUtility::buildSafePath(UPLOAD_PATH, ['labs', $facilityId, 'signatures']) . DIRECTORY_SEPARATOR;
 					$extension = MiscUtility::getFileExtension($sanitizedSignature[$key]->getClientFilename());
 					$imageName = MiscUtility::generateRandomString(12) . ".";
 					$imageName = $imageName . $extension;
