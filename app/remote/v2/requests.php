@@ -42,10 +42,6 @@ try {
 
     $authToken = ApiService::getAuthorizationBearerToken($request);
 
-    $bearerToken = $stsTokensService->getAuthorizationBearerToken($request);
-    $apiService->setBearerToken($bearerToken);
-
-
     $data = $apiService->getJsonFromRequest($request, true);
 
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
@@ -57,8 +53,14 @@ try {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
 
-    if (!$stsTokensService->validateToken($authToken, $labId)) {
-        throw new SystemException('Invalid token', 401);
+    $token = $stsTokensService->validateToken($authToken, $labId);
+
+    if ($token === false || empty($token)) {
+        throw new SystemException('Unauthorized Access', 401);
+    }
+
+    if (is_string($token)) {
+        $payload['token'] = $token;
     }
 
     $testType = $data['testType'] ?? null;
@@ -79,10 +81,10 @@ try {
     $facilityIds = $requestsData['facilityIds'] ?? [];
     $requests = $requestsData['requests'] ?? [];
 
-    $payload = [
-        'testType' => $testType,
-        'requests' => $requests
-    ];
+
+    $payload['status'] = 'success';
+    $payload['requests'] = $requests;
+    $payload['testType'] = $testType;
 
     $general->addApiTracking($transactionId, 'system', $resultCount, 'requests', $testType, $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
@@ -104,6 +106,7 @@ try {
     $db->rollbackTransaction();
 
     $payload = [
+        'status' => 'failed',
         'testType' => $testType,
         'error' => _translate('Unable to process the request')
     ];

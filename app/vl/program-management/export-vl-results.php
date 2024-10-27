@@ -132,10 +132,10 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 			$row[] = $gender;
 			if ($formId == COUNTRY\DRC) {
-				$row[] = strtoupper($aRow['key_population']);
+				$row[] = _toUpperCase($aRow['key_population']);
 			}
 			if ($formId == COUNTRY\CAMEROON) {
-				$row[] = strtoupper($aRow['health_insurance_code']);
+				$row[] = $aRow['health_insurance_code'] ?? null;
 			}
 			$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '');
 			$row[] = $aRow['createdBy'];
@@ -209,7 +209,7 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 				$row[] = strtoupper($aRow['key_population']);
 			}
 			if ($formId == COUNTRY\CAMEROON) {
-				$row[] = strtoupper($aRow['health_insurance_code']);
+				$row[] = $aRow['health_insurance_code'] ?? null;
 			}
 			$row[] = $aRow['patient_mobile_number'];
 			$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');

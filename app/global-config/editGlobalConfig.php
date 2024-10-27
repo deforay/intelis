@@ -127,9 +127,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								<div class="row">
 									<div class="col-md-7">
 										<div class="form-group">
-											<label for="vl_form" class="col-lg-4 control-label"><?php echo _translate("Choose Country of Installation"); ?> <span class="mandatory">*</span> </label>
+											<label for="vl_form" class="col-lg-4 control-label"><?php echo _translate("Country of Installation"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>" onchange="showExportFormat();">
+												<select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the country of installation'); ?>" onchange="showExportFormat();">
 													<?php
 													foreach ($formResult as $val) {
 													?>

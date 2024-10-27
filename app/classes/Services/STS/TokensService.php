@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
+use Psr\Http\Message\ServerRequestInterface;
 
 final class TokensService
 {
@@ -25,24 +26,24 @@ final class TokensService
         $this->commonService = $commonService;
     }
 
-    public static function generateToken()
-    {
-        return MiscUtility::generateUUID();
-    }
-
-    public function createAndStoreToken(int $facilityId, int $expiryInDays = 90): string
+    public function createToken(int $facilityId, int $expiryInDays = 90): string
     {
         // Calculate the new expiry time
         $tokenExpiry = date('Y-m-d H:i:s', strtotime("+$expiryInDays days"));
 
-        // Check if a token already exists for this facility
+        // Check if a token already exists and if it is expired
         $this->db->where('facility_id', $facilityId);
-        $existingToken = $this->db->getValue($this->facilitiesTable, 'sts_token');
+        $existingTokenData = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
 
-        // If token exists, keep it; otherwise, generate a new one
-        $token = $existingToken ?? self::generateToken();
+        if ($existingTokenData && strtotime($existingTokenData['sts_token_expiry']) > time()) {
+            // Token exists and is still valid, so return it without updating
+            return $existingTokenData['sts_token'];
+        }
 
-        // Update the token and expiry in the database
+        // Token does not exist or has expired; generate a new token
+        $token = MiscUtility::generateRandomString();
+
+        // Update the database with the new token and expiry time
         $this->db->where('facility_id', $facilityId);
         $this->db->update(
             $this->facilitiesTable,
@@ -56,32 +57,24 @@ final class TokensService
     }
 
 
-    public function validateToken(string $token, int $facilityId): bool
+    public function validateToken(?string $token, int $facilityId): bool
     {
-        $this->db->where('facility_id', $facilityId);
-        $result = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
 
-        if ($result && $result['sts_token'] === $token) {
-            // Directly check if the current time is less than the stored expiry
-            if (time() < strtotime($result['sts_token_expiry'])) {
-                return true;
+        if (!empty($token) && !empty($facilityId)) {
+
+            $this->db->where('facility_id', $facilityId);
+            $result = $this->db->getOne($this->facilitiesTable, ['sts_token', 'sts_token_expiry']);
+
+            if ($result && $result['sts_token'] === $token) {
+                // Directly check if the current time is less than the stored expiry
+                if (time() < strtotime($result['sts_token_expiry'])) {
+                    return true;
+                }
+                // Token expired, so generate a new one
+                $this->createToken($facilityId);
             }
-            // Token expired, so generate a new one
-            $this->createAndStoreToken($facilityId);
         }
 
         return false;
     }
-
-    public function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
-    {
-        $authorization = $request->getHeaderLine('Authorization');
-
-        if (preg_match('/^Bearer\s+(\S+)$/i', $authorization, $matches)) {
-            return $matches[1];
-        }
-
-        return null;
-    }
 }
-

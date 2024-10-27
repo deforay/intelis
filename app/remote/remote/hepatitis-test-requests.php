@@ -55,10 +55,7 @@ try {
                     WHERE $condition ";
 
     if (!empty($data['manifestCode'])) {
-        $sQuery .= " AND  (
-                      '{$data['manifestCode']}',
-                      (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '{$data['manifestCode']}')
-                  )";
+        $sQuery .= " AND sample_package_code like '{$data['manifestCode']}'";
     } else {
         $sQuery .= " AND data_sync=0 AND last_modified_datetime > SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
     }

@@ -41,7 +41,7 @@ try {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
 
-    $token = $stsTokensService->createAndStoreToken($labId);
+    $token = $stsTokensService->createToken($labId);
 
     $payload = [
         'status' => 'success',

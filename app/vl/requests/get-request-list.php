@@ -436,7 +436,7 @@ try {
           $row[] = $aRow['facility_district'];
           $row[] = $aRow['sample_name'];
           if ($formId == COUNTRY\CAMEROON) {
-               $row[] = $aRow['health_insurance_code'];
+               $row[] = $aRow['health_insurance_code'] ?? null;
                $row[] = $aRow['lab_assigned_code'];
           }
           $row[] = $aRow['result'];

@@ -27,7 +27,6 @@ configs/*.png
 configs/*.jpg
 secret-key.txt
 rector.php
-async-requests-receiver.php
 temp.ini
 vendor/
 

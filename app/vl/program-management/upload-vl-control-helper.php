@@ -42,7 +42,7 @@ try {
     $labName = $_POST['labName'];
     $machineName = $_POST['machineName'];
 
-    $ranNumber = "BULK-CONTROLS-" . strtoupper(MiscUtility::generateRandomString(16));
+    $ranNumber = "BULK-CONTROLS-" . MiscUtility::generateRandomString(16);
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
     $fileName = $ranNumber . "." . $extension;
     $allowedExtensions = array('xls', 'xlsx', 'csv');
@@ -69,7 +69,7 @@ try {
                     $spreadsheet = IOFactory::load($targetPath);
                     $sheetData   = $spreadsheet->getActiveSheet();
                     $sheetData   = $sheetData->toArray(null, true, true, true);
-       
+
                     $filteredArray = array_filter(array_slice($sheetData, 1), fn($row) => array_filter($row)); // Remove empty rows
 
                     $total = count($filteredArray);

@@ -23,6 +23,7 @@ final class ApiService
     protected float $jitterFactor;
     protected int $maxRetryDelay;
     protected ?string $bearerToken = null;
+    protected array $headers = [];
 
     protected CommonService $commonService;
 
@@ -36,6 +37,12 @@ final class ApiService
 
         // Use the injected client if provided, or create a new one
         $this->client = $client ?? $this->createApiClient();
+
+        // Set default headers
+        $this->headers = [
+            'X-Instance-ID' => $this->commonService->getInstanceId(),
+            'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion()
+        ];
     }
 
     private function logError(Throwable $e, string $message): void
@@ -46,6 +53,11 @@ final class ApiService
             'line' => $e->getLine(),
             'stacktrace' => $e->getTraceAsString()
         ]);
+    }
+
+    public function setHeaders(array $headers): void
+    {
+        $this->headers = array_merge($this->headers, $headers);
     }
 
     public function setBearerToken(string $bearerToken): void
@@ -103,11 +115,19 @@ final class ApiService
             $options = [
                 RequestOptions::HEADERS => [
                     'X-Request-ID' => MiscUtility::generateULID(),
-                    'X-Timestamp'  => time(),
-                    'X-Instance-ID' => $this->commonService->getInstanceId(),
-                    'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion()
+                    'X-Timestamp'  => time()
                 ]
             ];
+
+            if (!empty($this->headers)) {
+                $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
+            }
+
+            // Add Authorization header if a bearer token is provided
+            if (!empty($this->bearerToken) && $this->bearerToken != '') {
+                $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
+            }
+
             $response = $this->client->get($url, $options);
             $statusCode = $response->getStatusCode();
             return $statusCode === 200;
@@ -128,11 +148,13 @@ final class ApiService
             RequestOptions::HEADERS => [
                 'X-Request-ID'        => MiscUtility::generateULID(),
                 'X-Timestamp'         => time(),
-                'X-Instance-ID'       => $this->commonService->getInstanceId(),
-                'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
                 'Content-Type'        => 'application/json; charset=utf-8',
             ],
         ];
+
+        if (!empty($this->headers)) {
+            $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
+        }
 
         // Add Authorization header if a bearer token is provided
         if (!empty($this->bearerToken) && $this->bearerToken != '') {
@@ -230,9 +252,7 @@ final class ApiService
             // Prepare headers
             $headers = [
                 'X-Timestamp'    => time(),
-                'X-Request-ID'    => MiscUtility::generateULID(),
-                'X-Requestor-Version' => VERSION ?? $this->commonService->getAppVersion(),
-                'X-Instance-ID' => $this->commonService->getInstanceId()
+                'X-Request-ID'    => MiscUtility::generateULID()
             ];
 
             // Initialize the options array for multipart form data
@@ -240,6 +260,15 @@ final class ApiService
                 RequestOptions::MULTIPART => $multipartData,
                 RequestOptions::HEADERS   => $headers
             ];
+
+            if (!empty($this->headers)) {
+                $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
+            }
+
+            // Add Authorization header if a bearer token is provided
+            if (!empty($this->bearerToken) && $this->bearerToken != '') {
+                $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
+            }
 
             // Send the request
             $response = $this->client->post($url, $options);

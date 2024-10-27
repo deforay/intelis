@@ -64,7 +64,7 @@ class EIDResultPDFHelper extends Fpdi
                 $this->writeHTMLCell(0, 0, 10, 22, $this->text, 0, 0, 0, true, 'C');
                 if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
-                    $this->writeHTMLCell(0, 0, 10, 26, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, 26, _toUpperCase($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 14);
                 $this->writeHTMLCell(0, 0, 10, 30, 'EARLY INFANT DIAGNOSIS TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
@@ -90,7 +90,7 @@ class EIDResultPDFHelper extends Fpdi
                 if (!empty($this->text) && trim($this->text) != '') {
                     $this->SetFont('helvetica', '', 12);
                     //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-                    $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, 16, _toUpperCase($this->text), 0, 0, 0, true, 'C');
                     $thirdHeading = '23';
                     $fourthHeading = '28';
                     $hrLine = '36';
@@ -103,7 +103,7 @@ class EIDResultPDFHelper extends Fpdi
                 }
                 if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
-                    $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, $thirdHeading, _toUpperCase($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 12);
                 if ($this->formId == 3) {
@@ -129,7 +129,7 @@ class EIDResultPDFHelper extends Fpdi
             $this->Cell(0, 10, _translate('Page') . ' ' . $this->getAliasNumPage() . ' ' . _translate('of') . ' ' . $this->getAliasNbPages(), 0, false, 'C', 0);
         }
         if (!empty($this->trainingTxt)) {
-            $this->writeHTML('<span style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
+            $this->writeHTML('<span style="color:red">' . _toUpperCase((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
         }
     }
 }

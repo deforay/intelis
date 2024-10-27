@@ -123,7 +123,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 		$row[] = $aRow['patient_age_in_years'];
 		$row[] = $gender;
 		if ($formId == COUNTRY\DRC) {
-			$row[] = strtoupper($aRow['key_population']);
+			$row[] = _toUpperCase($aRow['key_population']);
 		}
 		$row[] = $aRow['patient_mobile_number'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');

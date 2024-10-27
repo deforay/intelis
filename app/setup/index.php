@@ -368,7 +368,7 @@ $testName = TestsService::getTestTypes();
                   </div>
                   <div style="margin-bottom: 5px" class="input-group">
                     <span class="input-group-addon"><em class="fa-solid fa-flag"></em></span>
-                    <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the viral load form'); ?>">
+                    <select class="form-control isRequired readPage select2" name="vl_form" id="vl_form" title="<?php echo _translate('Please select the country of installation'); ?>">
                       <option value=""></option>
                       <?php
                       foreach ($formResult as $val) {

@@ -132,12 +132,12 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	];
 
 	if (!empty($vlQueryInfo['result'])) {
-		$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivDetectedStringsToSearch);
+		$detectedMatching = $general->checkIfStringExists($vlQueryInfo['result'] ?? '', $hivDetectedStringsToSearch);
 		if ($detectedMatching !== false) {
 			$vlQueryInfo['result'] = trim(str_ireplace((string) $detectedMatching, "", (string) $vlQueryInfo['result']));
 			$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Detected";
 		} else {
-			$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'], $hivNotDetectedStringsToSearch);
+			$notDetectedMatching = $general->checkIfStringExists($vlQueryInfo['result'] ?? '', $hivNotDetectedStringsToSearch);
 			if ($notDetectedMatching !== false) {
 				$vlQueryInfo['result'] = trim(str_ireplace((string) $notDetectedMatching, "", (string) $vlQueryInfo['result']));
 				$vlQueryInfo['result_value_hiv_detection'] = "HIV-1 Not Detected";

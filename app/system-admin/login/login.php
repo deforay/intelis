@@ -7,7 +7,29 @@ $adminCount = $db->rawQuery("SELECT * FROM system_admin as ud");
 if (count($adminCount) == 0) {
     header("Location:/system-admin/setup/index.php");
 }
-$path = '/assets/img/remote-bg.jpg';
+
+
+function bgGradient($baseColor)
+{
+    if ($baseColor === 'red') {
+        // Two shades of red
+        $color1 = '#FF5733';
+        $color2 = '#C70039';
+    } elseif ($baseColor === 'blue') {
+        // Two shades of blue
+        $color1 = '#3B98E5';
+        $color2 = '#1F618D';
+    } else {
+        // Default gradient if no matching color is provided
+        $color1 = '#1F618D';
+        $color2 = '#3B98E5';
+    }
+
+    return "linear-gradient(to right, $color1, $color2)";
+}
+
+$bgColor = $general->isSTSInstance() ? 'red' : 'blue';
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -31,12 +53,7 @@ $path = '/assets/img/remote-bg.jpg';
 
     <style>
         body {
-            background: #F6F6F6;
-            background: #000;
-
-            background: url("<?php echo $path; ?>") center;
-            background-size: cover;
-            background-repeat: no-repeat;
+            background: <?= bgGradient($bgColor); ?> !important;
         }
     </style>
 

@@ -106,7 +106,7 @@ foreach ($resultSet as $aRow) {
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
 	if ($formId == COUNTRY\DRC) {
-		$row[] = strtoupper($aRow['key_population']);
+		$row[] = _toUpperCase($aRow['key_population']);
 	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;

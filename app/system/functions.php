@@ -2,11 +2,13 @@
 
 use voku\helper\AntiXSS;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\SystemService;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
+
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
@@ -152,7 +154,7 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
             'string' => (string)$variable,
             'bool' => (bool)$variable,
             'array' => is_array($variable) ? $variable : (array)$variable,
-            'json' => is_string($variable) ? json_decode($variable, true) : json_encode($variable),
+            'json' => JsonUtility::toJson($variable),
             default => $variable,
         };
     }
@@ -174,6 +176,21 @@ function _capitalizeFirstLetter($string, $encoding = "UTF-8")
     $firstChar = mb_substr($string, 0, 1, $encoding);
     $rest = mb_substr($string, 1, null, $encoding);
     return mb_strtoupper($firstChar, $encoding) . $rest;
+}
+
+function _toUpperCase(?string $string, $encoding = "UTF-8")
+{
+    if (empty($string || $string == '')) {
+        return $string;
+    }
+    return mb_strtoupper($string, $encoding);
+}
+function _toLowerCase(?string $string, $encoding = "UTF-8")
+{
+    if (empty($string || $string == '')) {
+        return $string;
+    }
+    return mb_strtolower($string, $encoding);
 }
 
 

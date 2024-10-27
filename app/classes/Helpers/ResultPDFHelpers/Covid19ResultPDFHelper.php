@@ -75,7 +75,7 @@ class Covid19ResultPDFHelper extends Fpdi
                     $this->writeHTMLCell(0, 0, 10, 03, $this->text, 0, 0, 0, true, 'C');
                     if (!empty($this->lab) && trim($this->lab) != '') {
                         $this->SetFont('helvetica', '', 10);
-                        $this->writeHTMLCell(0, 0, 10, 10, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                        $this->writeHTMLCell(0, 0, 10, 10, _toUpperCase($this->lab), 0, 0, 0, true, 'C');
                     }
                     $this->SetFont('helvetica', 'b', 10);
                     $this->writeHTMLCell(0, 0, 10, 18, 'Département de Virologie', 0, 0, 0, true, 'C');
@@ -91,7 +91,7 @@ class Covid19ResultPDFHelper extends Fpdi
                     $this->writeHTMLCell(0, 0, 10, 18, $this->text ?? '', 0, 0, 0, true, 'C');
                     if (!empty($this->lab) && trim($this->lab) != '') {
                         $this->SetFont('helvetica', '', 10);
-                        $this->writeHTMLCell(0, 0, 10, 25, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                        $this->writeHTMLCell(0, 0, 10, 25, _toUpperCase($this->lab), 0, 0, 0, true, 'C');
                     }
                     $this->SetFont('helvetica', '', 12);
                     $this->writeHTMLCell(0, 0, 10, 30, 'COVID-19 TEST - PATIENT REPORT', 0, 0, 0, true, 'C');
@@ -119,7 +119,7 @@ class Covid19ResultPDFHelper extends Fpdi
                 if (!empty($this->text) && trim($this->text) != '') {
                     $this->SetFont('helvetica', '', 12);
                     //        $this->writeHTMLCell(0,0,10,16,'PROGRAMME NATIONAL DE LUTTE CONTRE LE SIDA ET IST', 0, 0, 0, true, 'C', true);
-                    $this->writeHTMLCell(0, 0, 10, 16, strtoupper($this->text), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, 16, _toUpperCase($this->text), 0, 0, 0, true, 'C');
                     $thirdHeading = '23';
                     $fourthHeading = '28';
                     $hrLine = '36';
@@ -132,7 +132,7 @@ class Covid19ResultPDFHelper extends Fpdi
                 }
                 if (!empty($this->lab) && trim($this->lab) != '') {
                     $this->SetFont('helvetica', '', 9);
-                    $this->writeHTMLCell(0, 0, 10, $thirdHeading, strtoupper($this->lab), 0, 0, 0, true, 'C');
+                    $this->writeHTMLCell(0, 0, 10, $thirdHeading, _toUpperCase($this->lab), 0, 0, 0, true, 'C');
                 }
                 $this->SetFont('helvetica', '', 12);
                 $this->writeHTMLCell(0, 0, 10, $fourthHeading, 'RESULTATS CHARGE VIRALE', 0, 0, 0, true, 'C');
@@ -158,7 +158,7 @@ class Covid19ResultPDFHelper extends Fpdi
             $this->Cell(0, 10, _translate('Page') . ' ' . $this->getAliasNumPage() . ' ' . _translate('of') . ' ' . $this->getAliasNbPages(), 0, false, 'C', 0);
         }
         if (!empty($this->trainingTxt)) {
-            $this->writeHTML('<span style="color:red">' . strtoupper((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
+            $this->writeHTML('<span style="color:red">' . _toUpperCase((string) $this->trainingTxt) . '</span>', true, false, true, false, 'M');
         }
     }
 }

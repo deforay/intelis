@@ -342,7 +342,7 @@ try {
           $row[] = $aRow['patient_art_no'];
           $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
           if ($formId == COUNTRY\CAMEROON) {
-               $row[] = $aRow['health_insurance_code'];
+               $row[] = $aRow['health_insurance_code'] ?? null;
           }
           $row[] = ($aRow['facility_name']);
           $row[] = ($aRow['lab_name']);
