@@ -51,6 +51,8 @@ try {
         'Content-Type' => 'application/json',
     ];
 
+    $apiService->setHeaders($headers);
+
     $jsonResponse = $apiService->post($tokenURL, json_encode($payload), gzip: true);
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
@@ -63,7 +65,7 @@ try {
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
-            echo "Failed to generate token. Error: " . ($response['error'] ?? 'Unknown error') . "\n";
+            echo "Failed to generate token. Error: " . (implode("|", $response['error']) ?? 'Unknown error') . "\n";
         }
     }
 } catch (Throwable $e) {
