@@ -45,7 +45,7 @@ if ($general->isSTSInstance()) {
 	$shortCode = 'STS';
 }
 
-$systemDisplayName = SYSTEM_CONFIG['instanceName'] ?? $systemDisplayName;
+$systemDisplayName = SYSTEM_CONFIG['instance-name'] ?? $systemDisplayName;
 
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');

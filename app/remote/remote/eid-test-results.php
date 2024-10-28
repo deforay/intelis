@@ -82,7 +82,7 @@ try {
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
 
                 $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
-                $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
+                $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
                 // we dont need this now
                 //unset($resultRow['approved_by_name']);
             }

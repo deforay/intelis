@@ -19,7 +19,7 @@ $systemConfig['modules']['tb'] = false;
 $systemConfig['modules']['cd4'] = false;
 $systemConfig['modules']['generic-tests'] = false;
 
-$systemConfig['instanceName'] = '';
+$systemConfig['instance-name'] = '';
 
 
 // Database Settings

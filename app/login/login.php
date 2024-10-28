@@ -34,8 +34,8 @@ $general = ContainerRegistry::get(CommonService::class);
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();
 
-if (!empty(SYSTEM_CONFIG['instanceName'])) {
-	$systemDisplayName = SYSTEM_CONFIG['instanceName'];
+if (!empty(SYSTEM_CONFIG['instance-name']) && SYSTEM_CONFIG['instance-name'] != '') {
+	$systemDisplayName = SYSTEM_CONFIG['instance-name'];
 } else {
 	$systemDisplayName = _translate("Lab Sample Management Module");
 }

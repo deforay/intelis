@@ -8,6 +8,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
+use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
@@ -27,9 +28,20 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 $payload = [];
 
 try {
-
-    /** @var Laminas\Diactoros\ServerRequest $request */
+    /** @var ServerRequest $request */
     $request = AppRegistry::get('request');
+
+    // Retrieve the API key from the request header
+    $apiKey = $request->getHeaderLine('X-API-Key');
+
+    // Get the expected API key from the environment
+    $intelisSyncApiKey = $general->getIntelisSyncAPIKey();
+
+    // Check if the API key is missing or doesn't match
+    if (empty($apiKey) || $apiKey !== $intelisSyncApiKey) {
+        throw new SystemException('Unauthorized: Invalid API Key', 401);
+    }
+
     $data = $apiService->getJsonFromRequest($request, true);
 
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
@@ -48,7 +60,6 @@ try {
         'token' => $token
     ];
 } catch (Throwable $e) {
-
     $payload = [
         'status' => 'error',
         'error' => _translate('Unable to process the request')
@@ -64,6 +75,5 @@ try {
     ]);
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
-
 
 echo ApiService::sendJsonResponse($payload, $request);

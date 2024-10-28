@@ -50,6 +50,7 @@ use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\Services\STS\TokensService as STSTokensService;
+use App\Services\STS\ResultsService as STSResultsService;
 use App\Services\STS\RequestsService as STSRequestsService;
 
 try {
@@ -120,6 +121,7 @@ $builder->addDefinitions([
     StorageService::class => DI\autowire(),
     TestRequestsService::class => DI\autowire(),
     STSRequestsService::class => DI\autowire(),
+    STSResultsService::class => DI\autowire(),
     STSTokensService::class => DI\autowire(),
 ]);
 

@@ -75,6 +75,17 @@ final class CommonService
         });
     }
 
+    public function getIntelisSyncAPIKey()
+    {
+        return $this->fileCache->get('sts-api-key', function () {
+            $stsKey = SYSTEM_CONFIG['sts-api-key'];
+            if ($stsKey == '' || empty($stsKey)) {
+                return '';
+            }
+            return $stsKey;
+        });
+    }
+
     public function getClientIpAddress(): ?string
     {
         $ipAddress = null;

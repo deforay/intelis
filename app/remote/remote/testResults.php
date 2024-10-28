@@ -20,6 +20,10 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+
+$primaryKey = 'vl_sample_id';
+$tableName = 'form_vl';
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -44,7 +48,7 @@ try {
 
     //remove unwanted columns
     $unwantedColumns = [
-        'vl_sample_id',
+        $primaryKey,
         'sample_package_id',
         'sample_package_code',
         'result_printed_datetime',
@@ -52,8 +56,7 @@ try {
     ];
 
     // Create an array with all column names set to null
-    $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $unwantedColumns);
-
+    $emptyLabArray = $general->getTableFieldsAsArray($tableName, $unwantedColumns);
 
 
     $sampleCodes = $facilityIds = [];
@@ -84,7 +87,7 @@ try {
             if (isset($resultRow['approved_by_name']) && !empty($resultRow['approved_by_name'])) {
 
                 $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
-                $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
+                $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
                 // we dont need this now
                 //unset($resultRow['approved_by_name']);
             }
@@ -107,8 +110,6 @@ try {
                 $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
             }
 
-            $primaryKey = 'vl_sample_id';
-            $tableName = 'form_vl';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 $conditions = [];
@@ -135,7 +136,6 @@ try {
                 if (!empty($conditions)) {
                     $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
                     $sResult = $db->rawQueryOne($sQuery, $params);
-                    //LoggerUtility::log('info', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
 
                 $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');

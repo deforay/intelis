@@ -31,6 +31,9 @@ $jsonResponse = $apiService->getJsonFromRequest($request);
 
 
 
+$primaryKey = 'covid19_id';
+$tableName = 'form_covid19';
+
 require_once(dirname(__FILE__) . "/../../../bootstrap.php");
 
 ini_set('memory_limit', -1);
@@ -51,7 +54,7 @@ try {
 
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [
-            'covid19_id',
+            $primaryKey,
             'sample_package_id',
             'sample_package_code',
             'request_created_by'
@@ -87,7 +90,7 @@ try {
             if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
 
                 $lab['result_approved_by'] = $usersService->getOrCreateUser($lab['approved_by_name']);
-                $lab['result_approved_datetime'] = DateUtility::getCurrentDateTime();
+                $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
                 // we dont need this now
                 //unset($lab['approved_by_name']);
             }
@@ -105,8 +108,6 @@ try {
                 $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
 
-            $primaryKey = 'covid19_id';
-            $tableName = 'form_covid19';
             try {
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 $conditions = [];
@@ -153,7 +154,7 @@ try {
                 // Insert covid19_tests
                 $testsData = $resultRow[$uniqueId]['data_from_tests'] ?? [];
 
-                $db->where('covid19_id', $primaryKeyValue);
+                $db->where($primaryKey, $primaryKeyValue);
                 $db->delete("covid19_tests");
                 foreach ($testsData as $tRow) {
                     $covid19TestData = [
