@@ -25,7 +25,7 @@ final class TestRequestsService
         $this->commonService = $commonService;
     }
 
-    public function addToSampleCodeQueue(string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null): bool
+    public function addToSampleCodeQueue(?string $uniqueId, string $testType, string $sampleCollectionDate, ?string $provinceCode = null, ?string $sampleCodeFormat = null, ?string $prefix = null, ?string $accessType = null): bool
     {
         return $this->db->insert("queue_sample_code_generation", [
             'unique_id' => $uniqueId,
@@ -60,8 +60,6 @@ final class TestRequestsService
             }
 
             $sampleCodeColumn = $this->commonService->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
-
-
 
             if (!empty($uniqueIds)) {
                 $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
@@ -199,7 +197,7 @@ final class TestRequestsService
                         '$manifestCode',
                         (SELECT DISTINCT sample_package_code FROM $tableName WHERE remote_sample_code LIKE '$manifestCode')
                     )";
-            
+
             $sampleResult = $this->db->rawQuery($sampleQuery);
 
             $status = 0;

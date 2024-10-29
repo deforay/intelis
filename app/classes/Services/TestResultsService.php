@@ -16,7 +16,7 @@ final class TestResultsService
     }
     public function clearPreviousImportsByUser($userId = null, $module = null)
     {
-        $userId = $userId ?? $_SESSION['userId'] ?? null;
+        $userId ??= $_SESSION['userId'] ?? null;
         $this->db->where('imported_by', $userId);
         if (!empty($module)) {
             $this->db->where('module', $module);
@@ -67,7 +67,7 @@ final class TestResultsService
             $testingDateFormat .= ' A';
         }
 
-        $timestamp = DateTimeImmutable::createFromFormat("!" . $testingDateFormat, $testDate);
+        $timestamp = DateTimeImmutable::createFromFormat("!$testingDateFormat", $testDate);
         $testingDate = $timestamp ? $timestamp->format('Y-m-d H:i') : null;
 
         return [
@@ -89,19 +89,19 @@ final class TestResultsService
         $this->db->insert('result_import_stats', $data);
     }
 
-    public function updateEmailTestResultsInfo($testType,$emailInfo){
+    public function updateEmailTestResultsInfo($testType, $emailInfo)
+    {
         $testName = TestsService::getTestTypes();
         $tableName = $testName[$testType]['tableName'];
         $primaryKey = $testName[$testType]['primaryKey'];
         $this->db->where("$primaryKey IN (" . $emailInfo['samples'] . ")");
-        $result = $this->db->get($tableName,NULL,"result_dispatched_datetime,form_attributes,is_result_mail_sent");
-        foreach($result as $val){
-            if(!empty($val['form_attributes'])){
-                    $formAttributes = json_decode($val['form_attributes']);
-                    $formAttributes->email_sent_to = $emailInfo['to_mail'];
-            }
-            else{
-                $formAttributes = array('email_sent_to'=>$emailInfo['to_mail']);
+        $result = $this->db->get($tableName, NULL, "result_dispatched_datetime,form_attributes,is_result_mail_sent");
+        foreach ($result as $val) {
+            if (!empty($val['form_attributes'])) {
+                $formAttributes = json_decode($val['form_attributes']);
+                $formAttributes->email_sent_to = $emailInfo['to_mail'];
+            } else {
+                $formAttributes = array('email_sent_to' => $emailInfo['to_mail']);
             }
 
             $data = array(
@@ -109,12 +109,11 @@ final class TestResultsService
                 'form_attributes' => json_encode($formAttributes),
             );
 
-            if($val['result_dispatched_datetime'] == ""){
+            if ($val['result_dispatched_datetime'] == "") {
                 $data['result_dispatched_datetime'] = DateUtility::getCurrentDateTime();
             }
 
-            $this->db->update($tableName,$data);
+            $this->db->update($tableName, $data);
         }
-
     }
 }

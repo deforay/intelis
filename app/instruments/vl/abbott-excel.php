@@ -83,7 +83,7 @@ try {
                     if ($row < $skip) {
                         if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {
                             $cvNumber = $sheetData[1] ?? null;
-                        } elseif (strtoupper($sheetData[0]) == 'RUN COMPLETION TIME') {
+                        } elseif (in_array(strtoupper($sheetData[0]), ["RUN COMPLETION TIME", "HEURE DE FIN DE L'ANALYSE"])) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
