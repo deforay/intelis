@@ -65,9 +65,13 @@ final class ApiService
         $this->bearerToken = $bearerToken;
     }
 
-    public static function generateAuthToken(): string
+    public static function generateAuthToken(string $prefix = 'at', $format = '%s_%s'): string
     {
-        return base64_encode(MiscUtility::generateUUID());
+        return sprintf(
+            $format,
+            $prefix,
+            str_replace('-', '', MiscUtility::generateUUID())
+        );
     }
 
     protected function createApiClient(): Client

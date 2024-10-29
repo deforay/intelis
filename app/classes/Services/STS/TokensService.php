@@ -7,6 +7,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
+use App\Services\ApiService;
 use Psr\Http\Message\ServerRequestInterface;
 
 final class TokensService
@@ -41,7 +42,7 @@ final class TokensService
         }
 
         // Token does not exist or has expired; generate a new token
-        $token = MiscUtility::generateRandomString();
+        $token = ApiService::generateAuthToken('sts');
 
         // Update the database with the new token and expiry time
         $this->db->where('facility_id', $facilityId);

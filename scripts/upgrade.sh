@@ -13,7 +13,7 @@ fi
 # Initialize flags
 skip_ubuntu_updates=false
 skip_backup=false
-vlsm_path=""
+lis_path=""
 
 log_file="/tmp/intelis-upgrade-$(date +'%Y%m%d-%H%M%S').log"
 
@@ -22,7 +22,7 @@ while getopts ":sbp:" opt; do
     case $opt in
     s) skip_ubuntu_updates=true ;;
     b) skip_backup=true ;;
-    p) vlsm_path="$OPTARG" ;;
+    p) lis_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
 done
@@ -133,46 +133,46 @@ current_trap=$(trap -p ERR)
 trap - ERR
 
 # Prompt for the LIS path if not provided via the command-line argument
-if [ -z "$vlsm_path" ]; then
+if [ -z "$lis_path" ]; then
     echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
-    read -t 60 vlsm_path
+    read -t 60 lis_path
 
     # Check if read command timed out or no input was provided
-    if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
-        vlsm_path="/var/www/vlsm"
-        echo "Using default path: $vlsm_path"
+    if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
+        lis_path="/var/www/vlsm"
+        echo "Using default path: $lis_path"
     else
-        echo "LIS path is set to ${vlsm_path}"
+        echo "LIS path is set to ${lis_path}"
     fi
 else
-    echo "LIS path is set to ${vlsm_path}"
+    echo "LIS path is set to ${lis_path}"
 fi
 
 # Convert relative path to absolute path if necessary
-if [[ "$vlsm_path" != /* ]]; then
-    vlsm_path="$(realpath "$vlsm_path")"
-    echo "Converted to absolute path: $vlsm_path"
+if [[ "$lis_path" != /* ]]; then
+    lis_path="$(realpath "$lis_path")"
+    echo "Converted to absolute path: $lis_path"
 fi
 
 # Convert VLSM path to absolute path
-vlsm_path=$(to_absolute_path "$vlsm_path")
+lis_path=$(to_absolute_path "$lis_path")
 
 # Check if the LIS path is valid
-if ! is_valid_application_path "$vlsm_path"; then
+if ! is_valid_application_path "$lis_path"; then
     echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
-    log_action "Invalid LIS path specified: $vlsm_path"
+    log_action "Invalid LIS path specified: $lis_path"
     exit 1
 fi
 
-log_action "LIS path is set to ${vlsm_path}"
+log_action "LIS path is set to ${lis_path}"
 
 # Restore the previous error trap
 eval "$current_trap"
 
 # # Check if LIS folder exists
-# if [ ! -d "${vlsm_path}" ]; then
-#     echo "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
-#     log_action "LIS folder does not exist at ${vlsm_path}. Please first run the setup script."
+# if [ ! -d "${lis_path}" ]; then
+#     echo "LIS folder does not exist at ${lis_path}. Please first run the setup script."
+#     log_action "LIS folder does not exist at ${lis_path}. Please first run the setup script."
 #     exit 1
 # fi
 
@@ -390,7 +390,7 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
 
 spinner() {
     local pid=$!
@@ -447,8 +447,8 @@ if [ "$skip_backup" = false ]; then
         read -s mysql_root_password
 
         # Ask for the backup location and create it if it doesn't exist
-        read -p "Enter the backup location [press enter to select /var/vlsm-backup/db/]: " backup_location
-        backup_location="${backup_location:-/var/vlsm-backup/db/}"
+        read -p "Enter the backup location [press enter to select /var/intelis-backup/db/]: " backup_location
+        backup_location="${backup_location:-/var/intelis-backup/db/}"
 
         # Create the backup directory if it does not exist
         if [ ! -d "$backup_location" ]; then
@@ -499,9 +499,9 @@ if [ "$skip_backup" = false ]; then
         # Backup Old LIS Folder
         echo "Backing up old LIS folder..."
         timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
-        backup_folder="/var/vlsm-backup/www/vlsm-backup-$timestamp"
+        backup_folder="/var/intelis-backup/www/intelis-backup-$timestamp"
         mkdir -p "${backup_folder}"
-        rsync -a --delete --exclude "public/temporary/" "${vlsm_path}/" "${backup_folder}/" &
+        rsync -a --delete --exclude "public/temporary/" "${lis_path}/" "${backup_folder}/" &
         spinner # This will show the spinner until the above process is completed
         log_action "LIS folder backed up to ${backup_folder}"
     else
@@ -510,7 +510,7 @@ if [ "$skip_backup" = false ]; then
     fi
 fi
 
-rm -rf "${vlsm_path}/run-once"
+rm -rf "${lis_path}/run-once"
 
 echo "Downloading LIS..."
 wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
@@ -526,12 +526,12 @@ spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -av --ignore-times --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$vlsm_path/"
+rsync -av --ignore-times --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$lis_path/"
 
 # Check if rsync command succeeded
 if [ $? -ne 0 ]; then
     echo "Error occurred during rsync. Logging and continuing..."
-    log_action "Error during rsync operation. Path was: $vlsm_path"
+    log_action "Error during rsync operation. Path was: $lis_path"
 else
     echo "Files copied successfully, preserving symlinks where necessary."
     log_action "Files copied successfully."
@@ -545,14 +545,14 @@ wait ${cp_pid}      # Wait for the copy process to finish
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "LIS copied to ${vlsm_path}."
+log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${vlsm_path}"
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
 
 # Check for config.production.php and its content
-config_file="${vlsm_path}/configs/config.production.php"
-dist_config_file="${vlsm_path}/configs/config.production.dist.php"
+config_file="${lis_path}/configs/config.production.php"
+dist_config_file="${lis_path}/configs/config.production.dist.php"
 
 if [ -f "${config_file}" ]; then
     # Check if the file contains the required string
@@ -581,7 +581,7 @@ fi
 
 # Run Composer Install as www-data
 echo "Running composer install as www-data user..."
-cd "${vlsm_path}"
+cd "${lis_path}"
 
 sudo -u www-data composer config process-timeout 30000
 
@@ -601,7 +601,7 @@ wait $pid
 log_action "Database migrations and post-update tasks completed."
 
 # Check if there are any PHP scripts in the run-once directory
-run_once_scripts=("${vlsm_path}/run-once/"*.php)
+run_once_scripts=("${lis_path}/run-once/"*.php)
 
 if [ -e "${run_once_scripts[0]}" ]; then
     for script in "${run_once_scripts[@]}"; do
@@ -616,7 +616,7 @@ fi
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
     echo "Available maintenance scripts to run:"
-    files=("${vlsm_path}/maintenance/"*.php)
+    files=("${lis_path}/maintenance/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
@@ -652,7 +652,7 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
 fi
 
 # Run the PHP script for remote data sync
-cd "${vlsm_path}"
+cd "${lis_path}"
 echo "Running remote data sync script. Please wait..."
 sudo -u www-data composer metadata-sync &
 pid=$!
@@ -662,13 +662,13 @@ echo "Remote data sync completed."
 log_action "Remote data sync completed."
 
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
-if [ -f "${vlsm_path}/startup.php" ]; then
-    rm "${vlsm_path}/startup.php"
-    touch "${vlsm_path}/startup.php"
+if [ -f "${lis_path}/startup.php" ]; then
+    rm "${lis_path}/startup.php"
+    touch "${lis_path}/startup.php"
 fi
 
-if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
-    rm "${vlsm_path}/cache/CompiledContainer.php"
+if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
+    rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
 service apache2 restart
