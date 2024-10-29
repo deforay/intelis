@@ -21,7 +21,6 @@ $systemConfig['modules']['generic-tests'] = false;
 
 $systemConfig['instance-name'] = '';
 
-
 // Database Settings
 $systemConfig['database']['host']       = '';
 $systemConfig['database']['username']   = '';

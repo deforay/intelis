@@ -78,7 +78,7 @@ final class CommonService
     public function getIntelisSyncAPIKey()
     {
         return $this->fileCache->get('sts-api-key', function () {
-            $stsKey = SYSTEM_CONFIG['sts-api-key'];
+            $stsKey = SYSTEM_CONFIG['sts][api_key'];
             if ($stsKey == '' || empty($stsKey)) {
                 return '';
             }
