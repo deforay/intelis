@@ -1,10 +1,11 @@
 <?php
 
 use App\Services\ApiService;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
 
 require_once __DIR__ . "/../../../bootstrap.php";
 
@@ -18,18 +19,28 @@ $general = ContainerRegistry::get(CommonService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 $cliMode = php_sapi_name() === 'cli';
+$isLIS = $general->isLISInstance();
+
+if (!$isLIS || !$cliMode) {
+    LoggerUtility::log('error', "Token not generated. This script is only for LIS instances.");
+    exit(0);
+}
 
 // Parse CLI arguments to get the API key using either `-key` or `--key`
 $options = getopt('', ['key:']);
-$apiKey = $options['key'] ?? '';
+$apiKey = $options['key'] ?? null;
+
+// Set the URL for the token generation endpoint
+$remoteURL = trim($general->getRemoteURL(), '/');
+
+if (empty($apiKey)) {
+    $apiKey = MiscUtility::generateUUIDv5($remoteURL);
+}
 if (!$cliMode) {
-    echo "Usage: php tokener.php --key <API_KEY>\n";
+    echo "Usage: php token.php --key <API_KEY>\n";
     exit(1);
 }
 
-
-// Set the URL for the token generation endpoint
-$remoteURL = $general->getRemoteURL();
 $tokenURL = "$remoteURL/remote/v2/get-token.php";
 
 // Check connectivity
@@ -65,7 +76,7 @@ try {
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
-            echo "Failed to generate token. Error: " . (implode("|", $response['error']) ?? 'Unknown error') . "\n";
+            echo "Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error') . "\n";
         }
     }
 } catch (Throwable $e) {

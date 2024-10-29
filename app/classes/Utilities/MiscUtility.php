@@ -320,15 +320,18 @@ final class MiscUtility
         return $uuid;
     }
 
-    // Generate a UUIDv5 with a name and namespace
-    public static function generateUUIDv5($name, $namespace = null): string
+
+    /**
+     * Generate a UUIDv5 based on a name and optional namespace.
+     *
+     * @param string $name The input string for UUID generation
+     * @param string|null $namespace The namespace UUID (or null to use NAMESPACE_OID)
+     * @return string The generated UUIDv5 as an RFC 4122 string
+     */
+    public static function generateUUIDv5(string $name, ?string $namespace = Uuid::NAMESPACE_OID): string
     {
-        if ($namespace === null) {
-            $namespace = Uuid::fromString(Uuid::NAMESPACE_OID);
-        } elseif (is_string($namespace)) {
-            $namespace = Uuid::fromString($namespace);
-        }
-        return Uuid::v5($namespace, $name)->toRfc4122();
+        $namespaceUuid = is_string($namespace) ? Uuid::fromString($namespace) : $namespace;
+        return Uuid::v5($namespaceUuid, $name)->toRfc4122();
     }
 
 
