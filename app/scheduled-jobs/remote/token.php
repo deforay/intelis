@@ -26,12 +26,19 @@ if (!$isLIS || !$cliMode) {
     exit(0);
 }
 
+// Set the URL for the token generation endpoint
+$remoteURL = trim($general->getRemoteURL(), '/');
+
+// Check connectivity
+if (empty($remoteURL) || $remoteURL == '') {
+    LoggerUtility::log('error', "Please check if STS URL is set");
+    exit(0);
+}
+
 // Parse CLI arguments to get the API key using either `-key` or `--key`
 $options = getopt('', ['key:']);
 $apiKey = $options['key'] ?? null;
 
-// Set the URL for the token generation endpoint
-$remoteURL = trim($general->getRemoteURL(), '/');
 
 if (empty($apiKey)) {
     $apiKey = MiscUtility::generateUUIDv5($remoteURL);
@@ -42,12 +49,6 @@ if (!$cliMode) {
 }
 
 $tokenURL = "$remoteURL/remote/v2/get-token.php";
-
-// Check connectivity
-if (empty($remoteURL) || $remoteURL == '') {
-    LoggerUtility::log('error', "Please check if STS URL is set");
-    exit(0);
-}
 
 // Prepare payload with API key and lab ID
 $labId = $general->getSystemConfig('sc_testing_lab_id');

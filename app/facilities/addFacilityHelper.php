@@ -135,7 +135,7 @@ try {
 		$lastId = $db->getInsertId();
 
 		if ($data['facility_type'] == 2) {
-			$stsTokensService->createAndStoreToken($lastId);
+			$stsTokensService->createToken($lastId);
 		}
 
 		$facilityAttributes = [];
