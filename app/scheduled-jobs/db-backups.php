@@ -7,11 +7,11 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Exceptions\SystemException;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 
@@ -39,7 +39,7 @@ try {
     $dump->start($sqlFileName);
 
     $zip = new ZipArchive();
-    $zipStatus = $zip->open($sqlFileName . ".zip", ZipArchive::CREATE);
+    $zipStatus = $zip->open("$sqlFileName.zip", ZipArchive::CREATE);
     if ($zipStatus !== true) {
         throw new SystemException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
     }

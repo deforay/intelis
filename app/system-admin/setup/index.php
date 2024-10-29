@@ -1,10 +1,10 @@
 <?php
 
-use App\Exceptions\SystemException;
 use App\Services\CommonService;
+use App\Helpers\PassphraseHelper;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -23,13 +23,13 @@ $general = ContainerRegistry::get(CommonService::class);
 try {
   $myfile = fopen(CORE\SYSADMIN_SECRET_KEY_FILE, "w+");
   if ($myfile === false) {
-    throw new Exception("No permission to write file");
+    throw new SystemException("No permission to write file");
   }
-} catch (Exception $e) {
+} catch (Throwable $e) {
   throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
 
-$randomString = MiscUtility::generateUUID();
+$randomString = PassphraseHelper::generate();
 fwrite($myfile, $randomString);
 fclose($myfile);
 
