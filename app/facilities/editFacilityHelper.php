@@ -295,7 +295,7 @@ try {
 		if ($data['facility_type'] == 2) {
 			$facilityInfo = $facilityService->getFacilityById($facilityId);
 			if ($facilityInfo['sts_token'] == "" || $facilityInfo['sts_token'] == NULL) {
-				$stsTokensService->createAndStoreToken($facilityId);
+				$stsTokensService->createToken($facilityId);
 			}
 		}
 

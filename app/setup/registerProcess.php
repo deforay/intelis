@@ -80,6 +80,7 @@ try {
 
 
         // UPDATING CONFIG FILE
+       
         $updatedConfig = [
             'remoteURL' => $remoteURL,
             'modules.vl' => in_array('vl', $modulesToEnable),
@@ -95,6 +96,11 @@ try {
             'database.db' => (!empty($_POST['dbName'])) ? $_POST['dbName'] : 'vlsm',
             'database.port' => (!empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
         ];
+
+        if(isset($instanceType) && trim($instanceType) == 'remoteuser'){
+            $apiKey = MiscUtility::generateRandomString(16);
+            $updatedConfig['sts.api_key'] = $apiKey;
+        }
 
 
         $configService->updateConfig($updatedConfig);
