@@ -104,10 +104,7 @@ try {
                 $conditions = [];
                 $params = [];
 
-                if (!empty($lab['unique_id'])) {
-                    $conditions[] = "unique_id = ?";
-                    $params[] = $lab['unique_id'];
-                } elseif (!empty($lab['remote_sample_code'])) {
+                if (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
                 } elseif (!empty($lab['sample_code'])) {
@@ -120,6 +117,9 @@ try {
                         $params[] = $lab['sample_code'];
                         $params[] = $lab['facility_id'];
                     }
+                } elseif (!empty($lab['unique_id'])) {
+                    $conditions[] = "unique_id = ?";
+                    $params[] = $lab['unique_id'];
                 }
                 $sResult = [];
                 if (!empty($conditions)) {

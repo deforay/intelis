@@ -95,9 +95,9 @@ foreach ($systemConfig['modules'] as $module => $status) {
             async: true
         )->then(function ($response) use (&$responsePayload, $module, $cliMode) {
             $responsePayload[$module] = $response->getBody()->getContents();
-            if ($cliMode) {
-                echo "Response for $module received at: " . microtime(true) . PHP_EOL;
-            }
+            // if ($cliMode) {
+            //     echo "Response for $module received at: " . microtime(true) . PHP_EOL;
+            // }
         })->otherwise(function ($reason) use ($module, $cliMode) {
             if ($cliMode) {
                 echo "STS Request sync for $module failed: " . $reason . PHP_EOL;
@@ -114,7 +114,7 @@ Utils::settle($promises)->wait();
 $endTime = microtime(true);
 
 // Print the total execution time
-echo "Total requests download time: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
+echo "Total download time for STS Requests: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
 
 
 /*
@@ -389,8 +389,6 @@ try {
                     $counter++;
                 }
                 $db->commitTransaction();
-
-                echo $db->getLastQuery();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());

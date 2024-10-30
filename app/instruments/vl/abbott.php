@@ -24,7 +24,7 @@ try {
     /** @var TestResultsService $testResultsService */
     $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
+    $dateFormat = $_POST['dateFormat'] ?? 'd/m/Y H:i';
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
@@ -68,6 +68,8 @@ try {
         $reviewByCol = '';
         $lotExpirationDateCol = 13;
 
+
+
         if (str_contains($mime_type, 'text/plain')) {
             $infoFromFile = [];
             $testDateRow = "";
@@ -76,18 +78,22 @@ try {
             $row = 1;
             if (($handle = fopen(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName), "r")) !== false) {
                 while (($sheetData = fgetcsv($handle, 10000, "\t")) !== false) {
-                    //$num = count($sheetData);
                     $row++;
+
+                    MiscUtility::dumpToErrorLog($row);
+                    MiscUtility::dumpToErrorLog($sheetData[0]);
+                    MiscUtility::dumpToErrorLog($dateFormat);
                     if ($row < $skip) {
                         if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {
                             $cvNumber = $sheetData[1] ?? null;
-                        } elseif (strtoupper($sheetData[0]) == 'RUN COMPLETION TIME') {
+                        } elseif (in_array(strtoupper($sheetData[0]), ["RUN COMPLETION TIME", "HEURE DE FIN DE L'ANALYSE"])) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
                         }
                         continue;
                     }
+
                     $sampleCode = "";
                     $sampleType = "";
                     $absDecimalVal = "";

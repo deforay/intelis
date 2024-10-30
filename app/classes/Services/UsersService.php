@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use DateTime;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;

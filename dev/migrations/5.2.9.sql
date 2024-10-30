@@ -734,7 +734,7 @@ ALTER TABLE `facility_details` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFT
 
 
 -- Jeyabanu
-ALTER TABLE `s_vlsm_instance` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `instance_facility_logo`
+ALTER TABLE `s_vlsm_instance` ADD `sts_token` VARCHAR(64) NULL DEFAULT NULL AFTER `instance_facility_logo`;
 
 -- END OF VERSION --
 -- END OF VERSION --

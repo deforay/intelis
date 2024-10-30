@@ -1940,7 +1940,7 @@ CREATE TABLE `hepatitis_risk_factors` (
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Hepatitis Sample Code Format', 'hepatitis_sample_code', 'MMYY', 'hepatitis', 'yes', '2020-11-17 18:47:05', NULL, 'active'), ('Hepatitis Sample Code Prefix', 'hepatitis_sample_code_prefix', 'HEP', 'hepatitis', 'yes', '2020-11-17 18:47:05', NULL, 'active');
 
 -- Thana 19-Nov-2020
-ALTER TABLE `form_hepatitis` ADD `hbv_vaccination` VARCHAR(255) NULL DEFAULT NULL AFTER `patient_insurance`, ADD `vl_testing_site` VARCHAR(255) NULL DEFAULT NULL AFTER `hbv_vl_count`;
+ALTER TABLE `form_hepatitis` ADD `hbv_vaccination` VARCHAR(128) NULL DEFAULT NULL AFTER `patient_insurance`, ADD `vl_testing_site` VARCHAR(128) NULL DEFAULT NULL AFTER `hbv_vl_count`;
 ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis') CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL;
 INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES ('hepatitis-results', 'hepatitis', 'Hepatitis Results Management');
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `display_name`) VALUES (NULL, 'hepatitis-results', 'hepatitis-manual-results.php', 'Enter Result Manually');
@@ -2367,7 +2367,7 @@ ALTER TABLE `form_hepatitis` DROP INDEX `source_of_request`;
 ALTER TABLE `vl_request_form` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `eid_form` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `result_approved_datetime`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 ALTER TABLE `form_covid19` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
-ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(500) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
+ALTER TABLE `form_hepatitis` ADD `revised_by` VARCHAR(128) NULL DEFAULT NULL AFTER `authorized_on`, ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`;
 -- Thana 07-Oct-2021
 ALTER TABLE `eid_form` ADD `reason_for_changing` VARCHAR(256) NULL DEFAULT NULL AFTER `result`;
 
@@ -2377,9 +2377,9 @@ UPDATE `system_config` SET `value` = '4.4.2' WHERE `system_config`.`name` = 'sc_
 -- Thana 19-Oct-2021
 ALTER TABLE `failed_result_retest_tracker` ADD `sample_data` TEXT NOT NULL AFTER `sample_code`;
 -- ALTER TABLE `vl_request_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
-ALTER TABLE `eid_form` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
-ALTER TABLE `form_covid19` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
-ALTER TABLE `form_hepatitis` ADD `sample_reordered` VARCHAR(256) NOT NULL DEFAULT 'no' AFTER `sample_code`;
+ALTER TABLE `eid_form` ADD `sample_reordered` VARCHAR(3) NOT NULL DEFAULT 'no' AFTER `sample_code`;
+ALTER TABLE `form_covid19` ADD `sample_reordered` VARCHAR(3) NOT NULL DEFAULT 'no' AFTER `sample_code`;
+ALTER TABLE `form_hepatitis` ADD `sample_reordered` VARCHAR(3) NOT NULL DEFAULT 'no' AFTER `sample_code`;
 
 -- Thana 21-Oct-2021
 ALTER TABLE `vl_request_form` ADD `rejection_on` DATE NULL DEFAULT NULL AFTER `reason_for_sample_rejection`;
