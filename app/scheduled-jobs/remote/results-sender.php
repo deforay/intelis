@@ -39,10 +39,16 @@ $systemConfig = SYSTEM_CONFIG;
 
 $remoteURL = $general->getRemoteURL();
 
+
 if (empty($remoteURL)) {
     LoggerUtility::log('error', "Please check if STS URL is set");
     exit(0);
 }
+
+$stsBearerToken = $general->getSTSToken();
+
+$apiService->setBearerToken($stsBearerToken);
+
 try {
     // Checking if the network connection is available
     if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {

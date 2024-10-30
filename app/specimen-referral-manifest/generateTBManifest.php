@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\UsersService;
 use App\Helpers\ManifestPdfHelper;
 use App\Registries\ContainerRegistry;
 
@@ -14,6 +15,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -39,7 +43,16 @@ if (trim((string) $id) != '') {
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
+        $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
 
+        $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $oldPrintData[] = $newPrintData; 
+        $db->where('package_id', $id);
+        $db->update('package_details', array(
+            'manifest_print_history' => json_encode($oldPrintData)
+        ));
+
+        $reasonHistory = json_decode($bResult[0]['manifest_change_history']);
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('TB Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
@@ -153,7 +166,27 @@ if (trim((string) $id) != '') {
         $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Verified By :  </strong></td>';
         $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;"><strong>Received By : </strong><br>(at ' . $labname . ')</td>';
         $tbl .= '</tr>';
+        $tbl .= '</table><br><br>';
+
+        if(!empty($reasonHistory) && count($reasonHistory) > 0){
+            $tbl .= 'Manifest Change History';
+            $tbl .= '<br><br><table nobr="true" style="width:100%;" border="1" cellpadding="2"><tr nobr="true">';
+            $tbl .= '<th>Reason for Changes</th>';
+            $tbl .= '<th>Changed By </th>';
+            $tbl .= '<th>Changed On</th>';
+            $tbl .= '</tr>';
+            foreach($reasonHistory as $change){
+                $userResult = $usersService->getUserByUserId($change->changedBy);
+                $userName = $userResult['user_name'];
+                $tbl .= '<tr nobr="true">';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $change->reason . '</td>';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $userName . '</td>';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . DateUtility::humanReadableDateFormat($change->date) . '</td>';
+                $tbl .= '</tr>';
+            }
+        }
         $tbl .= '</table>';
+
         //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
         $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';

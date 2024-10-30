@@ -66,10 +66,60 @@ final class ResultsService
         $this->setTestType($testType);
         $resultsData = [];
 
-        //$rResult = $this->runQuery($labId);
+        $rResult = $this->runQuery($labId);
 
         //$resultsData = $this->returnResults($rResult);
 
         return $resultsData;
+    }
+
+    private function runQuery($labId)
+    {
+        // Start with selecting all columns
+        $columnSelection = "*";
+
+        if ($this->testType == 'vl') {
+            // Alias and constant column logic specific to VL
+            $aliasColumns = [
+                'sample_type' => 'specimen_type',
+                //'patient_art_no' => 'patient_id'
+            ];
+
+            $constantColumns = [
+                'sample_code_title' => "'auto'"
+            ];
+
+            // Add alias columns
+            foreach ($aliasColumns as $oldName => $newName) {
+                $columnSelection .= ", $newName AS $oldName";
+            }
+
+            // Add constant columns
+            foreach ($constantColumns as $columnName => $constantValue) {
+                $columnSelection .= ", $constantValue AS $columnName";
+            }
+        }
+
+        $condition = $this->buildCondition($labId, $facilityMapResult, $manifestCode);
+
+        $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE $condition";
+
+        [$rResult, $resultCount] = $this->db->getQueryResultAndCount($sQuery, returnGenerator: false);
+
+        return [$rResult, $resultCount];
+    }
+
+    private function returnResults(array $rResult, int $resultCount): array
+    {
+        $sampleIds = $facilityIds = [];
+        if ($resultCount > 0) {
+            $sampleIds = array_column($rResult, $this->primaryKeyName);
+            $facilityIds = array_column($rResult, 'facility_id');
+        }
+        return [
+            'sampleIds' => $sampleIds,
+            'facilityIds' => $facilityIds,
+            'requests' => $rResult
+        ];
     }
 }

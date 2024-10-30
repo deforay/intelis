@@ -311,8 +311,21 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						</div>
 					</div>
 					<br>
+					<div class="row">
+						<div class="col-md-6">
+								<div class="form-group">
+									<label for="reasonForChange" class="col-lg-4 control-label">
+										<?php echo _translate("Reason for changing manifest"); ?>
+									</label>
+									<div class="col-lg-7" style="margin-left:3%;">
+										<textarea class="form-control" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
+									</div>
+								</div>
+						</div>
+					</div>
+					<br>
 					<div class="row" id="sampleDetails">
-
+							
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>

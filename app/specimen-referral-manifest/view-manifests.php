@@ -59,7 +59,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 									<th><?= _translate("Testing Lab"); ?></th>
 									<th><?= _translate("Number of Samples"); ?></th>
 									<th><?= _translate("Manifest Created On"); ?></th>
-									<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?>
+									<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t']) || _isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?>
 										<th><?= _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -114,7 +114,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 				{
 					"sClass": "center"
 				},
-				<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t'])) { ?> {
+				<?php if (_isAllowed("/specimen-referral-manifest/edit-manifest.php?t=" . $_GET['t']) || _isAllowed("/specimen-referral-manifest/add-manifest.php?t=" . $_GET['t'])) { ?> {
 						"sClass": "center",
 						"bSortable": false
 					},

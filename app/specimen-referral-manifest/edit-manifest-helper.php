@@ -43,11 +43,19 @@ try {
         ]);
 
         $lastId = $_POST['packageId'];
+        
+        $db->where('package_id', $lastId);
+        $previousData = $db->getOne($packageTable);
+        $oldReason = json_decode($previousData['manifest_change_history']);
+
+        $newReason = array('reason' => $_POST['reasonForChange'],'changedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $oldReason[] = $newReason; 
         $db->where('package_id', $lastId);
         $db->update($packageTable, array(
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => count($selectedSample),
             'package_status' => $_POST['packageStatus'],
+            'manifest_change_history' => json_encode($oldReason),
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
         ));
 
