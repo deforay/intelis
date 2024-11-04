@@ -352,7 +352,7 @@ foreach ($testReasonsResultDetails as $row) {
                                                                       <option value=""> -- <?= _translate("Select"); ?> -- </option>
                                                                       <option value="6 Months"><?= _translate("6 Months"); ?></option>
                                                                       <option value="12 Months"><?= _translate("12 Months"); ?></option>
-                                                                      <option value="More then 12 Months"><?= _translate("More then 12 Months"); ?></option>
+                                                                      <option value="More than 12 Months"><?= _translate("More than 12 Months"); ?></option>
                                                                  </select>
                                                                  <input type="text" class="form-control" name="treatmentDurationPrecise1" id="treatmentDurationPrecise1" placeholder="Enter treatment period" title="Please enter treatment period" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -1449,7 +1449,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function treatmentDuration(value) {
-          if (value == "More then 12 Months") {
+          if (value == "More than 12 Months") {
                $('#treatmentDurationPrecise1').show();
           } else {
                $('#treatmentDurationPrecise1').hide();

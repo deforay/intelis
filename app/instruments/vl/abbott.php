@@ -10,6 +10,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
+use PhpMyAdmin\SqlParser\Utils\Misc;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -79,17 +80,21 @@ try {
             if (($handle = fopen(realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName), "r")) !== false) {
                 while (($sheetData = fgetcsv($handle, 10000, "\t")) !== false) {
                     $row++;
-
-                    MiscUtility::dumpToErrorLog($row);
-                    MiscUtility::dumpToErrorLog($sheetData[0]);
-                    MiscUtility::dumpToErrorLog($dateFormat);
                     if ($row < $skip) {
-                        if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {
-                            $cvNumber = $sheetData[1] ?? null;
-                        } elseif (in_array(strtoupper($sheetData[0]), ["RUN COMPLETION TIME", "HEURE DE FIN DE L'ANALYSE"])) {
+
+                        if (empty($sheetData[0])) {
+                            continue;
+                        }
+
+                        // $prefixes = ["RUN COMPLETION TIME", "HEURE DE FIN DE"];
+                        // $startsWithPrefix = \iter\any(fn($prefix) => str_starts_with($sheetData[0], $prefix), $prefixes);
+
+                        if ($row == 8) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
+                        } elseif (in_array($sheetData[0], ['PLATE NUMBER', 'PLATE NAME'])) {
+                            $cvNumber = $sheetData[1] ?? null;
                         }
                         continue;
                     }
@@ -130,7 +135,7 @@ try {
                         //     $txtVal = null;
                         //     $absVal = $absDecimalVal;
                         // }
-                    } else if (str_contains((string)$sheetData[$resultCol], 'Copies')) {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'Copies')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                         if (str_contains((string)$sheetData[$resultCol], '<')) {
                             if ($sheetData[$resultCol] == "< INF") {
@@ -140,14 +145,14 @@ try {
                                 $txtVal = $absVal = "< " . trim($absDecimalVal);
                                 $logVal = $absDecimalVal = $resultFlag = "";
                             }
-                        } else if (str_contains((string)$sheetData[$resultCol], '>')) {
+                        } elseif (str_contains((string)$sheetData[$resultCol], '>')) {
                             $txtVal = $absVal = "> " . trim($absDecimalVal);
                             $logVal = $absDecimalVal = $resultFlag = "";
                         } else {
                             $logVal = round(log10($absDecimalVal), 2);
                             $absVal = $absDecimalVal;
                         }
-                    } else if (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'IU/mL')) {
                         $absVal = $absDecimalVal = abs((int) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_INT));
                     } else {
                         if (str_contains(strtolower((string)$sheetData[$resultCol]), 'not detected') || strtolower((string) $sheetData[$resultCol]) == 'target not detected') {
@@ -155,7 +160,7 @@ try {
                             $resultFlag = "";
                             $absVal = "";
                             $logVal = "";
-                        } else if ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
+                        } elseif ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
                             //$txtVal =  $sheetData[$flagCol];
                             $txtVal = "Failed";
                             $resultFlag = $sheetData[$flagCol];
@@ -209,7 +214,7 @@ try {
                             "absDecimalVal" => $absDecimalVal,
                             "txtVal" => $txtVal,
                             "resultFlag" => $resultFlag,
-                            "testingDate" => $testingDate,
+                            "testingDate" => $testingDate ?? null,
                             "sampleType" => $sampleType,
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
@@ -230,7 +235,7 @@ try {
             $data = array(
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
-                'cv_number' => $cvNumber,
+                'cv_number' => $cvNumber ?? null,
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],

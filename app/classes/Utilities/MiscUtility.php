@@ -128,9 +128,9 @@ final class MiscUtility
 
         // Additional context
         $timestamp = date('Y-m-d H:i:s');
-        $output = "[{$timestamp}] " . $output;
+        $output = "[{$timestamp}] :::DUMP::: " . $output;
 
-        error_log($output);
+        LoggerUtility::logInfo($output);
     }
 
     /**
@@ -618,5 +618,22 @@ final class MiscUtility
 
         // Reconstruct the file name with its extension
         return $cleanFileName . ($extension ? '.' . $extension : '');
+    }
+
+
+    // Functions for metadata management
+    public static function loadMetadata($path)
+    {
+        if (file_exists($path)) {
+            return json_decode(file_get_contents($path), true);
+        }
+        return [];
+    }
+
+    public static function saveMetadata($path, $newData)
+    {
+        $existingData = self::loadMetadata($path);
+        $mergedData = array_merge($existingData, $newData);
+        file_put_contents($path, json_encode($mergedData, JSON_PRETTY_PRINT));
     }
 }

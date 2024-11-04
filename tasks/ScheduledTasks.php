@@ -22,6 +22,14 @@ $timeZone = $_SESSION['APP_TIMEZONE'];
 $schedule = new Schedule();
 
 
+// Archive Data from Audit Tables
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
+    ->everyFifteenMinutes()
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('Archive Audit Tables');
+
+
 // Generate Sample Codes
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php")
     ->everyMinute()

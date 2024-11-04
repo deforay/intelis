@@ -88,6 +88,8 @@
         "purge-cache": "php app/includes/clear-cache.php",
         "privilege-fix": "php maintenance/update-privileges.php",
         "audit-tables-fix": "php maintenance/fix-audit-tables.php",
+        "archive-audit-tables": "php app/scheduled-jobs/archive-audit-tables.php",
+        "token": "php app/scheduled-jobs/remote/token.php",
         "migrate": "php app/system/migrate.php -yq",
         "force-metadata": "php app/scheduled-jobs/remote/sts-metadata-receiver.php -ft",
         "metadata-sync": "php app/scheduled-jobs/remote/sts-metadata-receiver.php && php app/scheduled-jobs/remote/lab-metadata-sender.php",

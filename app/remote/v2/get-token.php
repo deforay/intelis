@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -75,5 +76,18 @@ try {
     ]);
     throw new SystemException($e->getMessage(), $e->getCode(), $e);
 }
+
+$general->addApiTracking(
+    $transactionId,
+    'system',
+    0,
+    'get-token',
+    null,
+    $_SERVER['REQUEST_URI'],
+    JsonUtility::encodeUtf8Json($data),
+    $payload,
+    'json',
+    $labId
+);
 
 echo ApiService::sendJsonResponse($payload, $request);

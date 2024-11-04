@@ -293,11 +293,11 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 35% !important;">
 											<label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "yes") ? 'checked="checked"' : ''; ?>>
 											</label>
 											<label class="radio-inline">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="Please check any of one option" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
+												<input type="radio" class="" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate("Please choose if ARV Regimen changed"); ?>" <?php echo $disable; ?> <?php echo (trim((string) $vlQueryInfo['has_patient_changed_regimen']) == "no") ? 'checked="checked"' : ''; ?>>
 											</label>
 										</td>
 									</tr>

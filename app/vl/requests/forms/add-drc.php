@@ -309,11 +309,11 @@ $sFormat = '';
 										</td>
 										<td style="width: 35% !important;"><label class="radio-inline">Oui </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate('Please check changé de régime de traitement'); ?>">
+												<input type="radio" class="isRequired" id="changedRegimenYes" name="hasChangedRegimen" value="yes" title="<?= _translate("Please choose if ARV Regimen changed"); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">Non </label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate('Please check changé de régime de traitement'); ?>">
+												<input type="radio" class="isRequired" id="changedRegimenNo" name="hasChangedRegimen" value="no" title="<?= _translate("Please choose if ARV Regimen changed"); ?>">
 											</label>
 										</td>
 									</tr>

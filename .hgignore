@@ -42,3 +42,9 @@ interop/dhis2/examples/(?!index.php)
 backups/(?!index.php)
 backup/(?!index.php)
 ^vendor/*
+
+# Ignore everything inside audit-trail/ but keep the folder
+^audit-trail/.*
+
+# Ignore everything inside metadata/ but keep the folder
+^metadata/.*

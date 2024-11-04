@@ -448,7 +448,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                                                       <option value=""> -- <?= _translate("Select"); ?> -- </option>
                                                                       <option value="6 Months" <?php echo ($vlQueryInfo['treatment_duration_precise'] == '6 Months') ? "selected='selected'" : "" ?>><?= _translate("6 Months"); ?></option>
                                                                       <option value="12 Months" <?php echo ($vlQueryInfo['treatment_duration_precise'] == '12 Months') ? "selected='selected'" : "" ?>><?= _translate("12 Months"); ?></option>
-                                                                      <option value="More then 12 Months" <?php echo (($vlQueryInfo['treatment_duration_precise'] == 'More then 12 Months') || (!in_array($vlQueryInfo['treatment_duration_precise'], array("6 Months", "12 Months")) && isset($vlQueryInfo['treatment_duration_precise']))) ? "selected='selected'" : "" ?>><?= _translate("More then 12 Months"); ?></option>
+                                                                      <option value="More than 12 Months" <?php echo (($vlQueryInfo['treatment_duration_precise'] == 'More than 12 Months') || (!in_array($vlQueryInfo['treatment_duration_precise'], array("6 Months", "12 Months")) && isset($vlQueryInfo['treatment_duration_precise']))) ? "selected='selected'" : "" ?>><?= _translate("More than 12 Months"); ?></option>
                                                                  </select>
                                                                  <?php $display =  ((!in_array($vlQueryInfo['treatment_duration_precise'], array("6 Months", "12 Months"))) && isset($vlQueryInfo['treatment_duration_precise'])) ? "block" : "none"; ?>
                                                                  <input type="text" value="<?php echo $vlQueryInfo['treatment_duration_precise'] ?? null; ?>" class="form-control" name="treatmentDurationPrecise1" id="treatmentDurationPrecise1" placeholder="Enter treatment period" title="Please enter treatment period" style="width:100%;display:<?php echo $display; ?>;margin-top:10px;">
@@ -1535,7 +1535,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      }
 
      function treatmentDuration(value) {
-          if (value == "More then 12 Months") {
+          if (value == "More than 12 Months") {
                $('#treatmentDurationPrecise1').show();
           } else {
                $('#treatmentDurationPrecise1').hide();

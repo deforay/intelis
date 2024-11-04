@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-10-24 17:02+0530\n"
-"PO-Revision-Date: 2024-10-24 17:03+0530\n"
+"POT-Creation-Date: 2024-11-04 18:16+0530\n"
+"PO-Revision-Date: 2024-11-04 18:17+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -26,7 +26,7 @@ msgstr "Bienvenue sur la page d’administration"
 
 #: app/admin/index.php:11 app/admin/monitoring/activity-log.php:47
 #: app/admin/monitoring/api-sync-history.php:40
-#: app/admin/monitoring/audit-trail.php:125
+#: app/admin/monitoring/audit-trail.php:105
 #: app/admin/monitoring/lab-sync-details.php:98
 #: app/admin/monitoring/log-files.php:68
 #: app/admin/monitoring/sources-of-requests.php:70
@@ -233,7 +233,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: app/users/users.php:13 app/vl/program-management/highViralLoad.php:121
 #: app/vl/program-management/sample-storage-reports.php:57
 #: app/vl/program-management/sampleRejectionReport.php:56
-#: app/vl/program-management/upload-vl-control.php:47
+#: app/vl/program-management/upload-vl-control.php:49
 #: app/vl/program-management/vl-sample-status.php:55
 #: app/vl/program-management/vlControlReport.php:37
 #: app/vl/reference/add-vl-art-code-details.php:25
@@ -277,9 +277,9 @@ msgid "User Activity Log"
 msgstr "Journal d’activité de l’utilisateur"
 
 #: app/admin/monitoring/activity-log.php:50
-#: app/admin/monitoring/audit-trail.php:9
-#: app/admin/monitoring/audit-trail.php:123
-#: app/admin/monitoring/audit-trail.php:126 app/system/translate-strings.php:22
+#: app/admin/monitoring/audit-trail.php:11
+#: app/admin/monitoring/audit-trail.php:103
+#: app/admin/monitoring/audit-trail.php:106 app/system/translate-strings.php:22
 msgid "Audit Trail"
 msgstr "Piste d’audit"
 
@@ -454,7 +454,7 @@ msgstr "Type d'action"
 #: app/vl/program-management/sampleRejectionReport.php:117
 #: app/vl/program-management/vl-export-data.php:374
 #: app/vl/program-management/vl-sample-status.php:129
-#: app/vl/program-management/vlControlReport.php:75
+#: app/vl/program-management/vlControlReport.php:78
 #: app/vl/program-management/vlMonitoringReport.php:241
 #: app/vl/program-management/vlWeeklyReport.php:87
 #: app/vl/program-management/vlWeeklyReport.php:215
@@ -544,7 +544,7 @@ msgstr "Rechercher"
 #: app/move-samples/select-samples-to-move.php:233
 #: app/specimen-referral-manifest/add-manifest.php:226
 #: app/specimen-referral-manifest/add-manifest.php:283
-#: app/specimen-referral-manifest/edit-manifest.php:369
+#: app/specimen-referral-manifest/edit-manifest.php:382
 #: app/specimen-referral-manifest/move-manifest.php:315
 #: app/system-admin/user-login-history/userLoginIndex.php:165
 #: app/tb/management/tb-clinic-report.php:614
@@ -561,7 +561,7 @@ msgstr "Rechercher"
 #: app/vl/program-management/sampleRejectionReport.php:152
 #: app/vl/program-management/vl-export-data.php:588
 #: app/vl/program-management/vl-sample-status.php:218
-#: app/vl/program-management/vlControlReport.php:109
+#: app/vl/program-management/vlControlReport.php:111
 #: app/vl/program-management/vlMonitoringReport.php:327
 #: app/vl/program-management/vlSuppressedTargetReport.php:261
 #: app/vl/program-management/vlTestingTargetReport.php:267
@@ -748,7 +748,7 @@ msgstr "Historique de l’API"
 
 #: app/admin/monitoring/api-sync-history.php:62
 #: app/admin/monitoring/api-sync-history.php:131
-#: app/admin/monitoring/audit-trail.php:140
+#: app/admin/monitoring/audit-trail.php:118
 #: app/admin/monitoring/lab-sync-details.php:140
 #: app/admin/monitoring/lab-sync-details.php:212
 #: app/admin/monitoring/sources-of-requests.php:127
@@ -772,7 +772,6 @@ msgid "Test Type"
 msgstr "Type de test"
 
 #: app/admin/monitoring/api-sync-history.php:65
-#: app/admin/monitoring/audit-trail.php:142
 #: app/admin/monitoring/lab-sync-details.php:144
 #: app/admin/monitoring/sources-of-requests.php:132
 #: app/admin/monitoring/sync-status.php:113
@@ -829,7 +828,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/cd4/results/email-results.php:240 app/cd4/results/email-results.php:255
 #: app/cd4/results/email-results.php:575 app/cd4/results/email-results.php:579
 #: app/cd4/results/get-cd4-result-status.php:169
-#: app/classes/Services/CommonService.php:298
+#: app/classes/Services/CommonService.php:310
 #: app/common/reference/add-geographical-divisions.php:74
 #: app/common/reference/edit-geographical-divisions.php:87
 #: app/covid-19/management/covid-19-clinic-report.php:101
@@ -1392,7 +1391,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/program-management/highViralLoad.php:1037
 #: app/vl/program-management/highViralLoad.php:1051
 #: app/vl/program-management/sampleRejectionReport.php:93
-#: app/vl/program-management/upload-vl-control.php:93
+#: app/vl/program-management/upload-vl-control.php:95
 #: app/vl/program-management/vl-export-data.php:104
 #: app/vl/program-management/vl-export-data.php:123
 #: app/vl/program-management/vl-export-data.php:165
@@ -1405,7 +1404,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/program-management/vl-export-data.php:328
 #: app/vl/program-management/vl-sample-status.php:82
 #: app/vl/program-management/vl-sample-status.php:97
-#: app/vl/program-management/vlControlReport.php:62
+#: app/vl/program-management/vlControlReport.php:65
 #: app/vl/program-management/vlMonitoringReport.php:211
 #: app/vl/program-management/vlWeeklyReport.php:73
 #: app/vl/program-management/vlWeeklyReport.php:201
@@ -1448,13 +1447,13 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/requests/forms/edit-drc.php:190
 #: app/vl/requests/forms/edit-drc.php:207
 #: app/vl/requests/forms/edit-drc.php:309
-#: app/vl/requests/forms/edit-drc.php:374
-#: app/vl/requests/forms/edit-drc.php:431
-#: app/vl/requests/forms/edit-drc.php:517
-#: app/vl/requests/forms/edit-drc.php:529
-#: app/vl/requests/forms/edit-drc.php:539
-#: app/vl/requests/forms/edit-drc.php:910
-#: app/vl/requests/forms/edit-drc.php:913
+#: app/vl/requests/forms/edit-drc.php:375
+#: app/vl/requests/forms/edit-drc.php:432
+#: app/vl/requests/forms/edit-drc.php:518
+#: app/vl/requests/forms/edit-drc.php:530
+#: app/vl/requests/forms/edit-drc.php:540
+#: app/vl/requests/forms/edit-drc.php:911
+#: app/vl/requests/forms/edit-drc.php:914
 #: app/vl/requests/sample-storage.php:208
 #: app/vl/requests/sample-storage.php:401 app/vl/requests/vl-requests.php:165
 #: app/vl/requests/vl-requests.php:192 app/vl/requests/vl-requests.php:238
@@ -1510,7 +1509,6 @@ msgid "-- Select --"
 msgstr "-- Sélectionner --"
 
 #: app/admin/monitoring/api-sync-history.php:71
-#: app/admin/monitoring/audit-trail.php:145
 #: app/admin/monitoring/lab-sync-details.php:147
 #: app/admin/monitoring/sources-of-requests.php:135
 #: app/admin/monitoring/sync-status.php:116
@@ -1529,7 +1527,6 @@ msgid "Viral Load"
 msgstr "CHARGE VIRALE"
 
 #: app/admin/monitoring/api-sync-history.php:76
-#: app/admin/monitoring/audit-trail.php:148
 #: app/admin/monitoring/lab-sync-details.php:152
 #: app/admin/monitoring/sources-of-requests.php:140
 #: app/admin/monitoring/sync-status.php:119
@@ -1544,7 +1541,6 @@ msgid "Early Infant Diagnosis"
 msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 
 #: app/admin/monitoring/api-sync-history.php:81
-#: app/admin/monitoring/audit-trail.php:151
 #: app/admin/monitoring/lab-sync-details.php:157
 #: app/admin/monitoring/sources-of-requests.php:145
 #: app/admin/monitoring/sync-status.php:122
@@ -1563,7 +1559,6 @@ msgid "Covid-19"
 msgstr "COVID-19"
 
 #: app/admin/monitoring/api-sync-history.php:86
-#: app/admin/monitoring/audit-trail.php:154
 #: app/admin/monitoring/lab-sync-details.php:162
 #: app/admin/monitoring/sources-of-requests.php:150
 #: app/admin/monitoring/sync-status.php:125
@@ -1586,7 +1581,6 @@ msgid "Hepatitis"
 msgstr "Hépatite"
 
 #: app/admin/monitoring/api-sync-history.php:91
-#: app/admin/monitoring/audit-trail.php:157
 #: app/admin/monitoring/lab-sync-details.php:167
 #: app/admin/monitoring/sources-of-requests.php:155
 #: app/admin/monitoring/sync-status.php:128
@@ -1603,7 +1597,6 @@ msgid "TB"
 msgstr "Tuberculose"
 
 #: app/admin/monitoring/api-sync-history.php:96
-#: app/admin/monitoring/audit-trail.php:160
 #: app/admin/monitoring/lab-sync-details.php:172
 #: app/admin/monitoring/sources-of-requests.php:160
 #: app/admin/monitoring/test-results-metadata.php:94
@@ -1711,7 +1704,7 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: app/admin/monitoring/audit-trail.php:164
+#: app/admin/monitoring/audit-trail.php:130
 #: app/batch/generate-batch-pdf.php:170 app/batch/generate-batch-pdf.php:181
 #: app/cd4/management/cd4-clinic-report.php:183
 #: app/cd4/management/cd4-clinic-report.php:287
@@ -1897,7 +1890,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: app/admin/monitoring/audit-trail.php:169 app/batch/edit-batch.php:327
+#: app/admin/monitoring/audit-trail.php:137 app/batch/edit-batch.php:327
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: app/cd4/reference/add-cd4-sample-type.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:70
@@ -1968,7 +1961,7 @@ msgstr "ID de l'échantillon"
 #: app/tb/reference/add-tb-test-reasons.php:75
 #: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:315
 #: app/users/edit-profile.php:129 app/users/editUser.php:399
-#: app/vl/program-management/upload-vl-control.php:120
+#: app/vl/program-management/upload-vl-control.php:124
 #: app/vl/reference/add-vl-art-code-details.php:92
 #: app/vl/reference/add-vl-results.php:148
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:74
@@ -1982,7 +1975,7 @@ msgstr "ID de l'échantillon"
 msgid "Submit"
 msgstr "Envoyer"
 
-#: app/admin/monitoring/audit-trail.php:170
+#: app/admin/monitoring/audit-trail.php:138
 #: app/admin/monitoring/lab-sync-details.php:184
 #: app/admin/monitoring/sync-status.php:139
 #: app/cd4/management/cd4-clinic-report.php:174
@@ -2089,7 +2082,7 @@ msgstr "Envoyer"
 #: app/vl/program-management/sample-storage-reports.php:194
 #: app/vl/program-management/sampleRejectionReport.php:119
 #: app/vl/program-management/vl-sample-status.php:131
-#: app/vl/program-management/vlControlReport.php:77
+#: app/vl/program-management/vlControlReport.php:80
 #: app/vl/program-management/vlMonitoringReport.php:243
 #: app/vl/program-management/vlWeeklyReport.php:89
 #: app/vl/program-management/vlWeeklyReport.php:217
@@ -3636,7 +3629,7 @@ msgstr "État de la synchronisation du laboratoire"
 #: app/tb/management/tb-export-data.php:274
 #: app/vl/program-management/getRejectionResult.php:90
 #: app/vl/program-management/highViralLoad.php:1131
-#: app/vl/program-management/upload-vl-control.php:78
+#: app/vl/program-management/upload-vl-control.php:80
 #: app/vl/program-management/vl-export-data.php:420
 #: app/vl/program-management/vl-export-data.php:490
 #: app/vl/program-management/vlMonitoringReport.php:226
@@ -3741,7 +3734,7 @@ msgstr "Nom du Labo"
 #: app/vl/requests/forms/edit-drc.php:234
 #: app/vl/requests/forms/edit-png.php:289
 #: app/vl/requests/forms/edit-rwanda.php:229
-#: app/vl/requests/forms/edit-sierraleone.php:325
+#: app/vl/requests/forms/edit-sierraleone.php:327
 #: app/vl/requests/forms/edit-southsudan.php:307
 #: app/vl/results/forms/update-burkina-faso-result.php:420
 #: app/vl/results/forms/update-cameroon-result.php:500
@@ -4440,7 +4433,7 @@ msgstr "Créer un lot"
 #: app/tb/results/forms/update-southsudan.php:109 app/users/addUser.php:70
 #: app/users/edit-profile.php:49 app/users/editUser.php:108
 #: app/vl/program-management/addContactNotes.php:45
-#: app/vl/program-management/upload-vl-control.php:60
+#: app/vl/program-management/upload-vl-control.php:62
 #: app/vl/reference/add-vl-art-code-details.php:35
 #: app/vl/reference/add-vl-results.php:49
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:22
@@ -4465,7 +4458,7 @@ msgstr "Créer un lot"
 #: app/vl/requests/forms/edit-cameroon.php:142
 #: app/vl/requests/forms/edit-drc.php:99 app/vl/requests/forms/edit-png.php:177
 #: app/vl/requests/forms/edit-rwanda.php:130
-#: app/vl/requests/forms/edit-sierraleone.php:193
+#: app/vl/requests/forms/edit-sierraleone.php:195
 #: app/vl/requests/forms/edit-southsudan.php:176
 #: app/vl/requests/forms/edit-who.php:184 app/vl/requests/upload-storage.php:73
 #: app/vl/results/email-results.php:75
@@ -4496,7 +4489,7 @@ msgid "Testing Platform"
 msgstr "Plate-forme d'essai"
 
 #: app/batch/add-batch.php:178 app/batch/edit-batch.php:267
-#: app/vl/program-management/upload-vl-control.php:91
+#: app/vl/program-management/upload-vl-control.php:93
 msgid "Please choose machine"
 msgstr "Veuillez choisir la machine"
 
@@ -5133,7 +5126,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/tb/results/email-results.php:333
 #: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:316
 #: app/users/edit-profile.php:130 app/users/editUser.php:400
-#: app/vl/program-management/upload-vl-control.php:123
+#: app/vl/program-management/upload-vl-control.php:127
 #: app/vl/reference/add-vl-art-code-details.php:93
 #: app/vl/reference/add-vl-results.php:151
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:75
@@ -5294,7 +5287,7 @@ msgstr ""
 
 #: app/batch/edit-batch.php:365
 #: app/specimen-referral-manifest/add-manifest.php:268
-#: app/specimen-referral-manifest/edit-manifest.php:351
+#: app/specimen-referral-manifest/edit-manifest.php:364
 msgid "Please select one or more samples"
 msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 
@@ -5313,7 +5306,7 @@ msgstr "Feuille de test"
 #: app/cd4/results/pdf/result-pdf-rwanda.php:40
 #: app/covid-19/mail/covid-19-result-mail-confirm.php:84
 #: app/eid/results/pdf/result-pdf-drc.php:61
-#: app/mail/vlResultMailConfirm.php:86 app/system-admin/login/login.php:18
+#: app/mail/vlResultMailConfirm.php:86 app/system-admin/login/login.php:40
 #: app/system-admin/setup/index.php:43 app/vl/results/pdf/result-pdf-drc.php:52
 #: app/vl/results/pdf/result-pdf-png.php:33
 #: app/vl/results/pdf/result-pdf-rwanda.php:33
@@ -5932,7 +5925,7 @@ msgstr "Veuillez choisir le sexe"
 #: app/cd4/requests/cd4-requests.php:289
 #: app/cd4/results/cd4-manual-results.php:156
 #: app/cd4/results/email-results.php:179
-#: app/classes/Utilities/MiscUtility.php:238
+#: app/classes/Utilities/MiscUtility.php:213
 #: app/covid-19/management/covid-19-clinic-report.php:161
 #: app/covid-19/management/covid-19-clinic-report.php:260
 #: app/covid-19/management/covid-19-clinic-report.php:360
@@ -5998,7 +5991,7 @@ msgstr "Homme"
 #: app/cd4/requests/cd4-requests.php:292
 #: app/cd4/results/cd4-manual-results.php:157
 #: app/cd4/results/email-results.php:182
-#: app/classes/Utilities/MiscUtility.php:239
+#: app/classes/Utilities/MiscUtility.php:214
 #: app/covid-19/management/covid-19-clinic-report.php:162
 #: app/covid-19/management/covid-19-clinic-report.php:261
 #: app/covid-19/management/covid-19-clinic-report.php:361
@@ -6065,7 +6058,7 @@ msgstr "Femme"
 #: app/cd4/results/cd4-manual-results.php:158
 #: app/cd4/results/email-results.php:185
 #: app/cd4/results/pdf/result-pdf-rwanda.php:135
-#: app/classes/Utilities/MiscUtility.php:240
+#: app/classes/Utilities/MiscUtility.php:215
 #: app/covid-19/management/covid-19-clinic-report.php:163
 #: app/covid-19/management/covid-19-clinic-report.php:262
 #: app/covid-19/management/covid-19-clinic-report.php:362
@@ -6088,7 +6081,7 @@ msgstr "Femme"
 #: app/covid-19/results/pdf/result-pdf-drc.php:149
 #: app/covid-19/results/pdf/result-pdf-png.php:145
 #: app/covid-19/results/pdf/result-pdf-rwanda.php:147
-#: app/covid-19/results/pdf/result-pdf-sierraleone.php:241
+#: app/covid-19/results/pdf/result-pdf-sierraleone.php:240
 #: app/covid-19/results/pdf/result-pdf-ssudan-default.php:181
 #: app/covid-19/results/pdf/result-pdf-ssudan.php:248
 #: app/covid-19/results/pdf/result-pdf-who.php:150
@@ -6421,7 +6414,7 @@ msgstr "Noms du patient"
 #: app/vl/program-management/highViralLoad.php:397
 #: app/vl/program-management/highViralLoad.php:1134
 #: app/vl/program-management/vl-sample-status.php:122
-#: app/vl/program-management/vlControlReport.php:52
+#: app/vl/program-management/vlControlReport.php:55
 msgid "Sample Tested Date"
 msgstr "Date de test de l'échantillon"
 
@@ -7786,7 +7779,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/vl/requests/forms/edit-drc.php:236
 #: app/vl/requests/forms/edit-png.php:291
 #: app/vl/requests/forms/edit-rwanda.php:231
-#: app/vl/requests/forms/edit-sierraleone.php:327
+#: app/vl/requests/forms/edit-sierraleone.php:329
 #: app/vl/requests/forms/edit-southsudan.php:309
 #: app/vl/requests/vl-requests.php:240 app/vl/requests/vl-requests.php:260
 #: app/vl/requests/vl-requests.php:276 app/vl/requests/vl-requests.php:384
@@ -7998,7 +7991,7 @@ msgstr "Oui"
 #: app/vl/requests/forms/edit-drc.php:235
 #: app/vl/requests/forms/edit-png.php:290
 #: app/vl/requests/forms/edit-rwanda.php:230
-#: app/vl/requests/forms/edit-sierraleone.php:326
+#: app/vl/requests/forms/edit-sierraleone.php:328
 #: app/vl/requests/forms/edit-southsudan.php:308
 #: app/vl/requests/vl-requests.php:243 app/vl/requests/vl-requests.php:263
 #: app/vl/requests/vl-requests.php:279 app/vl/requests/vl-requests.php:387
@@ -8191,7 +8184,7 @@ msgstr "Labo"
 #: app/hepatitis/management/hepatitis-sample-rejection-report.php:56
 #: app/tb/management/tb-sample-rejection-report.php:54
 #: app/vl/program-management/sampleRejectionReport.php:81
-#: app/vl/program-management/upload-vl-control.php:81
+#: app/vl/program-management/upload-vl-control.php:83
 msgid "Please select lab name"
 msgstr "Veuillez sélectionner le nom du laboratoire"
 
@@ -8298,7 +8291,7 @@ msgstr "Sélectionner la date de réception de l'échantillon au laboratoire"
 #: app/tb/requests/tb-requests.php:141
 #: app/vl/program-management/highViralLoad.php:399
 #: app/vl/program-management/vl-sample-status.php:125
-#: app/vl/program-management/vlControlReport.php:54
+#: app/vl/program-management/vlControlReport.php:57
 #: app/vl/requests/vl-requests.php:184
 msgid "Select Tested Date"
 msgstr "Sélectionner la date de l'essai"
@@ -9904,17 +9897,17 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: app/cd4/results/cd4-update-result-helper.php:143
 #: app/covid-19/requests/covid-19-edit-request-helper.php:430
 #: app/covid-19/results/covid-19-update-result-helper.php:189
-#: app/eid/requests/eid-add-request-helper.php:503
-#: app/eid/requests/eid-edit-request-helper.php:538
+#: app/eid/requests/eid-add-request-helper.php:501
+#: app/eid/requests/eid-edit-request-helper.php:536
 #: app/generic-tests/requests/add-request-helper.php:423
 #: app/generic-tests/requests/edit-request-helper.php:393
 #: app/generic-tests/results/update-generic-test-result-helper.php:263
 #: app/hepatitis/requests/hepatitis-edit-request-helper.php:263
 #: app/hepatitis/results/hepatitis-update-result-helper.php:104
 #: app/patients/save-patient-helper.php:88
-#: app/vl/requests/addVlRequestHelper.php:459
-#: app/vl/requests/editVlRequestHelper.php:424
-#: app/vl/results/updateVlTestResultHelper.php:289
+#: app/vl/requests/addVlRequestHelper.php:457
+#: app/vl/requests/editVlRequestHelper.php:422
+#: app/vl/results/updateVlTestResultHelper.php:287
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -10244,7 +10237,7 @@ msgstr "Résultat CD4 (%)"
 #: app/vl/requests/forms/add-rwanda.php:180
 #: app/vl/requests/forms/edit-cameroon.php:288
 #: app/vl/requests/forms/edit-rwanda.php:226
-#: app/vl/requests/forms/edit-sierraleone.php:322
+#: app/vl/requests/forms/edit-sierraleone.php:324
 #: app/vl/requests/forms/edit-southsudan.php:304
 msgid ""
 "Patient is from Defence Forces (Patient Name and Patient ID will not be "
@@ -10282,7 +10275,7 @@ msgstr ""
 #: app/vl/requests/forms/add-southsudan.php:228
 #: app/vl/requests/forms/edit-cameroon.php:290
 #: app/vl/requests/forms/edit-rwanda.php:228
-#: app/vl/requests/forms/edit-sierraleone.php:324
+#: app/vl/requests/forms/edit-sierraleone.php:326
 #: app/vl/requests/forms/edit-southsudan.php:306
 msgid "Encrypt Patient Identifying Information"
 msgstr "Cryptage des données d'identification des patients"
@@ -11630,7 +11623,7 @@ msgstr "Saisir le résultat"
 #: app/covid-19/results/pdf/result-pdf-drc-8.php:101
 #: app/covid-19/results/pdf/result-pdf-drc.php:435
 #: app/covid-19/results/pdf/result-pdf-rwanda.php:414
-#: app/covid-19/results/pdf/result-pdf-sierraleone.php:500
+#: app/covid-19/results/pdf/result-pdf-sierraleone.php:499
 #: app/covid-19/results/pdf/result-pdf-ssudan-default.php:432
 #: app/covid-19/results/pdf/result-pdf-ssudan.php:503
 #: app/eid/results/pdf/result-pdf-rwanda.php:340
@@ -13829,13 +13822,13 @@ msgstr "Date de réception"
 #: app/vl/requests/forms/edit-drc.php:202
 #: app/vl/requests/forms/edit-drc.php:248
 #: app/vl/requests/forms/edit-drc.php:340
-#: app/vl/requests/forms/edit-drc.php:367
-#: app/vl/requests/forms/edit-drc.php:392
-#: app/vl/requests/forms/edit-drc.php:419
-#: app/vl/requests/forms/edit-drc.php:458
-#: app/vl/requests/forms/edit-drc.php:480
-#: app/vl/requests/forms/edit-drc.php:512
-#: app/vl/requests/forms/edit-sierraleone.php:980
+#: app/vl/requests/forms/edit-drc.php:368
+#: app/vl/requests/forms/edit-drc.php:393
+#: app/vl/requests/forms/edit-drc.php:420
+#: app/vl/requests/forms/edit-drc.php:459
+#: app/vl/requests/forms/edit-drc.php:481
+#: app/vl/requests/forms/edit-drc.php:513
+#: app/vl/requests/forms/edit-sierraleone.php:982
 #: app/vl/requests/forms/edit-southsudan.php:846
 #: app/vl/requests/forms/edit-who.php:841
 #: app/vl/results/forms/update-burkina-faso-result.php:712
@@ -13948,7 +13941,7 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: app/vl/requests/forms/add-drc.php:511
 #: app/vl/requests/forms/edit-burkina-faso.php:617
 #: app/vl/requests/forms/edit-cameroon.php:651
-#: app/vl/requests/forms/edit-drc.php:550
+#: app/vl/requests/forms/edit-drc.php:551
 #: app/vl/results/forms/update-burkina-faso-result.php:615
 #: app/vl/results/forms/update-cameroon-result.php:666
 #: app/vl/results/forms/update-drc-result.php:527
@@ -15273,11 +15266,11 @@ msgstr "Nom de la mère"
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: app/eid/requests/eid-add-request-helper.php:495
+#: app/eid/requests/eid-add-request-helper.php:493
 msgid "EID request added successfully"
 msgstr "La demande EID a été mise à jour avec succès"
 
-#: app/eid/requests/eid-edit-request-helper.php:530
+#: app/eid/requests/eid-edit-request-helper.php:528
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -16290,9 +16283,9 @@ msgstr "Sélectionner Approuvé par"
 #: app/vl/requests/forms/add-cameroon.php:842
 #: app/vl/requests/forms/add-drc.php:1063
 #: app/vl/requests/forms/edit-cameroon.php:898
-#: app/vl/requests/forms/edit-drc.php:1080
+#: app/vl/requests/forms/edit-drc.php:1081
 #: app/vl/results/forms/update-drc-result.php:797
-#: public/assets/js/main.js.php:598
+#: public/assets/js/main.js.php:593
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
@@ -16326,7 +16319,7 @@ msgstr "Âge en semaines"
 #: app/vl/program-management/storageHistoryDataToExcel.php:25
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:441 app/vl/requests/forms/edit-drc.php:482
+#: app/vl/requests/forms/add-drc.php:441 app/vl/requests/forms/edit-drc.php:483
 #: app/vl/requests/get-request-list.php:392
 #: app/vl/requests/sample-storage.php:179
 #: app/vl/requests/sample-storage.php:281
@@ -16337,7 +16330,7 @@ msgstr "Congélateur"
 #: app/eid/requests/forms/add-drc.php:474
 #: app/eid/requests/forms/edit-drc.php:508
 #: app/eid/results/forms/update-drc-result.php:500
-#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:484
+#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:485
 #: app/vl/results/forms/update-drc-result.php:461
 msgid "Enter Freezer"
 msgstr "Entrer dans le congélateur"
@@ -16345,7 +16338,7 @@ msgstr "Entrer dans le congélateur"
 #: app/eid/requests/forms/add-drc.php:474
 #: app/eid/requests/forms/edit-drc.php:508
 #: app/eid/results/forms/update-drc-result.php:500
-#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:484
+#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:485
 #: app/vl/results/forms/update-drc-result.php:461
 msgid "Please enter Freezer"
 msgstr "Veuillez entrer Congélateur"
@@ -16366,8 +16359,8 @@ msgstr "Veuillez entrer Congélateur"
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
 #: app/vl/requests/forms/add-drc.php:448 app/vl/requests/forms/add-drc.php:450
-#: app/vl/requests/forms/edit-drc.php:490
-#: app/vl/requests/forms/edit-drc.php:492
+#: app/vl/requests/forms/edit-drc.php:491
+#: app/vl/requests/forms/edit-drc.php:493
 #: app/vl/requests/get-request-list.php:392
 #: app/vl/requests/sample-storage.php:284
 #: app/vl/requests/upload-storage.php:139
@@ -16378,7 +16371,7 @@ msgstr "Coffret"
 #: app/eid/requests/forms/add-drc.php:479
 #: app/eid/requests/forms/edit-drc.php:514
 #: app/eid/results/forms/update-drc-result.php:508
-#: app/vl/requests/forms/add-drc.php:450 app/vl/requests/forms/edit-drc.php:492
+#: app/vl/requests/forms/add-drc.php:450 app/vl/requests/forms/edit-drc.php:493
 #: app/vl/results/forms/update-drc-result.php:469
 msgid "Please enter rack"
 msgstr "Veuillez entrer le rack"
@@ -16399,8 +16392,8 @@ msgstr "Veuillez entrer le rack"
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
 #: app/vl/requests/forms/add-drc.php:452 app/vl/requests/forms/add-drc.php:454
-#: app/vl/requests/forms/edit-drc.php:494
-#: app/vl/requests/forms/edit-drc.php:496
+#: app/vl/requests/forms/edit-drc.php:495
+#: app/vl/requests/forms/edit-drc.php:497
 #: app/vl/requests/get-request-list.php:392
 #: app/vl/requests/sample-storage.php:287
 #: app/vl/requests/upload-storage.php:140
@@ -16411,7 +16404,7 @@ msgstr "Boîte"
 #: app/eid/requests/forms/add-drc.php:486
 #: app/eid/requests/forms/edit-drc.php:521
 #: app/eid/results/forms/update-drc-result.php:512
-#: app/vl/requests/forms/add-drc.php:454 app/vl/requests/forms/edit-drc.php:496
+#: app/vl/requests/forms/add-drc.php:454 app/vl/requests/forms/edit-drc.php:497
 #: app/vl/results/forms/update-drc-result.php:474
 msgid "Please enter box"
 msgstr "Veuillez entrer dans la case"
@@ -16432,8 +16425,8 @@ msgstr "Veuillez entrer dans la case"
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
 #: app/vl/requests/forms/add-drc.php:458 app/vl/requests/forms/add-drc.php:460
-#: app/vl/requests/forms/edit-drc.php:500
-#: app/vl/requests/forms/edit-drc.php:502
+#: app/vl/requests/forms/edit-drc.php:501
+#: app/vl/requests/forms/edit-drc.php:503
 #: app/vl/requests/get-request-list.php:392
 #: app/vl/requests/sample-storage.php:290
 #: app/vl/requests/upload-storage.php:141
@@ -16445,7 +16438,7 @@ msgstr "Position"
 #: app/eid/requests/forms/add-drc.php:490
 #: app/eid/requests/forms/edit-drc.php:525
 #: app/eid/results/forms/update-drc-result.php:518
-#: app/vl/requests/forms/add-drc.php:460 app/vl/requests/forms/edit-drc.php:502
+#: app/vl/requests/forms/add-drc.php:460 app/vl/requests/forms/edit-drc.php:503
 #: app/vl/results/forms/update-drc-result.php:480
 msgid "Please enter position"
 msgstr "Veuillez saisir la position"
@@ -16457,7 +16450,7 @@ msgstr "Veuillez saisir la position"
 #: app/vl/program-management/export-vl-results.php:48
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:462 app/vl/requests/forms/edit-drc.php:504
+#: app/vl/requests/forms/add-drc.php:462 app/vl/requests/forms/edit-drc.php:505
 #: app/vl/results/forms/update-drc-result.php:482
 msgid "Volume (ml)"
 msgstr "Volume (ml)"
@@ -16465,7 +16458,7 @@ msgstr "Volume (ml)"
 #: app/eid/requests/forms/add-drc.php:497
 #: app/eid/requests/forms/edit-drc.php:532
 #: app/eid/results/forms/update-drc-result.php:523
-#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:506
+#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:507
 #: app/vl/results/forms/update-drc-result.php:485
 msgid "Volume"
 msgstr "Volume"
@@ -16473,7 +16466,7 @@ msgstr "Volume"
 #: app/eid/requests/forms/add-drc.php:497
 #: app/eid/requests/forms/edit-drc.php:532
 #: app/eid/results/forms/update-drc-result.php:523
-#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:506
+#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:507
 #: app/vl/results/forms/update-drc-result.php:485
 msgid "Please enter volume"
 msgstr "Veuillez saisir le volume"
@@ -16571,7 +16564,7 @@ msgstr "Le résultat EID mis à jour avec succès"
 msgid "Print Result PDF"
 msgstr "Imprimer Résultat PDF"
 
-#: app/eid/results/eid-update-result-helper.php:161
+#: app/eid/results/eid-update-result-helper.php:159
 msgid "EID result updated successfully"
 msgstr "Le résultat de l'EID a été mis à jour avec succès"
 
@@ -17113,7 +17106,7 @@ msgstr "Veuillez saisir l'objectif mensuel de suppression"
 msgid "Please enter monthly target"
 msgstr "Objectif mensuel de tests"
 
-#: app/facilities/addFacilityHelper.php:301
+#: app/facilities/addFacilityHelper.php:311
 msgid "Facility details added successfully"
 msgstr "Les détails de la FOSA ont été ajoutés avec succès"
 
@@ -17157,7 +17150,7 @@ msgstr "Objectif mensuel"
 msgid "Suppressed Monthly Target"
 msgstr "Cible mensuelle de suppression"
 
-#: app/facilities/editFacilityHelper.php:323
+#: app/facilities/editFacilityHelper.php:336
 msgid "Facility details updated successfully"
 msgstr "Les détails de la FOSA ont été mis à jour avec succès"
 
@@ -17166,6 +17159,7 @@ msgid "Please select Active Facility"
 msgstr "Veuillez sélectionner la FOSA active"
 
 #: app/facilities/facilities.php:155
+#: app/vl/program-management/vlControlReport.php:50
 msgid "Bulk Upload"
 msgstr "Chargement groupé"
 
@@ -17235,7 +17229,7 @@ msgstr "Pas de Cartographie des FOSA pour sélection du type de test"
 
 #: app/facilities/upload-facilities-helper.php:65
 #: app/facilities/upload-facilities-helper.php:72
-#: app/vl/program-management/upload-vl-control-helper.php:61
+#: app/vl/program-management/upload-vl-control-helper.php:79
 #: app/vl/requests/upload-storage-helper.php:64
 #: app/vl/requests/upload-storage-helper.php:72
 msgid "Please enter all the mandatory fields in the excel sheet"
@@ -17254,7 +17248,7 @@ msgid "Upload Facilities in Bulk"
 msgstr "Téléchargement en bloc des FOSA"
 
 #: app/facilities/upload-facilities.php:104
-#: app/vl/program-management/upload-vl-control.php:71
+#: app/vl/program-management/upload-vl-control.php:73
 #: app/vl/requests/upload-storage.php:127
 msgid "Total number of records in file"
 msgstr "Nombre total d'enregistrements dans le fichier"
@@ -17288,13 +17282,13 @@ msgid "Update if Facility Name and Facility Code match"
 msgstr "Télécharger si les noms et codes de la FOSA correspondent"
 
 #: app/facilities/upload-facilities.php:126
-#: app/vl/program-management/upload-vl-control.php:104
+#: app/vl/program-management/upload-vl-control.php:106
 #: app/vl/requests/upload-storage.php:102
 msgid "Upload File"
 msgstr "Télécharger le fichier"
 
 #: app/facilities/upload-facilities.php:129
-#: app/vl/program-management/upload-vl-control.php:107
+#: app/vl/program-management/upload-vl-control.php:109
 #: app/vl/requests/upload-storage.php:105
 msgid "Click to upload file"
 msgstr "Cliquez pour télécharger le fichier"
@@ -19043,7 +19037,7 @@ msgstr "Veuillez sélectionner les sous-épreuves"
 #: app/vl/requests/forms/add-burkina-faso.php:584
 #: app/vl/requests/forms/add-drc.php:531
 #: app/vl/requests/forms/edit-burkina-faso.php:671
-#: app/vl/requests/forms/edit-drc.php:574
+#: app/vl/requests/forms/edit-drc.php:575
 #: app/vl/results/forms/update-burkina-faso-result.php:668
 #: app/vl/results/forms/update-drc-result.php:548
 msgid "Reason for Failure"
@@ -19364,13 +19358,14 @@ msgid "Global Settings"
 msgstr "Paramètres globaux"
 
 #: app/global-config/editGlobalConfig.php:130
-msgid "Choose Country of Installation"
-msgstr "Choisir le pays de la FOSA"
+#: app/system-admin/edit-config/index.php:160
+msgid "Country of Installation"
+msgstr "Pays d'installation"
 
 #: app/global-config/editGlobalConfig.php:132 app/setup/index.php:371
 #: app/system-admin/edit-config/index.php:162
-msgid "Please select the viral load form"
-msgstr "Veuillez sélectionner la fiche de charge virale"
+msgid "Please select the country of installation"
+msgstr "Veuillez sélectionner le pays d'installation"
 
 #: app/global-config/editGlobalConfig.php:148
 msgid "Default Time Zone"
@@ -20139,19 +20134,19 @@ msgstr "Saisir le nom du champ"
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: app/header.php:36 app/login/login.php:40
+#: app/header.php:37 app/login/login.php:40
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
-#: app/header.php:37
+#: app/header.php:38
 msgid "Sample Management"
 msgstr "Gestion des échantillons"
 
-#: app/header.php:41
+#: app/header.php:42
 msgid "Remote Sample Tracking Module"
 msgstr "Module de suivi des échantillons prélevé à l'extérieur du labo"
 
-#: app/header.php:44
+#: app/header.php:45
 msgid "Sample Tracking"
 msgstr "Suivi des échantillons"
 
@@ -21334,7 +21329,7 @@ msgstr ""
 
 #: app/instruments/instruments.php:11 app/instruments/instruments.php:18
 #: app/system/translate-strings.php:26
-#: app/vl/program-management/upload-vl-control.php:88
+#: app/vl/program-management/upload-vl-control.php:90
 #: app/vl/reference/vl-results.php:43
 msgid "Instruments"
 msgstr "Instruments"
@@ -21344,11 +21339,11 @@ msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
 #: app/login/login.php:70 app/login/login.php:182
-#: app/system-admin/login/login.php:68
+#: app/system-admin/login/login.php:85
 msgid "Login"
 msgstr "Connexion"
 
-#: app/login/login.php:160 app/system-admin/login/login.php:59
+#: app/login/login.php:160 app/system-admin/login/login.php:76
 #: app/system-admin/setup/index.php:86 app/users/editUser.php:118
 #: app/users/editUser.php:120 app/users/users.php:30 app/users/users.php:57
 msgid "User Name"
@@ -21361,7 +21356,7 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: app/login/login.php:165 app/setup/index.php:432
 #: app/system-admin/edit-config/resetPassword.php:36
 #: app/system-admin/edit-config/resetPassword.php:38
-#: app/system-admin/login/login.php:63
+#: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:29
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:189
@@ -21569,7 +21564,7 @@ msgstr "Les informations sur le patient ont été sauvegardées avec succès"
 msgid "Add Patients"
 msgstr "Ajouter des patients"
 
-#: app/remote/requests.php:92
+#: app/remote/v2/get-token.php:66 app/remote/v2/requests.php:111
 msgid "Unable to process the request"
 msgstr "Impossible de traiter la demande"
 
@@ -21875,35 +21870,43 @@ msgstr "Point de prélèvement de l'échantillon"
 msgid "Sample Collection Date Range"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: app/specimen-referral-manifest/edit-manifest.php:523
+#: app/specimen-referral-manifest/edit-manifest.php:318
+msgid "Reason for changing manifest"
+msgstr "Raison du changement de manifeste"
+
+#: app/specimen-referral-manifest/edit-manifest.php:321
+msgid "Reason for changing this manifest"
+msgstr "Raison de la modification de ce manifeste"
+
+#: app/specimen-referral-manifest/edit-manifest.php:536
 msgid "Please select the Testing Lab"
 msgstr "Veuillez sélectionner le laboratoire d'essai"
 
-#: app/specimen-referral-manifest/generateCD4Manifest.php:72
+#: app/specimen-referral-manifest/generateCD4Manifest.php:87
 msgid "CLUSTERS OF DIFFERENTIATION 4 Sample Referral Manifest"
 msgstr "CLUSTERS OF DIFFERENTIATION 4 Exemple de manifeste d'orientation"
 
-#: app/specimen-referral-manifest/generateCovid19Manifest.php:68
+#: app/specimen-referral-manifest/generateCovid19Manifest.php:82
 msgid "Covid-19 Sample Referral Manifest"
 msgstr "Covid-19 Exemple de manifeste de renvoi"
 
-#: app/specimen-referral-manifest/generateEIDManifest.php:54
+#: app/specimen-referral-manifest/generateEIDManifest.php:67
 msgid "EID Sample Referral Manifest"
 msgstr "Exemple de manifeste de renvoi EID"
 
-#: app/specimen-referral-manifest/generateGenericManifest.php:43
+#: app/specimen-referral-manifest/generateGenericManifest.php:57
 msgid "Lab Tests Sample Referral Manifest"
 msgstr "Tests de laboratoire, example Manifeste d'orientation"
 
-#: app/specimen-referral-manifest/generateHepatitisManifest.php:44
+#: app/specimen-referral-manifest/generateHepatitisManifest.php:57
 msgid "Hepatitis Sample Referral Manifest"
 msgstr "Manifeste de renvoi de l'échantillon d'hépatite"
 
-#: app/specimen-referral-manifest/generateTBManifest.php:44
+#: app/specimen-referral-manifest/generateTBManifest.php:57
 msgid "TB Sample Referral Manifest"
 msgstr "Modèle de manifeste d'orientation de la tuberculose"
 
-#: app/specimen-referral-manifest/generateVLManifest.php:69
+#: app/specimen-referral-manifest/generateVLManifest.php:84
 msgid "Viral Load Sample Referral Manifest"
 msgstr "Manifeste d'orientation de l'échantillon de charge virale"
 
@@ -22045,10 +22048,6 @@ msgstr "Instance à distante"
 msgid "Enabled Modules"
 msgstr "Modules activés"
 
-#: app/system-admin/edit-config/index.php:160
-msgid "Viral Load Form"
-msgstr "Formulaire de charge virale"
-
 #: app/system-admin/edit-config/index.php:202
 msgid "SMTP Settings"
 msgstr "Paramétrage SMTP"
@@ -22067,7 +22066,7 @@ msgid "Manage Password"
 msgstr "Gérer le mot de passe"
 
 #: app/system-admin/edit-config/resetPassword.php:38
-#: app/system-admin/login/login.php:63
+#: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:191
 #: app/users/edit-profile.php:110 app/users/editUser.php:248
@@ -22079,7 +22078,7 @@ msgstr "Veuillez saisir votre mot de passe actuel"
 msgid "Password updated successfully"
 msgstr "Mise à jour du mot de passe réussie"
 
-#: app/system-admin/edit-config/systemConfigHelper.php:78
+#: app/system-admin/edit-config/systemConfigHelper.php:89
 msgid "System Configuration updated successfully."
 msgstr "La configuration du système a été mise à jour avec succès."
 
@@ -22132,19 +22131,19 @@ msgstr "Référence à distance Dernière synchronisation"
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
-#: app/system-admin/login/login.php:18
+#: app/system-admin/login/login.php:40
 msgid "Viral Load LIS"
 msgstr "Charge virale LIS"
 
-#: app/system-admin/login/login.php:18
+#: app/system-admin/login/login.php:40
 msgid "Admin Login"
 msgstr "Connexion administrateur"
 
-#: app/system-admin/login/login.php:51
+#: app/system-admin/login/login.php:68
 msgid "System Administrator"
 msgstr "Administrateur de système"
 
-#: app/system-admin/login/login.php:59 app/system-admin/setup/index.php:86
+#: app/system-admin/login/login.php:76 app/system-admin/setup/index.php:86
 msgid "Please enter the user name"
 msgstr "Veuillez saisir le nom d'utilisateur"
 
@@ -24452,38 +24451,47 @@ msgstr "Sélectionner le congélateur"
 msgid "Volume of Sample(ml)"
 msgstr "Volume de l'échantillon (ml)"
 
-#: app/vl/program-management/upload-vl-control-helper.php:126
+#: app/vl/program-management/upload-vl-control-helper.php:156
 msgid "Controls added successfully"
 msgstr "Contrôles ajoutés avec succès"
 
-#: app/vl/program-management/upload-vl-control-helper.php:128
+#: app/vl/program-management/upload-vl-control-helper.php:158
+msgid "Uploaded file column mismatched"
+msgstr "La colonne du fichier téléchargé ne correspond pas"
+
+#: app/vl/program-management/upload-vl-control-helper.php:164
+msgid "Please Upload xls, xlsx, csv format only"
+msgstr ""
+"Veuillez télécharger uniquement des fichiers au format xls, xlsx ou csv"
+
+#: app/vl/program-management/upload-vl-control-helper.php:169
 msgid "Bulk Controls Import Failed"
 msgstr "Échec de l'importation des contrôles en bloc"
 
-#: app/vl/program-management/upload-vl-control.php:43
+#: app/vl/program-management/upload-vl-control.php:45
 msgid "Upload Controls in Bulk"
 msgstr "Téléchargement de contrôles en masse"
 
-#: app/vl/program-management/upload-vl-control.php:50
+#: app/vl/program-management/upload-vl-control.php:52
 msgid "Controls"
 msgstr "Contrôles"
 
-#: app/vl/program-management/upload-vl-control.php:71
+#: app/vl/program-management/upload-vl-control.php:73
 msgid "Number of Controls added"
 msgstr "Nombre de contrôles ajoutés"
 
-#: app/vl/program-management/upload-vl-control.php:71
+#: app/vl/program-management/upload-vl-control.php:73
 msgid "Number of Controls not added"
 msgstr "Nombre de contrôles non ajoutés"
 
-#: app/vl/program-management/upload-vl-control.php:108
+#: app/vl/program-management/upload-vl-control.php:111
 msgid ""
 "Click here to download the Excel format for uploading vl controls in bulk"
 msgstr ""
 "Cliquez ici pour télécharger le format Excel pour télécharger des contrôles "
 "vl en masse"
 
-#: app/vl/program-management/upload-vl-control.php:141
+#: app/vl/program-management/upload-vl-control.php:145
 #: app/vl/requests/sample-storage.php:467
 msgid "Select Lab"
 msgstr "Sélectionner un laboratoire"
@@ -24507,19 +24515,15 @@ msgstr "Rapport sur l'état de l'échantillon CV"
 msgid "VL Control Report"
 msgstr "Rapport de contrôle CV"
 
-#: app/vl/program-management/vlControlReport.php:57
+#: app/vl/program-management/vlControlReport.php:60
 msgid "Control Type"
 msgstr "Choisissez le type de contrôle"
 
-#: app/vl/program-management/vlControlReport.php:60
+#: app/vl/program-management/vlControlReport.php:63
 msgid "Choose control type"
 msgstr "Choisissez le type de contrôle"
 
-#: app/vl/program-management/vlControlReport.php:79
-msgid "Upload Data"
-msgstr "Chargement de données"
-
-#: app/vl/program-management/vlControlReport.php:152
+#: app/vl/program-management/vlControlReport.php:154
 msgid ""
 "Please choose Sample Test Date Range and Control Type to generate the report"
 msgstr ""
@@ -24931,11 +24935,11 @@ msgstr "Ajouter la raison du test CV"
 msgid "Failure Reason"
 msgstr "Motif de l'échec"
 
-#: app/vl/requests/addVlRequestHelper.php:425
+#: app/vl/requests/addVlRequestHelper.php:423
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: app/vl/requests/editVlRequestHelper.php:416
+#: app/vl/requests/editVlRequestHelper.php:414
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -25059,7 +25063,7 @@ msgstr "Durée du traitement"
 #: app/vl/requests/forms/add-burkina-faso.php:355
 #: app/vl/requests/forms/edit-burkina-faso.php:451
 #: app/vl/results/forms/update-burkina-faso-result.php:452
-msgid "More then 12 Months"
+msgid "More than 12 Months"
 msgstr "Plus de 12 mois"
 
 #: app/vl/requests/forms/add-burkina-faso.php:364
@@ -25442,20 +25446,24 @@ msgid "Please choose Si Femme enceinte"
 msgstr "Veuillez choisir Si Femme enceinte"
 
 #: app/vl/requests/forms/add-drc.php:312 app/vl/requests/forms/add-drc.php:316
-msgid "Please check changé de régime de traitement"
-msgstr "Veuillez vérifier le changement de régime de traitement"
+#: app/vl/requests/forms/edit-drc.php:352
+#: app/vl/requests/forms/edit-drc.php:356
+#: app/vl/results/forms/update-drc-result.php:296
+#: app/vl/results/forms/update-drc-result.php:300
+msgid "Please choose if ARV Regimen changed"
+msgstr "Veuillez choisir si le régime ARV a été modifié"
 
-#: app/vl/requests/forms/add-drc.php:705 app/vl/requests/forms/edit-drc.php:910
+#: app/vl/requests/forms/add-drc.php:705 app/vl/requests/forms/edit-drc.php:911
 #: app/vl/results/forms/update-drc-result.php:240
 msgid "PS"
 msgstr "PS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:913
+#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:914
 #: app/vl/results/forms/update-drc-result.php:241
 msgid "CPS"
 msgstr "CPS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:913
+#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:914
 #: app/vl/results/forms/update-drc-result.php:242
 msgid "MSM"
 msgstr "MSM"
@@ -25482,8 +25490,8 @@ msgstr "Raison de la demande de charge virale"
 msgid "Enter new reason of testing"
 msgstr "Saisir une nouvelle raison pour le contrôle"
 
-#: app/vl/requests/forms/edit-drc.php:610
-#: app/vl/requests/forms/edit-drc.php:614
+#: app/vl/requests/forms/edit-drc.php:611
+#: app/vl/requests/forms/edit-drc.php:615
 #: app/vl/results/forms/update-drc-result.php:587
 #: app/vl/results/forms/update-drc-result.php:594
 msgid "Enter reason for changing the result"
@@ -25923,7 +25931,7 @@ msgstr ""
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: app/vl/results/updateVlTestResultHelper.php:274
+#: app/vl/results/updateVlTestResultHelper.php:272
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -25958,55 +25966,55 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: public/assets/js/main.js.php:103 public/assets/js/main.js.php:130
+#: public/assets/js/main.js.php:98 public/assets/js/main.js.php:125
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: public/assets/js/main.js.php:109
+#: public/assets/js/main.js.php:104
 msgid "Receiving Metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
-#: public/assets/js/main.js.php:109 public/assets/js/main.js.php:136
-#: public/assets/js/main.js.php:158 public/assets/js/main.js.php:182
+#: public/assets/js/main.js.php:104 public/assets/js/main.js.php:131
+#: public/assets/js/main.js.php:153 public/assets/js/main.js.php:177
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: public/assets/js/main.js.php:120 public/assets/js/main.js.php:147
-#: public/assets/js/main.js.php:171 public/assets/js/main.js.php:195
+#: public/assets/js/main.js.php:115 public/assets/js/main.js.php:142
+#: public/assets/js/main.js.php:166 public/assets/js/main.js.php:190
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: public/assets/js/main.js.php:136
+#: public/assets/js/main.js.php:131
 msgid "Sending Lab Metadata"
 msgstr "Envoi de métadonnées de laboratoire"
 
-#: public/assets/js/main.js.php:158
+#: public/assets/js/main.js.php:153
 msgid "Sending Test Results"
 msgstr "Envoi des résultats des tests"
 
-#: public/assets/js/main.js.php:182
+#: public/assets/js/main.js.php:177
 msgid "Receiving Test Requests"
 msgstr "Réception des demandes de test"
 
-#: public/assets/js/main.js.php:254 public/assets/js/main.js.php:265
+#: public/assets/js/main.js.php:249 public/assets/js/main.js.php:260
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: public/assets/js/main.js.php:646
+#: public/assets/js/main.js.php:641
 msgid "Cache cleared successfully"
 msgstr "Le Câche a été éliminé avec succès"
 
-#: public/assets/js/main.js.php:668
+#: public/assets/js/main.js.php:663
 msgid "Sync Forced Successfully"
 msgstr "Synchronisation forcée avec succès"
 
-#: public/assets/js/main.js.php:699
+#: public/assets/js/main.js.php:694
 msgid "Sample Collection Date is over 6 months old"
 msgstr "La date de prélèvement de l'échantillon remonte à plus de 6 mois"
 
-#: public/assets/js/main.js.php:799
+#: public/assets/js/main.js.php:820
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -26014,9 +26022,21 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: public/assets/js/main.js.php:835
+#: public/assets/js/main.js.php:856
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
+
+#~ msgid "Please check changé de régime de traitement"
+#~ msgstr "Veuillez vérifier le changement de régime de traitement"
+
+#~ msgid "Please select the viral load form"
+#~ msgstr "Veuillez sélectionner la fiche de charge virale"
+
+#~ msgid "Viral Load Form"
+#~ msgstr "Formulaire de charge virale"
+
+#~ msgid "Upload Data"
+#~ msgstr "Chargement de données"
 
 #~ msgid " | Add Batch"
 #~ msgstr " | Ajouter un lot"

@@ -90,11 +90,6 @@ $remoteURL = $general->getRemoteURL();
     let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
     let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
 
-    function callSampleCodeGenerator() {
-        $.ajax({
-            url: "/scheduled-jobs/sample-code-generator.php"
-        });
-    }
     <?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
@@ -708,11 +703,43 @@ $remoteURL = $general->getRemoteURL();
 
     }
 
+    // Generic scheduler function to run scripts asynchronously at specified intervals
+    function runScheduledScripts(scriptsConfig) {
+        Object.keys(scriptsConfig).forEach(scriptUrl => {
+            const interval = scriptsConfig[scriptUrl];
+
+            // Run the script immediately, then every interval milliseconds
+            executeScript(scriptUrl);
+            setInterval(() => executeScript(scriptUrl), interval);
+        });
+    }
+
+    // Function to execute a script via AJAX asynchronously
+    function executeScript(scriptUrl) {
+        $.ajax({
+            url: scriptUrl,
+            method: 'GET',
+            cache: false,
+            success: function(data) {
+                console.log(`Script ${scriptUrl} executed successfully`);
+            },
+            error: function(xhr, status, error) {
+                console.error(`Failed to execute script ${scriptUrl}: ${status} - ${error}`);
+            }
+        });
+    }
+
+
+    // Define your scripts with their intervals in milliseconds
+    const scriptsToRun = {
+        "/scheduled-jobs/sample-code-generator.php": 60000, // Run every 1 minute
+        "/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
+    };
 
     $(document).ready(function() {
 
-        // Call the function on page load
-        callSampleCodeGenerator();
+        // Run the scheduler with the defined scripts and intervals
+        runScheduledScripts(scriptsToRun);
 
         // Add CSRF token to all existing forms
         $('form').each(function() {
@@ -724,12 +751,6 @@ $remoteURL = $general->getRemoteURL();
         $(document).on('submit', 'form', function(e) {
             addCsrfTokenToForm($(this));
         });
-
-        // Set an interval to call the function every minute (60000 milliseconds)
-        setInterval(function() {
-            callSampleCodeGenerator();
-        }, 60000);
-
 
 
         $('.richtextarea').summernote({
