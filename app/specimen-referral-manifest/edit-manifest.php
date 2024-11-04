@@ -315,10 +315,10 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 						<div class="col-md-6">
 								<div class="form-group">
 									<label for="reasonForChange" class="col-lg-4 control-label">
-										<?php echo _translate("Reason for changing manifest"); ?>
+										<?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<textarea class="form-control" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
+										<textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
 									</div>
 								</div>
 						</div>
