@@ -376,7 +376,6 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
-		getSampleCodeDetails();
 		$('#daterange').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
@@ -409,6 +408,9 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
+
+			getSampleCodeDetails();
+
 		$(".select2").select2();
 		$(".select2").select2({
 			tags: true
