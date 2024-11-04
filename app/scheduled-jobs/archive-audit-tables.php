@@ -3,9 +3,7 @@
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
-use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -13,7 +11,7 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$cliMode = CommonService::isCliRequest();
+$cliMode = php_sapi_name() === 'cli';
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
 if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
@@ -23,30 +21,39 @@ if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockF
     exit;
 }
 
-// Functions for metadata management
-function loadMetadata($path)
-{
-    if (file_exists($path)) {
-        return json_decode(file_get_contents($path), true);
-    }
-    return [];
-}
-
-function saveMetadata($path, $metadata)
-{
-    file_put_contents($path, json_encode($metadata, JSON_PRETTY_PRINT));
-}
-
+// Updates metadata for last processed date
 function updateLastProcessedDate(&$metadata, $tableName, $lastProcessedDate)
 {
     $metadata[$tableName]['last_processed_date'] = $lastProcessedDate;
 }
 
-// Archiving logic
+// Generator function to retrieve records in batches
+function fetchRecords(DatabaseService $db, string $tableName, string $lastProcessedDate = null, int $limit = 1000)
+{
+    $offset = 0;
+    while (true) {
+        if ($lastProcessedDate) {
+            $db->connection('default')->where('dt_datetime', $lastProcessedDate, '>');
+        }
+        $db->connection('default')->orderBy('dt_datetime', 'asc');
+        $batch = $db->connection('default')->get($tableName, [$offset, $limit]);
+
+        $rowCount = count($batch);
+        if ($rowCount === 0) {
+            break;
+        }
+
+        foreach ($batch as $record) {
+            yield $record;
+        }
+
+        $offset += $limit;
+    }
+}
+
 try {
     $metadataPath = ROOT_PATH . DIRECTORY_SEPARATOR . "metadata" . DIRECTORY_SEPARATOR . "archive.mdata.json";
-    MiscUtility::makeDirectory(dirname($metadataPath));
-    $metadata = loadMetadata($metadataPath);  // Load metadata once
+    $metadata = MiscUtility::loadMetadata($metadataPath);
 
     $tableToTestTypeMap = [
         'audit_form_vl' => 'vl',
@@ -57,12 +64,10 @@ try {
         'audit_form_generic' => 'generic',
     ];
 
-    $archiveBeforeDate = DateUtility::getDateBeforeMonths(1);
-    $mainDbName = SYSTEM_CONFIG['database']['db'];
     $archivePath = ROOT_PATH . "/audit-trail";
-
     MiscUtility::makeDirectory($archivePath);
 
+    // Helper functions for managing CSV headers and revisions
     function getCurrentColumns($db, $tableName)
     {
         $columns = [];
@@ -73,29 +78,20 @@ try {
         return $columns;
     }
 
-    function getCsvHeaders($filePath)
-    {
-        if (!file_exists($filePath)) {
-            return [];
-        }
-
-        $fileHandle = gzopen($filePath, 'r');
-        $headers = fgetcsv($fileHandle);
-        gzclose($fileHandle);
-        return $headers;
-    }
-
     function ensureCorrectHeaders($filePath, $currentHeaders)
     {
-        $existingHeaders = getCsvHeaders($filePath);
+        $existingHeaders = [];
+        if (file_exists($filePath)) {
+            $fileHandle = gzopen($filePath, 'r');
+            $existingHeaders = fgetcsv($fileHandle);
+            gzclose($fileHandle);
+        }
+
         if ($existingHeaders !== $currentHeaders) {
             $tempFile = "$filePath.tmp";
             $tempHandle = gzopen($tempFile, 'w');
-            if ($tempHandle === false) {
-                LoggerUtility::logError("Failed to open temporary file for writing headers.");
-                return;
-            }
             gzwrite($tempHandle, implode(',', $currentHeaders) . "\n");
+
             if (file_exists($filePath)) {
                 $oldFileHandle = gzopen($filePath, 'r');
                 fgetcsv($oldFileHandle); // Skip old headers
@@ -108,6 +104,7 @@ try {
                 }
                 gzclose($oldFileHandle);
             }
+
             gzclose($tempHandle);
             rename($tempFile, $filePath);
         }
@@ -118,7 +115,6 @@ try {
         if (!file_exists($filePath)) {
             return 0;
         }
-
         $lastRevision = 0;
         $fileHandle = gzopen($filePath, 'r');
         if ($fileHandle) {
@@ -135,74 +131,46 @@ try {
         $lastProcessedDate = $metadata[$auditTable]['last_processed_date'] ?? null;
 
         if ($cliMode) {
-            echo "Archiving data from $mainDbName.$auditTable to compressed CSV files for test type $testType.." . PHP_EOL;
+            echo "Archiving data from {$auditTable} for test type {$testType}.." . PHP_EOL;
         }
 
-        $limit = 1000;
-        $offset = 0;
+        $currentHeaders = getCurrentColumns($db, $auditTable);
 
-        do {
-            if ($lastProcessedDate) {
-                $db->connection('default')->where('dt_datetime', $lastProcessedDate, '>');
+        foreach (fetchRecords($db, $auditTable, $lastProcessedDate) as $record) {
+            $uniqueId = $record['unique_id'];
+            MiscUtility::makeDirectory("$archivePath/$testType");
+            $filePath = "$archivePath/$testType/{$uniqueId}.csv.gz";
+
+            ensureCorrectHeaders($filePath, $currentHeaders);
+
+            $lastRevision = getLastRevisionNumber($filePath);
+            $record['revision'] = $lastRevision + 1;
+
+            $fileHandle = gzopen($filePath, 'a');
+            if ($fileHandle === false) {
+                LoggerUtility::logError("Failed to open or create file $filePath for writing.");
+                continue;
             }
-            $db->connection('default')->orderBy('dt_datetime', 'asc');
-            $dataToArchive = $db->connection('default')->get($auditTable, [$offset, $limit]);
-            $rowCount = count($dataToArchive);
 
-            if ($cliMode) {
-                echo "Fetched $rowCount rows\n";
+            $rowToWrite = [];
+            foreach ($currentHeaders as $header) {
+                $rowToWrite[] = array_key_exists($header, $record) ? json_encode($record[$header]) : "null";
             }
+            gzwrite($fileHandle, implode(',', $rowToWrite) . "\n");
+            gzclose($fileHandle);
 
-            if ($rowCount > 0) {
-                $dataAppended = false;
-                foreach ($dataToArchive as $record) {
-                    $uniqueId = $record['unique_id'];
-                    MiscUtility::makeDirectory("$archivePath/$testType");
-                    $filePath = "$archivePath/$testType/{$uniqueId}.csv.gz";
+            // Update metadata after each record
+            $lastProcessedDate = $record['dt_datetime'];
+            updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
+            MiscUtility::saveMetadata($metadataPath, $metadata);
+        }
 
-                    $currentHeaders = getCurrentColumns($db, $auditTable);
-                    ensureCorrectHeaders($filePath, $currentHeaders);
-
-                    $lastRevision = getLastRevisionNumber($filePath);
-                    $record['revision'] = $lastRevision + 1;
-
-                    $fileHandle = gzopen($filePath, 'a');
-                    if ($fileHandle === false) {
-                        LoggerUtility::logError("Failed to open or create file $filePath for writing.");
-                        continue;
-                    }
-
-                    $rowToWrite = [];
-                    foreach ($currentHeaders as $header) {
-                        $rowToWrite[] = array_key_exists($header, $record) ? json_encode($record[$header]) : "null";
-                    }
-                    gzwrite($fileHandle, implode(',', $rowToWrite) . "\n");
-                    gzclose($fileHandle);
-
-                    $dataAppended = true;
-                }
-
-                if ($dataAppended) {
-                    $lastProcessedDateInBatch = end($dataToArchive)['dt_datetime'];
-                    updateLastProcessedDate($metadata, $auditTable, $lastProcessedDateInBatch);
-                }
-
-                $offset += $limit;
-                if ($cliMode) {
-                    echo "Processed $rowCount rows, moving to next batch.." . PHP_EOL;
-                }
-            } else {
-                if ($cliMode) {
-                    echo "No more data to process in $auditTable" . PHP_EOL;
-                }
-            }
-        } while ($rowCount > 0);
-
-        saveMetadata($metadataPath, $metadata);  // Save metadata after each table loop
+        if ($cliMode) {
+            echo "Completed archiving for {$auditTable}." . PHP_EOL;
+        }
     }
-
     if ($cliMode) {
-        echo "Archiving process completed" . PHP_EOL;
+        echo "Archiving process completed." . PHP_EOL;
     }
 } catch (Exception $e) {
     if ($cliMode) {

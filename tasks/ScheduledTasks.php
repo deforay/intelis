@@ -24,7 +24,7 @@ $schedule = new Schedule();
 
 // Archive Data from Audit Tables
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
-    ->everyFifteenMinutes()
+    ->everyThirtyMinutes()
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Archive Audit Tables');

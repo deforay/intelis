@@ -622,18 +622,19 @@ final class MiscUtility
 
 
     // Functions for metadata management
-    public static function loadMetadata($path)
+    public static function loadMetadata($metadataPath)
     {
-        if (file_exists($path)) {
-            return json_decode(file_get_contents($path), true);
+        if (file_exists($metadataPath)) {
+            return json_decode(file_get_contents($metadataPath), true);
         }
         return [];
     }
 
-    public static function saveMetadata($path, $newData)
+    public static function saveMetadata($metadataPath, $newData)
     {
-        $existingData = self::loadMetadata($path);
+        self::makeDirectory(dirname($metadataPath));
+        $existingData = self::loadMetadata($metadataPath);
         $mergedData = array_merge($existingData, $newData);
-        file_put_contents($path, json_encode($mergedData, JSON_PRETTY_PRINT));
+        file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
     }
 }
