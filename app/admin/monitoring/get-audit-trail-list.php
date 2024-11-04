@@ -26,8 +26,8 @@ try {
      $primaryKey = "log_id";
 
 
-     $aColumns = array('action', 'event_type', 'r.display_name', "DATE_FORMAT(date_time,'%d-%b-%Y')");
-     $orderColumns = array('action', 'event_type', 'r.display_name', 'date_time');
+     $aColumns = ['action', 'event_type', 'r.display_name', "DATE_FORMAT(date_time,'%d-%b-%Y')"];
+     $orderColumns = ['action', 'event_type', 'r.display_name', 'date_time'];
 
      /* Indexed column (used for fast and accurate table cardinality) */
      $sIndexColumn = $primaryKey;
@@ -126,12 +126,12 @@ try {
      /*
      * Output
      */
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
      foreach ($rResult as $key => $aRow) {
           $row = [];
           $row[] = $aRow['action'];
@@ -144,6 +144,17 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
-} catch (Throwable $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     $db->rollbackTransaction();
+     LoggerUtility::log(
+          'error',
+          $e->getMessage(),
+          [
+               'file' => $e->getFile(),
+               'line' => $e->getLine(),
+               'last_db_query' => $db->getLastQuery(),
+               'last_db_error' => $db->getLastError(),
+               'trace' => $e->getTraceAsString()
+          ]
+     );
 }

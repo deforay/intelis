@@ -81,12 +81,12 @@ try {
                     $num = count($sheetData);
                     $row++;
                     if ($row < $skip) {
-                        if (in_array(strtoupper($sheetData[0]), ['PLATE NUMBER', 'PLATE NAME'])) {
-                            $cvNumber = $sheetData[1] ?? null;
-                        } elseif (in_array(strtoupper($sheetData[0]), ["RUN COMPLETION TIME", "HEURE DE FIN DE L'ANALYSE"])) {
+                        if ($row == 8) {
                             $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
+                        } elseif (in_array($sheetData[0], ['PLATE NUMBER', 'PLATE NAME'])) {
+                            $cvNumber = $sheetData[1] ?? null;
                         }
                         continue;
                     }
