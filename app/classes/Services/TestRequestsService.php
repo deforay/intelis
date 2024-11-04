@@ -145,6 +145,7 @@ final class TestRequestsService
                             }
                         } else {
                             $tesRequestData['remote_sample'] = 'no';
+                            $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                             $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
@@ -190,17 +191,19 @@ final class TestRequestsService
     public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)
     {
         try {
+            if (empty($manifestCode)) {
+                return 0;
+            }
             $tableName = TestsService::getTestTableName($testType);
 
-            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code IN
-                    (
-                        '$manifestCode',
-                        (SELECT DISTINCT sample_package_code FROM $tableName WHERE remote_sample_code LIKE '$manifestCode')
-                    )";
+            $sampleQuery = "SELECT * FROM $tableName WHERE sample_package_code = '$manifestCode'";
 
             $sampleResult = $this->db->rawQuery($sampleQuery);
 
             $status = 0;
+
+
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
             $uniqueIdsForSampleCodeGeneration = [];
             foreach ($sampleResult as $sampleRow) {
@@ -223,9 +226,7 @@ final class TestRequestsService
                     }
 
                     $provinceCode = null;
-
                     // For PNG, we need to get the province code
-                    $formId = (int) $this->commonService->getGlobalConfig('vl_form');
                     if ($formId == COUNTRY\PNG) {
                         /** @var GeoLocationsService $geoService */
                         $geoService = ContainerRegistry::get(GeoLocationsService::class);
@@ -252,7 +253,7 @@ final class TestRequestsService
             $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
             if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
-                $uniqueIds = array_keys($sampleCodeData);
+                //$uniqueIds = array_keys($sampleCodeData);
 
                 $dataToUpdate = [];
                 $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
@@ -265,7 +266,7 @@ final class TestRequestsService
                     $dataToUpdate['sample_tested_datetime'] = null;
                     $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
                 }
-                $this->db->where('unique_id', $uniqueIds, 'IN');
+                $this->db->where('sample_package_code', $manifestCode);
                 $this->db->update($tableName, $dataToUpdate);
                 $status = 1;
             }

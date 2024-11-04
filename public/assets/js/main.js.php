@@ -733,7 +733,7 @@ $remoteURL = $general->getRemoteURL();
     // Define your scripts with their intervals in milliseconds
     const scriptsToRun = {
         "/scheduled-jobs/sample-code-generator.php": 60000, // Run every 1 minute
-        "/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
+        //"/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
     };
 
     $(document).ready(function() {
