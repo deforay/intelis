@@ -56,7 +56,7 @@ if (!empty($_SESSION['facilityMap'])) {
 }
 
 if (!empty($_POST['testingLab']) && $_POST['testingLab'] > 0) {
-	$where[] = " (vl.lab_id = 0 OR vl.lab_id IS NULL OR vl.lab_id = " . $_POST['testingLab'] . ") ";
+	$where[] = " (vl.lab_id = 0 OR vl.lab_id IS NULL OR vl.lab_id = {$_POST['testingLab']}) ";
 }
 
 if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
@@ -73,8 +73,7 @@ if (!empty($_POST['testType'])) {
 
 
 if (!empty($_POST['pkgId'])) {
-	//	$where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
-	$where[] = " (vl.sample_package_id = '" . $_POST['pkgId'] . "' OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
+	$where[] = " (vl.sample_package_id = '{$_POST['pkgId']}' OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
 } else {
 	$where[] = " (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }
