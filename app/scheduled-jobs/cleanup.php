@@ -63,3 +63,36 @@ foreach ($tablesToCleanup as $table => $condition) {
         LoggerUtility::log('error', "Error deleting from {$table}: " . $db->getLastError());
     }
 }
+
+
+/** Cleanup Audit Tables */
+
+// Load metadata JSON to get last_processed_date for each table
+$metadataPath = ROOT_PATH . DIRECTORY_SEPARATOR . "metadata" . DIRECTORY_SEPARATOR . "archive.mdata.json";
+$metadata = json_decode(file_get_contents($metadataPath), true);
+
+$tablesToCleanup = [
+    'audit_form_vl' => 'dt_datetime',
+    'audit_form_eid' => 'dt_datetime',
+    'audit_form_covid19' => 'dt_datetime',
+    'audit_form_tb' => 'dt_datetime',
+    'audit_form_hepatitis' => 'dt_datetime',
+    'audit_form_generic' => 'dt_datetime',
+];
+
+foreach ($tablesToCleanup as $table => $dateColumn) {
+    if (!empty($metadata[$table]['last_processed_date'])) {
+        $lastProcessedDate = $metadata[$table]['last_processed_date'];
+
+        // Calculate the date 7 days before the last processed date
+        $dateToDeleteBefore = date('Y-m-d H:i:s', strtotime($lastProcessedDate . ' - 7 days'));
+
+        // Delete records older than (last_processed_date - 7 days)
+        $db->where("{$dateColumn} < ?", [$dateToDeleteBefore]);
+        if (!$db->delete($table)) {
+            LoggerUtility::log('error', "Error deleting from {$table}: " . $db->getLastError());
+        } else {
+            LoggerUtility::log('info', "Deleted records from {$table} where {$dateColumn} < {$dateToDeleteBefore}");
+        }
+    }
+}

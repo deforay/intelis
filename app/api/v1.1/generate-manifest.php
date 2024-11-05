@@ -131,10 +131,11 @@ try {
         'requestUrl' => $requestUrl,
         'stacktrace' => $exc->getTraceAsString()
     ]);
+} finally {
+
+    $payload = JsonUtility::encodeUtf8Json($payload);
+    $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
+
+    //echo $payload
+    echo ApiService::sendJsonResponse($payload, $request);
 }
-
-$payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
-
-//echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
