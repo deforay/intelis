@@ -5,6 +5,7 @@ use App\Services\VlService;
 use App\Services\CD4Service;
 use App\Services\EidService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
@@ -13,7 +14,6 @@ use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Utilities\MiscUtility;
 
 $title = "Add New Specimen Referral Manifest";
 
@@ -50,37 +50,42 @@ if ($module == 'vl') {
 	/** @var VlService $vlService */
 	$vlService = ContainerRegistry::get(VlService::class);
 	$sampleTypes = $vlService->getVlSampleTypes();
-} else if ($module == 'eid') {
+} elseif ($module == 'eid') {
 	/** @var EidService $eidService */
 	$eidService = ContainerRegistry::get(EidService::class);
 	$sampleTypes = $eidService->getEidSampleTypes();
-} else if ($module == 'covid19') {
+} elseif ($module == 'covid19') {
 	$shortCode = 'C19';
 	/** @var Covid19Service $covid19Service */
 	$covid19Service = ContainerRegistry::get(Covid19Service::class);
 	$sampleTypes = $covid19Service->getCovid19SampleTypes();
-} else if ($module == 'hepatitis') {
+} elseif ($module == 'hepatitis') {
 	$shortCode = 'HEP';
 	/** @var HepatitisService $hepDb */
 	$hepDb = ContainerRegistry::get(HepatitisService::class);
 	$sampleTypes = $hepDb->getHepatitisSampleTypes();
-} else if ($module == 'tb') {
+} elseif ($module == 'tb') {
 	/** @var TbService $tbService */
 	$tbService = ContainerRegistry::get(TbService::class);
 	$sampleTypes = $tbService->getTbSampleTypes();
-} else if ($module == 'cd4') {
+} elseif ($module == 'cd4') {
 	/** @var CD4Service $cd4Service */
 	$cd4Service = ContainerRegistry::get(CD4Service::class);
 	$sampleTypes = $cd4Service->getCd4SampleTypes();
-} else if ($module == 'generic-tests') {
+} elseif ($module == 'generic-tests') {
 	/** @var GenericTestsService $genService */
 	$genService = ContainerRegistry::get(GenericTestsService::class);
 	$sampleTypes = $genService->getGenericSampleTypes();
 }
-$packageNo = strtoupper($shortCode . date('ymd') .  MiscUtility::generateRandomString(6));
 
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
-$testTypeResult = $db->rawQuery($testTypeQuery);
+$sampleManifestCode = strtoupper($shortCode . date('ymdH') .  MiscUtility::generateRandomString(4));
+
+if ($module == 'generic-tests') {
+	$testTypeQuery = "SELECT * FROM r_test_types
+					WHERE test_status='active'
+					ORDER BY test_standard_name ASC";
+	$testTypeResult = $db->rawQuery($testTypeQuery);
+}
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -158,7 +163,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 								<div class="form-group">
 									<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
 									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($packageNo)); ?>" />
+										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
 										<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
 									</div>
 								</div>

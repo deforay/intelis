@@ -55,7 +55,8 @@ $user = $usersService->getUserByToken($authToken);
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
-$packageCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymd') .  MiscUtility::generateRandomString(6));
+$sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymdH') .  MiscUtility::generateRandomString(4));
+
 try {
     $sQuery = "SELECT unique_id, sample_code, remote_sample_code, $primaryKeyName FROM $tableName as vl";
 
@@ -73,27 +74,27 @@ try {
     $avilableSamples = [];
     $missiedSamples = [];
     if (isset($rowData) && !empty($rowData)) {
-        $data = array(
-            'package_code'              => $packageCode,
-            'module'                    => $input['testType'],
-            'added_by'                  => $user['user_id'],
-            'lab_id'                    => $input['labId'],
-            'number_of_samples'         => count($rowData ?? []),
-            'package_status'            => 'pending',
-            'request_created_datetime'  => DateUtility::getCurrentDateTime(),
-            'last_modified_datetime'    => DateUtility::getCurrentDateTime()
-        );
+        $data = [
+            'package_code' => $sampleManifestCode,
+            'module' => $input['testType'],
+            'added_by' => $user['user_id'],
+            'lab_id' => $input['labId'],
+            'number_of_samples' => count($rowData ?? []),
+            'package_status' => 'pending',
+            'request_created_datetime' => DateUtility::getCurrentDateTime(),
+            'last_modified_datetime' => DateUtility::getCurrentDateTime()
+        ];
         $db->insert('package_details', $data);
         $lastId = $db->getInsertId();
         foreach ($rowData as $key => $row) {
             $avilableSamples[] = $sampleId = $row['sample_code'] ?? $row['remote_sample_code'];
-            $tData = array(
+            $tData = [
                 'sample_package_id' => $lastId,
-                'sample_package_code' => $packageCode,
-                'lab_id'    => $input['labId'],
+                'sample_package_code' => $sampleManifestCode,
+                'lab_id' => $input['labId'],
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
-            );
+            ];
             $db->where($primaryKeyName, $row[$primaryKeyName]);
             $status = $db->update($tableName, $tData);
             if ($status) {
@@ -111,7 +112,7 @@ try {
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
-        'manifestCode' => $packageCode,
+        'manifestCode' => $sampleManifestCode,
         'data' => ['alreadyInManifest' => $missiedSamples, 'addedToManifest' => $response]
     ];
 } catch (Throwable $exc) {

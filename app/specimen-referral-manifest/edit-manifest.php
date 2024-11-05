@@ -1,18 +1,11 @@
 <?php
 
-use App\Services\TbService;
-use App\Services\VlService;
-use App\Services\CD4Service;
-use App\Services\EidService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\Covid19Service;
 use App\Services\DatabaseService;
-use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
 
 $title = "Edit Specimen Referral Manifest";
 require_once APPLICATION_PATH . '/header.php';
@@ -52,24 +45,12 @@ if ($pResult['package_status'] == 'dispatch') {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 }
 
-$sarr = $general->getSystemConfig();
-
-if ($general->isSTSInstance()) {
-	$sCode = 'remote_sample_code';
-} else {
-	$sCode = 'sample_code';
-}
-
-
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);
 
 
-
-$global = $general->getGlobalConfig();
 $testTypeResult = null;
 if ($module == 'generic-tests') {
-	$global = $general->getGlobalConfig();
 	$testTypeQuery = "SELECT * FROM r_test_types
 					WHERE test_status='active' ORDER BY test_standard_name ASC";
 	$testTypeResult = $db->rawQuery($testTypeQuery);
