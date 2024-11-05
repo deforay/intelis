@@ -74,7 +74,7 @@ if (!empty($_POST['testType'])) {
 
 if (!empty($_POST['pkgId'])) {
 	//	$where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR pd.package_id IS NULL OR pd.package_id = '')";
-	$where[] = " (pd.package_id = '" . $_POST['pkgId'] . "' OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
+	$where[] = " (vl.sample_package_id = '" . $_POST['pkgId'] . "' OR vl.sample_package_id IS NULL OR vl.sample_package_id = '')";
 } else {
 	$where[] = " (vl.sample_package_id is null OR vl.sample_package_id='') AND (remote_sample = 'yes') ";
 }

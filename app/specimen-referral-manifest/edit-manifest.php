@@ -62,84 +62,11 @@ if ($general->isSTSInstance()) {
 	$sCode = 'sample_code';
 }
 
-if ($module == 'vl') {
-	$query = "SELECT vl.sample_code,
-				vl.remote_sample_code,
-				vl.vl_sample_id,
-				vl.sample_package_id
-				FROM form_vl as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
-	$m = ($module == 'vl') ? 'vl' : $module;
-	/** @var VlService $vlService */
-	$vlService = ContainerRegistry::get(VlService::class);
-	$sampleTypes = $vlService->getVlSampleTypes();
-} elseif ($module == 'eid') {
-	$query = "SELECT vl.sample_code,
-					vl.remote_sample_code,
-					vl.eid_id,
-					vl.sample_package_id
-					FROM form_eid as vl
-					WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
-	$m = ($module == 'eid') ? 'eid' : $module;
-	/** @var EidService $eidService */
-	$eidService = ContainerRegistry::get(EidService::class);
-	$sampleTypes = $eidService->getEidSampleTypes();
-} elseif ($module == 'hepatitis') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.hepatitis_id,vl.sample_package_id FROM form_hepatitis as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes')  ";
-	$m = ($module == 'HEP') ? 'hepatitis' : $module;
-	/** @var HepatitisService $hepDb */
-	$hepDb = ContainerRegistry::get(HepatitisService::class);
-	$sampleTypes = $hepDb->getHepatitisSampleTypes();
-} elseif ($module == 'covid19') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.covid19_id,vl.sample_package_id FROM form_covid19 as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
-	$m = ($module == 'C19') ? 'covid19' : $module;
-	/** @var Covid19Service $covid19Service */
-	$covid19Service = ContainerRegistry::get(Covid19Service::class);
-	$sampleTypes = $covid19Service->getCovid19SampleTypes();
-} elseif ($module == 'tb') {
-	$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.tb_id,vl.sample_package_id FROM form_tb as vl where (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes')  ";
-	$m = ($module == 'TB') ? 'tb' : $module;
-	/** @var TbService $tbService */
-	$tbService = ContainerRegistry::get(TbService::class);
-	$sampleTypes = $tbService->getTbSampleTypes();
-} elseif ($module == 'cd4') {
-	$query = "SELECT vl.sample_code,
-				vl.remote_sample_code,
-				vl.cd4_id,
-				vl.sample_package_id
-				FROM form_cd4 as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') ";
-	$m = ($module == 'cd4') ? 'cd4' : $module;
-	/** @var CD4Service $cd4Service */
-	$cd4Service = ContainerRegistry::get(CD4Service::class);
-	$sampleTypes = $cd4Service->getCd4SampleTypes();
-} elseif ($module == 'generic-tests') {
-	$testTypeQuery = "SELECT test_type FROM form_generic WHERE sample_package_id = ?";
-	$testType = $db->rawQueryOne($testTypeQuery, [$id]);
 
-	$query = "SELECT vl.sample_code,
-				vl.remote_sample_code,
-				vl.sample_id,vl.sample_package_id
-				FROM form_generic as vl
-				WHERE (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is null OR vl.sample_package_id='' OR vl.sample_package_id=$id) AND (remote_sample = 'yes') AND vl.test_type=" . $testType['test_type'];
-	$m = ($module == 'GEN') ? 'generic-tests' : $module;
-
-	/** @var GenericTestsService $genService */
-	$genService = ContainerRegistry::get(GenericTestsService::class);
-	$sampleTypes = $genService->getGenericSampleTypes();
-}
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);
 
-if (!empty($_SESSION['facilityMap'])) {
-	$query = $query . " AND facility_id IN(" . $_SESSION['facilityMap'] . ")";
-}
 
-
-
-$query = "$query ORDER BY vl.request_created_datetime ASC";
-
-$result = $db->rawQuery($query);
 
 $global = $general->getGlobalConfig();
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
