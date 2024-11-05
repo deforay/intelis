@@ -128,7 +128,7 @@ final class MiscUtility
 
         // Additional context
         $timestamp = date('Y-m-d H:i:s');
-        $output = "[{$timestamp}] :::DUMP::: " . $output;
+        $output = "[{$timestamp}]:::DUMP:::$output";
 
         LoggerUtility::logInfo($output);
     }

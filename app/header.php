@@ -61,6 +61,7 @@ $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 1
 $maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
 
 $_SESSION['menuItems'] ??= $appMenuService->getMenu();
+$instrumentCount = $userCount = 0;
 
 $db->where("status", "active");
 $instrumentCount = $db->getValue("instruments", "count(*)");
