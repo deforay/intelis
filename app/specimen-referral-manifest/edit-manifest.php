@@ -1,18 +1,11 @@
 <?php
 
-use App\Services\TbService;
-use App\Services\VlService;
-use App\Services\CD4Service;
-use App\Services\EidService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\Covid19Service;
 use App\Services\DatabaseService;
-use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
 
 $title = "Edit Specimen Referral Manifest";
 require_once APPLICATION_PATH . '/header.php';
@@ -52,25 +45,16 @@ if ($pResult['package_status'] == 'dispatch') {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 }
 
-$sarr = $general->getSystemConfig();
-
-if ($general->isSTSInstance()) {
-	$sCode = 'remote_sample_code';
-} elseif ($general->isLISInstance() || $general->isStandaloneInstance()) {
-	$sCode = 'sample_code';
-} else {
-	$sCode = 'sample_code';
-}
-
-
 $testingLabs = $facilitiesService->getTestingLabs($m);
 $facilities = $facilitiesService->getHealthFacilities($module);
 
 
-
-$global = $general->getGlobalConfig();
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
-$testTypeResult = $db->rawQuery($testTypeQuery);
+$testTypeResult = null;
+if ($module == 'generic-tests') {
+	$testTypeQuery = "SELECT * FROM r_test_types
+					WHERE test_status='active' ORDER BY test_standard_name ASC";
+	$testTypeResult = $db->rawQuery($testTypeQuery);
+}
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -240,19 +224,19 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 					<br>
 					<div class="row">
 						<div class="col-md-6">
-								<div class="form-group">
-									<label for="reasonForChange" class="col-lg-4 control-label">
-										<?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
-									</label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
-									</div>
+							<div class="form-group">
+								<label for="reasonForChange" class="col-lg-4 control-label">
+									<?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
+								</label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
 								</div>
+							</div>
 						</div>
 					</div>
 					<br>
 					<div class="row" id="sampleDetails">
-							
+
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
 			</div>
@@ -336,7 +320,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 				endDate = end.format('YYYY-MM-DD');
 			});
 
-			getSampleCodeDetails();
+		getSampleCodeDetails();
 
 		$(".select2").select2();
 		$(".select2").select2({

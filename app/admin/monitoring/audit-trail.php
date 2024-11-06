@@ -1,5 +1,6 @@
 <?php
 
+use GuzzleHttp\Client;
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -7,6 +8,7 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
@@ -66,13 +68,51 @@ try {
 		return $data;
 	}
 
-	if (isset($_POST['testType'])) {
+
+	$sampleCode = null;
+	if (!empty($_POST)) {
+		// Define $sampleCode from POST data
+		$request = AppRegistry::get('request');
+		$_POST = _sanitizeInput($request->getParsedBody());
+		$sampleCode = $_POST['sampleCode'] ?? null;
+	}
+
+	if (isset($_POST['testType']) && $sampleCode) {
+
 		$formTable = TestsService::getTestTableName($_POST['testType']);
-		$sampleCode = $_POST['sampleCode'];
-		$uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
+		// Get scheme (http or https)
+		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
+
+		// Get host (domain or IP with port if any)
+		$host = $_SERVER['HTTP_HOST'];
+
+		// Build the full URL
+		$baseUrl = "{$scheme}://{$host}";
+
+		// Archive latest audit data for this sample
+		$client = new Client();
+		try {
+			$response = $client->get("{$baseUrl}/scheduled-jobs/archive-audit-tables.php?sampleCode=$sampleCode", [
+				'headers' => [
+					'X-CSRF-Token' => $_SESSION['csrf_token'],
+					'X-Requested-With' => 'XMLHttpRequest', // Spoof as AJAX to avoid ACL. Auth etc.
+				],
+				'verify' => false,
+			]);
+
+			if ($response->getStatusCode() === 200) {
+				$uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
+				MiscUtility::dumpToErrorLog($uniqueId);
+			} else {
+				echo "<h3 align='center'>Failed to archive the latest audit trail data. Please try again.</h3>";
+				$uniqueId = null;
+			}
+		} catch (Exception $e) {
+			LoggerUtility::log('error', 'Request to archive audit data failed: ' . $e->getMessage());
+			$uniqueId = null;
+		}
 	} else {
 		$formTable = "";
-		$sampleCode = "";
 		$uniqueId = "";
 	}
 
@@ -129,7 +169,7 @@ try {
 									</td>
 									<td>&nbsp;<strong><?php echo _translate("Sample ID"); ?>&nbsp;:</strong></td>
 									<td>
-										<input type="text" value="<?= htmlspecialchars((string) $_POST['sampleCode']); ?>" name="sampleCode" id="sampleCode" class="form-control" />
+										<input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control" />
 									</td>
 								</tr>
 								<tr>
@@ -148,11 +188,11 @@ try {
 					$filePath = getAuditFilePath($_POST['testType'], $uniqueId);
 					$posts = readAuditDataFromCsv($filePath);
 
-					if (!empty($posts)) {
 				?>
-						<div class="col-xs-12">
-							<div class="box">
-								<div class="box-body">
+					<div class="col-xs-12">
+						<div class="box">
+							<div class="box-body">
+								<?php if (!empty($posts)) { ?>
 									<h3> Audit Trail for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
 									<select name="auditColumn[]" id="auditColumn" class="" multiple="multiple">
 										<?php
@@ -178,24 +218,17 @@ try {
 										</thead>
 										<tbody>
 											<?php
-											// Sort records by revision ID
+											// Sort the records by revision ID
 											usort($posts, function ($a, $b) {
 												return $a['revision'] <=> $b['revision'];
 											});
-
-											$excludeColumns = ['action', 'revision', 'dt_datetime']; // Columns to exclude from change highlighting
 
 											for ($i = 0; $i < count($posts); $i++) {
 												echo "<tr>";
 												foreach ($colArr as $j => $colName) {
 													$value = $posts[$i][$colName];
 													$previousValue = $i > 0 ? $posts[$i - 1][$colName] : null;
-
-													// Check if the column is not in the exclude list before highlighting changes
-													$style = (!in_array($colName, $excludeColumns) && $previousValue !== null && $value !== $previousValue)
-														? 'style="background-color: orange;"'
-														: '';
-
+													$style = ($j > 3 && $previousValue !== null && $value !== $previousValue) ? 'style="background-color: orange;"' : '';
 													echo "<td $style>" . htmlspecialchars($value) . "</td>";
 												}
 												echo "</tr>";
@@ -203,43 +236,54 @@ try {
 											?>
 										</tbody>
 									</table>
-								</div>
+								<?php } else {
+									echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
+								}
+								?>
 							</div>
 						</div>
-				<?php
-					} else {
-						echo '<h3 align="center">Records are not available for this sample ID. Please enter a valid sample ID.</h3>';
-					}
-
-					// Fetch the current row from the form_x table for the given sample
-					$currentData = $db->rawQuery("SELECT * FROM $formTable WHERE unique_id = ?", [$uniqueId]);
-
-					if (!empty($currentData)) {
-						echo '<div class="col-xs-12"><div class="box"><div class="box-body">';
-						echo '<h3>Current Data for Sample ' . htmlspecialchars((string) $sampleCode) . '</h3>';
-						echo '<table id="currentDataTable" class="table-bordered table table-striped table-hover" aria-hidden="true"><thead><tr>';
-
-						// Display column headers
-						foreach (array_keys($currentData[0]) as $colName) {
-							echo "<th>$colName</th>";
-						}
-						echo '</tr></thead><tbody><tr>';
-
-						// Display row data
-						foreach ($currentData[0] as $value) {
-							echo '<td>' . htmlspecialchars($value) . '</td>';
-						}
-						echo '</tr></tbody></table>';
-
-						echo '</div></div></div>';
-					} else {
-						echo '<h3 align="center">No current data available for this sample ID in the main table.</h3>';
-					}
-				} else {
-					echo '<h3 align="center">No unique ID found for the provided sample ID.</h3>';
-				} ?>
+					</div>
+					<div class="col-xs-12">
+						<div class="box">
+							<div class="box-body"></div>
+							<?php
+							$currentData = $db->rawQuery("SELECT * FROM $formTable WHERE unique_id = ?", [$uniqueId]);
+							// Display Current Data if available
+							if (!empty($currentData)) { ?>
+								<h3> <?= _translate("Current Data for Sample"); ?> <?php echo htmlspecialchars($sampleCode ?? ''); ?></h3>
+								<table id="currentDataTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
+									<thead>
+										<tr>
+											<?php
+											// Display column headers
+											foreach (array_keys($currentData[0]) as $colName) {
+												echo "<th>$colName</th>";
+											}
+											?>
+										</tr>
+									</thead>
+									<tbody>
+										<tr>
+											<?php
+											// Display row data
+											foreach ($currentData[0] as $value) {
+												echo '<td>' . htmlspecialchars($value ?? '') . '</td>';
+											}
+											?>
+										</tr>
+									</tbody>
+								</table>
+						<?php } else {
+								echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
+							}
+						} else {
+							echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
+						} ?>
+						</div>
+					</div>
 			</div>
-		</section>
+	</div>
+	</section>
 	</div>
 
 	<script src="/assets/js/dataTables.buttons.min.js"></script>
@@ -250,11 +294,24 @@ try {
 				plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 			});
 			table = $("#auditTable").DataTable({
-				ordering: false, // Make table non-sortable
+				dom: 'Bfrtip',
+				buttons: [{
+					extend: 'excelHtml5',
+					exportOptions: {
+						columns: ':visible'
+					},
+					text: 'Export To Excel',
+					title: 'AuditTrailSample-<?php echo $sampleCode; ?>',
+					extension: '.xlsx'
+				}],
 				scrollY: '250vh',
 				scrollX: true,
 				scrollCollapse: true,
 				paging: false,
+				ordering: false, // Make table non-sortable
+				order: [
+					[1, 'asc']
+				], // Order by revision ID (second column) by default
 			});
 
 			// Initialize the single row current data table

@@ -1,15 +1,27 @@
-#!/usr/bin/env php
 <?php
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+$sampleCode = null;
+if (!empty($_GET)) {
+    // Sanitized values from $request object
+    /** @var Laminas\Diactoros\ServerRequest $request */
+    $request = AppRegistry::get('request');
+    $_GET = _sanitizeInput($request->getQueryParams());
+    if (!empty($_GET['sampleCode'])) {
+        $sampleCode = $_GET['sampleCode'];
+    }
+}
+
 
 $cliMode = php_sapi_name() === 'cli';
 $lockFile = MiscUtility::getLockFile(__FILE__);
@@ -28,11 +40,13 @@ function updateLastProcessedDate(&$metadata, $tableName, $lastProcessedDate)
 }
 
 // Generator function to retrieve records in batches
-function fetchRecords(DatabaseService $db, string $tableName, string $lastProcessedDate = null, int $limit = 1000)
+function fetchRecords(DatabaseService $db, string $tableName, string $lastProcessedDate = null, int $limit = 1000, $sampleCode = null)
 {
     $offset = 0;
     while (true) {
-        if ($lastProcessedDate) {
+        if (!empty($sampleCode)) {
+            $db->connection('default')->where("sample_code = '$sampleCode' OR remote_sample_code = '$sampleCode' OR external_sample_code = '$sampleCode'");
+        } elseif ($lastProcessedDate) {
             $db->connection('default')->where('dt_datetime', $lastProcessedDate, '>');
         }
         $db->connection('default')->orderBy('dt_datetime', 'asc');
@@ -53,7 +67,7 @@ function fetchRecords(DatabaseService $db, string $tableName, string $lastProces
 
 try {
     $metadataPath = ROOT_PATH . DIRECTORY_SEPARATOR . "metadata" . DIRECTORY_SEPARATOR . "archive.mdata.json";
-    $metadata = MiscUtility::loadMetadata($metadataPath);
+    $metadata = empty($sampleCode) ? MiscUtility::loadMetadata($metadataPath) : [];
 
     $tableToTestTypeMap = [
         'audit_form_vl' => 'vl',
@@ -110,6 +124,23 @@ try {
         }
     }
 
+    // Load dt_datetime values from existing CSV to check for duplicates
+    function loadExistingDatetimes($filePath)
+    {
+        $existingDatetimes = [];
+        if (file_exists($filePath)) {
+            $fileHandle = gzopen($filePath, 'r');
+            fgetcsv($fileHandle); // Skip header row
+            while (($row = fgetcsv($fileHandle)) !== false) {
+                $existingDatetimes[] = $row[2]; // Assuming dt_datetime is the third column
+            }
+            gzclose($fileHandle);
+        }
+        return $existingDatetimes;
+    }
+
+
+
     function getLastRevisionNumber($filePath)
     {
         if (!file_exists($filePath)) {
@@ -128,7 +159,7 @@ try {
     }
 
     foreach ($tableToTestTypeMap as $auditTable => $testType) {
-        $lastProcessedDate = $metadata[$auditTable]['last_processed_date'] ?? null;
+        $lastProcessedDate = $sampleCode ? null : ($metadata[$auditTable]['last_processed_date'] ?? null);
 
         if ($cliMode) {
             echo "Archiving data from {$auditTable} for test type {$testType}.." . PHP_EOL;
@@ -136,12 +167,22 @@ try {
 
         $currentHeaders = getCurrentColumns($db, $auditTable);
 
-        foreach (fetchRecords($db, $auditTable, $lastProcessedDate) as $record) {
+        foreach (fetchRecords($db, $auditTable, $lastProcessedDate, 1000, $sampleCode) as $record) {
             $uniqueId = $record['unique_id'];
             MiscUtility::makeDirectory("$archivePath/$testType");
             $filePath = "$archivePath/$testType/{$uniqueId}.csv.gz";
 
             ensureCorrectHeaders($filePath, $currentHeaders);
+
+            // Load existing dt_datetime values for duplicate check
+            $existingDatetimes = loadExistingDatetimes($filePath);
+
+            if (in_array($record['dt_datetime'], $existingDatetimes)) {
+                if ($cliMode) {
+                    echo "Skipping duplicate record with dt_datetime: {$record['dt_datetime']}" . PHP_EOL;
+                }
+                continue;
+            }
 
             $lastRevision = getLastRevisionNumber($filePath);
             $record['revision'] = $lastRevision + 1;
@@ -159,10 +200,12 @@ try {
             gzwrite($fileHandle, implode(',', $rowToWrite) . "\n");
             gzclose($fileHandle);
 
-            // Update metadata after each record
-            $lastProcessedDate = $record['dt_datetime'];
-            updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
-            MiscUtility::saveMetadata($metadataPath, $metadata);
+            // Update metadata only if sampleCode is not provided (bulk case)
+            if (!$sampleCode) {
+                $lastProcessedDate = $record['dt_datetime'];
+                updateLastProcessedDate($metadata, $auditTable, $lastProcessedDate);
+                MiscUtility::saveMetadata($metadataPath, $metadata);
+            }
         }
 
         if ($cliMode) {

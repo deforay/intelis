@@ -128,7 +128,7 @@ final class MiscUtility
 
         // Additional context
         $timestamp = date('Y-m-d H:i:s');
-        $output = "[{$timestamp}] :::DUMP::: " . $output;
+        $output = "[{$timestamp}]:::DUMP:::$output";
 
         LoggerUtility::logInfo($output);
     }
@@ -636,5 +636,16 @@ final class MiscUtility
         $existingData = self::loadMetadata($metadataPath);
         $mergedData = array_merge($existingData, $newData);
         file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
+    }
+
+    public static function readCSVFile($filename)
+    {
+        if (($handle = fopen($filename, 'r')) !== false) {
+            $headers = fgetcsv($handle); // Read the header row
+            while (($row = fgetcsv($handle)) !== false) {
+                yield array_combine($headers, $row);
+            }
+            fclose($handle);
+        }
     }
 }

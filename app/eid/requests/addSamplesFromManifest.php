@@ -64,7 +64,7 @@ $batResult = $db->rawQuery($batQuery);
 
 							<td style="width:100%;" colspan="3">
 								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-square-check"></em>
-									<?php echo _translate("Activate Samples"); ?>
+									<?= _translate("Activate Samples"); ?>
 								</a>
 							</td>
 						</tr>

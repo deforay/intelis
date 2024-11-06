@@ -1,9 +1,12 @@
 <?php
 
+use League\Csv\Reader;
+use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
@@ -30,6 +33,11 @@ try {
 
     $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
+
+
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
+
     $allowedExtensions = array(
         'xls',
         'xlsx',
@@ -51,127 +59,32 @@ try {
 
     $resultFile = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
     if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
-        //$file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        //$mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
-
-        $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
-        $sheetData   = $objPHPExcel->getActiveSheet();
 
 
-
-        $sheetData   = $sheetData->toArray(null, true, true, true);
-        $m           = 0;
-        $skipTillRow = 2;
-
-        $sampleIdCol = 'E';
-        $sampleIdRow = '2';
-        $logValCol = '';
-        $logValRow = '';
-        $absValCol = 'I';
-        $absValRow = '2';
-        $txtValCol = '';
-        $txtValRow = '';
-        $testingDateCol = 'D';
-        $testingDateRow = '2';
-        $logAndAbsoluteValInSameCol = 'no';
-        $sampleTypeCol = 'F';
-        $flagCol = 'K';
-        //$flagRow = '2';
-
-        foreach ($sheetData as $rowIndex => $row) {
-
-            if ($rowIndex < $skipTillRow) {
+        foreach (MiscUtility::readCSVFile($resultFile) as $row) {
+            if ($row['Sample ID'] == "") {
                 continue;
             }
+            $interpretedResults = $vlService->interpretViralLoadResult($row['Result'] ?? null);
 
+            $testingDate = DateUtility::isoDateFormat($row['Released date/time'] ?? null, true);
 
-            $sampleCode    = "";
-            $sampleType    = "";
-            $absDecimalVal = "";
-            $absVal        = "";
-            $logVal        = "";
-            $txtVal        = "";
-            $resultFlag    = "";
-            $testingDate   = "";
-
-
-            $sampleCode = $row[$sampleIdCol];
-            $sampleType = $row[$sampleTypeCol];
-
-            $resultFlag = $row[$flagCol];
-
-
-
-
-            if ($sampleCode == "") {
-                continue;
-            }
-
-
-            // $testingDate = date('Y-m-d H:i', strtotime($row[$testingDateCol]));
-
-            $testingDate = null;
-            $testingDateObject = DateTimeImmutable::createFromFormat('!' . $dateFormat, $row[$testingDateCol]);
-            $errors = DateTimeImmutable::getLastErrors();
-            if (empty($errors['warning_count']) && empty($errors['error_count']) && !empty($testingDateObject)) {
-                $testingDate = $testingDateObject->format('Y-m-d H:i');
-            }
-
-            $vlResult = trim((string) $row[$absValCol]);
-
-            if (!empty($vlResult)) {
-                if (str_contains($vlResult, 'E')) {
-                    if (str_contains($vlResult, '< 2.00E+1')) {
-                        $vlResult = "< 20";
-                        $txtVal = $absVal = trim($vlResult);
-                        $logVal = "";
-                    } else {
-                        $vlResult = (float) $vlResult;
-                        $resInNumberFormat = number_format($vlResult, 0, '', '');
-                        if ($vlResult > 0) {
-                            $absVal = $resInNumberFormat;
-                            $absDecimalVal = $vlResult;
-                            $logVal = round(log10($vlResult), 2);
-                            $txtVal = null;
-                        } else {
-                            $absVal = $txtVal = trim($vlResult);
-                            $absDecimalVal = $logVal = "";
-                        }
-                    }
-                } else {
-                    $vlResult = (float)$row[$absValCol];
-                    if ($vlResult > 0) {
-                        $absVal = trim((string) $row[$absValCol]);
-                        $absDecimalVal = $vlResult;
-                        $logVal = round(log10($absDecimalVal), 4);
-                        $txtVal = null;
-                    } else {
-                        $logVal = $absDecimalVal = $absVal = "";
-                        $txtVal = trim((string) $row[$absValCol]);
-                    }
-                }
-            }
-
-
-
-            $infoFromFile[$sampleCode] = [
-                "sampleCode" => $sampleCode,
-                "logVal" => trim($logVal),
-                "absVal" => $absVal,
-                "absDecimalVal" => $absDecimalVal,
-                "txtVal" => $txtVal,
+            $infoFromFile[$row['Sample ID']] = [
+                "sampleCode" => $row['Sample ID'],
+                "logVal" => $interpretedResults['logVal'],
+                "absVal" => $interpretedResults['absVal'],
+                "absDecimalVal" => $interpretedResults['absDecimalVal'],
+                "txtVal" => $interpretedResults['txtVal'],
+                "result" => $interpretedResults['result'],
                 "resultFlag" => $resultFlag,
                 "testingDate" => $testingDate,
-                "sampleType" => $sampleType
+                "sampleType" => null
             ];
-
-
-            $m++;
         }
 
         foreach ($infoFromFile as $sampleCode => $d) {
 
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -179,6 +92,7 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'result_value_log' => $d['logVal'],
                 'sample_type' => $d['sampleType'],
+                'result' => $d['result'],
                 'result_value_absolute' => $d['absVal'],
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
@@ -186,18 +100,8 @@ try {
                 'result_status' => 6,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag']
-            );
+            ];
 
-
-            if ($d['absVal'] != "") {
-                $data['result'] = $d['absVal'];
-            } else if ($d['logVal'] != "") {
-                $data['result'] = $d['logVal'];
-            } else if ($d['txtVal'] != "") {
-                $data['result'] = $d['txtVal'];
-            } else {
-                $data['result'] = "";
-            }
 
             $query    = "SELECT facility_id,
                                 vl_sample_id,
@@ -236,6 +140,10 @@ try {
 
 
     header("Location:/import-result/imported-results.php?t=$type");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 }
