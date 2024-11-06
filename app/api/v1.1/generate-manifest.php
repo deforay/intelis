@@ -80,7 +80,7 @@ try {
             $response = [
                 'status' => 'Failed',
                 'timestamp' => time(),
-                'message' => 'Samples belongs to this lab is not mapped to this user'
+                'message' => 'Requested Facilities not mapped. Failed to add samples to manifest'
             ];
         }
         $where[] = " vl.facility_id IN (" . $facilityMap . ")";
@@ -137,7 +137,7 @@ try {
         $payload = [
             'status' => 'Failed',
             'timestamp' => time(),
-            'message' => 'Samples may not belong with this lab',
+            'message' => 'Possibly incorrect lab. Failed to add samples to manifest',
             'data' => $response
         ];
     }
