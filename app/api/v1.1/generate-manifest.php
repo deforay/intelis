@@ -3,6 +3,7 @@
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -24,6 +25,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
@@ -40,6 +42,7 @@ if (
     (empty($input['uniqueId']) && empty($input['sampleCode']))
 ) {
     http_response_code(400);
+    MiscUtility::dumpToErrorLog($input);
     throw new SystemException('Invalid request', 400);
 }
 
@@ -67,9 +70,24 @@ try {
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') OR vl.app_sample_code IN ('$sampleCode') ) ";
     }
     $where[] = " ((vl.sample_package_id IS NULL OR vl.sample_package_id = '') AND (vl.sample_package_code IS NULL  OR vl.sample_package_code = ''))";
+
+    $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
+    $response = [];
+
+    if (!empty($facilityMap)) {
+        $arrFacility =  explode(",",$facilityMap);
+        if(in_array($input['labId'],$arrFacility) == false){
+            $response = [
+                'status' => 'Failed',
+                'timestamp' => time(),
+                'message' => 'Samples belongs to this lab is not mapped to this user'
+            ];
+        }
+        $where[] = " vl.facility_id IN (" . $facilityMap . ")";
+    }
+
     $sQuery .= ' WHERE ' . implode(' AND ', $where);
     $rowData = $db->rawQuery($sQuery);
-    $response = [];
     $avilableSamples = [];
     $missiedSamples = [];
     if (isset($rowData) && !empty($rowData)) {
@@ -105,15 +123,24 @@ try {
                 ];
             }
         }
-    }
-    $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
+    
+        $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
 
-    $payload = [
-        'status' => 'success',
-        'timestamp' => time(),
-        'manifestCode' => $packageCode,
-        'data' => ['alreadyInManifest' => $missiedSamples, 'addedToManifest' => $response]
-    ];
+        $payload = [
+            'status' => 'success',
+            'timestamp' => time(),
+            'manifestCode' => $packageCode,
+            'data' => ['alreadyInManifest' => $missiedSamples, 'addedToManifest' => $response]
+        ];
+    }
+    else{
+        $payload = [
+            'status' => 'Failed',
+            'timestamp' => time(),
+            'message' => 'Samples may not belong with this lab',
+            'data' => $response
+        ];
+    }
 } catch (Throwable $exc) {
 
     http_response_code(500);
