@@ -637,4 +637,15 @@ final class MiscUtility
         $mergedData = array_merge($existingData, $newData);
         file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
     }
+
+    public static function readCSVFile($filename)
+    {
+        if (($handle = fopen($filename, 'r')) !== false) {
+            $headers = fgetcsv($handle); // Read the header row
+            while (($row = fgetcsv($handle)) !== false) {
+                yield array_combine($headers, $row);
+            }
+            fclose($handle);
+        }
+    }
 }

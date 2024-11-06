@@ -16,6 +16,8 @@ final class VlService extends AbstractTestService
     // keep in lowercase to make them easier to compare
     protected array $suppressedArray = [
         'hiv-1 not detected',
+        'hiv-1 target not detected',
+        'hiv-1 < titer min',
         'target not detected',
         'tnd',
         'not detected',

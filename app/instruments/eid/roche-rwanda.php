@@ -81,8 +81,9 @@ try {
 
         foreach ($sheetData as $rowIndex => $rowData) {
 
-            if ($rowIndex < $skipTillRow)
+            if ($rowIndex < $skipTillRow) {
                 continue;
+            }
 
 
             $num = count($rowData ?? []);
@@ -111,13 +112,13 @@ try {
             // $rowData[$testDateCol] = str_replace("/", "-", $rowData[$testDateCol]);
             // $testingDate = date('Y-m-d H:i', strtotime($rowData[$testDateCol]));
             $result = $absVal = $logVal = $absDecimalVal = $txtVal = '';
-
-            if (str_contains(strtolower((string)$rowData[$resultCol]), 'not detected')) {
+            $resultInLowerCase = strtolower((string)$rowData[$resultCol]);
+            if (str_contains($resultInLowerCase, 'not detected')) {
                 $result = 'negative';
-            } else if ((str_contains(strtolower((string)$rowData[$resultCol]), 'detected')) || (str_contains(strtolower((string)$rowData[$resultCol]), 'passed'))) {
+            } elseif ((str_contains($resultInLowerCase, 'detected')) || (str_contains(strtolower((string)$rowData[$resultCol]), 'passed'))) {
                 $result = 'positive';
             } else {
-                $result = 'indeterminate';
+                $result = $resultInLowerCase;
             }
 
 
