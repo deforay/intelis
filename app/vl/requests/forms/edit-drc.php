@@ -668,6 +668,7 @@ $storageInfo = $storageService->getLabStorage();
 		showTrimesterSection('<?php echo $trimsterDisplay; ?>');
 
 		$("#gender").trigger('change');
+		$('#serialNo').trigger('change');
 
 		getVlResults($("#testingPlatform").val());
 		if ($("#status").val() == 4) {
@@ -988,6 +989,21 @@ $storageInfo = $storageService->getLabStorage();
 			$('.reasonForFailure').hide();
 			$('#reasonForFailure').removeClass('isRequired');
 			$('#vlLog').attr('readonly', false);
+		}
+	});
+
+	$('#serialNo').on('change', function() {
+		if($(this).val() != ""){
+			$("#reasonForVLTesting").removeClass("isRequired");
+			$("#artRegimen").removeClass("isRequired");
+			$("#dateOfArtInitiation").removeClass("isRequired");
+			$("#viralLoadNo").removeClass("isRequired");
+		}
+		else{
+			$("#reasonForVLTesting").addClass("isRequired");
+			$("#artRegimen").addClass("isRequired");
+			$("#dateOfArtInitiation").addClass("isRequired");
+			$("#viralLoadNo").addClass("isRequired");
 		}
 	});
 

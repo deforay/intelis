@@ -817,6 +817,21 @@ $sFormat = '';
 		}
 	});
 
+	$('#serialNo').on('change', function() {
+		if($(this).val() != ""){
+			$("#reasonForVLTesting").removeClass("isRequired");
+			$("#artRegimen").removeClass("isRequired");
+			$("#dateOfArtInitiation").removeClass("isRequired");
+			$("#viralLoadNo").removeClass("isRequired");
+		}
+		else{
+			$("#reasonForVLTesting").addClass("isRequired");
+			$("#artRegimen").addClass("isRequired");
+			$("#dateOfArtInitiation").addClass("isRequired");
+			$("#viralLoadNo").addClass("isRequired");
+		}
+	});
+
 	function checkRejectionReason() {
 		var rejectionReason = $("#rejectionReason").val();
 		if (rejectionReason == "other") {
