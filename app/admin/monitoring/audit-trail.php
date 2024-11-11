@@ -254,6 +254,7 @@ try {
 								<table id="currentDataTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 									<thead>
 										<tr>
+											<th></th><th></th><th></th>
 											<?php
 											// Display column headers
 											foreach (array_keys($currentData[0]) as $colName) {
@@ -264,6 +265,7 @@ try {
 									</thead>
 									<tbody>
 										<tr>
+											<td></td><td></td><td></td>
 											<?php
 											// Display row data
 											foreach ($currentData[0] as $value) {
@@ -286,23 +288,23 @@ try {
 	</section>
 	</div>
 
-	<script src="/assets/js/dataTables.buttons.min.js"></script>
-	<script src="/assets/js/jszip.min.js"></script>
 	<script type="text/javascript">
 		$(document).ready(function() {
+
 			$("#auditColumn").selectize({
 				plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 			});
+
 			table = $("#auditTable").DataTable({
 				dom: 'Bfrtip',
 				buttons: [{
-					extend: 'excelHtml5',
+					extend: 'csvHtml5',
 					exportOptions: {
 						columns: ':visible'
 					},
-					text: 'Export To Excel',
+					text: 'Export To CSV',
 					title: 'AuditTrailSample-<?php echo $sampleCode; ?>',
-					extension: '.xlsx'
+					extension: '.csv'
 				}],
 				scrollY: '250vh',
 				scrollX: true,
@@ -315,7 +317,7 @@ try {
 			});
 
 			// Initialize the single row current data table
-			$('#currentDataTable').DataTable({
+			 ctable = $('#currentDataTable').DataTable({
 				paging: false,
 				searching: false,
 				info: false,
@@ -323,16 +325,29 @@ try {
 				scrollX: true
 			});
 
+			ctable.columns([0,1,2]).visible(false);
+
+
 			$('#auditColumn').on("change", function(e) {
 				var columns = $(this).val();
+				
 				if (columns === "" || columns == null) {
 					table.columns().visible(true);
+					ctable.columns().visible(true);
 				} else {
 					table.columns().visible(false);
 					table.columns(columns).visible(true);
+
+					ctable.columns().visible(false);
+					ctable.columns(columns).visible(true);
+
 				}
+
 			});
 		});
+
+
+
 	</script>
 <?php
 
