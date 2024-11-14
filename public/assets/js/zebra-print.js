@@ -94,12 +94,12 @@ function showBrowserPrintNotFound() {
 
 }
 function printBarcodeLabel(bcode, facility) {
-	//showLoading("Printing...");
+	showLoading("Printing...");
 	facility = urldecode(facility);
 	checkPrinterStatus(function (text) {
 		if (text == "Ready to Print") {
 			//selected_printer.send(format_start + bcode + format_end, printComplete, printerError);
-			var strToPrint = zebraFormat.replaceAll("1234567", bcode);
+			let strToPrint = zebraFormat.replaceAll("1234567", bcode);
 			strToPrint = strToPrint.replaceAll("FACILITY", facility);
 			selected_printer.send(strToPrint, printComplete, printerError);
 		}
@@ -111,13 +111,13 @@ function printBarcodeLabel(bcode, facility) {
 function checkPrinterStatus(finishedFunction) {
 	selected_printer.sendThenRead("~HQES",
 		function (text) {
-			var that = this;
-			var statuses = [];
-			var ok = false;
-			var is_error = text.charAt(70);
-			var media = text.charAt(88);
-			var head = text.charAt(87);
-			var pause = text.charAt(84);
+			let that = this;
+			let statuses = [];
+			let ok = false;
+			let is_error = text.charAt(70);
+			let media = text.charAt(88);
+			let head = text.charAt(87);
+			let pause = text.charAt(84);
 			// check each flag that prevents printing
 			if (is_error == '0') {
 				ok = true;
@@ -141,6 +141,10 @@ function checkPrinterStatus(finishedFunction) {
 				statuses.push("Incorrect Printhead");
 			if (pause == '1')
 				statuses.push("Printer Paused");
+
+			console.log(text);
+			console.log(statuses);
+
 			if ((!ok) && (statuses.Count == 0))
 				statuses.push("Error: Unknown Error");
 			finishedFunction(statuses.join());

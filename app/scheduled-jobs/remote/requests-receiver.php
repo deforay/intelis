@@ -169,8 +169,8 @@ try {
 
                 $existingSampleQuery = "SELECT vl_sample_id, sample_code
                                         FROM form_vl AS vl
-                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
@@ -320,8 +320,8 @@ try {
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
                     $removeMoreKeys = [
@@ -464,8 +464,8 @@ try {
 
                 //check exist remote
                 $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
-                                WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
                     $removeMoreKeys = [
@@ -667,8 +667,8 @@ try {
 
                 //check exist remote
                 $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
-                                        WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                                                                WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
                     $removeMoreKeys = [
@@ -847,8 +847,8 @@ try {
 
                 //check exist remote
                 $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if ($existingSampleResult) {
 
                     $removeMoreKeys = array(
@@ -996,8 +996,8 @@ try {
 
                 $existingSampleQuery = "SELECT cd4_id, sample_code
                                     FROM form_cd4 AS vl
-                                    WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                                    WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
@@ -1140,8 +1140,8 @@ try {
 
                 $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
                             FROM form_generic AS vl
-                            WHERE remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                            WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
+                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
