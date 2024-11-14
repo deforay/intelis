@@ -94,7 +94,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 							</div>
 							<div class="panel-body">
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Date Format"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
@@ -105,7 +105,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="gui_date_format" class="col-lg-4 control-label"><?php echo _translate("Display Encrypt PII Option"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-8">
@@ -125,7 +125,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 							</div>
 							<div class="panel-body">
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="vl_form" class="col-lg-4 control-label"><?php echo _translate("Country of Installation"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
@@ -141,9 +141,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7">
+								
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="default_time_zone" class="col-lg-4 control-label"><?php echo _translate("Default Time Zone"); ?> </label>
 											<div class="col-lg-8">
@@ -166,7 +165,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								</div>
 
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="app_locale" class="col-lg-4 control-label"><?php echo _translate("System Locale"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
@@ -178,9 +177,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7">
+								
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="header" class="col-lg-4 control-label"><?php echo _translate("Header"); ?> </label>
 											<div class="col-lg-8">
@@ -191,12 +189,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								</div>
 
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="" class="col-lg-4 control-label"><?php echo _translate("Logo Image"); ?> </label>
 											<div class="col-lg-8">
 												<div class="fileinput fileinput-new logo" data-provides="fileinput">
-													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:150px;">
+													<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width:200px; height:100px;">
 														<?php
 														if (isset($arr['logo']) && trim((string) $arr['logo']) != '' && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $arr['logo'])) {
 														?>
@@ -223,11 +221,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-
-
-								<div class="row">
-									<div class="col-md-7">
+								
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="edit_profile" class="col-lg-4 control-label"><?php echo _translate("Allow users to Edit Profile"); ?> </label>
 											<div class="col-lg-8">
@@ -239,7 +234,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								</div>
 
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="training_mode" class="col-lg-4 control-label"><?php echo _translate("Training Mode"); ?> </label>
 											<div class="col-lg-8">
@@ -249,10 +244,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+								
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="barcode_format" class="col-lg-4 control-label"><?php echo _translate("Barcode Format"); ?></label>
 											<div class="col-lg-8">
@@ -268,7 +261,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 								</div>
 
 								<div class="row" style="margin-top:10px;">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="auto_approval" class="col-lg-4 control-label"><?php echo _translate("Same user can Review and Approve"); ?> </label>
 											<div class="col-lg-8">
@@ -278,15 +271,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-
-								<div class="row">
-									<div class="col-md-7" style="text-align:center;">
-										<code><?php echo _translate("You can enter multiple emails by separating them with commas"); ?></code>
-									</div>
 								</div><br />
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="instance_type" class="col-lg-4 control-label"><?php echo _translate("Sample ID Barcode Label Printing"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
@@ -298,31 +285,29 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row barcodeFormat">
-									<div class="col-md-7">
+								
+									<div class="barcodeFormat">
+									<div class="col-md-6">
 										<div class="form-group contentDiv">
 											
 										</div>
 									</div>
 								</div>
-								
-								<div class="row" style="margin-top:10px;">
-									<div class="col-md-7">
+								</div>
+								<div class="row">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _translate("Allow Samples not matching the System Sample IDs while importing results manually"); ?></label>
 											<div class="col-lg-8">
-												<br>
-												<br>
+												
 												<input class="readPage" type="radio" id="import_non_matching_sample_yes" name="import_non_matching_sample" value="yes" <?php echo ($arr['import_non_matching_sample'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
 												<input class="readPage" type="radio" id="import_non_matching_sample_no" name="import_non_matching_sample" value="no" <?php echo ($arr['import_non_matching_sample'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
-												<br><br> <code><?php echo _translate("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in System database"); ?></code>
+												
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+								
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Support Email"); ?></label>
 											<div class="col-lg-8">
@@ -330,14 +315,21 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+									
 								</div>
+								
 								<div class="row">
-									<div class="col-md-7" style="text-align:center;">
+									<div class="col-md-6" style="text-align:center;">
+										<code><?php echo _translate("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in System database"); ?></code>
+									</div>
+									<div class="col-md-6" style="text-align:center;">
 										<code><?php echo _translate("You can enter multiple emails by separating them with commas"); ?></code>
 									</div>
-								</div><br />
+								</div>
+								<br>
+								<br>
 								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="default_csv_delimiter" class="col-lg-4 control-label"><?php echo _translate("CSV Delimiter"); ?></label>
 											<div class="col-lg-8">
@@ -345,9 +337,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="default_csv_enclosure" class="col-lg-4 control-label"><?php echo _translate("CSV Enclosure"); ?></label>
 											<div class="col-lg-8">
@@ -357,7 +347,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+								
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Default Phone Prefix"); ?></label>
 											<div class="col-lg-8">
@@ -365,9 +356,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+							
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Minimum Length of Phone Number"); ?></label>
 											<div class="col-lg-8">
@@ -375,9 +365,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+								
 								</div>
 								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Maximum Length of Phone Number"); ?></label>
 											<div class="col-lg-8">
@@ -385,9 +376,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="batch_pdf_layout" class="col-lg-4 control-label"><?php echo _translate("Batch PDF Layout"); ?> </label>
 											<div class="col-lg-8">
@@ -396,9 +385,11 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+								
+									
 								</div>
 								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="sample_expiry_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Expiry Days"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-4">
@@ -409,9 +400,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7" style="height:38px;">
+									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="sample_lock_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Lock Days"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-4">
@@ -493,22 +482,19 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div><br />
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="vl_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="vl_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="vl_min_patient_id_length" name="vl_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['vl_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-
-									<?php
+										<?php
 									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<div class="col-md-6">
 												<div class="form-group">
-													<label for="vl_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="vl_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="vl_copy_request_save_and_next" name="vl_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -517,14 +503,16 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 														</select>
 													</div>
 												</div>
-											</div>
 										</div>
-									<?php }
-									if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
+									</div>
+
+
 										<div class="row">
-											<div class="col-md-12">
+											<?php }
+											if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="vl_suppression_target" class="col-lg-2 control-label"><?php echo _translate("VL Suppression Target"); ?><span class="mandatory ">*</span></label>
+													<label for="vl_suppression_target" class="col-lg-4 control-label"><?php echo _translate("VL Suppression Target"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="vl_suppression_target" name="vl_suppression_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -534,13 +522,11 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php }
-									if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+											<?php }
+												if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="vl_monthly_target" class="col-lg-2 control-label"><?php echo _translate("VL Monthly Target"); ?><span class="mandatory ">*</span></label>
+													<label for="vl_monthly_target" class="col-lg-4 control-label"><?php echo _translate("VL Monthly Target"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="vl_monthly_target" name="vl_monthly_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -550,13 +536,14 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
+											<?php } ?>
 										</div>
-									<?php } ?>
-
+								
+										
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="vl_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("VL Auto Approve API Results"); ?></label>
+												<label for="vl_auto_approve_api_results" class="col-lg-4 control-label"><?php echo _translate("VL Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="vl_auto_approve_api_results" name="vl_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select VL Auto Approve API Results'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -566,11 +553,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="vl_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("VL Show Participant Name in Manifest"); ?></label>
+												<label for="vl_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("VL Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="vl_show_participant_name_in_manifest" name="vl_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select VL Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -581,10 +566,11 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+									
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="vl_interpret_and_convert_results" class="col-lg-2 control-label"><?php echo _translate("Interpret and Convert VL Results"); ?></label>
+												<label for="vl_interpret_and_convert_results" class="col-lg-4 control-label"><?php echo _translate("Interpret and Convert VL Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="vl_interpret_and_convert_results" name="vl_interpret_and_convert_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select Interpret and Convert VL Results'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -594,12 +580,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									</div>
-									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON) { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php if ($arr['vl_form'] == COUNTRY\CAMEROON) { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="vl_excel_export_format" class="col-lg-2 control-label"><?php echo _translate("Viral Load Export Format"); ?></label>
+													<label for="vl_excel_export_format" class="col-lg-4 control-label"><?php echo _translate("Viral Load Export Format"); ?></label>
 													<div class="col-lg-4">
 														<select id="vl_excel_export_format" name="vl_excel_export_format" type="text" class="form-control readPage" title="<?php echo _translate('Please select Interpret and Convert VL Results'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -609,8 +593,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
 									<?php } ?>
+									</div>
+									
 								</div>
 							</div>
 						<?php }
@@ -666,20 +651,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div><br />
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="eid_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="eid_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="eid_min_patient_id_length" name="eid_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['eid_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['eid_copy_request_save_and_next']) && $arr['eid_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="eid_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="eid_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="eid_copy_request_save_and_next" name="eid_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -689,12 +672,13 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
 									<?php } ?>
+									</div>
+									
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="eid_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("EID Auto Approve API Results"); ?></label>
+												<label for="eid_auto_approve_api_results" class="col-lg-4 control-label"><?php echo _translate("EID Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="eid_auto_approve_api_results" name="eid_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select EID Auto Approve API Results'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -704,11 +688,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="eid_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("EID Show Participant Name in Manifest"); ?></label>
+												<label for="eid_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("EID Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="eid_show_participant_name_in_manifest" name="eid_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select EID Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -793,22 +775,19 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div><br />
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="covid19_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="covid19_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="covid19_min_patient_id_length" name="covid19_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['covid19_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-
-									<?php
-									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php
+										if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['covid19_copy_request_save_and_next']) && $arr['covid19_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="covid19_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="covid19_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="covid19_copy_request_save_and_next" name="covid19_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -818,13 +797,13 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php } ?>
+										<?php } ?>
+									</div>
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="covid19_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("COVID-19 Auto Approve API Results"); ?></label>
+												<label for="covid19_auto_approve_api_results" class="col-lg-4 control-label"><?php echo _translate("COVID-19 Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="covid19_auto_approve_api_results" name="covid19_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select COVID-19 Auto Approve API Results'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -834,11 +813,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="eid_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("COVID-19 Show Participant Name in Manifest"); ?></label>
+												<label for="eid_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("COVID-19 Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="covid19_show_participant_name_in_manifest" name="covid19_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select COVID-19 Show Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -849,6 +826,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+									
 								</div>
 							</div>
 						<?php }
@@ -905,20 +883,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div><br />
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="hepatitis_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="hepatitis_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="hepatitis_min_patient_id_length" name="hepatitis_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['hepatitis_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['hepatitis_copy_request_save_and_next']) && $arr['hepatitis_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="hepatitis_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="hepatitis_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="hepatitis_copy_request_save_and_next" name="hepatitis_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -928,13 +904,14 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
 									<?php } ?>
+									</div>
+									
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="hepatitis_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("Hepatitis Show Participant Name in Manifest"); ?></label>
+												<label for="hepatitis_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("Hepatitis Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="hepatitis_show_participant_name_in_manifest" name="hepatitis_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select Hepatitis Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1001,20 +978,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div><br />
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="tb_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="tb_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="tb_min_patient_id_length" name="tb_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['tb_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['tb_copy_request_save_and_next']) && $arr['tb_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="tb_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="tb_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="tb_copy_request_save_and_next" name="tb_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1024,13 +999,13 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php } ?>
+										<?php } ?>
+									</div>
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="tb_auto_approve_api_results" class="col-lg-2 control-label"><?php echo _translate("TB Auto Approve API Results"); ?></label>
+												<label for="tb_auto_approve_api_results" class="col-lg-4 control-label"><?php echo _translate("TB Auto Approve API Results"); ?></label>
 												<div class="col-lg-4">
 													<select id="tb_auto_approve_api_results" name="tb_auto_approve_api_results" type="text" class="form-control readPage" title="<?php echo _translate('Please select TB Auto Approve API Results'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1040,11 +1015,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												</div>
 											</div>
 										</div>
-									</div>
-									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="tb_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("TB Show Participant Name in Manifest"); ?></label>
+												<label for="tb_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("TB Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="tb_show_participant_name_in_manifest" name="tb_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select TB Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1055,6 +1028,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
+								
 								</div>
 							</div>
 						<?php }
@@ -1110,22 +1084,19 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div><br />
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="cd4_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="cd4_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="cd4_min_patient_id_length" name="cd4_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['cd4_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-
-									<?php
-									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php
+										if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['cd4_copy_request_save_and_next']) && $arr['cd4_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="cd4_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="cd4_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="cd4_copy_request_save_and_next" name="cd4_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1135,13 +1106,14 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php } ?>
+										<?php } ?>
+									</div>
+
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="cd4_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("cd4 Show Participant Name in Manifest"); ?></label>
+												<label for="cd4_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("cd4 Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="cd4_show_participant_name_in_manifest" name="cd4_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select cd4 Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1208,20 +1180,18 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div><br />
 
 									<div class="row">
-										<div class="col-md-12">
+										<div class="col-md-6">
 											<div class="form-group">
-												<label for="generic_min_patient_id_length" class="col-lg-2 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
-												<div class="col-lg-10">
+												<label for="generic_min_patient_id_length" class="col-lg-4 control-label"><?php echo _translate("Minimum Patient ID Length"); ?></label>
+												<div class="col-lg-4">
 													<input type="text" class="form-control forceNumeric isNumeric" id="generic_min_patient_id_length" name="generic_min_patient_id_length" placeholder="<?php echo _translate('Min'); ?>" title="<?php echo _translate('Please enter minimum length for Patient ID'); ?>" value="<?= $arr['generic_min_patient_id_length'] ?? 3 ?>" style="max-width:60px;" />
 												</div>
 											</div>
 										</div>
-									</div>
-									<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] != '') { ?>
-										<div class="row">
-											<div class="col-md-12">
+										<?php if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['generic_copy_request_save_and_next']) && $arr['generic_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="generic_copy_request_save_and_next" class="col-lg-2 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
+													<label for="generic_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
 														<select id="generic_copy_request_save_and_next" name="generic_copy_request_save_and_next" type="text" class="form-control readPage" title="<?php echo _translate('Please select copy request on save and next form'); ?>">
 															<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1231,25 +1201,25 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php }
-									if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+									<?php } ?>
+									</div>
+									
 										<div class="row">
-											<div class="col-md-12">
+										<?php
+											if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
-													<label for="generic_sample_expiry_after_days" class="col-lg-2 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
+													<label for="generic_sample_expiry_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
 													<div class="col-lg-4">
 														<input value="<?php echo $arr['generic_sample_expiry_after_days']; ?>" type="text" id="generic_sample_expiry_after_days" name="generic_sample_expiry_after_days" placeholder="<?php echo _translate('Enter the sample expiry days'); ?>" class="form-control readPage" title="<?php echo _translate('Please enter the sample expiry days'); ?>">
 													</div>
 												</div>
 											</div>
-										</div>
-									<?php } ?>
+											<?php } ?>
 
-									<div class="row">
-										<div class="col-md-12">
-											<div class="form-group">
-												<label for="generic_show_participant_name_in_manifest" class="col-lg-2 control-label"><?php echo _translate("Other Lab Tests Show Participant Name in Manifest"); ?></label>
+											<div class="col-md-6">
+												<div class="form-group">
+												<label for="generic_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("Other Lab Tests Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="generic_show_participant_name_in_manifest" name="generic_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select Other Lab Tests Participant Name in Manifest'); ?>">
 														<option value=""><?php echo _translate("--Select--"); ?></option>
@@ -1258,8 +1228,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</select>
 												</div>
 											</div>
+											</div>
 										</div>
-									</div>
+									
 								</div>
 							</div>
 						<?php } ?>
@@ -1306,7 +1277,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 							</div>
 							<div class="panel-body">
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="show_smiley" class="col-lg-4 control-label"><?php echo _translate("Show Emoticon/Smiley"); ?> </label>
 											<div class="col-lg-8">
@@ -1315,9 +1286,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7">
+								
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="vl_display_log_result" class="col-lg-4 control-label"><?php echo _translate("Display VL Log Result"); ?> </label>
 											<div class="col-lg-8">
@@ -1328,7 +1298,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="h_vl_msg" class="col-lg-4 control-label"><?php echo _translate("High Viral Load Message"); ?> </label>
 											<div class="col-lg-8">
@@ -1336,9 +1306,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								</div>
-								<div class="row">
-									<div class="col-md-7">
+								
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="l_vl_msg" class="col-lg-4 control-label"><?php echo _translate("Low Viral Load Message"); ?> </label>
 											<div class="col-lg-8">
@@ -1348,7 +1317,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 								</div>
 								<div class="row">
-									<div class="col-md-7">
+									<div class="col-md-6">
 										<div class="form-group">
 											<label for="patient_name_pdf" class="col-lg-4 control-label"><?php echo _translate("Patient Name Format"); ?></label>
 											<div class="col-lg-8">
