@@ -290,7 +290,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group">
 											<label for="instance_type" class="col-lg-4 control-label"><?php echo _translate("Sample ID Barcode Label Printing"); ?> <span class="mandatory">*</span> </label>
 											<div class="col-lg-8">
-												<select class="form-control isRequired readPage" name="bar_code_printing" id="bar_code_printing" title="<?php echo _translate('Please select the barcode printing'); ?>">
+												<select class="form-control isRequired readPage" name="bar_code_printing" id="bar_code_printing" title="<?php echo _translate('Please select the barcode printing'); ?>" onchange="showBarcodeFormatMessage(this.value);">
 													<option value="off" <?php echo ('off' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _translate("Off"); ?></option>
 													<option value="zebra-printer" <?php echo ('zebra-printer' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _translate("Zebra Printer"); ?></option>
 													<option value="dymo-labelwriter-450" <?php echo ('dymo-labelwriter-450' == $arr['bar_code_printing']) ? "selected='selected'" : "" ?>><?php echo _translate("Dymo LabelWriter 450"); ?></option>
@@ -299,6 +299,14 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										</div>
 									</div>
 								</div>
+								<div class="row barcodeFormat">
+									<div class="col-md-7">
+										<div class="form-group contentDiv">
+											
+										</div>
+									</div>
+								</div>
+								
 								<div class="row" style="margin-top:10px;">
 									<div class="col-md-7">
 										<div class="form-group">
@@ -1381,7 +1389,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 <script type="text/javascript">
 	$(document).ready(function() {
 
-
+		showBarcodeFormatMessage($("#bar_code_printing").val());
+		
 		$(".select2").select2();
 
 		var editSet = '<?php if (isset($_GET['e'])) {
@@ -1458,6 +1467,34 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	function getNewImage(img) {
 		$("#clearImage").addClass("hide");
 		$("#removedLogoImage").val(img);
+	}
+
+	function showBarcodeFormatMessage(barcodeVal){
+		$contentMsg = "";
+		if(barcodeVal == "zebra-printer"){
+			$('.barcodeFormat').show();
+
+			$.post("/global-config/getJsFileContent.php", {
+				formatType : barcodeVal
+			},
+			function(data) {
+				$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> Zebra Label Format <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Zebra format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">'+data+'</textarea></div>');
+			});
+		}
+		else if(barcodeVal == "dymo-labelwriter-450"){
+			$('.barcodeFormat').show();
+
+			$.post("/global-config/getJsFileContent.php", {
+				formatType : barcodeVal
+			},
+			function(data) {
+				$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> Dymo Label Format <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Dymo format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">'+data+'</textarea></div>');
+			});
+		}
+		else{
+			$('.barcodeFormat').hide();
+		}
+
 	}
 
 

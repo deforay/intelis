@@ -127,6 +127,24 @@ try {
                 ]);
             }
         }
+        $barcode = $_POST['bar_code_printing'];
+        $message = $_POST['contentFormat'];
+        if($barcode == "zebra-printer"){
+            $content = "let zebraFormat = `$message`;";
+            $fileName="zebra-format.js";
+        }
+        elseif($barcode == "dymo-labelwriter-450"){
+            $content = "let dymoFormat = `$message`;";
+            $fileName="dymo-format.js";
+        }
+
+        $path = 'public/uploads'. DIRECTORY_SEPARATOR . 'barcode-formats';
+
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
+        file_put_contents($path.DIRECTORY_SEPARATOR.$fileName, $content);
     }
 
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
