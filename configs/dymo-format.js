@@ -1,4 +1,4 @@
-var dymoLabelXml = `<?xml version="1.0" encoding="utf-8"?>
+let dymoLabelXml = `<?xml version="1.0" encoding="utf-8"?>
 <DieCutLabel Version="8.0" Units="twips">
     <PaperOrientation>Landscape</PaperOrientation>
     <Id>Small30345</Id>

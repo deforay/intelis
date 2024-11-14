@@ -53,7 +53,6 @@ $skin = "skin-blue";
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script src="/assets/js/deforayModal.js"></script>
 	<script src="/assets/js/jquery.fastconfirm.js"></script>
-	<!--<script nonce="<?= $_SESSION['nonce']; ?>"type="text/javascript" src="/assets/js/jquery-ui-sliderAccess.js"></script>-->
 	<style>
 		.dataTables_wrapper {
 			position: relative;

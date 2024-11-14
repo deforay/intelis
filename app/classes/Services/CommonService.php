@@ -10,17 +10,19 @@ use TCPDF2DBarcode;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
+use App\Registries\ContainerRegistry;
+use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
 use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
-use PhpOffice\PhpSpreadsheet\IOFactory;
 
 
 final class CommonService
@@ -29,8 +31,11 @@ final class CommonService
     protected FacilitiesService $facilitiesService;
     protected $fileCache;
 
-    public function __construct(DatabaseService $db, FacilitiesService $facilitiesService, FileCacheUtility $fileCache)
-    {
+    public function __construct(
+        DatabaseService $db,
+        FacilitiesService $facilitiesService,
+        FileCacheUtility $fileCache
+    ) {
         $this->db = $db;
         $this->facilitiesService = $facilitiesService;
         $this->fileCache = $fileCache;
@@ -80,7 +85,10 @@ final class CommonService
         return $this->fileCache->get('sts-api-key', function () {
             $stsKey = SYSTEM_CONFIG['sts']['api_key'];
             if ($stsKey == '' || empty($stsKey)) {
-                return '';
+                /** @var ConfigService $configService */
+                $configService = ContainerRegistry::get(ConfigService::class);
+                $stsKey = $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
+                $configService->updateConfig($updatedConfig);
             }
             return $stsKey;
         });
