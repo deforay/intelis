@@ -2,9 +2,10 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use App\Utilities\FileCacheUtility;
-use Laminas\Config\Factory as ConfigFactory;
 use Laminas\Config\Config as LaminasConfig;
+use Laminas\Config\Factory as ConfigFactory;
 
 final class ConfigService
 {
@@ -83,5 +84,17 @@ final class ConfigService
             }
         }
         return $output;
+    }
+
+    public static function generateAPIKeyForSTS($domain = null)
+    {
+        if (empty($domain)) {
+            $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
+            $domain = $protocol . $_SERVER['HTTP_HOST'];
+        }
+
+        // Remove any trailing slashes
+        $domain = rtrim($domain, '/');
+        return MiscUtility::generateUUIDv5($domain);
     }
 }

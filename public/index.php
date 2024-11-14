@@ -2,19 +2,15 @@
 
 require_once dirname(__DIR__) . DIRECTORY_SEPARATOR . 'bootstrap.php';
 
-if (!isset($_SESSION['nonce'])) {
-    $_SESSION['nonce'] = bin2hex(random_bytes(32));
-}
-
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Middlewares\CorsMiddleware;
 use App\Registries\ContainerRegistry;
-use Laminas\Stratigility\MiddlewarePipe;
 use App\Middlewares\App\AclMiddleware;
+use App\Middlewares\App\CSRFMiddleware;
+use Laminas\Stratigility\MiddlewarePipe;
 use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\App\AppAuthMiddleware;
-use App\Middlewares\App\CSRFMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
 use Laminas\Diactoros\ServerRequestFactory;
 use function Laminas\Stratigility\middleware;
@@ -43,6 +39,8 @@ if (!empty($remoteURL)) {
     $allowedDomains[] = $remoteURL;
 }
 
+// Wildcard to allow all ports on 127.0.0.1
+$allowedDomains[] = "http://127.0.0.1:*";
 $allowedDomains = implode(" ", $allowedDomains);
 
 //$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";

@@ -98,13 +98,7 @@ try {
         ];
 
         if (isset($instanceType) && trim($instanceType) == 'remoteuser') {
-	        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-            $domain = $protocol . $_SERVER['HTTP_HOST'];
-
-            // Remove any trailing slashes
-            $domain = rtrim($domain, '/');
-            $apiKey = MiscUtility::generateUUIDv5($domain);
-	        $updatedConfig['sts.api_key'] = $apiKey;
+            $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
         }
 
 

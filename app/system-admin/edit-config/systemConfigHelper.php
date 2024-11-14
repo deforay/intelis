@@ -69,14 +69,8 @@ try {
         'database.port' => (isset($_POST['dbPort']) && !empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
     ];
     $stsKey = SYSTEM_CONFIG['sts']['api_key'];
-    if(($stsKey == '' || empty($stsKey)  && trim($_POST['sc_user_type']) == 'remoteuser')){
-        $protocol = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' || $_SERVER['SERVER_PORT'] == 443) ? "https://" : "http://";
-        $domain = $protocol . $_SERVER['HTTP_HOST'];
-
-        // Remove any trailing slashes
-        $domain = rtrim($domain, '/');
-        $apiKey = MiscUtility::generateUUIDv5($domain);
-        $updatedConfig['sts.api_key'] = $apiKey;
+    if ($stsKey == '' || empty($stsKey)  && trim($_POST['sc_user_type']) == 'remoteuser') {
+        $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
     }
 
 
