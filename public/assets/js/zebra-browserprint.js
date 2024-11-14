@@ -135,7 +135,7 @@ var Zebra = function () {
                 }).catch(g)
             }; this.storeConvertedResource = function (a, c, e, g) { if (!e && !g) return new Promise(function (b, e) { d.storeConvertedResource(a, c, b, e) }); b().then(function (b) { c.action = "store"; BrowserPrint.convert(a, d, c, e, g) }).catch(g) }; var b = function () { return new Promise(function (a, b) { if (d.configuration) a(d.configuration); else return d.getConfiguration().then(function (a) { d.configuration = a; return d.configuration }).catch(function (a) { b(a) }) }) }; this.configTimeout = function () {
                 d.configuration ||
-                d.getConfiguration().then(function (a) { return d.configuration = a }).catch(function () { setTimeout(d.configTimeout, 1E3) })
+                    d.getConfiguration().then(function (a) { return d.configuration = a }).catch(function () { setTimeout(d.configTimeout, 1E3) })
             }; this.configTimeout()
     }; g.watch = function (c, d, b) { b || (b = 2); l[c.uid] = { device: c, status: "", onchange: d, errors: 0, errorsForOffline: b } }; g.stopWatching = function (c) { delete l[c.uid] }; return g
 }();
