@@ -92,13 +92,19 @@ try {
         $general->updateTestRequestsSyncDateTime($testType, $facilityIds, $labId);
     }
 
-
     if (!empty($sampleIds)) {
+        $batchSize = 100;
         $updateData = [
             'data_sync' => 1
         ];
-        $db->where($primaryKeyName, $sampleIds, 'IN');
-        $db->update($tableName, $updateData);
+
+        // Split the sample IDs into batches
+        $sampleIdBatches = array_chunk($sampleIds, $batchSize);
+
+        foreach ($sampleIdBatches as $batch) {
+            $db->where($primaryKeyName, $batch, 'IN');
+            $db->update($tableName, $updateData);
+        }
     }
 
     $db->commitTransaction();
