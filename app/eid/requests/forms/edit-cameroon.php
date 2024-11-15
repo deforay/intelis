@@ -560,14 +560,18 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                         <tr>
-
+                                            <th><?= _translate('EID Number'); ?> </th>
+                                            <td>
+                                                <input name="eidNumber" id="eidNumber" class="form-control" placeholder="<?= _translate('Enter EID Number'); ?>" title="<?= _translate('Please enter EID Number'); ?>" value="<?php echo $eidInfo['eid_number']; ?>">
+                                            </td>
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
-                                            </td>
-
+                                            </td>                                           
+                                        </tr>
+                                        <tr>
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">

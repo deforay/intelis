@@ -513,25 +513,30 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                 </div>
                                 <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
                                     <tr>
+                                        <th><?= _translate('EID Number'); ?> </th>
+                                            <td>
+                                                <input name="eidNumber" id="eidNumber" class="form-control" placeholder="<?= _translate('Enter EID Number'); ?>" title="<?= _translate('Please enter EID Number'); ?>" value="<?php echo $eidInfo['eid_number']; ?>">
+                                            </td>
                                         <th><?= _translate('Testing Platform'); ?><span class="mandatory">*</span> </th>
                                         <td>
                                             <select class="form-control isRequired" name="eidPlatform" id="eidPlatform" title="<?= _translate('Please select the testing platform'); ?>">
                                                 <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                             </select>
                                         </td>
+                                       
+                                    <tr>
                                         <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> <span class="mandatory">*</span></label></th>
                                         <td>
                                             <input type="text" class="form-control dateTime isRequired" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="<?= _translate('Please enter sample receipt date'); ?>" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['sample_received_at_lab_datetime']) ?>" onchange="" style="width:100%;" />
                                         </td>
-
-                                    <tr>
-
                                         <td><label for="labId"><?= _translate('Lab Name'); ?> <span class="mandatory">*</span></label> </td>
                                         <td>
                                             <select name="labId" id="labId" class="form-control isRequired" title="<?= _translate('Please select Testing Lab name'); ?>" style="width:100%;">
                                                 <?= $general->generateSelectOptions($testingLabs, $eidInfo['lab_id'], '-- Select --'); ?>
                                             </select>
                                         </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row"><?= _translate('Is Sample Rejected?'); ?><span class="mandatory">*</span></th>
                                         <td>
                                             <select class="form-control isRequired" name="isSampleRejected" id="isSampleRejected">
@@ -561,7 +566,6 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                     <tr class="show-rejection rejected" style="display:none;">
                                         <td><?= _translate('Rejection Date'); ?><span class="mandatory">*</span></td>
                                         <td><input value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="<?= _translate('Select Rejection Date'); ?>" /></td>
-
                                     </tr>
                                     <tr>
                                         <td style="width:25%;"><label for=""><?= _translate('Sample Test Date'); ?><span class="mandatory">*</span> </label></td>

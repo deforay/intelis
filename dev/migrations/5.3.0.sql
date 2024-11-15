@@ -10,3 +10,8 @@ WHERE facility_type = 2 AND sts_token IS NULL;
 -- Jeyabanu 30-Oct-2024
 ALTER TABLE `package_details` ADD `manifest_change_history` JSON NULL DEFAULT NULL AFTER `number_of_samples`;
 ALTER TABLE `package_details` ADD `manifest_print_history` JSON NULL DEFAULT NULL AFTER `manifest_change_history`;
+
+
+-- Jeyabanu 15-Nov-2024
+ALTER TABLE `form_eid` ADD `eid_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_reception_person`;
+ALTER TABLE `audit_form_eid` ADD `eid_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_reception_person`;

@@ -391,6 +391,7 @@ try {
 		'rapid_test_date' => $_POST['rapidtestDate'] ?? null,
 		'rapid_test_result' => $_POST['rapidTestResult'] ?? null,
 		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'] ?? null,
+		'eid_number' => $_POST['eidNumber'] ?? null,
 		'eid_test_platform' => $testingPlatform ?? null,
 		'instrument_id' => $instrumentId ?? null,
 		'import_machine_name' => $_POST['machineName'] ?? null,

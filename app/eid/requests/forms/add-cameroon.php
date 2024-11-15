@@ -527,16 +527,19 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <h3 class="box-title"><?= _translate('Reserved for Laboratory Use'); ?> </h3>
                                     </div>
                                     <table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
-
                                         <tr>
+                                            <th><?= _translate('EID Number'); ?> </th>
+                                            <td>
+                                                <input name="eidNumber" id="eidNumber" class="form-control" placeholder="<?= _translate('Enter EID Number'); ?>" title="<?= _translate('Please enter EID Number'); ?>">
+                                            </td>
                                             <th><?= _translate('Testing Platform'); ?> </th>
                                             <td>
                                                 <select name="eidPlatform" id="eidPlatform" class="form-control" title="<?= _translate('Please choose VL Testing Platform'); ?>" <?php echo $labFieldDisabled; ?> onchange="hivDetectionChange();">
                                                     <?= $general->generateSelectOptions($testPlatformList, null, '-- Select --'); ?>
                                                 </select>
                                             </td>
-
-
+                                        </tr>
+                                        <tr>
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>
                                             <td>
                                                 <select class="form-control" name="isSampleRejected" id="isSampleRejected">
@@ -545,7 +548,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                     <option value="no"> <?= _translate('No'); ?> </option>
                                                 </select>
                                             </td>
-
                                         </tr>
                                         <tr class="show-rejection rejected" style="display:none;">
                                             <th scope="row" class="rejected" style="display: none;"><?= _translate('Reason for Rejection'); ?></th>
