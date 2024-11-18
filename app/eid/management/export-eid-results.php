@@ -38,9 +38,9 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 
 	$output = [];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number","Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	} else {
-		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child Date of Birth", "Child Age", "Child Gender", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type",  "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	}
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
 		unset($headings[$key]);
@@ -115,6 +115,7 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 		$row[] = $aRow['sample_requestor_phone'];
 		$row[] = $aRow['sample_name'] ?: null;
+		$row[] = $aRow['eid_number'];
 		$row[] = $sampleRejection;
 		if ($formId == COUNTRY\DRC) {
 			$formAttributes = json_decode($aRow['form_attributes']);

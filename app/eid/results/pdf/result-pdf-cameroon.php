@@ -415,9 +415,15 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
+    if($result['eid_number'] != ''){
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EID Number</td>';
+    }
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['eid_test_platform']) . '</td>';
+    if($result['eid_number'] != ''){
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['eid_number']) . '</td>';
+    }
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:2px;border-bottom:1px solid #d3d3d3;"></td>';
