@@ -8,7 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/../../bootstrap.php";
 
-use Throwable;
+
 use App\Services\VlService;
 use App\Services\TestsService;
 use App\Services\UsersService;

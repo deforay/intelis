@@ -331,7 +331,7 @@ final class VlService extends AbstractTestService
         }
 
         // Check the type of the value and process non-numeric types as text results
-        if ($this->checkViralLoadValueType($result) == 'text') {
+        if ($this->checkViralLoadValueType($result) === 'text') {
             return $this->interpretViralLoadTextResult($result, $unit);
         }
 
@@ -339,52 +339,88 @@ final class VlService extends AbstractTestService
         $originalResultValue = $result;
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
-        // Handling inequality operators (< and >), and scientific notation in the result
-        if (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $result, $matches)) {
+        // Normalize and process the result and unit
+        [$processedResult, $processedUnit] = $this->processResultAndUnit($result, $unit);
+
+        // Handling inequality operators (< and >), and processed numeric results
+        if (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $processedResult, $matches)) {
             $operator = $matches[1];
             $numericValue = floatval($matches[2]);
 
-            if (!empty($unit) && str_contains($unit, 'Log')) {
+            if (!empty($processedUnit) && str_contains($processedUnit, 'Log')) {
                 $logVal = $numericValue;
                 $absDecimalVal = round(pow(10, $logVal), 2);
             } else {
                 $absDecimalVal = $numericValue;
-                $logVal = log10($absDecimalVal);
+                $logVal = round(log10($absDecimalVal), 2);
             }
 
             $absVal = $absDecimalVal;
             $vlResult = "$operator $absDecimalVal";
-        } elseif (is_numeric($result)) {
+        } elseif (is_numeric($processedResult)) {
             // Handle all numeric results here, whether they need logarithmic conversion.
-            if (!empty($unit) && str_contains($unit, 'Log')) {
-                // Assume the numeric result is a log value needing conversion to absolute count.
-                $logVal = (float)$result;
+            if (!empty($processedUnit) && str_contains($processedUnit, 'Log')) {
+                $logVal = (float)$processedResult;
                 $absDecimalVal = round(pow(10, $logVal), 2);
                 $vlResult = $absVal = $absDecimalVal;
             } else {
-                // It's a simple numeric result, not requiring conversion from log scale.
-                $absDecimalVal = floatval($result);
+                $absDecimalVal = floatval($processedResult);
                 $logVal = round(log10($absDecimalVal), 2);
                 $absVal = $absDecimalVal;
                 $vlResult = $absDecimalVal;
             }
         } else {
-            $vlResult = $absVal = $absDecimalVal = floatval($result);
+            $vlResult = $absVal = $absDecimalVal = floatval($processedResult);
             $logVal = round(log10($absDecimalVal), 2);
         }
 
         // Use the converted or original value based on configuration
         $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
-
         return [
             'logVal' => $logVal,
             'result' => $resultToUse,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
-            'resultStatus' => $resultStatus
+            'resultStatus' => $resultStatus,
+            'originalResult' => $originalResultValue,
+            'processedUnit' => $processedUnit,
         ];
     }
+
+    private function processResultAndUnit(string $result, ?string $unit): array
+    {
+        $processedUnit = $unit;
+        $processedResult = $result;
+
+
+        // Check if the result itself is in scientific notation
+        if (preg_match('/^(\d+(\.\d+)?(E[+-]?\d+|10\*\s*-?\d+)?)$/i', $result)) {
+            $processedResult = $this->extractScientificNotation($result);
+        }
+
+        // Check if the unit contains scientific notation (e.g., "10*2", "E-1")
+        if (!empty($unit) && preg_match('/(10\*\s*(-?\d+)|E([+-]?\d+))/i', $unit, $matches)) {
+
+            $exponent = isset($matches[2]) ? (float)$matches[2] : (float)$matches[3];
+            $processedResult = (float)$processedResult * pow(10, $exponent); // Apply the multiplier
+            $processedUnit = preg_replace('/(10\*\s*-?\d+|E[+-]?\d+)/i', '', $unit); // Clean the unit
+        }
+
+        return [strval($processedResult), trim($processedUnit)];
+    }
+
+    private function extractScientificNotation(string $value): float
+    {
+        if (preg_match('/10\*\s*(-?\d+)/', $value, $matches)) {
+            return pow(10, (float)$matches[1]);
+        } elseif (preg_match('/E([+-]?\d+)/i', $value, $matches)) {
+            return pow(10, (float)$matches[1]);
+        }
+
+        return floatval($value);
+    }
+
 
     public function insertSample($params, $returnSampleData = false): int | array
     {
