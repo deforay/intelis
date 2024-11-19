@@ -47,6 +47,7 @@ $sharedPrivileges = [
 $sharedGenericPrivileges = [
     '/batch/delete-batch.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
     '/batch/generate-batch-pdf.php?type=generic-tests' => '/batch/batches.php?type=generic-tests',
+    '/batch/generate-compact-batch-pdf.php?type=generic-tests' => '/batch/batches.php?type=generic-tests',
     '/batch/add-batch-position.php?type=generic-tests' => '/batch/add-batch.php?type=generic-tests',
     '/batch/edit-batch-position.php?type=generic-tests' => '/batch/edit-batch.php?type=generic-tests',
     '/generic-tests/results/update-generic-test-result.php' => '/generic-tests/results/generic-test-results.php',
@@ -78,6 +79,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedGenericPrivileges);
 $sharedVLPrivileges = [
     '/batch/delete-batch.php?type=vl' => '/batch/edit-batch.php?type=vl',
     '/batch/generate-batch-pdf.php?type=vl' => '/batch/batches.php?type=vl',
+    '/batch/generate-compact-batch-pdf.php?type=vl' => '/batch/batches.php?type=vl',
     '/batch/add-batch-position.php?type=vl' => '/batch/add-batch.php?type=vl',
     '/batch/edit-batch-position.php?type=vl' => '/batch/edit-batch.php?type=vl',
     '/vl/requests/upload-storage.php' => '/vl/requests/vl-requests.php',
@@ -111,6 +113,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedVLPrivileges);
 $sharedEIDPrivileges = [
     '/batch/delete-batch.php?type=eid' => '/batch/edit-batch.php?type=eid',
     '/batch/generate-batch-pdf.php?type=eid' => '/batch/batches.php?type=eid',
+    '/batch/generate-compact-batch-pdf.php?type=eid' => '/batch/batches.php?type=eid',
     '/batch/add-batch-position.php?type=eid' => '/batch/add-batch.php?type=eid',
     '/batch/edit-batch-position.php?type=eid' => '/batch/edit-batch.php?type=eid',
     '/eid/results/eid-update-result.php' => '/eid/results/eid-manual-results.php',
@@ -137,6 +140,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedEIDPrivileges);
 $sharedCovid19Privileges = [
     '/batch/delete-batch.php?type=covid19' => '/batch/edit-batch.php?type=covid19',
     '/batch/generate-batch-pdf.php?type=covid19' => '/batch/batches.php?type=covid19',
+    '/batch/generate-compact-batch-pdf.php?type=covid19' => '/batch/batches.php?type=covid19',
     '/batch/add-batch-position.php?type=covid19' => '/batch/add-batch.php?type=covid19',
     '/batch/edit-batch-position.php?type=covid19' => '/batch/edit-batch.php?type=covid19',
     '/covid-19/mail/mail-covid-19-results.php' => '/covid-19/results/covid-19-print-results.php',
@@ -173,6 +177,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedCovid19Privileges);
 $sharedHepPrivileges = [
     '/batch/delete-batch.php?type=hepatitis' => '/batch/edit-batch.php?type=hepatitis',
     '/batch/generate-batch-pdf.php?type=hepatitis' => '/batch/batches.php?type=hepatitis',
+    '/batch/generate-compact-batch-pdf.php?type=hepatitis' => '/batch/batches.php?type=hepatitis',
     '/batch/add-batch-position.php?type=hepatitis' => '/batch/add-batch.php?type=hepatitis',
     '/batch/edit-batch-position.php?type=hepatitis' => '/batch/edit-batch.php?type=hepatitis',
     '/hepatitis/results/hepatitis-update-result.php' => '/hepatitis/results/hepatitis-manual-results.php',
@@ -199,6 +204,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedHepPrivileges);
 $sharedTbPrivileges = [
     '/batch/delete-batch.php?type=tb' => '/batch/edit-batch.php?type=tb',
     '/batch/generate-batch-pdf.php?type=tb' => '/batch/batches.php?type=tb',
+    '/batch/generate-compact-batch-pdf.php?type=tb' => '/batch/batches.php?type=tb',
     '/batch/add-batch-position.php?type=tb' => '/batch/add-batch.php?type=tb',
     '/batch/edit-batch-position.php?type=tb' => '/batch/edit-batch.php?type=tb',
     '/tb/results/tb-update-result.php' => '/tb/results/tb-manual-results.php',
@@ -218,6 +224,7 @@ $sharedPrivileges = array_merge($sharedPrivileges, $sharedTbPrivileges);
 $sharedCD4Privileges = [
     '/batch/delete-batch.php?type=cd4' => '/batch/edit-batch.php?type=cd4',
     '/batch/generate-batch-pdf.php?type=cd4' => '/batch/batches.php?type=cd4',
+    '/batch/generate-compact-batch-pdf.php?type=cd4' => '/batch/batches.php?type=cd4',
     '/batch/add-batch-position.php?type=cd4' => '/batch/add-batch.php?type=cd4',
     '/batch/edit-batch-position.php?type=cd4' => '/batch/edit-batch.php?type=cd4',
     '/cd4/results/cd4-update-result.php' => '/cd4/results/cd4-manual-results.php',

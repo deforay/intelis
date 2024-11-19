@@ -18,6 +18,7 @@ use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
+use App\Utilities\CryptoUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
@@ -257,15 +258,14 @@ final class CommonService
             sodium_memzero($key);
             return $plain;
         } catch (Throwable $e) {
-            // Log the exception and return an empty string or specific error message
-            return ''; // or a specific error message
+            return '';
         }
     }
 
-    public static function crypto(?string $action, ?string $inputString, $key): ?string
+    public static function crypto(?string $action, ?string $inputString, $key = null): ?string
     {
-        if (is_null($inputString)) {
-            return null;
+        if ($inputString === null || $inputString === '') {
+            return $inputString;
         }
         return match ($action) {
             'encrypt' => self::encrypt($inputString, $key),

@@ -163,11 +163,8 @@ try {
             }
         }
         if ($pdf) {
-            if (!empty($pdfLayout) && $pdfLayout == 'compact') {
-                $printBarcode = '<a href="/batch/generate-compact-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
-            } else {
-                $printBarcode = '<a href="/batch/generate-batch-pdf.php?type=' . $_POST['type'] . '&id=' . base64_encode((string) $aRow['batch_id']) . '" target="_blank"  rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
-            }
+            $baseUrl = ($pdfLayout == 'compact') ? '/batch/generate-compact-batch-pdf.php' : '/batch/generate-batch-pdf.php';
+            $printBarcode = '<a href="' . $baseUrl . '?type=' . $_POST['type'] . '&id=' . MiscUtility::sqid((string) $aRow['batch_id']) . '" target="_blank" rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Print Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Print Batch PDF") . '</a>';
         }
 
         if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
