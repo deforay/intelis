@@ -403,6 +403,9 @@ if (!empty($result)) {
             $dateOfModified = $resultHistory->dateOfChange;
             $prevResult = $eidResults[$resultHistory->previousResult];
         }
+
+
+
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
     if($modified=='Yes' && ($result['reason_for_changing']!="") && $resultHistory->dateOfChange!=""){
@@ -414,16 +417,17 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:10px;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM<br><br><span style="font-weight:normal">' . ($result["eid_test_platform"]) .'</span></td>';
     if($result['eid_number'] != ''){
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EID Number</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EID Number<br><br><span style="font-weight:normal">' . ($result['eid_number']) . '</span></td>';
     }
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['eid_test_platform']) . '</td>';
+    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
     if($result['eid_number'] != ''){
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['eid_number']) . '</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
     }
+        $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:2px;border-bottom:1px solid #d3d3d3;"></td>';
@@ -538,6 +542,8 @@ if (!empty($result)) {
             }
         }
     }
+
+ 
 
     // $html .= '<tr>';
     // $html .= '<td colspan="3" style="line-height:22px;"></td>';

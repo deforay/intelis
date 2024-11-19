@@ -142,6 +142,12 @@ if (!empty($result)) {
      if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
           $result['labName'] = '';
      }
+
+     $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+     if (MiscUtility::imageExists($stamp)) {
+         $pdf->SetAlpha(0.6);
+         $pdf->Image($stamp, 100, 120, 40, null);
+     }
      //Set Age
      $age = 'Unknown';
      if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {

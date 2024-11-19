@@ -112,6 +112,12 @@ if (!empty($requestResult)) {
         if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
             $result['labName'] = '';
         }
+        $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+       
+        if (MiscUtility::imageExists($stamp)) {
+            $pdf->SetAlpha(0.6);
+            $pdf->Image($stamp, 100, 190, 40, null);
+        }
         //Set Age
         $ageCalc = 0;
         $age = 'Unknown';
