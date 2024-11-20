@@ -162,7 +162,7 @@ final class TestRequestsService
                         $this->db->commitTransaction();
                     } catch (Throwable $e) {
                         $this->db->rollbackTransaction();
-                        LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
                             'exception' => $e,
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),

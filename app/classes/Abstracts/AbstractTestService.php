@@ -138,7 +138,7 @@ abstract class AbstractTestService
 
                 // PNG format has an additional R in prefix
                 if ($formId == COUNTRY\PNG) {
-                    $remotePrefix = $remotePrefix . "R";
+                    $remotePrefix .= "R";
                 }
 
                 if ($sampleCodeFormat == 'auto') {
@@ -164,7 +164,7 @@ abstract class AbstractTestService
                         // Rollback the current transaction to release locks and undo changes
                         $this->db->rollbackTransaction();
 
-                        LoggerUtility::log('info', "DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
+                        LoggerUtility::logInfo("DUPLICATE ::: Sample ID/Sample Key Code in $testTable ::: " . $sampleCodeGenerator['sampleCode'] . " / " . $maxId);
                         $params['existingMaxId'] = $maxId;
 
                         if ($insertOperation) {

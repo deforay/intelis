@@ -40,6 +40,11 @@ $ipaddress = $general->getClientIpAddress();
 
 try {
 
+    if (!empty($_POST['labname'])) {
+        http_response_code(403);
+        throw new SystemException(_translate("Invalid Login Credentials"));
+    }
+
     if (isset($_GET['u']) && isset($_GET['t']) && SYSTEM_CONFIG['recency']['crosslogin']) {
         $_POST['username'] = base64_decode((string) $_GET['u']);
 

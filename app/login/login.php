@@ -60,7 +60,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 ?>
 
 <!-- LOGIN PAGE -->
-<?php $_SESSION['csrf_token'] = ($_SESSION['csrf_token'] ?? MiscUtility::generateRandomString()); ?>
+<?php $_SESSION['csrf_token'] ??= MiscUtility::generateRandomString(); ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE']; ?>">
 
@@ -108,6 +108,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		a {
 			cursor: pointer;
 		}
+
+		.hpot {
+			display: none;
+		}
 	</style>
 
 	<script type="text/javascript" src="/assets/js/jquery.min.js"></script>
@@ -153,8 +157,12 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 				<div style="padding-top:10px;" class="panel-body">
 					<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
-					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="loginProcess.php" onsubmit="validateNow();return false;">
+					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="/login/loginProcess.php" onsubmit="validateNow();return false;">
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
+						<div style="margin-bottom: 5px" class="input-group hpot">
+							<span class="input-group-addon"><em class="fa-solid fa-x"></em></span>
+							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text" class="form-control" name="labname" value="" placeholder="<?php echo _translate('Lab Name'); ?>" title="<?php echo _translate('Please enter your lab name'); ?>" onchange="$('#captcha').show();">
+						</div>
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
 							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
@@ -285,7 +293,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 		function checkLoginAttempts() {
 			captchaflag = false;
-			$('#captcha').hide();
+			//$('#captcha').hide();
 			$("#challengeResponse").removeClass("isRequired");
 
 			if ($.trim($("#username").val()) != '') {
@@ -304,7 +312,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								getCaptcha('capChaw');
 								$("#challengeResponse").addClass("isRequired");
 							} else {
-								$('#captcha').hide(); // Hide CAPTCHA if not required
+								//$('#captcha').hide(); // Hide CAPTCHA if not required
 								$("#challengeResponse").removeClass("isRequired");
 							}
 

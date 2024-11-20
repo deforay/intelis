@@ -37,7 +37,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
+    public static function checkCSRF(ServerRequest $request, bool $rotateCSRF = false): void
     {
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
@@ -54,8 +54,8 @@ final class SecurityService
             throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
         }
 
-        // Optionally invalidate and regenerate the CSRF token after successful use
-        if (CommonService::isAjaxRequest($request) === false && $invalidate) {
+        // Optionally rotate the CSRF token after successful use
+        if (CommonService::isAjaxRequest($request) === false && $rotateCSRF) {
             self::rotateCSRF();
         }
     }
