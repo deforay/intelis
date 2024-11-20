@@ -4,7 +4,9 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\SecurityService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 
 if (isset($_SESSION['userId'])) {
 	SecurityService::redirect("/dashboard/index.php");
@@ -14,7 +16,7 @@ if (isset($_SESSION['userId'])) {
 $db = ContainerRegistry::get(DatabaseService::class);
 
 if ($db->isConnected() === false) {
-	throw new Exception("Database connection failed. Please check your database settings", 500);
+	throw new SystemException("Database connection failed. Please check your database settings", 500);
 }
 
 SecurityService::rotateCSRF();
@@ -30,6 +32,17 @@ if ($count == 0) {
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+$ipAddress = $general->getClientIpAddress();
+
+if (!isset($_SESSION[$ipAddress])) {
+	$_SESSION[$ipAddress] = [
+		'failedAttempts' => 0,
+		'lastFailedLogin' => null
+	];
+}
+
+SecurityService::checkLoginAttempts($ipAddress);
 
 $globalConfigResult = $general->getGlobalConfig();
 $systemInfo = $general->getSystemConfig();

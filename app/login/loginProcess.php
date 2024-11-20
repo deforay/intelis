@@ -10,6 +10,7 @@ use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -35,8 +36,11 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $usersService = ContainerRegistry::get(UsersService::class);
 
 $_SESSION['logged'] = false;
+
 $systemInfo = $general->getSystemConfig();
-$ipaddress = $general->getClientIpAddress();
+$ipaddress = $general->getClientIpAddress($request);
+
+SecurityService::checkLoginAttempts($ipAddress);
 
 try {
 
@@ -58,7 +62,7 @@ try {
 
 
         if (
-            ($usersService->continuousFailedLogins($_POST['username']) === true) &&
+            ($usersService->continuousFailedLogins($_POST['username']) >= 3) &&
             ((!empty($_SESSION['captchaCode']) && empty($_POST['captcha'])) ||
                 ($_POST['captcha'] != $_SESSION['captchaCode']))
         ) {
@@ -71,9 +75,6 @@ try {
                                         WHERE ud.login_id = ? AND ud.status = ?",
             [$_POST['username'], 'active']
         );
-
-
-        $usersService->recordLoginAttempt($_POST['username'], 'failed');
 
 
         if (empty($userRow) || !password_verify((string) $_POST['password'], (string) $userRow['password'])) {

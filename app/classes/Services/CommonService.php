@@ -10,7 +10,9 @@ use TCPDF2DBarcode;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\ConfigService;
+use App\Utilities\CryptoUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -18,7 +20,6 @@ use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
-use App\Utilities\CryptoUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
@@ -95,26 +96,28 @@ final class CommonService
         });
     }
 
-    public function getClientIpAddress(): ?string
+    public function getClientIpAddress(?ServerRequest $request = null): ?string
     {
-        $ipAddress = null;
-
-        if (isset($_SERVER['HTTP_CLIENT_IP'])) {
-            $ipAddress = $_SERVER['HTTP_CLIENT_IP'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-            $ipAddress = $_SERVER['HTTP_X_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_X_FORWARDED'])) {
-            $ipAddress = $_SERVER['HTTP_X_FORWARDED'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED_FOR'])) {
-            $ipAddress = $_SERVER['HTTP_FORWARDED_FOR'];
-        } elseif (isset($_SERVER['HTTP_FORWARDED'])) {
-            $ipAddress = $_SERVER['HTTP_FORWARDED'];
-        } elseif (isset($_SERVER['REMOTE_ADDR'])) {
-            $ipAddress = $_SERVER['REMOTE_ADDR'];
+        if ($request === null) {
+            $request = AppRegistry::get('request');
         }
 
-        return $ipAddress;
+        $headers = [
+            'X-Forwarded-For',
+            'X-Real-IP',
+            'Client-IP',
+        ];
+
+        foreach ($headers as $header) {
+            if ($request->hasHeader($header)) {
+                $forwardedIps = explode(',', $request->getHeaderLine($header));
+                return trim($forwardedIps[0]);
+            }
+        }
+
+        return $request->getServerParams()['REMOTE_ADDR'] ?? null;
     }
+
 
     // get data from the system_config table from database
     public function getSystemConfig(?string $name = null)
@@ -471,25 +474,32 @@ final class CommonService
 
     public function trackQRPageViews($type, $typeId, $sampleCode)
     {
-        $userAgent = $_SERVER['HTTP_USER_AGENT'];
+
+        /** @var ServerRequest $request */
+        $request = AppRegistry::get('request');
 
         $data = [
             'test_type' => $type,
             'test_type_id' => $typeId,
             'sample_code' => $sampleCode,
-            'browser' => $this->getBrowser($userAgent),
-            'operating_system' => $this->getOperatingSystem($userAgent),
+            'browser' => $this->getClientBrowser($request),
+            'operating_system' => $this->getClientOS($request),
             'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $this->getClientIpAddress(),
+            'ip_address' => $this->getClientIpAddress($request),
         ];
 
         $this->db->insert('track_qr_code_page', $data);
     }
 
-    public function getOperatingSystem($userAgent = null): string
+    public function getClientOS(?ServerRequest $request = null): string
     {
+        if ($request === null) {
+            $request = AppRegistry::get('request');
+        }
 
-        if ($userAgent === null) {
+        $userAgent = (string) ($request->getServerParams()['HTTP_USER_AGENT'] ?? '');
+
+        if ($userAgent === '') {
             return "Unknown OS";
         }
 
@@ -528,46 +538,53 @@ final class CommonService
         ];
 
         foreach ($osArray as $regex => $value) {
-            if (preg_match($regex, (string) $userAgent)) {
+            if (preg_match($regex, $userAgent)) {
                 return $value;
             }
         }
 
-        return "Unknown OS - $userAgent";
+        // Return fallback message
+        return "Unknown OS";
     }
 
 
-    public function getBrowser($userAgent = null): string
-    {
 
-        if ($userAgent === null) {
+    public function getClientBrowser(?ServerRequest $request = null): string
+    {
+        if ($request === null) {
+            $request = AppRegistry::get('request');
+        }
+
+        $userAgent = (string) ($request->getServerParams()['HTTP_USER_AGENT'] ?? '');
+
+        if ($userAgent === '') {
             return "Unknown Browser";
         }
 
         $browserArray = [
-            '/msie/i' => 'Internet Explorer',
-            '/trident/i' => 'Internet Explorer',
-            '/firefox/i' => 'Firefox',
-            '/safari/i' => 'Safari',
-            '/chrome/i' => 'Chrome',
+            '/brave/i' => 'Brave',
             '/edge/i' => 'Edge',
-            '/opera/i' => 'Opera',
+            '/chrome/i' => 'Chrome', // Must come before Safari
+            '/safari/i' => 'Safari',
+            '/firefox/i' => 'Firefox',
+            '/opera|opr/i' => 'Opera', // Include OPR for modern Opera
+            '/msie|trident/i' => 'Internet Explorer',
             '/netscape/i' => 'Netscape',
             '/maxthon/i' => 'Maxthon',
             '/konqueror/i' => 'Konqueror',
             '/mobile/i' => 'Mobile Browser',
             '/applewebkit/i' => 'Webkit Browser',
-            '/brave/i' => 'Brave'
         ];
 
         foreach ($browserArray as $regex => $value) {
-            if (preg_match($regex, (string) $userAgent)) {
+            if (preg_match($regex, $userAgent)) {
                 return $value;
             }
         }
 
-        return "Unknown Browser - $userAgent";
+        return "Unknown Browser";
     }
+
     public static function isAjaxRequest(ServerRequestInterface|ServerRequest $request): bool
     {
         return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';

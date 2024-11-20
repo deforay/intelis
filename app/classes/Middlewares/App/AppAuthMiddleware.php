@@ -51,11 +51,11 @@ class AppAuthMiddleware implements MiddlewareInterface
         }
 
         // Only store the requested URI if the user is not logged in and it's not already set
-        if (empty($_SESSION['userId'])) {
+        if (empty($_SESSION['userId']) && CommonService::isExcludedUri($uri, $this->excludedUris) !== true) {
             $_SESSION['requestedURI'] ??= AppRegistry::get('currentRequestURI');
         }
 
-        if (!is_null($redirect)) {
+        if ($redirect !== null && $redirect instanceof RedirectResponse) {
             return $redirect;
         } else {
             return $handler->handle($request);
