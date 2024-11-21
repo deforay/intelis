@@ -49,7 +49,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="forceSyncRequestsByManifestCode('vl', '/vl/requests/getRemoteManifestHelper.php');return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="loadVlRequestData();syncRequestsByManifestCode('vl', '/vl/requests/getRemoteManifestHelper.php');return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>

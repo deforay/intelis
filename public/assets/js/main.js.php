@@ -101,11 +101,11 @@ $remoteURL = $general->getRemoteURL();
     <?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
-        function forceSyncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
+        function syncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
             manifestCode = $("#samplePackageCode").val();
             if (manifestCode && remoteURL) {
                 $.blockUI({
-                    message: '<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
+                    message: '<h3><?php echo _translate("Downloading Samples from this Manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
                 });
 
                 if (remoteSync && remoteURL != null && remoteURL != '') {
