@@ -249,10 +249,11 @@ try {
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
                     'trace' => $e->getTraceAsString(),
                 ]);
                 continue;
