@@ -248,7 +248,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 	}
 
-	/* Remote Syn only package code matches */
+
 	<?php if ($general->isLISInstance()) { ?>
 		let remoteURL = '<?= $general->getRemoteURL(); ?>';
 

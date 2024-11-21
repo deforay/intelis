@@ -203,17 +203,17 @@ final class DatabaseService extends MysqliDb
      * Insert on duplicate key update (upsert) a row into a table.
      *
      * @param string $tableName The name of the table to operate on.
-     * @param array  $data Associative array of data to insert (column => value).
+     * @param array  $tableData Associative array of data to insert (column => value).
      * @param array  $updateColumns Array of columns to be updated on duplicate key, excluding primary key components.
      * @param array|string  $primaryKeys String or Array of primary key column names.
      * @return bool Returns true on success or false on failure.
      */
-    public function upsert($tableName, array $data, array $updateColumns = [], $primaryKeys = [])
+    public function upsert($tableName, array $tableData, array $updateColumns = [], $primaryKeys = [])
     {
         $this->reset();
-        $keys = array_keys($data);
-        $placeholders = array_fill(0, count($data), '?');
-        $values = array_values($data);
+        $keys = array_keys($tableData);
+        $placeholders = array_fill(0, count($tableData), '?');
+        $values = array_values($tableData);
 
         $primaryKeys = $primaryKeys ?: $this->getPrimaryKeys($tableName);
         $primaryKeys = is_array($primaryKeys) ? $primaryKeys : [$primaryKeys];

@@ -43,6 +43,7 @@ $remoteURL = $general->getRemoteURL();
 ?>
 
 <script type="text/javascript">
+    let remoteURL = '<?= $remoteURL; ?>';
     window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
     function addCsrfTokenToForm(form) {
@@ -54,6 +55,9 @@ $remoteURL = $general->getRemoteURL();
             }).appendTo(form);
         }
     }
+
+
+
     Highcharts.setOptions({
         chart: {
             style: {
@@ -96,6 +100,45 @@ $remoteURL = $general->getRemoteURL();
 
     <?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
         remoteSync = true;
+
+        function forceSyncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
+            manifestCode = $("#samplePackageCode").val();
+            if (manifestCode && remoteURL) {
+                $.blockUI({
+                    message: '<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
+                });
+
+                if (remoteSync && remoteURL != null && remoteURL != '') {
+                    var jqxhr = $.ajax({
+                            url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
+                        })
+                        .done(function(data) {
+                            ////console.log(data);
+                            //alert( "success" );
+                        })
+                        .fail(function() {
+                            $.unblockUI();
+                            // alert("Unable to do STS Sync. Please contact technical team for assistance.");
+                        })
+                        .always(function() {
+                            $.unblockUI();
+                            $.post(manifestHelperURL, {
+                                    samplePackageCode: $("#samplePackageCode").val()
+                                },
+                                function(data) {
+                                    $.unblockUI();
+                                    if (data != "") {
+                                        $('.activateSample').show();
+                                        $('#sampleId').val(data);
+                                        oTable.fnDraw();
+                                    }
+                                });
+                        });
+                }
+            } else {
+                alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+            }
+        }
 
         function receiveMetaData() {
             if (!navigator.onLine) {

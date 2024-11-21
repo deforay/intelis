@@ -216,47 +216,4 @@ final class SystemService
 
         return $folderPermissions;
     }
-
-
-    public function diskSpaceUtilization(): array
-    {
-        $filesystem = new Filesystem();
-        $rootDirectory = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN' ? 'C:/' : '/';
-
-        // Total disk space on the server (Root directory, adjusted for Windows/Linux)
-        $totalSpace = disk_total_space($rootDirectory);
-        $freeSpace = disk_free_space($rootDirectory);
-
-        // Space used by VLSM Application (ROOT_PATH)
-        $vlsmPath = ROOT_PATH;
-        $vlsmUsedSpace = $this->getDirectorySize($filesystem, $vlsmPath);
-
-        // Space used by Web Root Folder (ROOT_PATH . "../")
-        $webRootPath = realpath(ROOT_PATH . DIRECTORY_SEPARATOR . "..");
-        $webRootUsedSpace = $this->getDirectorySize($filesystem, $webRootPath);
-
-        return [
-            'total_server_space' => round($totalSpace / 1073741824, 2) . " GB", // Total server space in GB
-            'free_server_space' => round($freeSpace / 1073741824, 2) . " GB",   // Free space on the server in GB
-            'used_server_space' => round(($totalSpace - $freeSpace) / 1073741824, 2) . " GB", // Used space in GB
-            'vlsm_used_space' => round($vlsmUsedSpace / 1073741824, 2) . " GB", // Space used by VLSM Application in GB
-            'web_root_used_space' => round($webRootUsedSpace / 1073741824, 2) . " GB" // Space used by Web Root Folder in GB
-        ];
-    }
-
-    // Helper function to calculate directory size using Symfony Filesystem
-    protected function getDirectorySize(Filesystem $filesystem, string $dir): int
-    {
-        $size = 0;
-
-        // Ensure the directory exists
-        if ($filesystem->exists($dir)) {
-            // Recursively iterate through the directory and calculate size
-            foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator($dir, FilesystemIterator::SKIP_DOTS)) as $file) {
-                $size += $file->getSize(); // Add file size
-            }
-        }
-
-        return $size;
-    }
 }

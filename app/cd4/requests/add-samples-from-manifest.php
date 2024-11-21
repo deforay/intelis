@@ -239,7 +239,7 @@ $title = _translate("Add Samples from Manifest");
 		}
 	}
 
-	/* Remote Syn only package code matches */
+
 	<?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
 		var remoteURL = '<?= $remoteURL; ?>';
 
