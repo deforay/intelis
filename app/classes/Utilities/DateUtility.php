@@ -120,7 +120,14 @@ final class DateUtility
                 try {
                     return Carbon::createFromFormat($format, $dateStr);
                 } catch (Throwable $e) {
-                    LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
+                    LoggerUtility::logError(
+                        "Invalid or unparseable date $dateStr : " . $e->getMessage(),
+                        [
+                            'line' => $e->getLine(),
+                            'file' => $e->getFile(),
+                            'trace' => $e->getTraceAsString()
+                        ]
+                    );
                     continue;
                 }
             }
@@ -128,7 +135,14 @@ final class DateUtility
         try {
             return Carbon::parse($dateStr);
         } catch (Throwable $e) {
-            LoggerUtility::log('error', "Invalid or unparseable date $dateStr : " . $e->getMessage());
+            LoggerUtility::logError(
+                "Invalid or unparseable date $dateStr : " . $e->getMessage(),
+                [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString()
+                ]
+            );
         }
 
         return null;
