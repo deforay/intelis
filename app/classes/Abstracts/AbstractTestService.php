@@ -168,6 +168,10 @@ abstract class AbstractTestService
                         $params['existingMaxId'] = $maxId;
 
                         if ($insertOperation) {
+
+                            // Reset the sequence counter for this test type and year
+                            $this->resetSequenceCounter($testTable, $currentYear, $this->testType, $sampleCodeType);
+
                             // Add a small delay before retrying to avoid immediate retries
                             usleep($tryCount * 50000); // 50 milliseconds
                         }
@@ -209,13 +213,13 @@ abstract class AbstractTestService
 
                 return $this->generateSampleCode($testTable, $params, $tryCount + 1);
             }
-
             throw new SystemException("Error while generating Sample ID for $testTable (try count = $tryCount) : " . $exception->getMessage(), $exception->getCode(), $exception);
         }
     }
 
     private function resetSequenceCounter($testTable, $year, $testType, $sampleCodeType)
     {
+        LoggerUtility::logInfo("Resetting sequence counter for $testTable, year = $year, testType = $testType, sampleCodeType = $sampleCodeType");
         $this->db->rawQuery(
             "DELETE FROM sequence_counter WHERE year = ? AND test_type = ? AND code_type = ?",
             [$year, $testType, $sampleCodeType]
