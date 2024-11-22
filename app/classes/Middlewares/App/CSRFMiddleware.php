@@ -31,6 +31,7 @@ class CSRFMiddleware implements MiddlewareInterface
         $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
         if (
+            CommonService::isAjaxRequest($request) === true ||
             CommonService::isCliRequest() === true ||
             $this->isExcludedUri($currentURI) ||
             !in_array($method, $modifyingMethods) ||

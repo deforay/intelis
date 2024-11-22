@@ -79,7 +79,7 @@ final class PatientsService
     public function savePatient($params, $testTable)
     {
         try {
-            $this->db->beginTransaction();
+
 
             $data = [];
 
@@ -151,22 +151,37 @@ final class PatientsService
                 LoggerUtility::log('error', $this->db->getLastError());
             }
 
-            $this->db->commitTransaction();
+
             return $systemPatientCode;
         } catch (Throwable $e) {
-            $this->db->rollbackTransaction();
-            throw $e;
+            LoggerUtility::logError($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'last_db_query' => $this->db->getLastQuery(),
+                'last_db_error' => $this->db->getLastError(),
+                'trace' => $e->getTraceAsString(),
+            ]);
         }
     }
 
     public function getSystemPatientId($patientCode, $patientGender, $patientDob)
     {
-        // get system_patient_code for the patient using the above parameters
-        $this->db->where("patient_code", $patientCode);
-        $this->db->where("patient_gender", $patientGender);
-        $this->db->where("patient_dob", $patientDob);
-        $result = $this->db->getOne($this->table, "system_patient_code");
-        return $result['system_patient_code'] ?? null;
+        try {
+            // get system_patient_code for the patient using the above parameters
+            $this->db->where("patient_code", $patientCode);
+            $this->db->where("patient_gender", $patientGender);
+            $this->db->where("patient_dob", $patientDob);
+            $result = $this->db->getOne($this->table, "system_patient_code");
+            return $result['system_patient_code'] ?? null;
+        } catch (Throwable $e) {
+            LoggerUtility::logError($e->getMessage(), [
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'last_db_query' => $this->db->getLastQuery(),
+                'last_db_error' => $this->db->getLastError(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+        }
     }
 
     public function getLastRequestForPatientID(string $testType, string $patientId)
