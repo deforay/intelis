@@ -526,7 +526,7 @@ spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -av --ignore-times --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$lis_path/"
+rsync -av --inplace --whole-file --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$lis_path/"
 
 # Check if rsync command succeeded
 if [ $? -ne 0 ]; then

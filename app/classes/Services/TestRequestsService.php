@@ -79,7 +79,9 @@ final class TestRequestsService
                         continue;
                     }
 
+
                     try {
+                        $this->db->beginTransaction();
                         $formTable = TestsService::getTestTableName($item['test_type']);
                         $primaryKey = TestsService::getTestPrimaryKeyColumn($item['test_type']);
                         $serviceClass = TestsService::getTestServiceClass($item['test_type']);
@@ -98,8 +100,6 @@ final class TestRequestsService
                             $this->updateQueueItem($item['id'], 1);
                             continue;
                         }
-
-                        $this->db->beginTransaction();
 
                         $sampleCodeParams = [
                             'sampleCollectionDate' => $item['sample_collection_date'],
@@ -166,6 +166,8 @@ final class TestRequestsService
                             'exception' => $e,
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),
+                            'last_db_query' => $this->db->getLastQuery(),
+                            'last_db_error' => $this->db->getLastError(),
                             'stacktrace' => $e->getTraceAsString()
                         ]);
                         continue;
