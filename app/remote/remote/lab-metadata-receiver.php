@@ -126,16 +126,16 @@ try {
                                 $db->where($primaryKey, $sResult[$primaryKey]);
                                 $id = $db->update($tableName, $data);
                             } else {
-                                $id = $db->insert($tableName, $data);
+                                $id = $db->upsert($tableName, $data);
                             }
                         }
                     } catch (Throwable $e) {
-                        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
-                        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                        LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastQuery());
                         LoggerUtility::logError("Error when processing for $tableName : " . $e->getMessage(), [
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),
+                            'last_db_errno' => $db->getLastErrno(),
+                            'last_db_query' => $db->getLastQuery(),
+                            'last_db_error' => $db->getLastError(),
                             'trace' => $e->getTraceAsString(),
                         ]);
                         continue;

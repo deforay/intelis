@@ -22,7 +22,6 @@ use Laminas\Stratigility\Middleware\RequestHandlerMiddleware;
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$remoteURL = $general->getRemoteURL();
 
 // Create a server request object from the globals
 $request = ServerRequestFactory::fromGlobals();
@@ -32,15 +31,32 @@ $middlewarePipe = new MiddlewarePipe();
 
 $uri = $request->getUri()->getPath();
 
-$host = $request->getUri()->getScheme() . "://" . $request->getUri()->getHost();
+$allowedDomains = [];
+// Check if the IP addresses are already stored in the session
+if (!isset($_SESSION['allowedDomains'])) {
 
-$allowedDomains = [$host];
-if (!empty($remoteURL)) {
-    $allowedDomains[] = $remoteURL;
+    $host = rtrim($request->getUri()->getScheme() . "://" . $request->getUri()->getHost(), '/');
+    $allowedDomains = ["$host:*"];
+
+    $remoteURL = $general->getRemoteURL();
+
+    if (!empty($remoteURL)) {
+        $allowedDomains[] = "$remoteURL:*";
+    }
+
+    // Wildcard to allow all ports on 127.0.0.1 and localhost
+    $allowedDomains[] = "http://127.0.0.1:*";
+    $allowedDomains[] = "http://localhost:*";
+    $allowedDomains[] = "https://127.0.0.1:*";
+    $allowedDomains[] = "https://localhost:*";
+
+    // Store the allowed domains in the session
+    $_SESSION['allowedDomains'] = $allowedDomains;
+} else {
+    // Retrieve the allowed domains from the session
+    $allowedDomains = $_SESSION['allowedDomains'];
 }
 
-// Wildcard to allow all ports on 127.0.0.1
-$allowedDomains[] = "http://127.0.0.1:*";
 $allowedDomains = implode(" ", $allowedDomains);
 
 //$csp = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; connect-src 'self' $allowedDomains;  img-src 'self' data: blob: $allowedDomains; font-src 'self'; object-src 'none'; frame-src 'self'; base-uri 'self'; form-action 'self';";

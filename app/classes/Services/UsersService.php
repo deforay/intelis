@@ -368,18 +368,17 @@ final class UsersService
 
     public function recordLoginAttempt($loginId, $loginStatus, $userId = null)
     {
-        $browserAgent = $_SERVER['HTTP_USER_AGENT'];
-        $os = PHP_OS;
-        $ipaddress = $this->commonService->getClientIpAddress();
+        /** @var ServerRequest $request */
+        $request = AppRegistry::get('request');
 
         $data = [
             'login_id' => $loginId,
             'user_id' => $userId,
             'login_attempted_datetime' => DateUtility::getCurrentDateTime(),
             'login_status' => $loginStatus,
-            'ip_address' => $ipaddress,
-            'browser' => $browserAgent,
-            'operating_system' => $os
+            'ip_address' => $this->commonService->getClientIpAddress($request),
+            'browser' => $this->commonService->getClientBrowser($request),
+            'operating_system' => $this->commonService->getClientOS($request)
         ];
         $this->db->insert('user_login_history', $data);
     }
@@ -412,11 +411,13 @@ final class UsersService
         // Get current date and time
         $currentDateTime = DateUtility::getCurrentDateTime();
 
+
         // Query database for login attempts within the specified interval
         $loginAttempts = $this->db->rawQueryOne(
             "SELECT
             SUM(CASE WHEN ulh.login_status = 'failed' THEN 1 ELSE 0 END) AS failedAttempts,
-            SUM(CASE WHEN ulh.login_status = 'success' THEN 1 ELSE 0 END) AS successAttempts
+            SUM(CASE WHEN ulh.login_status = 'success' THEN 1 ELSE 0 END) AS successAttempts,
+            MAX(CASE WHEN ulh.login_status = 'failed' THEN ulh.login_attempted_datetime ELSE NULL END) AS lastFailedLoginTime
         FROM user_login_history ulh
         WHERE ulh.login_id = ? AND
         ulh.login_attempted_datetime >= DATE_SUB(?, INTERVAL ? MINUTE)",
@@ -426,9 +427,26 @@ final class UsersService
         // Ensure the results are not null
         $failedAttempts = $loginAttempts['failedAttempts'] ?? 0;
         $successAttempts = $loginAttempts['successAttempts'] ?? 0;
+        $lastFailedLoginTime = $loginAttempts['lastFailedLoginTime'] ?? null;
 
-        // Check if the user has failed to login continuously
-        return $failedAttempts >= 3 && $successAttempts == 0;
+        $ipAddress = $this->commonService->getClientIpAddress();
+
+        // consider failed if there are 3 or more failed attempts
+        // and no successful attempts in the last $intervalMinutes minutes
+        $failed = $failedAttempts >= 3 && $successAttempts == 0;
+
+        $_SESSION[$ipAddress] = [
+            'failedAttempts' => 0,
+            'lastFailedLogin' => null
+        ];
+
+        if ($failed) {
+            $_SESSION[$ipAddress]['failedAttempts'] = $failedAttempts;
+            $_SESSION[$ipAddress]['lastFailedLogin'] = $lastFailedLoginTime;
+        }
+
+        // how many continuous failed attempts in the last $intervalMinutes minutes
+        return $_SESSION[$ipAddress]['failedAttempts'];
     }
 
     public function savePreferences(int $userId, string $page, array $newPreferences): bool

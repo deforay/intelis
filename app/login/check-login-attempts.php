@@ -18,8 +18,7 @@ try {
 	/** @var UsersService $usersService */
 	$usersService = ContainerRegistry::get(UsersService::class);
 
-
-	if (!empty($loginId) && $usersService->continuousFailedLogins($loginId) === true) {
+	if (!empty($loginId) && $usersService->continuousFailedLogins($loginId) >= 3) {
 		$response = ['captchaRequired' => true];
 	} else {
 		$response = ['captchaRequired' => false];

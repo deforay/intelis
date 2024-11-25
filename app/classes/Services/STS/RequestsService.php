@@ -44,8 +44,6 @@ final class RequestsService
         } elseif ($testType === 'hepatitis') {
             $requestData = $this->returnHepatitisRequests($rResult, $resultCount);
         } elseif ($testType === 'generic-tests') {
-
-
             $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
                 'is_result_mail_sent' => 'no',
                 'is_request_mail_sent' => 'no',

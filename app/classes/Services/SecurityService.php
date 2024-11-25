@@ -37,7 +37,7 @@ final class SecurityService
         }
     }
 
-    public static function checkCSRF(ServerRequest $request, bool $invalidate = false): void
+    public static function checkCSRF(ServerRequest $request, bool $rotateCSRF = false): void
     {
         // Retrieve CSRF token from header or body
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
@@ -54,8 +54,8 @@ final class SecurityService
             throw new SystemException(_translate('Invalid Request token. Please refresh the page and try again.'));
         }
 
-        // Optionally invalidate and regenerate the CSRF token after successful use
-        if (CommonService::isAjaxRequest($request) === false && $invalidate) {
+        // Optionally rotate the CSRF token after successful use
+        if (CommonService::isAjaxRequest($request) === false && $rotateCSRF) {
             self::rotateCSRF();
         }
     }
@@ -87,5 +87,31 @@ final class SecurityService
             header("Location: $url");
         }
         exit;
+    }
+
+    public static function checkLoginAttempts($ipAddress)
+    {
+        $lockoutPeriod = 15 * 60; // Lockout period in seconds (15 minutes)
+
+        // Check if the user is locked out
+        if ($_SESSION[$ipAddress]['failedAttempts'] >= 10) {
+            $lastFailedLoginTimestamp = strtotime($_SESSION[$ipAddress]['lastFailedLogin']);
+            $timeSinceLastFail = time() - $lastFailedLoginTimestamp;
+
+            if ($timeSinceLastFail < $lockoutPeriod) {
+                // User is still within the lockout period
+                throw new SystemException(
+                    "Too many failed login attempts. Please try again after " .
+                        ceil(($lockoutPeriod - $timeSinceLastFail) / 60) . " minutes.",
+                    403
+                );
+            } else {
+                // Lockout period has expired; reset failed attempts
+                $_SESSION[$ipAddress] = [
+                    'failedAttempts' => 0,
+                    'lastFailedLogin' => null
+                ];
+            }
+        }
     }
 }

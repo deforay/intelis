@@ -6,7 +6,6 @@ use App\Services\AppMenuService;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 // Reset query counters on page reload
 unset($_SESSION['queryCounters']);

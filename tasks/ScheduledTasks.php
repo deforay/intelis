@@ -27,8 +27,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-au
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
-    ->description('Archive Audit Tables');
-
+    ->description('Archiving Audit Tables');
 
 // Generate Sample Codes
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php")
@@ -66,14 +65,6 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Importing data from interface db into local db');
-}
-// ARCHIVE AUDIT TABLES
-if (!empty(SYSTEM_CONFIG['archive']['enabled']) && SYSTEM_CONFIG['archive']['enabled'] === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
-        ->cron('15 0 * * *')
-        ->timezone($timeZone)
-        ->preventOverlapping()
-        ->description('Archiving audit tables');
 }
 
 // UPDATE VL RESULT INTERPRETATION

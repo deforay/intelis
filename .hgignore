@@ -5,6 +5,7 @@ syntax: glob
 # Ignore common system files and directories
 .DS_Store
 .DS_Store.orig
+key.storage
 .env
 .git
 .git/*

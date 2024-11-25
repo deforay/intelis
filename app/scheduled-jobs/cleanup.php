@@ -84,10 +84,10 @@ foreach ($tablesToCleanup as $table => $dateColumn) {
     if (!empty($metadata[$table]['last_processed_date'])) {
         $lastProcessedDate = $metadata[$table]['last_processed_date'];
 
-        // Calculate the date 7 days before the last processed date
-        $dateToDeleteBefore = date('Y-m-d H:i:s', strtotime($lastProcessedDate . ' - 7 days'));
+        // Calculate the date 3 days before the last processed date
+        $dateToDeleteBefore = date('Y-m-d H:i:s', strtotime($lastProcessedDate . ' - 3 days'));
 
-        // Delete records older than (last_processed_date - 7 days)
+        // Delete records older than (last_processed_date - 3 days)
         $db->where("{$dateColumn} < ?", [$dateToDeleteBefore]);
         if (!$db->delete($table)) {
             LoggerUtility::log('error', "Error deleting from {$table}: " . $db->getLastError());

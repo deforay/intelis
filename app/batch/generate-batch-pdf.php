@@ -32,7 +32,7 @@ if (empty($_GET['type'])) {
     throw new SystemException(_translate('Invalid Batch'), 500);
 }
 
-$id = base64_decode((string) $_GET['id']);
+$id = MiscUtility::desqid((string) $_GET['id']);
 
 $testTableData = TestsService::getAllData($_GET['type']);
 
@@ -61,8 +61,6 @@ $key = (string) $general->getGlobalConfig('key');
 $barcodeFormat = $globalConfig['barcode_format'] ?? 'C39';
 
 if (!empty($id)) {
-
-    MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "batches");
 
     $logo = $globalConfig['logo'] ?? '';
     $headerText = $globalConfig['header'] ?? '';
@@ -512,8 +510,10 @@ if (!empty($id)) {
         }
 
         $pdf->writeHTML($tbl);
-        $filename = "VLSM-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(12) . '.pdf';
-        $pdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . 'batches' . DIRECTORY_SEPARATOR . $filename);
+        $filename = "BATCH-" . trim((string) $bResult['batch_code']) . '-' . date('d-m-Y-h-i-s') . '-' . MiscUtility::generateRandomString(5) . '.pdf';
+        $batchesPath = MiscUtility::buildSafePath(TEMP_PATH, ["batches"]);
+        $filename = MiscUtility::cleanFileName($filename);
+        $pdf->Output($batchesPath . DIRECTORY_SEPARATOR . $filename);
         if ($bResult['printed_datetime'] == '') {
             $printedDatetime = DateUtility::getCurrentDateTime();
             $update = "UPDATE batch_details SET printed_datetime = ? WHERE batch_id = ?";

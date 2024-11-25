@@ -37,7 +37,8 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 ];
                 while (true) {
                     // Fetch a batch of rows
-                    $db->where("result_status", $statusCodes, 'NOT IN');
+                    $db->reset();
+                    $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
                     $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
                     $db->orderBy("vl_sample_id", "ASC"); // Ensure consistent ordering
                     $db->pageLimit = $batchSize;
@@ -52,6 +53,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                     $ids = array_column($rows, 'vl_sample_id');
 
                     // Update the rows in the current batch
+                    $db->reset();
                     $db->where("vl_sample_id", $ids, 'IN');
                     $db->update(
                         $tableName,
@@ -81,7 +83,8 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
             ];
 
-            $db->where("result_status", $statusCodes, 'IN');
+            $db->reset();
+            $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
             $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
             $db->update(
                 $tableName,
@@ -93,6 +96,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
 
             if ($general->isLISInstance()) {
                 // If sample is Expired but still within the expiry limit, then update it to Received at Testing Lab
+                $db->reset();
                 $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);
                 $db->where("(result IS NULL OR result = '')");
                 $db->where("sample_code IS NOT NULL");
@@ -117,7 +121,8 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 SAMPLE_STATUS\REJECTED,
                 SAMPLE_STATUS\ACCEPTED
             ];
-            $db->where("result_status", $statusCodes, 'IN');
+            $db->reset();
+            $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
             $db->where("locked NOT LIKE 'yes'");
             $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
             $db->update($tableName, ["locked" => "yes"]);
