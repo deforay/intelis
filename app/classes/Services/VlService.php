@@ -142,7 +142,7 @@ final class VlService extends AbstractTestService
         });
     }
 
-    public function extractViralLoadValueViralLoadResultFromForm(array $params): array
+    public function processViralLoadResultFromForm(array $params): array
     {
         $isRejected = 'no';
         $params['vlResult'] ??= $params['result'] ?? null;
@@ -345,11 +345,10 @@ final class VlService extends AbstractTestService
             $numericValue = floatval($matches[2]);
 
             if (!empty($unit) && str_contains($unit, 'Log')) {
-                $logVal = $numericValue;
+                $logVal = floatval($numericValue);
                 $absDecimalVal = round(pow(10, $logVal), 2);
             } else {
                 $absDecimalVal = $numericValue;
-                $logVal = log10($absDecimalVal);
             }
 
             $absVal = $absDecimalVal;
@@ -370,10 +369,9 @@ final class VlService extends AbstractTestService
             }
         } else {
             $vlResult = $absVal = $absDecimalVal = floatval($result);
-            $logVal = round(log10($absDecimalVal), 2);
         }
 
-        if (empty($logVal) && !empty($absDecimalVal) && $absDecimalVal > 0) {
+        if (empty($logVal) && is_numeric($absDecimalVal) && $absDecimalVal > 0) {
             $logVal = round(log10($absDecimalVal), 2);
         }
         // Use the converted or original value based on configuration
