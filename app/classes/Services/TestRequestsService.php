@@ -268,13 +268,13 @@ final class TestRequestsService
                     $dataToUpdate['sample_tested_datetime'] = null;
                     $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
                 }
+                $this->db->where('sample_code is NOT NULL');
                 $this->db->where('sample_package_code', $manifestCode);
                 $this->db->update($tableName, $dataToUpdate);
                 $status = 1;
             }
-
-            return $status;
         } catch (Throwable $e) {
+            $status = 0;
             LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'last_db_query' => $this->db->getLastQuery(),
@@ -283,6 +283,8 @@ final class TestRequestsService
                 'line' => $e->getLine(),
                 'stacktrace' => $e->getTraceAsString()
             ]);
+        } finally {
+            return $status;
         }
     }
 }
