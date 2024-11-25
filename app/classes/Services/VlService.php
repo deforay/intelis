@@ -358,7 +358,7 @@ final class VlService extends AbstractTestService
             // Handle all numeric results here, whether they need logarithmic conversion.
             if (!empty($unit) && str_contains($unit, 'Log')) {
                 // Assume the numeric result is a log value needing conversion to absolute count.
-                $logVal = (float)$result;
+                $logVal = floatval($result);
                 $absDecimalVal = round(pow(10, $logVal), 2);
                 $vlResult = $absVal = $absDecimalVal;
             } elseif (!empty($unit)) {
@@ -366,16 +366,16 @@ final class VlService extends AbstractTestService
                 $vlResult = $absVal = $absDecimalVal;
             } else {
                 // It's a simple numeric result, not requiring conversion from log scale.
-                $absDecimalVal = floatval($result);
-                $logVal = round(log10($absDecimalVal), 2);
-                $absVal = $absDecimalVal;
-                $vlResult = $absDecimalVal;
+                $vlResult = $absVal = $absDecimalVal = floatval($result);
             }
         } else {
             $vlResult = $absVal = $absDecimalVal = floatval($result);
             $logVal = round(log10($absDecimalVal), 2);
         }
 
+        if (empty($logVal) && !empty($absDecimalVal) && $absDecimalVal > 0) {
+            $logVal = round(log10($absDecimalVal), 2);
+        }
         // Use the converted or original value based on configuration
         $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
 
