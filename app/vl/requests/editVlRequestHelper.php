@@ -54,7 +54,6 @@ $resultStatus = null;
 $instanceId = $general->getInstanceId();
 
 try {
-
      $mandatoryFields = [
           $_POST['vlSampleId'],
           $_POST['sampleCode'],

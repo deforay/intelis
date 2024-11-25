@@ -300,6 +300,7 @@ try {
         'manual_result_entry' => 'yes',
     ];
 
+
     if ($general->isLISInstance() || $general->isStandaloneInstance()) {
         $vlData['source_of_request'] = 'vlsm';
     } elseif ($general->isSTSInstance()) {

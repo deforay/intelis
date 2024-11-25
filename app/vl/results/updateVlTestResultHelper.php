@@ -38,6 +38,7 @@ $absVal = null;
 $txtVal = null;
 $finalResult = null;
 try {
+
     $instanceId = $general->getInstanceId();
 
     $testingPlatform = null;
