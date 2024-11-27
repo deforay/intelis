@@ -111,7 +111,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         <?php } else { ?>
                                             <td><label for="sampleCode"><?= _translate('Sample ID'); ?> </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" readonly value="<?php echo $eidInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?>" title="<?= _translate('Please enter sample id'); ?>" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $eidInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate('Sample ID'); ?>" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <td></td>
@@ -569,7 +569,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                                 <select class="form-control result-optional" name="eidPlatform" id="eidPlatform" title="Please select the testing platform">
                                                     <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'] . '##' . $eidInfo['instrument_id'], '-- Select --'); ?>
                                                 </select>
-                                            </td>                                           
+                                            </td>
                                         </tr>
                                         <tr>
                                             <th scope="row"><?= _translate('Is Sample Rejected?'); ?></th>

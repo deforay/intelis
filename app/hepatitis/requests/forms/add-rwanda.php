@@ -71,7 +71,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } else { ?>
                                             <td style="width:15%"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                             <td style="width:35%">
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_hepatitis','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" readonly />
                                             </td>
                                         <?php } ?>
                                         <div class="col-md-12 encryptPIIContainer">

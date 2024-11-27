@@ -131,7 +131,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 									<?php } else { ?>
 										<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label></th>
 										<td style="width: 18%;">
-											<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
+											<input type="text" value="<?php echo $tbInfo['sample_code']; ?>" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
 										</td>
 									<?php } ?>
 									<th scope="row"></th>

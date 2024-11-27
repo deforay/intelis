@@ -501,7 +501,7 @@ if [ "$skip_backup" = false ]; then
         timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
         backup_folder="/var/intelis-backup/www/intelis-backup-$timestamp"
         mkdir -p "${backup_folder}"
-        rsync -a --delete --exclude "public/temporary/" "${lis_path}/" "${backup_folder}/" &
+        rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "${lis_path}/" "${backup_folder}/" &
         spinner # This will show the spinner until the above process is completed
         log_action "LIS folder backed up to ${backup_folder}"
     else
@@ -526,7 +526,7 @@ spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -av --inplace --whole-file --exclude 'public/uploads' "$temp_dir/vlsm-master/" "$lis_path/"
+rsync -a --inplace --whole-file --exclude 'public/uploads' --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/"
 
 # Check if rsync command succeeded
 if [ $? -ne 0 ]; then

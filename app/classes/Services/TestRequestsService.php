@@ -256,21 +256,6 @@ final class TestRequestsService
             if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
                 //$uniqueIds = array_keys($sampleCodeData);
-
-                $dataToUpdate = [];
-                $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-                $dataToUpdate['data_sync'] = 0;
-
-                $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
-                $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-                if (!empty($_POST['sampleReceivedOn'])) {
-                    $dataToUpdate['sample_tested_datetime'] = null;
-                    $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
-                }
-                $this->db->where('sample_code is NOT NULL');
-                $this->db->where('sample_package_code', $manifestCode);
-                $this->db->update($tableName, $dataToUpdate);
                 $status = 1;
             }
         } catch (Throwable $e) {
@@ -284,6 +269,20 @@ final class TestRequestsService
                 'stacktrace' => $e->getTraceAsString()
             ]);
         } finally {
+            $dataToUpdate = [];
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $dataToUpdate['data_sync'] = 0;
+
+            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
+            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            if (!empty($_POST['sampleReceivedOn'])) {
+                $dataToUpdate['sample_tested_datetime'] = null;
+                $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
+            }
+            $this->db->where('sample_code is NOT NULL');
+            $this->db->where('sample_package_code', $manifestCode);
+            $this->db->update($tableName, $dataToUpdate);
             return $status;
         }
     }

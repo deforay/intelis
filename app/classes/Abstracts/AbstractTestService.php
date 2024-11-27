@@ -125,7 +125,6 @@ abstract class AbstractTestService
 
                 // padding with zeroes
                 $maxId = sprintf("%04d", (int) $maxId);
-                LoggerUtility::logInfo("Max ID ::: $maxId");
                 $sampleCodeGenerator = [
                     'sampleCodeFormat' => $sampleCodeFormat,
                     'sampleCodeKey' => $maxId,

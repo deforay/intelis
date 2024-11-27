@@ -172,7 +172,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleCode" class="labels">Laboratory ID </label>
-										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Sample ID" title="Please enter Sample ID" style="width:100%;" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('form_vl','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
+										<input type="text" class="form-control sampleCode" id="sampleCode" name="sampleCode" <?php echo $disable; ?> placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" onblur="checkNameValidation('form_vl','<?php echo $sampleCode; ?>',this,'<?php echo "vl_sample_id##" . $vlQueryInfo["vl_sample_id"]; ?>','The Laboratory ID that you entered already exists. Please try another ID',null)" />
 									</div>
 								</div>
 							</div>

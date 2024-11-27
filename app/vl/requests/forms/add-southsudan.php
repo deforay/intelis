@@ -99,7 +99,7 @@ $sFormat = '';
                                                        <?php } else { ?>
                                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span></td>
                                                             <td>
-                                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Sample ID" title="Please enter Sample ID" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= _translate("The Sample ID that you entered already exists. Please try another Sample ID", true); ?>',null)" />
+                                                                 <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_vl','<?php echo $sampleCode; ?>',this.id,null,'<?= _translate("The Sample ID that you entered already exists. Please try another Sample ID", true); ?>',null)" />
                                                             </td>
                                                        <?php } ?>
                                                   </div>
