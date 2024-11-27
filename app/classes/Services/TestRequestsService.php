@@ -79,9 +79,7 @@ final class TestRequestsService
                         continue;
                     }
 
-
                     try {
-                        $this->db->beginTransaction();
                         $formTable = TestsService::getTestTableName($item['test_type']);
                         $primaryKey = TestsService::getTestPrimaryKeyColumn($item['test_type']);
                         $serviceClass = TestsService::getTestServiceClass($item['test_type']);
@@ -158,10 +156,8 @@ final class TestRequestsService
 
                             $this->updateQueueItem($item['id'], 1);
                         }
-
-                        $this->db->commitTransaction();
                     } catch (Throwable $e) {
-                        $this->db->rollbackTransaction();
+
                         LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
                             'exception' => $e,
                             'file' => $e->getFile(),

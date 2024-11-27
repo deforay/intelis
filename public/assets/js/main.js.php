@@ -779,14 +779,14 @@ $remoteURL = $general->getRemoteURL();
 
     // Define your scripts with their intervals in milliseconds
     const scriptsToRun = {
-        "/scheduled-jobs/sample-code-generator.php": 60000, // Run every 1 minute
+        // "/scheduled-jobs/sample-code-generator.php": 60000, // Run every 1 minute
         //"/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
     };
 
     $(document).ready(function() {
 
         // Run the scheduler with the defined scripts and intervals
-        runScheduledScripts(scriptsToRun);
+        //runScheduledScripts(scriptsToRun);
 
         // Add CSRF token to all existing forms
         $('form').each(function() {

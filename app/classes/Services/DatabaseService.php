@@ -133,21 +133,15 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    /**
-     * Commit the current transaction or to a savepoint.
-     * @param string|null $toSavepoint The savepoint to commit to, or null to commit the entire transaction.
-     */
-    public function commitTransaction($toSavepoint = null): void
+
+    public function commitTransaction(): void
     {
         if ($this->isTransactionActive) {
-            if ($toSavepoint && $this->useSavepoints) {
-                $this->releaseSavepoint($toSavepoint);
-            } else {
-                $this->commit();
-                $this->isTransactionActive = false;
-            }
+            $this->commit();
+            $this->isTransactionActive = false;
         }
     }
+
 
     /**
      * Roll back the current transaction.

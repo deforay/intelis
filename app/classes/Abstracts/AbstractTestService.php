@@ -191,12 +191,16 @@ abstract class AbstractTestService
                     ];
 
                     $this->db->upsert('sequence_counter', $data, $updateColumns);
+                    if ($insertOperation) {
+                        $this->db->commitTransaction();
+                    }
                 }
 
                 return json_encode($sampleCodeGenerator);
             }
-
-            throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
+            if ($tryCount > $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
+            }
         } catch (Throwable $exception) {
             // Rollback the current transaction to release locks and undo changes
             if ($insertOperation) {
