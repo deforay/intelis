@@ -27,7 +27,7 @@ $origJson = "";
     $origJson = $apiService->getJsonFromRequest($request);
 if(isset($origJson) && !empty($origJson)){
     if (JsonUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
+        throw new SystemException("Invalid JSON Payload", 400);
     }
 } */
 $input = $request->getParsedBody();

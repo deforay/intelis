@@ -53,7 +53,7 @@ try {
 
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
+        throw new SystemException("Invalid JSON Payload", 400);
     }
 
     // Attempt to extract appVersion

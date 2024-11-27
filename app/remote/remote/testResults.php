@@ -37,7 +37,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 try {
-    $db->beginTransaction();
+
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
@@ -78,7 +78,7 @@ try {
 
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
-
+            $db->beginTransaction();
             $counter++;
             $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
             // Overwrite the values in $emptyLabArray with the values in $resultRow
@@ -147,13 +147,13 @@ try {
                 } else {
                     $id = $db->insert($tableName, $lab);
                 }
-
+                $db->commitTransaction();
                 if ($id === true && isset($lab['sample_code'])) {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
             } catch (Throwable $e) {
-
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -169,10 +169,8 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('vl', $facilityIds, $labId);
-
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
+
 
     $payload = json_encode([]);
 

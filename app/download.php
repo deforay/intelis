@@ -57,14 +57,14 @@ if (
     !MiscUtility::fileExists($file)
 ) {
     http_response_code(404);
-    throw new SystemException('File does not exist. Cannot download this file');
+    throw new SystemException('File does not exist. Cannot download this file', 404);
 }
 
 $mimeType = MiscUtility::getMimeType($file, $allowedMimeTypes);
 
 if (!$mimeType) {
-    http_response_code(404);
-    throw new SystemException('Invalid file. Cannot download this file');
+    http_response_code(400);
+    throw new SystemException('Invalid file. Cannot download this file', 400);
 }
 
 $filename = basename($file);
