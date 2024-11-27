@@ -335,12 +335,6 @@ try {
         }
     }
 
-
-    // For inserted samples, generate sample code
-    if (!empty($uniqueIdsForSampleCodeGeneration)) {
-        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
-    }
-
     $responsePayload = json_encode([
         'transactionId' => $transactionId,
         'received' => $receivedCounter,
@@ -350,6 +344,11 @@ try {
 
 
     $db->commitTransaction();
+
+    // For inserted samples, generate sample code
+    if (!empty($uniqueIdsForSampleCodeGeneration)) {
+        $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
+    }
 } catch (Throwable $exception) {
     $responsePayload = json_encode([
         'transactionId' => $transactionId,

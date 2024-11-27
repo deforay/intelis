@@ -195,7 +195,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 												<input type="hidden" class="" id="sampleCode" name="sampleCode" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" />
 											<?php } else { ?>
 												<label class="labels" for="sampleCode">Laboratory ID <span class="mandatory">*</span></label>
-												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
+												<input type="text" class="form-control isRequired " id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?php echo $vlQueryInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
 												<input type="hidden" name="sampleCodeCol" value="<?= ($vlQueryInfo['sample_code']); ?>" />
 											<?php } ?>
 

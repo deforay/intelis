@@ -99,7 +99,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php } else { ?>
                                             <th style="width:15%;"><label for="sampleCode">Sample ID </label><span class="mandatory">*</span> </th>
                                             <td style="width:35%;">
-                                                <input type="text" readonly value="<?php echo $hepatitisInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:100%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $hepatitisInfo[$sampleCode]; ?>" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                         <th scope="row" style="width:15%"><label for="patientId">Patient Code <span class="mandatory">*</span> </label></th>

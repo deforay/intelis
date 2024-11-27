@@ -110,7 +110,7 @@ $storageInfo = $storageService->getLabStorage();
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
 											<td>
-												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="Please enter sample id" value="<?php echo $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
+												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?php echo $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
 												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
 											</td>
 										<?php } ?>

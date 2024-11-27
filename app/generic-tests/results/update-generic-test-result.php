@@ -420,7 +420,7 @@ $reasonForChange = $reasonForChangeArr[1];
 							<div class="col-md-6">
 								<label class="col-lg-5" for="sampleCode"><?= _translate("Sample ID"); ?> <span class="mandatory">*</span></label>
 								<div class="col-lg-7">
-									<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" readonly="readonly" title="<?= _translate('Please enter sample id'); ?>" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
+									<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="<?= _translate('Enter Sample ID'); ?>" readonly="readonly" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?php echo $genericResultInfo[$sampleCode]; ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
 									<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars((string) $genericResultInfo['sample_code']); ?>" style="width:100%;">
 								</div>
 							</div>
@@ -1565,11 +1565,11 @@ $reasonForChange = $reasonForChangeArr[1];
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
 					});
 
-				
+
 					$(".multipleSelectize").selectize({
 						plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 					});
-					
+
 				});
 		} else {
 			removeDynamicForm();
@@ -1784,8 +1784,6 @@ $reasonForChange = $reasonForChangeArr[1];
 				});
 		}
 	}
-
-
 </script>
 
 <?php require_once APPLICATION_PATH . '/footer.php';

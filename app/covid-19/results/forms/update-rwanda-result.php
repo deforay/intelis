@@ -106,7 +106,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                         <?php } else { ?>
                                             <td><label for="sampleCode">Sample ID </label><span class="mandatory">*</span> </td>
                                             <td colspan="5">
-                                                <input type="text" readonly value="<?php echo $covid19Info[$sampleCode]; ?>" class="form-control " id="sampleCode" name="sampleCode" placeholder="Sample ID" title="Please enter Sample ID" style="width:30%;" onchange="" />
+                                                <input type="text" readonly value="<?php echo $covid19Info[$sampleCode]; ?>" class="form-control " id="sampleCode" name="sampleCode" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:30%;" onchange="" />
                                             </td>
                                         <?php } ?>
                                     </tr>

@@ -102,7 +102,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <?php } else { ?>
                                             <td><label for="sampleCode"><?= _translate("Sample ID"); ?> </label><span class="mandatory">*</span></td>
                                             <td>
-                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
+                                                <input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_covid19','<?php echo $sampleCode; ?>',this.id,null,'The Sample ID that you entered already exists. Please try another Sample ID',null)" />
                                             </td>
                                         <?php } ?>
                                         <td><label for="sourceOfAlertPOE"><?= _translate("Source of Alert / POE"); ?></label></td>

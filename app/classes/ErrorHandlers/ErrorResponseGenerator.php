@@ -89,10 +89,9 @@ class ErrorResponseGenerator
     private function handleApiErrorResponse(Throwable $exception, ResponseInterface $response, int $httpCode): ResponseInterface
     {
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
-        $errorMessage = (APPLICATION_ENV === 'production')
-            ? _translate('Sorry, something went wrong. Please try again later.')
-            : $exception->getMessage();
-
+        $productionMessage = $_SESSION['errorDisplayMessage'] ?? _translate('Sorry, something went wrong. Please try again later.');
+        $errorMessage = (APPLICATION_ENV === 'production') ? $productionMessage : $exception->getMessage();
+        unset($_SESSION['errorDisplayMessage']);
         $responseBody = json_encode([
             'error' => [
                 'code' => $httpCode,
