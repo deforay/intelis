@@ -67,6 +67,10 @@ try {
         $systemConfig['modules'][$forceSyncModule] = true;
     }
 
+    //Sending results to results.php for all test
+    $url = "$remoteURL/remote/v2/results.php";
+
+
     // GERNERIC TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
         if ($cliMode) {
@@ -100,6 +104,7 @@ try {
         }
 
         $url = "$remoteURL/remote/remote/generic-test-results.php";
+
 
         $payload = [
             "labId" => $labId,

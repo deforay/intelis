@@ -60,7 +60,8 @@ try {
     }
 
     if (is_string($token)) {
-        $payload['token'] = $token;
+        $payload['token'] = $token; 
+        
     }
 
     $testType = $data['testType'] ?? null;
