@@ -1,11 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 use App\Services\SecurityService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -36,7 +37,7 @@ try {
 			$general->activityLog('VL Test Reason details', $_SESSION['userName'] . ' added new Test Reason for ' . $_POST['testReasonName'], 'vl-reference');
 		}
 	}
-	SecurityService::redirect("/vl/reference/vl-test-reasons.php");
+	MiscUtility::redirect("/vl/reference/vl-test-reasons.php");
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),

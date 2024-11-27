@@ -2,6 +2,7 @@
 
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -18,7 +19,7 @@ $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 
 
 if (empty($_GET['type'])) {
-	SecurityService::redirect("/batch/batches.php");
+	MiscUtility::redirect("/batch/batches.php");
 }
 
 

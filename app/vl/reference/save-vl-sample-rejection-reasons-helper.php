@@ -1,11 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 use App\Services\SecurityService;
+use App\Registries\ContainerRegistry;
 
 // echo "<pre>";print_r($_POST);die;
 
@@ -41,7 +42,7 @@ try {
 			$general->activityLog('VL Sample Rejection Reasons For VL', $_SESSION['userName'] . ' added new reference Sample Rejection Reasons for VL  ' . $_POST['rejectionReasonName'], 'vl-reference');
 		}
 	}
-	SecurityService::redirect("/vl/reference/vl-sample-rejection-reasons.php");
+	MiscUtility::redirect("/vl/reference/vl-sample-rejection-reasons.php");
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),

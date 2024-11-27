@@ -2,6 +2,7 @@
 
 use App\Services\BatchService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -87,7 +88,7 @@ try {
         $db->update($tableName, $data);
         $_SESSION['alertMsg'] = _translate("Batch Samples Position saved successfully.", true);
     }
-    SecurityService::redirect("batches.php?type=" . $_POST['type']);
+    MiscUtility::redirect("batches.php?type=" . $_POST['type']);
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

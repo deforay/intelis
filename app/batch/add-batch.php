@@ -3,6 +3,7 @@
 use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -16,7 +17,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 if (empty($_GET['type'])) {
-    SecurityService::redirect("/batch/batches.php");
+    MiscUtility::redirect("/batch/batches.php");
 }
 
 $testType = $_GET['type'];

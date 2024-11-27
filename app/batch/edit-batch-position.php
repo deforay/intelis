@@ -2,6 +2,7 @@
 
 use App\Services\BatchService;
 use App\Services\TestsService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
@@ -46,14 +47,14 @@ require_once APPLICATION_PATH . '/header.php';
 $id = isset($_GET['id']) ? base64_decode((string)$_GET['id']) : null;
 
 if (!isset($id) || trim($id) == '') {
-	SecurityService::redirect("batches.php?type=$testType");
+	MiscUtility::redirect("batches.php?type=$testType");
 	exit;
 }
 
 $batchInfo = $batchService->getBatchInfo($id);
 
 if (empty($batchInfo)) {
-	SecurityService::redirect("batches.php?type=$testType");
+	MiscUtility::redirect("batches.php?type=$testType");
 	exit;
 }
 $batchAttributes = json_decode((string)$batchInfo['batch_attributes']);

@@ -61,7 +61,7 @@ try {
      ];
      if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          SecurityService::redirect("/vl/requests/addVlRequest.php");
+          MiscUtility::redirect("/vl/requests/addVlRequest.php");
           die;
      }
 
@@ -420,7 +420,7 @@ try {
      } else {
           $_SESSION['alertMsg'] = _translate("Please try again later");
      }
-     SecurityService::redirect("/vl/requests/vl-requests.php");
+     MiscUtility::redirect("/vl/requests/vl-requests.php");
 } catch (Throwable $exc) {
      throw new SystemException($exc->getMessage(), 500, $exc);
 }
