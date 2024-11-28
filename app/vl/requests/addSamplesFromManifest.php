@@ -49,7 +49,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="loadVlRequestData();syncRequestsByManifestCode('vl', '/vl/requests/getRemoteManifestHelper.php');return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -136,6 +136,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 <script type="text/javascript">
 	var oTable = null;
+	remoteSync = true;
 
 	function loadVlRequestData() {
 		$.blockUI();
@@ -213,6 +214,67 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 		$.unblockUI();
 	}
+
+	function getSampleCode() {
+		if ($("#samplePackageCode").val() != "") {
+			$.blockUI();
+			loadVlRequestData();
+			$.post("/vl/requests/getRemoteManifestHelper.php", {
+					samplePackageCode: $("#samplePackageCode").val()
+				},
+				function(data) {
+					$.unblockUI();
+					if (data != "") {
+						$('.activateSample').show();
+						$('#sampleId').val(data);
+					} else {
+						<?php if ($general->isLISInstance()) { ?>
+							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'vl');
+						<?php } ?>
+					}
+				});
+		} else {
+			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+		}
+	}
+
+	<?php if ($general->isLISInstance()) { ?>
+		let remoteURL = '<?php echo $general->getRemoteURL(); ?>';
+
+		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
+			$.blockUI({
+				message: "<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>"
+			});
+
+			if (remoteSync && remoteURL != null && remoteURL != '') {
+				var jqxhr = $.ajax({
+						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
+					})
+					.done(function(data) {
+						////console.log(data);
+						//alert( "success" );
+					})
+					.fail(function() {
+						$.unblockUI();
+						// alert("Unable to do STS Sync. Please contact technical team for assistance.");
+					})
+					.always(function() {
+						$.unblockUI();
+						$.post("/vl/requests/getRemoteManifestHelper.php", {
+								samplePackageCode: $("#samplePackageCode").val()
+							},
+							function(data) {
+								$.unblockUI();
+								if (data != "") {
+									$('.activateSample').show();
+									$('#sampleId').val(data);
+									oTable.fnDraw();
+								}
+							});
+					});
+			}
+		}
+	<?php } ?>
 
 	function activateSamplesFromManifest() {
 		if ($("#sampleReceivedOn").val() == "") {

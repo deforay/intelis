@@ -2,6 +2,7 @@
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -34,6 +35,7 @@ $packageTable = "package_details";
 try {
     $selectedSample = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $uniqueSampleId = array_unique($selectedSample);
+    $numberOfSamples = count($selectedSample);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSample)) {
 
         $db->where('sample_package_code', $_POST['packageCode']);
@@ -53,23 +55,32 @@ try {
         $db->where('package_id', $lastId);
         $db->update($packageTable, array(
             'lab_id' => $_POST['testingLab'],
-            'number_of_samples' => count($selectedSample),
+            'number_of_samples' => $numberOfSamples,
             'package_status' => $_POST['packageStatus'],
             'manifest_change_history' => json_encode($oldReason),
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
         ));
 
         if ($lastId > 0) {
-            for ($j = 0; $j < count($selectedSample); $j++) {
+            //for ($j = 0; $j < count($selectedSample); $j++) {
                 $dataToUpdate = [
                     'sample_package_id'   => $lastId,
                     'sample_package_code' => $_POST['packageCode'],
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
                 ];
-                $db->where($primaryKey, $uniqueSampleId[$j]);
+
+                $formAttributes['manifest'] = [
+                    "number_of_samples" => $numberOfSamples,
+                ];
+
+                $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+                $dataToUpdate['form_attributes'] = $db->func($formAttributes);
+                
+                //$db->where($primaryKey, $uniqueSampleId[$j]);
+                $db->where($primaryKey, $selectedSample, 'IN');
                 $db->update($tableName, $dataToUpdate);
-            }
+            //}
 
             // In case some records dont have lab_id in the testing table
             // let us update them to the selected lab
