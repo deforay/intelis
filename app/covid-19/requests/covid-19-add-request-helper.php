@@ -153,17 +153,17 @@ try {
 		}
 	}
 
-	//Update patient Information in Patients Table
-	$patientsService->savePatient($_POST, 'form_covid19');
+	// //Update patient Information in Patients Table
+	// $patientsService->savePatient($_POST, 'form_covid19');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+	// $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 	$covid19Data = array(
 		'vlsm_instance_id' => $instanceId,
 		'vlsm_country_id' => $_POST['formId'],
 		'external_sample_code' => !empty($_POST['externalSampleCode']) ? $_POST['externalSampleCode'] : null,
 		'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
-		'system_patient_code' => $systemGeneratedCode,
+		//'system_patient_code' => $systemGeneratedCode,
 		'investigator_name' => !empty($_POST['investigatorName']) ? $_POST['investigatorName'] : null,
 		'investigator_phone' => !empty($_POST['investigatorPhone']) ? $_POST['investigatorPhone'] : null,
 		'investigator_email' => !empty($_POST['investigatorEmail']) ? $_POST['investigatorEmail'] : null,

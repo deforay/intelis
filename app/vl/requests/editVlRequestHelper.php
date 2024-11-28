@@ -143,7 +143,7 @@ try {
      $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
      //Update patient Information in Patients Table
-     $systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
+     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
 
      $isRejected = $processedResults['isRejected'];
      $finalResult = $processedResults['finalResult'];
@@ -182,7 +182,7 @@ try {
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => $_POST['serialNo'] ?? null,
           'facility_id' => $_POST['facilityId'] ?? null,
-          'system_patient_code' => $systemPatientCode,
+          //'system_patient_code' => $systemPatientCode,
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender' => $_POST['gender'] ?? null,
