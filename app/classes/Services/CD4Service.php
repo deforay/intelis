@@ -19,7 +19,7 @@ final class CD4Service extends AbstractTestService
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            throw new SystemException("Sample Collection Date is required");
+            throw new SystemException("Sample Collection Date is required to generate Sample Code", 400);
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['cd4_sample_code'] ?? 'MMYY';

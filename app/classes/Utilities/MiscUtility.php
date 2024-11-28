@@ -648,4 +648,14 @@ final class MiscUtility
             fclose($handle);
         }
     }
+
+    public static function redirect(string $url): void
+    {
+        if (str_contains(strtolower($url), 'location:')) {
+            header($url);
+        } else {
+            header("Location: $url");
+        }
+        exit;
+    }
 }

@@ -41,7 +41,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 //$origJson = $request->getBody()->getContents();
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload");
+    throw new SystemException("Invalid JSON Payload", 400);
 }
 $input = $request->getParsedBody();
 

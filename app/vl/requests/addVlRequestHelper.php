@@ -53,7 +53,7 @@ try {
     ];
     if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-        SecurityService::redirect("/vl/requests/addVlRequest.php");
+        MiscUtility::redirect("/vl/requests/addVlRequest.php");
     }
 
     if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
@@ -191,10 +191,10 @@ try {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';
     }
 
-    //Update patient Information in Patients Table
-    $patientsService->savePatient($_POST, 'form_vl');
+    // //Update patient Information in Patients Table
+    // $patientsService->savePatient($_POST, 'form_vl');
 
-    $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'] ?? '', $_POST['gender'] ?? '', DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+    // $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'] ?? '', $_POST['gender'] ?? '', DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
     $vlData = [
         'vlsm_instance_id' => $instanceId,
@@ -207,7 +207,7 @@ try {
         'patient_gender' => $_POST['gender'] ?? null,
         'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
         'key_population' => $_POST['keyPopulation'] ?? null,
-        'system_patient_code' => $systemGeneratedCode,
+        //'system_patient_code' => $systemGeneratedCode,
         'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
         'patient_age_in_years' => _castVariable($_POST['ageInYears'] ?? null, 'int'),
         'patient_age_in_months' => _castVariable($_POST['ageInMonths'] ?? null, 'int'),
@@ -442,9 +442,9 @@ try {
             if (isset($cpyReq) && !empty($cpyReq) && $cpyReq == 'yes') {
                 $_SESSION['vlData'] = $vlData;
             }
-            SecurityService::redirect("/vl/requests/addVlRequest.php");
+            MiscUtility::redirect("/vl/requests/addVlRequest.php");
         } else {
-            SecurityService::redirect("/vl/requests/vl-requests.php");
+            MiscUtility::redirect("/vl/requests/vl-requests.php");
         }
     } else {
         $db->rollbackTransaction();
@@ -456,7 +456,7 @@ try {
             ]);
         }
         $_SESSION['alertMsg'] = _translate("Please try again later");
-        SecurityService::redirect("/vl/requests/vl-requests.php");
+        MiscUtility::redirect("/vl/requests/vl-requests.php");
     }
 } catch (Throwable $e) {
     $db->rollbackTransaction();

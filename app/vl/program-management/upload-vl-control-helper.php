@@ -77,7 +77,7 @@ try {
 
                     if ($total == 0) {
                         $_SESSION['alertMsg'] = _translate("Please enter all the mandatory fields in the excel sheet");
-                        SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+                        MiscUtility::redirect("/vl/program-management/upload-vl-control.php");
                         exit();
                     }
 
@@ -156,19 +156,19 @@ try {
                     $_SESSION['alertMsg'] = _translate("Controls added successfully");
                 } else {
                     $_SESSION['alertMsg'] = _translate("Uploaded file column mismatched");
-                    SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+                    MiscUtility::redirect("/vl/program-management/upload-vl-control.php");
                     exit();
                 }
             }
         } else {
             $_SESSION['alertMsg'] = _translate("Please Upload xls, xlsx, csv format only");
-            SecurityService::redirect("/vl/program-management/upload-vl-control.php");
+            MiscUtility::redirect("/vl/program-management/upload-vl-control.php");
             exit();
         }
     } else {
         throw new SystemException(_translate("Bulk Controls Import Failed") . " - " . $uploadedFile->getError());
     }
-    SecurityService::redirect("/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded&link=$filename");
+    MiscUtility::redirect("/vl/program-management/upload-vl-control.php?total=$total&notAdded=$notAdded&link=$filename");
 } catch (Exception $exc) {
     throw new SystemException(($exc->getMessage()));
 }

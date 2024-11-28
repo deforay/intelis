@@ -1,11 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 use App\Services\SecurityService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -40,7 +41,7 @@ try {
 			$general->activityLog('Add art code details', $_SESSION['userName'] . ' added new art code for ' . $_POST['artCode'], 'vl-reference');
 		}
 	}
-	SecurityService::redirect("/vl/reference/vl-art-code-details.php");
+	MiscUtility::redirect("/vl/reference/vl-art-code-details.php");
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),

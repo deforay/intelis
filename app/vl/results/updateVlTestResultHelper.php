@@ -288,7 +288,7 @@ try {
         $_SESSION['alertMsg'] = _translate("Please try again later");
     }
 
-    SecurityService::redirect("/vl/results/vlTestResult.php");
+    MiscUtility::redirect("/vl/results/vlTestResult.php");
 } catch (Throwable $exc) {
     throw new SystemException($exc->getMessage(), 500, $exc);
 }

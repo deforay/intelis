@@ -217,12 +217,12 @@ try {
 
 
      //Update patient Information in Patients Table
-     $systemPatientCode = $patientsService->savePatient($_POST, 'form_generic');
+     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_generic');
 
      $genericData = array(
           'vlsm_instance_id' => $instanceId,
           'vlsm_country_id' => $formId,
-          'system_patient_code' => $systemPatientCode,
+          //'system_patient_code' => $systemPatientCode,
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => (isset($_POST['serialNo']) && $_POST['serialNo'] != '' ? $_POST['serialNo'] : null),
           'facility_id' => (isset($_POST['facilityId']) && $_POST['facilityId'] != '') ? $_POST['facilityId'] : null,

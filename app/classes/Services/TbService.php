@@ -19,7 +19,7 @@ final class TbService extends AbstractTestService
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            return json_encode([]);
+            throw new SystemException("Sample Collection Date is required to generate Sample Code", 400);
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';

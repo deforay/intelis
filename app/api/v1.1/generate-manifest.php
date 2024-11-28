@@ -32,7 +32,7 @@ $request = AppRegistry::get('request');
 //$origJson = $request->getBody()->getContents();
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload");
+    throw new SystemException("Invalid JSON Payload", 400);
 }
 $input = $request->getParsedBody();
 if (
@@ -75,8 +75,8 @@ try {
     $response = [];
 
     if (!empty($facilityMap)) {
-        $arrFacility =  explode(",",$facilityMap);
-        if(in_array($input['labId'],$arrFacility) == false){
+        $arrFacility =  explode(",", $facilityMap);
+        if (in_array($input['labId'], $arrFacility) == false) {
             $response = [
                 'status' => 'Failed',
                 'timestamp' => time(),
@@ -123,7 +123,7 @@ try {
                 ];
             }
         }
-    
+
         $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
 
         $payload = [
@@ -132,8 +132,7 @@ try {
             'manifestCode' => $sampleManifestCode,
             'data' => ['alreadyInManifest' => $missiedSamples, 'addedToManifest' => $response]
         ];
-    }
-    else{
+    } else {
         $payload = [
             'status' => 'Failed',
             'timestamp' => time(),

@@ -2,18 +2,17 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
-use Exception;
 use Throwable;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 final class PatientsService
 {
-
     protected ?DatabaseService $db;
     protected string $table = 'patients';
     protected CommonService $commonService;
@@ -26,7 +25,7 @@ final class PatientsService
 
     public function generatePatientId($prefix = null, $insertMode = false)
     {
-        $prefix = $prefix ?? 'P';
+        $prefix ??= 'P';
 
         $forUpdate = '';
         if ($insertMode) {
@@ -54,7 +53,6 @@ final class PatientsService
         ]);
     }
 
-
     public function getPatientCodeBySampleId($sampleId, $testTable)
     {
         if ($testTable == "form_vl") {
@@ -75,11 +73,9 @@ final class PatientsService
         return $result['system_patient_code'];
     }
 
-
     public function savePatient($params, $testTable)
     {
         try {
-
 
             $data = [];
 
@@ -97,7 +93,7 @@ final class PatientsService
             } else {
                 $params['patientFirstName'] = $params['firstName'] ?? null;
                 $params['patientLastName'] = $params['lastName'] ?? null;
-                $params['dob'] = $params['dob'] ?? null;
+                $params['dob'] ??= null;
                 $data['patient_code'] = $params['patientId'] ?? null;
             }
 
@@ -127,16 +123,16 @@ final class PatientsService
                 $data['is_encrypted'] = 'yes';
             }
 
-            $data['patient_province'] = (!empty($params['patientProvince']) ? $params['patientProvince'] : null);
-            $data['patient_district'] = (!empty($params['patientDistrict']) ? $params['patientDistrict'] : null);
-            $data['patient_gender'] = (!empty($params['patientGender']) ? $params['patientGender'] : null);
-            $data['patient_age_in_years'] = (!empty($params['ageInYears']) ? $params['ageInYears'] : null);
-            $data['patient_age_in_months'] = (!empty($params['ageInMonths']) ? $params['ageInMonths'] : null);
-            $data['patient_dob'] = DateUtility::isoDateFormat($params['dob'] ?? '');
-            $data['patient_phone_number'] = (!empty($params['patientPhoneNumber']) ? $params['patientPhoneNumber'] : null);
-            $data['is_patient_pregnant'] = (!empty($params['patientPregnant']) ? $params['patientPregnant'] : null);
-            $data['is_patient_breastfeeding'] = (!empty($params['breastfeeding']) ? $params['breastfeeding'] : null);
-            $data['patient_address'] = (!empty($params['patientAddress']) ? $params['patientAddress'] : null);
+            $data['patient_province'] = $params['patientProvince'] ?? null;
+            $data['patient_district'] = $params['patientDistrict'] ?? null;
+            $data['patient_gender'] = $params['patientGender'] ?? null;
+            $data['patient_age_in_years'] = $params['ageInYears'] ?? null;
+            $data['patient_age_in_months'] = $params['ageInMonths'] ?? null;
+            $data['patient_dob'] = DateUtility::isoDateFormat($params['dob'] ?? null);
+            $data['patient_phone_number'] = $params['patientPhoneNumber'] ?? null;
+            $data['is_patient_pregnant'] = $params['patientPregnant'] ?? null;
+            $data['is_patient_breastfeeding'] = $params['breastfeeding'] ?? null;
+            $data['patient_address'] = $params['patientAddress'] ?? null;
             $data['updated_datetime'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_by'] = $params['registeredBy'] ?? null;
@@ -144,14 +140,13 @@ final class PatientsService
             $updateColumns = array_keys($data);
             unset($updateColumns['patient_registered_on']);
             unset($updateColumns['patient_registered_by']);
+            unset($updateColumns['system_patient_code']);
             $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
                 // Error handling
                 LoggerUtility::log('error', $this->db->getLastError());
             }
-
-
             return $systemPatientCode;
         } catch (Throwable $e) {
             LoggerUtility::logError($e->getMessage(), [
@@ -186,44 +181,24 @@ final class PatientsService
 
     public function getLastRequestForPatientID(string $testType, string $patientId)
     {
-
-        $sQuery = "";
-        if ($testType == 'vl') {
-            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
-                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no` like ?) as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_vl` WHERE `patient_art_no` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
-                        FROM form_vl
-                        WHERE `patient_art_no`=? ORDER by DATE(request_created_datetime) DESC limit 1";
-            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
-        } elseif ($testType == 'eid') {
-            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
-                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id` like ?) as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_eid` WHERE `child_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
-                        FROM form_eid
-                        WHERE `child_id` like ? ORDER by DATE(request_created_datetime) DESC limit 1";
-            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
-        } elseif ($testType == 'covid19') {
-            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
-                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id` like ?) as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_covid19` WHERE `patient_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
-                        FROM form_covid19
-                        WHERE `patient_id` like ?
-                        ORDER by DATE(request_created_datetime) DESC limit 1";
-            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
-        } elseif ($testType == 'hepatitis') {
-            $sQuery = "SELECT DATE_FORMAT(DATE(request_created_datetime),'%d-%b-%Y') as request_created_datetime,
-                        DATE_FORMAT(DATE(sample_collection_date),'%d-%b-%Y') as sample_collection_date,
-                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id` like ?) as no_of_req_time,
-                        (SELECT COUNT(unique_id) FROM `form_hepatitis` WHERE `patient_id` like ? AND DATE(sample_tested_datetime) > '1970-01-01') as no_of_tested_time
-                        FROM form_hepatitis
-                        WHERE `patient_id` like ?
-                        ORDER by DATE(request_created_datetime) DESC limit 1";
-            return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
-        } else {
-            return null;
+        try {
+            $tableName = TestsService::getTestTableName($testType);
+            $patientIdColumn = TestsService::getPatientIdColumn($testType);
+        } catch (SystemException $e) {
+            return null; // Invalid test type
         }
+
+        $sQuery = "
+        SELECT
+            DATE_FORMAT(DATE(request_created_datetime), '%d-%b-%Y') AS request_created_datetime,
+            DATE_FORMAT(DATE(sample_collection_date), '%d-%b-%Y') AS sample_collection_date,
+            (SELECT COUNT(unique_id) FROM `$tableName` WHERE `$patientIdColumn` LIKE ?) AS no_of_req_time,
+            (SELECT COUNT(unique_id) FROM `$tableName` WHERE `$patientIdColumn` LIKE ? AND DATE(sample_tested_datetime) > '1970-01-01') AS no_of_tested_time
+        FROM `$tableName`
+        WHERE `$patientIdColumn` LIKE ?
+        ORDER BY DATE(request_created_datetime) DESC
+        LIMIT 1";
+
+        return $this->db->rawQueryOne($sQuery, [$patientId, $patientId, $patientId]);
     }
 }

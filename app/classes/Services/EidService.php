@@ -8,6 +8,7 @@ use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
+use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
 
 final class EidService extends AbstractTestService
@@ -18,7 +19,7 @@ final class EidService extends AbstractTestService
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            return json_encode([]);
+            throw new SystemException("Sample Collection Date is required to generate Sample Code", 400);
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['eid_sample_code'] ?? 'MMYY';
