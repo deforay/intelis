@@ -61,15 +61,15 @@ if (!empty($result)) {
      $resultApprovedBy  = '';
      $userRes = [];
      if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
+          $resultApprovedBy = $result['approvedBy'];
+          $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+          if ($approvedByRes) {
+               $resultApprovedBy = $approvedByRes['user_name'];
+          }
+          $userRes = $approvedByRes;
+     }
      $userSignaturePath = null;
      if (!empty($userRes['user_signature'])) {
           $userSignaturePath =  $userRes['user_signature'];
@@ -146,7 +146,7 @@ if (!empty($result)) {
      $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
      if (MiscUtility::imageExists($stamp)) {
           $pdf->SetAlpha(0.6);
-         $pdf->Image($stamp, 65, 165, 40, null);
+          $pdf->Image($stamp, 65, 165, 40, null);
      }
      //Set Age
      $age = 'Unknown';

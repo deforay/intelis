@@ -9,7 +9,6 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -86,13 +85,15 @@ try {
                 if (empty($emptyTableArray)) {
                     continue;
                 }
+                $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
+                $tableName = $tableInfo['table'][$j];
+                $dataResultSet = $tableInfo['data'][$j];
                 $deletedId = [];
-                foreach ($tableInfo['data'][$j] as $key => $resultRow) {
+                foreach ($dataResultSet as $key => $resultRow) {
                     $counter++;
                     $data = MiscUtility::updateFromArray($emptyTableArray, $resultRow);
                     $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-                    $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
-                    $tableName = $tableInfo['table'][$j];
+
                     try {
                         if ($tableName == 'instrument_controls' || $tableName == 'instrument_machines') {
                             if ((in_array($data['instrument_id'], $deletedId)) === false &&
@@ -157,15 +158,12 @@ try {
 
     $payload = json_encode([]);
 
-    if (!empty($db->getLastError())) {
-        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastErrno());
-        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastError());
-        LoggerUtility::logError('Error in lab-metadata-receiver.php : ' . $db->getLastQuery());
-    }
-
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'last_db_errno' => $db->getLastErrno(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
         'trace' => $e->getTraceAsString(),
     ]);
 }
