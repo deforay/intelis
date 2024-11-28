@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2024-11-04 18:16+0530\n"
-"PO-Revision-Date: 2024-11-04 18:17+0530\n"
+"POT-Creation-Date: 2024-11-27 12:51+0530\n"
+"PO-Revision-Date: 2024-11-27 12:51+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -26,7 +26,7 @@ msgstr "Bienvenue sur la page d’administration"
 
 #: app/admin/index.php:11 app/admin/monitoring/activity-log.php:47
 #: app/admin/monitoring/api-sync-history.php:40
-#: app/admin/monitoring/audit-trail.php:105
+#: app/admin/monitoring/audit-trail.php:145
 #: app/admin/monitoring/lab-sync-details.php:98
 #: app/admin/monitoring/log-files.php:68
 #: app/admin/monitoring/sources-of-requests.php:70
@@ -267,7 +267,7 @@ msgid "Home"
 msgstr "Accueil"
 
 #: app/admin/index.php:12 app/admin/monitoring/log-files.php:11
-#: app/system-admin/admin-header.php:133
+#: app/system-admin/admin-header.php:132
 msgid "Admin"
 msgstr "Administrateur"
 
@@ -277,9 +277,9 @@ msgid "User Activity Log"
 msgstr "Journal d’activité de l’utilisateur"
 
 #: app/admin/monitoring/activity-log.php:50
-#: app/admin/monitoring/audit-trail.php:11
-#: app/admin/monitoring/audit-trail.php:103
-#: app/admin/monitoring/audit-trail.php:106 app/system/translate-strings.php:22
+#: app/admin/monitoring/audit-trail.php:13
+#: app/admin/monitoring/audit-trail.php:143
+#: app/admin/monitoring/audit-trail.php:146 app/system/translate-strings.php:22
 msgid "Audit Trail"
 msgstr "Piste d’audit"
 
@@ -420,9 +420,9 @@ msgstr "Type d'action"
 #: app/hepatitis/results/hepatitis-print-results.php:318
 #: app/hepatitis/results/hepatitis-result-status.php:131
 #: app/mail/vlResultMail.php:287
-#: app/specimen-referral-manifest/add-manifest.php:225
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:135
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:136
+#: app/specimen-referral-manifest/add-manifest.php:230
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:137
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:138
 #: app/system-admin/user-login-history/userLoginIndex.php:50
 #: app/tb/management/tb-clinic-report.php:169
 #: app/tb/management/tb-clinic-report.php:274
@@ -526,7 +526,7 @@ msgstr "Rechercher"
 #: app/generic-tests/results/generic-print-result.php:588
 #: app/generic-tests/results/generic-result-approval.php:286
 #: app/generic-tests/results/generic-test-results.php:300
-#: app/global-config/editGlobalConfig.php:215
+#: app/global-config/editGlobalConfig.php:213
 #: app/hepatitis/mail/mail-hepatitis-results.php:271
 #: app/hepatitis/management/hepatitis-clinic-report.php:618
 #: app/hepatitis/management/hepatitis-export-data.php:354
@@ -542,9 +542,9 @@ msgstr "Rechercher"
 #: app/hepatitis/results/hepatitis-result-status.php:208
 #: app/mail/vlResultMail.php:372
 #: app/move-samples/select-samples-to-move.php:233
-#: app/specimen-referral-manifest/add-manifest.php:226
-#: app/specimen-referral-manifest/add-manifest.php:283
-#: app/specimen-referral-manifest/edit-manifest.php:382
+#: app/specimen-referral-manifest/add-manifest.php:231
+#: app/specimen-referral-manifest/add-manifest.php:288
+#: app/specimen-referral-manifest/edit-manifest.php:292
 #: app/specimen-referral-manifest/move-manifest.php:315
 #: app/system-admin/user-login-history/userLoginIndex.php:165
 #: app/tb/management/tb-clinic-report.php:614
@@ -748,7 +748,7 @@ msgstr "Historique de l’API"
 
 #: app/admin/monitoring/api-sync-history.php:62
 #: app/admin/monitoring/api-sync-history.php:131
-#: app/admin/monitoring/audit-trail.php:118
+#: app/admin/monitoring/audit-trail.php:158
 #: app/admin/monitoring/lab-sync-details.php:140
 #: app/admin/monitoring/lab-sync-details.php:212
 #: app/admin/monitoring/sources-of-requests.php:127
@@ -828,7 +828,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/cd4/results/email-results.php:240 app/cd4/results/email-results.php:255
 #: app/cd4/results/email-results.php:575 app/cd4/results/email-results.php:579
 #: app/cd4/results/get-cd4-result-status.php:169
-#: app/classes/Services/CommonService.php:310
+#: app/classes/Services/CommonService.php:321
 #: app/common/reference/add-geographical-divisions.php:74
 #: app/common/reference/edit-geographical-divisions.php:87
 #: app/covid-19/management/covid-19-clinic-report.php:101
@@ -1046,9 +1046,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/eid/requests/forms/add-cameroon.php:440
 #: app/eid/requests/forms/add-cameroon.php:451
 #: app/eid/requests/forms/add-cameroon.php:497
-#: app/eid/requests/forms/add-cameroon.php:543
-#: app/eid/requests/forms/add-cameroon.php:554
-#: app/eid/requests/forms/add-cameroon.php:571
+#: app/eid/requests/forms/add-cameroon.php:546
+#: app/eid/requests/forms/add-cameroon.php:556
+#: app/eid/requests/forms/add-cameroon.php:573
 #: app/eid/requests/forms/add-drc.php:24 app/eid/requests/forms/add-drc.php:94
 #: app/eid/requests/forms/add-drc.php:109
 #: app/eid/requests/forms/add-drc.php:121
@@ -1072,9 +1072,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/eid/requests/forms/edit-cameroon.php:468
 #: app/eid/requests/forms/edit-cameroon.php:479
 #: app/eid/requests/forms/edit-cameroon.php:526
-#: app/eid/requests/forms/edit-cameroon.php:574
-#: app/eid/requests/forms/edit-cameroon.php:584
-#: app/eid/requests/forms/edit-cameroon.php:610
+#: app/eid/requests/forms/edit-cameroon.php:578
+#: app/eid/requests/forms/edit-cameroon.php:588
+#: app/eid/requests/forms/edit-cameroon.php:614
 #: app/eid/requests/forms/edit-drc.php:134
 #: app/eid/requests/forms/edit-drc.php:149
 #: app/eid/requests/forms/edit-drc.php:160
@@ -1112,9 +1112,9 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/eid/results/forms/update-cameroon-result.php:440
 #: app/eid/results/forms/update-cameroon-result.php:451
 #: app/eid/results/forms/update-cameroon-result.php:487
-#: app/eid/results/forms/update-cameroon-result.php:538
-#: app/eid/results/forms/update-cameroon-result.php:548
-#: app/eid/results/forms/update-cameroon-result.php:576
+#: app/eid/results/forms/update-cameroon-result.php:543
+#: app/eid/results/forms/update-cameroon-result.php:553
+#: app/eid/results/forms/update-cameroon-result.php:580
 #: app/eid/results/forms/update-drc-result.php:118
 #: app/eid/results/forms/update-drc-result.php:133
 #: app/eid/results/forms/update-drc-result.php:144
@@ -1238,8 +1238,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/generic-tests/results/update-generic-test-result.php:754
 #: app/generic-tests/results/update-generic-test-result.php:769
 #: app/generic-tests/results/update-generic-test-result.php:802
-#: app/global-config/editGlobalConfig.php:151
-#: app/global-config/editGlobalConfig.php:731
+#: app/global-config/editGlobalConfig.php:150
+#: app/global-config/editGlobalConfig.php:721
 #: app/hepatitis/management/hepatitis-clinic-report.php:104
 #: app/hepatitis/management/hepatitis-clinic-report.php:117
 #: app/hepatitis/management/hepatitis-clinic-report.php:132
@@ -1452,8 +1452,8 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/requests/forms/edit-drc.php:518
 #: app/vl/requests/forms/edit-drc.php:530
 #: app/vl/requests/forms/edit-drc.php:540
-#: app/vl/requests/forms/edit-drc.php:911
-#: app/vl/requests/forms/edit-drc.php:914
+#: app/vl/requests/forms/edit-drc.php:912
+#: app/vl/requests/forms/edit-drc.php:915
 #: app/vl/requests/sample-storage.php:208
 #: app/vl/requests/sample-storage.php:401 app/vl/requests/vl-requests.php:165
 #: app/vl/requests/vl-requests.php:192 app/vl/requests/vl-requests.php:238
@@ -1704,8 +1704,8 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: app/admin/monitoring/audit-trail.php:130
-#: app/batch/generate-batch-pdf.php:170 app/batch/generate-batch-pdf.php:181
+#: app/admin/monitoring/audit-trail.php:170
+#: app/batch/generate-batch-pdf.php:168 app/batch/generate-batch-pdf.php:179
 #: app/cd4/management/cd4-clinic-report.php:183
 #: app/cd4/management/cd4-clinic-report.php:287
 #: app/cd4/management/cd4-clinic-report.php:383
@@ -1806,13 +1806,13 @@ msgstr "Action"
 #: app/generic-tests/results/generic-test-results.php:166
 #: app/generic-tests/results/generic-test-results.php:225
 #: app/generic-tests/results/update-generic-test-result.php:421
-#: app/global-config/editGlobalConfig.php:445
-#: app/global-config/editGlobalConfig.php:618
-#: app/global-config/editGlobalConfig.php:744
-#: app/global-config/editGlobalConfig.php:856
-#: app/global-config/editGlobalConfig.php:952
-#: app/global-config/editGlobalConfig.php:1062
-#: app/global-config/editGlobalConfig.php:1159
+#: app/global-config/editGlobalConfig.php:442
+#: app/global-config/editGlobalConfig.php:611
+#: app/global-config/editGlobalConfig.php:734
+#: app/global-config/editGlobalConfig.php:842
+#: app/global-config/editGlobalConfig.php:937
+#: app/global-config/editGlobalConfig.php:1044
+#: app/global-config/editGlobalConfig.php:1139
 #: app/hepatitis/management/hepatitis-clinic-report.php:181
 #: app/hepatitis/management/hepatitis-clinic-report.php:286
 #: app/hepatitis/management/hepatitis-clinic-report.php:382
@@ -1890,7 +1890,7 @@ msgstr "Action"
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: app/admin/monitoring/audit-trail.php:137 app/batch/edit-batch.php:327
+#: app/admin/monitoring/audit-trail.php:177 app/batch/edit-batch.php:327
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: app/cd4/reference/add-cd4-sample-type.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:70
@@ -1941,7 +1941,7 @@ msgstr "ID de l'échantillon"
 #: app/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:65
 #: app/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:76
 #: app/generic-tests/requests/add-samples-from-manifest.php:43
-#: app/global-config/editGlobalConfig.php:1364
+#: app/global-config/editGlobalConfig.php:1341
 #: app/hepatitis/reference/add-hepatitis-comorbidities.php:56
 #: app/hepatitis/reference/add-hepatitis-results.php:55
 #: app/hepatitis/reference/add-hepatitis-risk-factors.php:55
@@ -1975,7 +1975,7 @@ msgstr "ID de l'échantillon"
 msgid "Submit"
 msgstr "Envoyer"
 
-#: app/admin/monitoring/audit-trail.php:138
+#: app/admin/monitoring/audit-trail.php:178
 #: app/admin/monitoring/lab-sync-details.php:184
 #: app/admin/monitoring/sync-status.php:139
 #: app/cd4/management/cd4-clinic-report.php:174
@@ -2093,6 +2093,18 @@ msgstr "Envoyer"
 #: app/vl/results/vlTestResult.php:164
 msgid "Reset"
 msgstr "Réinitialiser"
+
+#: app/admin/monitoring/audit-trail.php:240
+#: app/admin/monitoring/audit-trail.php:279
+#: app/admin/monitoring/audit-trail.php:282
+msgid "Records are not available for this Sample ID"
+msgstr ""
+"Il n'y a pas d'enregistrements disponibles pour ce numéro d'identification "
+"d'échantillon"
+
+#: app/admin/monitoring/audit-trail.php:253
+msgid "Current Data for Sample"
+msgstr "Données actuelles de l'échantillon"
 
 #: app/admin/monitoring/export-test-results-report.php:31
 #: app/admin/monitoring/test-results-metadata.php:130
@@ -2371,9 +2383,9 @@ msgstr "Echantillon testé le"
 #: app/eid/requests/addSamplesFromManifest.php:113
 #: app/eid/requests/eid-requests.php:472
 #: app/eid/requests/forms/add-burkina-faso.php:397
-#: app/eid/requests/forms/add-cameroon.php:568
+#: app/eid/requests/forms/add-cameroon.php:570
 #: app/eid/requests/forms/edit-burkina-faso.php:419
-#: app/eid/requests/forms/edit-cameroon.php:607
+#: app/eid/requests/forms/edit-cameroon.php:611
 #: app/eid/results/eid-failed-results.php:231
 #: app/eid/results/eid-manual-results.php:160
 #: app/eid/results/eid-manual-results.php:219
@@ -2384,7 +2396,7 @@ msgstr "Echantillon testé le"
 #: app/eid/results/eid-result-status.php:179
 #: app/eid/results/eid-samples-for-manual-result-entry.php:216
 #: app/eid/results/forms/update-burkina-faso-result.php:419
-#: app/eid/results/forms/update-cameroon-result.php:573
+#: app/eid/results/forms/update-cameroon-result.php:577
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:333
 #: app/generic-tests/program-management/generic-export-data.php:295
 #: app/generic-tests/program-management/generic-export-data.php:333
@@ -2575,8 +2587,8 @@ msgstr "Le résultat a-t-il été modifié ?"
 #: app/admin/monitoring/test-results-metadata.php:169
 #: app/covid-19/requests/forms/edit-cameroon.php:581
 #: app/covid-19/results/forms/update-cameroon-result.php:536
-#: app/eid/requests/forms/edit-cameroon.php:638
-#: app/eid/results/forms/update-cameroon-result.php:604
+#: app/eid/requests/forms/edit-cameroon.php:642
+#: app/eid/results/forms/update-cameroon-result.php:608
 msgid "Reason for Changing"
 msgstr "Raison du changement"
 
@@ -3510,7 +3522,7 @@ msgid "Sample Status"
 msgstr "Statut de l'échantillon"
 
 #: app/admin/monitoring/sources-of-requests.php:241
-#: app/batch/generate-batch-pdf.php:174 app/batch/generate-batch-pdf.php:185
+#: app/batch/generate-batch-pdf.php:172 app/batch/generate-batch-pdf.php:183
 #: app/covid-19/requests/forms/add-cameroon.php:453
 #: app/covid-19/requests/forms/edit-cameroon.php:481
 #: app/covid-19/results/add-covid-19-qc-data.php:183
@@ -3612,7 +3624,7 @@ msgstr "État de la synchronisation du laboratoire"
 #: app/eid/requests/forms/add-cameroon.php:149
 #: app/eid/requests/forms/edit-cameroon.php:176
 #: app/eid/results/forms/update-cameroon-result.php:164
-#: app/eid/results/forms/update-cameroon-result.php:529
+#: app/eid/results/forms/update-cameroon-result.php:532
 #: app/generic-tests/mail/mail-generic-tests-results.php:239
 #: app/generic-tests/program-management/generic-export-data.php:283
 #: app/generic-tests/program-management/generic-export-data.php:329
@@ -3621,7 +3633,7 @@ msgstr "État de la synchronisation du laboratoire"
 #: app/hepatitis/management/get-rejected-samples.php:99
 #: app/hepatitis/management/hepatitis-clinic-report.php:551
 #: app/hepatitis/management/hepatitis-testing-target-report.php:195
-#: app/import-result/import-file.php:146
+#: app/import-result/import-file.php:146 app/login/login.php:177
 #: app/system-admin/edit-config/index.php:132
 #: app/tb/management/get-rejected-samples.php:101
 #: app/tb/management/tb-clinic-report.php:550
@@ -3683,28 +3695,28 @@ msgstr "Nom du Labo"
 #: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:57
 #: app/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:53
 #: app/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:64
-#: app/global-config/editGlobalConfig.php:506
-#: app/global-config/editGlobalConfig.php:522
-#: app/global-config/editGlobalConfig.php:538
-#: app/global-config/editGlobalConfig.php:554
-#: app/global-config/editGlobalConfig.php:568
-#: app/global-config/editGlobalConfig.php:582
-#: app/global-config/editGlobalConfig.php:597
-#: app/global-config/editGlobalConfig.php:677
-#: app/global-config/editGlobalConfig.php:692
-#: app/global-config/editGlobalConfig.php:706
-#: app/global-config/editGlobalConfig.php:806
-#: app/global-config/editGlobalConfig.php:822
-#: app/global-config/editGlobalConfig.php:836
-#: app/global-config/editGlobalConfig.php:916
-#: app/global-config/editGlobalConfig.php:932
-#: app/global-config/editGlobalConfig.php:1012
-#: app/global-config/editGlobalConfig.php:1028
-#: app/global-config/editGlobalConfig.php:1042
-#: app/global-config/editGlobalConfig.php:1123
-#: app/global-config/editGlobalConfig.php:1139
-#: app/global-config/editGlobalConfig.php:1219
-#: app/global-config/editGlobalConfig.php:1247
+#: app/global-config/editGlobalConfig.php:500
+#: app/global-config/editGlobalConfig.php:518
+#: app/global-config/editGlobalConfig.php:532
+#: app/global-config/editGlobalConfig.php:549
+#: app/global-config/editGlobalConfig.php:561
+#: app/global-config/editGlobalConfig.php:576
+#: app/global-config/editGlobalConfig.php:589
+#: app/global-config/editGlobalConfig.php:668
+#: app/global-config/editGlobalConfig.php:684
+#: app/global-config/editGlobalConfig.php:696
+#: app/global-config/editGlobalConfig.php:793
+#: app/global-config/editGlobalConfig.php:809
+#: app/global-config/editGlobalConfig.php:821
+#: app/global-config/editGlobalConfig.php:900
+#: app/global-config/editGlobalConfig.php:917
+#: app/global-config/editGlobalConfig.php:995
+#: app/global-config/editGlobalConfig.php:1011
+#: app/global-config/editGlobalConfig.php:1023
+#: app/global-config/editGlobalConfig.php:1102
+#: app/global-config/editGlobalConfig.php:1119
+#: app/global-config/editGlobalConfig.php:1197
+#: app/global-config/editGlobalConfig.php:1225
 #: app/hepatitis/requests/forms/add-rwanda.php:81
 #: app/hepatitis/requests/forms/edit-rwanda.php:163
 #: app/patients/add-patient.php:46 app/patients/add-patient.php:224
@@ -3848,14 +3860,14 @@ msgstr "Rapport sur les métadonnées des résultats des tests"
 #: app/eid/management/eid-sample-status.php:119
 #: app/eid/management/eidTestingTargetReport.php:191
 #: app/eid/requests/forms/add-burkina-faso.php:379
-#: app/eid/requests/forms/add-cameroon.php:562
+#: app/eid/requests/forms/add-cameroon.php:564
 #: app/eid/requests/forms/edit-burkina-faso.php:392
-#: app/eid/requests/forms/edit-cameroon.php:602
+#: app/eid/requests/forms/edit-cameroon.php:606
 #: app/eid/results/eid-print-results.php:95
 #: app/eid/results/eid-print-results.php:265
 #: app/eid/results/forms/update-burkina-faso-result.php:392
-#: app/eid/results/forms/update-cameroon-result.php:567
-#: app/eid/results/forms/update-cameroon-result.php:569
+#: app/eid/results/forms/update-cameroon-result.php:571
+#: app/eid/results/forms/update-cameroon-result.php:573
 #: app/generic-tests/program-management/generic-export-data.php:117
 #: app/generic-tests/program-management/generic-sample-status.php:167
 #: app/generic-tests/results/generic-print-result.php:154
@@ -3968,7 +3980,7 @@ msgstr ""
 #: app/api/v1.1/covid-19/save-request.php:639
 #: app/api/v1.1/eid/fetch-results.php:233 app/api/v1.1/eid/get-request.php:225
 #: app/api/v1.1/eid/save-request.php:500 app/api/v1.1/eid/save-request.php:544
-#: app/api/v1.1/generate-manifest.php:124
+#: app/api/v1.1/generate-manifest.php:151
 #: app/api/v1.1/generic-tests/fetch-results.php:155
 #: app/api/v1.1/generic-tests/get-request.php:135
 #: app/api/v1.1/generic-tests/save-request.php:467
@@ -4414,8 +4426,8 @@ msgstr "Créer un lot"
 #: app/move-samples/select-samples-to-move.php:71
 #: app/patients/add-patient.php:33 app/patients/edit-patient.php:50
 #: app/roles/addRole.php:126 app/roles/editRole.php:149
-#: app/specimen-referral-manifest/add-manifest.php:132
-#: app/specimen-referral-manifest/edit-manifest.php:194
+#: app/specimen-referral-manifest/add-manifest.php:137
+#: app/specimen-referral-manifest/edit-manifest.php:105
 #: app/system-admin/edit-config/resetPassword.php:25
 #: app/tb/reference/add-tb-results.php:30
 #: app/tb/reference/add-tb-sample-rejection-reason.php:22
@@ -4478,11 +4490,11 @@ msgstr "indique les champs obligatoires"
 #: app/covid-19/requests/export-covid19-requests.php:39
 #: app/covid-19/requests/export-covid19-requests.php:41
 #: app/eid/requests/forms/add-burkina-faso.php:358
-#: app/eid/requests/forms/add-cameroon.php:532
+#: app/eid/requests/forms/add-cameroon.php:535
 #: app/eid/requests/forms/edit-burkina-faso.php:371
-#: app/eid/requests/forms/edit-cameroon.php:564
+#: app/eid/requests/forms/edit-cameroon.php:567
 #: app/eid/results/forms/update-burkina-faso-result.php:370
-#: app/eid/results/forms/update-cameroon-result.php:516
+#: app/eid/results/forms/update-cameroon-result.php:520
 #: app/generic-tests/requests/add-request.php:547
 #: app/generic-tests/requests/edit-request.php:754
 msgid "Testing Platform"
@@ -4746,22 +4758,22 @@ msgid "Please select the postion"
 msgstr "Veuillez sélectionner le poste"
 
 #: app/batch/add-batch.php:243 app/batch/edit-batch.php:202
-#: app/global-config/editGlobalConfig.php:464
-#: app/global-config/editGlobalConfig.php:637
-#: app/global-config/editGlobalConfig.php:875
-#: app/global-config/editGlobalConfig.php:971
-#: app/global-config/editGlobalConfig.php:1081
-#: app/global-config/editGlobalConfig.php:1178
+#: app/global-config/editGlobalConfig.php:461
+#: app/global-config/editGlobalConfig.php:630
+#: app/global-config/editGlobalConfig.php:861
+#: app/global-config/editGlobalConfig.php:956
+#: app/global-config/editGlobalConfig.php:1063
+#: app/global-config/editGlobalConfig.php:1158
 msgid "Numeric"
 msgstr "Numérique"
 
 #: app/batch/add-batch.php:246 app/batch/edit-batch.php:203
-#: app/global-config/editGlobalConfig.php:465
-#: app/global-config/editGlobalConfig.php:638
-#: app/global-config/editGlobalConfig.php:876
-#: app/global-config/editGlobalConfig.php:972
-#: app/global-config/editGlobalConfig.php:1082
-#: app/global-config/editGlobalConfig.php:1179
+#: app/global-config/editGlobalConfig.php:462
+#: app/global-config/editGlobalConfig.php:631
+#: app/global-config/editGlobalConfig.php:862
+#: app/global-config/editGlobalConfig.php:957
+#: app/global-config/editGlobalConfig.php:1064
+#: app/global-config/editGlobalConfig.php:1159
 msgid "Alpha Numeric"
 msgstr "Alphanumérique"
 
@@ -4855,8 +4867,8 @@ msgstr "Alphanumérique"
 #: app/hepatitis/results/hepatitis-failed-results.php:113
 #: app/hepatitis/results/hepatitis-manual-results.php:147
 #: app/import-result/imported-results.php:245 app/mail/vlResultMail.php:146
-#: app/specimen-referral-manifest/add-manifest.php:204
-#: app/specimen-referral-manifest/edit-manifest.php:281
+#: app/specimen-referral-manifest/add-manifest.php:209
+#: app/specimen-referral-manifest/edit-manifest.php:192
 #: app/system/translate-strings.php:41
 #: app/tb/management/tb-clinic-report.php:112
 #: app/tb/management/tb-clinic-report.php:220
@@ -5103,7 +5115,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/generic-tests/requests/edit-request.php:950
 #: app/generic-tests/results/email-results.php:333
 #: app/generic-tests/results/update-generic-test-result.php:916
-#: app/global-config/editGlobalConfig.php:1365
+#: app/global-config/editGlobalConfig.php:1342
 #: app/hepatitis/reference/add-hepatitis-comorbidities.php:57
 #: app/hepatitis/reference/add-hepatitis-results.php:56
 #: app/hepatitis/reference/add-hepatitis-risk-factors.php:56
@@ -5115,7 +5127,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/instruments/edit-instrument.php:668 app/mail/vlResultMail.php:333
 #: app/patients/add-patient.php:238 app/patients/edit-patient.php:253
 #: app/roles/addRole.php:381 app/roles/editRole.php:376
-#: app/specimen-referral-manifest/add-manifest.php:243
+#: app/specimen-referral-manifest/add-manifest.php:248
 #: app/system-admin/edit-config/resetPassword.php:57
 #: app/system-admin/instance-overview/instanceIndex.php:117
 #: app/tb/reference/add-tb-results.php:92
@@ -5185,12 +5197,12 @@ msgstr ""
 "Nombre maximum d'échantillons autorisés pour la plate-forme sélectionnée"
 
 #: app/batch/batches.php:25 app/batch/generate-batch-pdf.php:30
-#: app/batch/generate-compact-batch-pdf.php:30
+#: app/batch/generate-compact-batch-pdf.php:31
 msgid "Invalid test type"
 msgstr "Type de test non valide"
 
 #: app/batch/batches.php:25 app/batch/generate-batch-pdf.php:30
-#: app/batch/generate-compact-batch-pdf.php:30
+#: app/batch/generate-compact-batch-pdf.php:31
 msgid "Unspecified"
 msgstr "Non spécifié"
 
@@ -5270,13 +5282,13 @@ msgstr "Ce code de lot existe déjà, essayez un autre code"
 
 #: app/batch/edit-batch.php:295 app/batch/get-samples-batch.php:190
 #: app/facilities/getFacilityMapUser.php:38
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:105
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:107
 msgid "Number of unselected samples"
 msgstr "Nombre d'échantillons non sélectionnés"
 
 #: app/batch/edit-batch.php:316 app/batch/get-samples-batch.php:214
 #: app/facilities/getFacilityMapUser.php:57
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:128
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:130
 msgid "Number of selected samples"
 msgstr "Nombre d'échantillons sélectionnés"
 
@@ -5286,23 +5298,23 @@ msgstr ""
 "Vous avez sélectionné un nombre d'échantillons supérieur au nombre autorisé"
 
 #: app/batch/edit-batch.php:365
-#: app/specimen-referral-manifest/add-manifest.php:268
-#: app/specimen-referral-manifest/edit-manifest.php:364
+#: app/specimen-referral-manifest/add-manifest.php:273
+#: app/specimen-referral-manifest/edit-manifest.php:275
 msgid "Please select one or more samples"
 msgstr "Veuillez sélectionner un ou plusieurs échantillons"
 
 #: app/batch/generate-batch-pdf.php:32
-#: app/batch/generate-compact-batch-pdf.php:32
+#: app/batch/generate-compact-batch-pdf.php:33
 msgid "Invalid Batch"
 msgstr "Lot non valide"
 
 #: app/batch/generate-batch-pdf.php:50
-#: app/batch/generate-compact-batch-pdf.php:50
+#: app/batch/generate-compact-batch-pdf.php:51
 msgid "Test Worksheet"
 msgstr "Feuille de test"
 
-#: app/batch/generate-batch-pdf.php:110
-#: app/batch/generate-compact-batch-pdf.php:112
+#: app/batch/generate-batch-pdf.php:108
+#: app/batch/generate-compact-batch-pdf.php:111
 #: app/cd4/results/pdf/result-pdf-rwanda.php:40
 #: app/covid-19/mail/covid-19-result-mail-confirm.php:84
 #: app/eid/results/pdf/result-pdf-drc.php:61
@@ -5313,52 +5325,52 @@ msgstr "Feuille de test"
 msgid "VLSM"
 msgstr "VLSM"
 
+#: app/batch/generate-batch-pdf.php:109 app/batch/generate-batch-pdf.php:110
 #: app/batch/generate-batch-pdf.php:111 app/batch/generate-batch-pdf.php:112
-#: app/batch/generate-batch-pdf.php:113 app/batch/generate-batch-pdf.php:114
+#: app/batch/generate-compact-batch-pdf.php:112
 #: app/batch/generate-compact-batch-pdf.php:113
 #: app/batch/generate-compact-batch-pdf.php:114
 #: app/batch/generate-compact-batch-pdf.php:115
-#: app/batch/generate-compact-batch-pdf.php:116
 msgid "VLSM BATCH"
 msgstr "VLSM BATCH"
 
-#: app/batch/generate-batch-pdf.php:156
-#: app/batch/generate-compact-batch-pdf.php:157
+#: app/batch/generate-batch-pdf.php:154
+#: app/batch/generate-compact-batch-pdf.php:156
 msgid "Reagent/Kit Name"
 msgstr "Nom du réactif/kit"
 
-#: app/batch/generate-batch-pdf.php:157
-#: app/batch/generate-compact-batch-pdf.php:159
+#: app/batch/generate-batch-pdf.php:155
+#: app/batch/generate-compact-batch-pdf.php:158
 #: app/covid-19/results/covid-19-qc-data.php:83
 #: app/import-result/imported-results.php:236
 msgid "Lot Number"
 msgstr "N° de lot"
 
-#: app/batch/generate-batch-pdf.php:158
-#: app/batch/generate-compact-batch-pdf.php:164
+#: app/batch/generate-batch-pdf.php:156
+#: app/batch/generate-compact-batch-pdf.php:163
 #: app/import-result/imported-results.php:239
 msgid "Lot Expiry Date"
 msgstr "Date d'expiration du lot"
 
-#: app/batch/generate-batch-pdf.php:161
-#: app/batch/generate-compact-batch-pdf.php:170
+#: app/batch/generate-batch-pdf.php:159
+#: app/batch/generate-compact-batch-pdf.php:169
 msgid "Printed By"
 msgstr "Imprimé par"
 
-#: app/batch/generate-batch-pdf.php:162
-#: app/batch/generate-compact-batch-pdf.php:171
+#: app/batch/generate-batch-pdf.php:160
+#: app/batch/generate-compact-batch-pdf.php:170
 msgid "Printed On"
 msgstr "Imprimé sur"
 
-#: app/batch/generate-batch-pdf.php:169 app/batch/generate-batch-pdf.php:180
+#: app/batch/generate-batch-pdf.php:167 app/batch/generate-batch-pdf.php:178
 msgid "Pos."
 msgstr "Pos."
 
-#: app/batch/generate-batch-pdf.php:171 app/batch/generate-batch-pdf.php:182
+#: app/batch/generate-batch-pdf.php:169 app/batch/generate-batch-pdf.php:180
 msgid "BARCODE"
 msgstr "BARCODE"
 
-#: app/batch/generate-batch-pdf.php:172
+#: app/batch/generate-batch-pdf.php:170
 #: app/cd4/management/cd4-clinic-report.php:185
 #: app/cd4/management/cd4-clinic-report.php:289
 #: app/cd4/management/cd4-clinic-report.php:385
@@ -5482,32 +5494,32 @@ msgstr "BARCODE"
 msgid "Remote Sample ID"
 msgstr "ID de l'échantillon à distance"
 
-#: app/batch/generate-batch-pdf.php:173 app/batch/generate-batch-pdf.php:183
+#: app/batch/generate-batch-pdf.php:171 app/batch/generate-batch-pdf.php:181
 #: app/patients/add-patient.php:96 app/patients/add-patient.php:98
 #: app/patients/edit-patient.php:113 app/patients/edit-patient.php:115
 #: app/patients/view-patients.php:34
 msgid "Patient Code"
 msgstr "Code du patient"
 
-#: app/batch/generate-batch-pdf.php:184
+#: app/batch/generate-batch-pdf.php:182
 msgid "Lot Number / <br>Exp. Date"
 msgstr "Numéro de lot / <br>Date d'exp. Date d'expiration"
 
-#: app/batch/generate-batch-pdf.php:401
-#: app/batch/generate-compact-batch-pdf.php:385
+#: app/batch/generate-batch-pdf.php:399
+#: app/batch/generate-compact-batch-pdf.php:384
 msgid "In-House Control"
 msgstr "Contrôle interne"
 
-#: app/batch/generate-batch-pdf.php:418
+#: app/batch/generate-batch-pdf.php:416
 msgid "Manufacturer Control"
 msgstr "Contrôle du fabricant"
 
-#: app/batch/generate-batch-pdf.php:435
-#: app/batch/generate-compact-batch-pdf.php:417
+#: app/batch/generate-batch-pdf.php:433
+#: app/batch/generate-compact-batch-pdf.php:416
 msgid "Calibrator"
 msgstr "Calibrateur"
 
-#: app/batch/generate-compact-batch-pdf.php:401
+#: app/batch/generate-compact-batch-pdf.php:400
 msgid "Manfacturing Control"
 msgstr "Contrôle de la fabrication"
 
@@ -5546,11 +5558,11 @@ msgstr "Modifier"
 msgid "Edit Position"
 msgstr "Modifier le poste"
 
-#: app/batch/get-batches.php:167 app/batch/get-batches.php:169
+#: app/batch/get-batches.php:167
 msgid "Print Batch PDF"
 msgstr "Imprimer des PDF par lots"
 
-#: app/batch/get-batches.php:174
+#: app/batch/get-batches.php:171
 msgid "Delete"
 msgstr "Supprimer"
 
@@ -6083,7 +6095,7 @@ msgstr "Femme"
 #: app/covid-19/results/pdf/result-pdf-rwanda.php:147
 #: app/covid-19/results/pdf/result-pdf-sierraleone.php:240
 #: app/covid-19/results/pdf/result-pdf-ssudan-default.php:181
-#: app/covid-19/results/pdf/result-pdf-ssudan.php:248
+#: app/covid-19/results/pdf/result-pdf-ssudan.php:255
 #: app/covid-19/results/pdf/result-pdf-who.php:150
 #: app/eid/management/eid-clinic-report.php:164
 #: app/eid/management/eid-clinic-report.php:264
@@ -6126,7 +6138,7 @@ msgstr "Femme"
 #: app/tb/requests/tb-requests.php:186 app/tb/results/email-results.php:185
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:193
 #: app/tb/results/pdf/result-pdf-sierraleone.php:182
-#: app/tb/results/pdf/result-pdf-ssudan.php:184
+#: app/tb/results/pdf/result-pdf-ssudan.php:190
 #: app/vl/program-management/highViralLoad.php:250
 #: app/vl/program-management/highViralLoad.php:416
 #: app/vl/program-management/highViralLoad.php:571
@@ -6146,7 +6158,7 @@ msgstr "Femme"
 #: app/vl/results/pdf/result-pdf-png.php:128
 #: app/vl/results/pdf/result-pdf-rwanda.php:128
 #: app/vl/results/pdf/result-pdf-sierraleone.php:199
-#: app/vl/results/pdf/result-pdf-ssudan.php:218
+#: app/vl/results/pdf/result-pdf-ssudan.php:224
 #: app/vl/results/pdf/result-pdf-who.php:217
 #: app/vl/results/vlPrintResult.php:180 app/vl/results/vlPrintResult.php:437
 #: app/vl/results/vlResultMail.php:185 app/vl/results/vlTestResult.php:157
@@ -7013,8 +7025,8 @@ msgstr "Télécharger le PDF"
 #: app/covid-19/results/covid-19-print-results.php:483
 #: app/eid/management/eid-clinic-report.php:610
 #: app/eid/management/eid-export-data.php:365
-#: app/eid/requests/forms/add-cameroon.php:880
-#: app/eid/requests/forms/edit-cameroon.php:869
+#: app/eid/requests/forms/add-cameroon.php:882
+#: app/eid/requests/forms/edit-cameroon.php:873
 #: app/eid/results/eid-failed-results.php:329
 #: app/eid/results/eid-print-results.php:482 app/facilities/addFacility.php:808
 #: app/facilities/editFacility.php:782 app/facilities/facilities.php:206
@@ -7055,8 +7067,8 @@ msgstr "Sélectionner la région"
 #: app/covid-19/results/covid-19-print-results.php:487
 #: app/eid/management/eid-clinic-report.php:614
 #: app/eid/management/eid-export-data.php:368
-#: app/eid/requests/forms/add-cameroon.php:883
-#: app/eid/requests/forms/edit-cameroon.php:872
+#: app/eid/requests/forms/add-cameroon.php:885
+#: app/eid/requests/forms/edit-cameroon.php:876
 #: app/eid/results/eid-failed-results.php:332
 #: app/eid/results/eid-print-results.php:485 app/facilities/addFacility.php:813
 #: app/facilities/editFacility.php:787 app/facilities/facilities.php:209
@@ -7621,7 +7633,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/eid/requests/forms/add-cameroon.php:372
 #: app/eid/requests/forms/add-cameroon.php:386
 #: app/eid/requests/forms/add-cameroon.php:498
-#: app/eid/requests/forms/add-cameroon.php:544
+#: app/eid/requests/forms/add-cameroon.php:547
 #: app/eid/requests/forms/add-png.php:200
 #: app/eid/requests/forms/add-rwanda.php:168
 #: app/eid/requests/forms/add-sierraleone.php:188
@@ -7637,7 +7649,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/eid/requests/forms/edit-cameroon.php:399
 #: app/eid/requests/forms/edit-cameroon.php:414
 #: app/eid/requests/forms/edit-cameroon.php:527
-#: app/eid/requests/forms/edit-cameroon.php:575
+#: app/eid/requests/forms/edit-cameroon.php:579
 #: app/eid/requests/forms/edit-png.php:232
 #: app/eid/requests/forms/edit-rwanda.php:182
 #: app/eid/requests/forms/edit-sierraleone.php:189
@@ -7653,7 +7665,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/eid/results/forms/update-cameroon-result.php:373
 #: app/eid/results/forms/update-cameroon-result.php:388
 #: app/eid/results/forms/update-cameroon-result.php:488
-#: app/eid/results/forms/update-cameroon-result.php:539
+#: app/eid/results/forms/update-cameroon-result.php:544
 #: app/facilities/addFacility.php:619 app/facilities/addFacility.php:633
 #: app/facilities/editFacility.php:594 app/facilities/editFacility.php:608
 #: app/facilities/facilities.php:115
@@ -7685,25 +7697,25 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/generic-tests/results/update-generic-test-result.php:617
 #: app/generic-tests/results/update-generic-test-result.php:756
 #: app/global-config/editGlobalConfig.php:113
-#: app/global-config/editGlobalConfig.php:234
-#: app/global-config/editGlobalConfig.php:246
-#: app/global-config/editGlobalConfig.php:276
-#: app/global-config/editGlobalConfig.php:309
-#: app/global-config/editGlobalConfig.php:555
-#: app/global-config/editGlobalConfig.php:569
-#: app/global-config/editGlobalConfig.php:583
-#: app/global-config/editGlobalConfig.php:693
-#: app/global-config/editGlobalConfig.php:707
-#: app/global-config/editGlobalConfig.php:732
-#: app/global-config/editGlobalConfig.php:823
-#: app/global-config/editGlobalConfig.php:837
-#: app/global-config/editGlobalConfig.php:933
-#: app/global-config/editGlobalConfig.php:1029
-#: app/global-config/editGlobalConfig.php:1043
-#: app/global-config/editGlobalConfig.php:1140
-#: app/global-config/editGlobalConfig.php:1248
-#: app/global-config/editGlobalConfig.php:1305
-#: app/global-config/editGlobalConfig.php:1316
+#: app/global-config/editGlobalConfig.php:229
+#: app/global-config/editGlobalConfig.php:241
+#: app/global-config/editGlobalConfig.php:269
+#: app/global-config/editGlobalConfig.php:303
+#: app/global-config/editGlobalConfig.php:550
+#: app/global-config/editGlobalConfig.php:562
+#: app/global-config/editGlobalConfig.php:577
+#: app/global-config/editGlobalConfig.php:685
+#: app/global-config/editGlobalConfig.php:697
+#: app/global-config/editGlobalConfig.php:722
+#: app/global-config/editGlobalConfig.php:810
+#: app/global-config/editGlobalConfig.php:822
+#: app/global-config/editGlobalConfig.php:918
+#: app/global-config/editGlobalConfig.php:1012
+#: app/global-config/editGlobalConfig.php:1024
+#: app/global-config/editGlobalConfig.php:1120
+#: app/global-config/editGlobalConfig.php:1226
+#: app/global-config/editGlobalConfig.php:1284
+#: app/global-config/editGlobalConfig.php:1294
 #: app/hepatitis/management/hepatitis-export-data.php:190
 #: app/hepatitis/requests/forms/add-rwanda.php:83
 #: app/hepatitis/requests/forms/edit-rwanda.php:165
@@ -7833,7 +7845,7 @@ msgstr "Oui"
 #: app/eid/requests/forms/add-cameroon.php:373
 #: app/eid/requests/forms/add-cameroon.php:387
 #: app/eid/requests/forms/add-cameroon.php:499
-#: app/eid/requests/forms/add-cameroon.php:545
+#: app/eid/requests/forms/add-cameroon.php:548
 #: app/eid/requests/forms/add-png.php:199
 #: app/eid/requests/forms/add-rwanda.php:167
 #: app/eid/requests/forms/add-sierraleone.php:187
@@ -7849,7 +7861,7 @@ msgstr "Oui"
 #: app/eid/requests/forms/edit-cameroon.php:400
 #: app/eid/requests/forms/edit-cameroon.php:415
 #: app/eid/requests/forms/edit-cameroon.php:528
-#: app/eid/requests/forms/edit-cameroon.php:576
+#: app/eid/requests/forms/edit-cameroon.php:580
 #: app/eid/requests/forms/edit-png.php:231
 #: app/eid/requests/forms/edit-rwanda.php:181
 #: app/eid/requests/forms/edit-sierraleone.php:188
@@ -7865,7 +7877,7 @@ msgstr "Oui"
 #: app/eid/results/forms/update-cameroon-result.php:374
 #: app/eid/results/forms/update-cameroon-result.php:389
 #: app/eid/results/forms/update-cameroon-result.php:489
-#: app/eid/results/forms/update-cameroon-result.php:540
+#: app/eid/results/forms/update-cameroon-result.php:545
 #: app/facilities/addFacility.php:620 app/facilities/addFacility.php:634
 #: app/facilities/editFacility.php:595 app/facilities/editFacility.php:609
 #: app/facilities/facilities.php:116
@@ -7897,25 +7909,25 @@ msgstr "Oui"
 #: app/generic-tests/results/update-generic-test-result.php:621
 #: app/generic-tests/results/update-generic-test-result.php:758
 #: app/global-config/editGlobalConfig.php:114
-#: app/global-config/editGlobalConfig.php:235
-#: app/global-config/editGlobalConfig.php:247
-#: app/global-config/editGlobalConfig.php:277
-#: app/global-config/editGlobalConfig.php:310
-#: app/global-config/editGlobalConfig.php:556
-#: app/global-config/editGlobalConfig.php:570
-#: app/global-config/editGlobalConfig.php:584
-#: app/global-config/editGlobalConfig.php:694
-#: app/global-config/editGlobalConfig.php:708
-#: app/global-config/editGlobalConfig.php:733
-#: app/global-config/editGlobalConfig.php:824
-#: app/global-config/editGlobalConfig.php:838
-#: app/global-config/editGlobalConfig.php:934
-#: app/global-config/editGlobalConfig.php:1030
-#: app/global-config/editGlobalConfig.php:1044
-#: app/global-config/editGlobalConfig.php:1141
-#: app/global-config/editGlobalConfig.php:1249
-#: app/global-config/editGlobalConfig.php:1306
-#: app/global-config/editGlobalConfig.php:1317
+#: app/global-config/editGlobalConfig.php:230
+#: app/global-config/editGlobalConfig.php:242
+#: app/global-config/editGlobalConfig.php:270
+#: app/global-config/editGlobalConfig.php:304
+#: app/global-config/editGlobalConfig.php:551
+#: app/global-config/editGlobalConfig.php:563
+#: app/global-config/editGlobalConfig.php:578
+#: app/global-config/editGlobalConfig.php:686
+#: app/global-config/editGlobalConfig.php:698
+#: app/global-config/editGlobalConfig.php:723
+#: app/global-config/editGlobalConfig.php:811
+#: app/global-config/editGlobalConfig.php:823
+#: app/global-config/editGlobalConfig.php:919
+#: app/global-config/editGlobalConfig.php:1013
+#: app/global-config/editGlobalConfig.php:1025
+#: app/global-config/editGlobalConfig.php:1121
+#: app/global-config/editGlobalConfig.php:1227
+#: app/global-config/editGlobalConfig.php:1285
+#: app/global-config/editGlobalConfig.php:1295
 #: app/hepatitis/management/hepatitis-export-data.php:191
 #: app/hepatitis/requests/forms/add-rwanda.php:82
 #: app/hepatitis/requests/forms/edit-rwanda.php:164
@@ -8706,12 +8718,12 @@ msgstr "Date de la demande"
 #: app/covid-19/results/forms/update-drc-result.php:753
 #: app/covid-19/results/forms/update-drc-result.php:755
 #: app/eid/requests/forms/add-burkina-faso.php:371
-#: app/eid/requests/forms/add-cameroon.php:540
+#: app/eid/requests/forms/add-cameroon.php:543
 #: app/eid/requests/forms/add-drc.php:499
 #: app/eid/requests/forms/edit-burkina-faso.php:384
-#: app/eid/requests/forms/edit-cameroon.php:571
+#: app/eid/requests/forms/edit-cameroon.php:575
 #: app/eid/results/forms/update-burkina-faso-result.php:384
-#: app/eid/results/forms/update-cameroon-result.php:535
+#: app/eid/results/forms/update-cameroon-result.php:540
 #: app/eid/results/forms/update-drc-result.php:470
 #: app/generic-tests/requests/add-request.php:558
 #: app/generic-tests/requests/edit-request.php:766
@@ -9776,6 +9788,16 @@ msgstr "Veuillez saisir l'exemple de code du manifeste"
 msgid "Sample Received at Testing Lab"
 msgstr "Date de réception au labo"
 
+#: app/cd4/requests/add-samples-from-manifest.php:66
+#: app/covid-19/requests/addSamplesFromManifest.php:66
+#: app/eid/requests/addSamplesFromManifest.php:67
+#: app/generic-tests/requests/add-samples-from-manifest.php:55
+#: app/hepatitis/requests/add-samples-from-manifest.php:59
+#: app/tb/requests/addSamplesFromManifest.php:45
+#: app/vl/requests/addSamplesFromManifest.php:65
+msgid "Activate Samples"
+msgstr "Echantillons activés"
+
 #: app/cd4/requests/add-samples-from-manifest.php:90
 #: app/cd4/requests/cd4-requests.php:570
 #: app/cd4/results/cd4-manual-results.php:248
@@ -9820,7 +9842,7 @@ msgstr "Veuillez saisir le code du manifeste, puis soumettre !"
 #: app/generic-tests/requests/add-samples-from-manifest.php:245
 #: app/hepatitis/requests/add-samples-from-manifest.php:246
 #: app/tb/requests/addSamplesFromManifest.php:199
-#: app/vl/requests/addSamplesFromManifest.php:237
+#: public/assets/js/main.js.php:139
 msgid "Please enter the Sample Manifest Code"
 msgstr "Veuillez saisir l'exemple de code de manifeste"
 
@@ -9830,7 +9852,6 @@ msgstr "Veuillez saisir l'exemple de code de manifeste"
 #: app/generic-tests/requests/add-samples-from-manifest.php:255
 #: app/hepatitis/requests/add-samples-from-manifest.php:256
 #: app/tb/requests/addSamplesFromManifest.php:209
-#: app/vl/requests/addSamplesFromManifest.php:247
 msgid "Trying to sync manifest"
 msgstr "Essai de synchronisation du manifeste"
 
@@ -9849,9 +9870,9 @@ msgstr "Essai de synchronisation du manifeste"
 #: app/hepatitis/requests/hepatitis-requests.php:846
 #: app/tb/requests/addSamplesFromManifest.php:209
 #: app/tb/requests/tb-requests.php:732 app/users/addUser.php:444
-#: app/users/editUser.php:535 app/vl/requests/addSamplesFromManifest.php:247
-#: app/vl/requests/vl-requests.php:1226 app/vl/requests/vl-requests.php:1250
-#: app/vl/requests/vl-requests.php:1281
+#: app/users/editUser.php:535 app/vl/requests/vl-requests.php:1226
+#: app/vl/requests/vl-requests.php:1250 app/vl/requests/vl-requests.php:1281
+#: public/assets/js/main.js.php:108
 msgid "Please wait"
 msgstr "Veuillez patienter"
 
@@ -9861,7 +9882,7 @@ msgstr "Veuillez patienter"
 #: app/generic-tests/requests/add-samples-from-manifest.php:290
 #: app/hepatitis/requests/add-samples-from-manifest.php:291
 #: app/tb/requests/addSamplesFromManifest.php:244
-#: app/vl/requests/addSamplesFromManifest.php:282
+#: app/vl/requests/addSamplesFromManifest.php:219
 msgid "Please select when the samples were received at the Testing Lab"
 msgstr ""
 "Veuillez indiquer la date à laquelle les échantillons ont été reçus par le "
@@ -9873,7 +9894,7 @@ msgstr ""
 #: app/generic-tests/requests/add-samples-from-manifest.php:302
 #: app/hepatitis/requests/add-samples-from-manifest.php:303
 #: app/tb/requests/addSamplesFromManifest.php:256
-#: app/vl/requests/addSamplesFromManifest.php:293
+#: app/vl/requests/addSamplesFromManifest.php:230
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
@@ -9882,7 +9903,7 @@ msgstr "Des échantillons de ce manifeste ont été activés"
 #: app/generic-tests/requests/add-request-helper.php:48
 #: app/generic-tests/requests/edit-request-helper.php:52
 #: app/vl/requests/addVlRequestHelper.php:55
-#: app/vl/requests/editVlRequestHelper.php:64
+#: app/vl/requests/editVlRequestHelper.php:63
 msgid "Please enter all mandatory fields to save the test request"
 msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
@@ -9897,17 +9918,17 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: app/cd4/results/cd4-update-result-helper.php:143
 #: app/covid-19/requests/covid-19-edit-request-helper.php:430
 #: app/covid-19/results/covid-19-update-result-helper.php:189
-#: app/eid/requests/eid-add-request-helper.php:501
-#: app/eid/requests/eid-edit-request-helper.php:536
+#: app/eid/requests/eid-add-request-helper.php:502
+#: app/eid/requests/eid-edit-request-helper.php:537
 #: app/generic-tests/requests/add-request-helper.php:423
 #: app/generic-tests/requests/edit-request-helper.php:393
 #: app/generic-tests/results/update-generic-test-result-helper.php:263
 #: app/hepatitis/requests/hepatitis-edit-request-helper.php:263
 #: app/hepatitis/results/hepatitis-update-result-helper.php:104
 #: app/patients/save-patient-helper.php:88
-#: app/vl/requests/addVlRequestHelper.php:457
-#: app/vl/requests/editVlRequestHelper.php:422
-#: app/vl/results/updateVlTestResultHelper.php:287
+#: app/vl/requests/addVlRequestHelper.php:458
+#: app/vl/requests/editVlRequestHelper.php:421
+#: app/vl/results/updateVlTestResultHelper.php:288
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
 
@@ -10231,6 +10252,77 @@ msgstr "Indication pour le test CD4"
 msgid "CD4 Result (%)"
 msgstr "Résultat CD4 (%)"
 
+#: app/cd4/requests/forms/add-rwanda.php:97
+#: app/cd4/requests/forms/edit-rwanda.php:141
+#: app/cd4/results/forms/update-rwanda-result.php:131
+#: app/covid-19/requests/forms/add-cameroon.php:105
+#: app/covid-19/requests/forms/add-rwanda.php:81
+#: app/covid-19/requests/forms/add-sierraleone.php:91
+#: app/covid-19/requests/forms/add-southsudan.php:105
+#: app/covid-19/requests/forms/add-who.php:79
+#: app/covid-19/requests/forms/edit-rwanda.php:111
+#: app/covid-19/requests/forms/edit-sierraleone.php:126
+#: app/covid-19/requests/forms/edit-southsudan.php:125
+#: app/covid-19/requests/forms/edit-who.php:105
+#: app/covid-19/requests/forms/quick-add-southsudan.php:78
+#: app/covid-19/results/forms/update-rwanda-result.php:109
+#: app/covid-19/results/forms/update-sierraleone-result.php:131
+#: app/covid-19/results/forms/update-southsudan-result.php:130
+#: app/covid-19/results/forms/update-who-result.php:96
+#: app/eid/requests/forms/add-burkina-faso.php:71
+#: app/eid/requests/forms/add-cameroon.php:90
+#: app/eid/requests/forms/add-png.php:86
+#: app/eid/requests/forms/add-rwanda.php:87
+#: app/eid/requests/forms/add-sierraleone.php:93
+#: app/eid/requests/forms/add-southsudan.php:91
+#: app/eid/requests/forms/add-who.php:85
+#: app/eid/requests/forms/edit-burkina-faso.php:85
+#: app/eid/requests/forms/edit-cameroon.php:114
+#: app/eid/requests/forms/edit-drc.php:113
+#: app/eid/requests/forms/edit-png.php:118
+#: app/eid/requests/forms/edit-rwanda.php:103
+#: app/eid/results/forms/update-burkina-faso-result.php:84
+#: app/eid/results/forms/update-png-result.php:113
+#: app/generic-tests/requests/clone-request.php:433
+#: app/generic-tests/requests/edit-request.php:436
+#: app/generic-tests/results/update-generic-test-result.php:423
+#: app/hepatitis/requests/forms/add-rwanda.php:74
+#: app/hepatitis/requests/forms/edit-rwanda.php:102
+#: app/hepatitis/results/forms/update-rwanda-result.php:92
+#: app/tb/requests/forms/add-burkina-faso.php:94
+#: app/tb/requests/forms/add-sierraleone.php:110
+#: app/tb/requests/forms/edit-burkina-faso.php:114
+#: app/tb/requests/forms/edit-sierraleone.php:149
+#: app/tb/requests/forms/edit-southsudan.php:119
+#: app/tb/results/forms/update-burkina-faso.php:113
+#: app/tb/results/forms/update-sierraleone.php:135
+#: app/tb/results/forms/update-southsudan.php:134
+#: app/vl/requests/forms/add-burkina-faso.php:108
+#: app/vl/requests/forms/add-cameroon.php:111
+#: app/vl/requests/forms/add-rwanda.php:97
+#: app/vl/requests/forms/add-sierraleone.php:94
+#: app/vl/requests/forms/add-southsudan.php:102
+#: app/vl/requests/forms/add-who.php:83
+#: app/vl/requests/forms/edit-burkina-faso.php:206
+#: app/vl/requests/forms/edit-cameroon.php:162
+#: app/vl/requests/forms/edit-png.php:198
+#: app/vl/requests/forms/edit-rwanda.php:152
+#: app/vl/requests/forms/edit-sierraleone.php:210
+#: app/vl/requests/forms/edit-southsudan.php:191
+#: app/vl/requests/forms/edit-who.php:199
+#: app/vl/results/forms/update-burkina-faso-result.php:206
+#: app/vl/results/forms/update-cameroon-result.php:203
+#: app/vl/results/forms/update-png-result.php:175
+#: app/vl/results/forms/update-rwanda-result.php:133
+#: app/vl/results/forms/update-sierraleone-result.php:196
+#: app/vl/results/forms/update-southsudan-result.php:194
+msgid ""
+"Please make sure you have selected Sample Collection Date and Requesting "
+"Facility"
+msgstr ""
+"Veuillez vous assurer que vous avez sélectionné la date de prélèvement de "
+"l'échantillon et l'établissement demandeur"
+
 #: app/cd4/requests/forms/add-rwanda.php:213
 #: app/cd4/requests/forms/edit-rwanda.php:258 app/patients/add-patient.php:43
 #: app/patients/edit-patient.php:60 app/vl/requests/forms/add-cameroon.php:233
@@ -10284,7 +10376,7 @@ msgstr "Cryptage des données d'identification des patients"
 #: app/cd4/requests/forms/edit-rwanda.php:856
 #: app/vl/requests/forms/add-burkina-faso.php:729
 #: app/vl/requests/forms/add-cameroon.php:766
-#: app/vl/requests/forms/add-drc.php:963 app/vl/requests/forms/add-png.php:660
+#: app/vl/requests/forms/add-drc.php:979 app/vl/requests/forms/add-png.php:660
 #: app/vl/requests/forms/add-rwanda.php:734
 #: app/vl/requests/forms/add-sierraleone.php:953
 #: app/vl/requests/forms/add-southsudan.php:833
@@ -10298,7 +10390,7 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 #: app/cd4/requests/forms/edit-rwanda.php:859
 #: app/vl/requests/forms/add-burkina-faso.php:732
 #: app/vl/requests/forms/add-cameroon.php:769
-#: app/vl/requests/forms/add-drc.php:966 app/vl/requests/forms/add-png.php:663
+#: app/vl/requests/forms/add-drc.php:982 app/vl/requests/forms/add-png.php:663
 #: app/vl/requests/forms/add-rwanda.php:737
 #: app/vl/requests/forms/add-sierraleone.php:956
 #: app/vl/requests/forms/add-southsudan.php:836
@@ -10312,7 +10404,7 @@ msgstr "Dernière demande ajouté à LIS/STS"
 #: app/cd4/requests/forms/edit-rwanda.php:862
 #: app/vl/requests/forms/add-burkina-faso.php:735
 #: app/vl/requests/forms/add-cameroon.php:772
-#: app/vl/requests/forms/add-drc.php:969 app/vl/requests/forms/add-png.php:666
+#: app/vl/requests/forms/add-drc.php:985 app/vl/requests/forms/add-png.php:666
 #: app/vl/requests/forms/add-rwanda.php:740
 #: app/vl/requests/forms/add-sierraleone.php:959
 #: app/vl/requests/forms/add-southsudan.php:839
@@ -10326,7 +10418,7 @@ msgstr "Date du dernier prélèvement de l'échantillon"
 #: app/cd4/requests/forms/edit-rwanda.php:865
 #: app/vl/requests/forms/add-burkina-faso.php:738
 #: app/vl/requests/forms/add-cameroon.php:775
-#: app/vl/requests/forms/add-drc.php:972 app/vl/requests/forms/add-png.php:669
+#: app/vl/requests/forms/add-drc.php:988 app/vl/requests/forms/add-png.php:669
 #: app/vl/requests/forms/add-rwanda.php:743
 #: app/vl/requests/forms/add-sierraleone.php:962
 #: app/vl/requests/forms/add-southsudan.php:842
@@ -10525,7 +10617,7 @@ msgstr "Date de l'essai précédent"
 #: app/covid-19/results/can-record-confirmatory-tests.php:185
 #: app/covid-19/results/pdf/result-pdf-cameroon.php:407
 #: app/dashboard/vlTestResultStatus.php:162
-#: app/eid/results/pdf/result-pdf-cameroon.php:410
+#: app/eid/results/pdf/result-pdf-cameroon.php:413
 #: app/vl/requests/patientModal.php:122
 #: app/vl/results/pdf/result-pdf-cameroon.php:489
 msgid "Previous Result"
@@ -11625,7 +11717,7 @@ msgstr "Saisir le résultat"
 #: app/covid-19/results/pdf/result-pdf-rwanda.php:414
 #: app/covid-19/results/pdf/result-pdf-sierraleone.php:499
 #: app/covid-19/results/pdf/result-pdf-ssudan-default.php:432
-#: app/covid-19/results/pdf/result-pdf-ssudan.php:503
+#: app/covid-19/results/pdf/result-pdf-ssudan.php:510
 #: app/eid/results/pdf/result-pdf-rwanda.php:340
 #: app/hepatitis/results/pdf/result-pdf-rwanda.php:439
 #: app/vl/results/pdf/result-pdf-rwanda.php:384
@@ -11689,9 +11781,9 @@ msgstr "Résultat sur"
 #: app/classes/Helpers/BatchPdfHelper.php:47
 #: app/covid-19/requests/forms/edit-cameroon.php:571
 #: app/covid-19/results/forms/update-cameroon-result.php:526
-#: app/eid/requests/forms/add-cameroon.php:579
-#: app/eid/requests/forms/edit-cameroon.php:618
-#: app/eid/results/forms/update-cameroon-result.php:584
+#: app/eid/requests/forms/add-cameroon.php:581
+#: app/eid/requests/forms/edit-cameroon.php:622
+#: app/eid/results/forms/update-cameroon-result.php:588
 #: app/generic-tests/requests/add-request.php:656
 #: app/generic-tests/requests/edit-request.php:872
 #: app/generic-tests/results/update-generic-test-result.php:836
@@ -11764,7 +11856,7 @@ msgstr ""
 "Vous n'avez pas l'autorisation d'accéder à cette page ou à cette ressource."
 
 #: app/classes/Middlewares/App/AppAuthMiddleware.php:47
-#: app/login/loginProcess.php:129
+#: app/login/loginProcess.php:135
 msgid "Please change your password to proceed."
 msgstr "Veuillez modifier votre mot de passe pour continuer."
 
@@ -11792,8 +11884,8 @@ msgstr "Tuberculose"
 msgid "Other Tests"
 msgstr "Autres tests"
 
-#: app/classes/Utilities/DateUtility.php:302
-#: app/classes/Utilities/DateUtility.php:327
+#: app/classes/Utilities/DateUtility.php:316
+#: app/classes/Utilities/DateUtility.php:341
 #: app/eid/requests/forms/add-burkina-faso.php:231
 #: app/eid/requests/forms/add-burkina-faso.php:243
 #: app/eid/requests/forms/add-burkina-faso.php:282
@@ -11812,21 +11904,21 @@ msgstr "Autres tests"
 msgid "Unknown"
 msgstr "Inconnu"
 
-#: app/classes/Utilities/DateUtility.php:310
-#: app/classes/Utilities/DateUtility.php:317
+#: app/classes/Utilities/DateUtility.php:324
+#: app/classes/Utilities/DateUtility.php:331
 msgid "years"
 msgstr "années"
 
-#: app/classes/Utilities/DateUtility.php:310
-#: app/classes/Utilities/DateUtility.php:317
+#: app/classes/Utilities/DateUtility.php:324
+#: app/classes/Utilities/DateUtility.php:331
 msgid "year"
 msgstr "année"
 
-#: app/classes/Utilities/DateUtility.php:323
+#: app/classes/Utilities/DateUtility.php:337
 msgid "months"
 msgstr "mois"
 
-#: app/classes/Utilities/DateUtility.php:323
+#: app/classes/Utilities/DateUtility.php:337
 msgid "month"
 msgstr "mois"
 
@@ -12110,7 +12202,7 @@ msgstr "Ajouter de nouvelles divisions géographiques"
 #: app/facilities/addFacility.php:700 app/facilities/addFacility.php:1033
 #: app/facilities/editFacility.php:661 app/facilities/editFacility.php:700
 #: app/facilities/editFacility.php:1044
-#: app/global-config/editGlobalConfig.php:1268
+#: app/global-config/editGlobalConfig.php:1247
 msgid "Name"
 msgstr "Nom"
 
@@ -12838,13 +12930,6 @@ msgstr "Covid-19-Demandes de test"
 msgid "Sample manifest code"
 msgstr "Code manifeste d'échantillons"
 
-#: app/covid-19/requests/addSamplesFromManifest.php:66
-#: app/eid/requests/addSamplesFromManifest.php:67
-#: app/hepatitis/requests/add-samples-from-manifest.php:59
-#: app/tb/requests/addSamplesFromManifest.php:45
-msgid "Activate Samples"
-msgstr "Echantillons activés"
-
 #: app/covid-19/requests/covid-19-add-request-helper.php:391
 msgid "Covid-19 test request added successfully"
 msgstr "Demande de test Covid-19 ajoutée avec succès"
@@ -13353,7 +13438,7 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: app/covid-19/requests/forms/edit-cameroon.php:242
 #: app/covid-19/results/forms/update-cameroon-result.php:202
 #: app/covid-19/results/forms/update-cameroon-result.php:204
-#: app/global-config/editGlobalConfig.php:1348
+#: app/global-config/editGlobalConfig.php:1325
 #: app/tb/requests/forms/add-burkina-faso.php:177
 #: app/tb/requests/forms/edit-burkina-faso.php:197
 #: app/tb/results/forms/update-burkina-faso.php:196
@@ -13656,7 +13741,7 @@ msgstr "Veuillez choisir le type de spécimen"
 #: app/covid-19/results/forms/update-cameroon-result.php:352
 #: app/eid/requests/forms/add-cameroon.php:513
 #: app/eid/requests/forms/edit-cameroon.php:543
-#: app/eid/results/forms/update-cameroon-result.php:522
+#: app/eid/results/forms/update-cameroon-result.php:528
 #: app/generic-tests/mail/mail-generic-tests-results.php:227
 #: app/generic-tests/requests/edit-request.php:748
 #: app/generic-tests/results/update-generic-test-result.php:724
@@ -13703,7 +13788,7 @@ msgstr "Date de réception"
 #: app/eid/requests/forms/add-burkina-faso.php:381
 #: app/eid/requests/forms/add-burkina-faso.php:432
 #: app/eid/requests/forms/add-cameroon.php:515
-#: app/eid/requests/forms/add-cameroon.php:564
+#: app/eid/requests/forms/add-cameroon.php:566
 #: app/eid/requests/forms/add-drc.php:469
 #: app/eid/requests/forms/add-drc.php:531
 #: app/eid/requests/forms/add-png.php:491
@@ -13723,7 +13808,7 @@ msgstr "Date de réception"
 #: app/eid/requests/forms/edit-burkina-faso.php:394
 #: app/eid/requests/forms/edit-burkina-faso.php:454
 #: app/eid/requests/forms/edit-cameroon.php:545
-#: app/eid/requests/forms/edit-cameroon.php:604
+#: app/eid/requests/forms/edit-cameroon.php:608
 #: app/eid/requests/forms/edit-drc.php:502
 #: app/eid/requests/forms/edit-drc.php:566
 #: app/eid/requests/forms/edit-png.php:520
@@ -13743,8 +13828,8 @@ msgstr "Date de réception"
 #: app/eid/results/forms/update-burkina-faso-result.php:394
 #: app/eid/results/forms/update-burkina-faso-result.php:454
 #: app/eid/results/forms/update-burkina-faso-result.php:480
-#: app/eid/results/forms/update-cameroon-result.php:524
-#: app/eid/results/forms/update-cameroon-result.php:569
+#: app/eid/results/forms/update-cameroon-result.php:530
+#: app/eid/results/forms/update-cameroon-result.php:573
 #: app/eid/results/forms/update-drc-result.php:466
 #: app/eid/results/forms/update-drc-result.php:529
 #: app/eid/results/forms/update-png-result.php:379
@@ -13849,7 +13934,7 @@ msgstr "Veuillez saisir la date"
 #: app/covid-19/requests/forms/add-cameroon.php:371
 #: app/covid-19/requests/forms/edit-cameroon.php:386
 #: app/covid-19/results/forms/update-cameroon-result.php:354
-#: app/eid/results/forms/update-cameroon-result.php:524
+#: app/eid/results/forms/update-cameroon-result.php:530
 msgid "Please enter sample receipt date"
 msgstr "Veuillez entrer la date de réception"
 
@@ -13905,11 +13990,11 @@ msgstr "Veuillez sélectionner un point de testing"
 #: app/covid-19/requests/forms/edit-cameroon.php:444
 #: app/covid-19/results/forms/update-cameroon-result.php:397
 #: app/eid/requests/forms/add-burkina-faso.php:387
-#: app/eid/requests/forms/add-cameroon.php:551
+#: app/eid/requests/forms/add-cameroon.php:553
 #: app/eid/requests/forms/edit-burkina-faso.php:400
-#: app/eid/requests/forms/edit-cameroon.php:581
+#: app/eid/requests/forms/edit-cameroon.php:585
 #: app/eid/results/forms/update-burkina-faso-result.php:400
-#: app/eid/results/forms/update-cameroon-result.php:545
+#: app/eid/results/forms/update-cameroon-result.php:550
 #: app/tb/requests/forms/add-burkina-faso.php:404
 #: app/tb/requests/forms/edit-burkina-faso.php:425
 #: app/tb/results/forms/update-burkina-faso.php:428
@@ -13925,11 +14010,11 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: app/covid-19/requests/forms/edit-cameroon.php:465
 #: app/covid-19/results/forms/update-cameroon-result.php:418
 #: app/eid/requests/forms/add-burkina-faso.php:385
-#: app/eid/requests/forms/add-cameroon.php:558
+#: app/eid/requests/forms/add-cameroon.php:560
 #: app/eid/requests/forms/edit-burkina-faso.php:398
-#: app/eid/requests/forms/edit-cameroon.php:597
+#: app/eid/requests/forms/edit-cameroon.php:601
 #: app/eid/results/forms/update-burkina-faso-result.php:398
-#: app/eid/results/forms/update-cameroon-result.php:562
+#: app/eid/results/forms/update-cameroon-result.php:567
 #: app/generic-tests/requests/add-request.php:591
 #: app/generic-tests/requests/edit-request.php:805
 #: app/generic-tests/results/update-generic-test-result.php:790
@@ -13951,9 +14036,9 @@ msgstr "Date de rejet"
 #: app/covid-19/requests/forms/add-cameroon.php:438
 #: app/covid-19/requests/forms/edit-cameroon.php:466
 #: app/covid-19/results/forms/update-cameroon-result.php:419
-#: app/eid/requests/forms/add-cameroon.php:559
-#: app/eid/requests/forms/edit-cameroon.php:598
-#: app/eid/results/forms/update-cameroon-result.php:563
+#: app/eid/requests/forms/add-cameroon.php:561
+#: app/eid/requests/forms/edit-cameroon.php:602
+#: app/eid/results/forms/update-cameroon-result.php:568
 #: app/generic-tests/requests/add-request.php:593
 #: app/generic-tests/requests/edit-request.php:808
 #: app/generic-tests/results/update-generic-test-result.php:793
@@ -14181,7 +14266,7 @@ msgstr "Fermer"
 
 #: app/covid-19/requests/forms/add-cameroon.php:1063
 #: app/covid-19/requests/forms/edit-cameroon.php:887
-#: app/eid/requests/forms/add-cameroon.php:892
+#: app/eid/requests/forms/add-cameroon.php:894
 #: app/generic-tests/requests/add-request.php:806
 #: app/generic-tests/requests/edit-request.php:1037
 #: app/generic-tests/results/update-generic-test-result.php:995
@@ -14191,7 +14276,7 @@ msgstr "Sélectionner Révisé par"
 
 #: app/covid-19/requests/forms/add-cameroon.php:1072
 #: app/covid-19/requests/forms/edit-cameroon.php:906
-#: app/eid/requests/forms/add-cameroon.php:886
+#: app/eid/requests/forms/add-cameroon.php:888
 #: app/generic-tests/requests/add-request.php:802
 #: app/generic-tests/requests/add-request.php:819
 #: app/generic-tests/requests/edit-request.php:1033
@@ -14250,7 +14335,6 @@ msgstr "Modifier la demande"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:127
 #: app/covid-19/results/forms/update-cameroon-result.php:130
-#: app/vl/requests/forms/add-cameroon.php:111
 msgid "Please enter Sample ID"
 msgstr "Veuillez saisir l'ID de l'échantillon"
 
@@ -14421,9 +14505,9 @@ msgstr "Résultat final"
 #: app/covid-19/requests/forms/edit-cameroon.php:565
 #: app/covid-19/results/forms/update-cameroon-result.php:520
 #: app/eid/requests/forms/add-burkina-faso.php:414
-#: app/eid/requests/forms/add-cameroon.php:581
+#: app/eid/requests/forms/add-cameroon.php:583
 #: app/eid/requests/forms/edit-burkina-faso.php:436
-#: app/eid/requests/forms/edit-cameroon.php:620
+#: app/eid/requests/forms/edit-cameroon.php:624
 #: app/eid/results/forms/update-burkina-faso-result.php:436
 #: app/generic-tests/mail/mail-generic-tests-results.php:246
 #: app/generic-tests/requests/add-request.php:648
@@ -14445,8 +14529,8 @@ msgstr "Révisé par"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:567
 #: app/covid-19/results/forms/update-cameroon-result.php:522
-#: app/eid/requests/forms/add-cameroon.php:583
-#: app/eid/requests/forms/edit-cameroon.php:622
+#: app/eid/requests/forms/add-cameroon.php:585
+#: app/eid/requests/forms/edit-cameroon.php:626
 #: app/generic-tests/requests/add-request.php:650
 #: app/generic-tests/requests/edit-request.php:866
 #: app/generic-tests/results/update-generic-test-result.php:830
@@ -14459,11 +14543,11 @@ msgstr "Veuillez choisir examiné par"
 #: app/covid-19/requests/forms/edit-cameroon.php:572
 #: app/covid-19/results/forms/update-cameroon-result.php:527
 #: app/eid/requests/forms/add-burkina-faso.php:420
-#: app/eid/requests/forms/add-cameroon.php:580
+#: app/eid/requests/forms/add-cameroon.php:582
 #: app/eid/requests/forms/edit-burkina-faso.php:442
-#: app/eid/requests/forms/edit-cameroon.php:619
+#: app/eid/requests/forms/edit-cameroon.php:623
 #: app/eid/results/forms/update-burkina-faso-result.php:442
-#: app/eid/results/forms/update-cameroon-result.php:585
+#: app/eid/results/forms/update-cameroon-result.php:589
 #: app/generic-tests/requests/add-request.php:658
 #: app/generic-tests/requests/edit-request.php:875
 #: app/generic-tests/results/update-generic-test-result.php:839
@@ -14478,8 +14562,8 @@ msgstr "Examiné le"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:572
 #: app/covid-19/results/forms/update-cameroon-result.php:527
-#: app/eid/requests/forms/add-cameroon.php:580
-#: app/eid/results/forms/update-cameroon-result.php:585
+#: app/eid/requests/forms/add-cameroon.php:582
+#: app/eid/results/forms/update-cameroon-result.php:589
 #: app/generic-tests/requests/add-request.php:658
 #: app/generic-tests/requests/edit-request.php:875
 #: app/generic-tests/results/update-generic-test-result.php:839
@@ -14491,8 +14575,8 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:577
 #: app/covid-19/results/forms/update-cameroon-result.php:532
-#: app/eid/requests/forms/add-cameroon.php:593
-#: app/eid/results/forms/update-cameroon-result.php:598
+#: app/eid/requests/forms/add-cameroon.php:595
+#: app/eid/results/forms/update-cameroon-result.php:602
 #: app/generic-tests/requests/add-request.php:666
 #: app/generic-tests/requests/add-request.php:674
 #: app/generic-tests/requests/edit-request.php:884
@@ -14505,15 +14589,15 @@ msgstr "Veuillez choisir approuvé par"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:582
 #: app/covid-19/results/forms/update-cameroon-result.php:537
-#: app/eid/requests/forms/edit-cameroon.php:639
-#: app/eid/results/forms/update-cameroon-result.php:605
+#: app/eid/requests/forms/edit-cameroon.php:643
+#: app/eid/results/forms/update-cameroon-result.php:609
 msgid "Enter the reason for changing"
 msgstr "Indiquer le motif de la modification"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:582
 #: app/covid-19/results/forms/update-cameroon-result.php:537
-#: app/eid/requests/forms/edit-cameroon.php:639
-#: app/eid/results/forms/update-cameroon-result.php:605
+#: app/eid/requests/forms/edit-cameroon.php:643
+#: app/eid/results/forms/update-cameroon-result.php:609
 msgid "Please enter the reason for changing"
 msgstr "Veuillez indiquer la raison du changement"
 
@@ -14760,13 +14844,13 @@ msgid "Please enter the Authorized on"
 msgstr "Veuillez saisir le numéro autorisé sur"
 
 #: app/covid-19/results/pdf/result-pdf-cameroon.php:404
-#: app/eid/results/pdf/result-pdf-cameroon.php:407
+#: app/eid/results/pdf/result-pdf-cameroon.php:410
 #: app/vl/results/pdf/result-pdf-cameroon.php:486
 msgid "Was the result modified?"
 msgstr "Le résultat a-t-il été modifié ?"
 
 #: app/covid-19/results/pdf/result-pdf-cameroon.php:406
-#: app/eid/results/pdf/result-pdf-cameroon.php:409
+#: app/eid/results/pdf/result-pdf-cameroon.php:412
 #: app/vl/results/pdf/result-pdf-cameroon.php:488
 msgid "Result Modification Date"
 msgstr "Date de modification des résultats"
@@ -15266,11 +15350,11 @@ msgstr "Nom de la mère"
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: app/eid/requests/eid-add-request-helper.php:493
+#: app/eid/requests/eid-add-request-helper.php:494
 msgid "EID request added successfully"
 msgstr "La demande EID a été mise à jour avec succès"
 
-#: app/eid/requests/eid-edit-request-helper.php:528
+#: app/eid/requests/eid-edit-request-helper.php:529
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -15691,11 +15775,11 @@ msgid "Machine used to test"
 msgstr "Machine utilisée pour le test"
 
 #: app/eid/requests/forms/add-burkina-faso.php:424
-#: app/eid/requests/forms/add-cameroon.php:591
+#: app/eid/requests/forms/add-cameroon.php:593
 #: app/eid/requests/forms/edit-burkina-faso.php:446
-#: app/eid/requests/forms/edit-cameroon.php:630
+#: app/eid/requests/forms/edit-cameroon.php:634
 #: app/eid/results/forms/update-burkina-faso-result.php:446
-#: app/eid/results/forms/update-cameroon-result.php:596
+#: app/eid/results/forms/update-cameroon-result.php:600
 #: app/generic-tests/mail/mail-generic-tests-results.php:247
 #: app/generic-tests/requests/add-request.php:672
 #: app/generic-tests/requests/edit-request.php:896
@@ -15715,11 +15799,11 @@ msgid "Approved By"
 msgstr "Approuvé par"
 
 #: app/eid/requests/forms/add-burkina-faso.php:430
-#: app/eid/requests/forms/add-cameroon.php:589
+#: app/eid/requests/forms/add-cameroon.php:591
 #: app/eid/requests/forms/edit-burkina-faso.php:452
-#: app/eid/requests/forms/edit-cameroon.php:628
+#: app/eid/requests/forms/edit-cameroon.php:632
 #: app/eid/results/forms/update-burkina-faso-result.php:452
-#: app/eid/results/forms/update-cameroon-result.php:594
+#: app/eid/results/forms/update-cameroon-result.php:598
 #: app/generic-tests/requests/add-request.php:682
 #: app/generic-tests/requests/edit-request.php:907
 #: app/generic-tests/results/update-generic-test-result.php:871
@@ -15756,7 +15840,7 @@ msgstr "Commentaires du Technicien labo"
 #: app/generic-tests/requests/edit-request.php:949
 #: app/generic-tests/results/update-generic-test-result.php:915
 #: app/import-result/imported-results.php:323
-#: app/specimen-referral-manifest/add-manifest.php:242
+#: app/specimen-referral-manifest/add-manifest.php:247
 #: app/system-admin/instance-overview/instanceIndex.php:116
 #: app/tb/requests/forms/add-burkina-faso.php:494
 #: app/tb/results/forms/update-burkina-faso.php:547
@@ -15773,19 +15857,6 @@ msgstr "Sauvegarder"
 #: app/eid/results/forms/update-cameroon-result.php:86
 msgid "HEALTH FACILITY INFORMATION"
 msgstr "INFORMATIONS SUR LA FOSA"
-
-#: app/eid/requests/forms/add-cameroon.php:90
-#: app/eid/requests/forms/edit-burkina-faso.php:85
-#: app/eid/requests/forms/edit-cameroon.php:114
-#: app/eid/results/forms/update-burkina-faso-result.php:84
-#: app/eid/results/forms/update-cameroon-result.php:102
-#: app/generic-tests/requests/add-request.php:251
-#: app/generic-tests/requests/edit-request.php:436
-#: app/generic-tests/results/update-generic-test-result.php:423
-#: app/vl/requests/forms/edit-cameroon.php:162
-#: app/vl/results/forms/update-cameroon-result.php:203
-msgid "Please enter sample id"
-msgstr "Veuillez saisir l'identifiant de l'échantillon"
 
 #: app/eid/requests/forms/add-cameroon.php:100
 msgid "Please select province"
@@ -15824,7 +15895,7 @@ msgstr "Veuillez saisir le code de la clinique/du centre de santé"
 #: app/eid/requests/forms/add-cameroon.php:150
 #: app/eid/requests/forms/edit-cameroon.php:177
 #: app/eid/results/forms/update-cameroon-result.php:165
-#: app/eid/results/forms/update-cameroon-result.php:531
+#: app/eid/results/forms/update-cameroon-result.php:534
 msgid "Please select Testing Lab name"
 msgstr "Veuillez sélectionner le nom du laboratoire de test"
 
@@ -16224,7 +16295,25 @@ msgstr "Numéro Contact"
 msgid "Requesting Officer Phone"
 msgstr "Contact du prescripteur"
 
-#: app/eid/requests/forms/add-cameroon.php:534
+#: app/eid/requests/forms/add-cameroon.php:531
+#: app/eid/requests/forms/edit-cameroon.php:563
+#: app/eid/results/forms/update-cameroon-result.php:516
+msgid "EID Number"
+msgstr "Numéro EID"
+
+#: app/eid/requests/forms/add-cameroon.php:533
+#: app/eid/requests/forms/edit-cameroon.php:565
+#: app/eid/results/forms/update-cameroon-result.php:518
+msgid "Enter EID Number"
+msgstr "Saisir le numéro EID"
+
+#: app/eid/requests/forms/add-cameroon.php:533
+#: app/eid/requests/forms/edit-cameroon.php:565
+#: app/eid/results/forms/update-cameroon-result.php:518
+msgid "Please enter EID Number"
+msgstr "Veuillez saisir le numéro EID"
+
+#: app/eid/requests/forms/add-cameroon.php:537
 #: app/generic-tests/requests/edit-request.php:756
 #: app/generic-tests/results/update-generic-test-result.php:731
 #: app/vl/requests/forms/add-cameroon.php:530
@@ -16233,15 +16322,15 @@ msgstr "Contact du prescripteur"
 msgid "Please choose VL Testing Platform"
 msgstr "Veuillez choisir la plate-forme de test CV"
 
-#: app/eid/requests/forms/add-cameroon.php:553
-#: app/eid/requests/forms/edit-cameroon.php:583
-#: app/eid/results/forms/update-cameroon-result.php:547
+#: app/eid/requests/forms/add-cameroon.php:555
+#: app/eid/requests/forms/edit-cameroon.php:587
+#: app/eid/results/forms/update-cameroon-result.php:552
 msgid "Please choose reason for rejection"
 msgstr "Veuillez choisir le motif du rejet"
 
-#: app/eid/requests/forms/add-cameroon.php:590
-#: app/eid/requests/forms/edit-cameroon.php:629
-#: app/eid/results/forms/update-cameroon-result.php:595
+#: app/eid/requests/forms/add-cameroon.php:592
+#: app/eid/requests/forms/edit-cameroon.php:633
+#: app/eid/results/forms/update-cameroon-result.php:599
 #: app/tb/requests/forms/add-burkina-faso.php:478
 #: app/tb/requests/forms/edit-burkina-faso.php:528
 #: app/tb/results/forms/update-burkina-faso.php:531
@@ -16249,19 +16338,19 @@ msgstr "Veuillez choisir le motif du rejet"
 msgid "Approved on"
 msgstr "Validé le"
 
-#: app/eid/requests/forms/add-cameroon.php:590
-#: app/eid/results/forms/update-cameroon-result.php:595
+#: app/eid/requests/forms/add-cameroon.php:592
+#: app/eid/results/forms/update-cameroon-result.php:599
 #: app/vl/requests/forms/add-cameroon.php:637
 msgid "Please enter the Approved on"
 msgstr "Veuillez saisir approuvée sur"
 
-#: app/eid/requests/forms/add-cameroon.php:889
+#: app/eid/requests/forms/add-cameroon.php:891
 #: app/move-samples/select-samples-to-move.php:222
 #: app/vl/requests/forms/add-cameroon.php:805
 msgid "Select Lab Name"
 msgstr "Sélectionner le nom du laboratoire"
 
-#: app/eid/requests/forms/add-cameroon.php:895
+#: app/eid/requests/forms/add-cameroon.php:897
 #: app/generic-tests/requests/add-request.php:815
 #: app/generic-tests/requests/edit-request.php:1046
 #: app/generic-tests/results/update-generic-test-result.php:1004
@@ -16269,9 +16358,9 @@ msgstr "Sélectionner le nom du laboratoire"
 msgid "Select Approved By"
 msgstr "Sélectionner Approuvé par"
 
-#: app/eid/requests/forms/add-cameroon.php:931
+#: app/eid/requests/forms/add-cameroon.php:933
 #: app/eid/requests/forms/add-drc.php:801
-#: app/eid/requests/forms/edit-cameroon.php:935
+#: app/eid/requests/forms/edit-cameroon.php:939
 #: app/eid/requests/forms/edit-drc.php:776
 #: app/eid/results/forms/update-drc-result.php:780
 #: app/generic-tests/requests/add-request.php:857
@@ -16281,11 +16370,11 @@ msgstr "Sélectionner Approuvé par"
 #: app/generic-tests/results/update-generic-test-result.php:1067
 #: app/generic-tests/results/update-generic-test-result.php:1124
 #: app/vl/requests/forms/add-cameroon.php:842
-#: app/vl/requests/forms/add-drc.php:1063
+#: app/vl/requests/forms/add-drc.php:1079
 #: app/vl/requests/forms/edit-cameroon.php:898
-#: app/vl/requests/forms/edit-drc.php:1081
+#: app/vl/requests/forms/edit-drc.php:1100
 #: app/vl/results/forms/update-drc-result.php:797
-#: public/assets/js/main.js.php:593
+#: public/assets/js/main.js.php:640
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
@@ -16564,7 +16653,7 @@ msgstr "Le résultat EID mis à jour avec succès"
 msgid "Print Result PDF"
 msgstr "Imprimer Résultat PDF"
 
-#: app/eid/results/eid-update-result-helper.php:159
+#: app/eid/results/eid-update-result-helper.php:160
 msgid "EID result updated successfully"
 msgstr "Le résultat de l'EID a été mis à jour avec succès"
 
@@ -16577,11 +16666,16 @@ msgstr "Envoyé Résultats EID par courrier électronique"
 msgid "Update Test Result"
 msgstr "Mise à jour du résultat du test"
 
+#: app/eid/results/forms/update-cameroon-result.php:102
+#: app/generic-tests/requests/add-request.php:251
+msgid "Please enter sample id"
+msgstr "Veuillez saisir l'identifiant de l'échantillon"
+
 #: app/eid/results/forms/update-cameroon-result.php:180
 msgid "Exposed Infant Identification (Patient)"
 msgstr "Identification du nourrisson exposé (patient)"
 
-#: app/eid/results/forms/update-cameroon-result.php:518
+#: app/eid/results/forms/update-cameroon-result.php:522
 msgid "Please select the testing platform"
 msgstr "Veuillez sélectionner la plateforme de test"
 
@@ -16935,34 +17029,34 @@ msgid "Report Format For TB"
 msgstr "Format de rapport pour CT"
 
 #: app/facilities/addFacility.php:538 app/facilities/editFacility.php:518
-#: app/global-config/editGlobalConfig.php:196
+#: app/global-config/editGlobalConfig.php:194
 msgid "Logo Image"
 msgstr "Image du logo"
 
 #: app/facilities/addFacility.php:547 app/facilities/editFacility.php:532
-#: app/global-config/editGlobalConfig.php:209
+#: app/global-config/editGlobalConfig.php:207
 msgid "Select image"
 msgstr "Sélectionner une image"
 
 #: app/facilities/addFacility.php:549 app/facilities/editFacility.php:532
-#: app/global-config/editGlobalConfig.php:209 app/users/addUser.php:164
+#: app/global-config/editGlobalConfig.php:207 app/users/addUser.php:164
 #: app/users/editUser.php:213
 msgid "Change"
 msgstr "Changer"
 
 #: app/facilities/addFacility.php:551 app/facilities/editFacility.php:533
-#: app/global-config/editGlobalConfig.php:210
+#: app/global-config/editGlobalConfig.php:208
 msgid "Please select logo image"
 msgstr "Veuillez sélectionner l'image du logo"
 
 #: app/facilities/addFacility.php:554 app/facilities/editFacility.php:540
-#: app/global-config/editGlobalConfig.php:217 app/users/addUser.php:168
+#: app/global-config/editGlobalConfig.php:215 app/users/addUser.php:168
 #: app/users/editUser.php:221
 msgid "Remove"
 msgstr "Supprimer"
 
 #: app/facilities/addFacility.php:559 app/facilities/editFacility.php:544
-#: app/global-config/editGlobalConfig.php:221
+#: app/global-config/editGlobalConfig.php:219
 msgid "Please make sure logo image size of"
 msgstr "Veillez à ce que la taille de l'image du logo soit de"
 
@@ -19314,7 +19408,7 @@ msgstr "Saisir le résultat"
 #: app/global-config/editGlobalConfig.php:9
 #: app/global-config/editGlobalConfig.php:62
 #: app/global-config/editGlobalConfig.php:65
-#: app/system-admin/admin-header.php:140 app/system/translate-strings.php:14
+#: app/system-admin/admin-header.php:139 app/system/translate-strings.php:14
 msgid "System Configuration"
 msgstr "Configuration du système"
 
@@ -19367,101 +19461,95 @@ msgstr "Pays d'installation"
 msgid "Please select the country of installation"
 msgstr "Veuillez sélectionner le pays d'installation"
 
-#: app/global-config/editGlobalConfig.php:148
+#: app/global-config/editGlobalConfig.php:147
 msgid "Default Time Zone"
 msgstr "Fuseau horaire par défaut"
 
-#: app/global-config/editGlobalConfig.php:150 app/setup/index.php:384
+#: app/global-config/editGlobalConfig.php:149 app/setup/index.php:384
 #: app/system-admin/edit-config/index.php:177
 #: app/system-admin/edit-config/index.php:179
 msgid "Timezone"
 msgstr "Fuseau horaire"
 
-#: app/global-config/editGlobalConfig.php:150 app/setup/index.php:384
+#: app/global-config/editGlobalConfig.php:149 app/setup/index.php:384
 #: app/system-admin/edit-config/index.php:179
 msgid "Please choose Timezone"
 msgstr "Veuillez choisir un fuseau horaire"
 
-#: app/global-config/editGlobalConfig.php:171
+#: app/global-config/editGlobalConfig.php:170
 msgid "System Locale"
 msgstr "Locale System"
 
-#: app/global-config/editGlobalConfig.php:173 app/setup/index.php:402
+#: app/global-config/editGlobalConfig.php:172 app/setup/index.php:402
 msgid "Please select the System Locale"
 msgstr "Veuillez sélectionner le System locale"
 
+#: app/global-config/editGlobalConfig.php:183
 #: app/global-config/editGlobalConfig.php:185
-#: app/global-config/editGlobalConfig.php:187
 msgid "Header"
 msgstr "En-tête"
 
-#: app/global-config/editGlobalConfig.php:187
+#: app/global-config/editGlobalConfig.php:185
 msgid "Please enter header"
 msgstr "Veuillez saisir l'en-tête"
 
-#: app/global-config/editGlobalConfig.php:232
+#: app/global-config/editGlobalConfig.php:227
 msgid "Allow users to Edit Profile"
 msgstr "Permettre aux utilisateurs de modifier le profil"
 
-#: app/global-config/editGlobalConfig.php:244
+#: app/global-config/editGlobalConfig.php:239
 msgid "Training Mode"
 msgstr "Mode de formation"
 
-#: app/global-config/editGlobalConfig.php:257
+#: app/global-config/editGlobalConfig.php:250
 msgid "Barcode Format"
 msgstr "Format du code-barres"
 
-#: app/global-config/editGlobalConfig.php:259
+#: app/global-config/editGlobalConfig.php:252
 msgid "Please select the Barcode type"
 msgstr "Veuillez sélectionner le type de code-barres"
 
-#: app/global-config/editGlobalConfig.php:260
+#: app/global-config/editGlobalConfig.php:253
 msgid "C39"
 msgstr "C39"
 
-#: app/global-config/editGlobalConfig.php:261
+#: app/global-config/editGlobalConfig.php:254
 msgid "C39+"
 msgstr "C39+"
 
-#: app/global-config/editGlobalConfig.php:262
+#: app/global-config/editGlobalConfig.php:255
 msgid "C128"
 msgstr "C128"
 
-#: app/global-config/editGlobalConfig.php:263
+#: app/global-config/editGlobalConfig.php:256
 msgid "QRCODE"
 msgstr "QRCODE"
 
-#: app/global-config/editGlobalConfig.php:273
+#: app/global-config/editGlobalConfig.php:266
 msgid "Same user can Review and Approve"
 msgstr "Le même utilisateur peut réviser et approuver"
 
-#: app/global-config/editGlobalConfig.php:285
-#: app/global-config/editGlobalConfig.php:328
-msgid "You can enter multiple emails by separating them with commas"
-msgstr ""
-"Vous pouvez saisir plusieurs courriels en les séparant par des virgules"
-
-#: app/global-config/editGlobalConfig.php:291
+#: app/global-config/editGlobalConfig.php:278
 msgid "Sample ID Barcode Label Printing"
 msgstr "Exemple d'impression d'étiquettes à code-barres"
 
-#: app/global-config/editGlobalConfig.php:293
+#: app/global-config/editGlobalConfig.php:280
 msgid "Please select the barcode printing"
 msgstr "Veuillez sélectionner l'impression du code-barres"
 
-#: app/global-config/editGlobalConfig.php:294
+#: app/global-config/editGlobalConfig.php:281
 msgid "Off"
 msgstr "Désactivé"
 
-#: app/global-config/editGlobalConfig.php:295
+#: app/global-config/editGlobalConfig.php:282
 msgid "Zebra Printer"
 msgstr "Imprimante Zebra"
 
-#: app/global-config/editGlobalConfig.php:296
+#: app/global-config/editGlobalConfig.php:283
 msgid "Dymo LabelWriter 450"
 msgstr "Dymo LabelWriter 450"
 
-#: app/global-config/editGlobalConfig.php:305
+#: app/global-config/editGlobalConfig.php:300
 msgid ""
 "Allow Samples not matching the System Sample IDs while importing results "
 "manually"
@@ -19469,7 +19557,20 @@ msgstr ""
 "Autoriser les échantillons ne correspondant pas aux System ID "
 "d'échantillons  lors de l'importation manuelle des résultats"
 
-#: app/global-config/editGlobalConfig.php:311
+#: app/global-config/editGlobalConfig.php:312
+msgid "Support Email"
+msgstr "Email du support"
+
+#: app/global-config/editGlobalConfig.php:314
+msgid "eg. manager1@example.com, manager2@example.com"
+msgstr "ex. manager1@example.com, manager2@example.com"
+
+#: app/global-config/editGlobalConfig.php:314
+#: app/global-config/editGlobalConfig.php:355
+msgid "Please enter manager email"
+msgstr "Veuillez saisir l'adresse électronique du gestionnaire"
+
+#: app/global-config/editGlobalConfig.php:323
 msgid ""
 "While importing results from CSV/Excel file, should we import results of "
 "Sample IDs that do not match the Sample IDs present in System database"
@@ -19478,18 +19579,10 @@ msgstr ""
 "nous importer les résultats des ID d'échantillons qui ne correspondent pas "
 "aux ID d'échantillons présents dans la base de données VLSM"
 
-#: app/global-config/editGlobalConfig.php:319
-msgid "Support Email"
-msgstr "Email du support"
-
-#: app/global-config/editGlobalConfig.php:321
-msgid "eg. manager1@example.com, manager2@example.com"
-msgstr "ex. manager1@example.com, manager2@example.com"
-
-#: app/global-config/editGlobalConfig.php:321
-#: app/global-config/editGlobalConfig.php:356
-msgid "Please enter manager email"
-msgstr "Veuillez saisir l'adresse électronique du gestionnaire"
+#: app/global-config/editGlobalConfig.php:326
+msgid "You can enter multiple emails by separating them with commas"
+msgstr ""
+"Vous pouvez saisir plusieurs courriels en les séparant par des virgules"
 
 #: app/global-config/editGlobalConfig.php:334
 msgid "CSV Delimiter"
@@ -19499,582 +19592,582 @@ msgstr "Séparateur CSV"
 msgid "Please enter CSV delimiter"
 msgstr "Veuillez entrer le délimiteur CSV"
 
-#: app/global-config/editGlobalConfig.php:344
+#: app/global-config/editGlobalConfig.php:342
 msgid "CSV Enclosure"
 msgstr "CSV Enveloppe"
 
-#: app/global-config/editGlobalConfig.php:346
+#: app/global-config/editGlobalConfig.php:344
 msgid "Please enter CSV enclosure"
 msgstr "Veuillez saisir la valeur CSV Enclosure"
 
-#: app/global-config/editGlobalConfig.php:354
+#: app/global-config/editGlobalConfig.php:353
 msgid "Default Phone Prefix"
 msgstr "Préfixe téléphonique par défaut"
 
-#: app/global-config/editGlobalConfig.php:356
+#: app/global-config/editGlobalConfig.php:355
 msgid "e.g. +232, +91"
 msgstr "par exemple +232, +91"
 
-#: app/global-config/editGlobalConfig.php:364
+#: app/global-config/editGlobalConfig.php:362
 msgid "Minimum Length of Phone Number"
 msgstr "Longueur minimale du numéro de téléphone"
 
-#: app/global-config/editGlobalConfig.php:366
-#: app/global-config/editGlobalConfig.php:492
-#: app/global-config/editGlobalConfig.php:665
-#: app/global-config/editGlobalConfig.php:792
-#: app/global-config/editGlobalConfig.php:904
-#: app/global-config/editGlobalConfig.php:1000
-#: app/global-config/editGlobalConfig.php:1109
-#: app/global-config/editGlobalConfig.php:1207
+#: app/global-config/editGlobalConfig.php:364
+#: app/global-config/editGlobalConfig.php:489
+#: app/global-config/editGlobalConfig.php:658
+#: app/global-config/editGlobalConfig.php:782
+#: app/global-config/editGlobalConfig.php:890
+#: app/global-config/editGlobalConfig.php:985
+#: app/global-config/editGlobalConfig.php:1091
+#: app/global-config/editGlobalConfig.php:1187
 msgid "Min"
 msgstr "Min"
 
-#: app/global-config/editGlobalConfig.php:366
+#: app/global-config/editGlobalConfig.php:364
 msgid "Please enter minimun length of phone number"
 msgstr "Veuillez saisir la longueur minimale du numéro de téléphone"
 
-#: app/global-config/editGlobalConfig.php:374
+#: app/global-config/editGlobalConfig.php:373
 msgid "Maximum Length of Phone Number"
 msgstr "Longueur maximale du numéro de téléphone"
 
-#: app/global-config/editGlobalConfig.php:376
+#: app/global-config/editGlobalConfig.php:375
 msgid "Max"
 msgstr "Max"
 
-#: app/global-config/editGlobalConfig.php:376
+#: app/global-config/editGlobalConfig.php:375
 msgid "Please enter maximum length of phone number"
 msgstr "Veuillez saisir la longueur maximale du numéro de téléphone"
 
-#: app/global-config/editGlobalConfig.php:384
+#: app/global-config/editGlobalConfig.php:381
 msgid "Batch PDF Layout"
 msgstr "Mise en page PDF par lots"
 
-#: app/global-config/editGlobalConfig.php:386
+#: app/global-config/editGlobalConfig.php:383
 msgid "Standard"
 msgstr "Standard"
 
-#: app/global-config/editGlobalConfig.php:387
+#: app/global-config/editGlobalConfig.php:384
 msgid "Compact"
 msgstr "Compact"
 
-#: app/global-config/editGlobalConfig.php:395
-#: app/global-config/editGlobalConfig.php:1232
+#: app/global-config/editGlobalConfig.php:394
+#: app/global-config/editGlobalConfig.php:1212
 msgid "Sample Expiry Days"
 msgstr "Jours d'expiration de l'échantillon"
 
-#: app/global-config/editGlobalConfig.php:397
-#: app/global-config/editGlobalConfig.php:1234
+#: app/global-config/editGlobalConfig.php:396
+#: app/global-config/editGlobalConfig.php:1214
 msgid "Enter the sample expiry days"
 msgstr "Saisir les jours d'expiration de l'échantillon"
 
-#: app/global-config/editGlobalConfig.php:397
-#: app/global-config/editGlobalConfig.php:1234
+#: app/global-config/editGlobalConfig.php:396
+#: app/global-config/editGlobalConfig.php:1214
 msgid "Please enter the sample expiry days"
 msgstr "Veuillez indiquer les jours d'expiration de l'échantillon"
 
-#: app/global-config/editGlobalConfig.php:408
+#: app/global-config/editGlobalConfig.php:405
 msgid "Sample Lock Days"
 msgstr "Exemple de jours de fermeture"
 
-#: app/global-config/editGlobalConfig.php:410
+#: app/global-config/editGlobalConfig.php:407
 msgid "Enter the sample lock days"
 msgstr "Saisir le nombre de jours de fermeture de l'échantillon"
 
-#: app/global-config/editGlobalConfig.php:410
+#: app/global-config/editGlobalConfig.php:407
 msgid "Please enter the sample lock days"
 msgstr "Veuillez saisir le nombre de jours de fermeture de l'échantillon"
 
-#: app/global-config/editGlobalConfig.php:423
+#: app/global-config/editGlobalConfig.php:420
 msgid "Viral Load Settings"
 msgstr "Réglages de la charge virale"
 
+#: app/global-config/editGlobalConfig.php:427
 #: app/global-config/editGlobalConfig.php:430
-#: app/global-config/editGlobalConfig.php:433
 msgid "Viral Load Threshold Limit"
 msgstr "Limite du seuil de charge virale"
 
-#: app/global-config/editGlobalConfig.php:433
+#: app/global-config/editGlobalConfig.php:430
 msgid "Please enter VL threshold limit"
 msgstr "Veuillez saisir le seuil limite CV"
 
-#: app/global-config/editGlobalConfig.php:434
+#: app/global-config/editGlobalConfig.php:431
 #: app/vl/program-management/vl-export-data.php:168
 #: app/vl/program-management/vl-export-data.php:172
 #: app/vl/requests/vl-requests.php:195 app/vl/requests/vl-requests.php:199
 msgid "cp/ml"
 msgstr "cp/ml"
 
-#: app/global-config/editGlobalConfig.php:445
-#: app/global-config/editGlobalConfig.php:618
-#: app/global-config/editGlobalConfig.php:744
-#: app/global-config/editGlobalConfig.php:856
-#: app/global-config/editGlobalConfig.php:952
-#: app/global-config/editGlobalConfig.php:1062
-#: app/global-config/editGlobalConfig.php:1159
+#: app/global-config/editGlobalConfig.php:442
+#: app/global-config/editGlobalConfig.php:611
+#: app/global-config/editGlobalConfig.php:734
+#: app/global-config/editGlobalConfig.php:842
+#: app/global-config/editGlobalConfig.php:937
+#: app/global-config/editGlobalConfig.php:1044
+#: app/global-config/editGlobalConfig.php:1139
 msgid "Format"
 msgstr "Format"
 
+#: app/global-config/editGlobalConfig.php:457
+#: app/global-config/editGlobalConfig.php:458
+#: app/global-config/editGlobalConfig.php:459
 #: app/global-config/editGlobalConfig.php:460
 #: app/global-config/editGlobalConfig.php:461
 #: app/global-config/editGlobalConfig.php:462
-#: app/global-config/editGlobalConfig.php:463
-#: app/global-config/editGlobalConfig.php:464
-#: app/global-config/editGlobalConfig.php:465
 msgid "Please select the Viral Load Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon de charge "
 "virale"
 
-#: app/global-config/editGlobalConfig.php:460
-#: app/global-config/editGlobalConfig.php:461
-#: app/global-config/editGlobalConfig.php:633
-#: app/global-config/editGlobalConfig.php:634
-#: app/global-config/editGlobalConfig.php:871
-#: app/global-config/editGlobalConfig.php:872
-#: app/global-config/editGlobalConfig.php:967
-#: app/global-config/editGlobalConfig.php:968
-#: app/global-config/editGlobalConfig.php:1077
-#: app/global-config/editGlobalConfig.php:1078
-#: app/global-config/editGlobalConfig.php:1174
-#: app/global-config/editGlobalConfig.php:1175
+#: app/global-config/editGlobalConfig.php:457
+#: app/global-config/editGlobalConfig.php:458
+#: app/global-config/editGlobalConfig.php:626
+#: app/global-config/editGlobalConfig.php:627
+#: app/global-config/editGlobalConfig.php:857
+#: app/global-config/editGlobalConfig.php:858
+#: app/global-config/editGlobalConfig.php:952
+#: app/global-config/editGlobalConfig.php:953
+#: app/global-config/editGlobalConfig.php:1059
+#: app/global-config/editGlobalConfig.php:1060
+#: app/global-config/editGlobalConfig.php:1154
+#: app/global-config/editGlobalConfig.php:1155
 msgid "Enter Prefix"
 msgstr "Saisir le préfixe"
 
-#: app/global-config/editGlobalConfig.php:460
-#: app/global-config/editGlobalConfig.php:633
-#: app/global-config/editGlobalConfig.php:871
-#: app/global-config/editGlobalConfig.php:967
-#: app/global-config/editGlobalConfig.php:1077
-#: app/global-config/editGlobalConfig.php:1174
+#: app/global-config/editGlobalConfig.php:457
+#: app/global-config/editGlobalConfig.php:626
+#: app/global-config/editGlobalConfig.php:857
+#: app/global-config/editGlobalConfig.php:952
+#: app/global-config/editGlobalConfig.php:1059
+#: app/global-config/editGlobalConfig.php:1154
 msgid "YY"
 msgstr "YY"
 
-#: app/global-config/editGlobalConfig.php:461
-#: app/global-config/editGlobalConfig.php:634
-#: app/global-config/editGlobalConfig.php:872
-#: app/global-config/editGlobalConfig.php:968
-#: app/global-config/editGlobalConfig.php:1078
-#: app/global-config/editGlobalConfig.php:1175
+#: app/global-config/editGlobalConfig.php:458
+#: app/global-config/editGlobalConfig.php:627
+#: app/global-config/editGlobalConfig.php:858
+#: app/global-config/editGlobalConfig.php:953
+#: app/global-config/editGlobalConfig.php:1060
+#: app/global-config/editGlobalConfig.php:1155
 msgid "MMYY"
 msgstr "MMYY"
 
-#: app/global-config/editGlobalConfig.php:463
-#: app/global-config/editGlobalConfig.php:636
-#: app/global-config/editGlobalConfig.php:874
-#: app/global-config/editGlobalConfig.php:970
-#: app/global-config/editGlobalConfig.php:1080
-#: app/global-config/editGlobalConfig.php:1177
+#: app/global-config/editGlobalConfig.php:460
+#: app/global-config/editGlobalConfig.php:629
+#: app/global-config/editGlobalConfig.php:860
+#: app/global-config/editGlobalConfig.php:955
+#: app/global-config/editGlobalConfig.php:1062
+#: app/global-config/editGlobalConfig.php:1157
 msgid "Auto"
 msgstr "Auto"
 
-#: app/global-config/editGlobalConfig.php:474
-#: app/global-config/editGlobalConfig.php:647
-#: app/global-config/editGlobalConfig.php:773
-#: app/global-config/editGlobalConfig.php:885
-#: app/global-config/editGlobalConfig.php:981
-#: app/global-config/editGlobalConfig.php:1091
-#: app/global-config/editGlobalConfig.php:1188
+#: app/global-config/editGlobalConfig.php:471
+#: app/global-config/editGlobalConfig.php:640
+#: app/global-config/editGlobalConfig.php:763
+#: app/global-config/editGlobalConfig.php:871
+#: app/global-config/editGlobalConfig.php:966
+#: app/global-config/editGlobalConfig.php:1073
+#: app/global-config/editGlobalConfig.php:1168
 msgid "eg. Province Code+Year+Month+Date+Increment Counter"
 msgstr "ex. Code de la province+année+mois+date+compteur d'augmentation"
 
-#: app/global-config/editGlobalConfig.php:477
+#: app/global-config/editGlobalConfig.php:474
 msgid "eg. R+Year+Province Code+VL+Increment Counter (R18NCDVL0001)"
 msgstr "ex. R+Année+Code province+VL+Compteur d'incrémentation (R18NCDVL0001)"
 
-#: app/global-config/editGlobalConfig.php:480
+#: app/global-config/editGlobalConfig.php:477
 msgid "eg. Prefix+Month+Year+Increment Counter (VL0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (VL0517999)"
 
-#: app/global-config/editGlobalConfig.php:483
+#: app/global-config/editGlobalConfig.php:480
 msgid "eg. Prefix+Year+Increment Counter (VL17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (VL17999)"
 
-#: app/global-config/editGlobalConfig.php:490
-#: app/global-config/editGlobalConfig.php:663
-#: app/global-config/editGlobalConfig.php:790
-#: app/global-config/editGlobalConfig.php:902
-#: app/global-config/editGlobalConfig.php:998
-#: app/global-config/editGlobalConfig.php:1107
-#: app/global-config/editGlobalConfig.php:1205
+#: app/global-config/editGlobalConfig.php:487
+#: app/global-config/editGlobalConfig.php:656
+#: app/global-config/editGlobalConfig.php:780
+#: app/global-config/editGlobalConfig.php:888
+#: app/global-config/editGlobalConfig.php:983
+#: app/global-config/editGlobalConfig.php:1089
+#: app/global-config/editGlobalConfig.php:1185
 msgid "Minimum Patient ID Length"
 msgstr "Longueur minimale du No ID Patient"
 
-#: app/global-config/editGlobalConfig.php:492
-#: app/global-config/editGlobalConfig.php:665
-#: app/global-config/editGlobalConfig.php:792
-#: app/global-config/editGlobalConfig.php:904
-#: app/global-config/editGlobalConfig.php:1000
-#: app/global-config/editGlobalConfig.php:1109
-#: app/global-config/editGlobalConfig.php:1207
+#: app/global-config/editGlobalConfig.php:489
+#: app/global-config/editGlobalConfig.php:658
+#: app/global-config/editGlobalConfig.php:782
+#: app/global-config/editGlobalConfig.php:890
+#: app/global-config/editGlobalConfig.php:985
+#: app/global-config/editGlobalConfig.php:1091
+#: app/global-config/editGlobalConfig.php:1187
 msgid "Please enter minimum length for Patient ID"
 msgstr "Veuillez saisir la longueur minimale de l'identifiant du patient"
 
-#: app/global-config/editGlobalConfig.php:503
-#: app/global-config/editGlobalConfig.php:674
-#: app/global-config/editGlobalConfig.php:803
-#: app/global-config/editGlobalConfig.php:913
-#: app/global-config/editGlobalConfig.php:1009
-#: app/global-config/editGlobalConfig.php:1120
-#: app/global-config/editGlobalConfig.php:1216
+#: app/global-config/editGlobalConfig.php:497
+#: app/global-config/editGlobalConfig.php:665
+#: app/global-config/editGlobalConfig.php:790
+#: app/global-config/editGlobalConfig.php:897
+#: app/global-config/editGlobalConfig.php:992
+#: app/global-config/editGlobalConfig.php:1099
+#: app/global-config/editGlobalConfig.php:1194
 msgid "Copy Request On Save and Next Form"
 msgstr "Demande de copie sur les formulaires Enregistrer et Suivant"
 
-#: app/global-config/editGlobalConfig.php:505
-#: app/global-config/editGlobalConfig.php:676
-#: app/global-config/editGlobalConfig.php:805
-#: app/global-config/editGlobalConfig.php:915
-#: app/global-config/editGlobalConfig.php:1011
-#: app/global-config/editGlobalConfig.php:1122
-#: app/global-config/editGlobalConfig.php:1218
+#: app/global-config/editGlobalConfig.php:499
+#: app/global-config/editGlobalConfig.php:667
+#: app/global-config/editGlobalConfig.php:792
+#: app/global-config/editGlobalConfig.php:899
+#: app/global-config/editGlobalConfig.php:994
+#: app/global-config/editGlobalConfig.php:1101
+#: app/global-config/editGlobalConfig.php:1196
 msgid "Please select copy request on save and next form"
 msgstr ""
 "Veuillez sélectionner la demande de copie sur le formulaire de sauvegarde et "
 "le formulaire suivant"
 
-#: app/global-config/editGlobalConfig.php:507
-#: app/global-config/editGlobalConfig.php:523
-#: app/global-config/editGlobalConfig.php:539
-#: app/global-config/editGlobalConfig.php:678
-#: app/global-config/editGlobalConfig.php:807
-#: app/global-config/editGlobalConfig.php:917
-#: app/global-config/editGlobalConfig.php:1013
-#: app/global-config/editGlobalConfig.php:1124
-#: app/global-config/editGlobalConfig.php:1220
+#: app/global-config/editGlobalConfig.php:501
+#: app/global-config/editGlobalConfig.php:519
+#: app/global-config/editGlobalConfig.php:533
+#: app/global-config/editGlobalConfig.php:669
+#: app/global-config/editGlobalConfig.php:794
+#: app/global-config/editGlobalConfig.php:901
+#: app/global-config/editGlobalConfig.php:996
+#: app/global-config/editGlobalConfig.php:1103
+#: app/global-config/editGlobalConfig.php:1198
 msgid "Enable"
 msgstr "Activer"
 
-#: app/global-config/editGlobalConfig.php:508
-#: app/global-config/editGlobalConfig.php:524
-#: app/global-config/editGlobalConfig.php:540
-#: app/global-config/editGlobalConfig.php:679
-#: app/global-config/editGlobalConfig.php:808
-#: app/global-config/editGlobalConfig.php:918
-#: app/global-config/editGlobalConfig.php:1014
-#: app/global-config/editGlobalConfig.php:1125
-#: app/global-config/editGlobalConfig.php:1221
+#: app/global-config/editGlobalConfig.php:502
+#: app/global-config/editGlobalConfig.php:520
+#: app/global-config/editGlobalConfig.php:534
+#: app/global-config/editGlobalConfig.php:670
+#: app/global-config/editGlobalConfig.php:795
+#: app/global-config/editGlobalConfig.php:902
+#: app/global-config/editGlobalConfig.php:997
+#: app/global-config/editGlobalConfig.php:1104
+#: app/global-config/editGlobalConfig.php:1199
 msgid "Disable"
 msgstr "Désactiver"
 
-#: app/global-config/editGlobalConfig.php:519
+#: app/global-config/editGlobalConfig.php:515
 msgid "VL Suppression Target"
 msgstr "Cible de suppression CV"
 
-#: app/global-config/editGlobalConfig.php:521
-#: app/global-config/editGlobalConfig.php:537
+#: app/global-config/editGlobalConfig.php:517
+#: app/global-config/editGlobalConfig.php:531
 msgid "Please select lock approved sample"
 msgstr "Veuillez sélectionner l'échantillon approuvé pour la serrure"
 
-#: app/global-config/editGlobalConfig.php:535
+#: app/global-config/editGlobalConfig.php:529
 msgid "VL Monthly Target"
 msgstr "Objectif mensuel CV"
 
-#: app/global-config/editGlobalConfig.php:551
+#: app/global-config/editGlobalConfig.php:546
 msgid "VL Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API pour CV"
 
-#: app/global-config/editGlobalConfig.php:553
+#: app/global-config/editGlobalConfig.php:548
 msgid "Please select VL Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner Approbation automatique des résultats de l'API pour CV"
 
-#: app/global-config/editGlobalConfig.php:565
+#: app/global-config/editGlobalConfig.php:558
 msgid "VL Show Participant Name in Manifest"
 msgstr "CV, Afficher le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:567
+#: app/global-config/editGlobalConfig.php:560
 msgid "Please select VL Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant CV dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:579
+#: app/global-config/editGlobalConfig.php:573
 msgid "Interpret and Convert VL Results"
 msgstr "Interpréter et convertir les résultats de la CV"
 
-#: app/global-config/editGlobalConfig.php:581
-#: app/global-config/editGlobalConfig.php:596
+#: app/global-config/editGlobalConfig.php:575
+#: app/global-config/editGlobalConfig.php:588
 msgid "Please select Interpret and Convert VL Results"
 msgstr "Veuillez sélectionner Interpréter et convertir les résultats CV"
 
-#: app/global-config/editGlobalConfig.php:594
+#: app/global-config/editGlobalConfig.php:586
 msgid "Viral Load Export Format"
 msgstr "Format d'exportation de la charge virale"
 
-#: app/global-config/editGlobalConfig.php:598
+#: app/global-config/editGlobalConfig.php:590
 msgid "Default Format"
 msgstr "Format par défaut"
 
-#: app/global-config/editGlobalConfig.php:599
+#: app/global-config/editGlobalConfig.php:591
 msgid "CRESAR Format"
 msgstr "Format CRESAR"
 
-#: app/global-config/editGlobalConfig.php:612
+#: app/global-config/editGlobalConfig.php:605
 msgid "EID Settings"
 msgstr "Paramètres EID"
 
-#: app/global-config/editGlobalConfig.php:633
-#: app/global-config/editGlobalConfig.php:634
-#: app/global-config/editGlobalConfig.php:635
-#: app/global-config/editGlobalConfig.php:636
-#: app/global-config/editGlobalConfig.php:637
-#: app/global-config/editGlobalConfig.php:638
+#: app/global-config/editGlobalConfig.php:626
+#: app/global-config/editGlobalConfig.php:627
+#: app/global-config/editGlobalConfig.php:628
+#: app/global-config/editGlobalConfig.php:629
+#: app/global-config/editGlobalConfig.php:630
+#: app/global-config/editGlobalConfig.php:631
 msgid "Please select the EID Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon EID"
 
-#: app/global-config/editGlobalConfig.php:650
+#: app/global-config/editGlobalConfig.php:643
 msgid "eg. R+Year+Province Code+EID+Increment Counter (R18NCDEID0001)"
 msgstr ""
 "ex. R+Année+Code province+EID+Compteur d'incrémentation (R18NCDEID0001)"
 
-#: app/global-config/editGlobalConfig.php:653
+#: app/global-config/editGlobalConfig.php:646
 msgid "eg. Prefix+Month+Year+Increment Counter (EID0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (EID0517999)"
 
-#: app/global-config/editGlobalConfig.php:656
+#: app/global-config/editGlobalConfig.php:649
 msgid "eg. Prefix+Year+Increment Counter (EID17999)"
 msgstr "eg. Préfixe+année+compteur d'incrémentation (EID17999)"
 
-#: app/global-config/editGlobalConfig.php:689
+#: app/global-config/editGlobalConfig.php:681
 msgid "EID Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API pour EID"
 
-#: app/global-config/editGlobalConfig.php:691
+#: app/global-config/editGlobalConfig.php:683
 msgid "Please select EID Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner l'Approbation automatique des résultats de l'API pour "
 "EID"
 
-#: app/global-config/editGlobalConfig.php:703
+#: app/global-config/editGlobalConfig.php:693
 msgid "EID Show Participant Name in Manifest"
 msgstr "EID, Afficher le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:705
+#: app/global-config/editGlobalConfig.php:695
 msgid "Please select EID Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant EID dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:720
+#: app/global-config/editGlobalConfig.php:710
 msgid "Covid-19 Settings"
 msgstr "Covid-19 Paramètres"
 
-#: app/global-config/editGlobalConfig.php:728
+#: app/global-config/editGlobalConfig.php:718
 msgid "Covid-19 Positive Confirmatory Tests Required"
 msgstr "Covid-19 Tests de confirmation positifs requis"
 
-#: app/global-config/editGlobalConfig.php:730
+#: app/global-config/editGlobalConfig.php:720
 msgid "Please select covid19 report type"
 msgstr "Veuillez sélectionner le type de rapport covid19"
 
-#: app/global-config/editGlobalConfig.php:776
+#: app/global-config/editGlobalConfig.php:766
 msgid "eg. R+Year+Province Code+covid19+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+covid19+Compteur d'incrémentation (R18NCDC190001)"
 
-#: app/global-config/editGlobalConfig.php:779
-#: app/global-config/editGlobalConfig.php:987
-#: app/global-config/editGlobalConfig.php:1097
+#: app/global-config/editGlobalConfig.php:769
+#: app/global-config/editGlobalConfig.php:972
+#: app/global-config/editGlobalConfig.php:1079
 msgid "eg. Prefix+Month+Year+Increment Counter (C190517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (C190517999)"
 
-#: app/global-config/editGlobalConfig.php:782
-#: app/global-config/editGlobalConfig.php:990
-#: app/global-config/editGlobalConfig.php:1100
+#: app/global-config/editGlobalConfig.php:772
+#: app/global-config/editGlobalConfig.php:975
+#: app/global-config/editGlobalConfig.php:1082
 msgid "eg. Prefix+Year+Increment Counter (C1917999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (C1917999)"
 
-#: app/global-config/editGlobalConfig.php:819
+#: app/global-config/editGlobalConfig.php:806
 msgid "COVID-19 Auto Approve API Results"
 msgstr "COVID-19 Approbation automatique des résultats de l'API"
 
-#: app/global-config/editGlobalConfig.php:821
+#: app/global-config/editGlobalConfig.php:808
 msgid "Please select COVID-19 Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner COVID-19 Approbation automatique des résultats de l'API"
 
-#: app/global-config/editGlobalConfig.php:833
+#: app/global-config/editGlobalConfig.php:818
 msgid "COVID-19 Show Participant Name in Manifest"
 msgstr "COVID-19 Afficher le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:835
+#: app/global-config/editGlobalConfig.php:820
 msgid "Please select COVID-19 Show Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner COVID-19 Afficher le nom du participant dans le "
 "manifeste"
 
-#: app/global-config/editGlobalConfig.php:850
+#: app/global-config/editGlobalConfig.php:836
 msgid "Hepatitis Settings"
 msgstr "Paramètres de l'hépatite"
 
-#: app/global-config/editGlobalConfig.php:871
-#: app/global-config/editGlobalConfig.php:872
-#: app/global-config/editGlobalConfig.php:873
-#: app/global-config/editGlobalConfig.php:874
-#: app/global-config/editGlobalConfig.php:875
-#: app/global-config/editGlobalConfig.php:876
+#: app/global-config/editGlobalConfig.php:857
+#: app/global-config/editGlobalConfig.php:858
+#: app/global-config/editGlobalConfig.php:859
+#: app/global-config/editGlobalConfig.php:860
+#: app/global-config/editGlobalConfig.php:861
+#: app/global-config/editGlobalConfig.php:862
 msgid "Please select the Hepatitis Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon d'hépatite"
 
-#: app/global-config/editGlobalConfig.php:888
+#: app/global-config/editGlobalConfig.php:874
 msgid "eg. R+Year+Province Code+hepatitis+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+hépatite+Compteur d'incrémentation (R18NCDC190001)"
 
-#: app/global-config/editGlobalConfig.php:891
+#: app/global-config/editGlobalConfig.php:877
 msgid "eg. Prefix+Month+Year+Increment Counter (HEP0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incrémentation (HEP0517999)"
 
-#: app/global-config/editGlobalConfig.php:894
+#: app/global-config/editGlobalConfig.php:880
 msgid "eg. Prefix+Year+Increment Counter (HEP17999)"
 msgstr "eg. Préfixe+année+compteur d'incrément (HEP17999)"
 
-#: app/global-config/editGlobalConfig.php:929
+#: app/global-config/editGlobalConfig.php:914
 msgid "Hepatitis Show Participant Name in Manifest"
 msgstr "Hépatite Montrer le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:931
+#: app/global-config/editGlobalConfig.php:916
 msgid "Please select Hepatitis Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner le nom du participant à l'hépatite dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:946
+#: app/global-config/editGlobalConfig.php:931
 msgid "TB Settings"
 msgstr "Réglages TB"
 
-#: app/global-config/editGlobalConfig.php:967
-#: app/global-config/editGlobalConfig.php:968
-#: app/global-config/editGlobalConfig.php:969
-#: app/global-config/editGlobalConfig.php:970
-#: app/global-config/editGlobalConfig.php:971
-#: app/global-config/editGlobalConfig.php:972
+#: app/global-config/editGlobalConfig.php:952
+#: app/global-config/editGlobalConfig.php:953
+#: app/global-config/editGlobalConfig.php:954
+#: app/global-config/editGlobalConfig.php:955
+#: app/global-config/editGlobalConfig.php:956
+#: app/global-config/editGlobalConfig.php:957
 msgid "Please select the TB Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon TB"
 
-#: app/global-config/editGlobalConfig.php:984
+#: app/global-config/editGlobalConfig.php:969
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDC190001)"
 msgstr "eg. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDC190001)"
 
-#: app/global-config/editGlobalConfig.php:1025
+#: app/global-config/editGlobalConfig.php:1008
 msgid "TB Auto Approve API Results"
 msgstr "Approbation automatique des résultats de l'API par le CT"
 
-#: app/global-config/editGlobalConfig.php:1027
+#: app/global-config/editGlobalConfig.php:1010
 msgid "Please select TB Auto Approve API Results"
 msgstr ""
 "Veuillez sélectionner TB Approbation automatique des résultats de l'API"
 
-#: app/global-config/editGlobalConfig.php:1039
+#: app/global-config/editGlobalConfig.php:1020
 msgid "TB Show Participant Name in Manifest"
 msgstr "TB Indiquer le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:1041
+#: app/global-config/editGlobalConfig.php:1022
 msgid "Please select TB Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner le nom du participant au test TB dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:1056
+#: app/global-config/editGlobalConfig.php:1038
 msgid "CD4 Settings"
 msgstr "CD4 Paramètres"
 
-#: app/global-config/editGlobalConfig.php:1077
-#: app/global-config/editGlobalConfig.php:1078
-#: app/global-config/editGlobalConfig.php:1079
-#: app/global-config/editGlobalConfig.php:1080
-#: app/global-config/editGlobalConfig.php:1081
-#: app/global-config/editGlobalConfig.php:1082
+#: app/global-config/editGlobalConfig.php:1059
+#: app/global-config/editGlobalConfig.php:1060
+#: app/global-config/editGlobalConfig.php:1061
+#: app/global-config/editGlobalConfig.php:1062
+#: app/global-config/editGlobalConfig.php:1063
+#: app/global-config/editGlobalConfig.php:1064
 msgid "Please select the CD4 Sample ID Format"
 msgstr "Veuillez sélectionner le format d'identification de l'échantillon CD4"
 
-#: app/global-config/editGlobalConfig.php:1094
+#: app/global-config/editGlobalConfig.php:1076
 msgid "eg. R+Year+Province Code+cd4+Increment Counter (R18NCDC190001)"
 msgstr ""
 "eg. R+Année+Code province+cd4+Compteur d'incrémentation (R18NCDC190001)"
 
-#: app/global-config/editGlobalConfig.php:1136
+#: app/global-config/editGlobalConfig.php:1116
 msgid "cd4 Show Participant Name in Manifest"
 msgstr "cd4 Afficher le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:1138
+#: app/global-config/editGlobalConfig.php:1118
 msgid "Please select cd4 Participant Name in Manifest"
 msgstr "Veuillez sélectionner le nom du participant au cd4 dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:1153
+#: app/global-config/editGlobalConfig.php:1133
 msgid "Other Lab Tests Settings"
 msgstr "Autres tests de laboratoire Paramètres"
 
-#: app/global-config/editGlobalConfig.php:1174
-#: app/global-config/editGlobalConfig.php:1175
-#: app/global-config/editGlobalConfig.php:1176
-#: app/global-config/editGlobalConfig.php:1177
-#: app/global-config/editGlobalConfig.php:1178
-#: app/global-config/editGlobalConfig.php:1179
+#: app/global-config/editGlobalConfig.php:1154
+#: app/global-config/editGlobalConfig.php:1155
+#: app/global-config/editGlobalConfig.php:1156
+#: app/global-config/editGlobalConfig.php:1157
+#: app/global-config/editGlobalConfig.php:1158
+#: app/global-config/editGlobalConfig.php:1159
 msgid "Please select the Generic Test Sample ID Format"
 msgstr ""
 "Veuillez sélectionner le format d'identification de l'échantillon de test "
 "générique"
 
-#: app/global-config/editGlobalConfig.php:1191
+#: app/global-config/editGlobalConfig.php:1171
 msgid "eg. R+Year+Province Code+tb+Increment Counter (R18NCDLAB0001)"
 msgstr "ex. R+Année+Code province+tb+Compteur d'incrémentation (R18NCDLAB0001)"
 
-#: app/global-config/editGlobalConfig.php:1194
+#: app/global-config/editGlobalConfig.php:1174
 msgid "eg. Prefix+Month+Year+Increment Counter (LAB0517999)"
 msgstr "eg. Préfixe+mois+année+compteur d'incréments (LAB0517999)"
 
-#: app/global-config/editGlobalConfig.php:1197
+#: app/global-config/editGlobalConfig.php:1177
 msgid "eg. Prefix+Year+Increment Counter (LAB17999)"
 msgstr "eg. Préfixe+année+compteur d'incréments (LAB17999)"
 
-#: app/global-config/editGlobalConfig.php:1244
+#: app/global-config/editGlobalConfig.php:1222
 msgid "Other Lab Tests Show Participant Name in Manifest"
 msgstr ""
 "Autres tests de laboratoire Indiquer le nom du participant dans le manifeste"
 
-#: app/global-config/editGlobalConfig.php:1246
+#: app/global-config/editGlobalConfig.php:1224
 msgid "Please select Other Lab Tests Participant Name in Manifest"
 msgstr ""
 "Veuillez sélectionner Autres tests de laboratoire Nom du participant dans le "
 "manifeste"
 
-#: app/global-config/editGlobalConfig.php:1260
+#: app/global-config/editGlobalConfig.php:1239
 msgid "Mobile App Settings"
 msgstr "Paramètres de l'application mobile"
 
-#: app/global-config/editGlobalConfig.php:1266
+#: app/global-config/editGlobalConfig.php:1245
 msgid "Mobile APP Menu Name"
 msgstr "Nom du menu de l'APP mobile"
 
-#: app/global-config/editGlobalConfig.php:1268
+#: app/global-config/editGlobalConfig.php:1247
 msgid "Please enter name"
 msgstr "S'il vous plaît entrer le nom"
 
-#: app/global-config/editGlobalConfig.php:1277
+#: app/global-config/editGlobalConfig.php:1256
 msgid "Connect"
 msgstr "Connecter"
 
-#: app/global-config/editGlobalConfig.php:1283
+#: app/global-config/editGlobalConfig.php:1262
 msgid "National Dashboard URL"
 msgstr "URL du tableau de bord national"
 
-#: app/global-config/editGlobalConfig.php:1285
+#: app/global-config/editGlobalConfig.php:1264
 msgid "Please enter the National Dashboard URL"
 msgstr "Veuillez saisir l'URL du tableau de bord national"
 
-#: app/global-config/editGlobalConfig.php:1297
+#: app/global-config/editGlobalConfig.php:1276
 msgid "Viral Load Result PDF Settings"
 msgstr "Résultat de la charge virale en paramètres PDF"
 
-#: app/global-config/editGlobalConfig.php:1303
+#: app/global-config/editGlobalConfig.php:1282
 msgid "Show Emoticon/Smiley"
 msgstr "Afficher l'émoticône/l'émoticône"
 
-#: app/global-config/editGlobalConfig.php:1314
+#: app/global-config/editGlobalConfig.php:1292
 msgid "Display VL Log Result"
 msgstr "Afficher le résultat du journal VL"
 
-#: app/global-config/editGlobalConfig.php:1325
+#: app/global-config/editGlobalConfig.php:1303
 msgid "High Viral Load Message"
 msgstr "Message sur la charge virale élevée"
 
-#: app/global-config/editGlobalConfig.php:1327
+#: app/global-config/editGlobalConfig.php:1305
 msgid ""
 "High Viral Load message that will appear for results >= the VL threshold "
 "limit"
@@ -20082,15 +20175,15 @@ msgstr ""
 "Message apparent pour les résultats de charge virale élevée >= au seuil "
 "limite de la charge virale"
 
-#: app/global-config/editGlobalConfig.php:1327
+#: app/global-config/editGlobalConfig.php:1305
 msgid "Please enter high viral load message"
 msgstr "Veuillez saisir le message de charge virale élevée"
 
-#: app/global-config/editGlobalConfig.php:1335
+#: app/global-config/editGlobalConfig.php:1312
 msgid "Low Viral Load Message"
 msgstr "Message de faible charge virale"
 
-#: app/global-config/editGlobalConfig.php:1337
+#: app/global-config/editGlobalConfig.php:1314
 msgid ""
 "Low Viral Load message that will appear for results lesser than the VL "
 "threshold limit"
@@ -20098,55 +20191,55 @@ msgstr ""
 "Message apparent des résultats de faible charge virale inférieurs au seuil "
 "limite de la charge virale"
 
-#: app/global-config/editGlobalConfig.php:1337
+#: app/global-config/editGlobalConfig.php:1314
 msgid "Please enter low viral load message"
 msgstr "Veuillez saisir le message de faible charge virale"
 
-#: app/global-config/editGlobalConfig.php:1345
+#: app/global-config/editGlobalConfig.php:1322
 msgid "Patient Name Format"
 msgstr "Format du nom du patient"
 
-#: app/global-config/editGlobalConfig.php:1347
+#: app/global-config/editGlobalConfig.php:1324
 msgid "Choose one option"
 msgstr "Choisissez une option"
 
-#: app/global-config/editGlobalConfig.php:1348
+#: app/global-config/editGlobalConfig.php:1325
 msgid "Last Name"
 msgstr "Nom"
 
-#: app/global-config/editGlobalConfig.php:1349 app/setup/index.php:424
+#: app/global-config/editGlobalConfig.php:1326 app/setup/index.php:424
 #: app/users/addUser.php:80 app/users/addUser.php:82
 msgid "Full Name"
 msgstr "Nom complet"
 
-#: app/global-config/editGlobalConfig.php:1350
+#: app/global-config/editGlobalConfig.php:1327
 msgid "Hide Patient Name"
 msgstr "Cacher le nom du patient"
 
-#: app/global-config/editGlobalConfig.php:1396
-#: app/global-config/editGlobalConfig.php:1397
+#: app/global-config/editGlobalConfig.php:1374
+#: app/global-config/editGlobalConfig.php:1375
 #: app/vl/result-mail/editTestResultEmailConfig.php:145
 #: app/vl/result-mail/editTestResultEmailConfig.php:146
 msgid "Enter Field Name"
 msgstr "Saisir le nom du champ"
 
-#: app/global-config/globalConfigHelper.php:162
+#: app/global-config/globalConfigHelper.php:180
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: app/header.php:37 app/login/login.php:40
+#: app/header.php:36 app/login/login.php:53
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
-#: app/header.php:38
+#: app/header.php:37
 msgid "Sample Management"
 msgstr "Gestion des échantillons"
 
-#: app/header.php:42
+#: app/header.php:41
 msgid "Remote Sample Tracking Module"
 msgstr "Module de suivi des échantillons prélevé à l'extérieur du labo"
 
-#: app/header.php:45
+#: app/header.php:44
 msgid "Sample Tracking"
 msgstr "Suivi des échantillons"
 
@@ -20174,7 +20267,7 @@ msgstr "Récent"
 msgid "Edit Profile"
 msgstr "Modifier le profil"
 
-#: app/header.php:241 app/system-admin/admin-header.php:115
+#: app/header.php:241 app/system-admin/admin-header.php:114
 msgid "Sign out"
 msgstr "Déconnexion"
 
@@ -21334,26 +21427,30 @@ msgstr ""
 msgid "Instruments"
 msgstr "Instruments"
 
-#: app/login/login.php:43
+#: app/login/login.php:56
 msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
-#: app/login/login.php:70 app/login/login.php:182
+#: app/login/login.php:83 app/login/login.php:203
 #: app/system-admin/login/login.php:85
 msgid "Login"
 msgstr "Connexion"
 
-#: app/login/login.php:160 app/system-admin/login/login.php:76
+#: app/login/login.php:177
+msgid "Please enter your lab name"
+msgstr "Veuillez saisir le nom de votre laboratoire"
+
+#: app/login/login.php:181 app/system-admin/login/login.php:76
 #: app/system-admin/setup/index.php:86 app/users/editUser.php:118
 #: app/users/editUser.php:120 app/users/users.php:30 app/users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
-#: app/login/login.php:160
+#: app/login/login.php:181
 msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
-#: app/login/login.php:165 app/setup/index.php:432
+#: app/login/login.php:186 app/setup/index.php:432
 #: app/system-admin/edit-config/resetPassword.php:36
 #: app/system-admin/edit-config/resetPassword.php:38
 #: app/system-admin/login/login.php:80
@@ -21368,28 +21465,32 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: app/login/login.php:165
+#: app/login/login.php:186
 msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
-#: app/login/login.php:170
+#: app/login/login.php:191
 msgid "Get New Image"
 msgstr "Obtenir une nouvelle image"
 
-#: app/login/login.php:175
+#: app/login/login.php:196
 msgid "Please enter the text from the image"
 msgstr "Veuillez saisir le texte de l'image"
 
-#: app/login/login.php:241
+#: app/login/login.php:262
 msgid "Text you entered from the image is incorrect. Please try again"
 msgstr ""
 "Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer"
 
-#: app/login/login.php:251
+#: app/login/login.php:272
 msgid "Please enter the text from the image to proceed."
 msgstr "Veuillez saisir le texte de l'image pour continuer."
 
-#: app/login/loginProcess.php:60
+#: app/login/loginProcess.php:49
+msgid "Invalid Login Credentials"
+msgstr "Donnees de connexion invalides"
+
+#: app/login/loginProcess.php:69
 msgid ""
 "You have exhausted the maximum number of login attempts. Please retry login "
 "after some time."
@@ -21397,7 +21498,7 @@ msgstr ""
 "Vous avez épuisé le nombre maximum de tentatives de connexion. Veuillez "
 "réessayer après un certain temps."
 
-#: app/login/loginProcess.php:76 app/login/loginProcess.php:135
+#: app/login/loginProcess.php:82 app/login/loginProcess.php:141
 #: app/system-admin/login/adminLoginProcess.php:39
 msgid "Please check your login credentials"
 msgstr "Veuillez vérifier vos identifiants de connexion"
@@ -21564,7 +21665,8 @@ msgstr "Les informations sur le patient ont été sauvegardées avec succès"
 msgid "Add Patients"
 msgstr "Ajouter des patients"
 
-#: app/remote/v2/get-token.php:66 app/remote/v2/requests.php:111
+#: app/remote/v2/get-token.php:66 app/remote/v2/requests.php:117
+#: app/remote/v2/results.php:105
 msgid "Unable to process the request"
 msgstr "Impossible de traiter la demande"
 
@@ -21853,32 +21955,32 @@ msgstr "- Sélectionnez un fuseau horaire -"
 msgid "Please select the Testing lab"
 msgstr "Veuillez sélectionner le laboratoire d'essai"
 
-#: app/specimen-referral-manifest/add-manifest.php:181
-#: app/specimen-referral-manifest/edit-manifest.php:255
+#: app/specimen-referral-manifest/add-manifest.php:186
+#: app/specimen-referral-manifest/edit-manifest.php:166
 msgid "Operator/Technician"
 msgstr "Opérateur/Technicien"
 
-#: app/specimen-referral-manifest/add-manifest.php:192
-#: app/specimen-referral-manifest/edit-manifest.php:269
+#: app/specimen-referral-manifest/add-manifest.php:197
+#: app/specimen-referral-manifest/edit-manifest.php:180
 msgid "Sample Collection Point"
 msgstr "Point de prélèvement de l'échantillon"
 
-#: app/specimen-referral-manifest/add-manifest.php:215
-#: app/specimen-referral-manifest/add-manifest.php:217
-#: app/specimen-referral-manifest/edit-manifest.php:295
-#: app/specimen-referral-manifest/edit-manifest.php:298
+#: app/specimen-referral-manifest/add-manifest.php:220
+#: app/specimen-referral-manifest/add-manifest.php:222
+#: app/specimen-referral-manifest/edit-manifest.php:206
+#: app/specimen-referral-manifest/edit-manifest.php:209
 msgid "Sample Collection Date Range"
 msgstr "Date de prélèvement de l'échantillon"
 
-#: app/specimen-referral-manifest/edit-manifest.php:318
+#: app/specimen-referral-manifest/edit-manifest.php:229
 msgid "Reason for changing manifest"
 msgstr "Raison du changement de manifeste"
 
-#: app/specimen-referral-manifest/edit-manifest.php:321
+#: app/specimen-referral-manifest/edit-manifest.php:232
 msgid "Reason for changing this manifest"
 msgstr "Raison de la modification de ce manifeste"
 
-#: app/specimen-referral-manifest/edit-manifest.php:536
+#: app/specimen-referral-manifest/edit-manifest.php:449
 msgid "Please select the Testing Lab"
 msgstr "Veuillez sélectionner le laboratoire d'essai"
 
@@ -21943,36 +22045,36 @@ msgstr "Nous vous remercions. Votre message a été soumis."
 msgid "Viral Load Sample Management"
 msgstr "Gestion des échantillons de charge virale"
 
-#: app/system-admin/admin-header.php:112
+#: app/system-admin/admin-header.php:111
 msgid "Change Password"
 msgstr "Modifier le mot de passe"
 
-#: app/system-admin/admin-header.php:145
+#: app/system-admin/admin-header.php:144
 #: app/system-admin/instance-overview/instanceIndex.php:42
 #: app/system-admin/instance-overview/instanceIndex.php:45
 msgid "Instance Overview"
 msgstr "Vue d'ensemble de l'instance"
 
-#: app/system-admin/admin-header.php:150
+#: app/system-admin/admin-header.php:149
 #: app/system-admin/api-stats/api-stats.php:2
 #: app/system-admin/api-stats/api-stats.php:12
 #: app/system-admin/api-stats/api-stats.php:19
 msgid "API Stats"
 msgstr "Statistiques API"
 
-#: app/system-admin/admin-header.php:155
+#: app/system-admin/admin-header.php:154
 #: app/system-admin/user-login-history/userLoginIndex.php:2
 #: app/system-admin/user-login-history/userLoginIndex.php:13
 msgid "User Login History"
 msgstr "Historique de connexion de l’utilisateur"
 
-#: app/system-admin/admin-header.php:160
+#: app/system-admin/admin-header.php:159
 #: app/system-admin/reset-password/reset-password.php:2
 #: app/system-admin/reset-password/reset-password.php:21
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
 
-#: app/system-admin/admin-header.php:172
+#: app/system-admin/admin-header.php:171
 msgid "some problem"
 msgstr "un problème"
 
@@ -22078,7 +22180,7 @@ msgstr "Veuillez saisir votre mot de passe actuel"
 msgid "Password updated successfully"
 msgstr "Mise à jour du mot de passe réussie"
 
-#: app/system-admin/edit-config/systemConfigHelper.php:89
+#: app/system-admin/edit-config/systemConfigHelper.php:83
 msgid "System Configuration updated successfully."
 msgstr "La configuration du système a été mise à jour avec succès."
 
@@ -24935,11 +25037,11 @@ msgstr "Ajouter la raison du test CV"
 msgid "Failure Reason"
 msgstr "Motif de l'échec"
 
-#: app/vl/requests/addVlRequestHelper.php:423
+#: app/vl/requests/addVlRequestHelper.php:424
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: app/vl/requests/editVlRequestHelper.php:414
+#: app/vl/requests/editVlRequestHelper.php:413
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -25453,17 +25555,17 @@ msgstr "Veuillez choisir Si Femme enceinte"
 msgid "Please choose if ARV Regimen changed"
 msgstr "Veuillez choisir si le régime ARV a été modifié"
 
-#: app/vl/requests/forms/add-drc.php:705 app/vl/requests/forms/edit-drc.php:911
+#: app/vl/requests/forms/add-drc.php:705 app/vl/requests/forms/edit-drc.php:912
 #: app/vl/results/forms/update-drc-result.php:240
 msgid "PS"
 msgstr "PS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:914
+#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:915
 #: app/vl/results/forms/update-drc-result.php:241
 msgid "CPS"
 msgstr "CPS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:914
+#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:915
 #: app/vl/results/forms/update-drc-result.php:242
 msgid "MSM"
 msgstr "MSM"
@@ -25931,7 +26033,7 @@ msgstr ""
 msgid "REVIEWED AND APPROVED BY"
 msgstr "REVU ET APPROUVÉ PAR"
 
-#: app/vl/results/updateVlTestResultHelper.php:272
+#: app/vl/results/updateVlTestResultHelper.php:273
 msgid "VL result updated successfully"
 msgstr "Les résultats de la VL ont été mis à jour avec succès"
 
@@ -25966,55 +26068,59 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: public/assets/js/main.js.php:98 public/assets/js/main.js.php:125
+#: public/assets/js/main.js.php:108
+msgid "Downloading Samples from this Manifest"
+msgstr "Télécharger des échantillons de ce manifeste"
+
+#: public/assets/js/main.js.php:145 public/assets/js/main.js.php:172
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: public/assets/js/main.js.php:104
+#: public/assets/js/main.js.php:151
 msgid "Receiving Metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
-#: public/assets/js/main.js.php:104 public/assets/js/main.js.php:131
-#: public/assets/js/main.js.php:153 public/assets/js/main.js.php:177
+#: public/assets/js/main.js.php:151 public/assets/js/main.js.php:178
+#: public/assets/js/main.js.php:200 public/assets/js/main.js.php:224
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: public/assets/js/main.js.php:115 public/assets/js/main.js.php:142
-#: public/assets/js/main.js.php:166 public/assets/js/main.js.php:190
+#: public/assets/js/main.js.php:162 public/assets/js/main.js.php:189
+#: public/assets/js/main.js.php:213 public/assets/js/main.js.php:237
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: public/assets/js/main.js.php:131
+#: public/assets/js/main.js.php:178
 msgid "Sending Lab Metadata"
 msgstr "Envoi de métadonnées de laboratoire"
 
-#: public/assets/js/main.js.php:153
+#: public/assets/js/main.js.php:200
 msgid "Sending Test Results"
 msgstr "Envoi des résultats des tests"
 
-#: public/assets/js/main.js.php:177
+#: public/assets/js/main.js.php:224
 msgid "Receiving Test Requests"
 msgstr "Réception des demandes de test"
 
-#: public/assets/js/main.js.php:249 public/assets/js/main.js.php:260
+#: public/assets/js/main.js.php:296 public/assets/js/main.js.php:307
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: public/assets/js/main.js.php:641
+#: public/assets/js/main.js.php:688
 msgid "Cache cleared successfully"
 msgstr "Le Câche a été éliminé avec succès"
 
-#: public/assets/js/main.js.php:663
+#: public/assets/js/main.js.php:710
 msgid "Sync Forced Successfully"
 msgstr "Synchronisation forcée avec succès"
 
-#: public/assets/js/main.js.php:694
+#: public/assets/js/main.js.php:741
 msgid "Sample Collection Date is over 6 months old"
 msgstr "La date de prélèvement de l'échantillon remonte à plus de 6 mois"
 
-#: public/assets/js/main.js.php:820
+#: public/assets/js/main.js.php:867
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -26022,7 +26128,7 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: public/assets/js/main.js.php:856
+#: public/assets/js/main.js.php:903
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
 

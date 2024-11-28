@@ -202,7 +202,7 @@ try {
      }
 
 
-     $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+     // $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['artNo'], $_POST['gender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
      $vlData = [
           'vlsm_instance_id' => $instanceId,
@@ -212,7 +212,7 @@ try {
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender' => $_POST['gender'] ?? null,
-          'system_patient_code' => $systemGeneratedCode,
+          //'system_patient_code' => $systemGeneratedCode,
           'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
           'patient_age_in_years' => _castVariable($_POST['ageInYears'] ?? null, 'int'),
           'patient_age_in_months' => _castVariable($_POST['ageInMonths'] ?? null, 'int'),

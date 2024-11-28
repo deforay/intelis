@@ -1,7 +1,8 @@
 <?php
 
-use App\Services\SecurityService;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
+use App\Services\SecurityService;
 
 
 
@@ -24,7 +25,7 @@ try {
         }
     }
     $_SESSION['alertMsg'] = _translate("Test Result Email Config values updated successfully.");
-    SecurityService::redirect("/vl/result-mail/testResultEmailConfig.php");
+    MiscUtility::redirect("/vl/result-mail/testResultEmailConfig.php");
 } catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage());
 }

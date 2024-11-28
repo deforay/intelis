@@ -99,9 +99,9 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$patientsService->savePatient($_POST, 'form_hepatitis');
+	//$patientsService->savePatient($_POST, 'form_hepatitis');
 
-	$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
+	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
 
 
 	$hepatitisData = array(
@@ -110,7 +110,7 @@ try {
 		'external_sample_code' => $_POST['externalSampleCode'] ?? null,
 		'hepatitis_test_type' => $_POST['hepatitisTestType'] ?? 'hcv',
 		'facility_id' => $_POST['facilityId'] ?? null,
-		'system_patient_code' => $systemGeneratedCode,
+		//'system_patient_code' => $systemGeneratedCode,
 		'test_number' => $_POST['testNumber'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,

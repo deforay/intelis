@@ -49,10 +49,9 @@ try {
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
 
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
+        throw new SystemException("Invalid JSON Payload", 400);
     }
     $appVersion = null;
     try {
@@ -185,10 +184,7 @@ try {
                 FROM form_generic ";
                 $sQueryWhere = [];
 
-                // if (!empty($data['uniqueId'])) {
-                //     $uniqueId = $data['uniqueId'];
-                //     $sQueryWhere[] = " unique_id like '" . $data['uniqueId'] . "'";
-                // }
+
                 if (!empty($data['appSampleCode']) && !empty($data['labId'])) {
                     $sQueryWhere[] = " (app_sample_code like '" . $data['appSampleCode'] . "' AND lab_id = '" . $data['labId'] . "') ";
                 }
@@ -241,7 +237,7 @@ try {
                 $currentSampleData = $genericService->insertSample($params, returnSampleData: true);
                 $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
                 $currentSampleData['action'] = 'inserted';
-                $data['genericSampleId'] = (int) $currentSampleData['id'];;
+                $data['genericSampleId'] = (int) $currentSampleData['id'];
                 if ($data['genericSampleId'] == 0) {
                     $noOfFailedRecords++;
                     $responseData[$rootKey] = [
@@ -370,7 +366,6 @@ try {
                 'test_type_form' => !empty($testTypeForm) ? $db->func($testTypeForm) : null,
                 'external_sample_code' => $data['externalSampleCode'] ?? $data['appSampleCode'] ?? null,
                 'app_sample_code' => $data['appSampleCode'] ?? $data['externalSampleCode'] ?? null,
-                'external_sample_code' => !empty($data['externalSampleCode']) ? $data['externalSampleCode'] : null,
                 'sample_reordered' => !empty($data['sampleReordered']) ? $data['sampleReordered'] : 'no',
                 'facility_id' => !empty($data['facilityId']) ? $data['facilityId'] : null,
                 'province_id' => !empty($data['provinceId']) ? $data['provinceId'] : null,
@@ -469,6 +464,11 @@ try {
             }
         }
     }
+
+
+    // Commit transaction after processing all records
+    // we are doing this before generating sample codes as that is a separate process in itself
+    $db->commitTransaction();
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {

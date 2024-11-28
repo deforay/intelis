@@ -191,7 +191,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 								<div class="col-xs-4 col-md-4">
 									<div class="form-group">
 										<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-										<input type="text" class="form-control " id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="Please enter Sample ID" value="<?= ($vlQueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
+										<input type="text" class="form-control " id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?= ($vlQueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
 									</div>
 								</div>
 								<div class="col-xs-4 col-md-4">

@@ -2,13 +2,14 @@
 
 use GuzzleHttp\Client;
 use App\Services\TestsService;
+use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
@@ -18,6 +19,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService  $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 try {
 	// Sanitized values from request object
@@ -184,6 +188,16 @@ try {
 				</div>
 
 				<?php
+
+				$usernameFields = [
+					'tested_by',
+					'result_approved_by',
+					'result_reviewed_by',
+					'revised_by',
+					'request_created_by',
+					'last_modified_by'
+				];
+
 				if (!empty($uniqueId)) {
 					$filePath = getAuditFilePath($_POST['testType'], $uniqueId);
 					$posts = readAuditDataFromCsv($filePath);
@@ -223,13 +237,25 @@ try {
 												return $a['revision'] <=> $b['revision'];
 											});
 
+											$userCache = [];
+
 											for ($i = 0; $i < count($posts); $i++) {
 												echo "<tr>";
 												foreach ($colArr as $j => $colName) {
 													$value = $posts[$i][$colName];
 													$previousValue = $i > 0 ? $posts[$i - 1][$colName] : null;
 													$style = ($j > 3 && $previousValue !== null && $value !== $previousValue) ? 'style="background-color: orange;"' : '';
-													echo "<td $style>" . htmlspecialchars($value) . "</td>";
+
+													if (in_array($colName, $usernameFields)) {
+														// Check if the user information is already in the cache
+														if (!isset($userCache[$value])) {
+															$user = $usersService->getUserInfo($value, ['user_name']);
+															$userCache[$value] = $user['user_name'] ?? $value;
+														}
+														$value = $userCache[$value];
+													}
+
+													echo "<td $style>" . htmlspecialchars(stripslashes($value)) . "</td>";
 												}
 												echo "</tr>";
 											}
@@ -254,7 +280,9 @@ try {
 								<table id="currentDataTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
 									<thead>
 										<tr>
-											<th></th><th></th><th></th>
+											<th></th>
+											<th></th>
+											<th></th>
 											<?php
 											// Display column headers
 											foreach (array_keys($currentData[0]) as $colName) {
@@ -265,11 +293,21 @@ try {
 									</thead>
 									<tbody>
 										<tr>
-											<td></td><td></td><td></td>
+											<td></td>
+											<td></td>
+											<td></td>
 											<?php
 											// Display row data
 											foreach ($currentData[0] as $value) {
-												echo '<td>' . htmlspecialchars($value ?? '') . '</td>';
+												if (in_array($colName, $usernameFields)) {
+													// Check if the user information is already in the cache
+													if (!isset($userCache[$value])) {
+														$user = $usersService->getUserInfo($value, ['user_name']);
+														$userCache[$value] = $user['user_name'] ?? $value;
+													}
+													$value = $userCache[$value];
+												}
+												echo '<td>' . htmlspecialchars(stripslashes($value)) . '</td>';
 											}
 											?>
 										</tr>
@@ -317,7 +355,7 @@ try {
 			});
 
 			// Initialize the single row current data table
-			 ctable = $('#currentDataTable').DataTable({
+			ctable = $('#currentDataTable').DataTable({
 				paging: false,
 				searching: false,
 				info: false,
@@ -325,12 +363,12 @@ try {
 				scrollX: true
 			});
 
-			ctable.columns([0,1,2]).visible(false);
+			ctable.columns([0, 1, 2]).visible(false);
 
 
 			$('#auditColumn').on("change", function(e) {
 				var columns = $(this).val();
-				
+
 				if (columns === "" || columns == null) {
 					table.columns().visible(true);
 					ctable.columns().visible(true);
@@ -345,9 +383,6 @@ try {
 
 			});
 		});
-
-
-
 	</script>
 <?php
 

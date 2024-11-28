@@ -31,6 +31,13 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+/** @var ResultsService $stsResultsService */
+$stsResultsService = ContainerRegistry::get(ResultsService::class);
+
+/** @var TokensService $stsTokensService */
+$stsTokensService = ContainerRegistry::get(TokensService::class);
+
+
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $version = VERSION;
 
@@ -58,6 +65,8 @@ try {
 
     $transactionId = MiscUtility::generateULID();
 
+
+
     $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
     $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;
 
@@ -65,10 +74,11 @@ try {
     if (!empty($forceSyncModule)) {
         unset($systemConfig['modules']);
         $systemConfig['modules'][$forceSyncModule] = true;
+        $testType = $forceSyncModule;
     }
 
 
-    $requestsData = $stsRequestsService->receiveResults($testType, $labId);
+    $resultsData = $stsResultsService->getResults($testType, $labId);
 
 
     $sampleIds = $requestsData['sampleIds'] ?? [];

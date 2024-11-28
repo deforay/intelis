@@ -993,6 +993,7 @@ $storageInfo = $storageService->getLabStorage();
 	});
 
 	$('#serialNo').on('change', function() {
+		artDateVisibility = '<?php echo $duVisibility; ?>';
 		if($(this).val() != ""){
 			$("#reasonForVLTesting").removeClass("isRequired");
 			$("#artRegimen").removeClass("isRequired");
@@ -1002,7 +1003,9 @@ $storageInfo = $storageService->getLabStorage();
 		else{
 			$("#reasonForVLTesting").addClass("isRequired");
 			$("#artRegimen").addClass("isRequired");
-			$("#dateOfArtInitiation").addClass("isRequired");
+			if(artDateVisibility == 'visible'){
+				$("#dateOfArtInitiation").addClass("isRequired");
+			}
 			$("#viralLoadNo").addClass("isRequired");
 		}
 	});

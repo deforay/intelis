@@ -128,7 +128,7 @@ $disable = "disabled = 'disabled'";
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
 										<label for="sampleCode">Sample ID <span class="mandatory">*</span></label>
-										<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="Please enter sample id" value="<?= ($cd4QueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
+										<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?= ($cd4QueryInfo['sample_code']); ?>" <?php echo $disable; ?> style="width:100%;" />
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">

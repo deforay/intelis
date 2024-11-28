@@ -159,7 +159,7 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');
+	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');
 
 
 	$covid19Data = array(
@@ -174,7 +174,7 @@ try {
 		'test_number' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
 		'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
 		'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
-		'system_patient_code' => $systemPatientCode,
+		//'system_patient_code' => $systemPatientCode,
 		'testing_point' => !empty($_POST['testingPoint']) ? $_POST['testingPoint'] : null,
 		'funding_source' => (isset($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') ? base64_decode((string) $_POST['fundingSource']) : null,
 		'implementing_partner' => (isset($_POST['implementingPartner']) && trim((string) $_POST['implementingPartner']) != '') ? base64_decode((string) $_POST['implementingPartner']) : null,

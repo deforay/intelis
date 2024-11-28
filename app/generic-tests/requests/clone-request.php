@@ -134,11 +134,11 @@ if (isset($genericResultInfo['sample_received_at_hub_datetime']) && trim((string
 }
 
 
-if (isset($genericResultInfo['sample_received_at_testing_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_testing_lab_datetime']) != '' && $genericResultInfo['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_testing_lab_datetime']);
-	$genericResultInfo['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
+if (isset($genericResultInfo['sample_received_at_lab_datetime']) && trim((string) $genericResultInfo['sample_received_at_lab_datetime']) != '' && $genericResultInfo['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+	$expStr = explode(" ", (string) $genericResultInfo['sample_received_at_lab_datetime']);
+	$genericResultInfo['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 } else {
-	$genericResultInfo['sample_received_at_testing_lab_datetime'] = '';
+	$genericResultInfo['sample_received_at_lab_datetime'] = '';
 }
 
 
@@ -430,7 +430,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 								<div class="col-md-6">
 									<label class="col-lg-5" for="sampleCode">Sample ID <span class="mandatory">*</span></label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="Please enter sample id" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
+										<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" readonly="readonly" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_generic','<?php echo $sampleCode; ?>',this.id,'<?php echo "sample_id##" . $genericResultInfo["sample_id"]; ?>','This sample number already exists.Try another number',null)" />
 										<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars((string) $genericResultInfo['sample_code']); ?>" style="width:100%;">
 									</div>
 								</div>
@@ -741,7 +741,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<label class="col-lg-5 control-label" for="sampleReceivedDate">Date
 													Sample Received at Testing Lab </label>
 												<div class="col-lg-7">
-													<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $genericResultInfo['sample_received_at_testing_lab_datetime']; ?>" />
+													<input type="text" class="form-control labSection dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received Date" title="Please select sample received date" value="<?php echo $genericResultInfo['sample_received_at_lab_datetime']; ?>" />
 												</div>
 											</div>
 										</div>

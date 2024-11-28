@@ -175,7 +175,7 @@ try {
     $reason['reason'] = array($reason['reason'] => 'yes');
 
     //Update patient Information in Patients Table
-    $systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
+    //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
 
 
 
@@ -187,7 +187,7 @@ try {
         'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
-        'system_patient_code' => $systemPatientCode,
+        //'system_patient_code' => $systemPatientCode,
         'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
         'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
         'referring_unit' => !empty($_POST['referringUnit']) ? $_POST['referringUnit'] : null,

@@ -117,7 +117,6 @@ abstract class AbstractTestService
 
                 $currentYear = $dateObj->format('Y');
                 $latestSequenceId = $this->getMaxId($currentYear, $this->testType, $sampleCodeType, $insertOperation);
-
                 if (!empty($existingMaxId) && $existingMaxId > 0) {
                     $maxId = max($existingMaxId, $latestSequenceId) + 1;
                 } else {
@@ -126,7 +125,6 @@ abstract class AbstractTestService
 
                 // padding with zeroes
                 $maxId = sprintf("%04d", (int) $maxId);
-
                 $sampleCodeGenerator = [
                     'sampleCodeFormat' => $sampleCodeFormat,
                     'sampleCodeKey' => $maxId,
@@ -169,9 +167,10 @@ abstract class AbstractTestService
 
                         if ($insertOperation) {
 
-                            // Reset the sequence counter for this test type and year
-                            $this->resetSequenceCounter($testTable, $currentYear, $this->testType, $sampleCodeType);
-
+                            if ($tryCount == $this->maxTries - 1) {
+                                // Reset the sequence counter for this test type and year
+                                $this->resetSequenceCounter($testTable, $currentYear, $this->testType, $sampleCodeType);
+                            }
                             // Add a small delay before retrying to avoid immediate retries
                             usleep($tryCount * 50000); // 50 milliseconds
                         }
@@ -192,12 +191,16 @@ abstract class AbstractTestService
                     ];
 
                     $this->db->upsert('sequence_counter', $data, $updateColumns);
+                    if ($insertOperation) {
+                        $this->db->commitTransaction();
+                    }
                 }
 
                 return json_encode($sampleCodeGenerator);
             }
-
-            throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
+            if ($tryCount > $this->maxTries) {
+                throw new SystemException("Exceeded maximum number of tries ($this->maxTries) for generating Sample ID");
+            }
         } catch (Throwable $exception) {
             // Rollback the current transaction to release locks and undo changes
             if ($insertOperation) {

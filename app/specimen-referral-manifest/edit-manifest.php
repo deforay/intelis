@@ -51,6 +51,11 @@ $facilities = $facilitiesService->getHealthFacilities($module);
 
 $testTypeResult = null;
 if ($module == 'generic-tests') {
+
+	$testQuery = "SELECT * FROM form_generic WHERE sample_package_id = ?";
+	$testType = $db->rawQueryOne($testQuery, [$pResult['package_id']]);
+
+
 	$testTypeQuery = "SELECT * FROM r_test_types
 					WHERE test_status='active' ORDER BY test_standard_name ASC";
 	$testTypeResult = $db->rawQuery($testTypeQuery);
@@ -104,27 +109,29 @@ if ($module == 'generic-tests') {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-			<!-- /.box-header -->
-			<div class="box-body">
-				<?php
-				if ($module == 'generic-tests') { ?>
-					<div class="row">
-						<div class="col-xs-4 col-md-4">
-							<div class="form-group" style="margin-left:30px; margin-top:30px;">
-								<label for="testType">Test Type</label>
-								<select disabled="disabled" class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
-									<option value=""> -- Select -- </option>
-									<?php foreach ($testTypeResult as $testTypeInfo) { ?>
-										<option value="<?php echo $testTypeInfo['test_type_id'] ?>" data-short="<?php echo $testTypeInfo['test_short_code']; ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
-									<?php } ?>
-								</select>
-							</div>
-						</div>
-					</div>
-				<?php } ?>
+				
 				<!-- form start -->
 				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
 					<div class="box-body">
+						<?php
+						if ($module == 'generic-tests') { ?>
+							<div class="row">
+								<div class="col-md-6">
+									<div class="form-group">
+										<label for="testType" class="col-lg-4 control-label">Test Type</label>
+										<div class="col-lg-7" style="margin-left:3%;">
+											<select disabled="disabled" class="form-control select2" name="testType" id="testType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
+												<option value=""> -- Select -- </option>
+												<?php foreach ($testTypeResult as $testTypeInfo) { ?>
+													<option value="<?php echo $testTypeInfo['test_type_id'] ?>" data-short="<?php echo $testTypeInfo['test_short_code']; ?>" <?php echo ($testType['test_type'] == $testTypeInfo['test_type_id']) ? "selected='selected'" : ""; ?>><?php echo $testTypeInfo['test_standard_name'] ?></option>
+												<?php } ?>
+											</select>
+										</div>
+									</div>
+								</div>
+							</div>
+						<?php } ?>
+					
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -220,7 +227,7 @@ if ($module == 'generic-tests') {
 								</div>
 							</div>
 						</div>
-					</div>
+					
 					<br>
 					<div class="row">
 						<div class="col-md-6">
@@ -239,6 +246,7 @@ if ($module == 'generic-tests') {
 
 					</div>
 					<div class="row" id="alertText" style="font-size:18px;"></div>
+			</div>
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">

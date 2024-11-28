@@ -818,6 +818,7 @@ $sFormat = '';
 	});
 
 	$('#serialNo').on('change', function() {
+		$(".du").show();
 		if($(this).val() != ""){
 			$("#reasonForVLTesting").removeClass("isRequired");
 			$("#artRegimen").removeClass("isRequired");

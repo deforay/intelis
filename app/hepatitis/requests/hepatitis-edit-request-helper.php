@@ -124,7 +124,7 @@ try {
 	}
 
 	//Update patient Information in Patients Table
-	$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
+	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_hepatitis');
 
 
 	$hepatitisData = array(
@@ -134,7 +134,7 @@ try {
 		'test_number' => $_POST['testNumber'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_id' => $_POST['labId'] ?? null,
-		'system_patient_code' => $systemPatientCode,
+		//'system_patient_code' => $systemPatientCode,
 		'implementing_partner' => $_POST['implementingPartner'] ?? null,
 		'funding_source' => $_POST['fundingSource'] ?? null,
 		'patient_id' => $_POST['patientId'] ?? null,

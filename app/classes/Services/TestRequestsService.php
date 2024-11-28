@@ -99,8 +99,6 @@ final class TestRequestsService
                             continue;
                         }
 
-                        $this->db->beginTransaction();
-
                         $sampleCodeParams = [
                             'sampleCollectionDate' => $item['sample_collection_date'],
                             'provinceCode' => $item['province_code'] ?? null,
@@ -158,14 +156,14 @@ final class TestRequestsService
 
                             $this->updateQueueItem($item['id'], 1);
                         }
-
-                        $this->db->commitTransaction();
                     } catch (Throwable $e) {
-                        $this->db->rollbackTransaction();
+
                         LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
                             'exception' => $e,
                             'file' => $e->getFile(),
                             'line' => $e->getLine(),
+                            'last_db_query' => $this->db->getLastQuery(),
+                            'last_db_error' => $this->db->getLastError(),
                             'stacktrace' => $e->getTraceAsString()
                         ]);
                         continue;
@@ -254,25 +252,10 @@ final class TestRequestsService
             if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
                 //$uniqueIds = array_keys($sampleCodeData);
-
-                $dataToUpdate = [];
-                $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-                $dataToUpdate['data_sync'] = 0;
-
-                $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
-                $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-                if (!empty($_POST['sampleReceivedOn'])) {
-                    $dataToUpdate['sample_tested_datetime'] = null;
-                    $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
-                }
-                $this->db->where('sample_package_code', $manifestCode);
-                $this->db->update($tableName, $dataToUpdate);
                 $status = 1;
             }
-
-            return $status;
         } catch (Throwable $e) {
+            $status = 0;
             LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'last_db_query' => $this->db->getLastQuery(),
@@ -281,6 +264,22 @@ final class TestRequestsService
                 'line' => $e->getLine(),
                 'stacktrace' => $e->getTraceAsString()
             ]);
+        } finally {
+            $dataToUpdate = [];
+            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            $dataToUpdate['data_sync'] = 0;
+
+            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
+            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+            if (!empty($_POST['sampleReceivedOn'])) {
+                $dataToUpdate['sample_tested_datetime'] = null;
+                $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
+            }
+            $this->db->where('sample_code is NOT NULL');
+            $this->db->where('sample_package_code', $manifestCode);
+            $this->db->update($tableName, $dataToUpdate);
+            return $status;
         }
     }
 }

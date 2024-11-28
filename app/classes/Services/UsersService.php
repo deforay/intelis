@@ -147,6 +147,7 @@ final class UsersService
 
     public function getUserInfo($userId, $columns = '*')
     {
+
         if (is_array($columns)) {
             $columns = implode(",", $columns);
         }

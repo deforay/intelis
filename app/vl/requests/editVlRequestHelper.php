@@ -54,7 +54,6 @@ $resultStatus = null;
 $instanceId = $general->getInstanceId();
 
 try {
-
      $mandatoryFields = [
           $_POST['vlSampleId'],
           $_POST['sampleCode'],
@@ -62,7 +61,7 @@ try {
      ];
      if (ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
           $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
-          SecurityService::redirect("/vl/requests/addVlRequest.php");
+          MiscUtility::redirect("/vl/requests/addVlRequest.php");
           die;
      }
 
@@ -144,7 +143,7 @@ try {
      $processedResults = $vlService->processViralLoadResultFromForm($_POST);
 
      //Update patient Information in Patients Table
-     $systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
+     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_vl');
 
      $isRejected = $processedResults['isRejected'];
      $finalResult = $processedResults['finalResult'];
@@ -183,7 +182,7 @@ try {
           'sample_reordered' => $_POST['sampleReordered'] ?? 'no',
           'external_sample_code' => $_POST['serialNo'] ?? null,
           'facility_id' => $_POST['facilityId'] ?? null,
-          'system_patient_code' => $systemPatientCode,
+          //'system_patient_code' => $systemPatientCode,
           'sample_collection_date' => DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true),
           'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
           'patient_gender' => $_POST['gender'] ?? null,
@@ -421,7 +420,7 @@ try {
      } else {
           $_SESSION['alertMsg'] = _translate("Please try again later");
      }
-     SecurityService::redirect("/vl/requests/vl-requests.php");
+     MiscUtility::redirect("/vl/requests/vl-requests.php");
 } catch (Throwable $exc) {
      throw new SystemException($exc->getMessage(), 500, $exc);
 }

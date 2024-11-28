@@ -36,6 +36,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+$batchSize = 100; // Process 100 rows per batch
+
 try {
     $db->beginTransaction();
 
@@ -151,6 +153,10 @@ try {
                 if ($id === true && isset($lab['sample_code'])) {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
+                }
+                if ($counter % $batchSize === 0) {
+                    $db->commitTransaction();
+                    $db->beginTransaction();
                 }
             } catch (Throwable $e) {
 

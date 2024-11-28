@@ -54,7 +54,7 @@ try {
 
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
+        throw new SystemException("Invalid JSON Payload", 400);
     }
     // Attempt to extract appVersion
     try {
@@ -502,6 +502,10 @@ try {
         }
     }
 
+    // Commit transaction after processing all records
+    // we are doing this before generating sample codes as that is a separate process in itself
+    $db->commitTransaction();
+
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
         $sampleCodeData = $testRequestsService->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
@@ -533,7 +537,6 @@ try {
         'transactionId' => $transactionId,
         'data' => $responseData ?? []
     ];
-    $db->commitTransaction();
 } catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);

@@ -61,7 +61,7 @@ final class ResultsService
         return $this->usersService->getOrCreateUser($approverId);
     }
 
-    public function receiveResults($testType, $labId)
+    public function getResults($testType, $labId)
     {
         $this->setTestType($testType);
         $resultsData = [];

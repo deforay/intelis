@@ -77,12 +77,12 @@ try {
 
                 $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                 $db->update($testTable, ['sample_batch_id' => $id]);
-                SecurityService::redirect("edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
+                MiscUtility::redirect("edit-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($id) . "&position=" . $_POST['positions']);
             }
         } else {
             if ($batchService->doesBatchCodeExist($_POST['batchCode'])) {
                 $_SESSION['alertMsg'] = _translate("Something went wrong. Please try again later.", true);
-                SecurityService::redirect("batches.php?type=" . $_POST['type']);
+                MiscUtility::redirect("batches.php?type=" . $_POST['type']);
             } else {
                 $maxSampleBatchId = $general->getMaxSampleBatchId($testTable);
                 $maxBatchId = $general->getMaxBatchId($tableName1);
@@ -115,9 +115,9 @@ try {
                     $uniqueSampleIds = array_unique($selectedSamples);
                     $db->where($testTablePrimaryKey, $uniqueSampleIds, "IN");
                     $db->update($testTable, ['sample_batch_id' => $lastId]);
-                    SecurityService::redirect("add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
+                    MiscUtility::redirect("add-batch-position.php?type=" . $_POST['type'] . "&id=" . base64_encode($lastId) . "&position=" . $_POST['positions']);
                 } else {
-                    SecurityService::redirect("batches.php?type=" . $_POST['type']);
+                    MiscUtility::redirect("batches.php?type=" . $_POST['type']);
                 }
             }
         }

@@ -53,7 +53,7 @@ try {
 
     $origJson = $apiService->getJsonFromRequest($request);
     if (JsonUtility::isJSON($origJson) === false) {
-        throw new SystemException("Invalid JSON Payload");
+        throw new SystemException("Invalid JSON Payload", 400);
     }
 
     // Attempt to extract appVersion
@@ -259,7 +259,7 @@ try {
             $currentSampleData = $covid19Service->insertSample($params, returnSampleData: true);
             $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
-            $data['covid19SampleId'] = (int) $currentSampleData['id'];;
+            $data['covid19SampleId'] = (int) $currentSampleData['id'];
             if ($data['covid19SampleId'] == 0) {
                 $noOfFailedRecords++;
                 $responseData[$rootKey] = [
@@ -595,6 +595,9 @@ try {
         }
     }
 
+    // Commit transaction after processing all records
+    // we are doing this before generating sample codes as that is a separate process in itself
+    $db->commitTransaction();
 
     // For inserted samples, generate sample code
     if (!empty($uniqueIdsForSampleCodeGeneration)) {
@@ -628,7 +631,6 @@ try {
         'transactionId' => $transactionId,
         'data' => $responseData ?? []
     ];
-    $db->commitTransaction();
 } catch (Throwable $exc) {
     $db->rollbackTransaction();
     http_response_code(500);
