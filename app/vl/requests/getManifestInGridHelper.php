@@ -50,8 +50,6 @@ if (!empty($columnSearch) && $columnSearch != '') {
 
 
 
-
-
 $sQuery = "SELECT vl.sample_collection_date,
                     vl.vl_sample_id,
                     vl.last_modified_datetime,

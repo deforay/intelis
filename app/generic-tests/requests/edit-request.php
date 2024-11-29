@@ -1726,7 +1726,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		$('.ins-row-' + row + subrow).attr('disabled', true);
 		$('.ins-row-' + row + subrow).addClass('disabled');
 		testCounter = (subrow + 1);
-		options = $("#finalResult" + row).html();
+		options = $("#resultListQl" + row).html();
 		testMethodOptions = $("#testName" + row + (testCounter - 1)).html();
 		if ($('.qualitative-field').hasClass('testResultUnit')) {
 			unitTest = `<td class="testResultUnit">

@@ -1219,7 +1219,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	<?php if ($general->isLISInstance()) { ?>
-		//let remoteURL = '<?php echo $general->getRemoteURL(); ?>';
+		let remoteURL = '<?php echo $general->getRemoteURL(); ?>';
 
 		function forceResultSync(sampleCode) {
 			$.blockUI({

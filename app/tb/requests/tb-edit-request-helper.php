@@ -177,9 +177,7 @@ try {
     //Update patient Information in Patients Table
     //$systemPatientCode = $patientsService->savePatient($_POST, 'form_tb');
 
-
-
-    $tbData = array(
+    $tbData = [
         'vlsm_instance_id' => $instanceId,
         'vlsm_country_id' => $_POST['formId'],
         'facility_id' => !empty($_POST['facilityId']) ? $_POST['facilityId'] : null,
@@ -243,7 +241,7 @@ try {
         'lab_tech_comments' => !empty($_POST['labComments']) ? $_POST['labComments'] : '',
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
         'source_of_request' => "web"
-    );
+    ];
 
 
     $db->where('tb_id', $_POST['tbSampleId']);

@@ -43,7 +43,7 @@ $remoteURL = $general->getRemoteURL();
 ?>
 
 <script type="text/javascript">
-    let remoteURL = '<?= $remoteURL; ?>';
+    let stsURL = '<?= $remoteURL; ?>';
     window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
     function addCsrfTokenToForm(form) {
@@ -103,12 +103,12 @@ $remoteURL = $general->getRemoteURL();
 
         function syncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
             manifestCode = $("#samplePackageCode").val();
-            if (manifestCode && remoteURL) {
+            if (manifestCode && stsURL) {
                 $.blockUI({
                     message: '<h3><?php echo _translate("Downloading Samples from this Manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
                 });
 
-                if (remoteSync && remoteURL != null && remoteURL != '') {
+                if (remoteSync && stsURL != null && stsURL != '') {
                     var jqxhr = $.ajax({
                             url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
                         })
@@ -262,7 +262,7 @@ $remoteURL = $general->getRemoteURL();
                     $('.is-remote-server-reachable').hide();
                 } else {
                     $.ajax({
-                        url: '<?= $remoteURL; ?>/api/version.php',
+                        url: stsURL + '/api/version.php',
                         cache: false,
                         success: function(data) {
                             $('.is-remote-server-reachable').fadeIn(1000);

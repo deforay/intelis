@@ -714,6 +714,12 @@ final class CommonService
     public function updateSyncDateTime($testType, $facilityIds, $labId, $syncType): void
     {
         try {
+
+
+            if ($testType == 'generic-tests') {
+                $testType = 'genericTests';
+            }
+
             $currentDateTime = DateUtility::getCurrentDateTime();
 
             if (!empty($facilityIds)) {

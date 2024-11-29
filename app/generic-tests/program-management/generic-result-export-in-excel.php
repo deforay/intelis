@@ -1,17 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\MiscUtility;
-use App\Services\DatabaseService;
-use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\Cell\DataType;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 
 
@@ -99,8 +97,8 @@ if (isset($_SESSION['genericResultQuery']) && trim((string) $_SESSION['genericRe
 		}
 
 		$sampleReceivedOn = '';
-		if (!empty($aRow['sample_received_at_testing_lab_datetime'])) {
-			$sampleReceivedOn =  DateUtility::humanReadableDateFormat($aRow['sample_received_at_testing_lab_datetime']);
+		if (!empty($aRow['sample_received_at_lab_datetime'])) {
+			$sampleReceivedOn =  DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 		}
 
 		//set sample rejection

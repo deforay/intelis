@@ -1,15 +1,12 @@
 <?php
 
+use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
-
-
 
 
 /** @var DatabaseService $db */
@@ -124,7 +121,7 @@ try {
                         vl.request_clinician_name,
                         vl.lab_tech_comments,
                         vl.sample_received_at_hub_datetime,
-                        vl.sample_received_at_testing_lab_datetime,
+                        vl.sample_received_at_lab_datetime,
                         vl.result_dispatched_datetime,
                         vl.request_created_datetime,
                         vl.result_printed_datetime,
@@ -272,9 +269,9 @@ try {
      }
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
           if (trim((string) $sSampleReceivedDate) == trim((string) $eSampleReceivedDate)) {
-               $sWhere[] =  '  DATE(vl.sample_received_at_testing_lab_datetime) like "' . $sSampleReceivedDate . '"';
+               $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) like "' . $sSampleReceivedDate . '"';
           } else {
-               $sWhere[] =  '  DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $eSampleReceivedDate . '"';
+               $sWhere[] =  '  DATE(vl.sample_received_at_lab_datetime) >= "' . $sSampleReceivedDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $eSampleReceivedDate . '"';
           }
      }
      if (isset($_POST['requestCreatedDatetime']) && trim((string) $_POST['requestCreatedDatetime']) != '') {

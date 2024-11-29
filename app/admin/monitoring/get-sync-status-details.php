@@ -51,6 +51,10 @@ if (isset($testType) && $testType == 'tb') {
     $testName = 'TB';
 }
 
+if ($testType == 'generic-tests') {
+    $testType = 'genericTests';
+}
+
 $sQuery = "SELECT f.facility_id,
             f.facility_name, GREATEST(
                     COALESCE(facility_attributes->>'$." . $testType . "RemoteResultsSync', 0),
@@ -79,7 +83,7 @@ if (!empty($sWhere)) {
 $sQuery = $sQuery . " ORDER BY latestSync DESC, f.facility_name ASC";
 
 $_SESSION['labSyncStatusDetails'] = $sQuery;
-// die($sQuery);
+
 $rResult = $db->rawQuery($sQuery);
 foreach ($rResult as $key => $aRow) { ?>
     <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>" data-labId="<?= htmlspecialchars((string) $_POST['labId']); ?>" data-url="<?php echo urlencode($url); ?>">
