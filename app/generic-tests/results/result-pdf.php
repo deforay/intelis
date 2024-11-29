@@ -651,7 +651,7 @@ if (!empty($requestResult)) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
                $html .= '</tr>';
           }
-          
+
           if (!empty($result['lab_tech_comments'])) {
 
                $html .= '<tr>';
@@ -679,7 +679,7 @@ if (!empty($requestResult)) {
           $html .= '</td>';
           $html .= '</tr>';
           $html .= '</table>';
-       
+
           if ($vlResult != '' || ($vlResult == '' && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
                $pdf->writeHTML($html);
                $pdf->lastPage();
