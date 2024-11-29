@@ -103,12 +103,12 @@ $remoteURL = $general->getRemoteURL();
 
         function syncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
             manifestCode = $("#samplePackageCode").val();
-            if (manifestCode && remoteURL) {
+            if (manifestCode && stsURL) {
                 $.blockUI({
                     message: '<h3><?php echo _translate("Downloading Samples from this Manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
                 });
 
-                if (remoteSync && remoteURL != null && remoteURL != '') {
+                if (remoteSync && stsURL != null && stsURL != '') {
                     var jqxhr = $.ajax({
                             url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
                         })
