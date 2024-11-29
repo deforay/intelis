@@ -19,7 +19,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $sampleData = [];
 
 $sampleCode = $_POST['samplePackageCode'];
-$sampleQuery = "SELECT vl.sample_id
+$sampleQuery = "SELECT vl.sample_id,vl.form_attributes
                     FROM form_generic as vl
                     WHERE vl.sample_package_code IN
                     (
@@ -27,5 +27,24 @@ $sampleQuery = "SELECT vl.sample_id
                         (SELECT DISTINCT sample_package_code FROM form_generic WHERE remote_sample_code LIKE '$sampleCode')
                     )";
 $sampleResult = $db->rawQuery($sampleQuery);
+
+
+$noOfSamples=0;
+// Get number of samples
+$formAttributes = json_decode($sampleResult[0]['form_attributes']);
+if(isset($formAttributes->manifest)){
+    $manifest=json_decode($formAttributes->manifest);
+    if(isset($manifest->number_of_samples)){
+        $noOfSamples=$manifest->number_of_samples;
+    }
+}
+
 $sampleData = array_column($sampleResult, 'sample_id');
-echo implode(',', $sampleData);
+
+$count=sizeof($sampleData);
+if($noOfSamples>0){
+    if($count==$noOfSamples){
+        echo implode(',', $sampleData);
+    }
+}
+

@@ -18,7 +18,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 $sampleData = [];
 $sampleCode = $_POST['samplePackageCode'];
-$sampleQuery = "SELECT vl.cd4_id
+$sampleQuery = "SELECT vl.cd4_id,vl.form_attributes
                     FROM form_cd4 as vl
                     WHERE vl.sample_package_code IN
                     (
@@ -27,5 +27,23 @@ $sampleQuery = "SELECT vl.cd4_id
                     )";
 
 $sampleResult = $db->rawQuery($sampleQuery);
+
+$noOfSamples=0;
+// Get number of samples
+$formAttributes = json_decode($sampleResult[0]['form_attributes']);
+if(isset($formAttributes->manifest)){
+    $manifest=json_decode($formAttributes->manifest);
+    if(isset($manifest->number_of_samples)){
+        $noOfSamples=$manifest->number_of_samples;
+    }
+}
+
 $sampleData = array_column($sampleResult, 'cd4_id');
-echo implode(',', $sampleData);
+
+$count=sizeof($sampleData);
+if($noOfSamples>0){
+    if($count==$noOfSamples){
+        echo implode(',', $sampleData);
+    }
+}
+
