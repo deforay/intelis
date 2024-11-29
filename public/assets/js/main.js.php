@@ -43,7 +43,7 @@ $remoteURL = $general->getRemoteURL();
 ?>
 
 <script type="text/javascript">
-    let remoteURL = '<?= $remoteURL; ?>';
+    let stsURL = '<?= $remoteURL; ?>';
     window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
     function addCsrfTokenToForm(form) {
