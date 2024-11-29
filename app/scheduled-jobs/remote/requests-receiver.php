@@ -1153,7 +1153,7 @@ try {
                         'lab_id',
                         'vl_test_platform',
                         'sample_received_at_hub_datetime',
-                        'sample_received_at_testing_lab_datetime',
+                        'sample_received_at_lab_datetime',
                         'sample_tested_datetime',
                         'result_dispatched_datetime',
                         'is_sample_rejected',

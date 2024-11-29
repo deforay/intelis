@@ -262,7 +262,7 @@ $remoteURL = $general->getRemoteURL();
                     $('.is-remote-server-reachable').hide();
                 } else {
                     $.ajax({
-                        url: '<?= $remoteURL; ?>/api/version.php',
+                        url: stsURL + '/api/version.php',
                         cache: false,
                         success: function(data) {
                             $('.is-remote-server-reachable').fadeIn(1000);
