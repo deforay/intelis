@@ -36,10 +36,8 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$batchSize = 100; // Process 100 rows per batch
-
 try {
-    $db->beginTransaction();
+
 
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
@@ -81,38 +79,40 @@ try {
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
 
-            $counter++;
-            $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
-            // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
-
-            if (isset($resultRow['approved_by_name']) && !empty($resultRow['approved_by_name'])) {
-
-                $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
-                $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
-                // we dont need this now
-                //unset($resultRow['approved_by_name']);
-            }
-
-            //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-            $lab['data_sync'] = 1;
-            $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-
-            if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                $keysToRemove = [
-                    'result',
-                    'result_value_log',
-                    'result_value_absolute',
-                    'result_value_text',
-                    'result_value_absolute_decimal',
-                    'is_sample_rejected',
-                    'reason_for_sample_rejection'
-                ];
-                $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
-            }
-
             try {
+                $db->beginTransaction();
+                $counter++;
+                $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
+                // Overwrite the values in $emptyLabArray with the values in $resultRow
+                $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
+
+                if (isset($resultRow['approved_by_name']) && !empty($resultRow['approved_by_name'])) {
+
+                    $lab['result_approved_by'] = $usersService->getOrCreateUser($resultRow['approved_by_name']);
+                    $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
+                    // we dont need this now
+                    //unset($resultRow['approved_by_name']);
+                }
+
+                //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
+                $lab['data_sync'] = 1;
+                $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+
+                if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
+                    $keysToRemove = [
+                        'result',
+                        'result_value_log',
+                        'result_value_absolute',
+                        'result_value_text',
+                        'result_value_absolute_decimal',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection'
+                    ];
+                    $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
+                }
+
+
                 // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
                 $conditions = [];
                 $params = [];
@@ -136,7 +136,7 @@ try {
                 }
                 $sResult = [];
                 if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -154,12 +154,9 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
-                if ($counter % $batchSize === 0) {
-                    $db->commitTransaction();
-                    $db->beginTransaction();
-                }
+                $db->commitTransaction();
             } catch (Throwable $e) {
-
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -175,10 +172,8 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'vl', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('vl', $facilityIds, $labId);
-
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
+
 
     $payload = json_encode([]);
 

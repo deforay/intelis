@@ -10,7 +10,6 @@ use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -134,18 +133,23 @@ try {
             $redirect = "/users/edit-profile.php";
             $_SESSION['alertMsg'] = _translate("Please change your password to proceed.");
         } elseif (isset($_SESSION['requestedURI'])) {
-            $redirect = $_SESSION['requestedURI'];
+            if (_isAllowed($_SESSION['requestedURI'])) {
+                $redirect = $_SESSION['requestedURI'];
+            }
             unset($_SESSION['requestedURI']);
         }
     } else {
         throw new SystemException(_translate("Please check your login credentials"));
     }
-} catch (SystemException $exception) {
-    $_SESSION['alertMsg'] = $exception->getMessage();
-    LoggerUtility::log('error', $exception->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
-        'exception' => $exception,
-        'file' => $exception->getFile(), // File where the error occurred
-        'line' => $exception->getLine(), // Line number of the error
+} catch (Throwable $e) {
+    $_SESSION['alertMsg'] = $e->getMessage();
+    LoggerUtility::log('error', $e->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
+        'exception' => $e,
+        'code'  => $e->getCode(), // Error code
+        'last_db_error' => $db->getLastError(), // Last database error
+        'last_db_query' => $db->getLastQuery(), // Last executed query
+        'file' => $e->getFile(), // File where the error occurred
+        'line' => $e->getLine(), // Line number of the error
     ]);
     $redirect = "/login/login.php";
 }

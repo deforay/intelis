@@ -374,9 +374,11 @@ try {
         $vlData['patient_last_name'] = $encryptedPatientLastName;
         $vlData['is_encrypted'] = 'yes';
     }
+
     $formAttributes = [
         'applicationVersion' => $general->getAppVersion(),
-        'ip_address' => $general->getClientIpAddress()
+        'ip_address' => $general->getClientIpAddress(),
+        'browser' => $general->getClientBrowser()
     ];
 
     if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
@@ -413,13 +415,12 @@ try {
 
 
     $id = 0;
-    // echo "<pre>";print_r($vlData);die;
 
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
     $db->commitTransaction();
-    $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';
+    $patientId = isset($_POST['artNo']) ? $_POST['artNo'] : '';
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("VL request added successfully");
         $eventType = 'add-vl-request';
@@ -460,5 +461,13 @@ try {
     }
 } catch (Throwable $e) {
     $db->rollbackTransaction();
-    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), 500, $e);
+    LoggerUtility::logError($e->getMessage(), [
+        'code'  => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError(),
+        'trace' => $e->getTraceAsString(),
+    ]);
+    throw new SystemException($e->getMessage(), 500, $e);
 }

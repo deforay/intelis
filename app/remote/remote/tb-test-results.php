@@ -21,7 +21,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 try {
-    $db->beginTransaction();
+
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -73,6 +73,9 @@ try {
 
 
         foreach ($parsedData as $key => $resultRow) {
+
+            $db->beginTransaction();
+
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
             $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
@@ -89,9 +92,6 @@ try {
             $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
             $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-            //unset($lab['request_created_by']);
-            //unset($lab['last_modified_by']);
-            //unset($lab['request_created_datetime']);
 
             if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
                 $keysToRemove = [
@@ -128,7 +128,7 @@ try {
                 }
                 $sResult = [];
                 if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -149,7 +149,13 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
+                if ($counter % $batchSize === 0) {
+                    $db->commitTransaction();
+                    $db->beginTransaction();
+                }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -166,10 +172,7 @@ try {
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
 
     $general->updateResultSyncDateTime('tb', $facilityIds, $labId);
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
-
     $payload = json_encode([]);
 
     if ($db->getLastErrno() > 0) {

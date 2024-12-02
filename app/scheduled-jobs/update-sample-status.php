@@ -36,36 +36,49 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                     SAMPLE_STATUS\TEST_FAILED
                 ];
                 while (true) {
-                    // Fetch a batch of rows
-                    $db->reset();
-                    $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
-                    $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
-                    $db->orderBy("vl_sample_id", "ASC"); // Ensure consistent ordering
-                    $db->pageLimit = $batchSize;
-                    $rows = $db->get($tableName, [$offset, $batchSize], "vl_sample_id");
+                    try {
+                        $db->beginTransaction();
+                        // Fetch a batch of rows
+                        $db->reset();
+                        $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
+                        $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
+                        $db->orderBy("vl_sample_id", "ASC"); // Ensure consistent ordering
+                        $db->pageLimit = $batchSize;
+                        $rows = $db->get($tableName, [$offset, $batchSize], "vl_sample_id");
 
-                    if (empty($rows)) {
-                        // No more rows to process
-                        break;
+                        if (empty($rows)) {
+                            // No more rows to process
+                            break;
+                        }
+
+                        // Extract the IDs of the rows to update
+                        $ids = array_column($rows, 'vl_sample_id');
+
+                        // Update the rows in the current batch
+                        $db->reset();
+                        $db->where("vl_sample_id", $ids, 'IN');
+                        $db->update(
+                            $tableName,
+                            [
+                                "result_status" => SAMPLE_STATUS\TEST_FAILED,
+                                "data_sync" => 0,
+                                "last_modified_datetime" => DateUtility::getCurrentDateTime()
+                            ]
+                        );
+
+                        // Move to the next batch
+                        $offset += $batchSize;
+                        $db->commitTransaction();
+                    } catch (Throwable $e) {
+                        $db->rollbackTransaction();
+                        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                        LoggerUtility::logError($e->getMessage(), [
+                            'file' => $e->getFile(),
+                            'line' => $e->getLine(),
+                            'trace' => $e->getTraceAsString(),
+                        ]);
+                        continue;
                     }
-
-                    // Extract the IDs of the rows to update
-                    $ids = array_column($rows, 'vl_sample_id');
-
-                    // Update the rows in the current batch
-                    $db->reset();
-                    $db->where("vl_sample_id", $ids, 'IN');
-                    $db->update(
-                        $tableName,
-                        [
-                            "result_status" => SAMPLE_STATUS\TEST_FAILED,
-                            "data_sync" => 0,
-                            "last_modified_datetime" => DateUtility::getCurrentDateTime()
-                        ]
-                    );
-
-                    // Move to the next batch
-                    $offset += $batchSize;
                 }
             }
 

@@ -39,9 +39,8 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-
 try {
-    $db->beginTransaction();
+
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
@@ -75,6 +74,9 @@ try {
 
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
+
+            $db->beginTransaction();
+
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
             $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
@@ -126,7 +128,7 @@ try {
                 }
                 $sResult = [];
                 if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -149,7 +151,9 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -167,10 +171,8 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'eid', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('eid', $facilityIds, $labId);
-
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
+
 
     $payload = json_encode([]);
 

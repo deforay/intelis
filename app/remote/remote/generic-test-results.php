@@ -29,9 +29,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-
 try {
-    $db->beginTransaction();
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -74,6 +72,8 @@ try {
 
         $counter = 0;
         foreach ($resultsData as $uniqueId => $resultRow) {
+
+            $db->beginTransaction();
 
             $counter++;
 
@@ -131,7 +131,7 @@ try {
                 }
                 $sResult = [];
                 if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -170,7 +170,9 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -186,11 +188,7 @@ try {
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'generic-tests', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime('genericTests', $facilityIds, $labId);
-
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
-
     $payload = json_encode([]);
 
     if ($db->getLastErrno() > 0) {

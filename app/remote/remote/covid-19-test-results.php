@@ -40,8 +40,9 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+
 try {
-    $db->beginTransaction();
+
     //this file receives the lab results and updates in the remote db
     //$jsonResponse = $contentEncoding = $request->getHeaderLine('Content-Encoding');
 
@@ -77,6 +78,9 @@ try {
 
         $counter = 0;
         foreach ($resultsData as $uniqueId => $resultRow) {
+
+            $db->beginTransaction();
+
             $counter++;
 
             $formData = $resultRow['form_data'] ?? [];
@@ -132,7 +136,7 @@ try {
                 }
                 $sResult = [];
                 if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions);
+                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -178,7 +182,9 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
@@ -193,12 +199,9 @@ try {
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'covid19', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-
-
     $general->updateResultSyncDateTime('covid19', $facilityIds, $labId);
-    $db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
+
 
     $payload = json_encode([]);
 
