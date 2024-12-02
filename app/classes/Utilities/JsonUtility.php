@@ -215,7 +215,9 @@ final class JsonUtility
         // Build the set string
         $setString = '';
         foreach ($data as $key => $value) {
-            $setString .= ', "$.' . $key . '", ' . self::jsonValueToString($value);
+            $setString .= ', "$.' . $key . '", ' . (is_array($value) || is_object($value)
+                ? 'CAST(\'' . json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) . '\' AS JSON)'
+                : self::jsonValueToString($value));
         }
 
         // Construct and return the JSON_SET query

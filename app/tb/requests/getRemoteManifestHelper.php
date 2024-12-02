@@ -16,34 +16,23 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$sampleData = [];
-
 $sampleCode = $_POST['samplePackageCode'];
-$sampleQuery = "SELECT tb.tb_id,tb.form_attributes
-                    FROM form_tb as tb
-                    WHERE tb.sample_package_code IN
-                    (
-                        '$sampleCode',
-                        (SELECT DISTINCT sample_package_code FROM form_tb WHERE remote_sample_code LIKE '$sampleCode')
-                    )";
 
-$sampleResult = $db->rawQuery($sampleQuery);
-$noOfSamples=0;
-// Get number of samples
-$formAttributes = json_decode($sampleResult[0]['form_attributes']);
-if(isset($formAttributes->manifest)){
-    $manifest=json_decode($formAttributes->manifest);
-    if(isset($manifest->number_of_samples)){
-        $noOfSamples=$manifest->number_of_samples;
-    }
-}
+// Query to fetch sample data and number of samples
+$sampleQuery = "SELECT tb.tb_id,
+                COALESCE(JSON_EXTRACT(tb.form_attributes, '$.manifest.number_of_samples'), 0) AS number_of_samples
+                FROM form_tb AS tb
+                WHERE tb.sample_package_code IN (?,
+                        (SELECT DISTINCT sample_package_code FROM form_tb WHERE remote_sample_code LIKE ?)
+                        ) ORDER BY request_created_datetime	DESC";
 
+$sampleResult = $db->rawQuery($sampleQuery, [$sampleCode, $sampleCode]);
+
+// Extract sample IDs and number of samples
 $sampleData = array_column($sampleResult, 'tb_id');
+$noOfSamples = isset($sampleResult[0]['number_of_samples']) ? (int)$sampleResult[0]['number_of_samples'] : 0;
 
-$count=sizeof($sampleData);
-if($noOfSamples>0){
-    if($count==$noOfSamples){
-        echo implode(',', $sampleData);
-    }
+$count = count($sampleData);
+if ($noOfSamples > 0 && $count === $noOfSamples) {
+    echo implode(',', $sampleData);
 }
-
