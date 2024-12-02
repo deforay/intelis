@@ -41,9 +41,6 @@ if(isset($formAttributes->manifest)){
 $sampleData = array_column($sampleResult, 'cd4_id');
 
 $count=sizeof($sampleData);
-if($noOfSamples>0){
-    if($count==$noOfSamples){
-        echo implode(',', $sampleData);
-    }
+if($noOfSamples > 0 && $count == $noOfSamples) {
+    echo implode(',', $sampleData);
 }
-
