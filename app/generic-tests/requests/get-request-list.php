@@ -24,78 +24,30 @@ try {
      $barCodePrinting = $general->getGlobalConfig('bar_code_printing');
 
 
-     $tableName = "form_generic";
-     $primaryKey = "sample_id";
-
-
-     $aColumns = array('vl.sample_code', 'ty.test_standard_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name');
-     $orderColumns = array('vl.sample_code', 'ty.test_standard_name', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+     $aColumns = ['vl.sample_code', 'ty.test_standard_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y %H:%i:%s')", 'ts.status_name'];
+     $orderColumns = ['vl.sample_code', 'ty.test_standard_name', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_id', 'vl.patient_first_name', 'l.facility_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_type_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
      if ($_SESSION['instance']['type'] !=  'standalone') {
-          array_splice($aColumns, 1, 0, array('vl.remote_sample_code'));
-          array_splice($orderColumns, 1, 0, array('vl.remote_sample_code'));
+          array_splice($aColumns, 1, 0, ['vl.remote_sample_code']);
+          array_splice($orderColumns, 1, 0, ['vl.remote_sample_code']);
      }
-     /* Indexed column (used for fast and accurate table cardinality) */
-     $sIndexColumn = $primaryKey;
 
-     $sTable = $tableName;
-     /*
-* Paging
-*/
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-* Ordering
-*/
-     //  echo (int) $_POST['iSortingCols'];
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= " (";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         if (!empty($aColumns[$i]))
-                              $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         if (!empty($aColumns[$i]))
-                              $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     if (!empty($columnSearch) && $columnSearch != '') {
+          $sWhere[] = $columnSearch;
      }
 
-
-
-     /*
-* SQL queries
-* Get data to display
-*/
+     if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
+          $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
+     }
 
      $sQuery = "SELECT vl.*,
           ty.test_standard_name,
@@ -125,20 +77,20 @@ try {
           $sWhere[] = " vl.test_type like " . $_POST['testType'];
      }
 
-
      if (!empty($sWhere)) {
-          $sWhere = ' where ' . implode(' AND ', $sWhere);
-          $sQuery = $sQuery . ' ' . $sWhere;
+          $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
+          $sQuery = "$sQuery $sWhere";
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
+
      $_SESSION['genericRequestQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -153,27 +105,25 @@ try {
      ];
 
      $editRequest = false;
-     if ((_isAllowed("/generic-tests/requests/edit-request.php"))) {
+     if (_isAllowed("/generic-tests/requests/edit-request.php")) {
           $editRequest = true;
      }
 
      $sampleCodeColumn = $general->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
      foreach ($rResult as $aRow) {
-          $edit = '';
+          $row = [];
 
           $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 
-          $patientFname = ($general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']));
-          $patientMname = ($general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']));
-          $patientLname = ($general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']));
+          $patientFname = $general->crypto('doNothing', $aRow['patient_first_name'], $aRow['patient_id']);
+          $patientMname = $general->crypto('doNothing', $aRow['patient_middle_name'], $aRow['patient_id']);
+          $patientLname = $general->crypto('doNothing', $aRow['patient_last_name'], $aRow['patient_id']);
 
           if (empty($aRow[$sampleCodeColumn]) && empty($aRow['sample_code'])) {
                $aRow[$sampleCodeColumn] = _translate("Generating...");
           }
-
-          $row = [];
 
           $sampleCodeTooltip = '';
           $patientTooltip = '';
@@ -214,14 +164,14 @@ try {
                $row[] = '<span>' . $aRow['patient_id'] . '</span>';
           }
           $row[] = trim(implode(" ", array($patientFname, $patientMname, $patientLname)));
-          $row[] = ($aRow['lab_name']);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['facility_state']);
-          $row[] = ($aRow['facility_district']);
-          $row[] = ($aRow['sample_type_name']);
+          $row[] = $aRow['lab_name'];
+          $row[] = $aRow['facility_name'];
+          $row[] = $aRow['facility_state'];
+          $row[] = $aRow['facility_district'];
+          $row[] = $aRow['sample_type_name'];
           $row[] = $aRow['result'];
           $row[] = $aRow['last_modified_datetime'];
-          $row[] = ($aRow['status_name']);
+          $row[] = $aRow['status_name'];
 
           if ($editRequest) {
                $row[] = '<a href="/generic-tests/requests/edit-request.php?id=' . base64_encode((string) $aRow['sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
