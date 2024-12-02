@@ -156,12 +156,12 @@ try {
 			<div class="row">
 				<div class="col-xs-12">
 					<div class="box">
-						<form name="form1" action="audit-trail.php" method="post" id="searchForm">
+						<form name="form1" action="audit-trail.php" method="post" id="searchForm" autocomplete="off">
 							<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 								<tr>
-									<td><strong><?php echo _translate("Test Type"); ?>&nbsp;:</strong></td>
+									<td><strong><?php echo _translate("Test Type"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
 									<td>
-										<select id="testType" name="testType" class="form-control">
+										<select id="testType" name="testType" class="form-control isRequired">
 											<option value="">-- Choose Test Type--</option>
 											<?php foreach ($activeModules as $module): ?>
 												<option value="<?php echo $module; ?>"
@@ -171,14 +171,14 @@ try {
 											<?php endforeach; ?>
 										</select>
 									</td>
-									<td>&nbsp;<strong><?php echo _translate("Sample ID"); ?>&nbsp;:</strong></td>
+									<td>&nbsp;<strong><?php echo _translate("Sample ID"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
 									<td>
-										<input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control" />
+										<input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control isRequired" />
 									</td>
 								</tr>
 								<tr>
 									<td colspan="4">
-										<input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm">
+										<input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm" onclick="validateNow();return false;">
 										<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 									</td>
 								</tr>
@@ -383,6 +383,18 @@ try {
 
 			});
 		});
+
+		function validateNow() {
+			
+			flag = deforayValidator.init({
+				formId: 'searchForm'
+			});
+
+			if (flag) {
+				$.blockUI();
+				document.getElementById('searchForm').submit();
+			}
+		}
 	</script>
 <?php
 
