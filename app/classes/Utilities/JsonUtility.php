@@ -200,7 +200,7 @@ final class JsonUtility
         $jsonData = $json && self::isJSON($json) ? json_decode($json, true) : [];
 
         // Decode newData if it's a string
-        if (is_string($newData)) {
+        if (is_string($newData) && self::isJSON($newData)) {
             $newData = json_decode($newData, true);
         }
 

@@ -22,9 +22,13 @@ $sampleCode = $_POST['samplePackageCode'];
 $sampleQuery = "SELECT vl.vl_sample_id,
                 COALESCE(JSON_EXTRACT(vl.form_attributes, '$.manifest.number_of_samples'), 0) AS number_of_samples
                 FROM form_vl AS vl
-                WHERE vl.sample_package_code IN (?,
-                        (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE ?)
-                        ) ORDER BY request_created_datetime	DESC";
+                WHERE
+                    vl.sample_package_code IN
+                        (
+                            ?,
+                            (SELECT DISTINCT sample_package_code FROM form_vl WHERE remote_sample_code LIKE ?)
+                        )
+                ORDER BY request_created_datetime	DESC";
 
 $sampleResult = $db->rawQuery($sampleQuery, [$sampleCode, $sampleCode]);
 

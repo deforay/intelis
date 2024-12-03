@@ -1281,23 +1281,14 @@ final class CommonService
         $tableFieldsAsArray = [];
         if (!empty($tableName) && $tableName != '') {
             try {
-
-                $allColumns = "SELECT COLUMN_NAME FROM INFORMATION_SCHEMA.COLUMNS
-                        WHERE TABLE_SCHEMA = ? AND table_name= ?";
-                $allColResult = $this->db->rawQuery($allColumns, [SYSTEM_CONFIG['database']['db'], $tableName]);
-                $columnNames = array_column($allColResult, 'COLUMN_NAME');
-
-                // Create an array with all column names set to null
-                $tableFieldsAsArray = array_fill_keys($columnNames, null);
-                if (!empty($unwantedColumns)) {
-                    $tableFieldsAsArray = MiscUtility::removeFromAssociativeArray($tableFieldsAsArray, $unwantedColumns);
-                }
+                $tableFieldsAsArray = $this->db->getTableFieldsAsArray($tableName, $unwantedColumns);
             } catch (Throwable $e) {
                 $tableFieldsAsArray = [];
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $this->db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_error' => $this->db->getLastError(),
+                    'last_db_query' => $this->db->getLastQuery(),
                     'trace' => $e->getTraceAsString(),
                 ]);
             }
