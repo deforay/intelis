@@ -80,33 +80,33 @@ final class PatientsService
             $data = [];
 
             if ($testTable == "form_vl" || $testTable == "form_generic") {
-                $data['patient_code'] =  $params['artNo'] ?? null;
-                $params['patientGender'] = $params['gender'] ?? null;
+                $data['patient_code'] =  $params['patient_art_no'] ?? null;
+                $params['patient_gender'] = $params['patient_gender'] ?? null;
             } elseif ($testTable == "form_eid") {
-                $data['patient_code'] =  $params['childId'] ?? null;
-                $params['patientFirstName'] = $params['childName'] ?? null;
-                $params['dob'] = $params['childDob'] ?? null;
-                $params['patientGender'] = $params['childGender'] ?? null;
-                $params['patientPhoneNumber'] = $params['caretakerPhoneNumber'] ?? null;
-                $params['patientAddress'] = $params['caretakerAddress'] ?? null;
-                $params['ageInMonths'] = $params['childAge'] ?? null;
+                $data['patient_code'] =  $params['child_id'] ?? null;
+                $params['patientFirstName'] = $params['child_name'] ?? null;
+                $params['dob'] = $params['child_dob'] ?? null;
+                $params['patient_gender'] = $params['child_gender'] ?? null;
+                $params['patientPhoneNumber'] = $params['caretaker_phone_number'] ?? null;
+                $params['patientAddress'] = $params['caretaker_address'] ?? null;
+                $params['ageInMonths'] = $params['child_age'] ?? null;
             } else {
-                $params['patientFirstName'] = $params['firstName'] ?? null;
-                $params['patientLastName'] = $params['lastName'] ?? null;
+                $params['patientFirstName'] = $params['patient_first_name'] ?? null;
+                $params['patientLastName'] = $params['patient_last_name'] ?? null;
                 $params['dob'] ??= null;
-                $data['patient_code'] = $params['patientId'] ?? null;
+                $data['patient_code'] = $params['patient_id'] ?? null;
             }
 
-            $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patientGender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
+            $systemPatientCode = $this->getSystemPatientId($data['patient_code'], $params['patient_gender'], DateUtility::isoDateFormat($params['dob'] ?? ''));
 
             if (empty($systemPatientCode) || $systemPatientCode === '') {
                 $systemPatientCode = MiscUtility::generateULID();
             }
 
             $data['system_patient_code'] = $systemPatientCode;
-            $data['patient_first_name'] = $params['patientFirstName'] ?? null;
-            $data['patient_middle_name'] = $params['patientMiddleName'] ?? null;
-            $data['patient_last_name'] = $params['patientLastName'] ?? null;
+            $data['patient_first_name'] = $params['patient_first_name'] ?? null;
+            $data['patient_middle_name'] = $params['patient_middle_name'] ?? null;
+            $data['patient_last_name'] = $params['patient_last_name'] ?? null;
 
             $data['is_encrypted'] = 'no';
             if (isset($params['encryptPII']) && $params['encryptPII'] == 'yes') {
@@ -123,25 +123,25 @@ final class PatientsService
                 $data['is_encrypted'] = 'yes';
             }
 
-            $data['patient_province'] = $params['patientProvince'] ?? null;
-            $data['patient_district'] = $params['patientDistrict'] ?? null;
-            $data['patient_gender'] = $params['patientGender'] ?? null;
-            $data['patient_age_in_years'] = $params['ageInYears'] ?? null;
-            $data['patient_age_in_months'] = $params['ageInMonths'] ?? null;
+            $data['patient_province'] = $params['patient_province'] ?? null;
+            $data['patient_district'] = $params['patient_district'] ?? null;
+            $data['patient_gender'] = $params['patient_gender'] ?? null;
+            $data['patient_age_in_years'] = $params['patient_age_in_years'] ?? null;
+            $data['patient_age_in_months'] = $params['patient_age_in_months'] ?? null;
             $data['patient_dob'] = DateUtility::isoDateFormat($params['dob'] ?? null);
-            $data['patient_phone_number'] = $params['patientPhoneNumber'] ?? null;
-            $data['is_patient_pregnant'] = $params['patientPregnant'] ?? null;
-            $data['is_patient_breastfeeding'] = $params['breastfeeding'] ?? null;
-            $data['patient_address'] = $params['patientAddress'] ?? null;
+            $data['patient_phone_number'] = $params['patient_phone_number'] ?? null;
+            $data['is_patient_pregnant'] = $params['is_patient_pregnant'] ?? null;
+            $data['is_patient_breastfeeding'] = $params['is_patient_breastfeeding'] ?? null;
+            $data['patient_address'] = $params['patient_address'] ?? null;
             $data['updated_datetime'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
-            $data['patient_registered_by'] = $params['registeredBy'] ?? null;
+            $data['patient_registered_by'] = $params['request_created_by'] ?? null;
 
             $updateColumns = array_keys($data);
             unset($updateColumns['patient_registered_on']);
             unset($updateColumns['patient_registered_by']);
             unset($updateColumns['system_patient_code']);
-            $id = $this->db->upsert($this->table, $data, $updateColumns, ['system_patient_code']);
+            $id = $this->db->insert($this->table, $data, $updateColumns, ['system_patient_code']);
 
             if ($id === false) {
                 // Error handling
