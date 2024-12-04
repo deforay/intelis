@@ -45,11 +45,11 @@ require_once APPLICATION_PATH . '/header.php';
 									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:70%;vertical-align:middle;">
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _translate('Sample Manifest Code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample Manifest Code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -200,8 +200,8 @@ require_once APPLICATION_PATH . '/header.php';
 			"sAjaxSource": "/vl/requests/getManifestInGridHelper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "samplePackageCode",
-					"value": $("#samplePackageCode").val()
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -215,22 +215,20 @@ require_once APPLICATION_PATH . '/header.php';
 		$.unblockUI();
 	}
 
-	function getSampleCode() {
-		if ($("#samplePackageCode").val() != "") {
+	function getSamplesForManifest() {
+		if ($("#manifestCode").val() != "") {
 			$.blockUI();
-			loadVlRequestData();
-			$.post("/vl/requests/getRemoteManifestHelper.php", {
-					samplePackageCode: $("#samplePackageCode").val()
+
+			$.post("/common/get-sample-ids-from-manifest.php", {
+					manifestCode: $("#manifestCode").val(),
+					testType: 'vl'
 				},
 				function(data) {
 					$.unblockUI();
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-					} else {
-						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'vl');
-						<?php } ?>
+						loadVlRequestData();
 					}
 				});
 		} else {
@@ -238,43 +236,6 @@ require_once APPLICATION_PATH . '/header.php';
 		}
 	}
 
-	<?php if ($general->isLISInstance()) { ?>
-		let remoteURL = '<?php echo $general->getRemoteURL(); ?>';
-
-		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
-			$.blockUI({
-				message: "<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>"
-			});
-
-			if (remoteSync && remoteURL != null && remoteURL != '') {
-				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
-					})
-					.done(function(data) {
-						////console.log(data);
-						//alert( "success" );
-					})
-					.fail(function() {
-						$.unblockUI();
-						// alert("Unable to do STS Sync. Please contact technical team for assistance.");
-					})
-					.always(function() {
-						$.unblockUI();
-						$.post("/vl/requests/getRemoteManifestHelper.php", {
-								samplePackageCode: $("#samplePackageCode").val()
-							},
-							function(data) {
-								$.unblockUI();
-								if (data != "") {
-									$('.activateSample').show();
-									$('#sampleId').val(data);
-									oTable.fnDraw();
-								}
-							});
-					});
-			}
-		}
-	<?php } ?>
 
 	function activateSamplesFromManifest() {
 		if ($("#sampleReceivedOn").val() == "") {
@@ -284,7 +245,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$.blockUI();
 		$.post("/vl/requests/activate-samples-from-manifest.php", {
 				testType: 'vl',
-				manifestCode: $("#samplePackageCode").val(),
+				manifestCode: $("#manifestCode").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
 			function(data) {

@@ -5,7 +5,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once(__DIR__ . '/../bootstrap.php');
+require_once __DIR__ . '/../bootstrap.php';
 
 function createAndModifyAuditTable($db, $fromDbName, $toDbName, $formTable, $auditTable)
 {
@@ -44,7 +44,7 @@ function setupTriggers($mysqli, $fromDbName, $toDbName, $formTable, $auditTable)
 
         // Execute the DROP TRIGGER and CREATE TRIGGER statements directly
         if (!$mysqli->multi_query($triggerQuery)) {
-            echo "Error executing trigger statement for $triggerName: " . $mysqli->error . "\n";
+            echo "Error executing trigger statement for $triggerName: {$mysqli->error}\n";
             do {
                 if ($res = $mysqli->store_result()) {
                     $res->free();
