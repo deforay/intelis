@@ -1,5 +1,6 @@
 <?php
 
+use App\Exceptions\SystemException;
 use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -11,6 +12,16 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+
+if (empty($_POST['manifestCode'])) {
+     throw new SystemException('Manifest code is required');
+}
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -75,7 +86,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['manifestCode'])) {
-     $sWhere[] = " vl.sample_package_code = {$_POST['manifestCode']} ";
+     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']} '";
 }
 
 if (!empty($sWhere)) {
@@ -84,7 +95,7 @@ if (!empty($sWhere)) {
 
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-     $sQuery = $sQuery . " ORDER BY " . $sOrder;
+     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
@@ -117,14 +128,14 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['sample_collection_date'];
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-     $row[] = ($aRow['facility_name']);
-     $row[] = ($aRow['facility_state']);
-     $row[] = ($aRow['facility_district']);
-     $row[] = ($aRow['sample_name']);
+     $row[] = "$patientFname $patientMname $patientLname";
+     $row[] = $aRow['facility_name'];
+     $row[] = $aRow['facility_state'];
+     $row[] = $aRow['facility_district'];
+     $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
      $row[] = $aRow['last_modified_datetime'];
-     $row[] = ($aRow['status_name']);
+     $row[] = $aRow['status_name'];
      $output['aaData'][] = $row;
 }
 echo json_encode($output);

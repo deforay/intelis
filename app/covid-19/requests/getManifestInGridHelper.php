@@ -51,7 +51,7 @@ $sQuery = "SELECT * FROM form_covid19 as vl
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['manifestCode'])) {
-     $sWhere[] = " vl.sample_package_code = {$_POST['manifestCode']} ";
+     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']} '";
 }
 
 if (!empty($sWhere)) {
