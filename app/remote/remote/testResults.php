@@ -158,6 +158,7 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -174,14 +175,12 @@ try {
     $general->updateResultSyncDateTime('vl', $facilityIds, $labId);
 } catch (Throwable $e) {
 
-
     $payload = json_encode([]);
 
-    if (!empty($db->getLastError())) {
-        error_log('Error in testResults.php in remote : ' . $db->getLastErrno());
-        error_log('Error in testResults.php in remote : ' . $db->getLastError());
-        error_log('Error in testResults.php in remote : ' . $db->getLastQuery());
-    }
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
+
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 

@@ -34,7 +34,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span><?php echo _translate("Submit"); ?></span></button>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();return false;"><span><?php echo _translate("Submit"); ?></span></button>
 							</td>
 						</tr>
 						<tr class="activateSample" style="display:none;">
@@ -109,7 +109,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	function loadCovid19RequestData() {
+	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
 			$("#tbManifestDataTable").dataTable().fnDestroy();
@@ -177,67 +177,26 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.unblockUI();
 	}
 
-	function getSampleCode() {
+	function getSamplesForManifest() {
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
-			loadCovid19RequestData();
-			$.post("/tb/requests/getRemoteManifestHelper.php", {
-					manifestCode: $("#manifestCode").val()
+
+			$.post("/common/get-sample-ids-from-manifest.php", {
+					manifestCode: $("#manifestCode").val(),
+					testType: 'tb'
 				},
 				function(data) {
 					$.unblockUI();
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-					} else {
-						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#manifestCode").val(), 'tb');
-						<?php } ?>
+						loadRequestData();
 					}
 				});
 		} else {
 			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
 		}
 	}
-
-
-	<?php if ($general->isLISInstance()) { ?>
-		let remoteURL = '<?php echo $general->getRemoteURL(); ?>';
-
-		function forceSyncRequestsByManifestCode(manifestCode, forceSyncModule) {
-			$.blockUI({
-				message: "<h3><?php echo _translate("Trying to sync manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>"
-			});
-
-			if (remoteSync && remoteURL != null && remoteURL != '') {
-				var jqxhr = $.ajax({
-						url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
-					})
-					.done(function(data) {
-						////console.log(data);
-						//alert( "success" );
-					})
-					.fail(function() {
-						$.unblockUI();
-						// alert("Unable to do STS Sync. Please contact technical team for assistance.");
-					})
-					.always(function() {
-						$.unblockUI();
-						$.post("/tb/requests/getRemoteManifestHelper.php", {
-								manifestCode: $("#manifestCode").val()
-							},
-							function(data) {
-								$.unblockUI();
-								if (data != "") {
-									$('.activateSample').show();
-									$('#sampleId').val(data);
-									oTable.fnDraw();
-								}
-							});
-					});
-			}
-		}
-	<?php } ?>
 
 	function activateSamplesFromManifest() {
 		if ($("#sampleReceivedOn").val() == "") {

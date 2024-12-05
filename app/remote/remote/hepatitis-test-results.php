@@ -103,11 +103,14 @@ try {
             $primaryKey = 'hepatitis_id';
             $tableName = 'form_hepatitis';
             try {
-                // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
+
                 $conditions = [];
                 $params = [];
 
-                if (!empty($lab['remote_sample_code'])) {
+                if (!empty($lab['unique_id'])) {
+                    $conditions[] = "unique_id = ?";
+                    $params[] = $lab['unique_id'];
+                } elseif (!empty($lab['remote_sample_code'])) {
                     $conditions[] = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
                 } elseif (!empty($lab['sample_code'])) {
@@ -120,10 +123,8 @@ try {
                         $params[] = $lab['sample_code'];
                         $params[] = $lab['facility_id'];
                     }
-                } elseif (!empty($lab['unique_id'])) {
-                    $conditions[] = "unique_id = ?";
-                    $params[] = $lab['unique_id'];
                 }
+
                 $sResult = [];
                 if (!empty($conditions)) {
                     $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
@@ -143,7 +144,6 @@ try {
                     $id = $db->insert($tableName, $lab);
                 }
 
-
                 if ($id === true && isset($lab['sample_code'])) {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
@@ -152,6 +152,7 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
@@ -162,22 +163,19 @@ try {
         }
     }
 
-
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
-
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-
     $general->updateResultSyncDateTime('hepatitis', $facilityIds, $labId);
 } catch (Throwable $e) {
 
 
     $payload = json_encode([]);
 
-    if ($db->getLastErrno() > 0) {
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastErrno());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-        error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
-    }
+
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
+
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }
 

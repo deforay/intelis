@@ -172,13 +172,13 @@ try {
                                 OR vl.is_sample_rejected = '' )";
     } elseif ($table == "form_generic") {
         $waitingQuery = "SELECT COUNT(unique_id) as total
-                        FROM $table as generic
-                        LEFT JOIN facility_details as f ON f.facility_id=generic.facility_id
+                        FROM $table as vl
+                        LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                         WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
-                        AND (generic.result is null or generic.result = '')
-                        AND (generic.is_sample_rejected like 'no'
-                                    OR generic.is_sample_rejected is null
-                                    OR generic.is_sample_rejected like '' )";
+                        AND (vl.result is null or vl.result = '')
+                        AND (vl.is_sample_rejected like 'no'
+                                    OR vl.is_sample_rejected is null
+                                    OR vl.is_sample_rejected like '' )";
     }
 
     $waitingResult = $db->rawQueryOne($waitingQuery); //waiting result

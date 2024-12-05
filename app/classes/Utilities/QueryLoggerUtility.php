@@ -1,0 +1,46 @@
+<?php
+
+namespace App\Utilities;
+
+use Throwable;
+use Monolog\Level;
+use Monolog\Logger;
+use Monolog\Handler\StreamHandler;
+use Monolog\Handler\RotatingFileHandler;
+
+final class QueryLoggerUtility
+{
+    private static ?Logger $queryLogger = null;
+
+    private static function getQueryLogger(): Logger
+    {
+        if (self::$queryLogger === null) {
+            self::$queryLogger = new Logger('query_logger');
+
+            try {
+                // Try to use the RotatingFileHandler for query logging
+                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/query.log', 30, Level::Debug);
+                $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
+                self::$queryLogger->pushHandler($handler);
+            } catch (Throwable $e) {
+                // If the logs directory is not writable, fallback to stderr
+                $fallbackHandler = new StreamHandler('php://stderr', Level::Warning);
+                self::$queryLogger->pushHandler($fallbackHandler);
+                self::$queryLogger->warning('Query log file could not be written to. Fallback to stderr: ' . $e->getMessage());
+            }
+        }
+        return self::$queryLogger;
+    }
+
+    public static function log(string $query, array $bindings = [], ?float $executionTime = null): void
+    {
+        $logger = self::getQueryLogger();
+
+        $context = [
+            'bindings' => $bindings,
+            'execution_time' => $executionTime !== null ? $executionTime . ' ms' : 'N/A'
+        ];
+
+        $logger->info('SQL Query Executed', array_merge(['query' => $query], $context));
+    }
+}
