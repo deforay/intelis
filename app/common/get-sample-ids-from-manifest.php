@@ -28,14 +28,13 @@ $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
 function fetchSamples(DatabaseService $db, $formTable, $primaryKey, string $manifestCode): array
 {
 
-    $query = "SELECT vl.$primaryKey,
-                COALESCE(JSON_EXTRACT(vl.form_attributes, '$.manifest.number_of_samples'), 0) AS number_of_samples
-                FROM $formTable AS vl
-                WHERE vl.sample_package_code IN
-                    (?, (SELECT DISTINCT sample_package_code FROM $formTable WHERE remote_sample_code LIKE ?))
+    $query = "SELECT $primaryKey,
+                COALESCE(JSON_EXTRACT(form_attributes, '$.manifest.number_of_samples'), 0) AS number_of_samples
+                FROM $formTable
+                WHERE sample_package_code = ?
                 ORDER BY request_created_datetime DESC";
 
-    return $db->rawQuery($query, [$manifestCode, $manifestCode]);
+    return $db->rawQuery($query, [$manifestCode]);
 }
 
 // Fetch initial sample data

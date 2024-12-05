@@ -38,7 +38,7 @@ require_once APPLICATION_PATH . '/header.php';
 									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td>
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
@@ -209,8 +209,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"sAjaxSource": "/hepatitis/requests/get-manifest-in-grid-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "samplePackageCode",
-					"value": $("#samplePackageCode").val()
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -225,11 +225,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function getSampleCode() {
-		if ($("#samplePackageCode").val() != "") {
+		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 			loadhepatitisRequestData();
 			$.post("/hepatitis/requests/getRemoteManifestHelper.php", {
-					samplePackageCode: $("#samplePackageCode").val()
+					manifestCode: $("#manifestCode").val()
 				},
 				function(data) {
 					$.unblockUI();
@@ -238,7 +238,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('#sampleId').val(data);
 					} else {
 						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'hepatitis');
+							forceSyncRequestsByManifestCode($("#manifestCode").val(), 'hepatitis');
 						<?php } ?>
 					}
 				});
@@ -271,7 +271,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					.always(function() {
 						$.unblockUI();
 						$.post("/hepatitis/requests/getRemoteManifestHelper.php", {
-								samplePackageCode: $("#samplePackageCode").val()
+								manifestCode: $("#manifestCode").val()
 							},
 							function(data) {
 								$.unblockUI();
@@ -294,7 +294,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		$.post("/hepatitis/requests/activate-samples-from-manifest.php", {
 				testType: 'hepatitis',
-				manifestCode: $("#samplePackageCode").val(),
+				manifestCode: $("#manifestCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},

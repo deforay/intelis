@@ -91,23 +91,23 @@ $sQuery = "SELECT * FROM form_hepatitis as vl
 
 if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . $sWhere;
-     if (isset($_POST['samplePackageCode']) && $_POST['samplePackageCode'] != '') {
-          $samplePackageCode = $_POST['samplePackageCode'];
+     if (isset($_POST['manifestCode']) && $_POST['manifestCode'] != '') {
+          $manifestCode = $_POST['manifestCode'];
 
           $sWhere = $sWhere . " AND vl.sample_package_code IN
                     (
-                        '$samplePackageCode',
-                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$samplePackageCode')
+                        '$manifestCode',
+                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$manifestCode')
                     )";
      }
 } else {
-     if (isset($_POST['samplePackageCode']) && trim((string) $_POST['samplePackageCode']) != '') {
-          $samplePackageCode = $_POST['samplePackageCode'];
+     if (isset($_POST['manifestCode']) && trim((string) $_POST['manifestCode']) != '') {
+          $manifestCode = $_POST['manifestCode'];
           $sWhere = ' WHERE ' . $sWhere;
           $sWhere = $sWhere . " vl.sample_package_code IN
                     (
-                        '$samplePackageCode',
-                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$samplePackageCode')
+                        '$manifestCode',
+                        (SELECT DISTINCT sample_package_code FROM form_hepatitis WHERE remote_sample_code LIKE '$manifestCode')
                     )";
      }
 }

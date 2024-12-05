@@ -16,7 +16,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$sampleCode = $_POST['samplePackageCode'];
+$sampleCode = $_POST['manifestCode'];
 
 // Query to fetch sample data and number of samples
 $sampleQuery = "SELECT tb.tb_id,

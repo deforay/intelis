@@ -46,7 +46,7 @@ $general = ContainerRegistry::get(CommonService::class);
 									<?php echo _translate("Enter Sample Manifest Code"); ?> :
 								</strong></td>
 							<td style="width:50%;vertical-align:middle;">
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:20%;vertical-align:middle;">
@@ -210,8 +210,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"sAjaxSource": "/covid-19/requests/getManifestInGridHelper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "samplePackageCode",
-					"value": $("#samplePackageCode").val()
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -226,11 +226,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function getSampleCode() {
-		if ($("#samplePackageCode").val() != "") {
+		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 			loadCovid19RequestData();
 			$.post("/covid-19/requests/getRemoteManifestHelper.php", {
-					samplePackageCode: $("#samplePackageCode").val()
+					manifestCode: $("#manifestCode").val()
 				},
 				function(data) {
 					$.unblockUI();
@@ -239,7 +239,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('#sampleId').val(data);
 					} else {
 						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'covid19');
+							forceSyncRequestsByManifestCode($("#manifestCode").val(), 'covid19');
 						<?php } ?>
 					}
 				});
@@ -272,7 +272,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					.always(function() {
 						$.unblockUI();
 						$.post("/covid-19/requests/getRemoteManifestHelper.php", {
-								samplePackageCode: $("#samplePackageCode").val()
+								manifestCode: $("#manifestCode").val()
 							},
 							function(data) {
 								$.unblockUI();
@@ -295,7 +295,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		$.post("/covid-19/requests/activate-samples-from-manifest.php", {
 				testType: 'covid19',
-				manifestCode: $("#samplePackageCode").val(),
+				manifestCode: $("#manifestCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},

@@ -30,7 +30,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<tr>
 							<td style="width:20%;vertical-align:middle;"><strong><?php echo _translate("Enter Sample Manifest Code"); ?> :</strong></td>
 							<td>
-								<input type="text" id="samplePackageCode" name="samplePackageCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
+								<input type="text" id="manifestCode" name="manifestCode" class="form-control" placeholder="<?php echo _translate('Sample manifest code'); ?>" title="<?php echo _translate('Please enter the sample manifest code'); ?>" style="background:#fff;" />
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
@@ -162,8 +162,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"sAjaxSource": "/tb/requests/getManifestInGridHelper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
-					"name": "samplePackageCode",
-					"value": $("#samplePackageCode").val()
+					"name": "manifestCode",
+					"value": $("#manifestCode").val()
 				});
 				$.ajax({
 					"dataType": 'json',
@@ -178,11 +178,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function getSampleCode() {
-		if ($("#samplePackageCode").val() != "") {
+		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 			loadCovid19RequestData();
 			$.post("/tb/requests/getRemoteManifestHelper.php", {
-					samplePackageCode: $("#samplePackageCode").val()
+					manifestCode: $("#manifestCode").val()
 				},
 				function(data) {
 					$.unblockUI();
@@ -191,7 +191,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						$('#sampleId').val(data);
 					} else {
 						<?php if ($general->isLISInstance()) { ?>
-							forceSyncRequestsByManifestCode($("#samplePackageCode").val(), 'tb');
+							forceSyncRequestsByManifestCode($("#manifestCode").val(), 'tb');
 						<?php } ?>
 					}
 				});
@@ -224,7 +224,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					.always(function() {
 						$.unblockUI();
 						$.post("/tb/requests/getRemoteManifestHelper.php", {
-								samplePackageCode: $("#samplePackageCode").val()
+								manifestCode: $("#manifestCode").val()
 							},
 							function(data) {
 								$.unblockUI();
@@ -247,7 +247,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		$.blockUI();
 		$.post("/tb/requests/activate-samples-from-manifest.php", {
 				testType: 'tb',
-				manifestCode: $("#samplePackageCode").val(),
+				manifestCode: $("#manifestCode").val(),
 				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
