@@ -194,21 +194,16 @@ try {
      if (isset($sLimit) && isset($sOffset)) {
           $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
      }
-     // die($sQuery);
-     $rResult = $db->rawQuery($sQuery);
-     /* Data set length after filtering */
-     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-     /*
- * Output
- */
-     $output = array(
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
+
 
      /** @var HepatitisService $hepatitisService */
      $hepatitisService = ContainerRegistry::get(HepatitisService::class);
