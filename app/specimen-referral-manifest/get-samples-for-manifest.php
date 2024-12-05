@@ -26,7 +26,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';
-} else if ($general->isLISInstance() || $general->isStandaloneInstance()) {
+} elseif ($general->isLISInstance() || $general->isStandaloneInstance()) {
 	$sampleCode = 'sample_code';
 }
 
@@ -63,9 +63,6 @@ if (!empty($_POST['testingLab']) && is_numeric($_POST['facility'])) {
 	$where[] = " facility_id = " . $_POST['facility'];
 }
 
-//if (!empty($_POST['operator'])) {
-// $where[] = " (request_created_by like '" . $_POST['operator'] . "'  OR (request_created_by like '' OR request_created_by is null OR request_created_by = 0))";
-//}
 
 if (!empty($_POST['testType'])) {
 	$where[] = " test_type = " . $_POST['testType'];
@@ -99,7 +96,7 @@ $key = (string) $general->getGlobalConfig('key');
 			}
 			if (!empty($sample[$sampleCode])) {
 				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
-					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
 		<?php }
 			}
 		} ?>
@@ -122,7 +119,7 @@ $key = (string) $general->getGlobalConfig('key');
 			}
 			if (!empty($sample[$sampleCode])) {
 				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
-					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?php echo ($sample[$sampleCode] . ' - ' . $sample[$patientId]); ?></option>
+					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
 		<?php }
 			}
 		} ?>

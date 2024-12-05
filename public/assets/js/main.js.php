@@ -101,45 +101,6 @@ $remoteURL = $general->getRemoteURL();
     <?php if (!empty($remoteURL) && $general->isLISInstance()) { ?>
         remoteSync = true;
 
-        function syncRequestsByManifestCode(forceSyncModule, manifestHelperURL) {
-            manifestCode = $("#samplePackageCode").val();
-            if (manifestCode && stsURL) {
-                $.blockUI({
-                    message: '<h3><?php echo _translate("Downloading Samples from this Manifest", true); ?><br><?php echo _translate("Please wait", true); ?>...</h3>'
-                });
-
-                if (remoteSync && stsURL != null && stsURL != '') {
-                    var jqxhr = $.ajax({
-                            url: "/scheduled-jobs/remote/requests-receiver.php?manifestCode=" + manifestCode + "&forceSyncModule=" + forceSyncModule,
-                        })
-                        .done(function(data) {
-                            ////console.log(data);
-                            //alert( "success" );
-                        })
-                        .fail(function() {
-                            $.unblockUI();
-                            // alert("Unable to do STS Sync. Please contact technical team for assistance.");
-                        })
-                        .always(function() {
-                            $.unblockUI();
-                            $.post(manifestHelperURL, {
-                                    samplePackageCode: $("#samplePackageCode").val()
-                                },
-                                function(data) {
-                                    $.unblockUI();
-                                    if (data != "") {
-                                        $('.activateSample').show();
-                                        $('#sampleId').val(data);
-                                        oTable.fnDraw();
-                                    }
-                                });
-                        });
-                }
-            } else {
-                alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
-            }
-        }
-
         function receiveMetaData() {
             if (!navigator.onLine) {
                 alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");

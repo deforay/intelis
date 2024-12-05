@@ -69,7 +69,7 @@ $title = _translate("Add Samples from Manifest");
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="cd4ManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -138,13 +138,13 @@ $title = _translate("Add Samples from Manifest");
 <script type="text/javascript">
 	var oTable = null;
 
-	function loadVlRequestData() {
+	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#cd4ManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
 
-		oTable = $('#cd4ManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -228,7 +228,7 @@ $title = _translate("Add Samples from Manifest");
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-						loadVlRequestData();
+						loadRequestData();
 					}
 				});
 		} else {

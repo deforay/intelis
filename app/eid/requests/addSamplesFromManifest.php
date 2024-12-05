@@ -71,7 +71,7 @@ $batResult = $db->rawQuery($batQuery);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="eidManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -164,12 +164,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	function loadEIDRequestData() {
+	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#eidManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
-		oTable = $('#eidManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -249,7 +249,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-						loadEIDRequestData();
+						loadRequestData();
 					}
 				});
 		} else {

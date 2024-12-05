@@ -42,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td>
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSampleCode();return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -63,7 +63,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="hepatitisManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -154,12 +154,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	function loadhepatitisRequestData() {
+	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#hepatitisManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
-		oTable = $('#hepatitisManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -237,7 +237,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-						loadhepatitisRequestData();
+						loadRequestData();
 					}
 				});
 		} else {

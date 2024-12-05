@@ -12,6 +12,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Utilities\QueryLoggerUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 require_once dirname(__FILE__) . "/../../../bootstrap.php";
@@ -177,9 +178,9 @@ try {
 
     $payload = json_encode([]);
 
-    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
-    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
-    LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
 
     throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
 }

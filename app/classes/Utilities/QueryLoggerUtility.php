@@ -19,7 +19,7 @@ final class QueryLoggerUtility
 
             try {
                 // Try to use the RotatingFileHandler for query logging
-                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/query.log', 30, Level::Debug);
+                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/db/query.log', 30, Level::Debug);
                 $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
                 self::$queryLogger->pushHandler($handler);
             } catch (Throwable $e) {
@@ -35,6 +35,12 @@ final class QueryLoggerUtility
     public static function log(string $query, array $bindings = [], ?float $executionTime = null): void
     {
         $logger = self::getQueryLogger();
+
+        // Truncate query if it exceeds 10,000 characters (or any other limit)
+        $maxLength = 10000;
+        if (strlen($query) > $maxLength) {
+            $query = substr($query, 0, $maxLength) . '... [truncated]';
+        }
 
         $context = [
             'bindings' => $bindings,

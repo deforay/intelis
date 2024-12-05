@@ -70,7 +70,7 @@ $general = ContainerRegistry::get(CommonService::class);
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="covid19ManifestDataTable" class="table table-bordered table-striped table-vcenter" aria-hidden="true">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter" aria-hidden="true">
 							<thead>
 								<tr>
 									<th>
@@ -160,9 +160,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#covid19ManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
-		oTable = $('#covid19ManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},

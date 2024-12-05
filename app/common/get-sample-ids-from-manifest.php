@@ -18,6 +18,12 @@ $manifestCode = $_POST['manifestCode'];
 $testType = $_POST['testType'];
 
 if (empty($testType) || empty($manifestCode)) {
+    LoggerUtility::logError('Manifest code and test type are required', [
+        'testType' => $testType,
+        'manifestCode' => $manifestCode,
+        'line' => __LINE__,
+        'file' => __FILE__
+    ]);
     echo "";
     return;
 }

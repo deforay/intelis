@@ -58,7 +58,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="vlManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th>
@@ -145,13 +145,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	function loadVlRequestData() {
+	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#vlManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
 
-		oTable = $('#vlManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -235,7 +235,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 					if (data != "") {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
-						loadVlRequestData();
+						loadRequestData();
 					}
 				});
 		} else {

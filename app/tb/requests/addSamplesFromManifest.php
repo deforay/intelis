@@ -48,7 +48,7 @@ require_once APPLICATION_PATH . '/header.php';
 					</table>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
-						<table aria-describedby="table" id="tbManifestDataTable" class="table table-bordered table-striped table-vcenter">
+						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">
 							<thead>
 								<tr>
 									<th><?php echo _translate("Sample ID"); ?></th>
@@ -112,9 +112,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
-			$("#tbManifestDataTable").dataTable().fnDestroy();
+			$("#manifestDataTable").dataTable().fnDestroy();
 		}
-		oTable = $('#tbManifestDataTable').dataTable({
+		oTable = $('#manifestDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
