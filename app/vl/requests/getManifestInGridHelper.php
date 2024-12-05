@@ -1,10 +1,10 @@
 <?php
 
-use App\Exceptions\SystemException;
-use App\Registries\AppRegistry;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -17,7 +17,7 @@ $general = ContainerRegistry::get(CommonService::class);
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
+$_POST = _sanitizeInput($request->getParsedBody());
 
 if (empty($_POST['manifestCode'])) {
      throw new SystemException('Manifest code is required');
@@ -48,8 +48,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sLimit = $_POST['iDisplayLength'];
 }
 
-
-
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
@@ -58,8 +56,6 @@ $sWhere = [];
 if (!empty($columnSearch) && $columnSearch != '') {
      $sWhere[] = $columnSearch;
 }
-
-
 
 $sQuery = "SELECT vl.sample_collection_date,
                     vl.vl_sample_id,

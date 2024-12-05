@@ -1,10 +1,11 @@
 <?php
 
-use App\Registries\AppRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -17,6 +18,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
+if (empty($_POST['manifestCode'])) {
+     throw new SystemException('Manifest code is required');
+}
+
 
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
