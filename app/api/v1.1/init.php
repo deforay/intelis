@@ -426,26 +426,26 @@ if (isset($applicationConfig['modules']['tb']) && $applicationConfig['modules'][
 }
 
 // Check if lab tests module active/inactive
-if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig['modules']['generic-tests'] === true) {
+// if (isset($applicationConfig['modules']['generic-tests']) && $applicationConfig['modules']['generic-tests'] === true) {
 
-    /** @var GenericTestsService $genericService */
-    $genericService = ContainerRegistry::get(GenericTestsService::class);
-    $data['genericTests']['specimenTypeList'] = $general->generateSelectOptionsAPI($genericService->getGenericSampleTypes($updatedDateTime));
-    $data['genericTests']['resultsList'] = $general->generateSelectOptionsAPI($genericService->getGenericResults(null, $updatedDateTime));
-    /* Rejected Reason*/
-    $data['genericTests']['rejectedReasonList'] = $rejectionReason['generic-tests'];
-    $data['genericTests']['testReasonList'] = $testReason['generic-tests']['testReasons'];
+//     /** @var GenericTestsService $genericService */
+//     $genericService = ContainerRegistry::get(GenericTestsService::class);
+//     $data['genericTests']['specimenTypeList'] = $general->generateSelectOptionsAPI($genericService->getGenericSampleTypes($updatedDateTime));
+//     $data['genericTests']['resultsList'] = $general->generateSelectOptionsAPI($genericService->getGenericResults(null, $updatedDateTime));
+//     /* Rejected Reason*/
+//     $data['genericTests']['rejectedReasonList'] = $rejectionReason['generic-tests'];
+//     $data['genericTests']['testReasonList'] = $testReason['generic-tests']['testReasons'];
 
-    /* Testing Platform Details */
-    $testPlatformList = [];
-    $testPlatformResult = $general->getTestingPlatforms('generic-tests');
-    foreach ($testPlatformResult as $row) {
-        $testPlatformList[$row['machine_name']] = $row['machine_name'];
-    }
-    $data['genericTests']['testPlatformList'] = $general->generateSelectOptionsAPI($testPlatformList);
-    $data['genericTests']['statusFilterList'] = $statusFilterList;
-    $status = true;
-}
+//     /* Testing Platform Details */
+//     $testPlatformList = [];
+//     $testPlatformResult = $general->getTestingPlatforms('generic-tests');
+//     foreach ($testPlatformResult as $row) {
+//         $testPlatformList[$row['machine_name']] = $row['machine_name'];
+//     }
+//     $data['genericTests']['testPlatformList'] = $general->generateSelectOptionsAPI($testPlatformList);
+//     $data['genericTests']['statusFilterList'] = $statusFilterList;
+//     $status = true;
+// }
 
 if ($status) {
     $payload = [

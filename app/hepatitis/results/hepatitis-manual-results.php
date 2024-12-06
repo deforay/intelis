@@ -338,7 +338,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "hepatitis-samples-for-manual-result-entry.php",
+			"sAjaxSource": "/hepatitis/results/hepatitis-samples-for-manual-result-entry.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "batchCode",

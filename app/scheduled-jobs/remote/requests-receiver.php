@@ -95,9 +95,9 @@ foreach ($systemConfig['modules'] as $module => $status) {
             async: true
         )->then(function ($response) use (&$responsePayload, $module, $cliMode) {
             $responsePayload[$module] = $response->getBody()->getContents();
-            // if ($cliMode) {
-            //     echo "Response for $module received at: " . microtime(true) . PHP_EOL;
-            // }
+            if ($cliMode) {
+                echo "Received $module" . PHP_EOL;
+            }
         })->otherwise(function ($reason) use ($module, $cliMode) {
             if ($cliMode) {
                 echo "STS Request sync for $module failed: " . $reason . PHP_EOL;
@@ -323,7 +323,7 @@ try {
                 $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if ($existingSampleResult) {
+                if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -467,7 +467,7 @@ try {
                 $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if ($existingSampleResult) {
+                if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -670,7 +670,7 @@ try {
                 $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
                                                                                 WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if ($existingSampleResult) {
+                if (!empty($existingSampleResult)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -850,9 +850,9 @@ try {
                 $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if ($existingSampleResult) {
+                if (!empty($existingSampleResult)) {
 
-                    $removeMoreKeys = array(
+                    $removeMoreKeys = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -884,7 +884,7 @@ try {
                         'last_modified_datetime',
                         'last_modified_by',
                         'lab_technician'
-                    );
+                    ];
 
                     $request = array_diff_key($request, array_flip($removeMoreKeys));
 
