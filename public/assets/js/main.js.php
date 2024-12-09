@@ -748,6 +748,11 @@ $remoteURL = $general->getRemoteURL();
 
         // Run the scheduler with the defined scripts and intervals
         //runScheduledScripts(scriptsToRun);
+        existingPatientId = "";
+        if($('.patientId').val() !== "")
+        {
+            existingPatientId = $('.patientId').val();
+        }
 
         // Add CSRF token to all existing forms
         $('form').each(function() {
@@ -855,7 +860,19 @@ $remoteURL = $general->getRemoteURL();
         });
 
         $('.patientId').on('change', function() {
+
+
             var patientId = $(this).val();
+
+            if(existingPatientId !== "" && existingPatientId != patientId){
+                if (confirm("Are you sure you want to change the Patient ID from '" +existingPatientId+ "' to '" +patientId+ "'? This can lead to data mismatch or data loss.")){
+                    $(this).val(patientId);
+                }
+                else{
+                    $(this).val(existingPatientId);
+                }
+            }
+
 
             var minLength = '<?= $minPatientIdLength ?? 0; ?>';
 
@@ -866,6 +883,8 @@ $remoteURL = $general->getRemoteURL();
             } else {
                 $(".lengthErr").remove();
             }
+
+             
 
 
         });
