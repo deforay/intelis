@@ -24,7 +24,10 @@ require_once(__DIR__ . "/../../bootstrap.php");
 
    $activeModules = SystemService::getActiveModules(onlyTests: true);
 
-   $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'patientsInfo.csv';
+
+   function implodeValues($a){
+    return implode("," , $a);
+   }
 
 try {
 
@@ -93,39 +96,17 @@ try {
             $data['updated_datetime'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_by'] = $row['request_created_by'] ?? null;
-
-            /*$updateColumns = array_keys($data);
-            unset($updateColumns['patient_registered_on']);
-            unset($updateColumns['patient_registered_by']);
-            unset($updateColumns['system_patient_code']);*/
-
             
+            $output[] =  $data;
 
-            echo '<pre>'; print_r($updateColumns); die;
-
-
-            $output[] =  implode(', ', $updateColumns);
+            $db->where("vl_sample_id",$row['vl_sample_id']);
+            $db->update($tableName, array("system_patient_code" => $systemPatientCode));
+    
         }
 
-        echo '<pre>'; print_r($output); die;
+        $db->insertMulti("patients", $output);
 
-
-
-        // Get table columns as an array
-        $columnsArray = $commonService->getTableFieldsAsArray('patients');
-
-        // Convert array keys to a comma-separated list
-        $columnsList = implode(', ', array_keys($columnsArray));
-
-        
-        $output = array_unshift($data,$columnsList);
-        $fileName = MiscUtility::generateCsv($columnsList, $data, $fileName, ',', '"');
     }
-
-    //  $systemPatientCode = $patientsService->savePatient($row, $tableName);
-
-           // $db->where("vl_sample_id",$row['vl_sample_id']);
-            //$updateFormTable = $db->update($tableName,array("system_patient_code"=>$systemPatientCode));
 
 } catch (Exception $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
