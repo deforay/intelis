@@ -2,6 +2,7 @@
 
 use JsonMachine\Items;
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -22,6 +23,11 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 try {
+
+    $testType = 'hepatitis';
+
+    $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
+    $tableName = TestsService::getTestTableName($testType);
 
     //this file receives the lab results and updates in the remote db
 
@@ -50,13 +56,13 @@ try {
 
         //remove fields that we DO NOT NEED here
         $unwantedColumns = [
-            'hepatitis_id',
+            $primaryKey,
             'sample_package_id',
             'sample_package_code',
             'request_created_by'
         ];
         // Create an array with all column names set to null
-        $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis', $unwantedColumns);
+        $emptyLabArray = $general->getTableFieldsAsArray($tableName, $unwantedColumns);
 
         $counter = 0;
 
@@ -100,35 +106,32 @@ try {
                 ];
                 $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
             }
-
-            $primaryKey = 'hepatitis_id';
-            $tableName = 'form_hepatitis';
             try {
 
-                $conditions = [];
+                $condition = '';
                 $params = [];
 
                 if (!empty($lab['unique_id'])) {
-                    $conditions[] = "unique_id = ?";
+                    $condition = "unique_id = ?";
                     $params[] = $lab['unique_id'];
                 } elseif (!empty($lab['remote_sample_code'])) {
-                    $conditions[] = "remote_sample_code = ?";
+                    $condition = "remote_sample_code = ?";
                     $params[] = $lab['remote_sample_code'];
                 } elseif (!empty($lab['sample_code'])) {
                     if (!empty($lab['lab_id'])) {
-                        $conditions[] = "sample_code = ? AND lab_id = ?";
+                        $condition = "sample_code = ? AND lab_id = ?";
                         $params[] = $lab['sample_code'];
                         $params[] = $lab['lab_id'];
                     } elseif (!empty($lab['facility_id'])) {
-                        $conditions[] = "sample_code = ? AND facility_id = ?";
+                        $condition = "sample_code = ? AND facility_id = ?";
                         $params[] = $lab['sample_code'];
                         $params[] = $lab['facility_id'];
                     }
                 }
 
                 $sResult = [];
-                if (!empty($conditions)) {
-                    $sQuery = "SELECT $primaryKey FROM $tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
+                if (!empty($condition)) {
+                    $sQuery = "SELECT unique_id FROM $tableName WHERE $condition FOR UPDATE";
                     $sResult = $db->rawQueryOne($sQuery, $params);
                 }
 
@@ -139,7 +142,8 @@ try {
                 $lab['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
 
                 if (!empty($sResult)) {
-                    $db->where($primaryKey, $sResult[$primaryKey]);
+                    $db->reset();
+                    $db->where('unique_id', $sResult['unique_id']);
                     $id = $db->update($tableName, $lab);
                 } else {
                     $id = $db->insert($tableName, $lab);
@@ -152,6 +156,7 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
+                LoggerUtility::logError(JsonUtility::encodeUtf8Json($resultRow));
                 LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
                 LoggerUtility::logError($e->getMessage(), [
@@ -165,8 +170,8 @@ try {
     }
 
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', 'hepatitis', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime('hepatitis', $facilityIds, $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+    $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
 } catch (Throwable $e) {
 
 

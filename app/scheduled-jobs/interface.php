@@ -2,12 +2,12 @@
 <?php
 
 // only run from command line
-if (php_sapi_name() !== 'cli') {
+$isCli = php_sapi_name() === 'cli';
+if ($isCli === false) {
     exit(0);
 }
 
 require_once __DIR__ . "/../../bootstrap.php";
-
 
 use App\Services\VlService;
 use App\Services\TestsService;
@@ -89,6 +89,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
 }
 
 try {
+    $interfaceData = [];
     //get the value from interfacing DB
     if ($mysqlConnected) {
 
@@ -98,8 +99,11 @@ try {
         }
         $db->connection('interface')->where('result_status', 1);
         $db->connection('interface')->orderBy('analysed_date_time', 'asc');
-        $interfaceData = $db->connection('interface')->get('orders');
-    } elseif ($sqliteConnected) {
+        $mysqlData = $db->connection('interface')->get('orders');
+        $interfaceData = array_merge($interfaceData, $mysqlData); // Add MySQL data
+    }
+
+    if ($sqliteConnected) {
 
         $where = [];
         $where[] = " result_status = 1 ";
@@ -110,8 +114,14 @@ try {
         $interfaceQuery = "SELECT * FROM `orders`
                         WHERE $where
                         ORDER BY analysed_date_time ASC";
-        $interfaceData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
-    } else {
+        $sqliteData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
+        $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
+    }
+
+    if (empty($interfaceData)) {
+        if ($isCli) {
+            echo "No results to process" . PHP_EOL;
+        }
         exit(0);
     }
 
@@ -125,8 +135,9 @@ try {
 
 
         $totalResults = count($interfaceData); // Get the total number of items
-
-        echo "Processing results from Interface Tool" . PHP_EOL;
+        if ($isCli) {
+            echo "Processing results from Interface Tool" . PHP_EOL;
+        }
 
         $availableModules = [];
 
@@ -142,7 +153,9 @@ try {
 
         foreach ($interfaceData as $key => $result) {
 
-            MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar
+            if ($isCli) {
+                MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar
+            }
 
             if (empty($result['order_id']) && empty($result['test_id'])) {
                 continue;

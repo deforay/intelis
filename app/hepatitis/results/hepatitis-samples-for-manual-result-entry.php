@@ -9,7 +9,6 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -56,52 +55,15 @@ try {
      }
 
 
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-     $sOrder = "";
-
-
-
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-
-
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= "(";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     if (!empty($columnSearch) && $columnSearch != '') {
+          $sWhere[] = $columnSearch;
      }
 
-
-
-
-     $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.hepatitis_id,vl.sample_code, vl.external_sample_code,
+     $sQuery = "SELECT vl.hepatitis_id,vl.sample_code, vl.external_sample_code,
           vl.remote_sample_code, vl.patient_id, vl.patient_name,
           vl.patient_surname,vl.patient_phone_number,vl.patient_gender,vl.is_sample_collected,vl.reason_for_hepatitis_test,
           vl.specimen_type,vl.hepatitis_test_platform,vl.result_status,vl.locked,vl.is_sample_rejected,vl.reason_for_sample_rejection,
@@ -123,17 +85,14 @@ try {
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
           LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by";
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
@@ -147,13 +106,13 @@ try {
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           if ($_POST['status'] == 'no_result') {
                $statusCondition = ' ((vl.hcv_vl_count is NULL OR vl.hcv_vl_count  = "" OR vl.hbv_vl_count is NULL OR vl.hbv_vl_count  = "") AND vl.result_status = ' . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . ')';
-          } else if ($_POST['status'] == 'result') {
+          } elseif ($_POST['status'] == 'result') {
                $statusCondition = ' vl.hcv_vl_count is NOT NULL OR vl.hcv_vl_count  != "" OR vl.hbv_vl_count is NOT NULL OR vl.hbv_vl_count  != "" ';
           } else {
                $statusCondition = ' vl.is_sample_rejected = "yes" AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
-     } else {      // Only approved results can be printed
+     } else {
           $sWhere[] = " ((vl.result_status = " . SAMPLE_STATUS\ACCEPTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = " . SAMPLE_STATUS\REJECTED . " AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
      }
 
@@ -164,35 +123,22 @@ try {
           $sWhere[] = '  vl.implementing_partner ="' . base64_decode((string) $_POST['implementingPartner']) . '"';
      }
 
-     ///$dWhere = '';
-     // Only approved results can be printed
-     /*if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-          if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
-               if (!empty($sWhere)) {
-                    $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.result_status = 4 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
-               } else {
-                    $sWhere[] = " ((vl.result_status = 7 AND (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  ='')) OR (vl.hcv_vl_count is NULL AND vl.hcv_vl_count  ='' AND vl.hbv_vl_count is NULL AND vl.hbv_vl_count  =''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
-               }
-          }
-     }*/
      if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  ";
-          // $dWhere = $dWhere . " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
      }
-
 
      if (!empty($sWhere)) {
           $sWhere = implode(' AND ', $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE $sWhere";
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -204,20 +150,17 @@ try {
           "aaData" => []
      ];
 
-
      /** @var HepatitisService $hepatitisService */
      $hepatitisService = ContainerRegistry::get(HepatitisService::class);
      $hepatitisResults = $hepatitisService->getHepatitisResults();
      foreach ($rResult as $aRow) {
           $row = [];
-          $print = '<a href="hepatitis-update-result.php?id=' . base64_encode((string) $aRow['hepatitis_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+          $print = '<a href="/hepatitis/results/hepatitis-update-result.php?id=' . base64_encode($aRow['unique_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (!_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
                }
           }
-
-
 
           $row[] = $aRow['sample_code'] . (!empty($aRow['external_sample_code']) ? "<br>/" . $aRow['external_sample_code'] : '');
           if (!$general->isStandaloneInstance()) {
@@ -229,7 +172,7 @@ try {
                $aRow['patient_surname'] = $general->crypto('decrypt', $aRow['patient_surname'], $key);
           }
           $row[] = $aRow['batch_code'];
-          $row[] = ($aRow['facility_name']);
+          $row[] = $aRow['facility_name'];
           $row[] = $aRow['patient_id'];
           $row[] = $aRow['patient_name'] . " " . $aRow['patient_surname'];
           $row[] = $aRow['hcv_vl_count'];
@@ -242,7 +185,7 @@ try {
           }
 
           $row[] = $aRow['last_modified_datetime'];
-          $row[] = ($aRow['status_name']);
+          $row[] = $aRow['status_name'];
           $row[] = $print;
           $output['aaData'][] = $row;
      }

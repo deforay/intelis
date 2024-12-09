@@ -88,6 +88,7 @@ try {
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $genericQuery .= " AND sample_code like '$sampleCode'";
         }
+        $db->reset();
         $genericLabResult = $db->rawQuery($genericQuery);
 
         $forms = array_column($genericLabResult, 'sample_id');
@@ -146,6 +147,7 @@ try {
             $vlQuery .= " AND sample_code like '$sampleCode'";
         }
 
+        $db->reset();
         $vlLabResult = $db->rawQuery($vlQuery);
 
         $url = "$remoteURL/remote/remote/testResults.php";
@@ -189,6 +191,7 @@ try {
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $eidQuery .= " AND sample_code like '$sampleCode'";
         }
+        $db->reset();
         $eidLabResult = $db->rawQuery($eidQuery);
 
         $url = "$remoteURL/remote/remote/eid-test-results.php";
@@ -230,6 +233,7 @@ try {
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $covid19Query .= " AND sample_code like '$sampleCode'";
         }
+        $db->reset();
         $c19LabResult = $db->rawQuery($covid19Query);
 
         $forms = array_column($c19LabResult, 'covid19_id');
@@ -285,6 +289,7 @@ try {
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $hepQuery .= " AND sample_code like '$sampleCode'";
         }
+        $db->reset();
         $hepLabResult = $db->rawQuery($hepQuery);
 
         $url = "$remoteURL/remote/remote/hepatitis-test-results.php";
@@ -327,7 +332,7 @@ try {
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $cd4Query .= " AND sample_code like '$sampleCode'";
         }
-
+        $db->reset();
         $cd4LabResult = $db->rawQuery($cd4Query);
 
         $url = "$remoteURL/remote/remote/cd4-test-results.php";

@@ -1,18 +1,17 @@
 <?php
 
+use App\Services\UsersService;
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\HepatitisService;
-use App\Services\UsersService;
 
 
 $title = "Enter Hepatitis Result";
 
 require_once APPLICATION_PATH . '/header.php';
-
 
 
 /** @var DatabaseService $db */
@@ -45,15 +44,12 @@ foreach ($userResult as $user) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
 
 
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
-
-// $userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-// $userResult = $db->rawQuery($userQuery);
 
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 $pdResult = $db->query($pdQuery);
