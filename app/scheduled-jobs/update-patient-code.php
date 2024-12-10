@@ -33,6 +33,7 @@ try {
 
     foreach($activeModules as $module){
         $tableName = TestsService::getTestTableName($module);
+        $primaryKey = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
         $sampleResult = $db->rawQuery("SELECT * FROM $tableName WHERE system_patient_code IS NULL");
 
@@ -99,7 +100,7 @@ try {
             
             $output[] =  $data;
 
-            $db->where("vl_sample_id",$row['vl_sample_id']);
+            $db->where($primaryKey,$row[$primaryKey]);
             $db->update($tableName, array("system_patient_code" => $systemPatientCode));
     
         }

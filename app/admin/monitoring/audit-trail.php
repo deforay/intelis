@@ -84,6 +84,9 @@ try {
 	if (isset($_POST['testType']) && $sampleCode) {
 
 		$formTable = TestsService::getTestTableName($_POST['testType']);
+
+		$filteredData = $_POST['hiddenColumns'];
+		echo $filteredData;
 		// Get scheme (http or https)
 		$scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
 
@@ -118,6 +121,7 @@ try {
 	} else {
 		$formTable = "";
 		$uniqueId = "";
+		$filteredData = "";
 	}
 
 	// Include audit-specific columns explicitly
@@ -180,9 +184,11 @@ try {
 									<td colspan="4">
 										<input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm" onclick="validateNow();return false;">
 										<button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
+										<input type="hidden" name="hiddenColumns" id="hiddenColumns" value="<?= htmlspecialchars($_POST['hiddenColumns'] ?? ''); ?>" />
 									</td>
 								</tr>
 							</table>
+
 						</form>
 					</div>
 				</div>
@@ -201,7 +207,6 @@ try {
 				if (!empty($uniqueId)) {
 					$filePath = getAuditFilePath($_POST['testType'], $uniqueId);
 					$posts = readAuditDataFromCsv($filePath);
-
 				?>
 					<div class="col-xs-12">
 						<div class="box">
@@ -212,7 +217,11 @@ try {
 										<?php
 										$i = 0;
 										foreach ($resultColumn as $col) {
-											echo "<option value='$i'>{$col['COLUMN_NAME']}</option>";
+											$selected = "";
+											if(in_array($i,explode(",",$_POST['hiddenColumns']))){
+												$selected = "selected";
+											}
+											echo "<option value='$i' $selected>{$col['COLUMN_NAME']}</option>";
 											$i++;
 										}
 										?>
@@ -331,6 +340,9 @@ try {
 
 			$("#auditColumn").selectize({
 				plugins: ["restore_on_backspace", "remove_button", "clear_button"],
+				onClear: function(){
+					document.getElementById('searchForm').submit();
+				}
 			});
 
 			table = $("#auditTable").DataTable({
@@ -352,7 +364,8 @@ try {
 				order: [
 					[1, 'asc']
 				], // Order by revision ID (second column) by default
-			});
+			});			
+
 
 			// Initialize the single row current data table
 			ctable = $('#currentDataTable').DataTable({
@@ -363,12 +376,19 @@ try {
 				scrollX: true
 			});
 
+			col = $("#hiddenColumns").val();
+
+			table.columns().visible(false);
+			table.columns(col).visible(true);
+			ctable.columns().visible(false);
+			ctable.columns(col).visible(true);
+
 			ctable.columns([0, 1, 2]).visible(false);
 
 
 			$('#auditColumn').on("change", function(e) {
 				var columns = $(this).val();
-
+				$('#hiddenColumns').val(columns);
 				if (columns === "" || columns == null) {
 					table.columns().visible(true);
 					ctable.columns().visible(true);
