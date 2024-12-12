@@ -26,14 +26,14 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
     exit;
 }
 
-/** @var UsersService $usersService */
-$usersService = ContainerRegistry::get(UsersService::class);
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
@@ -92,7 +92,9 @@ try {
     $interfaceData = [];
     //get the value from interfacing DB
     if ($mysqlConnected) {
-
+        if ($isCli) {
+            echo "Connected to MySQL" . PHP_EOL;
+        }
         if (!empty($lastInterfaceSync)) {
             $db->connection('interface')
                 ->where("added_on > '$lastInterfaceSync' OR lims_sync_status = 0");
@@ -100,11 +102,16 @@ try {
         $db->connection('interface')->where('result_status', 1);
         $db->connection('interface')->orderBy('analysed_date_time', 'asc');
         $mysqlData = $db->connection('interface')->get('orders');
+        if ($isCli) {
+            echo "No of records from MySQL : " . count($mysqlData) . PHP_EOL;
+        }
         $interfaceData = array_merge($interfaceData, $mysqlData); // Add MySQL data
     }
 
     if ($sqliteConnected) {
-
+        if ($isCli) {
+            echo "Connected to sqlite" . PHP_EOL;
+        }
         $where = [];
         $where[] = " result_status = 1 ";
         if (!empty($lastInterfaceSync)) {
@@ -114,7 +121,11 @@ try {
         $interfaceQuery = "SELECT * FROM `orders`
                         WHERE $where
                         ORDER BY analysed_date_time ASC";
+
         $sqliteData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
+        if ($isCli) {
+            echo "No of records from MySQL : " . count($sqliteData) . PHP_EOL;
+        }
         $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
     }
 
@@ -125,14 +136,12 @@ try {
         exit(0);
     }
 
-
     $additionalColumns = [
         'form_hepatitis' => ['hepatitis_test_type'],
     ];
 
     $numberOfResults = 0;
     if (!empty($interfaceData)) {
-
 
         $totalResults = count($interfaceData); // Get the total number of items
         if ($isCli) {
@@ -286,11 +295,7 @@ try {
 
                     $pattern = "/$stringToSearch/i";
 
-                    if (preg_match($pattern, $result['raw_text'], $matches)) {
-                        $data['cv_number'] = trim($matches[1]);
-                    } else {
-                        $data['cv_number'] = null;
-                    }
+                    $data['cv_number'] = (preg_match($pattern, $result['raw_text'], $matches)) ? trim($matches[1]) : null;
                 }
 
                 if (strtolower((string) $vlResult) == 'failed' || strtolower((string) $vlResult) == 'fail' || strtolower((string) $vlResult) == 'invalid' || strtolower((string) $vlResult) == 'inconclusive') {

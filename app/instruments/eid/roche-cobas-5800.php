@@ -101,11 +101,7 @@ try {
 
             $query    = "SELECT facility_id,
                                 eid_id,
-                                result,
-                                result_value_log,
-                                result_value_absolute,
-                                result_value_text,
-                                result_value_absolute_decimal
+                                result
                         FROM form_eid
                         WHERE result_printed_datetime is null
                         AND sample_code= ?";
