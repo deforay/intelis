@@ -93,17 +93,6 @@ if ($lastInterfaceSync === null) {
     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 }
 
-// Default to database value if no valid date or days were provided and --skip-locked wasn't set
-if ($lastInterfaceSync === null && !$skipLocked) {
-    $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
-}
-
-
-if ($lastInterfaceSync === null && !$skipLocked) {
-    // Get the last sync date from the database if a date or number wasn't provided
-    $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
-}
-
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
