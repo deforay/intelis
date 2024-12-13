@@ -58,7 +58,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 $db->beginReadOnlyTransaction();
                 $db->reset();
                 $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-                $db->where("locked IS NOT NULL AND locked != 'yes'");
+                $db->where("locked IS NULL OR locked = 'no'");
                 $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
                 $db->pageLimit = $batchSize;
                 $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
