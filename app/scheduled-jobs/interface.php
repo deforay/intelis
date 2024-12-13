@@ -47,24 +47,59 @@ if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CO
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
 }
 
-// Check for a command-line argument for the date
-$lastInterfaceSync = null;
-if (isset($argv[1])) {
-    $input = $argv[1];
+// // Check for a command-line argument for the date
+// $skipLocked = false;
+// $lastInterfaceSync = null;
+// if (isset($argv[1])) {
+//     $input = $argv[1];
 
-    // Check if the input is a valid date in YYYY-MM-DD format
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $input)) {
-        $lastInterfaceSync = $input; // Use provided date as $lastInterfaceSync
-    }
-    // Check if the input is a number (days to subtract from current date)
-    elseif (is_numeric($input)) {
-        $daysToSubtract = (int) $input;
+//     // Check if the input is a valid date in YYYY-MM-DD format
+//     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $input)) {
+//         $lastInterfaceSync = $input; // Use provided date as $lastInterfaceSync
+//     }
+//     // Check if the input is a number (days to subtract from current date)
+//     elseif (is_numeric($input)) {
+//         $daysToSubtract = (int) $input;
+//         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
+//     } else {
+//         echo "Invalid input. Please provide a valid date (YYYY-MM-DD) or a number of days." . PHP_EOL;
+//         exit(1);
+//     }
+// } else {
+//     // Get the last sync date from the database if a date or number wasn't provided
+//     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
+// }
+
+$forceLocked = false; // Default: Do not include locked samples
+$lastInterfaceSync = null;
+
+foreach ($argv as $arg) {
+    if ($arg === '--force-locked') {
+        $forceLocked = true; // Allow locked samples
+    } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg)) {
+        $lastInterfaceSync = $arg; // Use provided date as $lastInterfaceSync
+    } elseif (is_numeric($arg)) {
+        $daysToSubtract = (int) $arg;
         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-    } else {
-        echo "Invalid input. Please provide a valid date (YYYY-MM-DD) or a number of days." . PHP_EOL;
-        exit(1);
+    } elseif (preg_match('/^(\d+)--force-locked$/', $arg, $matches)) {
+        $daysToSubtract = (int) $matches[1];
+        $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
+        $forceLocked = true;
     }
-} else {
+}
+
+// Default to database value if no valid date or days were provided
+if ($lastInterfaceSync === null) {
+    $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
+}
+
+// Default to database value if no valid date or days were provided and --skip-locked wasn't set
+if ($lastInterfaceSync === null && !$skipLocked) {
+    $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
+}
+
+
+if ($lastInterfaceSync === null && !$skipLocked) {
     // Get the last sync date from the database if a date or number wasn't provided
     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 }
@@ -186,7 +221,26 @@ try {
                     $columnsToSelect = "$primaryKeyColumn, $extraColumnsString";
                 }
 
-                $tableQuery = "SELECT $columnsToSelect FROM $individualTableName WHERE (sample_code = ? OR remote_sample_code = ? OR lab_assigned_code = ?) OR (sample_code = ? OR remote_sample_code = ? OR lab_assigned_code = ?)";
+                $conditions = [];
+                if ($forceLocked === false) {
+                    $conditions[] = "locked IS NULL OR locked = 'no'"; // Default: Exclude locked samples
+                }
+                $conditions[] = "(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))";
+
+                $conditions = implode(' AND ', $conditions);
+                $tableQuery = "SELECT $columnsToSelect
+                                    FROM $individualTableName
+                                    WHERE $conditions";
+
+                // Execute the query with fewer parameters
+                $tableInfo = $db->rawQueryOne($tableQuery, [
+                    $result['order_id'],
+                    $result['test_id'],
+                    $result['order_id'],
+                    $result['test_id'],
+                    $result['order_id'],
+                    $result['test_id']
+                ]);
 
                 // Execute the query
                 $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['order_id'], $result['test_id'], $result['test_id'], $result['test_id']]);
