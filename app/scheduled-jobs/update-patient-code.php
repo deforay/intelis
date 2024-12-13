@@ -1,48 +1,45 @@
 <?php
 
-use App\Utilities\MiscUtility;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
+use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Services\SystemService;
-use App\Services\TestsService;
 use App\Services\PatientsService;
-use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once __DIR__ . "/../../bootstrap.php";
 
-    /** @var DatabaseService $db */
-    $db = ContainerRegistry::get(DatabaseService::class);
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
-    /** @var PatientsService $patientsService */
-    $patientsService = ContainerRegistry::get(PatientsService::class);
+/** @var PatientsService $patientsService */
+$patientsService = ContainerRegistry::get(PatientsService::class);
 
-    /** @var CommonService $commonService */
-    $commonService = ContainerRegistry::get(CommonService::class);
+/** @var CommonService $commonService */
+$commonService = ContainerRegistry::get(CommonService::class);
 
-   $activeModules = SystemService::getActiveModules(onlyTests: true);
+$activeModules = SystemService::getActiveModules(onlyTests: true);
 
-
-   function implodeValues($a){
-    return implode("," , $a);
-   }
 
 try {
 
-    foreach($activeModules as $module){
+    foreach ($activeModules as $module) {
+        $db->beginTransaction();
         $tableName = TestsService::getTestTableName($module);
         $primaryKey = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
-        $sampleResult = $db->rawQuery("SELECT * FROM $tableName WHERE system_patient_code IS NULL");
+        $sampleResult = $db->rawQuery("SELECT * FROM $tableName WHERE system_patient_code IS NULL LIMIT 100");
 
         $data = [];
         $output = [];
-        foreach($sampleResult as $row){
+        foreach ($sampleResult as $row) {
             if ($tableName == "form_vl" || $tableName == "form_generic") {
                 $data['patient_code'] =  $row['patient_art_no'] ?? null;
-                $row['patient_gender'] = $row['patient_gender'] ?? null;
+                $row['patient_gender'] ??= null;
             } elseif ($tableName == "form_eid") {
                 $data['patient_code'] =  $row['child_id'] ?? null;
                 $row['patientFirstName'] = $row['child_name'] ?? null;
@@ -71,11 +68,11 @@ try {
 
             $data['is_encrypted'] = 'no';
             if (isset($row['encryptPII']) && $row['encryptPII'] == 'yes') {
-                $key = base64_decode((string) $this->commonService->getGlobalConfig('key'));
-                $encryptedPatientId = $this->commonService->crypto('encrypt', $data['patient_code'], $key);
-                $encryptedPatientFirstName = $this->commonService->crypto('encrypt', $data['patient_first_name'], $key);
-                $encryptedPatientMiddleName = $this->commonService->crypto('encrypt', $data['patient_middle_name'], $key);
-                $encryptedPatientLastName = $this->commonService->crypto('encrypt', $data['patient_last_name'], $key);
+                $key = base64_decode((string) $commonService->getGlobalConfig('key'));
+                $encryptedPatientId = $commonService->crypto('encrypt', $data['patient_code'], $key);
+                $encryptedPatientFirstName = $commonService->crypto('encrypt', $data['patient_first_name'], $key);
+                $encryptedPatientMiddleName = $commonService->crypto('encrypt', $data['patient_middle_name'], $key);
+                $encryptedPatientLastName = $commonService->crypto('encrypt', $data['patient_last_name'], $key);
 
                 $data['patient_code'] = $encryptedPatientId;
                 $data['patient_first_name'] = $encryptedPatientFirstName;
@@ -97,19 +94,18 @@ try {
             $data['updated_datetime'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_on'] = DateUtility::getCurrentDateTime();
             $data['patient_registered_by'] = $row['request_created_by'] ?? null;
-            
+
             $output[] =  $data;
 
-            $db->where($primaryKey,$row[$primaryKey]);
-            $db->update($tableName, array("system_patient_code" => $systemPatientCode));
-    
+            $db->where($primaryKey, $row[$primaryKey]);
+            $db->update($tableName, ["system_patient_code" => $systemPatientCode]);
         }
 
         $db->insertMulti("patients", $output);
-
+        $db->commitTransaction();
     }
-
 } catch (Exception $e) {
+    $db->rollbackTransaction();
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

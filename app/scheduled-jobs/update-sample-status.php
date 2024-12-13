@@ -1,4 +1,3 @@
-#!/usr/bin/env php
 <?php
 
 // only run from command line
@@ -23,92 +22,109 @@ $general = ContainerRegistry::get(CommonService::class);
 
 foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
 
-    try {
-        $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
-        if (!empty($tableName)) {
-            //FAILED SAMPLES
-            if ($module === 'vl') {
-                //FAILED SAMPLES
-                $batchSize = 100;
-                $offset = 0;
-                $statusCodes = [
-                    SAMPLE_STATUS\REJECTED,
-                    SAMPLE_STATUS\TEST_FAILED
-                ];
-                while (true) {
-                    try {
-                        $db->beginTransaction();
-                        // Fetch a batch of rows
-                        $db->reset();
-                        $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
-                        $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
-                        $db->orderBy("vl_sample_id", "ASC"); // Ensure consistent ordering
-                        $db->pageLimit = $batchSize;
-                        $rows = $db->get($tableName, [$offset, $batchSize], "vl_sample_id");
+    $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
+    if (!empty($tableName)) {
 
-                        if (empty($rows)) {
-                            // No more rows to process
-                            break;
-                        }
+        // BLOCK 1: FAILED SAMPLES
+        if ($module === 'vl') {
+            $batchSize = 100;
+            $offset = 0;
+            $statusCodes = [
+                SAMPLE_STATUS\REJECTED,
+                SAMPLE_STATUS\TEST_FAILED
+            ];
+            while (true) {
+                try {
+                    $db->beginTransaction();
+                    $db->reset();
+                    $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
+                    $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
+                    $db->orderBy("vl_sample_id", "ASC");
+                    $db->pageLimit = $batchSize;
+                    $rows = $db->get($tableName, [$offset, $batchSize], "vl_sample_id");
 
-                        // Extract the IDs of the rows to update
-                        $ids = array_column($rows, 'vl_sample_id');
-
-                        // Update the rows in the current batch
-                        $db->reset();
-                        $db->where("vl_sample_id", $ids, 'IN');
-                        $db->update(
-                            $tableName,
-                            [
-                                "result_status" => SAMPLE_STATUS\TEST_FAILED,
-                                "data_sync" => 0,
-                                "last_modified_datetime" => DateUtility::getCurrentDateTime()
-                            ]
-                        );
-
-                        // Move to the next batch
-                        $offset += $batchSize;
-                        $db->commitTransaction();
-                    } catch (Throwable $e) {
-                        $db->rollbackTransaction();
-                        LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                        LoggerUtility::logError($e->getMessage(), [
-                            'file' => $e->getFile(),
-                            'line' => $e->getLine(),
-                            'trace' => $e->getTraceAsString(),
-                        ]);
-                        continue;
+                    if (empty($rows)) {
+                        break;
                     }
+
+                    $ids = array_column($rows, 'vl_sample_id');
+
+                    $db->reset();
+                    $db->where("vl_sample_id", $ids, 'IN');
+                    $db->update(
+                        $tableName,
+                        [
+                            "result_status" => SAMPLE_STATUS\TEST_FAILED,
+                            "data_sync" => 0,
+                            "last_modified_datetime" => DateUtility::getCurrentDateTime()
+                        ]
+                    );
+
+                    $offset += $batchSize;
+                    $db->commitTransaction();
+                } catch (Throwable $e) {
+                    $db->rollbackTransaction();
+                    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+                    LoggerUtility::logError($e->getMessage(), [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                    continue;
                 }
             }
+        }
 
-            //EXPIRING SAMPLES
-            $expiryDays = (int) ($general->getGlobalConfig('sample_expiry_after_days') ?? 365);
-            if (empty($expiryDays) || $expiryDays <= 0) {
-                $expiryDays = 365; // by default, we consider samples more than 1 year as expired
+        // BLOCK 2: EXPIRING SAMPLES
+        $batchSize = 100;
+        $offset = 0;
+        $expiryDays = (int) ($general->getGlobalConfig('sample_expiry_after_days') ?? 365);
+        $expiryDays = $expiryDays > 0 ? $expiryDays : 365;
+
+        $statusCodes = [
+            SAMPLE_STATUS\ON_HOLD,
+            SAMPLE_STATUS\REORDERED_FOR_TESTING,
+            SAMPLE_STATUS\RECEIVED_AT_CLINIC,
+            SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
+        ];
+
+        while (true) {
+            try {
+                $db->beginTransaction();
+                $db->reset();
+                $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
+                $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
+                $db->pageLimit = $batchSize;
+                $rows = $db->get($tableName, [$offset, $batchSize], "sample_id");
+
+                if (empty($rows)) {
+                    break;
+                }
+
+                $ids = array_column($rows, 'sample_id');
+
+                $db->reset();
+                $db->where("sample_id", $ids, 'IN');
+                $db->update(
+                    $tableName,
+                    [
+                        "result_status" => SAMPLE_STATUS\EXPIRED,
+                        "locked" => "yes"
+                    ]
+                );
+
+                $offset += $batchSize;
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getMessage());
+                continue;
             }
+        }
 
-            // if sample is not yet tested, then update it to Expired if it is older than expiryDays
-            $statusCodes = [
-                SAMPLE_STATUS\ON_HOLD,
-                SAMPLE_STATUS\REORDERED_FOR_TESTING,
-                SAMPLE_STATUS\RECEIVED_AT_CLINIC,
-                SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
-            ];
-
-            $db->reset();
-            $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-            $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
-            $db->update(
-                $tableName,
-                [
-                    "result_status" => SAMPLE_STATUS\EXPIRED,
-                    "locked" => "yes"
-                ]
-            );
-
-            if ($general->isLISInstance()) {
-                // If sample is Expired but still within the expiry limit, then update it to Received at Testing Lab
+        if ($general->isLISInstance()) {
+            try {
+                $db->beginTransaction();
                 $db->reset();
                 $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);
                 $db->where("(result IS NULL OR result = '')");
@@ -122,33 +138,56 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                         "locked" => "no"
                     ]
                 );
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getMessage());
             }
-
-            //LOCKING SAMPLES
-            $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
-            if (empty($lockAfterDays) || $lockAfterDays <= 0) {
-                $lockAfterDays = 14;
-            }
-
-            $statusCodes = [
-                SAMPLE_STATUS\REJECTED,
-                SAMPLE_STATUS\ACCEPTED
-            ];
-            $db->reset();
-            $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
-            $db->where("locked NOT LIKE 'yes'");
-            $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
-            $db->update($tableName, ["locked" => "yes"]);
         }
-    } catch (Throwable $e) {
-        LoggerUtility::logError($e->getMessage(), [
-            'module' => $module,
-            'last_query' => $db->getLastQuery(),
-            'last_db_error' => $db->getLastError(),
-            'line' => $e->getLine(),
-            'file' => $e->getFile(),
-            'trace' => $e->getTraceAsString()
-        ]);
-        continue;
+
+        // BLOCK 3: LOCKING SAMPLES
+        $batchSize = 100;
+        $offset = 0;
+        $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
+        $lockAfterDays = $lockAfterDays > 0 ? $lockAfterDays : 14;
+
+        $statusCodes = [
+            SAMPLE_STATUS\REJECTED,
+            SAMPLE_STATUS\ACCEPTED
+        ];
+
+        while (true) {
+            try {
+                $db->beginTransaction();
+                $db->reset();
+                $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
+                $db->where("locked NOT LIKE 'yes'");
+                $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
+                $db->pageLimit = $batchSize;
+                $rows = $db->get($tableName, [$offset, $batchSize], "sample_id");
+
+                if (empty($rows)) {
+                    break;
+                }
+
+                $ids = array_column($rows, 'sample_id');
+
+                $db->reset();
+                $db->where("sample_id", $ids, 'IN');
+                $db->update(
+                    $tableName,
+                    [
+                        "locked" => "yes"
+                    ]
+                );
+
+                $offset += $batchSize;
+                $db->commitTransaction();
+            } catch (Throwable $e) {
+                $db->rollbackTransaction();
+                LoggerUtility::logError($e->getMessage());
+                continue;
+            }
+        }
     }
 }
