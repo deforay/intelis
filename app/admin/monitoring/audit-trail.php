@@ -109,7 +109,6 @@ try {
 
 			if ($response->getStatusCode() === 200) {
 				$uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
-				MiscUtility::dumpToErrorLog($uniqueId);
 			} else {
 				echo "<h3 align='center'>Failed to archive the latest audit trail data. Please try again.</h3>";
 				$uniqueId = null;
@@ -364,7 +363,7 @@ try {
 				order: [
 					[1, 'asc']
 				], // Order by revision ID (second column) by default
-			});			
+			});
 
 
 			// Initialize the single row current data table
@@ -405,7 +404,7 @@ try {
 		});
 
 		function validateNow() {
-			
+
 			flag = deforayValidator.init({
 				formId: 'searchForm'
 			});

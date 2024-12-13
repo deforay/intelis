@@ -85,6 +85,7 @@
         "collation": "php maintenance/change-db-collation.php",
         "db-backup": "php app/scheduled-jobs/db-backups.php",
         "interface": "php app/scheduled-jobs/interface.php",
+        "lock": "php app/scheduled-jobs/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",
         "privilege-fix": "php maintenance/update-privileges.php",
         "audit-tables-fix": "php maintenance/fix-audit-tables.php",

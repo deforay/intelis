@@ -988,7 +988,6 @@ final class CommonService
         } else {
             $query .= $whereStr . ' GROUP BY facility_name ORDER BY facility_name ASC';
         }
-        // MiscUtility::dumpToErrorLog($query);
         $result = $this->db->rawQuery($query);
         $response = [];
         foreach ($result as $key => $row) {
