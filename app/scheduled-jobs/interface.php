@@ -74,14 +74,14 @@ $forceLocked = false; // Default: Do not include locked samples
 $lastInterfaceSync = null;
 
 foreach ($argv as $arg) {
-    if ($arg === '--force-locked') {
+    if (str_contains($arg, 'force-locked')) {
         $forceLocked = true; // Allow locked samples
     } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg)) {
         $lastInterfaceSync = $arg; // Use provided date as $lastInterfaceSync
     } elseif (is_numeric($arg)) {
         $daysToSubtract = (int) $arg;
         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-    } elseif (preg_match('/^(\d+)--force-locked$/', $arg, $matches)) {
+    } elseif (preg_match('/^(\d+)force-locked$/', $arg, $matches)) {
         $daysToSubtract = (int) $matches[1];
         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
         $forceLocked = true;
@@ -92,6 +92,7 @@ foreach ($argv as $arg) {
 if ($lastInterfaceSync === null) {
     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 }
+
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
