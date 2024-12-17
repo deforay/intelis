@@ -342,13 +342,14 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                            if ($general->isLISInstance() === false) { ?>
                                                                                 <!-- <option value="other">Other</option> -->
                                                                            <?php } ?>
+                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['current_regimen'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
                                                                       </select>
                                                                       <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter the ART Regimen" style="width:100%;display:none;margin-top:2px;">
                                                                  </div>
                                                             </div>
                                                             <div class="col-xs-3 col-md-3">
                                                                  <div class="form-group">
-                                                                      <label for="">Date of Initiation of Current Regimen<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                      <label for="" class="curRegimenDate">Date of Initiation of Current Regimen<?php echo ($general->isSTSInstance() && $vlQueryInfo['current_regimen'] != 'not_reported') ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                       <input type="text" class="form-control date  <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on" value="<?php echo $vlQueryInfo['date_of_initiation_of_current_regimen']; ?>">
                                                                  </div>
                                                             </div>
@@ -360,6 +361,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                            <option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
                                                                            <option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
                                                                            <option value="poor" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'poor') ? "selected='selected'" : "" ?>>Poor < 85%</option>
+                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
                                                                       </select>
                                                                  </div>
                                                             </div>
@@ -760,7 +762,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      facilityName = true;
      $(document).ready(function() {
           checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
-
+          
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);

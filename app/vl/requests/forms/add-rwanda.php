@@ -305,13 +305,14 @@ $sFormat = '';
                                                                       if ($general->isLISInstance() === false) { ?>
                                                                            <!-- <option value="other">Other</option> -->
                                                                       <?php } ?>
+                                                                      <option value="not_reported">Not Reported</option>
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter ART Regimen" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
                                                        </div>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
-                                                                 <label for="">Date of Initiation of Current Regimen<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
+                                                                 <label for="" class="curRegimenDate">Date of Initiation of Current Regimen<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <input type="text" class="form-control date <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" style="width:100%;" name="regimenInitiatedOn" id="regimenInitiatedOn" placeholder="Current Regimen Initiated On" title="Please enter current regimen initiated on">
                                                             </div>
                                                        </div>
@@ -323,6 +324,7 @@ $sFormat = '';
                                                                       <option value="good">Good >= 95%</option>
                                                                       <option value="fair">Fair (85-94%)</option>
                                                                       <option value="poor">Poor < 85%</option>
+                                                                      <option value="not_reported">Not Reported</option>
                                                                  </select>
                                                             </div>
                                                        </div>

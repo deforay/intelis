@@ -317,6 +317,8 @@ $disable = "disabled = 'disabled'";
 														</optgroup>
 													<?php } ?>
 													<option value="other">Other</option>
+													<option value="not_reported" <?php echo ($vlQueryInfo['current_regimen'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
+
 												</select>
 												<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" <?php echo $disable; ?> style="width:100%;display:none;margin-top:2px;">
 											</div>
@@ -339,6 +341,7 @@ $disable = "disabled = 'disabled'";
 													<option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
 													<option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
 													<option value="poor" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'poor') ? "selected='selected'" : "" ?>>Poor < 85%</option>
+													<option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
 												</select>
 											</div>
 										</div>
