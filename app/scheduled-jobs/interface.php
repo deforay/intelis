@@ -70,21 +70,21 @@ if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CO
 //     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 // }
 
-$forceLocked = false; // Default: Do not include locked samples
+$overwriteLocked = false; // Default: Do not include locked samples
 $lastInterfaceSync = null;
 
 foreach ($argv as $arg) {
-    if (str_contains($arg, 'force-locked')) {
-        $forceLocked = true; // Allow locked samples
+    if (str_contains($arg, 'force')) {
+        $overwriteLocked = true; // Allow locked samples
     } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg)) {
         $lastInterfaceSync = $arg; // Use provided date as $lastInterfaceSync
     } elseif (is_numeric($arg)) {
         $daysToSubtract = (int) $arg;
         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-    } elseif (preg_match('/^(\d+)force-locked$/', $arg, $matches)) {
+    } elseif (preg_match('/^(\d+)force/', $arg, $matches)) {
         $daysToSubtract = (int) $matches[1];
         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-        $forceLocked = true;
+        $overwriteLocked = true;
     }
 }
 
@@ -122,7 +122,7 @@ try {
         }
         if (!empty($lastInterfaceSync)) {
             $db->connection('interface')
-                ->where("added_on > '$lastInterfaceSync' OR lims_sync_status = 0");
+                ->where(" (added_on > '$lastInterfaceSync' OR lims_sync_status = 0) ");
         }
         $db->connection('interface')->where('result_status', 1);
         $db->connection('interface')->orderBy('analysed_date_time', 'asc');
@@ -133,6 +133,8 @@ try {
         $interfaceData = array_merge($interfaceData, $mysqlData); // Add MySQL data
     }
 
+
+
     if ($sqliteConnected) {
         if ($isCli) {
             echo "Connected to sqlite" . PHP_EOL;
@@ -140,16 +142,16 @@ try {
         $where = [];
         $where[] = " result_status = 1 ";
         if (!empty($lastInterfaceSync)) {
-            $where[] = " added_on > '$lastInterfaceSync' OR lims_sync_status = 0";
+            $where[] = " (added_on > '$lastInterfaceSync' OR lims_sync_status = 0) ";
         }
         $where = implode(' AND ', $where);
         $interfaceQuery = "SELECT * FROM `orders`
-                        WHERE $where
-                        ORDER BY analysed_date_time ASC";
+                            WHERE $where
+                            ORDER BY analysed_date_time ASC";
 
         $sqliteData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
         if ($isCli) {
-            echo "No of records from MySQL : " . count($sqliteData) . PHP_EOL;
+            echo "No of records from SQLITE3 : " . count($sqliteData) . PHP_EOL;
         }
         $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
     }
@@ -186,7 +188,7 @@ try {
         //$allowRepeatedTests = false;
 
         foreach ($interfaceData as $key => $result) {
-
+            $db->connection('default')->beginTransaction();
             if ($isCli) {
                 MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar
             }
@@ -203,17 +205,18 @@ try {
             $tableInfo = [];
             foreach ($availableModules as $primaryKeyColumn => $individualTableName) {
 
-                $columnsToSelect = "$primaryKeyColumn, sample_code, remote_sample_code, lab_assigned_code";
+                $columnsToSelect = "$primaryKeyColumn, unique_id, sample_code, remote_sample_code, lab_assigned_code";
 
                 // If the table name is there in $additionalColumns, add the additional columns
                 if (!empty($additionalColumns) && array_key_exists($individualTableName, $additionalColumns)) {
                     $extraColumnsString = implode(', ', $additionalColumns[$individualTableName]);
-                    $columnsToSelect = "$primaryKeyColumn, $extraColumnsString";
+                    $columnsToSelect = "$primaryKeyColumn, unique_id, $extraColumnsString";
                 }
 
                 $conditions = [];
-                if ($forceLocked === false) {
-                    $conditions[] = "locked IS NULL OR locked = 'no'"; // Default: Exclude locked samples
+                if ($overwriteLocked === false) {
+                    // Default: Exclude locked samples
+                    $conditions[] = "IFNULL(locked, 'no') = 'no'";
                 }
                 $conditions[] = "(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))";
 
@@ -222,28 +225,47 @@ try {
                                     FROM $individualTableName
                                     WHERE $conditions";
 
-                // Execute the query with fewer parameters
-                $tableInfo = $db->rawQueryOne($tableQuery, [
-                    $result['order_id'],
-                    $result['test_id'],
-                    $result['order_id'],
-                    $result['test_id'],
-                    $result['order_id'],
-                    $result['test_id']
-                ]);
-
                 // Execute the query
-                $tableInfo = $db->rawQueryOne($tableQuery, [$result['order_id'], $result['order_id'], $result['order_id'], $result['test_id'], $result['test_id'], $result['test_id']]);
-
+                $tableInfo = $db->connection('default')
+                    ->rawQueryOne($tableQuery, [
+                        $result['order_id'],
+                        $result['order_id'],
+                        $result['order_id'],
+                        $result['test_id'],
+                        $result['test_id'],
+                        $result['test_id']
+                    ]);
                 // If we found the information, break out of the loop
-                if (!empty($tableInfo[$primaryKeyColumn])) {
+                // if (!empty($tableInfo[$primaryKeyColumn])) {
+                //     break;
+                // }
+
+                $matchedColumn = null;
+                $matchedTable = null;
+
+                // Check which columns match
+                // Determine which column matches
+                if (!empty($tableInfo)) {
+
+                    $matchedTable = $individualTableName;
+
+                    if ($result['order_id'] === $tableInfo['sample_code'] || $result['test_id'] === $tableInfo['sample_code']) {
+                        $matchedColumn = 'sample_code';
+                    } elseif ($result['order_id'] === $tableInfo['remote_sample_code'] || $result['test_id'] === $tableInfo['remote_sample_code']) {
+                        $matchedColumn = 'remote_sample_code';
+                    } elseif ($result['order_id'] === $tableInfo['lab_assigned_code'] || $result['test_id'] === $tableInfo['lab_assigned_code']) {
+                        $matchedColumn = 'lab_assigned_code';
+                    }
                     break;
                 }
             }
 
             //Getting Approved By and Reviewed By from Instruments table
-            $instrumentDetails = $db->rawQueryOne("SELECT * FROM instruments
-                                                WHERE machine_name like ?", [$result['machine_used']]);
+            $instrumentDetails = $db->connection('default')
+                ->rawQueryOne(
+                    "SELECT * FROM instruments WHERE machine_name like ?",
+                    [$result['machine_used']]
+                );
 
             if (empty($instrumentDetails)) {
                 $sql = "SELECT * FROM instruments
@@ -257,7 +279,7 @@ try {
             $instrumentId = $instrumentDetails['instrument_id'] ?? null;
             $lowerLimit = $instrumentDetails['lower_limit'] ?? null;
 
-            if (isset($tableInfo['vl_sample_id'])) {
+            if ($matchedTable === 'form_vl') {
 
                 /** @var VlService $vlService */
                 $vlService = ContainerRegistry::get(VlService::class);
@@ -352,14 +374,14 @@ try {
                 } elseif ($data['vl_result_category'] == 'rejected') {
                     $data['result_status'] = SAMPLE_STATUS\REJECTED;
                 }
-                $db->where('vl_sample_id', $tableInfo['vl_sample_id']);
-                $queryStatus = $db->update('form_vl', $data);
+                $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
+                $queryStatus = $db->connection('default')->update('form_vl', $data);
                 $numberOfResults++;
 
                 if ($queryStatus === true) {
                     $syncedIds[]  = $result['id'];
                 }
-            } elseif (isset($tableInfo['eid_id'])) {
+            } elseif ($matchedTable === 'form_eid') {
 
                 $absDecimalVal = null;
                 $absVal = null;
@@ -395,18 +417,18 @@ try {
                     'data_sync' => 0
                 ];
 
-                $db->where('eid_id', $tableInfo['eid_id']);
-                $queryStatus = $db->update('form_eid', $data);
+                $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
+                $queryStatus = $db->connection('default')->update('form_eid', $data);
                 $numberOfResults++;
 
                 if ($queryStatus === true) {
                     $syncedIds[]  = $result['id'];
                 }
-            } elseif (isset($tableInfo['covid19_id'])) {
+            } elseif ($matchedTable === 'form_covid19') {
 
                 // TODO: Add covid19 results
 
-            } elseif (isset($tableInfo['hepatitis_id'])) {
+            } elseif ($matchedTable === 'form_hepatitis') {
 
                 /** @var VlService $vlService */
                 $vlService = ContainerRegistry::get(VlService::class);
@@ -456,8 +478,8 @@ try {
                     'data_sync' => 0
                 ];
 
-                $db->where('hepatitis_id', $tableInfo['hepatitis_id']);
-                $queryStatus = $db->update('form_hepatitis', $data);
+                $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
+                $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
                 $numberOfResults++;
                 // $processedResults[] = $result['order_id'];
                 //  $processedResults[] = $result['test_id'];
@@ -471,6 +493,8 @@ try {
             if (!empty($result['added_on'])) {
                 $addedOnValues[] = $result['added_on'];
             }
+
+            $db->connection('default')->commitTransaction();
         }
 
         if ($numberOfResults > 0) {
@@ -479,6 +503,7 @@ try {
         }
     }
 } catch (Throwable $e) {
+    $db->connection('default')->rollbackTransaction();
     LoggerUtility::log('error', $e->getMessage(),  [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
@@ -503,6 +528,7 @@ try {
                         'lims_sync_status' => $status,
                         'lims_sync_date_time' => $currentDateTime,
                     ];
+                    $db->connection('interface')->reset();
                     $db->connection('interface')->where('id', $batchIds, 'IN');
                     $db->connection('interface')->update('orders', $interfaceData);
                 }
@@ -528,12 +554,19 @@ try {
     };
 
 
-    // Update synced IDs
-    $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
+    try {
+        // Update synced IDs
+        $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
 
-    // Update unsynced IDs
-    $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
-
+        // Update unsynced IDs
+        $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
+    } catch (Throwable $e) {
+        LoggerUtility::log('error', $e->getMessage(),  [
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+            'trace' => $e->getTraceAsString()
+        ]);
+    }
     // Close SQLite connection
     if ($sqliteConnected && $sqliteDb !== null) {
         $sqliteDb = null;
