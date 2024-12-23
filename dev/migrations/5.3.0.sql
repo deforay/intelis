@@ -15,3 +15,10 @@ ALTER TABLE `package_details` ADD `manifest_print_history` JSON NULL DEFAULT NUL
 -- Jeyabanu 15-Nov-2024
 ALTER TABLE `form_eid` ADD `eid_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_reception_person`;
 ALTER TABLE `audit_form_eid` ADD `eid_number` VARCHAR(20) NULL DEFAULT NULL AFTER `lab_reception_person`;
+
+
+-- Jeyabanu 20-Dec-2024
+ALTER TABLE `form_cd4` ADD `is_patient_initiated_on_art` VARCHAR(10) NULL DEFAULT NULL AFTER `is_patient_new`;
+
+ALTER TABLE `form_vl` ADD `last_vl_date_recency` DATE NULL DEFAULT NULL AFTER `last_vl_result_failure`, ADD `last_vl_result_recency` TEXT NULL DEFAULT NULL AFTER `last_vl_date_recency`;
+ALTER TABLE `audit_form_vl` ADD `last_vl_date_recency` DATE NULL DEFAULT NULL AFTER `last_vl_result_failure`, ADD `last_vl_result_recency` TEXT NULL DEFAULT NULL AFTER `last_vl_date_recency`;

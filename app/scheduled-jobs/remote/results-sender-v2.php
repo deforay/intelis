@@ -70,51 +70,6 @@ try {
     //Sending results to results.php for all test
     $url = "$remoteURL/remote/v2/results.php";
 
-    // VIRAL LOAD TEST RESULTS
-    if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-        if ($cliMode) {
-            echo "Trying to send test results from HIV Viral Load...\n";
-        }
-        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
-            FROM `form_vl` AS vl
-            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND (facility_id != '' AND facility_id is not null)
-            AND (sample_code !='' AND sample_code is not null)
-            AND vl.data_sync = 0";
-
-        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
-            $vlQuery .= " AND sample_code like '$sampleCode'";
-        }
-
-        $db->reset();
-        $vlLabResult = $db->rawQuery($vlQuery);
-
-        $url = "$remoteURL/remote/v2/results.php";
-
-        $payload = [
-            "labId" => $labId,
-            "result" => $vlLabResult,
-            "testType" => "vl",
-            'time' => time(),
-            "instanceId" => $general->getInstanceId()
-        ];
-
-        $jsonResponse = $apiService->post($url, $payload, gzip: true);
-        $result = json_decode($jsonResponse, true);
-
-        if (!empty($result)) {
-            $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
-        }
-
-        $totalResults  = count($result ?? []);
-        if ($cliMode) {
-            echo "Sent $totalResults test results from HIV Viral Load...\n";
-        }
-
-        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
-    }
 
 
     // GERNERIC TEST RESULTS
@@ -176,6 +131,54 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
+
+    // VIRAL LOAD TEST RESULTS
+    if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from HIV Viral Load...\n";
+        }
+        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
+            FROM `form_vl` AS vl
+            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
+            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
+            AND vl.data_sync = 0";
+
+
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
+            $vlQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        $db->reset();
+        $vlLabResult = $db->rawQuery($vlQuery);
+
+        $url = "$remoteURL/remote/v2/results.php";
+
+        $payload = [
+            "labId" => $labId,
+            "result" => $vlLabResult,
+            "testType" => "vl",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
+      
+        $result = json_decode($jsonResponse, true);
+        echo '<pre>'; print_r($result); die;
+        if (!empty($result)) {
+            $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+        }
+
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from HIV Viral Load...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+    }
 
 
     // EID TEST RESULTS

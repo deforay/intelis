@@ -534,6 +534,52 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                  </div>
                                                             </div>
 
+                                                            <div class="row">
+                                                            <div class="col-md-8">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                           <?php
+                                                                                     $checked = '';
+                                                                                     $display = '';
+                                                                                     $vlValue = '';
+                                                                                     if (trim((string) $vlQueryInfo['reason_for_vl_testing']) == 'recency' || isset($vlTestReasonResultRow[0]['test_reason_id']) && $vlTestReasonResultRow[0]['test_reason_name'] == 'recency') {
+                                                                                          $checked = 'checked="checked"';
+                                                                                          $display = 'block';
+                                                                                          if ($vlQueryInfo['last_vl_result_recency'] != null && trim((string) $vlQueryInfo['last_vl_result_recency']) != '' && trim((string) $vlQueryInfo['last_vl_result_recency']) != '<20' && trim((string) $vlQueryInfo['last_vl_result_recency']) != 'tnd') {
+                                                                                               $vlValue = $vlQueryInfo['last_vl_result_recency'];
+                                                                                          }
+                                                                                     } else {
+                                                                                          $checked = '';
+                                                                                          $display = 'none';
+                                                                                     }
+                                                                                     ?>
+                                                                                <input type="radio" class="" id="confirmRecencyTesting" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('confirmRecencyTesting');">
+                                                                                <strong> Confirmation Test for Recency </strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row confirmRecencyTesting hideTestData well" style="display: <?php echo $display; ?>;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="confirmRecencyTestingLastVLDate" name="confirmRecencyTestingLastVLDate" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_recency']) != '' && $vlQueryInfo['last_vl_date_recency'] != null && $vlQueryInfo['last_vl_date_recency'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_recency']) : ''; ?>" placeholder="Select Last VL Date" title="Please select Last VL Date" />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="confirmRecencyTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="confirmRecencyTestingVlValue" name="confirmRecencyTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_recency'] == null || trim((string) $vlQueryInfo['last_vl_result_recency']) == '') || trim((string) $vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
+                                                                      (copies/ml)<br>
+                                                                      <input type="checkbox" id="confirmRecencyTestingVlCheckValuelt20" name="confirmRecencyTestingVlValue" <?php echo ($vlQueryInfo['last_vl_result_recency'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" title="Please check VL Result">
+                                                                      < 20<br>
+                                                                           <input type="checkbox" id="confirmRecencyTestingVlCheckValueTnd" name="confirmRecencyTestingVlValue" <?php echo ($vlQueryInfo['last_vl_result_recency'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+
                                                             <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                                  <div class="row">
                                                                       <div class="col-md-6">

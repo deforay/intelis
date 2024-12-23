@@ -254,6 +254,8 @@ try {
         'last_vl_sample_type_routine' => $_POST['rmLastVLTestSampleType'] ?? null,
         'last_vl_date_failure_ac' => DateUtility::isoDateFormat($_POST['repeatTestingLastVLDate'] ?? null),
         'last_vl_result_failure_ac' => $_POST['repeatTestingVlValue'] ?? null,
+        'last_vl_date_recency' => DateUtility::isoDateFormat($_POST['confirmRecencyTestingLastVLDate'] ?? ''),
+        'last_vl_result_recency' => $_POST['confirmRecencyTestingVlValue'] ?? null,
         'last_vl_sample_type_failure_ac' => $_POST['repeatLastVLTestSampleType'] ?? null,
         'last_vl_date_failure' => DateUtility::isoDateFormat($_POST['suspendTreatmentLastVLDate'] ?? ''),
         'last_vl_result_failure' => $_POST['suspendTreatmentVlValue'] ?? null,

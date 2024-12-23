@@ -450,6 +450,37 @@ $sFormat = '';
                                                             </div>
                                                        </div>
 
+                                                       <div class="row">
+                                                            <div class="col-md-8">
+                                                                 <div class="form-group">
+                                                                      <div class="col-lg-12">
+                                                                           <label class="radio-inline">
+                                                                                <input type="radio" class="" id="confirmRecencyTesting" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" onclick="showTesting('confirmRecencyTesting');">
+                                                                                <strong> Confirmation Test for Recency </strong>
+                                                                           </label>
+                                                                      </div>
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+                                                       <div class="row confirmRecencyTesting hideTestData well" style="display:none;">
+                                                            <div class="col-md-6">
+                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control date viralTestData" id="confirmRecencyTestingLastVLDate" name="confirmRecencyTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-6">
+                                                                 <label for="confirmRecencyTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <input type="text" class="form-control forceNumeric viralTestData" id="confirmRecencyTestingVlValue" name="confirmRecencyTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
+                                                                      (copies/ml)<br>
+                                                                      <input type="checkbox" id="confirmRecencyTestingVlCheckValuelt20" name="confirmRecencyTestingVlValue" value="<20" title="Please check VL Result">
+                                                                      < 20<br>
+                                                                           <input type="checkbox" id="confirmRecencyTestingVlCheckValueTnd" name="confirmRecencyTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
+                                                                 </div>
+                                                            </div>
+                                                       </div>
+
                                                        <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                             <div class="row">
                                                                  <div class="col-md-6">
@@ -823,12 +854,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#rmTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    $("#confirmRecencyTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
+                    
                }
 
                if ($.trim(patientInfo['result']) != '') {
                     $("#rmTestingVlValue").val($.trim(patientInfo['result']));
                     $("#repeatTestingVlValue").val($.trim(patientInfo['result']));
                     $("#suspendTreatmentVlValue").val($.trim(patientInfo['result']));
+                    $("#confirmRecencyTestingVlValue").val($.trim(patientInfo['result']));
+
                }
           }
      }
@@ -1048,6 +1083,38 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('#repeatTestingVlCheckValuelt20').attr('disabled', false);
           }
      });
+
+
+     $('#confirmRecencyTestingVlValue').on('input', function(e) {
+          if (this.value != '') {
+               $('#confirmRecencyTestingVlCheckValuelt20').attr('disabled', true);
+               $('#confirmRecencyTestingVlCheckValueTnd').attr('disabled', true);
+          } else {
+               $('#confirmRecencyTestingVlCheckValuelt20').attr('disabled', false);
+               $('#confirmRecencyTestingVlCheckValueTnd').attr('disabled', false);
+          }
+     });
+
+     $('#confirmRecencyTestingVlCheckValuelt20').change(function() {
+          if ($('#confirmRecencyTestingVlCheckValuelt20').is(':checked')) {
+               $('#confirmRecencyTestingVlValue').attr('readonly', true);
+               $('#confirmRecencyTestingVlCheckValueTnd').attr('disabled', true);
+          } else {
+               $('#confirmRecencyTestingVlValue').attr('readonly', false);
+               $('#confirmRecencyTestingVlCheckValueTnd').attr('disabled', false);
+          }
+     });
+
+     $('#confirmRecencyTestingVlCheckValueTnd').change(function() {
+          if ($('#confirmRecencyTestingVlCheckValueTnd').is(':checked')) {
+               $('#confirmRecencyTestingVlValue').attr('readonly', true);
+               $('#confirmRecencyTestingVlCheckValuelt20').attr('disabled', true);
+          } else {
+               $('#confirmRecencyTestingVlValue').attr('readonly', false);
+               $('#confirmRecencyTestingVlCheckValuelt20').attr('disabled', false);
+          }
+     });
+
 
      $('#suspendTreatmentVlValue').on('input', function(e) {
           if (this.value != '') {

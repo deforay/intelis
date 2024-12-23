@@ -232,6 +232,8 @@ try {
           'community_sample' => $_POST['communitySample'] ?? null,
           'last_vl_date_routine' => DateUtility::isoDateFormat($_POST['rmTestingLastVLDate'] ?? null),
           'last_vl_result_routine' => $_POST['rmTestingVlValue'] ?? null,
+          'last_vl_date_recency' => DateUtility::isoDateFormat($_POST['confirmRecencyTestingLastVLDate'] ?? ''),
+          'last_vl_result_recency' => $_POST['confirmRecencyTestingVlValue'] ?? null,  
           'last_vl_sample_type_routine' => $_POST['rmLastVLTestSampleType'] ?? null,
           'last_vl_date_failure_ac' => DateUtility::isoDateFormat($_POST['repeatTestingLastVLDate'] ?? null),
           'last_vl_result_failure_ac' => $_POST['repeatTestingVlValue'] ?? null,

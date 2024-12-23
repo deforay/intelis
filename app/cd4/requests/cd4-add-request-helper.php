@@ -222,6 +222,7 @@ try {
         'is_patient_breastfeeding' => $_POST['breastfeeding'] ?? null,
         'patient_art_no' => $_POST['artNo'] ?? null,
         'is_patient_new' => $_POST['isPatientNew'] ?? null,
+        'is_patient_initiated_on_art' => $_POST['isPatientInitiatedOnArt'] ?? null,
         'treatment_initiated_date' => DateUtility::isoDateFormat($_POST['dateOfArtInitiation'] ?? ''),
         'current_regimen' => $_POST['artRegimen'] ?? null,
         'has_patient_changed_regimen' => $_POST['hasChangedRegimen'] ?? null,

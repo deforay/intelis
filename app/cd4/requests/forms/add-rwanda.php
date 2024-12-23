@@ -345,7 +345,20 @@ $sFormat = '';
                                                   <h3 class="box-title">Treatment Information</h3>
                                              </div>
                                              <div class="box-body">
-                                                  <div class="row">
+                                             <div class="row">
+                                                  <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Is patient initiated on ART?</label>
+                                                                 <select name="isPatientInitiatedOnArt" id="isPatientInitiatedOnArt" class="form-control" onchange="showArtSection(this.value);">
+                                                                      <option value=""> -- Select -- </option>
+                                                                      <option value="yes">Yes</option>
+                                                                      <option value="no">No</option>
+                                                                 </select>                                                            
+                                                            </div>
+                                                       </div>
+                                                  </div>
+
+                                                  <div class="row ARTSection" style="display:none;">
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="arvAdherence">ARV Adherence <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
@@ -354,6 +367,7 @@ $sFormat = '';
                                                                       <option value="good">Good >= 95%</option>
                                                                       <option value="fair">Fair (85-94%)</option>
                                                                       <option value="poor">Poor < 85%</option>
+                                                                      <option value="no_information_provided">No Information Provided</option>
                                                                  </select>
                                                             </div>
                                                        </div>
@@ -384,6 +398,8 @@ $sFormat = '';
                                                                       if ($general->isLISInstance() === false) { ?>
                                                                            <!-- <option value="other">Other</option> -->
                                                                       <?php } ?>
+                                                                      <option value="no_information_provided">No Information Provided</option>
+
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter ART Regimen" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -953,6 +969,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos): $(".facilityMobileNumbers").html('');
           ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
+     }
+
+     function showArtSection(isPatientArt){
+          if(isPatientArt == "yes"){
+               $(".ARTSection").show();
+          }
+          else{
+               $(".ARTSection").hide();
+          }
      }
 
      $("input:radio[name=gender]").click(function() {

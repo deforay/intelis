@@ -160,7 +160,9 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
+      
         $result = json_decode($jsonResponse, true);
+        echo '<pre>'; print_r($result); die;
 
         if (!empty($result)) {
             $db->where('sample_code', $result, 'IN');

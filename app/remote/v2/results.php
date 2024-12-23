@@ -1,26 +1,21 @@
 <?php
 
-$cliMode = php_sapi_name() === 'cli';
-if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
-    echo "=========================" . PHP_EOL;
-    echo "Starting results sending" . PHP_EOL;
-}
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
-
-//this file gets the data from the local database and updates the remote database
 use App\Services\ApiService;
-use App\Utilities\DateUtility;
+use App\Services\TestsService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
+use App\Utilities\QueryLoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
+use App\Services\FacilitiesService;
+use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
+use App\Services\STS\ResultsService;
+
+header('Content-Type: application/json');
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -38,93 +33,64 @@ $stsResultsService = ContainerRegistry::get(ResultsService::class);
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
-$labId = $general->getSystemConfig('sc_testing_lab_id');
-$version = VERSION;
+$payload = [];
 
-// putting this into a variable to make this editable
-$systemConfig = SYSTEM_CONFIG;
-
-$remoteURL = $general->getRemoteURL();
-
-
-if (empty($remoteURL)) {
-    LoggerUtility::log('error', "Please check if STS URL is set");
-    exit(0);
-}
-
-$stsBearerToken = $general->getSTSToken();
-
-$apiService->setBearerToken($stsBearerToken);
 
 try {
-    // Checking if the network connection is available
-    if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-        LoggerUtility::log('error', "No network connectivity while trying remote sync.");
-        return false;
+        /** @var Laminas\Diactoros\ServerRequest $request */
+        $request = AppRegistry::get('request');
+
+        $jsonResponse = $apiService->getJsonFromRequest($request);
+
+
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
+
+      //  $authToken = ApiService::getAuthorizationBearerToken($request);
+
+/*
+    $labId = $data['labId'] ?? null;
+
+    if (empty($labId)) {
+        throw new SystemException('Lab ID is missing in the request', 400);
     }
 
-    $transactionId = MiscUtility::generateULID();
+    $token = $stsTokensService->validateToken($authToken, $labId);
 
-
-
-    $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
-    $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;
-
-    // if only one module is getting synced, lets only sync that one module
-    if (!empty($forceSyncModule)) {
-        unset($systemConfig['modules']);
-        $systemConfig['modules'][$forceSyncModule] = true;
-        $testType = $forceSyncModule;
+    if ($token === false || empty($token)) {
+        throw new SystemException('Unauthorized Access', 401);
     }
 
-
-    $resultsData = $stsResultsService->getResults($testType, $labId);
-
-
-    $sampleIds = $requestsData['sampleIds'] ?? [];
-    $facilityIds = $requestsData['facilityIds'] ?? [];
-    $requests = $requestsData['requests'] ?? [];
-
-
-    $payload['status'] = 'success';
-    $payload['requests'] = $requests;
-    $payload['testType'] = $testType;
-
-    $general->addApiTracking($transactionId, 'system', $resultCount, 'requests', $testType, $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
-
-    if (!empty($facilityIds)) {
-        $general->updateTestRequestsSyncDateTime($testType, $facilityIds, $labId);
+    if (is_string($token)) {
+        $payload['token'] = $token;
     }
+*/
+   
+        $testType = $jsonResponse['testType'] ?? null;
 
+        if (empty($testType)) {
+            throw new SystemException('Test Type is missing in the request', 400);
+        }
 
-    if (!empty($sampleIds)) {
-        $updateData = [
-            'data_sync' => 1
-        ];
-        $db->where($primaryKeyName, $sampleIds, 'IN');
-        $db->update($tableName, $updateData);
-    }
+        [$sampleCodes, $facilityIds] = $stsResultsService->getResults($testType, $jsonResponse);
 
-    $db->commitTransaction();
+        $payload = JsonUtility::encodeUtf8Json($sampleCodes);
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+        $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
+
+        //$db->commitTransaction();
 } catch (Throwable $e) {
-    $db->rollbackTransaction();
+    //$db->rollbackTransaction();
 
-    $payload = [
-        'status' => 'failed',
-        'testType' => $testType,
-        'error' => _translate('Unable to process the request')
-    ];
+    $payload = json_encode([]);
 
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
-        'exception' => $e,
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'stacktrace' => $e->getTraceAsString()
-    ]);
-    throw new SystemException($e->getMessage(), $e->getCode(), $e);
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
+    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
+
+    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
+
 }
-
 
 echo ApiService::sendJsonResponse($payload, $request);
