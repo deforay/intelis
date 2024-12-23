@@ -35,7 +35,7 @@ CREATE TABLE IF NOT EXISTS `app_log` (
   `id` int(11) NOT NULL,
   `log` text NOT NULL,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +68,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `printed_at` int(11) DEFAULT NULL,
   `raw_text` mediumtext,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 -- --------------------------------------------------------
 
@@ -81,7 +81,7 @@ CREATE TABLE IF NOT EXISTS `raw_data` (
   `data` mediumtext NOT NULL,
   `machine` varchar(500) NOT NULL,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
 
 --
 -- Indexes for dumped tables
