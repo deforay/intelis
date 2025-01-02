@@ -1,18 +1,15 @@
 <?php
 
+use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
-use App\Services\TestsService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
-use App\Utilities\QueryLoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
-use App\Registries\ContainerRegistry;
 use App\Services\STS\ResultsService;
 
 header('Content-Type: application/json');
@@ -33,22 +30,18 @@ $stsResultsService = ContainerRegistry::get(ResultsService::class);
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
-$payload = [];
+
+ try {
+    /** @var Laminas\Diactoros\ServerRequest $request */
+    $request = AppRegistry::get('request');
+    $data = $apiService->getJsonFromRequest($request);
 
 
-try {
-        /** @var Laminas\Diactoros\ServerRequest $request */
-        $request = AppRegistry::get('request');
+      $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+      $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
-        $jsonResponse = $apiService->getJsonFromRequest($request);
+    $authToken = ApiService::getAuthorizationBearerToken($request);
 
-
-    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
-    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
-
-      //  $authToken = ApiService::getAuthorizationBearerToken($request);
-
-/*
     $labId = $data['labId'] ?? null;
 
     if (empty($labId)) {
@@ -61,35 +54,31 @@ try {
         throw new SystemException('Unauthorized Access', 401);
     }
 
-    if (is_string($token)) {
-        $payload['token'] = $token;
+
+    $testType = $data['testType'] ?? null;
+
+    if (empty($testType)) {
+        throw new SystemException( 'Test Type is missing in the request', 400);
     }
-*/
-   
-        $testType = $jsonResponse['testType'] ?? null;
 
-        if (empty($testType)) {
-            throw new SystemException('Test Type is missing in the request', 400);
-        }
 
-        [$sampleCodes, $facilityIds] = $stsResultsService->getResults($testType, $jsonResponse);
+   $sampleCodes = $stsResultsService->getResults($testType, $data);
 
-        $payload = JsonUtility::encodeUtf8Json($sampleCodes);
+    $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
-        $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+    $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
 
-        //$db->commitTransaction();
 } catch (Throwable $e) {
-    //$db->rollbackTransaction();
-
     $payload = json_encode([]);
 
-    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine() . ":" . $db->getLastErrno());
-    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastError());
-    QueryLoggerUtility::log($e->getFile() . ":" . $e->getLine()  . ":" . $db->getLastQuery());
-
-    throw new SystemException($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), $e->getCode(), $e);
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 
 }
 
