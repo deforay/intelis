@@ -75,11 +75,9 @@ try {
             $vlSampleId = $group[$primaryKeyColumn];
             $oldestDatetime = $group['oldest_datetime'];
 
-            $deleteQuery = "
-                DELETE FROM $tableName
-                WHERE $primaryKeyColumn = ?
-                AND dt_datetime != ?
-            ";
+            $deleteQuery = "DELETE FROM $tableName
+                            WHERE $primaryKeyColumn = ? AND
+                            dt_datetime != ?";
 
             $db->rawQuery($deleteQuery, [$vlSampleId, $oldestDatetime]);
         }
