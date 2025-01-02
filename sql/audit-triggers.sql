@@ -1,6 +1,6 @@
 -- Viral Load
 DROP TABLE IF EXISTS `audit_form_vl`;
-CREATE TABLE `audit_form_vl` SELECT * from `form_vl` WHERE 1=0;
+CREATE TABLE `audit_form_vl` SELECT * FROM `form_vl` WHERE 1=0;
 
 ALTER TABLE `audit_form_vl`
    MODIFY COLUMN `vl_sample_id` int(11) NOT NULL,
@@ -33,7 +33,7 @@ CREATE TRIGGER form_vl_data__bd BEFORE DELETE ON `form_vl` FOR EACH ROW
 -- EID
 
 DROP TABLE IF EXISTS `audit_form_eid`;
-CREATE TABLE `audit_form_eid` SELECT * from `form_eid` WHERE 1=0;
+CREATE TABLE `audit_form_eid` SELECT * FROM `form_eid` WHERE 1=0;
 
 ALTER TABLE `audit_form_eid`
    MODIFY COLUMN `eid_id` int(11) NOT NULL,

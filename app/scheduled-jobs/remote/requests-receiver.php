@@ -44,12 +44,12 @@ $systemConfig = SYSTEM_CONFIG;
 $remoteURL = $general->getRemoteURL();
 
 if (empty($remoteURL)) {
-    LoggerUtility::log('error', "Please check if STS URL is set");
+    LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-    LoggerUtility::log('error', "No internet connectivity while trying remote sync.");
+    LoggerUtility::logError("No internet connectivity while trying remote sync.");
     return false;
 }
 
@@ -167,7 +167,7 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $existingSampleQuery = "SELECT vl_sample_id, sample_code
+                $existingSampleQuery = "SELECT vl_sample_id, sample_code, IFNULL(locked, 'no') as locked
                                         FROM form_vl AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
@@ -249,12 +249,13 @@ try {
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
-                LoggerUtility::logError($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
                     'last_db_query' => $db->getLastQuery(),
                     'last_db_error' => $db->getLastError(),
-                    'trace' => $e->getTraceAsString(),
+                    'exception' => $e,
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -265,7 +266,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $responsePayload['vl'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -407,7 +408,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $responsePayload['eid'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -604,7 +605,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $responsePayload['covid19'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -772,11 +773,13 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                LoggerUtility::logError($e->getMessage(), [
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -787,7 +790,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $responsePayload['hepatitis'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -924,11 +927,13 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                LoggerUtility::logError($e->getMessage(), [
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -940,7 +945,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $payload, $responsePayload['tb'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -1071,11 +1076,13 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                LoggerUtility::logError($e->getMessage(), [
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -1086,7 +1093,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $responsePayload['cd4'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
@@ -1252,11 +1259,13 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-                LoggerUtility::logError($e->getMessage(), [
+                LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -1269,7 +1278,7 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $responsePayload['generic-tests'], 'json', $labId);
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception' => $e,
