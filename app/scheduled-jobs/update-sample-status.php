@@ -87,7 +87,13 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 $offset += $batchSize;
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getMessage());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'last_db_error' => $db->getLastError(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 continue;
             }
         }
@@ -141,10 +147,11 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                     $offset += $batchSize;
                 } catch (Throwable $e) {
                     $db->rollbackTransaction();
-                    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                     LoggerUtility::logError($e->getMessage(), [
                         'file' => $e->getFile(),
                         'line' => $e->getLine(),
+                        'last_db_error' => $db->getLastError(),
+                        'last_db_query' => $db->getLastQuery(),
                         'trace' => $e->getTraceAsString(),
                     ]);
                     continue;
@@ -204,7 +211,13 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 $offset += $batchSize;
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getMessage());
+                LoggerUtility::logError($e->getMessage(), [
+                    'file' => $e->getFile(),
+                    'line' => $e->getLine(),
+                    'last_db_error' => $db->getLastError(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'trace' => $e->getTraceAsString(),
+                ]);
                 continue;
             }
         }
