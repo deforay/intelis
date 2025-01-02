@@ -101,6 +101,7 @@ handle_database_setup_and_import() {
     fi
 
     mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
     local sql_file="${1:-${vlsm_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
@@ -111,7 +112,7 @@ handle_database_setup_and_import() {
         mysql -u root -p"${mysql_root_password}" vlsm <"$sql_file"
     fi
     mysql -u root -p"${mysql_root_password}" vlsm <"${vlsm_path}/sql/audit-triggers.sql"
-    mysql -u root -p"${mysql_root_password}" <"${vlsm_path}/sql/interface-init.sql"
+    mysql -u root -p"${mysql_root_password}" interfacing <"${vlsm_path}/sql/interface-init.sql"
 }
 
 spinner() {
