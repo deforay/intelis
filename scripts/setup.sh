@@ -101,6 +101,7 @@ handle_database_setup_and_import() {
     fi
 
     mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql -u root -p"${mysql_root_password}" -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
     local sql_file="${1:-${vlsm_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
@@ -350,6 +351,31 @@ else
     echo "File config.production.php already exists. Skipping renaming."
     log_action "File config.production.php already exists. Skipping renaming."
 fi
+
+# Load environment variables from lamp-setup.env
+if [ -f /tmp/lamp-setup.env ]; then
+    source /tmp/lamp-setup.env
+    mysql_root_password="${MYSQL_ROOT_PASSWORD}"
+else
+    echo "Environment file not found. Please enter the MySQL root password."
+    read -sp "MySQL root password: " mysql_root_password
+    echo
+
+    # Verify the password for the root user
+    echo "Verifying MySQL root password..."
+    if ! mysqladmin ping -u root -p"${mysql_root_password}" &>/dev/null; then
+        echo "Invalid MySQL root password. Please rerun the script and enter the correct password."
+        exit 1
+    fi
+    echo "MySQL root password verified successfully."
+fi
+
+# Validate the password
+if [ -z "$mysql_root_password" ]; then
+    echo "MySQL root password is empty. Exiting."
+    exit 1
+fi
+
 
 # Escape special characters in password for sed
 # This uses Perl's quotemeta which is more reliable when dealing with many special characters
