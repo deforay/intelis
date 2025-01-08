@@ -146,8 +146,7 @@ try {
      $db->commitTransaction();
 } catch (Throwable $e) {
      $db->rollbackTransaction();
-     LoggerUtility::log(
-          'error',
+     LoggerUtility::logError(
           $e->getMessage(),
           [
                'file' => $e->getFile(),

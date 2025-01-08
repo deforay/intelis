@@ -149,11 +149,11 @@ $sQuery = $sQuery . $sWhere;
 $sQuery = $sQuery . ' group by vl.hepatitis_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 $_SESSION['highViralResult'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -161,12 +161,12 @@ if (isset($sLimit) && isset($sOffset)) {
 
 $_SESSION['highViralResultCount'] = $resultCount;
 
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
     if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
@@ -194,14 +194,14 @@ foreach ($rResult as $aRow) {
         $aRow['patient_id'] = $general->crypto('decrypt', $aRow['patient_id'], $key);
         $patientName = $general->crypto('decrypt', $patientName, $key);
     }
-    $row[] = ($aRow['facility_name']);
+    $row[] = $aRow['facility_name'];
     $row[] = $aRow['patient_id'];
-    $row[] = ($patientName);
+    $row[] = $patientName;
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['labName'];
-    $row[] =  ($aRow['hcv_vl_result']);
-    $row[] =  ($aRow['hbv_vl_result']);
+    $row[] = $aRow['hcv_vl_result'];
+    $row[] = $aRow['hbv_vl_result'];
     $row[] = '';
     $output['aaData'][] = $row;
 }
