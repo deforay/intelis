@@ -28,9 +28,22 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 try {
     if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
+
+
+        $lastId = $_POST['packageId'];
+        
+        $db->where('package_code', $packageCode);
+        $previousData = $db->getOne("package_details");
+        $oldReason = json_decode($previousData['manifest_change_history']);
+
+        $newReason = array('reason' => $_POST['reasonForChange'],'changedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $oldReason[] = $newReason;
+      
+
         $value = [
             'lab_id' => $_POST['assignLab'],
             'referring_lab_id' => $_POST['testingLab'],
+            'manifest_change_history' => json_encode($oldReason),
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0
@@ -39,6 +52,13 @@ try {
         $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update('package_details', array("lab_id" => $_POST['assignLab']));
 
+        $value = [
+            'lab_id' => $_POST['assignLab'],
+            'referring_lab_id' => $_POST['testingLab'],
+            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+            'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
+            'data_sync' => 0
+        ];
         /* Update test types */
         $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update($table, $value);

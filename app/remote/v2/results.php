@@ -1,6 +1,5 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -11,6 +10,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
 use App\Services\STS\ResultsService;
+use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
 
@@ -31,14 +31,13 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
 
- try {
+try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
-    $data = $apiService->getJsonFromRequest($request);
+    $data = $apiService->getJsonFromRequest($request, true);
 
-
-      $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
-      $transactionId = $apiRequestId ?? MiscUtility::generateULID();
+    $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
+    $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
     $authToken = ApiService::getAuthorizationBearerToken($request);
 
@@ -58,28 +57,28 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
     $testType = $data['testType'] ?? null;
 
     if (empty($testType)) {
-        throw new SystemException( 'Test Type is missing in the request', 400);
+        throw new SystemException('Test Type is missing in the request', 400);
     }
 
 
-   $sampleCodes = $stsResultsService->getResults($testType, $data);
+    $sampleCodes = $stsResultsService->getResults($testType, json_encode($data));
 
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
     $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
-
 } catch (Throwable $e) {
     $payload = json_encode([]);
 
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
     LoggerUtility::logError($e->getMessage(), [
+        'lab' => $labId,
+        'transactionId' => $transactionId,
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
-
 }
 
 echo ApiService::sendJsonResponse($payload, $request);

@@ -67,56 +67,6 @@ try {
         $systemConfig['modules'][$forceSyncModule] = true;
     }
 
-
-    // VIRAL LOAD TEST RESULTS
-    if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
-        if ($cliMode) {
-            echo "Trying to send test results from HIV Viral Load...\n";
-        }
-        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
-            FROM `form_vl` AS vl
-            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
-            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND (facility_id != '' AND facility_id is not null)
-            AND (sample_code !='' AND sample_code is not null)
-            AND vl.data_sync = 0";
-
-
-        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
-            $vlQuery .= " AND sample_code like '$sampleCode'";
-        }
-
-        $db->reset();
-        $vlLabResult = $db->rawQuery($vlQuery);
-
-        $url = "$remoteURL/remote/v2/results.php";
-
-        $payload = [
-            "labId" => $labId,
-            "result" => $vlLabResult,
-            "testType" => "vl",
-            'time' => time(),
-            "instanceId" => $general->getInstanceId()
-        ];
-
-        $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
-        $result = json_decode($jsonResponse, true);
-      //print_r($result); die;
-                if (!empty($result)) {
-                    $db->where('sample_code', $result, 'IN');
-                    $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
-                }
-                $totalResults  = count($result ?? []);
-
-                if ($cliMode) {
-                    echo "Sent $totalResults test results from HIV Viral Load...\n";
-                }
-
-        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
-    }
-
-
     // GERNERIC TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
         if ($cliMode) {
@@ -149,8 +99,9 @@ try {
             $customTestResultData[$r['unique_id']]['form_data'] = $r;
             $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['sample_id']);
         }
-        $url = "$remoteURL/remote/v2/results.php";
 
+        //$url = "$remoteURL/remote/remote/generic-test-results.php";
+        $url = "$remoteURL/remote/v2/results.php";
 
         $payload = [
             "labId" => $labId,
@@ -159,7 +110,6 @@ try {
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
-
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
@@ -175,7 +125,55 @@ try {
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
+    
+    // VIRAL LOAD TEST RESULTS
+    if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from HIV Viral Load...\n";
+        }
+        $vlQuery = "SELECT vl.*, a.user_name as 'approved_by_name'
+            FROM `form_vl` AS vl
+            LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
+            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
+            AND vl.data_sync = 0";
 
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
+            $vlQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        $db->reset();
+        $vlLabResult = $db->rawQuery($vlQuery);
+
+        //$url = "$remoteURL/remote/remote/testResults.php";
+        $url = "$remoteURL/remote/v2/results.php";
+
+        $payload = [
+            "labId" => $labId,
+            "results" => $vlLabResult,
+            "testType" => "vl",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
+   
+        $result = json_decode($jsonResponse, true);
+
+        if (!empty($result)) {
+            $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_vl', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+        }
+
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from HIV Viral Load...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+    
     // EID TEST RESULTS
     if (isset($systemConfig['modules']['eid']) && $systemConfig['modules']['eid'] === true) {
         if ($cliMode) {
@@ -195,12 +193,12 @@ try {
         $db->reset();
         $eidLabResult = $db->rawQuery($eidQuery);
 
-        // $url = "$remoteURL/remote/remote/eid-test-results.php";
+        //$url = "$remoteURL/remote/remote/eid-test-results.php";
         $url = "$remoteURL/remote/v2/results.php";
 
         $payload = [
             "labId" => $labId,
-            "result" => $eidLabResult,
+            "results" => $eidLabResult,
             "testType" => "eid",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
@@ -254,7 +252,9 @@ try {
             $c19ResultData[$r['unique_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
         }
 
+        //$url = "$remoteURL/remote/remote/covid-19-test-results.php";
         $url = "$remoteURL/remote/v2/results.php";
+
         $payload = [
             "labId" => $labId,
             "results" => $c19ResultData,
@@ -262,6 +262,8 @@ try {
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
+
+       // echo '<pre>'; print_r($payload); die;
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
@@ -297,10 +299,12 @@ try {
         $db->reset();
         $hepLabResult = $db->rawQuery($hepQuery);
 
+        //$url = "$remoteURL/remote/remote/hepatitis-test-results.php";
         $url = "$remoteURL/remote/v2/results.php";
+
         $payload = [
             "labId" => $labId,
-            "result" => $hepLabResult,
+            "results" => $hepLabResult,
             "testType" => "hepatitis",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
@@ -322,6 +326,54 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
+     // TB TEST RESULTS
+     if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from TB...\n";
+        }
+        $tbQuery = "SELECT tb.*, a.user_name as 'approved_by_name'
+            FROM `form_tb` AS tb
+            LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
+            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
+            AND tb.data_sync = 0";
+
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
+            $tbQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        $db->reset();
+        $tbLabResult = $db->rawQuery($tbQuery);
+
+        //$url = "$remoteURL/remote/remote/testResults.php";
+        $url = "$remoteURL/remote/v2/results.php";
+
+        $payload = [
+            "labId" => $labId,
+            "results" => $tbLabResult,
+            "testType" => "tb",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
+        ];
+
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
+   
+        $result = json_decode($jsonResponse, true);
+
+        if (!empty($result)) {
+            $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+        }
+
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from TB...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+
     // CD4 TEST RESULTS
     if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
         if ($cliMode) {
@@ -341,16 +393,16 @@ try {
         $db->reset();
         $cd4LabResult = $db->rawQuery($cd4Query);
 
+        //$url = "$remoteURL/remote/remote/cd4-test-results.php";
         $url = "$remoteURL/remote/v2/results.php";
 
         $payload = [
             "labId" => $labId,
-            "result" => $cd4LabResult,
+            "results" => $cd4LabResult,
             "testType" => "cd4",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
-
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
@@ -363,51 +415,6 @@ try {
             echo "Sent $totalResults test results from CD4...\n";
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
-    }
-
-
-    // TB TEST RESULTS
-
-    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
-        if ($cliMode) {
-            echo "Trying to send test results from TB...\n";
-        }
-        $tbQuery = "SELECT tb.*, a.user_name as 'approved_by_name'
-                    FROM `form_tb` AS tb
-                    LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
-                    WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND sample_code != ''
-                    AND sample_code is not null
-                    AND tb.data_sync=0";
-        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
-            $tbQuery .= " AND sample_code like '$sampleCode'";
-        }
-        $db->reset();
-        $tbLabResult = $db->rawQuery($tbQuery);
-
-        $url = "$remoteURL/remote/v2/results.php";
-        $payload = [
-            "labId" => $labId,
-            "result" => $tbLabResult,
-            "testType" => "tb",
-            'time' => time(),
-            "instanceId" => $general->getInstanceId()
-        ];
-
-        $jsonResponse = $apiService->post($url, $payload, gzip: true);
-        $result = json_decode($jsonResponse, true);
-
-        if (!empty($result)) {
-            $db->where('sample_code', $result, 'IN');
-            $id = $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
-        }
-
-        $totalResults  = count($result ?? []);
-        if ($cliMode) {
-            echo "Sent $totalResults test results from TB...\n";
-        }
-
-        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     $instanceId = $general->getInstanceId();

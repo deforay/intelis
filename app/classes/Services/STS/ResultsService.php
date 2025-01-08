@@ -68,8 +68,8 @@ final class ResultsService
 
     public function getResults($testType, $jsonResponse)
     {
-        $this->setTestType($testType);
 
+        $this->setTestType($testType);
 
              //remove unwanted columns
        $unwantedColumns = [
@@ -86,8 +86,8 @@ final class ResultsService
 
     $sampleCodes = $facilityIds = [];
     $labId = null;
- 
-echo $jsonResponse; 
+
+
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $resultData = [];
@@ -98,7 +98,7 @@ echo $jsonResponse;
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
-            } elseif ($name === 'result') {
+            } elseif ($name === 'results') {
                 $resultData = $data;
             }
         }
@@ -106,8 +106,8 @@ echo $jsonResponse;
         $counter = 0;
         foreach ($resultData as $key => $resultRow) {
 
-              //  $this->db->beginTransaction();
                 $counter++;
+              
                 $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
                 // Overwrite the values in $emptyLabArray with the values in $resultRow
                 $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
@@ -116,8 +116,6 @@ echo $jsonResponse;
 
                     $lab['result_approved_by'] = $this->usersService->getOrCreateUser($resultRow['approved_by_name']);
                     $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
-                    // we dont need this now
-                    //unset($resultRow['approved_by_name']);
                 }
 
                 //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
@@ -130,52 +128,84 @@ echo $jsonResponse;
                     $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
                 }
 
-
-                // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-                $conditions = [];
-                $params = [];
-
-                if (!empty($lab['unique_id'])) {
-                    $conditions[] = "unique_id = ?";
-                    $params[] = $lab['unique_id'];
-                } elseif (!empty($lab['remote_sample_code'])) {
-                    $conditions[] = "remote_sample_code = ?";
-                    $params[] = $lab['remote_sample_code'];
-                } elseif (!empty($lab['sample_code'])) {
-                    if (!empty($lab['lab_id'])) {
-                        $conditions[] = "sample_code = ? AND lab_id = ?";
-                        $params[] = $lab['sample_code'];
-                        $params[] = $lab['lab_id'];
-                    } elseif (!empty($lab['facility_id'])) {
-                        $conditions[] = "sample_code = ? AND facility_id = ?";
-                        $params[] = $lab['sample_code'];
-                        $params[] = $lab['facility_id'];
-                    }
+            if($testType == "covid19"){
+                $formData = $resultRow['form_data'] ?? [];
+                if (empty($formData)) {
+                    continue;
                 }
-                $sResult = [];
-                if (!empty($conditions)) {
-                    $sQuery = "SELECT $this->primaryKeyName FROM $this->tableName WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
-                    $sResult = $this->db->rawQueryOne($sQuery, $params);
+    
+                // Overwrite the values in $emptyLabArray with the values in $formData
+                $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
+    
+                if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
+    
+                    $lab['result_approved_by'] = $this->usersService->getOrCreateUser($lab['approved_by_name']);
+                    $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
+                    // we dont need this now
+                    //unset($lab['approved_by_name']);
                 }
+    
+                $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
+                $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+    
+    
+                if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
+                    $keysToRemove = [
+                        'result',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection'
+                    ];
+                    $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
+                }
+            }
 
+                $sResult = $this->runQuery($lab);
+              
                 $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
                 if (!empty($sResult)) {
                     $this->db->where($this->primaryKeyName, $sResult[$this->primaryKeyName]);
                     $id = $this->db->update($this->tableName, $lab);
+                    $primaryKeyValue = $sResult[$this->primaryKeyName];
+
                 } else {
                     $id = $this->db->insert($this->tableName, $lab);
+                    $primaryKeyValue = $this->db->getInsertId();
+                }
+                if($testType == "covid19"){
+
+                    // Insert covid19_tests
+                    $testsData = $resultRow[$key]['data_from_tests'] ?? [];
+
+                    $this->db->where($this->primaryKeyName, $this->primaryKeyName);
+                    $this->db->delete("covid19_tests");
+                    foreach ($testsData as $tRow) {
+                        $covid19TestData = [
+                            "covid19_id"                => $primaryKeyValue,
+                            "facility_id"               => $tRow['facility_id'],
+                            "test_name"                 => $tRow['test_name'],
+                            "tested_by"                 => $tRow['tested_by'],
+                            "sample_tested_datetime"    => $tRow['sample_tested_datetime'],
+                            "testing_platform"          => $tRow['testing_platform'],
+                            "instrument_id"             => $tRow['instrument_id'],
+                            "kit_lot_no"                => $tRow['kit_lot_no'],
+                            "kit_expiry_date"           => $tRow['kit_expiry_date'],
+                            "result"                    => $tRow['result'],
+                            "updated_datetime"          => $tRow['updated_datetime']
+                        ];
+                        $this->db->insert("covid19_tests", $covid19TestData);
+                    }
                 }
 
                 if ($id === true && isset($lab['sample_code'])) {
-                    $sampleCodes[] = $lab['sample_code'];
-                    $facilityIds[] = $lab['facility_id'];
+                    array_push($sampleCodes, $lab['sample_code']);
+                    array_push($facilityIds, $lab['facility_id']);
                 }
-               // $this->db->commitTransaction();
-           
+
         }
     }
+
     return $sampleCodes;
 
     }

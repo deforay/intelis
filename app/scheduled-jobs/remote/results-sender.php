@@ -317,6 +317,54 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
+     // TB TEST RESULTS
+     if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
+        if ($cliMode) {
+            echo "Trying to send test results from TB...\n";
+        }
+        $tbQuery = "SELECT tb.*, a.user_name as 'approved_by_name'
+            FROM `form_tb` AS tb
+            LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
+            WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
+            AND (facility_id != '' AND facility_id is not null)
+            AND (sample_code !='' AND sample_code is not null)
+            AND tb.data_sync = 0";
+
+        if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
+            $tbQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        $db->reset();
+        $tbLabResult = $db->rawQuery($tbQuery);
+
+        //$url = "$remoteURL/remote/remote/tb-test-results.php";
+        $url = "$remoteURL/remote/remote/tb-test-results.php";
+
+        $payload = [
+            "labId" => $labId,
+            "results" => $tbLabResult,
+            "testType" => "tb",
+            'time' => time(),
+            "instanceId" => $general->getInstanceId()
+        ];
+print_r($payload); die;
+        $jsonResponse = $apiService->post($url, $payload, gzip: true);
+   
+        $result = json_decode($jsonResponse, true);
+
+        if (!empty($result)) {
+            $db->where('sample_code', $result, 'IN');
+            $id = $db->update('form_tb', ['data_sync' => 1, 'result_sent_to_source' => 'sent']);
+        }
+
+        $totalResults  = count($result ?? []);
+        if ($cliMode) {
+            echo "Sent $totalResults test results from TB...\n";
+        }
+
+        $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
+    }
+
     // CD4 TEST RESULTS
     if (isset($systemConfig['modules']['cd4']) && $systemConfig['modules']['cd4'] === true) {
         if ($cliMode) {

@@ -62,7 +62,6 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
-        $parsedData = Items::fromString($jsonResponse, $options);
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
@@ -149,10 +148,7 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
-                if ($counter % $batchSize === 0) {
-                    $db->commitTransaction();
-                    $db->beginTransaction();
-                }
+               
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
