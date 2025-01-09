@@ -215,8 +215,4 @@ require_once($fileArray[$formId]);
 
 <?php
 
-// Common JS functions in a PHP file
-// Why PHP? Because we can use PHP variables in the JS code
-require_once APPLICATION_PATH . "/vl/vl.js.php";
-
 require_once APPLICATION_PATH . '/footer.php';

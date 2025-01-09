@@ -29,7 +29,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatitisResultQuery']) != "") {
 
-	$headings = array("S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
+	$headings = array("S.No.", "Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Gender", "Sample Collection Date", "Is Sample Rejected?", "Rejection Reason", "Sample Tested On", "HCV VL Result", "HBV VL Result", "Date Result Dispatched", "Result Status", "Comments", "Funding Source", "Implementing Partner");
 	$output = [];
 
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
@@ -93,7 +93,9 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
-		$row[] = $hepatitisResults[$aRow['result']] ?? $aRow['result'];
+		//$row[] = $hepatitisResults[$aRow['result']] ?? $aRow['result'];
+		$row[] = $aRow['hcv_vl_result'];
+		$row[] = $aRow['hbv_vl_result'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);

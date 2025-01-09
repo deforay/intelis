@@ -132,11 +132,6 @@ require_once($fileArray[$formId]);
 
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 
-<?php
-// Common JS functions in a PHP file
-// Why PHP? Because we can use PHP variables in the JS code
-require_once APPLICATION_PATH . "/vl/vl.js.php";
-?>
 <script>
     function insertSampleCode(formId) {
         $.blockUI();

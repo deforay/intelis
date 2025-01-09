@@ -433,7 +433,7 @@ $remoteURL = $general->getRemoteURL();
         const dob = $.trim($("#dob").val());
         // Clear the fields initially
 
-        if (dob) {
+        if (dob && dob != "") {
             $("#ageInYears, #ageInMonths").val("");
             const age = Utilities.getAgeFromDob(dob, globalDayjsDateFormat);
             if (age.years && age.years >= 1) {
@@ -744,6 +744,48 @@ $remoteURL = $general->getRemoteURL();
         //"/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
     };
 
+    function checkARTRegimenValue() {
+        var artRegimen = $("#artRegimen").val();
+        if (artRegimen == 'not_reported') {
+            $(".curRegimenDate .mandatory").remove();
+            $("#regimenInitiatedOn").removeClass("isRequired");
+        }
+        else{ 
+            $(".curRegimenDate").append(' <span class="mandatory">*</span>');
+            $("#regimenInitiatedOn").addClass("isRequired");
+            if (artRegimen == 'other') {
+                $(".newArtRegimen").show();
+                $("#newArtRegimen").addClass("isRequired");
+                $("#newArtRegimen").focus();
+            } else {
+
+                $(".newArtRegimen").hide();
+                $("#newArtRegimen").removeClass("isRequired");
+                $('#newArtRegimen').val("");
+            }
+        }
+    }
+
+    function checkARTInitiationDate() {
+        var dobInput = $("#dob").val();
+        var artInitiationDateInput = $("#dateOfArtInitiation").val();
+
+        if ($.trim(dobInput) !== '' && $.trim(artInitiationDateInput) !== '') {
+            var dob = dayjs(dobInput, globalDayjsDateFormat);
+            var artInitiationDate = dayjs(artInitiationDateInput, globalDayjsDateFormat);
+
+            if (!dob.isValid() || !artInitiationDate.isValid()) {
+                alert("<?= _translate('Invalid date format. Please check the input dates.'); ?>");
+                return;
+            }
+
+            if (artInitiationDate.isBefore(dob)) {
+                alert("<?= _translate('ART Initiation Date cannot be earlier than Patient Date of Birth'); ?>");
+                $("#dateOfArtInitiation").val("");
+            }
+        }
+    }
+
     $(document).ready(function() {
 
         // Run the scheduler with the defined scripts and intervals
@@ -883,9 +925,6 @@ $remoteURL = $general->getRemoteURL();
             } else {
                 $(".lengthErr").remove();
             }
-
-             
-
 
         });
     });

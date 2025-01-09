@@ -50,54 +50,12 @@
     }
 
 
-
-    function checkARTRegimenValue() {
-        var artRegimen = $("#artRegimen").val();
-        if (artRegimen == 'not_reported') {
-            $(".curRegimenDate .mandatory").remove();
-            $("#regimenInitiatedOn").removeClass("isRequired");
-        }
-        else{ 
-            $(".curRegimenDate").append(' <span class="mandatory">*</span>');
-            $("#regimenInitiatedOn").addClass("isRequired");
-            if (artRegimen == 'other') {
-                $(".newArtRegimen").show();
-                $("#newArtRegimen").addClass("isRequired");
-                $("#newArtRegimen").focus();
-            } else {
-
-                $(".newArtRegimen").hide();
-                $("#newArtRegimen").removeClass("isRequired");
-                $('#newArtRegimen').val("");
-            }
-        }
-    }
-
     function clearDOB(val) {
         if ($.trim(val) != "") {
             $("#dob").val("");
         }
     }
 
-    function checkARTInitiationDate() {
-        var dobInput = $("#dob").val();
-        var artInitiationDateInput = $("#dateOfArtInitiation").val();
-
-        if ($.trim(dobInput) !== '' && $.trim(artInitiationDateInput) !== '') {
-            var dob = dayjs(dobInput, globalDayjsDateFormat);
-            var artInitiationDate = dayjs(artInitiationDateInput, globalDayjsDateFormat);
-
-            if (!dob.isValid() || !artInitiationDate.isValid()) {
-                alert("<?= _translate('Invalid date format. Please check the input dates.'); ?>");
-                return;
-            }
-
-            if (artInitiationDate.isBefore(dob)) {
-                alert("<?= _translate('ART Initiation Date cannot be earlier than Patient Date of Birth'); ?>");
-                $("#dateOfArtInitiation").val("");
-            }
-        }
-    }
 
     function showPatientList() {
         $("#showEmptyResult").hide();
