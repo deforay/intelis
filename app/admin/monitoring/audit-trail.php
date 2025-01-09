@@ -418,8 +418,7 @@ try {
 <?php
 
 } catch (Throwable $e) {
-	LoggerUtility::log(
-		'error',
+	LoggerUtility::logError(
 		$e->getMessage(),
 		[
 			'file' => $e->getFile(),

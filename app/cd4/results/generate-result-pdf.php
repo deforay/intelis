@@ -116,15 +116,6 @@ $pages = [];
 $page = 1;
 $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
-	/*if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
-		$db->where('cd4_id', $result['cd4_id']);
-		$id = $db->update('form_vl', $pData);
-	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
-		$db->where('cd4_id', $result['cd4_id']);
-		$id = $db->update('form_vl', $pData);
-	}*/
 
 
 	$selectedReportFormats = [];

@@ -12,9 +12,9 @@ if ($cliMode) {
     $options = getopt("f", ["force"]);
     $forceRun = isset($options['f']) || isset($options['force']);
 }
-
-if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
-    require_once APPLICATION_PATH . '/../configs/config.interop.php';
+$configFile = APPLICATION_PATH . '/../configs/config.interop.php';
+if (file_exists($configFile)) {
+    require_once $configFile;
 } else {
     if ($cliMode) {
         echo "Interop config file is missing." . PHP_EOL;
@@ -24,7 +24,7 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 
 if (!defined('EXTERNAL_RESULTS_RECEIVER_URL')) {
     if ($cliMode) {
-        echo "EXTERNAL_RESULTS_RECEIVER_URL constant is not defined in the config." . PHP_EOL;
+        echo "EXTERNAL_RESULTS_RECEIVER_URL constant is not defined in $configFile" . PHP_EOL;
     }
     exit(0);
 }
@@ -213,10 +213,11 @@ try {
     if ($cliMode) {
         echo "Some or all results could not be sent" . PHP_EOL;
     }
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
         'trace' => $e->getTraceAsString(),
     ]);
 } finally {
