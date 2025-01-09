@@ -104,8 +104,8 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $sheet->fromArray($rowData, null, 'A' . $rRowCount);
           }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
-          $writer->save($filename);
-          echo urlencode(basename($filename));
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $writer->save($fileName);
+          echo urlencode(basename($fileName));
      }
 }

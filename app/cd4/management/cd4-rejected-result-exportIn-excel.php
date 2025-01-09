@@ -105,6 +105,6 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
           $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);
-          echo urlencode(basename($filename));
+          echo urlencode(basename($fileName));
      }
 }
