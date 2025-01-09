@@ -638,6 +638,14 @@ $state = $geolocationService->getProvinces("yes");
 				$("#testingLab").html(Obj['labs']);
 			});
 	}
+
+	function checkSampleCollectionDate() {
+		if ($("#sampleCollectionDate").val() == "" && $("#status").val() == 4) {
+			alert("<?php echo _translate("Please select Sample Collection Date Range"); ?>");
+		} else if ($("#sampleTestDate").val() == "" && $("#status").val() == 7) {
+			alert("<?php echo _translate("Please select Sample Test Date Range"); ?>");
+		}
+	}
 </script>
 <?php
 require_once APPLICATION_PATH . '/footer.php';

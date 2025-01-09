@@ -87,7 +87,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-$sQuery = "SELECT vl.*,f.*,s.*,b.*,fd.facility_name as labName FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
+$sQuery = "SELECT vl.*,f.facility_name,s.sample_id,b.batch_code,fd.facility_name as labName 
+FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
 $start_date = '';
 $end_date = '';
 

@@ -73,23 +73,6 @@
         }
     }
 
-    function checkPatientDetails(tableName, fieldName, obj, fnct) {
-        //if ($.trim(obj.value).length == 10) {
-        if ($.trim(obj.value) != '') {
-            $.post("/includes/checkDuplicate.php", {
-                    tableName: tableName,
-                    fieldName: fieldName,
-                    value: obj.value,
-                    fnct: fnct,
-                    format: "html"
-                },
-                function(data) {
-                    if (data === '1') {
-                        showModal('patientModal.php?artNo=' + obj.value, 900, 520);
-                    }
-                });
-        }
-    }
 
     function checkSampleNameValidation(tableName, fieldName, id, fnct, alrt) {
         if ($.trim($("#" + id).val()) != '') {
@@ -118,36 +101,7 @@
 
 
 
-    function getfacilityProvinceDetails(obj) {
-        $.blockUI();
-        //check facility name`
-        var cName = $("#facilityId").val();
-        var pName = $("#province").val();
-        if (cName != '' && provinceName && facilityName) {
-            provinceName = false;
-        }
-        if (cName != '' && facilityName) {
-            $.post("/includes/siteInformationDropdownOptions.php", {
-                    cName: cName,
-                    testType: 'vl'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#province").html(details[0]);
-                        $("#district").html(details[1]);
-                        $("#clinicianName").val(details[2])
-                    }
-                });
-        } else if (pName == '' && cName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#facilityId").html("<?= (string) $facility ?? ""; ?>");
-        }
-        $.unblockUI();
-    }
-
+    
     function getTreatmentLine(artRegimen) {
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);
