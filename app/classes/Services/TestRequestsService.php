@@ -2,9 +2,9 @@
 
 namespace App\Services;
 
+use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
-use COUNTRY;
 use App\Utilities\DateUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -200,7 +200,6 @@ final class TestRequestsService
 
             $status = 0;
 
-
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
 
             $uniqueIdsForSampleCodeGeneration = [];
@@ -248,15 +247,17 @@ final class TestRequestsService
                 }
             }
 
-            $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
-            if ($sampleCodeData !== false && !empty($sampleCodeData)) {
+            if (!empty($uniqueIdsForSampleCodeGeneration)) {
+                $sampleCodeData = $this->processSampleCodeQueue(uniqueIds: $uniqueIdsForSampleCodeGeneration, parallelProcess: true);
+                if ($sampleCodeData !== false && !empty($sampleCodeData)) {
 
-                //$uniqueIds = array_keys($sampleCodeData);
-                $status = 1;
+                    //$uniqueIds = array_keys($sampleCodeData);
+                    $status = 1;
+                }
             }
         } catch (Throwable $e) {
             $status = 0;
-            LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+            LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'last_db_query' => $this->db->getLastQuery(),
                 'last_db_error' => $this->db->getLastError(),
@@ -276,6 +277,7 @@ final class TestRequestsService
                 $dataToUpdate['sample_tested_datetime'] = null;
                 $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
             }
+            $this->db->where('result_status = ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
             $this->db->where('sample_code is NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $dataToUpdate);
