@@ -136,7 +136,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 <script type="text/javascript">
 	var oTable = null;
-	remoteSync = true;
 
 	function loadRequestData() {
 		$.blockUI();
@@ -219,7 +218,7 @@ require_once APPLICATION_PATH . '/header.php';
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/common/get-sample-ids-from-manifest.php", {
+			$.post("/specimen-referral-manifest/get-sample-ids-from-manifest.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'vl'
 				},
@@ -246,13 +245,14 @@ require_once APPLICATION_PATH . '/header.php';
 		$.post("/vl/requests/activate-samples-from-manifest.php", {
 				testType: 'vl',
 				manifestCode: $("#manifestCode").val(),
+				sampleId: $("#sampleId").val(),
 				sampleReceivedOn: $("#sampleReceivedOn").val()
 			},
 			function(data) {
 				if (data > 0) {
 					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
-					$('.activateSample').hide();
 				}
+				$('.activateSample').hide();
 				oTable.fnDraw();
 				$.unblockUI();
 			});

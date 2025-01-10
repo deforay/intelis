@@ -228,7 +228,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/common/get-sample-ids-from-manifest.php", {
+			$.post("/specimen-referral-manifest/get-sample-ids-from-manifest.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'hepatitis'
 				},
@@ -261,8 +261,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			function(data) {
 				if (data > 0) {
 					alert("<?php echo _translate("Samples from this Manifest have been activated", true); ?>");
-					$('.activateSample').hide();
 				}
+				$('.activateSample').hide();
 				oTable.fnDraw();
 				$.unblockUI();
 			});
