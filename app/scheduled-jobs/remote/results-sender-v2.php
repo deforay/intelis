@@ -110,6 +110,7 @@ try {
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
+    
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 

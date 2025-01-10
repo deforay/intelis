@@ -128,7 +128,7 @@ final class ResultsService
                     $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
                 }
 
-            if($testType == "covid19"){
+            if($testType == "covid19" || $testType == "generic-tests"){
                 $formData = $resultRow['form_data'] ?? [];
                 if (empty($formData)) {
                     continue;
@@ -178,7 +178,7 @@ final class ResultsService
                     // Insert covid19_tests
                     $testsData = $resultRow[$key]['data_from_tests'] ?? [];
 
-                    $this->db->where($this->primaryKeyName, $this->primaryKeyName);
+                    $this->db->where($this->primaryKeyName, $primaryKeyValue);
                     $this->db->delete("covid19_tests");
                     foreach ($testsData as $tRow) {
                         $covid19TestData = [
@@ -196,6 +196,25 @@ final class ResultsService
                         ];
                         $this->db->insert("covid19_tests", $covid19TestData);
                     }
+                }
+                if($testType == "generic-tests"){
+                    // Insert generic_test_results
+                $testsData = $resultRow['data_from_tests'] ?? [];
+
+                $this->db->where($this->primaryKeyName, $primaryKeyValue);
+                $this->db->delete("generic_test_results");
+                foreach ($testsData as $tRow) {
+                    $customTestData = [
+                        "generic_id" => $primaryKeyValue,
+                        "test_name" => $tRow['test_name'],
+                        "facility_id" => $tRow['facility_id'],
+                        "sample_tested_datetime" => $tRow['sample_tested_datetime'],
+                        "testing_platform" => $tRow['testing_platform'],
+                        "result" => $tRow['result'],
+                        "updated_datetime" => DateUtility::getCurrentDateTime()
+                    ];
+                    $this->db->insert("generic_test_results", $customTestData);
+                }
                 }
 
                 if ($id === true && isset($lab['sample_code'])) {
