@@ -70,49 +70,49 @@ ask_yes_no() {
 }
 
 handle_database_setup_and_import() {
-    db_exists=$(mysql -u root --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
-    db_not_empty=$(mysql -u root --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
+    db_exists=$(mysql --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
+    db_not_empty=$(mysql --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
 
     if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
         echo "Renaming existing LIS database..."
         log_action "Renaming existing LIS database..."
         local todays_date=$(date +%Y%m%d_%H%M%S)
         local new_db_name="vlsm_${todays_date}"
-        mysql -u root --login-path=rootuser -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+        mysql --login-path=rootuser -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
         # Get the list of tables in the original database
-        local tables=$(mysql -u root --login-path=rootuser -sse "SHOW TABLES IN vlsm;")
+        local tables=$(mysql --login-path=rootuser -sse "SHOW TABLES IN vlsm;")
 
         # Rename tables
         for table in $tables; do
-            mysql -u root --login-path=rootuser -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
+            mysql --login-path=rootuser -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
         done
 
         echo "Copying triggers..."
         log_action "Copying triggers..."
-        local triggers=$(mysql -u root --login-path=rootuser -sse "SHOW TRIGGERS IN vlsm;")
+        local triggers=$(mysql --login-path=rootuser -sse "SHOW TRIGGERS IN vlsm;")
         for trigger_name in $triggers; do
-            local trigger_sql=$(mysql -u root --login-path=rootuser -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
-            mysql -u root --login-path=rootuser -D ${new_db_name} -e "$trigger_sql"
+            local trigger_sql=$(mysql --login-path=rootuser -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
+            mysql --login-path=rootuser -D ${new_db_name} -e "$trigger_sql"
         done
 
         echo "All tables and triggers moved to ${new_db_name}."
         log_action "All tables and triggers moved to ${new_db_name}."
     fi
 
-    mysql -u root --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-    mysql -u root --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
     local sql_file="${1:-${vlsm_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
-        gunzip -c "$sql_file" | mysql -u root --login-path=rootuser vlsm
+        gunzip -c "$sql_file" | mysql --login-path=rootuser vlsm
     elif [[ "$sql_file" == *".zip" ]]; then
-        unzip -p "$sql_file" | mysql -u root --login-path=rootuser vlsm
+        unzip -p "$sql_file" | mysql --login-path=rootuser vlsm
     else
-        mysql -u root --login-path=rootuser vlsm <"$sql_file"
+        mysql --login-path=rootuser vlsm <"$sql_file"
     fi
-    mysql -u root --login-path=rootuser vlsm <"${vlsm_path}/sql/audit-triggers.sql"
-    mysql -u root --login-path=rootuser interfacing <"${vlsm_path}/sql/interface-init.sql"
+    mysql --login-path=rootuser vlsm <"${vlsm_path}/sql/audit-triggers.sql"
+    mysql --login-path=rootuser interfacing <"${vlsm_path}/sql/interface-init.sql"
 }
 
 spinner() {
@@ -197,7 +197,7 @@ fi
 PHP_VERSION=8.2
 
 # Download and install lamp-setup script
-wget https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh
+wget -q --show-progress --progress=dot:giga -O lamp-setup.sh https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh
 chmod u+x ./lamp-setup.sh
 
 ./lamp-setup.sh $PHP_VERSION
