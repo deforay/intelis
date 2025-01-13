@@ -229,6 +229,10 @@ if (isset($_SESSION['vlResultQuery']) && trim((string) $_SESSION['vlResultQuery'
 			$row[] = $aRow['recommended_corrective_action_name'];
 			if ($formId == COUNTRY\DRC) {
 				$formAttributes = json_decode($aRow['form_attributes']);
+				if(is_object($formAttributes->storage))
+				{
+					$formAttributes->storage = json_encode($formAttributes->storage);
+				} 
 				$storageObj = json_decode($formAttributes->storage);
 
 				$row[] = $storageObj->freezerCode;

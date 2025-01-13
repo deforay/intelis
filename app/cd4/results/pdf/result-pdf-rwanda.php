@@ -245,6 +245,10 @@ if (!empty($result)) {
           $html .= '<td colspan="2" style="line-height:11px;font-size:11px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
           $html .= '</tr>';
      }
+     $crAgResult = "";
+     if($result['crag_test_results'] != '' || $result['crag_test_results'] != NULL){
+          $crAgResult = '<br>&nbsp;&nbsp;CrAg Test Result &nbsp;&nbsp;:&nbsp;&nbsp;'.ucfirst($result['crag_test_results']);
+     }
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:10px;"></td>';
      $html .= '</tr>';
@@ -302,7 +306,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
      $html .= '</tr>';
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) . '<br>&nbsp;&nbsp;CrAg Test Result &nbsp;&nbsp;:&nbsp;&nbsp;'.ucfirst($result['crag_test_results']).'</td><td>' . $smileyContent . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) .$crAgResult.'</td><td>' . $smileyContent . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';

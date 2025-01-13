@@ -345,8 +345,8 @@ $sFormat = '';
                                                   <h3 class="box-title">Treatment Information</h3>
                                              </div>
                                              <div class="box-body">
-                                             <div class="row">
-                                                  <div class="col-xs-3 col-md-3">
+                                                  <div class="row">
+                                                       <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
                                                                  <label for="">Is patient initiated on ART?</label>
                                                                  <select name="isPatientInitiatedOnArt" id="isPatientInitiatedOnArt" class="form-control" onchange="showArtSection(this.value);">

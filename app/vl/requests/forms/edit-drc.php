@@ -64,7 +64,10 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'none' : 'block';
 
 $formAttributes = json_decode($vlQueryInfo['form_attributes']);
-
+if(is_object($formAttributes->storage))
+{
+	$formAttributes->storage = json_encode($formAttributes->storage);
+} 
 $storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
 

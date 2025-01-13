@@ -390,7 +390,19 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <h3 class="box-title">Treatment Information</h3>
                                         </div>
                                         <div class="box-body">
-                                             <div class="row">
+                                                  <div class="row">
+                                                       <div class="col-xs-3 col-md-3">
+                                                            <div class="form-group">
+                                                                 <label for="">Is patient initiated on ART?</label>
+                                                                 <select name="isPatientInitiatedOnArt" id="isPatientInitiatedOnArt" class="form-control" onchange="showArtSection(this.value);">
+                                                                      <option value=""> -- Select -- </option>
+                                                                      <option value="yes" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
+                                                                      <option value="no" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'no') ? "selected='selected'" : "" ?>>No</option>
+                                                                 </select>                                                            
+                                                            </div>
+                                                       </div>
+                                                  </div>
+                                                  <div class="row ARTSection" style="display:<?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "block" : "none"; ?>;">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="arvAdherence">ARV Adherence <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
@@ -1080,6 +1092,20 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos): $(".facilityMobileNumbers").html('');
           ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
+     }
+
+     function showArtSection(isPatientArt){
+          $("#arvAdherence").val("");
+               $("#dateOfArtInitiation").val("");
+               $("#artRegimen").val("");
+               $("#regimenInitiatedOn").val("");
+
+          if(isPatientArt == "yes"){
+               $(".ARTSection").show();
+          }
+          else{
+               $(".ARTSection").hide();
+          }
      }
 
      function getCrAgResults(cd4Count)
