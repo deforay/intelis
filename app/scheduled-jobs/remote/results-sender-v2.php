@@ -100,7 +100,6 @@ try {
             $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['sample_id']);
         }
 
-        //$url = "$remoteURL/remote/remote/generic-test-results.php";
         $url = "$remoteURL/remote/v2/results.php";
 
         $payload = [
@@ -110,7 +109,7 @@ try {
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
-    
+   
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 

@@ -73,6 +73,7 @@ try {
 
         // Handle the response
         if (!empty($response['status']) && $response['status'] === 'success') {
+            echo $response['token'];
             //echo "STS Token for this lab is {$response['token']}" . PHP_EOL;
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);

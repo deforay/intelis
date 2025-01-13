@@ -690,7 +690,7 @@ $disable = "disabled = 'disabled'";
 												<div class="col-md-6 cd4Result">
 													<label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value)<span class="mandatory">*</span> </label>
 													<div class="col-lg-7 resultInputContainer">
-														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control isRequired" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
+														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control isRequired" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" onchange="getCrAgResults(this.value);"  />
 													</div>
 												</div>
 												<div class="col-md-6 cd4Result">
@@ -700,6 +700,20 @@ $disable = "disabled = 'disabled'";
 													</div>
 												</div>
 											</div>
+											<div class="row crAgResults" style="display:none;">
+                                                                 <div class="col-md-6 cd4Result">
+																 <label class="col-lg-5 control-label" for="cd4Result">CrAg test Result (If CD4 Count <= 200)</label>
+																 <div class="col-lg-7">
+                                                                           <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                <option value="">--Select--</option>
+																				<option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
+                                                                                <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
+                                                                                <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
+                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>                                                                           
+																			</select>
+                                                                      </div>
+                                                                 </div>
+                                                       </div>
 											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory">*</span></label>
@@ -893,4 +907,14 @@ $disable = "disabled = 'disabled'";
 			document.getElementById('cd4RequestFormRwd').submit();
 		}
 	}
+
+	function getCrAgResults(cd4Count)
+     {
+          if(cd4Count <= 200){
+               $(".crAgResults").show();
+          }
+          else{
+               $(".crAgResults").hide();
+          }
+     }
 </script>

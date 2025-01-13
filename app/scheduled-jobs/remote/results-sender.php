@@ -347,7 +347,7 @@ try {
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
-print_r($payload); die;
+
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
    
         $result = json_decode($jsonResponse, true);

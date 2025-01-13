@@ -201,7 +201,7 @@ final class ResultsService
                     // Insert generic_test_results
                 $testsData = $resultRow['data_from_tests'] ?? [];
 
-                $this->db->where($this->primaryKeyName, $primaryKeyValue);
+                $this->db->where('generic_id', $primaryKeyValue);
                 $this->db->delete("generic_test_results");
                 foreach ($testsData as $tRow) {
                     $customTestData = [

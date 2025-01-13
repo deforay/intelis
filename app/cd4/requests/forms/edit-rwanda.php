@@ -725,7 +725,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             <div class="col-md-6 cd4Result">
                                                                  <label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value): </label>
                                                                  <div class="col-lg-7 resultInputContainer">
-                                                                      <input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" />
+                                                                      <input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" onchange="getCrAgResults(this.value);" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6 cd4Result">
@@ -734,6 +734,20 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                       <input type="text" value="<?= $cd4QueryInfo['cd4_result_percentage']; ?>" class="form-control" id="cd4ResultPercentage" name="cd4ResultPercentage" placeholder="CD4 Result Value percentage" title="Please enter CD4 Result Value percentage" style="width:100%;" />
                                                                  </div>
                                                             </div>
+                                                       </div>
+                                                       <div class="row crAgResults" style="display:none;">
+                                                                 <div class="col-md-6 cd4Result">
+                                                                      <label class="col-lg-5 control-label" for="crAgResults">CrAg test Result (If CD4 Count <= 200)</label>
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                <option value="">--Select--</option>
+                                                                                <option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
+                                                                                <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
+                                                                                <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
+                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-6">
@@ -839,6 +853,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           Utilities.autoSelectSingleOption('facilityId');
           Utilities.autoSelectSingleOption('specimenType');
           fillFacilityDetails();
+          getCrAgResults($("#cd4Result").val());
           $("#artNo").on('input', function() {
 
                let artNo = $.trim($(this).val());
@@ -1065,6 +1080,16 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fmobilenos) != '') ? $(".facilityMobileNumbers").html(fmobilenos): $(".facilityMobileNumbers").html('');
           ($.trim(fContactPerson) != '') ? $(".fContactPerson").show(): $(".fContactPerson").hide();
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
+     }
+
+     function getCrAgResults(cd4Count)
+     {
+          if(cd4Count <= 200){
+               $(".crAgResults").show();
+          }
+          else{
+               $(".crAgResults").hide();
+          }
      }
 
      $("input:radio[name=gender]").click(function() {

@@ -240,6 +240,7 @@ try {
         'last_cd4_result_percentage' => $lastResultPercentage ?? null,
         'cd4_result' => $_POST['cd4Result'] ?? null,
         'cd4_result_percentage' => $_POST['cd4ResultPercentage'] ?? null,
+        'crag_test_results' => $_POST['crAgResults'] ?? null,
         'request_clinician_name' => $_POST['reqClinician'] ?? null,
         'request_clinician_phone_number' => $_POST['reqClinicianPhoneNumber'] ?? null,
         'test_requested_on' => DateUtility::isoDateFormat($_POST['requestDate'] ?? '', true),
