@@ -9,7 +9,6 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
-use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;

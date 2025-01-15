@@ -191,13 +191,13 @@ try {
 
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_NEG') {
                             $sampleType = 'NC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         }
                     }
 
@@ -207,7 +207,7 @@ try {
                     }
 
                     if (!isset($infoFromFile[$sampleCode])) {
-                        $infoFromFile[$sampleCode] = array(
+                        $infoFromFile[$sampleCode] = [
                             "sampleCode" => $sampleCode,
                             "logVal" => trim($logVal),
                             "absVal" => $absVal,
@@ -218,7 +218,7 @@ try {
                             "sampleType" => $sampleType,
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
-                        );
+                        ];
                     }
 
                     $m++;
@@ -232,7 +232,7 @@ try {
                 $d['sampleCode'] = '';
             }
 
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'cv_number' => $cvNumber ?? null,
@@ -251,7 +251,7 @@ try {
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
-            );
+            ];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['txtVal'] != "") {
@@ -273,7 +273,7 @@ try {
 
             $query = "SELECT facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal FROM form_vl
                             WHERE result_printed_datetime is null AND sample_code like ?";
-            $vlResult = $db->rawQueryOne($query, array($sampleCode));
+            $vlResult = $db->rawQueryOne($query, [$sampleCode]);
             //insert sample controls
             $scQuery = "SELECT r_sample_control_name FROM r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);

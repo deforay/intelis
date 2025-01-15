@@ -70,49 +70,49 @@ ask_yes_no() {
 }
 
 handle_database_setup_and_import() {
-    db_exists=$(mysql --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
-    db_not_empty=$(mysql --login-path=rootuser -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
+    db_exists=$(mysql -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
+    db_not_empty=$(mysql -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
 
     if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
         echo "Renaming existing LIS database..."
         log_action "Renaming existing LIS database..."
         local todays_date=$(date +%Y%m%d_%H%M%S)
         local new_db_name="vlsm_${todays_date}"
-        mysql --login-path=rootuser -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
         # Get the list of tables in the original database
-        local tables=$(mysql --login-path=rootuser -sse "SHOW TABLES IN vlsm;")
+        local tables=$(mysql -sse "SHOW TABLES IN vlsm;")
 
         # Rename tables
         for table in $tables; do
-            mysql --login-path=rootuser -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
+            mysql -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
         done
 
         echo "Copying triggers..."
         log_action "Copying triggers..."
-        local triggers=$(mysql --login-path=rootuser -sse "SHOW TRIGGERS IN vlsm;")
+        local triggers=$(mysql -sse "SHOW TRIGGERS IN vlsm;")
         for trigger_name in $triggers; do
-            local trigger_sql=$(mysql --login-path=rootuser -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
-            mysql --login-path=rootuser -D ${new_db_name} -e "$trigger_sql"
+            local trigger_sql=$(mysql -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
+            mysql -D ${new_db_name} -e "$trigger_sql"
         done
 
         echo "All tables and triggers moved to ${new_db_name}."
         log_action "All tables and triggers moved to ${new_db_name}."
     fi
 
-    mysql --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-    mysql --login-path=rootuser -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
     local sql_file="${1:-${vlsm_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
-        gunzip -c "$sql_file" | mysql --login-path=rootuser vlsm
+        gunzip -c "$sql_file" | mysql vlsm
     elif [[ "$sql_file" == *".zip" ]]; then
-        unzip -p "$sql_file" | mysql --login-path=rootuser vlsm
+        unzip -p "$sql_file" | mysql vlsm
     else
-        mysql --login-path=rootuser vlsm <"$sql_file"
+        mysql vlsm <"$sql_file"
     fi
-    mysql --login-path=rootuser vlsm <"${vlsm_path}/sql/audit-triggers.sql"
-    mysql --login-path=rootuser interfacing <"${vlsm_path}/sql/interface-init.sql"
+    mysql vlsm <"${vlsm_path}/sql/audit-triggers.sql"
+    mysql interfacing <"${vlsm_path}/sql/interface-init.sql"
 }
 
 spinner() {
@@ -197,7 +197,7 @@ fi
 PHP_VERSION=8.2
 
 # Download and install lamp-setup script
-wget -q --show-progress --progress=dot:giga -O lamp-setup.sh https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh
+wget -q -O lamp-setup.sh https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh
 chmod u+x ./lamp-setup.sh
 
 ./lamp-setup.sh $PHP_VERSION
@@ -352,35 +352,49 @@ else
     log_action "File config.production.php already exists. Skipping renaming."
 fi
 
-while :; do
-    # Check if the `rootuser` login path works
-    echo "Verifying MySQL root password..."
-    if mysqladmin ping --login-path=rootuser &>/dev/null; then
-        echo "MySQL root password verified successfully."
-        # Fetch the password from login path and use it directly
-        mysql_root_password=$(mysql_config_editor print --login-path=rootuser | awk '/password/{print $3}')
-        break
-    else
-        echo "Unable to login to MySQL. Please enter the MySQL root password to reconfigure."
+# Extract MySQL root password or create ~/.my.cnf if missing
 
-        # Prompt the user for a new password
-        read -sp "MySQL root password: " mysql_root_password
+if [ -f ~/.my.cnf ]; then
+    # Extract password from .my.cnf
+    mysql_root_password=$(awk -F= '/password/ {print $2}' ~/.my.cnf | xargs)
+    echo "MySQL root password extracted"
+else
+    # Prompt user for MySQL root password
+    echo "Warning: mysql password not found. Please provide the MySQL root password to create one."
+    while true; do
+        read -sp "Enter MySQL root password: " mysql_root_password
+        echo
+        read -sp "Confirm MySQL root password: " mysql_root_password_confirm
         echo
 
-        # Attempt to store the new password in the login path
-        echo "Configuring MySQL login..."
-        echo "$mysql_root_password" | mysql_config_editor set --login-path=rootuser --host=localhost --user=root --password
-
-        # Verify the updated login path
-        if mysqladmin ping --login-path=rootuser &>/dev/null; then
-            echo "MySQL login reconfigured successfully."
-            break
+        if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
+            echo "Passwords do not match. Please try again."
+        elif [ -z "$mysql_root_password" ]; then
+            echo "Password cannot be empty. Please try again."
         else
-            echo "Failed to configure MySQL login. Please try again."
+            break
         fi
-    fi
-done
+    done
 
+    # Verify the password
+    echo "Verifying MySQL root password..."
+    if ! mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
+        echo "Error: Unable to verify the password. Please check and try again."
+        exit 1
+    fi
+
+    # Create ~/.my.cnf
+    echo "Storing MySQL password for secure login..."
+    cat <<EOF >~/.my.cnf
+[client]
+user=root
+password=${mysql_root_password}
+host=localhost
+EOF
+    chmod 600 ~/.my.cnf
+
+    echo "MySQL credentials saved in secure file."
+fi
 
 # Escape special characters in password for sed
 # This uses Perl's quotemeta which is more reliable when dealing with many special characters
