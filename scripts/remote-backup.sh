@@ -6,6 +6,13 @@
 # sudo chmod u+x remote-backup.sh;
 # sudo ./remote-backup.sh;
 
+
+# Check if running as root
+if [ "$EUID" -ne 0 ]; then
+    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    exit 1
+fi
+
 # Step 1: Prompt for instance name and sanitize it
 echo -n "Enter the lab or instance name or code: "
 read instance_name
