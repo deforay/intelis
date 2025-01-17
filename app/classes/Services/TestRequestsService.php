@@ -67,6 +67,7 @@ final class TestRequestsService
             }
             $this->db->where('processed = 0');
             $queueItems = $this->db->get('queue_sample_code_generation', 100);
+          
             if (!empty($queueItems)) {
                 foreach ($queueItems as $item) {
 
@@ -88,9 +89,9 @@ final class TestRequestsService
                         $testTypeService = ContainerRegistry::get($serviceClass);
 
                         // Check if sample code already exists
-                        $sQuery = "SELECT $sampleCodeColumn FROM $formTable WHERE unique_id = ?";
+                        $sQuery = "SELECT result_status,$sampleCodeColumn FROM $formTable WHERE unique_id = ?";
                         $rowData = $this->db->rawQueryOne($sQuery, [$item['unique_id']]);
-
+                      
                         if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
                             if ($isCli) {
                                 echo "Sample Code {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
@@ -121,7 +122,7 @@ final class TestRequestsService
                                 $sQuery = "SELECT $primaryKey FROM $formTable WHERE $sampleCodeColumn = ?";
                                 $rowData = $this->db->rawQueryOne($sQuery, [$sampleData['sampleCode']]);
                             }
-
+                           
                             $tries++;
                         } while (!empty($rowData) && $tries < $maxTries);
 
@@ -132,18 +133,25 @@ final class TestRequestsService
                         $accessType = $item['access_type'] ?? null;
                         $tesRequestData = [];
 
+                        $resultStatusQuery = "SELECT result_status FROM $formTable WHERE unique_id = ?";
+                        $resultData = $this->db->rawQueryOne($resultStatusQuery, [$item['unique_id']]);
+
                         if ($this->commonService->isSTSInstance()) {
                             $tesRequestData['remote_sample'] = 'yes';
                             $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                            $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                            if($resultData['result_status'] != SAMPLE_STATUS\REJECTED && $resultData['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultData['result_status'] != SAMPLE_STATUS\PENDING_APPROVAL){
+                                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+                            }
                             if ($accessType === 'testing-lab') {
                                 $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             }
                         } else {
                             $tesRequestData['remote_sample'] = 'no';
-                            $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                            if($resultData['result_status'] != SAMPLE_STATUS\REJECTED && $resultData['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultData['result_status'] != SAMPLE_STATUS\PENDING_APPROVAL){
+                                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                            }
                             $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];

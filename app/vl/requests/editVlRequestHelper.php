@@ -408,6 +408,7 @@ try {
      } else {
           $vlData['is_encrypted'] = null;
      }
+
      $db->where('vl_sample_id', $_POST['vlSampleId']);
      $id = $db->update($tableName, $vlData);
      $patientId = (isset($_POST['artNo'])) ? $_POST['artNo'] : '';

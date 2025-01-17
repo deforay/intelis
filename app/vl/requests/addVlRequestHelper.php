@@ -51,6 +51,7 @@ try {
         $_POST['sampleCode'],
         $_POST['sampleCollectionDate']
     ];
+    
     if (empty($_POST) || ValidationUtility::validateMandatoryFields($mandatoryFields) === false) {
         $_SESSION['alertMsg'] = _translate("Please enter all mandatory fields to save the test request");
         MiscUtility::redirect("/vl/requests/addVlRequest.php");
@@ -417,7 +418,6 @@ try {
 
 
     $id = 0;
-
     $db->where('vl_sample_id', $_POST['vlSampleId']);
     $id = $db->update($tableName, $vlData);
 
