@@ -136,22 +136,29 @@ final class TestRequestsService
                         // $resultStatusQuery = "SELECT result_status FROM $formTable WHERE unique_id = ?";
                         // $resultData = $this->db->rawQueryOne($resultStatusQuery, [$item['unique_id']]);
 
+                        $excludedStatuses = [
+                            SAMPLE_STATUS\REJECTED,
+                            SAMPLE_STATUS\ACCEPTED,
+                            SAMPLE_STATUS\PENDING_APPROVAL
+                        ];
+
+                        $presetStatus = null;
+                        if (!empty($rowData['result_status']) && in_array($rowData['result_status'], $excludedStatuses, true)) {
+                            $presetStatus = $rowData['result_status'];
+                        }
+
                         if ($this->commonService->isSTSInstance()) {
                             $tesRequestData['remote_sample'] = 'yes';
                             $tesRequestData['remote_sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['remote_sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['remote_sample_code_key'] = $sampleData['sampleCodeKey'];
-                            if ($rowData['result_status'] != SAMPLE_STATUS\REJECTED && $rowData['result_status'] != SAMPLE_STATUS\ACCEPTED && $rowData['result_status'] != SAMPLE_STATUS\PENDING_APPROVAL) {
-                                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-                            }
+                            $tesRequestData['result_status'] = (!empty($presetStatus)) ? $presetStatus : SAMPLE_STATUS\RECEIVED_AT_CLINIC;
                             if ($accessType === 'testing-lab') {
                                 $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             }
                         } else {
                             $tesRequestData['remote_sample'] = 'no';
-                            if ($rowData['result_status'] != SAMPLE_STATUS\REJECTED && $rowData['result_status'] != SAMPLE_STATUS\ACCEPTED && $rowData['result_status'] != SAMPLE_STATUS\PENDING_APPROVAL) {
-                                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-                            }
+                            $tesRequestData['result_status'] = (!empty($presetStatus)) ? $presetStatus : SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                             $tesRequestData['sample_code'] = $sampleData['sampleCode'];
                             $tesRequestData['sample_code_format'] = $sampleData['sampleCodeFormat'];
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
