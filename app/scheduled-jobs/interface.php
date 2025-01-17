@@ -348,6 +348,7 @@ try {
                     'vl_test_platform' => $instrumentDetails['machine_name'] ?? $result['machine_used'],
                     'result_status' => SAMPLE_STATUS\ACCEPTED,
                     'manual_result_entry' => 'no',
+                    'import_machine_file_name' => 'interface',
                     'result_printed_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
