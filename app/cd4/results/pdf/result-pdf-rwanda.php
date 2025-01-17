@@ -159,12 +159,13 @@ if (!empty($result)) {
           $result['patient_last_name'] = $general->crypto('decrypt',  $result['patient_last_name'], $key);
      }
 
-     $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-
-     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
-          $smileyContent = '';
-     } else {
-          $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . $smileyContent;
+     $smileyContent = '';
+     if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "yes") {
+          if (!empty($result['cd4_result']) && $result['cd4_result'] <= 200) {
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
+          } elseif (!empty($result['cd4_result']) && $result['cd4_result'] <= 200) {
+               $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
+          }
      }
      $html = '<table style="padding:0px 2px 2px 2px;z-index:1;">';
      $html .= '<tr>';
@@ -246,8 +247,8 @@ if (!empty($result)) {
           $html .= '</tr>';
      }
      $crAgResult = "";
-     if($result['crag_test_results'] != '' || $result['crag_test_results'] != NULL){
-          $crAgResult = '<br>&nbsp;&nbsp;CrAg Test Result &nbsp;&nbsp;:&nbsp;&nbsp;'.ucfirst($result['crag_test_results']);
+     if ($result['crag_test_results'] != '' || $result['crag_test_results'] != NULL) {
+          $crAgResult = '<br>&nbsp;&nbsp;CrAg Test Result &nbsp;&nbsp;:&nbsp;&nbsp;' . ucfirst($result['crag_test_results']);
      }
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:10px;"></td>';
@@ -306,7 +307,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="4" style="line-height:16px;"></td>';
      $html .= '</tr>';
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) .$crAgResult.'</td><td>' . $smileyContent . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;CD4 RESULT (value)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['cd4_result']) . $crAgResult . '</td><td>' . $smileyContent . '</td></tr>';
      $html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';

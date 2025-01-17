@@ -305,7 +305,7 @@ $sFormat = '';
                                                                       if ($general->isLISInstance() === false) { ?>
                                                                            <!-- <option value="other">Other</option> -->
                                                                       <?php } ?>
-                                                                      <option value="not_reported">Not Reported</option>
+                                                                      <option value="not_reported">No Information Provided</option>
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter ART Regimen" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -450,7 +450,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
 
-                                                       <div class="row">
+                                                       <!-- <div class="row">
                                                             <div class="col-md-8">
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
@@ -461,7 +461,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       </div>
+                                                       </div> -->
                                                        <div class="row confirmRecencyTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
@@ -469,7 +469,7 @@ $sFormat = '';
                                                                       <input type="text" class="form-control date viralTestData" id="confirmRecencyTestingLastVLDate" name="confirmRecencyTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <!-- <div class="col-md-6">
                                                                  <label for="confirmRecencyTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="confirmRecencyTestingVlValue" name="confirmRecencyTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
@@ -478,7 +478,7 @@ $sFormat = '';
                                                                       < 20<br>
                                                                            <input type="checkbox" id="confirmRecencyTestingVlCheckValueTnd" name="confirmRecencyTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
-                                                            </div>
+                                                            </div> -->
                                                        </div>
 
                                                        <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
@@ -855,7 +855,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                     $("#repeatTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#suspendTreatmentLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
                     $("#confirmRecencyTestingLastVLDate").val($.trim(patientInfo['sample_tested_datetime']));
-                    
+
                }
 
                if ($.trim(patientInfo['result']) != '') {

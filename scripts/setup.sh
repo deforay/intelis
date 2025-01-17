@@ -420,26 +420,43 @@ else
 fi
 
 # Prompt for Remote STS URL
-read -p "Please enter the Remote STS URL (can be blank if you choose so): " remote_sts_url
-log_action "Remote STS URL: $remote_sts_url"
-# Update LIS config.production.php with Remote STS URL if provided
-if [ ! -z "$remote_sts_url" ]; then
+while true; do
+    read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
+    log_action "Remote STS URL entered: $remote_sts_url"
 
-    # Define desired_sts_url
-    desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
-
-    config_file="${vlsm_path}/configs/config.production.php"
-
-    # Check if the desired configuration already exists in the file
-    if ! grep -qF "$desired_sts_url" "${config_file}"; then
-        # The desired configuration does not exist, so update the file
-        sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
-        echo "Remote STS URL updated in the configuration file."
-    else
-        # The configuration already exists as desired
-        echo "Remote STS URL is already set as desired in the configuration file."
+    if [ -z "$remote_sts_url" ]; then
+        echo "No STS URL provided. Skipping validation."
+        log_action "No STS URL provided. Skipping validation."
+        break
     fi
-fi
+
+    echo "Validating the provided STS URL..."
+    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
+
+    if [ "$response_code" -eq 200 ]; then
+        echo "STS URL validation successful."
+        log_action "STS URL validation successful."
+
+        # Define desired_sts_url
+        desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
+
+        config_file="${vlsm_path}/configs/config.production.php"
+
+        # Check if the desired configuration already exists in the file
+        if ! grep -qF "$desired_sts_url" "${config_file}"; then
+            # The desired configuration does not exist, so update the file
+            sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
+            echo "Remote STS URL updated in the configuration file."
+        else
+            echo "Remote STS URL is already set as desired in the configuration file."
+        fi
+        break
+    else
+        echo "Error: Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
+        log_action "STS URL validation failed with response code $response_code."
+    fi
+done
+
 
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"

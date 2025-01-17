@@ -342,7 +342,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                            if ($general->isLISInstance() === false) { ?>
                                                                                 <!-- <option value="other">Other</option> -->
                                                                            <?php } ?>
-                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['current_regimen'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
+                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['current_regimen'] == 'not_reported') ? "selected='selected'" : "" ?>>No Information Provided</option>
                                                                       </select>
                                                                       <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter the ART Regimen" style="width:100%;display:none;margin-top:2px;">
                                                                  </div>
@@ -561,7 +561,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                  </div>
                                                             </div>
                                                        </div>
-                                                       <div class="row confirmRecencyTesting hideTestData well" style="display: <?php echo $display; ?>;">
+                                                       <!-- <div class="row confirmRecencyTesting hideTestData well" style="display: <?php echo $display; ?>;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
@@ -578,7 +578,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                            <input type="checkbox" id="confirmRecencyTestingVlCheckValueTnd" name="confirmRecencyTestingVlValue" <?php echo ($vlQueryInfo['last_vl_result_recency'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" title="Please check VL Result"> Target Not Detected
                                                                  </div>
                                                             </div>
-                                                       </div>
+                                                       </div> -->
 
                                                             <?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
                                                                  <div class="row">
@@ -808,7 +808,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
      facilityName = true;
      $(document).ready(function() {
           checkCollectionDate('<?php echo $vlQueryInfo['sample_collection_date']; ?>');
-          
+
           if ($(".specialResults:checked").length > 0) {
                $('#vlResult, #vlLog').val('');
                $('#vlResult,#vlLog').attr('readonly', true);
