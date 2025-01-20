@@ -2,7 +2,6 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -177,7 +176,7 @@ try {
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
           $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     /* VL lab id filter */
+     /*Lab id filter */
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
           $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }

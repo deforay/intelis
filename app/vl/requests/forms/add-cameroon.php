@@ -819,7 +819,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
+               $sampleCode = htmlspecialchars($_GET['s']);
+               $facilityCode = htmlspecialchars($_GET['f']);
+               $patientID = htmlspecialchars($_GET['p']);
+               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
           }
           ?>
           // BARCODESTUFF END

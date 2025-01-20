@@ -456,7 +456,7 @@ try {
 
           if (isset($barCodePrinting) && $barCodePrinting != "off") {
                $fac = ($aRow['facility_name']) . " | " . $aRow['sample_collection_date'];
-               $barcode = '<br><a href="javascript:void(0)" onclick="printBarcodeLabel(\'' . $aRow[$sampleCode] . '\',\'' . $fac . '\')" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Barcode") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Barcode") . ' </a>';
+               $barcode = "<br><a href='javascript:void(0)' onclick=\"printBarcodeLabel('{$aRow[$sampleCode]}', '{$fac}', '{$aRow['patient_art_no']}')\" class='btn btn-default btn-xs' style='margin-right: 2px;' title='" . _translate("Barcode") . "'><em class='fa-solid fa-barcode'></em> " . _translate("Barcode") . " </a>";
           }
 
           if ($syncRequest && $general->isLISInstance() && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {

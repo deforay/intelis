@@ -398,7 +398,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                                       <option value=""> -- Select -- </option>
                                                                       <option value="yes" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
                                                                       <option value="no" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'no') ? "selected='selected'" : "" ?>>No</option>
-                                                                 </select>                                                            
+                                                                 </select>
                                                             </div>
                                                        </div>
                                                   </div>
@@ -928,7 +928,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
+                              $sampleCode = htmlspecialchars($_GET['s']);
+               $facilityCode = htmlspecialchars($_GET['f']);
+               $patientID = htmlspecialchars($_GET['p']);
+               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
           }
           ?>
           // BARCODESTUFF END

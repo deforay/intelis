@@ -128,7 +128,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -293,7 +293,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			plugins: ["restore_on_backspace", "remove_button", "clear_button"],
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {

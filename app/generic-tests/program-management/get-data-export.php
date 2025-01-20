@@ -97,7 +97,7 @@ try {
           * SQL queries
           * Get data to display
           */
-     $sQuery = "SELECT SQL_CALC_FOUND_ROWS
+     $sQuery = "SELECT
                         vl.sample_id,
                         vl.test_type,
                         vl.sample_code,
@@ -174,7 +174,7 @@ try {
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
           $sWhere[] =  ' f.facility_id IN (' . $_POST['facilityName'] . ')';
      }
-     /* VL lab id filter */
+     /* lab id filter */
      if (isset($_POST['vlLab']) && trim((string) $_POST['vlLab']) != '') {
           $sWhere[] =  '  vl.lab_id IN (' . $_POST['vlLab'] . ')';
      }
@@ -311,20 +311,18 @@ try {
      $_SESSION['genericResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
-     $rResult = $db->rawQuery($sQuery);
 
-     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-     $_SESSION['genericResultQueryCount'] = $iTotal;
+     $_SESSION['genericResultQueryCount'] = $resultCount;
 
 
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
-          "iTotalRecords" => $iTotal,
-          "iTotalDisplayRecords" => $iFilteredTotal,
+          "iTotalRecords" => $resultCount,
+          "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
      );
 

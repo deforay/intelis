@@ -139,7 +139,7 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -301,7 +301,7 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {
