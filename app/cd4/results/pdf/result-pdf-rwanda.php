@@ -161,7 +161,7 @@ if (!empty($result)) {
 
      $smileyContent = '';
      if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "yes") {
-          if (!empty($result['cd4_result']) && $result['cd4_result'] <= 200) {
+          if (!empty($result['cd4_result']) && $result['cd4_result'] > 200) {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
           } elseif (!empty($result['cd4_result']) && $result['cd4_result'] <= 200) {
                $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;' . '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
