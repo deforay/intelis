@@ -412,12 +412,14 @@ $disable = "disabled = 'disabled'";
 															$cd4Date = '';
 															$cd4Value = '';
 															$cd4ValuePercentage = '';
+															$cragResult = '';
 															if (trim((string) $cd4QueryInfo['reason_for_cd4_testing']) == 'baselineInitiation' || isset($cd4TestReasonResultRow[0]['test_reason_id']) && $cd4TestReasonResultRow[0]['test_reason_name'] == 'baselineInitiation') {
 																$checked = 'checked="checked"';
 																$display = 'block';
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
 																$cd4Value = $cd4QueryInfo['last_cd4_result'];
 																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+																$cragResult = $cd4QueryInfo['last_cd4_crag_result'];
 															} else {
 																$checked = '';
 																$display = 'none';
@@ -431,19 +433,33 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 										<div class="row baselineInitiation hideTestData well" style="display:<?php echo $display; ?>;">
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label class="col-lg-5 control-label">Last CD4 date</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="baselineInitiationLastCd4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label for="baselineInitiationCD4Value" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
 												<div class="col-lg-7">
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
 												</div>
 											</div>
+											<div class="col-md-4">
+                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+                                                                                <option value="">--Select--</option>
+                                                                                <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+                                                                                <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+                                                                                <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+                                                                                <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                       </div>
 										</div>
 										<div class="row">
 											<div class="col-md-6">
@@ -461,6 +477,8 @@ $disable = "disabled = 'disabled'";
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
 																$cd4Value = $cd4QueryInfo['last_cd4_result'];
 																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+																$cragResult = $cd4QueryInfo['last_cd4_crag_result'];
+
 															} else {
 																$checked = '';
 																$display = 'none';
@@ -474,19 +492,33 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 										<div class="row assessmentAHD hideTestData well" style="display: <?= $display; ?>;margin-bottom:20px;">
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label class="col-lg-5 control-label">Last CD4 date</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="assessmentAHDLastCd4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label for="assessmentAHDCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
 												<div class="col-lg-7">
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
 												</div>
 											</div>
+											<div class="col-md-4">
+                                                <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                <div class="col-lg-7">
+                                                    <div class="col-lg-7">
+                                                        <select class="form-control viralTestData" id="assessmentAHDLastCrAgResult" name="assessmentAHDLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+                                                            <option value="">--Select--</option>
+                                                            <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+                                                            <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+                                                            <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+                                                            <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+                                                        </select>
+                                                     </div>
+                                                </div>
+                                            </div>
 										</div>
 										<div class="row">
 											<div class="col-md-8">
@@ -504,6 +536,8 @@ $disable = "disabled = 'disabled'";
 																$cd4Date = $cd4QueryInfo['last_cd4_date'];
 																$cd4Value = $cd4QueryInfo['last_cd4_result'];
 																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
+																$cragResult = $cd4QueryInfo['last_cd4_crag_result'];
+
 															} else {
 																$checked = '';
 																$display = 'none';
@@ -517,19 +551,33 @@ $disable = "disabled = 'disabled'";
 											</div>
 										</div>
 										<div class="row treatmentCoinfection hideTestData well" style="display:<?= $display; ?>;">
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label class="col-lg-5 control-label">Last CD4 date</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCd4Date" name="treatmentCoinfectionLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" value="<?= DateUtility::humanReadableDateFormat($cd4Date); ?>" <?php echo $disable; ?> />
 												</div>
 											</div>
-											<div class="col-md-6">
+											<div class="col-md-4">
 												<label for="treatmentCoinfectionCD4Value" class="col-lg-5 control-label">Absolute value & Percentage</label>
 												<div class="col-lg-7">
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" value="<?= $cd4Value; ?>" <?php echo $disable; ?> />(cells/ml)</div>
 													<div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" value="<?= $cd4ValuePercentage; ?>" <?php echo $disable; ?> /></div>
 												</div>
 											</div>
+											<div class="col-md-4">
+                                                            <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+                                                                               <option value="">--Select--</option>
+                                                                               <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+                                                                               <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+                                                                               <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+                                                                               <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+                                                                           </select>
+                                                                      </div>
+                                                                 </div>
+                                                       </div>
 										</div>
 
 										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>

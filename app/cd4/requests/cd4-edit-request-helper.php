@@ -125,15 +125,18 @@ try {
           $lastDate = $_POST['baselineInitiationLastCd4Date'];
           $lastResult = $_POST['baselineInitiationLastCd4Result'];
           $lastResultPercentage = $_POST['baselineInitiationLastCd4ResultPercentage'];
-     } elseif ($_POST['reasonForCD4Testing'] == "assessmentAHD") {
+          $lastCrAgResult = $_POST['baselineInitiationLastCrAgResult'];
+      } elseif ($_POST['reasonForCD4Testing'] == "assessmentAHD") {
           $lastDate = $_POST['assessmentAHDLastCd4Date'];
           $lastResult = $_POST['assessmentAHDLastCd4Result'];
           $lastResultPercentage = $_POST['assessmentAHDLastCd4ResultPercentage'];
-     } elseif ($_POST['reasonForCD4Testing'] == "treatmentCoinfection") {
+          $lastCrAgResult = $_POST['assessmentAHDLastCrAgResult'];
+      } elseif ($_POST['reasonForCD4Testing'] == "treatmentCoinfection") {
           $lastDate = $_POST['treatmentCoinfectionLastCd4Date'];
           $lastResult = $_POST['treatmentCoinfectionLastCd4Result'];
           $lastResultPercentage = $_POST['treatmentCoinfectionLastCd4ResultPercentage'];
-     }
+          $lastCrAgResult = $_POST['treatmentCoinfectionLastCrAgResult'];
+      }
 
      //set cd4 test reason
      if (isset($_POST['reasonForCD4Testing']) && trim((string) $_POST['reasonForCD4Testing']) != "" && !is_numeric($_POST['reasonForCD4Testing'])) {
@@ -236,6 +239,7 @@ try {
           'last_cd4_date' => DateUtility::isoDateFormat($lastDate ?? ''),
           'last_cd4_result' => $lastResult ?? null,
           'last_cd4_result_percentage' => $lastResultPercentage ?? null,
+          'last_cd4_crag_result'=> $lastCrAgResult ?? null,
           'cd4_result' => $_POST['cd4Result'] ?? null,
           'cd4_result_percentage' => $_POST['cd4ResultPercentage'] ?? null,
           'crag_test_results' => $_POST['crAgResults'] ?? null,

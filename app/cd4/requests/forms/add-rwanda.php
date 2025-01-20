@@ -432,17 +432,31 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row baselineInitiation hideTestData well" style="display:none;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="baselineInitiationLastCD4Date" name="baselineInitiationLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last CD4 Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label"> Absolute value & Percentage :</label>
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="Enter CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
-                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="Enter CD4 Result" title="Please enter CD4 Result" /></div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="baselineInitiationLastCd4Result" name="baselineInitiationLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
+                                                                      <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData input-sm" id="lastCd4ResultPercentage" name="baselineInitiationLastCd4ResultPercentage" placeholder="CD4 Result" title="Please enter CD4 Result" /></div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                <option value="">--Select--</option>
+                                                                               <option value="positive">Positive</option>
+                                                                               <option value="negative">Negative</option>
+                                                                               <option value="intermediate">Indeterminate</option>
+                                                                               <option value="testNotDone">Test not done</option>
+                                                                           </select>
+                                                                      </div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -459,17 +473,31 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row assessmentAHD hideTestData well" style="display: none;margin-bottom:20px;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="assessmentAHDLastCD4Date" name="assessmentAHDLastCd4Date" placeholder="Select Last CD4 Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
-                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
+                                                            <div class="col-md-4">
+                                                                 <label for="assessmentAHDLastCrAgResult" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="assessmentAHDLastCd4Result" name="assessmentAHDLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="assessmentAHDLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control viralTestData" id="assessmentAHDLastCrAgResult" name="assessmentAHDLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                <option value="">--Select--</option>
+                                                                               <option value="positive">Positive</option>
+                                                                               <option value="negative">Negative</option>
+                                                                               <option value="intermediate">Indeterminate</option>
+                                                                               <option value="testNotDone">Test not done</option>
+                                                                           </select>
+                                                                      </div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -486,17 +514,31 @@ $sFormat = '';
                                                             </div>
                                                        </div>
                                                        <div class="row treatmentCoinfection hideTestData well" style="display:none;">
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label class="col-lg-5 control-label">Last CD4 date</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="treatmentCoinfectionLastCD4Date" name="treatmentCoinfectionLastCD4Date" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <div class="col-md-6">
+                                                            <div class="col-md-4">
                                                                  <label for="treatmentCoinfectionLastCd4Result" class="col-lg-5 control-label">Absolute value & Percentage</label>
                                                                  <div class="col-lg-7">
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="treatmentCoinfectionLastCd4Result" name="treatmentCoinfectionLastCd4Result" placeholder="CD4 Result" title="Please enter CD4 Result" />(cells/ml)</div>
                                                                       <div class="col-xs-6"><input type="text" class="form-control forceNumeric viralTestData" id="lastCd4ResultPercentage" name="treatmentCoinfectionLastCd4ResultPercentage" placeholder="CD4 Result %" title="Please enter CD4 Result" /></div>
+                                                                 </div>
+                                                            </div>
+                                                            <div class="col-md-4">
+                                                                 <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                                 <div class="col-lg-7">
+                                                                      <div class="col-lg-7">
+                                                                           <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                <option value="">--Select--</option>
+                                                                               <option value="positive">Positive</option>
+                                                                               <option value="negative">Negative</option>
+                                                                               <option value="intermediate">Indeterminate</option>
+                                                                               <option value="testNotDone">Test not done</option>
+                                                                           </select>
+                                                                 </div>
                                                                  </div>
                                                             </div>
                                                        </div>
