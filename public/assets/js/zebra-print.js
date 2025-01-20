@@ -93,14 +93,19 @@ function showBrowserPrintNotFound() {
 	showErrorMessage("An error occured while attempting to connect to your Zebra Printer. You may not have Zebra Browser Print installed, or it may not be running. Install Zebra Browser Print, or start the Zebra Browser Print Service, and try again.");
 
 }
-function printBarcodeLabel(bcode, facility) {
+function printBarcodeLabel(barcode, facility = '', patientART = '') {
 	showLoading("Printing...");
 	facility = urldecode(facility);
 	checkPrinterStatus(function (text) {
 		if (text == "Ready to Print") {
 			//selected_printer.send(format_start + bcode + format_end, printComplete, printerError);
-			let strToPrint = zebraFormat.replaceAll("1234567", bcode);
-			strToPrint = strToPrint.replaceAll("FACILITY", facility);
+			let strToPrint = zebraFormat.replaceAll("1234567", barcode);
+			if (facility != '') {
+				strToPrint = strToPrint.replaceAll("FACILITY", facility);
+			}
+			if (patientART != '') {
+				strToPrint = strToPrint.replaceAll("PATIENTART", patientART);
+			}
 			selected_printer.send(strToPrint, printComplete, printerError);
 		}
 		else {

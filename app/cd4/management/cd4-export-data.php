@@ -107,7 +107,7 @@ $state = $geolocationService->getProvinces("yes");
 							</td>
 							<th scope="row"><?php echo _translate("Testing Lab"); ?></th>
 							<td>
-								<select class="filter-input form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+								<select class="filter-input form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>

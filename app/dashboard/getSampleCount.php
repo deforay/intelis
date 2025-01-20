@@ -210,7 +210,7 @@ $tableResult = $db->rawQuery($sQuery);
                             <?php echo _translate("Samples Currently Registered at HC"); ?>
                         </th>
                         <th class="sum">
-                            <?php echo _translate("Samples Currently Registered at VL Lab"); ?>
+                            <?php echo _translate("Samples Currently Registered at Testing Lab"); ?>
                             <br>
                             <?php echo _translate("(Results not yet available)"); ?>
                         </th>

@@ -110,7 +110,7 @@ $lastUrl2 = '';
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>

@@ -140,7 +140,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 									<?php echo _translate("Testing Lab"); ?> :
 								</strong></td>
 							<td>
-								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select cd4 lab'); ?>" style="width:220px;">
+								<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please Select Testing Lab'); ?>" style="width:220px;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -305,7 +305,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 			placeholder: "<?php echo _translate("Select Facilities"); ?>"
 		});
 		$("#vlLab").select2({
-			placeholder: "<?php echo _translate("Select CD4 Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
 		$('#sampleCollectionDate').daterangepicker({
 				locale: {

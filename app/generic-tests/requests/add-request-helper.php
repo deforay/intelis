@@ -396,7 +396,7 @@ try {
         //Add event log
 
         $eventType = 'add-lab-test-request';
-        $action = $_SESSION['userName'] . ' added a new request with the sample id ' . $_POST['sampleCode'] . $patientId;
+        $action = $_SESSION['userName'] . " added a new request for Patient $patientId with the Sample ID : " . $_POST['sampleCode'];
         $resource = 'lab-test-request';
 
         $general->activityLog($eventType, $action, $resource);
@@ -407,7 +407,7 @@ try {
             $facQuery = "SELECT * FROM facility_details where facility_id=" . $_POST['facilityId'];
             $facResult = $db->rawQuery($facQuery);
             $f = ($facResult[0]['facility_name']) . " | " . $_POST['sampleCollectionDate'];
-            $barcode = "?barcode=true&s=$s&f=$f";
+            $barcode = "?barcode=true&s=$s&f=$f&p=$patientId";
         }
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {

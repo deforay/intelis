@@ -89,7 +89,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 																<?php echo _translate("Testing Lab"); ?> :
 															</strong></td>
 														<td>
-															<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
+															<select class="form-control" id="vlLab" name="vlLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;" onchange="getFreezers(this.value);">
 																<?= $testingLabsDropdown; ?>
 															</select>
 														</td>
@@ -172,7 +172,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 																<?php echo _translate("Testing Lab"); ?> :
 															</strong></td>
 														<td>
-															<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>" style="width:220px;">
+															<select class="form-control" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>" style="width:220px;">
 																<?= $testingLabsDropdown; ?>
 															</select>
 														</td>
@@ -290,7 +290,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 		});
 
 		$("#vlLab, #testingLab").select2({
-			placeholder: "<?php echo _translate("Select Vl Lab"); ?>"
+			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
 		});
 
 

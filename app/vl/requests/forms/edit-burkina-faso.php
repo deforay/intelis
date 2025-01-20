@@ -883,12 +883,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $('#artRegimen').select2({
                placeholder: "Select ART Regimen"
           });
-          // BARCODESTUFF START
-          <?php
-          if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-               echo "printBarcodeLabel('" . htmlspecialchars((string) $_GET['s']) . "','" . htmlspecialchars((string) $_GET['f']) . "');";
-          }
-          ?>
+
           getfacilityProvinceDetails($("#facilityId").val());
           // BARCODESTUFF END
 

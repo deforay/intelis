@@ -351,7 +351,7 @@ $testName = TestsService::getTestTypes();
                   </div>
                   <div style="margin-bottom: 5px" class="input-group lis">
                     <span class="input-group-addon"><em class="fa-solid fa-flask-vial"></em></span>
-                    <select class="form-control select2" id="testingLab" name="testingLab" title="<?php echo _translate('Please select vl lab'); ?>">
+                    <select class="form-control select2" id="testingLab" name="testingLab" title="<?php echo _translate('Please select Testing Lab'); ?>">
                       <?= $testingLabsDropdown; ?>
                     </select>
                   </div>

@@ -328,7 +328,7 @@ try {
             $facQuery = "SELECT facility_name FROM facility_details where facility_id= ?";
             $facResult = $db->rawQueryOne($facQuery, [$_POST['facilityId']]);
             $f = ($facResult['facility_name']) . " | " . $_POST['sampleCollectionDate'];
-            $barcode = "?barcode=true&s=$s&f=$f";
+            $barcode = "?barcode=true&s=$s&f=$f&p=$patientId";
         }
 
         if (isset($_POST['saveNext']) && $_POST['saveNext'] == 'next') {
