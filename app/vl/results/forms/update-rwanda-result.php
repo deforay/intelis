@@ -229,7 +229,7 @@ $disable = "disabled = 'disabled'";
 							<div class="row">
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="patientFirstName">Patient Name </label>
+										<label for="patientFirstName">Patient Name / Code </label>
 										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFirstName; ?>" />
 									</div>
 								</div>
@@ -341,7 +341,7 @@ $disable = "disabled = 'disabled'";
 													<option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
 													<option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
 													<option value="poor" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'poor') ? "selected='selected'" : "" ?>>Poor < 85%</option>
-													<option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
+													<option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>No Information Provided</option>
 												</select>
 											</div>
 										</div>

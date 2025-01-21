@@ -260,7 +260,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="patientFirstName">Patient Name </label>
+                                                            <label for="patientFirstName">Patient Name / Code </label>
                                                             <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" value="<?php echo $patientFirstName; ?>" />
                                                        </div>
                                                   </div>
@@ -361,7 +361,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                            <option value="good" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'good') ? "selected='selected'" : "" ?>>Good >= 95%</option>
                                                                            <option value="fair" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'fair') ? "selected='selected'" : "" ?>>Fair (85-94%)</option>
                                                                            <option value="poor" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'poor') ? "selected='selected'" : "" ?>>Poor < 85%</option>
-                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>Not Reported</option>
+                                                                           <option value="not_reported" <?php echo ($vlQueryInfo['arv_adherance_percentage'] == 'not_reported') ? "selected='selected'" : "" ?>>No Information Provided</option>
                                                                       </select>
                                                                  </div>
                                                             </div>
@@ -427,13 +427,13 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
                                                             <div class="row rmTesting hideTestData well" style="display:<?php echo $display; ?>;">
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                      <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_routine']) != '' && $vlQueryInfo['last_vl_date_routine'] != null && $vlQueryInfo['last_vl_date_routine'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_routine']) : ''; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
-                                                                      <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                      <label for="rmTestingVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_routine'] == null || trim((string) $vlQueryInfo['last_vl_result_routine']) == '') || trim((string) $vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
                                                                            (copies/ml)<br>
@@ -472,13 +472,13 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
                                                             <div class="row suspendTreatment hideTestData well" style="display: <?php echo $display; ?>;">
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                      <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure']) != '' && $vlQueryInfo['last_vl_date_failure'] != null && $vlQueryInfo['last_vl_date_failure'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure']) : ''; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
-                                                                      <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                      <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_failure'] == null || trim((string) $vlQueryInfo['last_vl_result_failure']) == '') || trim((string) $vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
                                                                            (copies/ml)<br>
@@ -517,13 +517,13 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
                                                             <div class="row repeatTesting hideTestData well" style="display: <?php echo $display; ?>;">
                                                                  <div class="col-md-6">
-                                                                      <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                      <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" value="<?php echo (trim((string) $vlQueryInfo['last_vl_date_failure_ac']) != '' && $vlQueryInfo['last_vl_date_failure_ac'] != null && $vlQueryInfo['last_vl_date_failure_ac'] != '0000-00-00') ? DateUtility::humanReadableDateFormat($vlQueryInfo['last_vl_date_failure_ac']) : ''; ?>" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
-                                                                      <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                      <label for="repeatTestingVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                       <div class="col-lg-7">
                                                                            <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" <?php echo (($vlQueryInfo['last_vl_result_failure_ac'] == null || trim((string) $vlQueryInfo['last_vl_result_failure_ac']) == '') || trim((string) $vlValue) != '') ? '' : 'readonly="readonly"'; ?> value="<?php echo $vlValue; ?>" />
                                                                            (copies/ml)<br>
@@ -836,7 +836,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
           });
 
           $('#artRegimen').select2({
-               placeholder: "Select ART Regimen"
+               placeholder: "ART Code"
           });
 
           getfacilityProvinceDetails($("#facilityId").val());

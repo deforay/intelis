@@ -215,7 +215,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="patientFirstName">Patient Name </label>
+                                                       <label for="patientFirstName">Patient Name / Code </label>
                                                        <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
@@ -288,7 +288,7 @@ $sFormat = '';
                                                             <div class="form-group">
                                                                  <label for="artRegimen">Current Regimen <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                                  <select class="form-control  <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="artRegimen" name="artRegimen" title="Please choose an ART Regimen" style="width:100%;" onchange="checkARTRegimenValue();">
-                                                                      <option value="">-- Select --</option>
+                                                                      <option value="">-- ART Codes --</option>
                                                                       <?php foreach ($artRegimenResult as $heading) { ?>
                                                                            <optgroup label="<?= $heading['headings']; ?>">
                                                                                 <?php
@@ -324,7 +324,7 @@ $sFormat = '';
                                                                       <option value="good">Good >= 95%</option>
                                                                       <option value="fair">Fair (85-94%)</option>
                                                                       <option value="poor">Poor < 85%</option>
-                                                                      <option value="not_reported">Not Reported</option>
+                                                                      <option value="not_reported">No Information Provided</option>
                                                                  </select>
                                                             </div>
                                                        </div>
@@ -373,13 +373,13 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row rmTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="rmTestingLastVLDate" name="rmTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <label for="rmTestingVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
@@ -403,13 +403,13 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row suspendTreatment hideTestData well" style="display: none;margin-bottom:20px;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="suspendTreatmentLastVLDate" name="suspendTreatmentLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
@@ -433,13 +433,13 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row repeatTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
-                                                                 <label class="col-lg-5 control-label">Date of Last VL Test</label>
+                                                                 <label class="col-lg-5 control-label">Last VL date if available</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="repeatTestingLastVLDate" name="repeatTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">
-                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label">VL Result</label>
+                                                                 <label for="repeatTestingVlValue" class="col-lg-3 control-label"> Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
                                                                       (copies/ml)<br>
@@ -450,7 +450,7 @@ $sFormat = '';
                                                             </div>
                                                        </div>
 
-                                                       <!-- <div class="row">
+                                                        <div class="row">
                                                             <div class="col-md-8">
                                                                  <div class="form-group">
                                                                       <div class="col-lg-12">
@@ -461,15 +461,15 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       </div> -->
-                                                       <div class="row confirmRecencyTesting hideTestData well" style="display:none;">
+                                                       </div> 
+                                                     <!---  <div class="row confirmRecencyTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control date viralTestData" id="confirmRecencyTestingLastVLDate" name="confirmRecencyTestingLastVLDate" placeholder="Select Last VL Date" title="Please select Last VL Date" />
                                                                  </div>
                                                             </div>
-                                                            <!-- <div class="col-md-6">
+                                                             <div class="col-md-6">
                                                                  <label for="confirmRecencyTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="confirmRecencyTestingVlValue" name="confirmRecencyTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
@@ -805,7 +805,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                placeholder: "Select Approved By"
           });
           $('#artRegimen').select2({
-               placeholder: "Select ART Regimen"
+               placeholder: "ART Code"
           });
           // BARCODESTUFF START
           <?php

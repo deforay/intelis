@@ -243,7 +243,7 @@ $disable = "disabled = 'disabled'";
 							<div class="row">
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="patientFirstName">Patient Name </label>
+										<label for="patientFirstName">Patient Name / Code </label>
 										<input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" <?php echo $disable; ?> value="<?php echo $patientFirstName; ?>" />
 									</div>
 								</div>
@@ -256,9 +256,7 @@ $disable = "disabled = 'disabled'";
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
-										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
-										</label>
+										
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">

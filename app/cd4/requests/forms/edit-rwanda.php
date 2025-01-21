@@ -217,16 +217,16 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   </select>
                                              </div>
                                         </div>
-                                        <div class="col-xs-3 col-md-3">
+                                        <!--<div class="col-xs-3 col-md-3">
                                              <div class="">
                                                   <label for="facilityCode">Implementing Partner </label>
-                                                  <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
+                                                  <select class="form-control" name="implementingPartner" id="implementingPartner" title="< ?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
                                                        <option value=""> -- Select -- </option>
-                                                       <?php
+                                                       < ?php
                                                        foreach ($implementingPartnerList as $implementingPartner) {
                                                        ?>
-                                                            <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" <?php echo ($cd4QueryInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
-                                                       <?php } ?>
+                                                            <option value="< ?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>" < ?php echo ($cd4QueryInfo['implementing_partner'] == $implementingPartner['i_partner_id']) ? "selected='selected'" : ""; ?>><?= $implementingPartner['i_partner_name']; ?></option>
+                                                       < ?php } ?>
                                                   </select>
                                              </div>
                                         </div>
@@ -235,14 +235,14 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   <label for="labId">Funding Partner </label>
                                                   <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                        <option value=""> -- Select -- </option>
-                                                       <?php
+                                                       < ?php
                                                        foreach ($fundingSourceList as $fundingSource) {
                                                        ?>
-                                                            <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" <?php echo ($cd4QueryInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
-                                                       <?php } ?>
+                                                            <option value="< ?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>" < ?php echo ($cd4QueryInfo['funding_source'] == $fundingSource['funding_source_id']) ? "selected='selected'" : ""; ?>><?= $fundingSource['funding_source_name']; ?></option>
+                                                       < ?php } ?>
                                                   </select>
                                              </div>
-                                        </div>
+                                        </div>-->
                                    </div>
                               </div>
                          </div>
@@ -293,7 +293,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                    <div class="row">
                                         <div class="col-xs-3 col-md-3">
                                              <div class="form-group">
-                                                  <label for="patientFirstName">Patient Name </label>
+                                                  <label for="patientFirstName">Patient Name / Code </label>
                                                   <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" value="<?= $cd4QueryInfo['patient_first_name'] ?>" />
                                              </div>
                                         </div>
@@ -306,9 +306,9 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   <label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : ""; ?>>Female
                                                   </label>&nbsp;&nbsp;
-                                                  <label class="radio-inline" style="margin-left:0px;">
+                                                 <!-- <label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : ""; ?>>Unreported
-                                                  </label>
+                                                  </label>-->
                                              </div>
                                         </div>
                                         <div class="col-xs-3 col-md-3">

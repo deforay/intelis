@@ -172,16 +172,16 @@ $sFormat = '';
                                                   </div>
                                              </div>
 
-                                             <div class="col-xs-3 col-md-3">
+                                           <!----  <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Implementing Partner </label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
-                                                            <?php
+                                                            < ?php
                                                             foreach ($implementingPartnerList as $implementingPartner) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
-                                                            <?php } ?>
+                                                                 <option value="< ?php echo base64_encode((string) $implementingPartner['i_partner_id']); ?>"><?= $implementingPartner['i_partner_name']; ?></option>
+                                                            < ?php } ?>
                                                        </select>
                                                   </div>
                                              </div>
@@ -190,14 +190,14 @@ $sFormat = '';
                                                        <label for="labId">Funding Partner</label>
                                                        <select class="form-control" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
                                                             <option value=""> -- Select -- </option>
-                                                            <?php
+                                                            < ?php
                                                             foreach ($fundingSourceList as $fundingSource) {
                                                             ?>
-                                                                 <option value="<?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
-                                                            <?php } ?>
+                                                                 <option value="< ?php echo base64_encode((string) $fundingSource['funding_source_id']); ?>"><?= $fundingSource['funding_source_name']; ?></option>
+                                                            < ?php } ?>
                                                        </select>
                                                   </div>
-                                             </div>
+                                             </div>--->
                                         </div>
                                    </div>
                               </div>
@@ -248,7 +248,7 @@ $sFormat = '';
                                         <div class="row">
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="patientFirstName">Patient Name </label>
+                                                       <label for="patientFirstName">Patient Name / Code </label>
                                                        <input type="text" name="patientFirstName" id="patientFirstName" class="form-control" placeholder="Enter Patient Name" title="Enter patient name" />
                                                   </div>
                                              </div>
@@ -261,9 +261,9 @@ $sFormat = '';
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender">Female
                                                        </label>&nbsp;&nbsp;
-                                                       <label class="radio-inline" style="margin-left:0px;">
+                                                      <!-- <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
-                                                       </label>
+                                                       </label>-->
                                                   </div>
                                              </div>
                                              <div class="col-xs-3 col-md-3">
