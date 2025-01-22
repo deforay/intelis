@@ -22,7 +22,7 @@ use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
 
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] === false) {
-    LoggerUtility::log('error', 'Interfacing is not enabled. Please enable it in configuration.');
+    LoggerUtility::logError('Interfacing is not enabled. Please enable it in configuration.');
     exit;
 }
 
@@ -38,37 +38,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-
-$mysqlConnected = false;
-$sqliteConnected = false;
-
-if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
-    $mysqlConnected = true;
-    $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
-}
-
-// // Check for a command-line argument for the date
-// $skipLocked = false;
-// $lastInterfaceSync = null;
-// if (isset($argv[1])) {
-//     $input = $argv[1];
-
-//     // Check if the input is a valid date in YYYY-MM-DD format
-//     if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $input)) {
-//         $lastInterfaceSync = $input; // Use provided date as $lastInterfaceSync
-//     }
-//     // Check if the input is a number (days to subtract from current date)
-//     elseif (is_numeric($input)) {
-//         $daysToSubtract = (int) $input;
-//         $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-//     } else {
-//         echo "Invalid input. Please provide a valid date (YYYY-MM-DD) or a number of days." . PHP_EOL;
-//         exit(1);
-//     }
-// } else {
-//     // Get the last sync date from the database if a date or number wasn't provided
-//     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
-// }
 
 $overwriteLocked = false; // Default: Do not include locked samples
 $lastInterfaceSync = null;
@@ -88,11 +57,33 @@ foreach ($argv as $arg) {
     }
 }
 
+$lockFile = MiscUtility::getLockFile(__FILE__);
+
+// If the force flag is set, delete the lock file if it exists
+if ($overwriteLocked && MiscUtility::fileExists($lockFile)) {
+    MiscUtility::deleteLockFile(__FILE__);
+}
+
+// Check if the lock file already exists
+if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+    echo "Another instance of the " . basename(__FILE__) . " is already running." . PHP_EOL;
+    exit;
+}
+
+MiscUtility::touchLockFile(__FILE__); // Create or update the lock file
+
+$mysqlConnected = false;
+$sqliteConnected = false;
+
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
+    $mysqlConnected = true;
+    $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
+}
+
 // Default to database value if no valid date or days were provided
 if ($lastInterfaceSync === null) {
     $lastInterfaceSync = $db->connection('default')->getValue('s_vlsm_instance', 'last_interface_sync');
 }
-
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -120,20 +111,24 @@ try {
         if ($isCli) {
             echo "Connected to MySQL" . PHP_EOL;
         }
+
+        $db->connection('interface')->beginTransaction();
+
         if (!empty($lastInterfaceSync)) {
             $db->connection('interface')
                 ->where(" (added_on > '$lastInterfaceSync' OR lims_sync_status = 0) ");
+        } else {
+            $db->connection('interface')
+                ->where(" lims_sync_status = 0 ");
         }
         $db->connection('interface')->where('result_status', 1);
         $db->connection('interface')->orderBy('analysed_date_time', 'asc');
         $mysqlData = $db->connection('interface')->get('orders');
         if ($isCli) {
-            echo "No of records from MySQL : " . count($mysqlData) . PHP_EOL;
+            echo "# of records from MySQL : " . count($mysqlData) . PHP_EOL;
         }
         $interfaceData = array_merge($interfaceData, $mysqlData); // Add MySQL data
     }
-
-
 
     if ($sqliteConnected) {
         if ($isCli) {
@@ -151,7 +146,7 @@ try {
 
         $sqliteData = $sqliteDb->query($interfaceQuery)->fetchAll(PDO::FETCH_ASSOC);
         if ($isCli) {
-            echo "No of records from SQLITE3 : " . count($sqliteData) . PHP_EOL;
+            echo "# of records from SQLITE3 : " . count($sqliteData) . PHP_EOL;
         }
         $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
     }
@@ -492,7 +487,7 @@ try {
             }
 
             if (!empty($result['added_on'])) {
-                $addedOnValues[] = $result['added_on'];
+                $addedOnValues[] = strtotime(datetime: $result['added_on']);
             }
 
             $db->connection('default')->commitTransaction();
@@ -503,11 +498,18 @@ try {
             $testResultsService->resultImportStats($numberOfResults, 'interface', $importedBy);
         }
     }
+
+    $db->connection('interface')->commitTransaction();
 } catch (Throwable $e) {
     $db->connection('default')->rollbackTransaction();
-    LoggerUtility::log('error', $e->getMessage(),  [
+    $db->connection('interface')->rollbackTransaction();
+    LoggerUtility::logError($e->getMessage(),  [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
+        'last_interface_db_query' => $db->connection('interface')->getLastQuery(),
+        'last_interface_db_error' => $db->connection('interface')->getLastError(),
+        'last_default_db_query' => $db->connection('default')->getLastQuery(),
+        'last_default_db_error' => $db->connection('default')->getLastError(),
         'trace' => $e->getTraceAsString()
     ]);
 } finally {
@@ -562,9 +564,13 @@ try {
         // Update unsynced IDs
         $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
     } catch (Throwable $e) {
-        LoggerUtility::log('error', $e->getMessage(),  [
+        LoggerUtility::logError($e->getMessage(),  [
             'file' => $e->getFile(),
             'line' => $e->getLine(),
+            'last_interface_db_query' => $db->connection('interface')->getLastQuery(),
+            'last_interface_db_error' => $db->connection('interface')->getLastError(),
+            'last_default_db_query' => $db->connection('default')->getLastQuery(),
+            'last_default_db_error' => $db->connection('default')->getLastError(),
             'trace' => $e->getTraceAsString()
         ]);
     }
@@ -574,9 +580,13 @@ try {
     }
 
     if (!empty($addedOnValues)) {
-        $maxAddedOn = max($addedOnValues);
+        $maxAddedOnTimestamp = max($addedOnValues);
+        $maxAddedOn = date('Y-m-d H:i:s', $maxAddedOnTimestamp);
 
         // Update s_vlsm_instance with the maximum added_on
         $db->connection('default')->update('s_vlsm_instance', ['last_interface_sync' => $maxAddedOn]);
     }
+
+    // Delete the lock file after execution completes
+    MiscUtility::deleteLockFile(__FILE__);
 }

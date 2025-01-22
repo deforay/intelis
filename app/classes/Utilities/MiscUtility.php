@@ -359,7 +359,7 @@ final class MiscUtility
         }
 
         $zip = new ZipArchive();
-        $zipPath = $fileName . '.zip';
+        $zipPath = "$fileName.zip";
 
         if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
             $zip->addFromString(basename($fileName), $stringData);
@@ -419,12 +419,12 @@ final class MiscUtility
         return $actualMimeType === $expectedMimeType;
     }
 
-    public static function displayProgressBar($current, $total = null, $size = 30)
+    public static function displayProgressBar($current, $total = null, $size = 30): void
     {
         static $startTime;
 
-        // Start the timer
-        if (empty($startTime)) {
+        // Initialize the timer on the first call
+        if (!isset($startTime)) {
             $startTime = time();
         }
 
@@ -432,23 +432,27 @@ final class MiscUtility
         $elapsed = time() - $startTime;
 
         if ($total !== null) {
-            // Calculate the percentage
+            // Calculate progress percentage
             $progress = ($current / $total);
-            $bar = floor($progress * $size);
+            $barLength = (int) floor($progress * $size);
 
-            // Generate the progress bar string
-            $progressBar = str_repeat('=', $bar) . str_repeat(' ', $size - $bar);
+            // Generate the progress bar
+            $progressBar = str_repeat('=', $barLength) . str_repeat(' ', $size - $barLength);
 
             // Output the progress bar
-            printf("\r[%s] %d%% Complete (%d/%d) - %d sec elapsed", $progressBar, $progress * 100, $current, $total, $elapsed);
+            printf("\r[%s] %3d%% Complete (%d/%d) - %d sec elapsed", $progressBar, $progress * 100, $current, $total, $elapsed);
         } else {
-            // Output the current progress without percentage
+            // Output the progress without percentage
             printf("\rProcessed %d items - %d sec elapsed", $current, $elapsed);
         }
 
-        // Flush output
+        // Flush output for real-time updates
+        fflush(STDOUT);
+
+        // Print a newline and reset the timer when done
         if ($total !== null && $current === $total) {
-            echo "\n";
+            echo PHP_EOL;
+            $startTime = null; // Reset timer for reuse
         }
     }
 
