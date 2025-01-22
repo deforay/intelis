@@ -150,7 +150,7 @@ try {
         $province = explode("##", (string) $_POST['province']);
         $provinceId = $geolocationService->getProvinceIdByName($province[0]);
         if (empty($provinceId)) {
-            $_POST['provinceId'] = $geolocation->addGeoLocation($province[0]);
+            $_POST['provinceId'] = $geolocationService->addGeoLocation($province[0]);
         } else {
             $_POST['provinceId'] = $provinceId;
         }
@@ -230,6 +230,10 @@ try {
         'recommended_corrective_action' => !empty($_POST['correctiveAction']) ? $_POST['correctiveAction'] : '',
         'result' => !empty($_POST['result']) ? $_POST['result'] : $_POST['xPertMTMResult'],
         'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
+        'culture_result' => !empty($_POST['cultureResult']) ? $_POST['cultureResult'] : null,
+        'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
+        'drug_mgit_result' => !empty($_POST['drugMGITResult']) ? $_POST['drugMGITResult'] : null,
+        'drug_lpa_result' => !empty($_POST['drugLPAResult']) ? $_POST['drugLPAResult'] : null,
         'result_sent_to_source' => $resultSentToSource,
         'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",

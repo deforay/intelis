@@ -35,6 +35,10 @@ foreach ($testPlatformResult as $row) {
 
 $tbXPertResults = $tbService->getTbResults('x-pert');
 $tbLamResults = $tbService->getTbResults('lam');
+$tbCultureResults = $tbService->getTbResults('culture');
+$tbIdentificationResults = $tbService->getTbResults('identification');
+$tbdrugMGITResults = $tbService->getTbResults('drugMGIT');
+$tbdrugLPAResults = $tbService->getTbResults('drugLPA');
 $specimenTypeResult = $tbService->getTbSampleTypes();
 $tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 
@@ -513,6 +517,34 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 											<td class="platform lam <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>">
 												<select class="form-control isRequired" name="result" id="result" title="Please select the TB LAM result">
 													<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th scope="row" class="platform culture"><label class="label-control" for="cultureResult">Culture Result (LG & MGIT)</label></th>
+											<td class="platform xpert">
+												<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
+													<?= $general->generateSelectOptions($tbCultureResults, $tbInfo['culture_result'], '-- Select --'); ?>
+												</select>
+											</td>
+											<th scope="row" class="platform identification"><label class="label-control" for="indicationResult">Identification Result (Rapid Test)</label></th>
+											<td class="platform lam">
+												<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
+													<?= $general->generateSelectOptions($tbIdentificationResults, $tbInfo['identification_result'], '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th scope="row" class="platform drug"><label class="label-control" for="drugMGITResult">Drug Susceptibility Results (MGIT - 1st Line)</label></th>
+											<td class="platform xpert">
+												<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
+													<?= $general->generateSelectOptions($tbdrugMGITResults, $tbInfo['drug_mgit_result'], '-- Select --'); ?>
+												</select>
+											</td>
+											<th scope="row" class="platform drug"><label class="label-control" for="drugLPAResult">Drug Susceptibility Results (LPA - 1st & 2nd Line)</label></th>
+											<td class="platform lam">
+												<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
+													<?= $general->generateSelectOptions($tbdrugLPAResults, $tbInfo['drug_lpa_result'], '-- Select --'); ?>
 												</select>
 											</td>
 										</tr>

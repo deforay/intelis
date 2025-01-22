@@ -35,6 +35,13 @@ $tbService = ContainerRegistry::get(TbService::class);
 
 $tbXPertResults = $tbService->getTbResults('x-pert');
 $tbLamResults = $tbService->getTbResults('lam');
+$tbCultureResults = $tbService->getTbResults('culture');
+$tbIdentificationResults = $tbService->getTbResults('identification');
+$tbdrugMGITResults = $tbService->getTbResults('drugMGIT');
+$tbdrugLPAResults = $tbService->getTbResults('drugLPA');
+
+
+
 $specimenTypeResult = $tbService->getTbSampleTypes();
 $tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 
@@ -207,7 +214,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</td>
 									</tr>
 									<tr>
-										<th scope="row"><label for="lastName">Surname </label></th>
+										<th scope="row"><label for="lastName">Patient's Surname </label></th>
 										<td>
 											<input type="text" class="form-control " id="lastName" name="lastName" placeholder="Last name" title="Please enter Last name" style="width:100%;" onchange="" />
 										</td>
@@ -532,6 +539,35 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												</select>
 											</td>
 										</tr>
+										<tr>
+											<th scope="row" class="platform culture"><label class="label-control" for="cultureResult">Culture Result (LG & MGIT)</label></th>
+											<td class="platform xpert">
+												<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
+													<?= $general->generateSelectOptions($tbCultureResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<th scope="row" class="platform identification"><label class="label-control" for="indicationResult">Identification Result (Rapid Test)</label></th>
+											<td class="platform lam">
+												<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
+													<?= $general->generateSelectOptions($tbIdentificationResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										<tr>
+											<th scope="row" class="platform drug"><label class="label-control" for="drugMGITResult">Drug Susceptibility Results (MGIT - 1st Line)</label></th>
+											<td class="platform xpert">
+												<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
+													<?= $general->generateSelectOptions($tbdrugMGITResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<th scope="row" class="platform drug"><label class="label-control" for="drugLPAResult">Drug Susceptibility Results (LPA - 1st & 2nd Line)</label></th>
+											<td class="platform lam">
+												<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
+													<?= $general->generateSelectOptions($tbdrugLPAResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+										</tr>
+										
 										<tr>
 											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>
