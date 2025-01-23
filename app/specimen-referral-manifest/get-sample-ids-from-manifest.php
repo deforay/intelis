@@ -18,12 +18,6 @@ $manifestCode = $_POST['manifestCode'];
 $testType = $_POST['testType'];
 
 if (empty($testType) || empty($manifestCode)) {
-    LoggerUtility::logError('Manifest code and test type are required', [
-        'testType' => $testType,
-        'manifestCode' => $manifestCode,
-        'line' => __LINE__,
-        'file' => __FILE__
-    ]);
     echo "";
     return;
 }
@@ -46,6 +40,7 @@ function fetchSamples(DatabaseService $db, $formTable, $primaryKey, string $mani
 // Fetch initial sample data
 $sampleResult = fetchSamples($db, $formTable, $primaryKey, $manifestCode);
 
+$sampleData = [];
 $sampleData = array_column($sampleResult, $primaryKey);
 $noOfSamples = (int)($sampleResult[0]['number_of_samples'] ?? 0);
 $count = count($sampleData);

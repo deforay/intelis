@@ -44,7 +44,7 @@ if (empty($apiKey)) {
     $apiKey = MiscUtility::generateUUIDv5($remoteURL);
 }
 if (!$cliMode) {
-    echo "Usage: php token.php --key <API_KEY>\n";
+    echo "Usage: php token.php --key <API_KEY>" . PHP_EOL;
     exit(1);
 }
 
@@ -73,16 +73,22 @@ try {
 
         // Handle the response
         if (!empty($response['status']) && $response['status'] === 'success') {
-            echo $response['token'];
+            echo "Token generated: {$response['token']}" . PHP_EOL;
             //echo "STS Token for this lab is {$response['token']}" . PHP_EOL;
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
-            echo "Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error') . "\n";
+            echo "Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error') . PHP_EOL;
         }
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', "Error in token generation: " . $e->getMessage());
-    echo "An error occurred. Please check logs for details.\n";
-    exit(1);
+    LoggerUtility::logError(
+        "Error in token generation: " . $e->getMessage(),
+        [
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'trace' => $e->getTraceAsString(),
+        ]
+    );
+    echo "Error in token generation: " . $e->getMessage() . ". Please check logs for details" . PHP_EOL;
 }
