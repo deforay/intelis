@@ -27,7 +27,7 @@ $sheet = $excel->getActiveSheet();
 $sQuery = "SELECT
 vl.sample_collection_date,
 vl.sample_tested_datetime,
-vl.sample_received_at_testing_lab_datetime,
+vl.sample_received_at_lab_datetime,
 vl.result_printed_datetime,
 vl.remote_sample_code,
 vl.external_sample_code,
@@ -53,7 +53,7 @@ if (!empty($_SESSION['vlTatData']['sOrder'])) {
 }
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array("Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date");
+$headings = array("Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date");
 
 $colNo = 1;
 
@@ -109,8 +109,8 @@ foreach ($rResult as $aRow) {
 	if ($aRow['sample_dispatched_datetime'] != null && trim((string) $aRow['sample_dispatched_datetime']) != '' && $aRow['sample_dispatched_datetime'] != '0000-00-00 00:00:00') {
 		$sampleDispatchedDate = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 	}
-	if (isset($aRow['sample_received_at_testing_lab_datetime']) && trim((string) $aRow['sample_received_at_testing_lab_datetime']) != '' && $aRow['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_testing_lab_datetime']);
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+		$sampleRecievedDate = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
 		$sampleRecievedDate = '';
 	}

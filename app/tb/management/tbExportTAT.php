@@ -24,7 +24,7 @@ $excel = new Spreadsheet();
 $output = [];
 $sheet = $excel->getActiveSheet();
 
-$headings = array("TB Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Sample Print Date", "Sample Email Date");
+$headings = array("TB Sample ID", "Sample Collection Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date", "Sample Email Date");
 
 $colNo = 1;
 

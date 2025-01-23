@@ -167,7 +167,7 @@ $batResult = $db->rawQuery($batQuery);
 										<?php echo _translate("Sample Test Date"); ?>
 									</th>
 									<th>
-										<?php echo _translate("Sample Print Date"); ?>
+										<?php echo _translate("Result Print Date"); ?>
 									</th>
 								</tr>
 							</thead>

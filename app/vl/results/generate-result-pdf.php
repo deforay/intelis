@@ -95,11 +95,10 @@ if (empty($requestResult) || !$requestResult) {
 	return null;
 }
 
+$currentDateTime = DateUtility::getCurrentDateTime();
 
 //set print time
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
-
-$currentDateTime = DateUtility::getCurrentDateTime();
 
 
 $fileArray = array(
