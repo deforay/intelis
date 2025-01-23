@@ -92,19 +92,6 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 $_SESSION['aliasPage'] = 1;
 
 
-foreach ($requestResult as $requestRow) {
-	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
-		$db->where('covid19_id', $requestRow['covid19_id']);
-		$id = $db->update('form_covid19', $pData);
-	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
-		$db->where('covid19_id', $requestRow['covid19_id']);
-		$id = $db->update('form_covid19', $pData);
-	}
-}
-
-
 /* Test Results */
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
 	try {
@@ -149,6 +136,16 @@ if (!empty($requestResult)) {
 		$expStr = explode(" ", $printedTime);
 		$printDate = DateUtility::humanReadableDateFormat($expStr[0]);
 		$printDateTime = $expStr[1];
+
+		if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
+			$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+			$db->where('covid19_id', $result['covid19_id']);
+			$id = $db->update('form_covid19', $pData);
+		} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+			$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+			$db->where('covid19_id', $result['covid19_id']);
+			$id = $db->update('form_covid19', $pData);
+		}
 
 		/** @var Covid19Service $covid19Service */
 		$covid19Service = ContainerRegistry::get(Covid19Service::class);

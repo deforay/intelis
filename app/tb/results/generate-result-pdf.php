@@ -91,18 +91,6 @@ $requestResult = $db->query($searchQuery);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-foreach ($requestResult as $requestRow) {
-    if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-        $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
-        $db->where('tb_id', $requestRow['tb_id']);
-        $id = $db->update('form_tb', $pData);
-    } elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-        $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
-        $db->where('tb_id', $requestRow['tb_id']);
-        $id = $db->update('form_tb', $pData);
-    }
-}
-
 
 if (isset($_POST['type']) && $_POST['type'] == "qr") {
     try {
@@ -152,6 +140,18 @@ if (!empty($requestResult)) {
         $expStr = explode(" ", $printedTime);
         $printDate = DateUtility::humanReadableDateFormat($expStr[0]);
         $printDateTime = $expStr[1];
+
+
+            if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
+                $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+                $db->where('tb_id', $result['tb_id']);
+                $id = $db->update('form_tb', $pData);
+            } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+                $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+                $db->where('tb_id', $result['tb_id']);
+                $id = $db->update('form_tb', $pData);
+            }
+
 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";
         $tbTestInfo = $db->rawQuery($tbTestQuery);

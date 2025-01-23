@@ -95,24 +95,12 @@ if (empty($requestResult) || !$requestResult) {
 	return null;
 }
 
-$currentDateTime = DateUtility::getCurrentDateTime();
 
 //set print time
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-foreach ($requestResult as $requestRow) {
-	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
-		$db->where('vl_sample_id', $requestRow['vl_sample_id']);
-		$id = $db->update('form_vl', $pData);
-	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
-		$db->where('vl_sample_id', $requestRow['vl_sample_id']);
-		$id = $db->update('form_vl', $pData);
-	}
-}
 
 $fileArray = array(
 	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
@@ -138,6 +126,15 @@ $_SESSION['aliasPage'] = 1;
 
 foreach ($requestResult as $result) {
 
+	if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('vl_sample_id', $result['vl_sample_id']);
+		$id = $db->update('form_vl', $pData);
+	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('vl_sample_id', $result['vl_sample_id']);
+		$id = $db->update('form_vl', $pData);
+	}
 
 	$selectedReportFormats = [];
 	if (!empty($result['reportFormat'])) {

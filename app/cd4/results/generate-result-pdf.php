@@ -94,6 +94,7 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 //set print time
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
+$currentDateTime = DateUtility::getCurrentDateTime();
 
 $fileArray = array(
 	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
@@ -117,6 +118,16 @@ $page = 1;
 $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
 
+	if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$db->where('cd4_id', $result['cd4_id']);
+		$id = $db->update('form_cd4', $pData);
+	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$db->where('cd4_id', $result['cd4_id']);
+		$id = $db->update('form_cd4', $pData);
+	}
+
 
 	$selectedReportFormats = [];
 	if (!empty($result['reportFormat'])) {
@@ -124,8 +135,8 @@ foreach ($requestResult as $result) {
 	}
 
 	$fileToInclude = $fileArray[$arr['vl_form']];
-	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['vl'])) {
-		$includedFile = realpath(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['vl']);
+	if (!empty($selectedReportFormats) && !empty($selectedReportFormats['cd4'])) {
+		$includedFile = realpath(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['cd4']);
 		if ($includedFile !== false && file_exists($includedFile) && is_file($includedFile)) {
 			$fileToInclude = $includedFile;
 		}
