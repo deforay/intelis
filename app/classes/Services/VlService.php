@@ -390,19 +390,32 @@ final class VlService extends AbstractTestService
 
     private function processResultAndUnit(string $result, ?string $unit): array
     {
+        // Ensure result is converted to a float
+        $processedResult = is_numeric($result) ? floatval($result) : 0;
         $processedUnit = $unit;
-        $processedResult = floatval($result);
 
         // Check if the unit contains scientific notation (e.g., "10*2", "E-1")
-        if (!empty($unit) && preg_match('/(10\*\s*(-?\d+)|E([+-]?\d+))/i', $unit, $matches)) {
+        if (!empty($unit)) {
+            // Extract the scientific notation part (e.g., "10*-1" or "E-1")
+            if (preg_match('/10\*\s*(-?\d+)|E([+-]?\d+)/i', $unit, $matches)) {
+                $exponent = isset($matches[1]) && $matches[1] !== ''
+                    ? (float)$matches[1]
+                    : (float)$matches[2];
 
-            $exponent = isset($matches[2]) ? (float)$matches[2] : (float)$matches[3];
-            $processedResult = (float)$processedResult * pow(10, $exponent); // Apply the multiplier
-            $processedUnit = preg_replace('/(10\*\s*-?\d+|E[+-]?\d+)/i', '', $unit); // Clean the unit
+                $processedResult *= pow(10, $exponent); // Apply the multiplier
+                $processedUnit = preg_replace('/10\*\s*-?\d+|E[+-]?\d+/i', '', $unit); // Clean the unit
+            }
+
+            // Remove any non-printable or unexpected characters from the unit
+            $processedUnit = preg_replace('/[^a-zA-Z0-9\s\/().%]/', '', $processedUnit);
+
+            // Trim extra spaces and clean up the unit string
+            $processedUnit = trim($processedUnit);
         }
 
-        return [strval($processedResult), trim($processedUnit)];
+        return [strval($processedResult), $processedUnit];
     }
+
 
     public function insertSample($params, $returnSampleData = false): int | array
     {
