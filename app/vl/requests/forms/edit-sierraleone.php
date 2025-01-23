@@ -85,9 +85,6 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
-			echo '<pre>';
-			print_r($change);
-			die;
 			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['user'] . "'";
 			$usrResult = $db->rawQuery($usrQuery);
 			$name = '';
