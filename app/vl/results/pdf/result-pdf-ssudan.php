@@ -49,13 +49,13 @@ if (!empty($result)) {
 
      $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = null;
      if (!empty($testedByRes['user_signature'])) {
-          $testUserSignaturePath =  $testedByRes['user_signature'];
+          $testUserSignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
      }
      if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedSignaturePath = $reviewedByRes['user_signature'];
+          $reviewedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $reviewedByRes['user_signature'];
      }
      if (!empty($revisedByRes['user_signature'])) {
-          $revisedSignaturePath =  $revisedByRes['user_signature'];
+          $revisedSignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
      }
 
      $resultApprovedBy  = '';
@@ -72,7 +72,7 @@ if (!empty($result)) {
      }
      $userSignaturePath = null;
      if (!empty($userRes['user_signature'])) {
-          $userSignaturePath =  $userRes['user_signature'];
+          $userSignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
@@ -144,9 +144,10 @@ if (!empty($result)) {
      }
 
      $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
+    // echo $stamp; die;
      if (MiscUtility::imageExists($stamp)) {
           $pdf->SetAlpha(0.6);
-          $pdf->Image($stamp, 65, 165, 40, null);
+          $pdf->Image($stamp, 65, 200, 40, null);
      }
      //Set Age
      $age = 'Unknown';

@@ -52,7 +52,6 @@ try {
         $primaryKey,
         'sample_package_id',
         'sample_package_code',
-        'result_printed_datetime',
         'request_created_by'
     ];
 

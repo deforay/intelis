@@ -76,7 +76,7 @@ final class ResultsService
         $this->primaryKeyName,
         'sample_package_id',
         'sample_package_code',
-        'result_printed_datetime',
+     //   'result_printed_datetime',
         'request_created_by'
     ];
 
@@ -269,19 +269,4 @@ final class ResultsService
         return [$conditions, $params];
     }
 
-    private function returnResults($id, array $lab): array
-    {
-        $sampleCodes = $facilityIds = [];
-
-        if ($id === true && isset($lab['sample_code'])) {
-            $sampleCodes[] = $lab['sample_code'];
-            $facilityIds[] = $lab['facility_id'];
-        }
-     
-          
-        return [
-            'sampleCodes' => $sampleCodes,
-            'facilityIds' => $facilityIds
-        ];
-    }
 }
