@@ -147,7 +147,7 @@ if (!empty($result)) {
     // echo $stamp; die;
      if (MiscUtility::imageExists($stamp)) {
           $pdf->SetAlpha(0.6);
-          $pdf->Image($stamp, 65, 200, 40, null);
+          $pdf->Image($stamp, 63, 202, 40, null);
      }
      //Set Age
      $age = 'Unknown';
