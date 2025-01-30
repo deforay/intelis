@@ -46,3 +46,19 @@ ALTER TABLE `audit_form_tb` ADD `culture_result` INT NULL AFTER `xpert_mtb_resul
 ALTER TABLE `audit_form_tb` ADD `identification_result` INT NULL AFTER `culture_result`;
 ALTER TABLE `audit_form_tb` ADD `drug_mgit_result` INT NULL AFTER `identification_result`;
 ALTER TABLE `audit_form_tb` ADD `drug_lpa_result` INT NULL AFTER `drug_mgit_result`;
+
+
+-- Jeyabanu 30-Jan-2025
+ALTER TABLE `form_tb` ADD `xpert_result_date` DATE NULL DEFAULT NULL AFTER `result_date`;
+ALTER TABLE `form_tb` ADD `tblam_result_date` DATE NULL DEFAULT NULL AFTER `xpert_result_date`;
+ALTER TABLE `form_tb` ADD `culture_result_date` DATE NULL DEFAULT NULL AFTER `tblam_result_date`;
+ALTER TABLE `form_tb` ADD `identification_result_date` DATE NULL DEFAULT NULL AFTER `culture_result_date`;
+ALTER TABLE `form_tb` ADD `drug_mgit_result_date` DATE NULL DEFAULT NULL AFTER `identification_result_date`;
+ALTER TABLE `form_tb` ADD `drug_lpa_result_date` DATE NULL DEFAULT NULL AFTER `drug_mgit_result_date`;
+
+ALTER TABLE `audit_form_tb` ADD `xpert_result_date` DATE NULL DEFAULT NULL AFTER `result_date`;
+ALTER TABLE `audit_form_tb` ADD `tblam_result_date` DATE NULL DEFAULT NULL AFTER `xpert_result_date`;
+ALTER TABLE `audit_form_tb` ADD `culture_result_date` DATE NULL DEFAULT NULL AFTER `tblam_result_date`;
+ALTER TABLE `audit_form_tb` ADD `identification_result_date` DATE NULL DEFAULT NULL AFTER `culture_result_date`;
+ALTER TABLE `audit_form_tb` ADD `drug_mgit_result_date` DATE NULL DEFAULT NULL AFTER `identification_result_date`;
+ALTER TABLE `audit_form_tb` ADD `drug_lpa_result_date` DATE NULL DEFAULT NULL AFTER `drug_mgit_result_date`;

@@ -81,6 +81,49 @@ try {
     } else {
         $_POST['resultDate'] = null;
     }
+
+    if (isset($_POST['xpertDateOfResult']) && trim((string) $_POST['xpertDateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['xpertDateOfResult']);
+        $_POST['xpertDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['xpertDateOfResult'] = null;
+    }
+
+    if (isset($_POST['tbLamDateOfResult']) && trim((string) $_POST['tbLamDateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['tbLamDateOfResult']);
+        $_POST['tbLamDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['tbLamDateOfResult'] = null;
+    }
+
+    if (isset($_POST['cultureDateOfResult']) && trim((string) $_POST['cultureDateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['cultureDateOfResult']);
+        $_POST['cultureDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['cultureDateOfResult'] = null;
+    }
+
+    if (isset($_POST['identificationDateOfResult']) && trim((string) $_POST['identificationDateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['identificationDateOfResult']);
+        $_POST['identificationDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['identificationDateOfResult'] = null;
+    }
+
+    if (isset($_POST['drugMGITDateOfResult']) && trim((string) $_POST['drugMGITDateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['drugMGITDateOfResult']);
+        $_POST['drugMGITDateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['drugMGITDateOfResult'] = null;
+    }
+
+    if (isset($_POST['drugLPADateOfResult']) && trim((string) $_POST['drugLPADateOfResult']) != "") {
+        $resultDate = explode(" ", (string) $_POST['drugLPADateOfResult']);
+        $_POST['drugLPADateOfResult'] = DateUtility::isoDateFormat($resultDate[0]) . " " . $resultDate[1];
+    } else {
+        $_POST['drugLPADateOfResult'] = null;
+    }
+
     //echo '<pre>'; print_r($_POST); die;
     if (!empty($_POST['arrivalDateTime']) && trim((string) $_POST['arrivalDateTime']) != "") {
         $arrivalDate = explode(" ", (string) $_POST['arrivalDateTime']);
@@ -234,6 +277,12 @@ try {
         'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
         'drug_mgit_result' => !empty($_POST['drugMGITResult']) ? $_POST['drugMGITResult'] : null,
         'drug_lpa_result' => !empty($_POST['drugLPAResult']) ? $_POST['drugLPAResult'] : null,
+        'xpert_result_date' => !empty($_POST['xPertDateOfResult']) ? $_POST['xPertDateOfResult'] : null,
+        'culture_result_date' => !empty($_POST['cultureDateOfResult']) ? $_POST['cultureDateOfResult'] : null,
+        'tblam_result_date' => !empty($_POST['tbLamDateOfResult']) ? $_POST['tbLamDateOfResult'] : null,
+        'identification_result_date' => !empty($_POST['identicationDateOfResult']) ? $_POST['identicationDateOfResult'] : null,
+        'drug_mgit_result_date' => !empty($_POST['drugMGITDateOfResult']) ? $_POST['drugMGITDateOfResult'] : null,
+        'drug_lpa_result_date' => !empty($_POST['drugLPADateOfResult']) ? $_POST['drugLPADateOfResult'] : null,
         'result_sent_to_source' => $resultSentToSource,
         'result_dispatched_datetime' => !empty($_POST['resultDispatchedDatetime']) ? $_POST['resultDispatchedDatetime'] : null,
         'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : "",

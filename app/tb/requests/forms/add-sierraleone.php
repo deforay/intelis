@@ -526,45 +526,91 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 											</td>
 										</tr>
 										<tr>
-											<th scope="row" class="platform xpert"><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
-											<td class="platform xpert">
-												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
-													<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
-												</select>
-											</td>
-											<th scope="row" class="platform lam"><label class="label-control" for="result">TB LAM Result</label></th>
-											<td class="platform lam">
-												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
-													<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<th scope="row" class="platform culture"><label class="label-control" for="cultureResult">Culture Result (LG & MGIT)</label></th>
-											<td class="platform xpert">
-												<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
-													<?= $general->generateSelectOptions($tbCultureResults, null, '-- Select --'); ?>
-												</select>
-											</td>
-											<th scope="row" class="platform identification"><label class="label-control" for="indicationResult">Identification Result (Rapid Test)</label></th>
-											<td class="platform lam">
-												<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
-													<?= $general->generateSelectOptions($tbIdentificationResults, null, '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<th scope="row" class="platform drug"><label class="label-control" for="drugMGITResult">Drug Susceptibility Results (MGIT - 1st Line)</label></th>
-											<td class="platform xpert">
-												<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
-													<?= $general->generateSelectOptions($tbdrugMGITResults, null, '-- Select --'); ?>
-												</select>
-											</td>
-											<th scope="row" class="platform drug"><label class="label-control" for="drugLPAResult">Drug Susceptibility Results (LPA - 1st & 2nd Line)</label></th>
-											<td class="platform lam">
-												<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
-													<?= $general->generateSelectOptions($tbdrugLPAResults, null, '-- Select --'); ?>
-												</select>
+											<td colspan="4">
+												
+												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+													<thead>
+														
+														<tr>
+															<th scope="row" style="width: 30%;" class="text-center">Test Name</th>
+															<th scope="row" style="width: 40%;" class="text-center">Result</th>
+															<th scope="row" style="width: 40%;" class="text-center">Date of Result</th>
+														</tr>
+													</thead>
+													<tbody>
+															<tr>
+																<td class="text-center">Xpert MTB Result</td>
+																<td>
+																<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
+																	<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
+																</select>
+																</td>
+																<td>
+																<input type="text" name="xpertDateOfResult" id="xpertDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+															</tr>
+															<tr>
+																<td class="text-center">TB LAM Result</td>
+																<td>
+																	<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
+																		<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="tbLamDateOfResult" id="tbLamDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Culture Result (LG & MGIT)</td>
+																<td>
+																	<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
+																		<?= $general->generateSelectOptions($tbCultureResults, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="cultureDateOfResult" id="cultureDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Identification Result (Rapid Test)</td>
+																<td>
+																	<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
+																		<?= $general->generateSelectOptions($tbIdentificationResults, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="identificationDateOfResult" id="identificationDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
+																<td>
+																	<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
+																		<?= $general->generateSelectOptions($tbdrugMGITResults, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="drugMGITDateOfResult" id="drugMGITDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Drug Susceptibility Results (LPA - 1st & 2nd Line)</td>
+																<td>
+																	<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
+																		<?= $general->generateSelectOptions($tbdrugLPAResults, null, '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="drugLPADateOfResult" id="drugLPADateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
+
+															</td>
+															</tr>
+													</tbody>
+												</table>
+
 											</td>
 										</tr>
 										

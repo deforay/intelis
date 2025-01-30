@@ -484,7 +484,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</td>
 											<th scope="row"><label class="label-control" for="testedBy">Date Of Result</label></th>
 											<td>
-												<input type="text" value="<?php echo $tbInfo['result_date']; ?>" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
+												<input type="text" class="date-time form-control" value="<?php echo $tbInfo['result_date']; ?>" id="resultDate" name="resultDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter result date" style="width:100%;" />
 											</td>
 
 										</tr>
@@ -586,47 +586,106 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											</td>
 										</tr>
 										<tr>
+											<td colspan="5">
+											<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
+													<thead>
+														
+														<tr>
+															<th scope="row" style="width: 30%;" class="text-center">Test Name</th>
+															<th scope="row" style="width: 40%;" class="text-center">Result</th>
+															<th scope="row" style="width: 40%;" class="text-center">Date of Result</th>
+														</tr>
+													</thead>
+													<tbody>
+															<tr>
+																<td class="text-center">Xpert MTB Result</td>
+																<td>
+																<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
+																	<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
+																</select>
+																</td>
+																<td>
+																<input type="text" name="xpertDateOfResult" id="xpertDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['xpert_result_date']; ?>" />																</td>
+															</tr>
+															<tr>
+																<td class="text-center">TB LAM Result</td>
+																<td>
+																	<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
+																		<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="tbLamDateOfResult" id="tbLamDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['tblam_result_date']; ?>" />																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Culture Result (LG & MGIT)</td>
+																<td>
+																	<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
+																		<?= $general->generateSelectOptions($tbCultureResults, $tbInfo['culture_result'], '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="cultureDateOfResult" id="cultureDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['culture_result_date']; ?>"/>																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Identification Result (Rapid Test)</td>
+																<td>
+																	<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
+																		<?= $general->generateSelectOptions($tbIdentificationResults, $tbInfo['identification_result'], '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="identificationDateOfResult" id="identificationDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['identification_result_date']; ?>"/>																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
+																<td>
+																	<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
+																		<?= $general->generateSelectOptions($tbdrugMGITResults, $tbInfo['drug_mgit_result'], '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="drugMGITDateOfResult" id="drugMGITDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['drug_mgit_result_date']; ?>"/>																</td>
+
+															</td>
+															</tr>
+															<tr>
+																<td class="text-center">Drug Susceptibility Results (LPA - 1st & 2nd Line)</td>
+																<td>
+																	<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
+																		<?= $general->generateSelectOptions($tbdrugLPAResults, $tbInfo['drug_lpa_result'], '-- Select --'); ?>
+																	</select>
+																</td>
+																<td>
+																<input type="text" name="drugLPADateOfResult" id="drugLPADateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" value="<?php echo $tbInfo['drug_lpa_result_date']; ?>"/>																</td>
+
+															</td>
+															</tr>
+													</tbody>
+												</table>
+											</td>
+										</tr>
+										<!--<tr>
 											<th scope="row" class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="xPertMTMResult">Xpert MTB Result</label></th>
 											<td class="platform xpert" <?php echo (isset($attributes) && $attributes != "" && in_array("xpert", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
-													<?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
+													< ?= $general->generateSelectOptions($tbXPertResults, $tbInfo['xpert_mtb_result'], '-- Select --'); ?>
 												</select>
 											</td>
 											<th scope="row" class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>><label class="label-control" for="result">TB LAM Result</label></th>
 											<td class="platform lam" <?php echo (isset($attributes) && $attributes != "" && in_array("lam", $attributes)) ? 'style="display:none;"' : ''; ?>>
 												<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
-													<?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
+													< ?= $general->generateSelectOptions($tbLamResults, $tbInfo['result'], '-- Select --'); ?>
 												</select>
 											</td>
-										</tr>
-										<tr>
-											<th scope="row" class="platform culture"><label class="label-control" for="cultureResult">Culture Result (LG & MGIT)</label></th>
-											<td class="platform xpert">
-												<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
-													<?= $general->generateSelectOptions($tbCultureResults, $tbInfo['culture_result'], '-- Select --'); ?>
-												</select>
-											</td>
-											<th scope="row" class="platform identification"><label class="label-control" for="indicationResult">Identification Result (Rapid Test)</label></th>
-											<td class="platform lam">
-												<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
-													<?= $general->generateSelectOptions($tbIdentificationResults, $tbInfo['identification_result'], '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
-										<tr>
-											<th scope="row" class="platform drug"><label class="label-control" for="drugMGITResult">Drug Susceptibility Results (MGIT - 1st Line)</label></th>
-											<td class="platform xpert">
-												<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
-													<?= $general->generateSelectOptions($tbdrugMGITResults, $tbInfo['drug_mgit_result'], '-- Select --'); ?>
-												</select>
-											</td>
-											<th scope="row" class="platform drug"><label class="label-control" for="drugLPAResult">Drug Susceptibility Results (LPA - 1st & 2nd Line)</label></th>
-											<td class="platform lam">
-												<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
-													<?= $general->generateSelectOptions($tbdrugLPAResults, $tbInfo['drug_lpa_result'], '-- Select --'); ?>
-												</select>
-											</td>
-										</tr>
+										</tr>-->
+										
 										<tr>
 											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>

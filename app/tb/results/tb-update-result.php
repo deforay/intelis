@@ -139,6 +139,50 @@ if (isset($tbInfo['result_date']) && trim((string) $tbInfo['result_date']) != ''
     $tbInfo['result_date'] = '';
 }
 
+
+if (isset($tbInfo['xpert_result_date']) && trim((string) $tbInfo['xpert_result_date']) != '' && $tbInfo['xpert_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['xpert_result_date']);
+    $tbInfo['xpert_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['xpert_result_date'] = '';
+}
+
+if (isset($tbInfo['tblam_result_date']) && trim((string) $tbInfo['tblam_result_date']) != '' && $tbInfo['tblam_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['tblam_result_date']);
+    $tbInfo['tblam_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['tblam_result_date'] = '';
+}
+
+if (isset($tbInfo['culture_result_date']) && trim((string) $tbInfo['culture_result_date']) != '' && $tbInfo['culture_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['culture_result_date']);
+    $tbInfo['culture_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['culture_result_date'] = '';
+}
+
+if (isset($tbInfo['identification_result_date']) && trim((string) $tbInfo['identification_result_date']) != '' && $tbInfo['identification_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['identification_result_date']);
+    $tbInfo['identification_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['identification_result_date'] = '';
+}
+
+if (isset($tbInfo['drug_mgit_result_date']) && trim((string) $tbInfo['drug_mgit_result_date']) != '' && $tbInfo['drug_mgit_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['drug_mgit_result_date']);
+    $tbInfo['drug_mgit_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['drug_mgit_result_date'] = '';
+}
+
+if (isset($tbInfo['drug_lpa_result_date']) && trim((string) $tbInfo['drug_lpa_result_date']) != '' && $tbInfo['drug_lpa_result_date'] != '0000-00-00 00:00:00') {
+    $reviewedOn = explode(" ", (string) $tbInfo['drug_lpa_result_date']);
+    $tbInfo['drug_lpa_result_date'] = DateUtility::humanReadableDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
+} else {
+    $tbInfo['drug_lpa_result_date'] = '';
+}
+
+
 if (isset($tbInfo['result_approved_datetime']) && trim((string) $tbInfo['result_approved_datetime']) != '' && $tbInfo['result_approved_datetime'] != '0000-00-00 00:00:00') {
     $approvedOn = explode(" ", (string) $tbInfo['result_approved_datetime']);
     $tbInfo['result_approved_datetime'] = DateUtility::humanReadableDateFormat($approvedOn[0]) . " " . $approvedOn[1];
