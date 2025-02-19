@@ -39,7 +39,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 
-$overwriteLocked = false; // Default: Do not include locked samples
+$overwriteLocked = true; // Default: Include locked samples
 $lastInterfaceSync = null;
 
 foreach ($argv as $arg) {

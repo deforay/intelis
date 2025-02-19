@@ -60,7 +60,6 @@
         "openspout/openspout": "^4.24",
         "voku/anti-xss": "^4.1",
         "sqids/sqids": "^0.4.1",
-        "symfony/yaml": "^6.4",
         "symfony/uid": "^7.1",
         "symfony/filesystem": "^7.1",
         "psr/log": "^3.0"
