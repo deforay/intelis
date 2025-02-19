@@ -929,7 +929,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 } else {
                     $.unblockUI();
                     oTable.fnDraw();
-                    //opTable.fnDraw();
+                    opTable.fnDraw();
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });
