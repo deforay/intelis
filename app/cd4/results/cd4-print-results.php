@@ -56,7 +56,7 @@ $state = $geolocationService->getProvinces("yes");
                                 <div class="bs-example bs-example-tabs">
                                     <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                                         <li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _translate("Results not yet Printed"); ?> </a></li>
-                                        <li><a href="#printedData" data-toggle="tab" class="printedData"><?php echo _translate("Results already Printed"); ?> </a></li>
+                                        <li><a href="#printedData" data-toggle="tab" class="printedDataTab"><?php echo _translate("Results already Printed"); ?> </a></li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
@@ -455,7 +455,7 @@ $state = $geolocationService->getProvinces("yes");
 
 
         var i = '<?php echo $i; ?>';
-        $(".printedData").click(function() {
+        $(".printedDataTab").click(function() {
             loadPrintedVlRequestData();
 
             for (colNo = 0; colNo <= i; colNo++) {
