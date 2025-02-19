@@ -80,11 +80,11 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
 	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
 		$db->where('sample_id', $requestRow['sample_id']);
 		$id = $db->update('form_generic', $pData);
 	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
 		$db->where('sample_id', $requestRow['sample_id']);
 		$id = $db->update('form_generic', $pData);
 	}

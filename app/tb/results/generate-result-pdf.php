@@ -143,11 +143,11 @@ if (!empty($requestResult)) {
 
 
             if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-                $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+                $pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
                 $db->where('tb_id', $result['tb_id']);
                 $id = $db->update('form_tb', $pData);
             } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-                $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+                $pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
                 $db->where('tb_id', $result['tb_id']);
                 $id = $db->update('form_tb', $pData);
             }

@@ -115,11 +115,11 @@ $_SESSION['aliasPage'] = $page;
 
 foreach ($requestResult as $result) {
     if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-        $pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+        $pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
     } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-        $pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+        $pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
     }

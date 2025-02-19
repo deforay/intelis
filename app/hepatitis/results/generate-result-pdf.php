@@ -72,11 +72,11 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 foreach ($requestResult as $requestRow) {
 	if (($general->isLISInstance()) && empty($requestRow['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime);
+		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
 	} elseif (($general->isSTSInstance()) && empty($requestRow['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime);
+		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
 		$db->where('hepatitis_id', $requestRow['hepatitis_id']);
 		$id = $db->update('form_hepatitis', $pData);
 	}
