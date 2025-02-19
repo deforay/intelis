@@ -136,30 +136,16 @@ try {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
      }
 
-
      if (!empty($_POST['sampleCollectionDate'])) {
-
-          if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
 
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          if (trim((string) $t_start_date) == trim((string) $t_end_date)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $t_start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $t_start_date . '" AND DATE(vl.sample_tested_datetime) <= "' . $t_end_date . '"';
-          }
+          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$t_start_date' AND '$t_end_date'";
      }
 
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
-          if (trim((string) $r_start_date) == trim((string) $r_end_date)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $r_start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $r_start_date . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $r_end_date . '"';
-          }
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$r_start_date' AND '$r_end_date'";
      }
 
 
@@ -200,7 +186,7 @@ try {
      // Only approved results can be printed
      if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
           if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-               $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL AND result_printed_datetime  > '0000-00-00'";
+               $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL AND DATE(result_printed_datetime)  > '0000-00-00'";
           } else {
                $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = '0000-00-00')";
           }
@@ -218,13 +204,13 @@ try {
 
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
      $_SESSION['vlResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -232,12 +218,12 @@ try {
      $_SESSION['vlResultQueryCount'] = $resultCount;
 
 
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
      foreach ($rResult as $aRow) {
           $row = [];
           if (isset($_POST['vlPrint'])) {
@@ -270,9 +256,9 @@ try {
                $patientLname = $general->crypto('decrypt', $patientLname, $key);
           }
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['lab_name']);
+          $row[] = "$patientFname $patientMname $patientLname";
+          $row[] = $aRow['facility_name'];
+          $row[] = $aRow['lab_name'];
           if ($formId == COUNTRY\CAMEROON) {
                $row[] = $aRow['lab_assigned_code'];
           }
