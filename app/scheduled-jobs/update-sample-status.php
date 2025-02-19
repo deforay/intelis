@@ -46,7 +46,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
         $batchSize = 100;
         $offset = 0;
         $lockAfterDays = (int) ($general->getGlobalConfig('sample_lock_after_days') ?? 14);
-        $lockAfterDays = $lockAfterDays > 0 ? $lockAfterDays : 14;
+        $lockAfterDays = $lockAfterDays > 7 ? $lockAfterDays : 14;
 
         $statusCodes = [
             SAMPLE_STATUS\REJECTED,
