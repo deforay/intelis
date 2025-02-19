@@ -1127,8 +1127,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					alert("<?= _translate("Unable to generate download", true); ?>");
 				} else {
 					$.unblockUI();
-					oTable.fnDraw();
-					opTable.fnDraw();
+					if (oTable) {
+						oTable.fnDraw();
+					}
+					if (opTable) {
+						opTable.fnDraw();
+					}
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
