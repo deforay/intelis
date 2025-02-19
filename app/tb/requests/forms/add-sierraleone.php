@@ -114,7 +114,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<?php } else { ?>
 											<th scope="row" style="width: 14%;"><label class="label-control" for="sampleCode">Sample ID </label><span class="mandatory">*</span></th>
 											<td style="width: 18%;">
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
+												<input type="text" class="form-control" id="sampleCode" name="sampleCode" readonly="readonly" placeholder="Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" style="width:100%;" onchange="checkSampleNameValidation('form_tb','<?php echo $sampleCode; ?>',this.id,null,'The sample id that you entered already exists. Please try another sample id',null)" />
 											</td>
 										<?php } ?>
 										<th scope="row"></th>
@@ -527,10 +527,10 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										</tr>
 										<tr>
 											<td colspan="4">
-												
+
 												<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
-														
+
 														<tr>
 															<th scope="row" style="width: 30%;" class="text-center">Test Name</th>
 															<th scope="row" style="width: 40%;" class="text-center">Result</th>
@@ -613,7 +613,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 
 											</td>
 										</tr>
-										
+
 										<tr>
 											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>
