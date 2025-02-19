@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Step 1: Prompt for instance name and sanitize it
-echo -n "Enter the lab or instance name or code: "
+echo -n "Enter the current lab name or lab code: "
 read instance_name
 
 if [ -z "$instance_name" ]; then
@@ -31,15 +31,18 @@ for attempt in {1..3}; do
     read backup_user
     echo -n "Enter the backup Ubuntu hostname or IP: "
     read backup_host
+    echo -n "Enter the SSH port (default 22): "
+    read backup_port
+    backup_port=${backup_port:-22}  # Set default port to 22 if left empty
 
     # Test connectivity
     echo "Testing connection to backup machine (attempt $attempt)..."
-    if ssh -o BatchMode=yes -o ConnectTimeout=5 "$backup_user@$backup_host" exit 2>/dev/null; then
+    if ssh -p "$backup_port" -o BatchMode=yes -o ConnectTimeout=5 "$backup_user@$backup_host" exit 2>/dev/null; then
         echo "Connection successful!"
         connection_success=1
 
         # Check if a folder with the same name already exists
-        if ssh "$backup_user@$backup_host" "[ -d /backups/$sanitized_name ]"; then
+        if ssh -p "$backup_port" "$backup_user@$backup_host" "[ -d /backups/$sanitized_name ]"; then
             echo "A folder with the name '$sanitized_name' already exists on the remote server."
             echo -n "Enter a different name for this machine: "
             read instance_name
@@ -87,7 +90,7 @@ fi
 
 # Step 6: Copy SSH key to backup machine
 echo "Copying SSH key to backup machine..."
-ssh-copy-id "$backup_user@$backup_host"
+ssh-copy-id -p "$backup_port" "$backup_user@$backup_host"
 
 # Step 7: Create backup script
 backup_script="/var/www/backup.sh"
@@ -98,11 +101,12 @@ cat <<EOL | sudo tee $backup_script >/dev/null
 source_dir="/var/www/vlsm"
 backup_user="$backup_user"
 backup_host="$backup_host"
+backup_port="$backup_port"
 instance_name="$sanitized_name"
 backup_dir="/backups/\${instance_name}"
 
 # Sync local directory to backup directory
-rsync -avz --delete "\$source_dir" "\$backup_user@\$backup_host:\$backup_dir"
+rsync -avz -e "ssh -p \${backup_port}" --delete "\$source_dir" "\$backup_user@\$backup_host:\$backup_dir"
 EOL
 
 sudo chmod +x $backup_script
