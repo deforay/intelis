@@ -1179,7 +1179,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						selectedRows = [];
 						$(".checkRows").prop('checked', false);
 						$("#checkRowsData").prop('checked', false);
-						oTable.fnDraw();
 					} else {
 						selectedPrintedRows = [];
 						$(".checkPrintedRows").prop('checked', false);
@@ -1194,6 +1193,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						$("#printedResult").css('display', 'block');
 					} else {
 						$("#printedResult").css('display', 'none');
+					}
+					if (oTable) {
+						oTable.fnDraw();
+					}
+					if (opTable) {
+						opTable.fnDraw();
 					}
 					window.open('/download.php?f=' + data, '_blank');
 				}

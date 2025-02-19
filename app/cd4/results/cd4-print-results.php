@@ -858,8 +858,12 @@ $state = $geolocationService->getProvinces("yes");
                     alert("<?php echo _translate("Unable to generate download"); ?>");
                 } else {
                     $.unblockUI();
-                    oTable.fnDraw();
-                     opTable.fnDraw();
+                    if (oTable) {
+                        oTable.fnDraw();
+                    }
+                    if (opTable) {
+                        opTable.fnDraw();
+                    }
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });
@@ -907,7 +911,6 @@ $state = $geolocationService->getProvinces("yes");
                         selectedRows = [];
                         $(".checkRows").prop('checked', false);
                         $("#checkRowsData").prop('checked', false);
-                        oTable.fnDraw();
                     } else {
                         selectedPrintedRows = [];
                         $(".checkPrintedRows").prop('checked', false);
@@ -923,6 +926,12 @@ $state = $geolocationService->getProvinces("yes");
                     } else {
                         $("#printedResult").css('display', 'none');
                     }
+                    if (oTable) {
+						oTable.fnDraw();
+					}
+					if (opTable) {
+						opTable.fnDraw();
+					}
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });

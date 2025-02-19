@@ -1072,6 +1072,12 @@ $state = $geolocationService->getProvinces("yes");
 					} else {
 						$("#printedResult").css('display', 'none');
 					}
+					if (oTable) {
+						oTable.fnDraw();
+					}
+					if (opTable) {
+						opTable.fnDraw();
+					}
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
