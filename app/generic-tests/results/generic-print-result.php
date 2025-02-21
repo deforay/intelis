@@ -1036,7 +1036,7 @@ $state = $geolocationService->getProvinces("yes");
 			return false;
 		} else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
 			$.unblockUI();
-			alert("<?php echo _translate("Maximum 100 results allowed to print at a time"); ?>");
+			alert("<?php echo _translate("Maximum of 100 results allowed to print at a time"); ?>");
 			return false;
 		} else {
 			id = checkedRow;

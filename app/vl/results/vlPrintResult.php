@@ -76,10 +76,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="widget-content">
 								<div class="bs-example bs-example-tabs">
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
-										<li class="active"><a href="#notPrintedData" data-toggle="tab">
+										<li class="active"><a href="#notPrintedData" id="notPrintedDataTabHeading" data-toggle="tab" onclick="loadUnPrintedData();">
 												<?php echo _translate("Results not yet Printed"); ?>
 											</a></li>
-										<li><a href="#printedData" data-toggle="tab" class="printedData">
+										<li><a href="#printedData" id="printedDataTabHeading" data-toggle="tab" onclick="loadPrintedResults();">
 												<?php echo _translate("Results already Printed"); ?>
 											</a></li>
 									</ul>
@@ -633,8 +633,28 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	let selectedPrintedRowsId = [];
 	let unprintedTable = null;
 	let printedTable = null;
+	let i = '<?php echo $i; ?>';
 
 	$(document).ready(function() {
+
+		// Check if there's a hash in the URL
+		if (window.location.hash) {
+			let activeTab = window.location.hash;
+			if ($('a[href="' + activeTab + '"]').length) {
+				// Activate the tab
+				$('a[href="' + activeTab + '"]').tab('show');
+			}
+
+			$(activeTab + 'TabHeading').trigger('click');
+		}else{
+			loadUnPrintedData();
+		}
+
+
+		// Update URL hash when switching tabs
+		$('a[data-toggle="tab"]').on('shown.bs.tab', function(e) {
+			window.location.hash = e.target.hash;
+		});
 
 		$("#batchCode, #printBatchCode").autocomplete({
 			source: function(request, response) {
@@ -651,21 +671,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						response(data);
 					}
 				});
-			}
-		});
-
-
-		var i = '<?php echo $i; ?>';
-		$(".printedData").click(function() {
-			printedResults();
-
-			for (colNo = 0; colNo <= i; colNo++) {
-				$("#printiCol" + colNo).attr("checked", printedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-				if (printedTable.fnSettings().aoColumns[colNo].bVisible) {
-					$("#printiCol" + colNo + "-sort").show();
-				} else {
-					$("#printiCol" + colNo + "-sort").hide();
-				}
 			}
 		});
 
@@ -712,7 +717,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
-		unprintedResults();
+
 
 		//printedResults();
 		$(".showhideCheckBox").change(function() {
@@ -742,17 +747,40 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 
 
-		for (colNo = 0; colNo <= i; colNo++) {
-			$("#iCol" + colNo).attr("checked", unprintedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-			if (unprintedTable.fnSettings().aoColumns[colNo].bVisible) {
-				$("#iCol" + colNo + "-sort").show();
-			} else {
-				$("#iCol" + colNo + "-sort").hide();
-			}
-		}
+
 	});
 
+	function loadPrintedResults() {
 
+		printedResults();
+
+		if (printedTable) {
+			for (colNo = 0; colNo <= i; colNo++) {
+				$("#printiCol" + colNo).attr("checked", printedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+				if (printedTable.fnSettings().aoColumns[colNo].bVisible) {
+					$("#printiCol" + colNo + "-sort").show();
+				} else {
+					$("#printiCol" + colNo + "-sort").hide();
+				}
+			}
+		}
+	}
+
+	function loadUnPrintedData() {
+
+		unprintedResults();
+
+		if (unprintedTable) {
+			for (colNo = 0; colNo <= i; colNo++) {
+				$("#iCol" + colNo).attr("checked", unprintedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+				if (unprintedTable.fnSettings().aoColumns[colNo].bVisible) {
+					$("#iCol" + colNo + "-sort").show();
+				} else {
+					$("#iCol" + colNo + "-sort").hide();
+				}
+			}
+		}
+	}
 
 	function fnShowHide(iCol) {
 		var bVis = unprintedTable.fnSettings().aoColumns[iCol].bVisible;
@@ -1148,22 +1176,25 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$path = '';
 		$path = '/vl/results/generate-result-pdf.php';
 		?>
+		let rowsLength = 0;
+		let totalCount = 0;
+		let checkedRow = null;
 		if (newData == null) {
-			let rowsLength = selectedRows.length;
-			let totalCount = $("#totalSamplesList").val();
-			let checkedRow = $("#checkedRows").val();
+			rowsLength = selectedRows.length;
+			totalCount = $("#totalSamplesList").val();
+			checkedRow = $("#checkedRows").val();
 		} else {
-			let rowsLength = selectedPrintedRows.length;
-			let totalCount = $("#totalSamplesPrintedList").val();
-			let checkedRow = $("#checkedPrintedRows").val();
+			rowsLength = selectedPrintedRows.length;
+			totalCount = $("#totalSamplesPrintedList").val();
+			checkedRow = $("#checkedPrintedRows").val();
 		}
-		if (rowsLength != 0 && rowsLength > 100) {
+		if (rowsLength && rowsLength != 0 && rowsLength > 100) {
 			$.unblockUI();
 			alert("<?= _translate("You have selected", true); ?> " + rowsLength + " <?php echo _translate("results out of the maximum allowed 100 at a time", true); ?>");
 			return false;
 		} else if (totalCount != 0 && totalCount > 100 && rowsLength == 0) {
 			$.unblockUI();
-			alert("<?= _translate("Maximum 100 results allowed to print at a time", true); ?>");
+			alert("<?= _translate("Maximum of 100 results allowed to print at a time", true); ?>");
 			return false;
 		} else {
 			id = checkedRow;
@@ -1189,12 +1220,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						$("#checkPrintedRowsData").prop('checked', false);
 					}
 					if (selectedRows != "") {
+						$("#totalSamplesList").val('');
 						$("#notPrintedResult").css('display', 'block');
 					} else {
 						$("#notPrintedResult").css('display', 'none');
 					}
 					if (selectedPrintedRows != "") {
 						$("#printedResult").css('display', 'block');
+						$("#totalSamplesPrintedList").val('');
 					} else {
 						$("#printedResult").css('display', 'none');
 					}
