@@ -286,12 +286,12 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</div>
 											</span><br>
 											<div id="notPrintedResult" style="display:none;">
-												&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('');"><span><em class="fa-solid fa-print"></em>
+												&nbsp;<button class="btn btn-primary btn-sm" onclick="printInBulk('');"><span><em class="fa-solid fa-print"></em>
 														<?php echo _translate("Print Selected Results PDF"); ?>
 													</span></button></div>
 
 
-											<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="unprintedDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><input type="checkbox" id="checkRowsData" onclick="toggleAllVisible()" /></th>
@@ -544,10 +544,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</span>
 											<br>
 											<div id="printedResult" style="display:none;">
-												&nbsp;<button class="btn btn-primary btn-sm" onclick="convertSearchResultToPdf('','printData');"><em class="fa-solid fa-print"></em><span>
+												&nbsp;<button class="btn btn-primary btn-sm" onclick="printInBulk('','printData');"><em class="fa-solid fa-print"></em><span>
 														<?php echo _translate("Print selected Results PDF"); ?>
 													</span></button></div>
-											<table aria-describedby="table" id="printedVlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+											<table aria-describedby="table" id="printedDataTable" class="table table-bordered table-striped" aria-hidden="true">
 												<thead>
 													<tr>
 														<th><input type="checkbox" id="checkPrintedRowsData" onclick="toggleAllPrintedVisible()" /></th>
@@ -625,14 +625,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 </div>
 
 <script type="text/javascript">
-	var startDate = "";
-	var endDate = "";
-	var selectedRows = [];
-	var selectedRowsId = [];
-	var selectedPrintedRows = [];
-	var selectedPrintedRowsId = [];
-	var oTable = null;
-	var opTable = null;
+	let startDate = "";
+	let endDate = "";
+	let selectedRows = [];
+	let selectedRowsId = [];
+	let selectedPrintedRows = [];
+	let selectedPrintedRowsId = [];
+	let unprintedTable = null;
+	let printedTable = null;
 
 	$(document).ready(function() {
 
@@ -657,11 +657,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 		var i = '<?php echo $i; ?>';
 		$(".printedData").click(function() {
-			loadPrintedVlRequestData();
+			printedResults();
 
 			for (colNo = 0; colNo <= i; colNo++) {
-				$("#printiCol" + colNo).attr("checked", opTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-				if (opTable.fnSettings().aoColumns[colNo].bVisible) {
+				$("#printiCol" + colNo).attr("checked", printedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+				if (printedTable.fnSettings().aoColumns[colNo].bVisible) {
 					$("#printiCol" + colNo + "-sort").show();
 				} else {
 					$("#printiCol" + colNo + "-sort").hide();
@@ -712,9 +712,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				endDate = end.format('YYYY-MM-DD');
 			});
 		$('#sampleCollectionDate,#sampleTestDate,#sampleReceivedDate,#printSampleCollectionDate,#printSampleTestDate,#printSampleReceivedDate').val("");
-		loadVlRequestData();
+		unprintedResults();
 
-		//loadPrintedVlRequestData();
+		//printedResults();
 		$(".showhideCheckBox").change(function() {
 			if ($(this).attr('checked')) {
 				idpart = $(this).attr('data-showhide');
@@ -743,8 +743,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 
 		for (colNo = 0; colNo <= i; colNo++) {
-			$("#iCol" + colNo).attr("checked", oTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
-			if (oTable.fnSettings().aoColumns[colNo].bVisible) {
+			$("#iCol" + colNo).attr("checked", unprintedTable.fnSettings().aoColumns[parseInt(colNo)].bVisible);
+			if (unprintedTable.fnSettings().aoColumns[colNo].bVisible) {
 				$("#iCol" + colNo + "-sort").show();
 			} else {
 				$("#iCol" + colNo + "-sort").hide();
@@ -755,23 +755,24 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 
 	function fnShowHide(iCol) {
-		var bVis = oTable.fnSettings().aoColumns[iCol].bVisible;
-		oTable.fnSetColumnVis(iCol, bVis ? false : true);
+		var bVis = unprintedTable.fnSettings().aoColumns[iCol].bVisible;
+		unprintedTable.fnSetColumnVis(iCol, bVis ? false : true);
 	}
 
 	function printfnShowHide(iCol) {
-		var bVis = opTable.fnSettings().aoColumns[iCol].bVisible;
-		opTable.fnSetColumnVis(iCol, bVis ? false : true);
+		var bVis = printedTable.fnSettings().aoColumns[iCol].bVisible;
+		printedTable.fnSetColumnVis(iCol, bVis ? false : true);
 	}
 
-	function loadVlRequestData() {
+	function unprintedResults() {
 		$.blockUI();
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
 		<?php } else { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
 		<?php } ?>
-		oTable = $('#vlRequestDataTable').dataTable({
+		unprintedTable = null;
+		unprintedTable = $('#unprintedDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -781,7 +782,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"bScrollCollapse": true,
 			//"bStateSave" : true,
 			"iDisplayLength": 100,
-			"bRetrieve": true,
+			//"bRetrieve": true,
+			"bDestroy": true,
 			"aoColumns": [{
 					"sClass": "center",
 					"bSortable": false
@@ -844,7 +846,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				[sort, "desc"]
 			],
 			"fnDrawCallback": function() {
-				var checkBoxes = document.getElementsByName("chk[]");
+				let checkBoxes = document.getElementsByName("chk[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
 					if (jQuery.inArray(checkBoxes[c].id, selectedRowsId) != -1) {
@@ -931,14 +933,15 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$.unblockUI();
 	}
 
-	function loadPrintedVlRequestData() {
+	function printedResults() {
 		$.blockUI();
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
 		<?php } else { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11 ?>';
 		<?php } ?>
-		opTable = $('#printedVlRequestDataTable').dataTable({
+		printedTable = null;
+		printedTable = $('#printedDataTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -948,7 +951,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			"bScrollCollapse": true,
 			//"bStateSave" : true,
 			"iDisplayLength": 100,
-			"bRetrieve": true,
+			//"bRetrieve": true,
+			"bDestroy": true,
 			"aoColumns": [{
 					"sClass": "center",
 					"bSortable": false
@@ -1011,7 +1015,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				[sort, "desc"]
 			],
 			"fnDrawCallback": function() {
-				var checkBoxes = document.getElementsByName("chkPrinted[]");
+				let checkBoxes = document.getElementsByName("chkPrinted[]");
 				len = checkBoxes.length;
 				for (c = 0; c < len; c++) {
 					if (jQuery.inArray(checkBoxes[c].id, selectedPrintedRowsId) != -1) {
@@ -1100,13 +1104,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 
 	function searchVlRequestData() {
 		$.blockUI();
-		oTable.fnDraw();
+		unprintedTable.fnDraw();
 		$.unblockUI();
 	}
 
 	function searchPrintedVlRequestData() {
 		$.blockUI();
-		opTable.fnDraw();
+		printedTable.fnDraw();
 		$.unblockUI();
 	}
 
@@ -1127,31 +1131,31 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					alert("<?= _translate("Unable to generate download", true); ?>");
 				} else {
 					$.unblockUI();
-					if (oTable) {
-						oTable.fnDraw();
+					if (unprintedTable) {
+						unprintedResults()
 					}
-					if (opTable) {
-						opTable.fnDraw();
+					if (printedTable) {
+						printedResults();
 					}
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
 	}
 
-	function convertSearchResultToPdf(id, newData = null) {
+	function printInBulk(id, newData = null) {
 		$.blockUI();
 		<?php
 		$path = '';
 		$path = '/vl/results/generate-result-pdf.php';
 		?>
 		if (newData == null) {
-			var rowsLength = selectedRows.length;
-			var totalCount = $("#totalSamplesList").val();
-			var checkedRow = $("#checkedRows").val();
+			let rowsLength = selectedRows.length;
+			let totalCount = $("#totalSamplesList").val();
+			let checkedRow = $("#checkedRows").val();
 		} else {
-			var rowsLength = selectedPrintedRows.length;
-			var totalCount = $("#totalSamplesPrintedList").val();
-			var checkedRow = $("#checkedPrintedRows").val();
+			let rowsLength = selectedPrintedRows.length;
+			let totalCount = $("#totalSamplesPrintedList").val();
+			let checkedRow = $("#checkedPrintedRows").val();
 		}
 		if (rowsLength != 0 && rowsLength > 100) {
 			$.unblockUI();
@@ -1194,11 +1198,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					} else {
 						$("#printedResult").css('display', 'none');
 					}
-					if (oTable) {
-						oTable.fnDraw();
+					if (unprintedTable) {
+						unprintedResults();
 					}
-					if (opTable) {
-						opTable.fnDraw();
+					if (printedTable) {
+						printedResults();
 					}
 					window.open('/download.php?f=' + data, '_blank');
 				}

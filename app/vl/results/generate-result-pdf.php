@@ -18,9 +18,6 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$tableName1 = "activity_log";
-$tableName2 = "form_vl";
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -101,7 +98,7 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
 
-$fileArray = array(
+$fileArray = [
 	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
 	COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
 	COUNTRY\DRC => 'pdf/result-pdf-drc.php',
@@ -110,7 +107,7 @@ $fileArray = array(
 	COUNTRY\WHO => 'pdf/result-pdf-who.php',
 	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
 	COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
-);
+];
 
 $randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
 
@@ -126,11 +123,17 @@ $_SESSION['aliasPage'] = 1;
 foreach ($requestResult as $result) {
 
 	if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-		$pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = [
+			'result_printed_on_lis_datetime' => $currentDateTime,
+			'result_printed_datetime' => $currentDateTime
+		];
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	} elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-		$pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+		$pData = [
+			'result_printed_on_sts_datetime' => $currentDateTime,
+			'result_printed_datetime' => $currentDateTime
+		];
 		$db->where('vl_sample_id', $result['vl_sample_id']);
 		$id = $db->update('form_vl', $pData);
 	}
@@ -160,7 +163,7 @@ if (!empty($pages)) {
 	$resultPdf->setPrintHeader(false);
 	$resultPdf->setPrintFooter(false);
 	$resultPdf->concat();
-	$resultFilename = 'VLSM-VL-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
+	$resultFilename = 'HIV-VL-Test-Result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
 	$resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 	MiscUtility::removeDirectory($pathFront);
 }
