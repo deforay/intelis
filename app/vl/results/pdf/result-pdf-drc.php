@@ -432,20 +432,20 @@ if (!empty($result)) {
 		$eventType = 'print-result';
 		$action = $_SESSION['userName'] . ' printed the test result with ' . $sampleId . $concat . $patientId;
 		$resource = 'print-test-result';
-		$data = array(
+		$data = [
 			'event_type' => $eventType,
 			'action' => $action,
 			'resource' => $resource,
 			'date_time' => DateUtility::getCurrentDateTime()
-		);
-		$db->insert($tableName1, $data);
+		];
+		$db->insert('activity_log', $data);
 		//Update print datetime in VL tbl.
 		$vlQuery = "SELECT result_printed_datetime
 						FROM form_vl as vl WHERE vl.vl_sample_id = ?";
-		$vlResult = $db->rawQuery($vlQuery, [$result['vl_sample_id']]);
-		if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
+		$vlResult = $db->rawQueryOne($vlQuery, [$result['vl_sample_id']]);
+		if ($vlResult['result_printed_datetime'] == null || trim((string) $vlResult['result_printed_datetime']) == '' || str_starts_with(trim($vlResult['result_printed_datetime']), '0000')) {
 			$db->where('vl_sample_id', $result['vl_sample_id']);
-			$db->update($tableName2, array('result_printed_datetime' => DateUtility::getCurrentDateTime()));
+			$db->update('form_vl', ['result_printed_datetime' => DateUtility::getCurrentDateTime()]);
 		}
 	}
 }

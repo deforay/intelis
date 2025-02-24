@@ -97,6 +97,8 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 //set print time
 $printDate = DateUtility::humanReadableDateFormat($currentDateTime, true);
 
+$tableName1 = "activity_log";
+$tableName2 = "form_vl";
 
 $fileArray = [
 	COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
