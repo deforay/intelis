@@ -39,7 +39,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 
-$overwriteLocked = true; // Default: Include locked samples
+$overwriteLocked = false; // Default: exclude locked samples
 $lastInterfaceSync = null;
 
 foreach ($argv as $arg) {
@@ -345,6 +345,8 @@ try {
                     'manual_result_entry' => 'no',
                     'import_machine_file_name' => 'interface',
                     'result_printed_datetime' => null,
+                    'result_printed_on_lis_datetime' => null,
+                    'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
@@ -408,6 +410,8 @@ try {
                     'result_approved_by' => $approved['eid'] ?? null,
                     'result_reviewed_by' => $reviewed['eid'] ?? null,
                     'result_printed_datetime' => null,
+                    'result_printed_on_lis_datetime' => null,
+                    'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
@@ -469,6 +473,8 @@ try {
                     'result_approved_by' => $approved['hepatitis'] ?? null,
                     'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
                     'result_printed_datetime' => null,
+                    'result_printed_on_lis_datetime' => null,
+                    'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
@@ -531,6 +537,7 @@ try {
                         'lims_sync_status' => $status,
                         'lims_sync_date_time' => $currentDateTime,
                     ];
+
                     $db->connection('interface')->reset();
                     $db->connection('interface')->where('id', $batchIds, 'IN');
                     $db->connection('interface')->update('orders', $interfaceData);
@@ -559,11 +566,15 @@ try {
 
     try {
         // Update synced IDs
+        $db->connection('interface')->beginTransaction();
         $updateSyncStatus($db, $sqliteDb, $syncedIds, 1, $mysqlConnected, $sqliteConnected);
 
         // Update unsynced IDs
         $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
+        $db->connection('interface')->commitTransaction();
     } catch (Throwable $e) {
+        echo $e->getMessage() . PHP_EOL;
+        $db->connection('interface')->rollbackTransaction();
         LoggerUtility::logError($e->getMessage(),  [
             'file' => $e->getFile(),
             'line' => $e->getLine(),

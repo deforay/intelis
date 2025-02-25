@@ -12,7 +12,6 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\ConfigService;
-use App\Utilities\CryptoUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -298,7 +297,7 @@ final class CommonService
     public function getUserMappedProvinces($facilityMap = null)
     {
         return once(function () use ($facilityMap) {
-            $facilityMap = $facilityMap ?? $_SESSION['facilityMap'] ?? null;
+            $facilityMap ??= $_SESSION['facilityMap'] ?? null;
 
             $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
                         FROM geographical_divisions as gd";

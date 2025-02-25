@@ -517,9 +517,15 @@ final class MiscUtility
             $fullPath = $fileName;
         }
 
+        // Replace non-alphanumeric characters with hyphens
         $sanitizedFullPath = preg_replace('/[^A-Za-z0-9_\-]/', '-', $fullPath);
+
+        // Remove any leading hyphen
+        $sanitizedFullPath = ltrim($sanitizedFullPath, '-');
+
         return $lockFileLocation . '/' . strtolower($sanitizedFullPath) . '.lock';
     }
+
 
     public static function isLockFileExpired($lockFile, $maxAgeInSeconds = 3600): bool
     {
