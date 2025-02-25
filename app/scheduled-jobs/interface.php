@@ -345,8 +345,8 @@ try {
                     'manual_result_entry' => 'no',
                     'import_machine_file_name' => 'interface',
                     'result_printed_datetime' => null,
-                    'result_printed_on_lis_datetime' => null,
-                    'result_printed_on_sts_datetime' => null,
+                    // 'result_printed_on_lis_datetime' => null,
+                    // 'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
@@ -410,8 +410,8 @@ try {
                     'result_approved_by' => $approved['eid'] ?? null,
                     'result_reviewed_by' => $reviewed['eid'] ?? null,
                     'result_printed_datetime' => null,
-                    'result_printed_on_lis_datetime' => null,
-                    'result_printed_on_sts_datetime' => null,
+                    // 'result_printed_on_lis_datetime' => null,
+                    // 'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
@@ -473,8 +473,8 @@ try {
                     'result_approved_by' => $approved['hepatitis'] ?? null,
                     'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
                     'result_printed_datetime' => null,
-                    'result_printed_on_lis_datetime' => null,
-                    'result_printed_on_sts_datetime' => null,
+                    // 'result_printed_on_lis_datetime' => null,
+                    // 'result_printed_on_sts_datetime' => null,
                     'result_dispatched_datetime' => null,
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
