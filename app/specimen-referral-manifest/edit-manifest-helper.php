@@ -33,6 +33,7 @@ $primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
 
 $packageTable = "package_details";
 try {
+    $db->beginTransaction();
     $selectedSample = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $uniqueSampleId = array_unique($selectedSample);
     $numberOfSamples = count($selectedSample);
@@ -45,21 +46,21 @@ try {
         ]);
 
         $lastId = $_POST['packageId'];
-        
+
         $db->where('package_id', $lastId);
         $previousData = $db->getOne($packageTable);
         $oldReason = json_decode($previousData['manifest_change_history']);
 
-        $newReason = array('reason' => $_POST['reasonForChange'],'changedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
-        $oldReason[] = $newReason; 
+        $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
+        $oldReason[] = $newReason;
         $db->where('package_id', $lastId);
-        $db->update($packageTable, array(
+        $db->update($packageTable, [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
             'package_status' => $_POST['packageStatus'],
             'manifest_change_history' => json_encode($oldReason),
             'last_modified_datetime' => DateUtility::getCurrentDateTime()
-        ));
+        ]);
 
         if ($lastId > 0) {
             //for ($j = 0; $j < count($selectedSample); $j++) {
@@ -76,7 +77,7 @@ try {
 
                 $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
                 $dataToUpdate['form_attributes'] = $db->func($formAttributes);
-                
+
                 //$db->where($primaryKey, $uniqueSampleId[$j]);
                 $db->where($primaryKey, $selectedSample, 'IN');
                 $db->update($tableName, $dataToUpdate);
@@ -104,9 +105,10 @@ try {
     $resource = 'specimen-manifest';
 
     $general->activityLog($eventType, $action, $resource);
-
+    $db->commitTransaction();
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Throwable $e) {
+    $db->rollbackTransaction();
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

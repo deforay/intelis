@@ -31,6 +31,7 @@ $tableName = TestsService::getTestTableName($_POST['module']);
 $primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
 
 try {
+    $db->beginTransaction();
     $selectedSample = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $uniqueSampleId = array_unique($selectedSample);
     $numberOfSamples = count($selectedSample);
@@ -67,7 +68,7 @@ try {
                 //$db->where($primaryKey, $uniqueSampleId[$j]);
                 $db->where($primaryKey, $selectedSample, 'IN');
                 $db->update($tableName, $dataToUpdate);
-            
+
             $_SESSION['alertMsg'] = "Manifest added successfully";
         }
     }
@@ -77,8 +78,16 @@ try {
     $resource = 'specimen-manifest';
 
     $general->activityLog($eventType, $action, $resource);
-
+    $db->commitTransaction();
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Exception $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    $db->rollbackTransaction();
+    LoggerUtility::log('error', $exc->getMessage(),[
+        'file' => $exc->getFile(),
+        'line' => $exc->getLine(),
+        'trace' => $exc->getTraceAsString(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError()
+
+    ]);
 }
