@@ -109,10 +109,11 @@ try {
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Throwable $e) {
     $db->rollbackTransaction();
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-    LoggerUtility::logError($e->getMessage(), [
+    LoggerUtility::log('error',  $e->getMessage(),[
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError()
     ]);
 }

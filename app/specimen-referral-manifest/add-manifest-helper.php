@@ -80,14 +80,14 @@ try {
     $general->activityLog($eventType, $action, $resource);
     $db->commitTransaction();
     header("Location:view-manifests.php?t=" . ($_POST['module']));
-} catch (Exception $exc) {
+} catch (Throwable $e) {
     $db->rollbackTransaction();
-    LoggerUtility::log('error', $exc->getMessage(),[
-        'file' => $exc->getFile(),
-        'line' => $exc->getLine(),
-        'trace' => $exc->getTraceAsString(),
+    LoggerUtility::log('error',  $e->getMessage(),[
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError()
-
     ]);
 }
+
