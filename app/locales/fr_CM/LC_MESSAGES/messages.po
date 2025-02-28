@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-01-20 13:33+0530\n"
-"PO-Revision-Date: 2025-01-20 13:33+0530\n"
+"POT-Creation-Date: 2025-02-28 13:13+0530\n"
+"PO-Revision-Date: 2025-02-28 13:13+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -223,7 +223,7 @@ msgstr "Bienvenue sur la page d’administration"
 #: app/tb/requests/forms/edit-burkina-faso.php:82
 #: app/tb/requests/tb-requests.php:109 app/tb/results/email-results.php:61
 #: app/tb/results/forms/update-burkina-faso.php:82
-#: app/tb/results/forms/update-sierraleone.php:101
+#: app/tb/results/forms/update-sierraleone.php:105
 #: app/tb/results/forms/update-southsudan.php:101
 #: app/tb/results/tb-failed-results.php:58
 #: app/tb/results/tb-manual-results.php:74
@@ -569,7 +569,7 @@ msgstr "Rechercher"
 #: app/vl/requests/sample-storage.php:494 app/vl/requests/vl-requests.php:818
 #: app/vl/results/email-results.php:372
 #: app/vl/results/vl-failed-results.php:307
-#: app/vl/results/vlPrintResult.php:686 app/vl/results/vlResultApproval.php:292
+#: app/vl/results/vlPrintResult.php:691 app/vl/results/vlResultApproval.php:292
 #: app/vl/results/vlResultMail.php:372 app/vl/results/vlTestResult.php:308
 msgid "Clear"
 msgstr "Effacer"
@@ -828,7 +828,7 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/cd4/results/email-results.php:238 app/cd4/results/email-results.php:253
 #: app/cd4/results/email-results.php:573 app/cd4/results/email-results.php:577
 #: app/cd4/results/get-cd4-result-status.php:169
-#: app/classes/Services/CommonService.php:321
+#: app/classes/Services/CommonService.php:320
 #: app/common/reference/add-geographical-divisions.php:74
 #: app/common/reference/edit-geographical-divisions.php:87
 #: app/covid-19/management/covid-19-clinic-report.php:101
@@ -1423,11 +1423,11 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/requests/forms/add-cameroon.php:644
 #: app/vl/requests/forms/add-drc.php:28 app/vl/requests/forms/add-drc.php:109
 #: app/vl/requests/forms/add-drc.php:133 app/vl/requests/forms/add-drc.php:151
-#: app/vl/requests/forms/add-drc.php:228 app/vl/requests/forms/add-drc.php:273
-#: app/vl/requests/forms/add-drc.php:334 app/vl/requests/forms/add-drc.php:390
-#: app/vl/requests/forms/add-drc.php:477 app/vl/requests/forms/add-drc.php:489
-#: app/vl/requests/forms/add-drc.php:499 app/vl/requests/forms/add-drc.php:705
-#: app/vl/requests/forms/add-drc.php:708
+#: app/vl/requests/forms/add-drc.php:228 app/vl/requests/forms/add-drc.php:272
+#: app/vl/requests/forms/add-drc.php:333 app/vl/requests/forms/add-drc.php:389
+#: app/vl/requests/forms/add-drc.php:476 app/vl/requests/forms/add-drc.php:488
+#: app/vl/requests/forms/add-drc.php:498 app/vl/requests/forms/add-drc.php:704
+#: app/vl/requests/forms/add-drc.php:707
 #: app/vl/requests/forms/edit-burkina-faso.php:529
 #: app/vl/requests/forms/edit-cameroon.php:197
 #: app/vl/requests/forms/edit-cameroon.php:205
@@ -1446,14 +1446,14 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/requests/forms/edit-drc.php:166
 #: app/vl/requests/forms/edit-drc.php:193
 #: app/vl/requests/forms/edit-drc.php:210
-#: app/vl/requests/forms/edit-drc.php:312
-#: app/vl/requests/forms/edit-drc.php:378
-#: app/vl/requests/forms/edit-drc.php:435
-#: app/vl/requests/forms/edit-drc.php:521
-#: app/vl/requests/forms/edit-drc.php:533
-#: app/vl/requests/forms/edit-drc.php:543
-#: app/vl/requests/forms/edit-drc.php:915
-#: app/vl/requests/forms/edit-drc.php:918
+#: app/vl/requests/forms/edit-drc.php:311
+#: app/vl/requests/forms/edit-drc.php:377
+#: app/vl/requests/forms/edit-drc.php:434
+#: app/vl/requests/forms/edit-drc.php:520
+#: app/vl/requests/forms/edit-drc.php:532
+#: app/vl/requests/forms/edit-drc.php:542
+#: app/vl/requests/forms/edit-drc.php:914
+#: app/vl/requests/forms/edit-drc.php:917
 #: app/vl/requests/sample-storage.php:208
 #: app/vl/requests/sample-storage.php:401 app/vl/requests/vl-requests.php:165
 #: app/vl/requests/vl-requests.php:192 app/vl/requests/vl-requests.php:238
@@ -1484,12 +1484,12 @@ msgstr "Veuillez sélectionner les types de tests"
 #: app/vl/results/forms/update-drc-result.php:160
 #: app/vl/results/forms/update-drc-result.php:177
 #: app/vl/results/forms/update-drc-result.php:239
-#: app/vl/results/forms/update-drc-result.php:252
-#: app/vl/results/forms/update-drc-result.php:319
-#: app/vl/results/forms/update-drc-result.php:404
-#: app/vl/results/forms/update-drc-result.php:496
-#: app/vl/results/forms/update-drc-result.php:508
-#: app/vl/results/forms/update-drc-result.php:518
+#: app/vl/results/forms/update-drc-result.php:251
+#: app/vl/results/forms/update-drc-result.php:318
+#: app/vl/results/forms/update-drc-result.php:403
+#: app/vl/results/forms/update-drc-result.php:495
+#: app/vl/results/forms/update-drc-result.php:507
+#: app/vl/results/forms/update-drc-result.php:517
 #: app/vl/results/getVlResultsForApproval.php:167
 #: app/vl/results/vl-failed-results.php:72
 #: app/vl/results/vl-failed-results.php:98 app/vl/results/vlPrintResult.php:99
@@ -2450,7 +2450,7 @@ msgstr "Echantillon testé le"
 #: app/vl/requests/addSamplesFromManifest.php:107
 #: app/vl/requests/vl-requests.php:615 app/vl/requests/vl-requests.php:676
 #: app/vl/results/get-manual-results.php:280
-#: app/vl/results/getVlTestResultDetails.php:251
+#: app/vl/results/getVlTestResultDetails.php:237
 #: app/vl/results/vl-failed-results.php:177
 #: app/vl/results/vl-failed-results.php:207
 #: app/vl/results/vlPrintResult.php:276 app/vl/results/vlPrintResult.php:334
@@ -3722,10 +3722,10 @@ msgstr "Nom du Labo"
 #: app/patients/add-patient.php:46 app/patients/add-patient.php:224
 #: app/patients/edit-patient.php:63 app/patients/edit-patient.php:240
 #: app/tb/requests/forms/add-burkina-faso.php:166
-#: app/tb/requests/forms/add-sierraleone.php:193
+#: app/tb/requests/forms/add-sierraleone.php:200
 #: app/tb/requests/forms/add-southsudan.php:168
 #: app/tb/requests/forms/edit-burkina-faso.php:186
-#: app/tb/requests/forms/edit-sierraleone.php:232
+#: app/tb/requests/forms/edit-sierraleone.php:237
 #: app/tb/requests/forms/edit-southsudan.php:197
 #: app/tb/results/forms/update-burkina-faso.php:185 app/users/addUser.php:109
 #: app/users/addUser.php:143 app/users/editUser.php:149
@@ -3746,7 +3746,7 @@ msgstr "Nom du Labo"
 #: app/vl/requests/forms/edit-drc.php:237
 #: app/vl/requests/forms/edit-png.php:289
 #: app/vl/requests/forms/edit-rwanda.php:229
-#: app/vl/requests/forms/edit-sierraleone.php:327
+#: app/vl/requests/forms/edit-sierraleone.php:324
 #: app/vl/requests/forms/edit-southsudan.php:307
 #: app/vl/results/forms/update-burkina-faso-result.php:420
 #: app/vl/results/forms/update-cameroon-result.php:500
@@ -4221,7 +4221,7 @@ msgstr "Lot"
 #: app/vl/program-management/vlMonitoringReport.php:261
 #: app/vl/requests/addSamplesFromManifest.php:86
 #: app/vl/requests/export-vl-requests.php:36
-#: app/vl/requests/get-request-list.php:379 app/vl/requests/vl-requests.php:286
+#: app/vl/requests/get-request-list.php:378 app/vl/requests/vl-requests.php:286
 #: app/vl/requests/vl-requests.php:583 app/vl/requests/vl-requests.php:644
 #: app/vl/results/vl-failed-results.php:156
 #: app/vl/results/vl-failed-results.php:200 app/vl/results/vlPrintResult.php:96
@@ -4434,14 +4434,14 @@ msgstr "Créer un lot"
 #: app/tb/reference/add-tb-sample-type.php:22
 #: app/tb/reference/add-tb-test-reasons.php:24
 #: app/tb/requests/forms/add-burkina-faso.php:71
-#: app/tb/requests/forms/add-sierraleone.php:84
+#: app/tb/requests/forms/add-sierraleone.php:91
 #: app/tb/requests/forms/add-southsudan.php:63
 #: app/tb/requests/forms/edit-burkina-faso.php:91
-#: app/tb/requests/forms/edit-sierraleone.php:123
+#: app/tb/requests/forms/edit-sierraleone.php:128
 #: app/tb/requests/forms/edit-southsudan.php:93
 #: app/tb/results/email-results.php:75
 #: app/tb/results/forms/update-burkina-faso.php:91
-#: app/tb/results/forms/update-sierraleone.php:109
+#: app/tb/results/forms/update-sierraleone.php:113
 #: app/tb/results/forms/update-southsudan.php:109 app/users/addUser.php:70
 #: app/users/edit-profile.php:49 app/users/editUser.php:108
 #: app/vl/program-management/addContactNotes.php:45
@@ -4471,7 +4471,7 @@ msgstr "Créer un lot"
 #: app/vl/requests/forms/edit-drc.php:102
 #: app/vl/requests/forms/edit-png.php:177
 #: app/vl/requests/forms/edit-rwanda.php:130
-#: app/vl/requests/forms/edit-sierraleone.php:195
+#: app/vl/requests/forms/edit-sierraleone.php:192
 #: app/vl/requests/forms/edit-southsudan.php:176
 #: app/vl/requests/forms/edit-who.php:184 app/vl/requests/upload-storage.php:73
 #: app/vl/results/email-results.php:75
@@ -5550,7 +5550,7 @@ msgstr "Contrôle de la fabrication"
 #: app/tb/requests/get-request-list.php:317 app/users/getUserDetails.php:131
 #: app/vl/reference/get-vl-results-helper.php:108
 #: app/vl/reference/get-vl-test-failure-reasons-helper.php:121
-#: app/vl/requests/get-request-list.php:450
+#: app/vl/requests/get-request-list.php:449
 #: app/vl/result-mail/testResultEmailConfig.php:23
 msgid "Edit"
 msgstr "Modifier"
@@ -5826,8 +5826,11 @@ msgstr "Tout"
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/cd4-requests.php:281
 #: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/forms/add-rwanda.php:257
+#: app/cd4/requests/forms/edit-rwanda.php:302
 #: app/cd4/requests/patientModal.php:110
 #: app/cd4/results/cd4-manual-results.php:148
+#: app/cd4/results/forms/update-rwanda-result.php:252
 #: app/covid-19/management/covid-19-clinic-report.php:157
 #: app/covid-19/management/covid-19-clinic-report.php:256
 #: app/covid-19/management/covid-19-clinic-report.php:356
@@ -5842,11 +5845,28 @@ msgstr "Tout"
 #: app/eid/requests/eid-requests.php:213
 #: app/eid/requests/forms/add-burkina-faso.php:163
 #: app/eid/requests/forms/add-cameroon.php:197
+#: app/eid/requests/forms/add-drc.php:210
+#: app/eid/requests/forms/add-png.php:219
+#: app/eid/requests/forms/add-rwanda.php:188
+#: app/eid/requests/forms/add-sierraleone.php:208
+#: app/eid/requests/forms/add-southsudan.php:198
+#: app/eid/requests/forms/add-who.php:175
 #: app/eid/requests/forms/edit-burkina-faso.php:177
 #: app/eid/requests/forms/edit-cameroon.php:222
+#: app/eid/requests/forms/edit-drc.php:259
+#: app/eid/requests/forms/edit-png.php:251
+#: app/eid/requests/forms/edit-rwanda.php:201
+#: app/eid/requests/forms/edit-sierraleone.php:208
+#: app/eid/requests/forms/edit-southsudan.php:204
+#: app/eid/requests/forms/edit-who.php:190
 #: app/eid/requests/patientModal.php:102
 #: app/eid/results/forms/update-burkina-faso-result.php:176
 #: app/eid/results/forms/update-cameroon-result.php:198
+#: app/eid/results/forms/update-drc-result.php:226
+#: app/eid/results/forms/update-png-result.php:199
+#: app/eid/results/forms/update-rwanda-result.php:181
+#: app/eid/results/forms/update-sierraleone-result.php:184
+#: app/eid/results/forms/update-southsudan-result.php:183
 #: app/generic-tests/mail/mail-generic-tests-results.php:229
 #: app/generic-tests/program-management/generic-export-data.php:210
 #: app/generic-tests/requests/add-request.php:410
@@ -5880,15 +5900,28 @@ msgstr "Tout"
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/forms/add-burkina-faso.php:240
 #: app/vl/requests/forms/add-cameroon.php:290
+#: app/vl/requests/forms/add-rwanda.php:224
+#: app/vl/requests/forms/add-sierraleone.php:261
+#: app/vl/requests/forms/add-southsudan.php:269
+#: app/vl/requests/forms/add-who.php:240
 #: app/vl/requests/forms/edit-burkina-faso.php:337
 #: app/vl/requests/forms/edit-cameroon.php:342
-#: app/vl/requests/patientModal.php:110 app/vl/requests/vl-requests.php:330
+#: app/vl/requests/forms/edit-png.php:303
+#: app/vl/requests/forms/edit-rwanda.php:269
+#: app/vl/requests/forms/edit-sierraleone.php:364
+#: app/vl/requests/forms/edit-southsudan.php:348
+#: app/vl/requests/forms/edit-who.php:346 app/vl/requests/patientModal.php:110
+#: app/vl/requests/vl-requests.php:330
 #: app/vl/result-mail/editTestResultEmailConfig.php:90
 #: app/vl/results/forms/update-burkina-faso-result.php:337
 #: app/vl/results/forms/update-cameroon-result.php:376
+#: app/vl/results/forms/update-png-result.php:268
+#: app/vl/results/forms/update-rwanda-result.php:238
+#: app/vl/results/forms/update-sierraleone-result.php:348
+#: app/vl/results/forms/update-southsudan-result.php:346
 #: app/vl/results/vlPrintResult.php:166 app/vl/results/vlPrintResult.php:423
 #: app/vl/results/vlTestResult.php:147
-msgid "Gender"
+msgid "Sex"
 msgstr "Sexe"
 
 #: app/cd4/management/cd4-clinic-report.php:163
@@ -5923,14 +5956,19 @@ msgstr "Sexe"
 #: app/vl/requests/forms/add-cameroon.php:292
 #: app/vl/requests/forms/add-cameroon.php:295
 #: app/vl/requests/forms/add-cameroon.php:298
+#: app/vl/requests/forms/add-drc.php:217 app/vl/requests/forms/add-drc.php:221
+#: app/vl/requests/forms/add-drc.php:225
 #: app/vl/requests/forms/edit-cameroon.php:344
 #: app/vl/requests/forms/edit-cameroon.php:347
 #: app/vl/requests/forms/edit-cameroon.php:350
 #: app/vl/requests/vl-requests.php:333
 #: app/vl/results/forms/update-cameroon-result.php:385
+#: app/vl/results/forms/update-drc-result.php:222
+#: app/vl/results/forms/update-drc-result.php:226
+#: app/vl/results/forms/update-drc-result.php:230
 #: app/vl/results/vlPrintResult.php:169 app/vl/results/vlPrintResult.php:426
-msgid "Please choose gender"
-msgstr "Veuillez choisir le sexe"
+msgid "Please select sex"
+msgstr "Sélectionnez svp le sexe"
 
 #: app/cd4/management/cd4-clinic-report.php:165
 #: app/cd4/management/cd4-clinic-report.php:264
@@ -6159,7 +6197,7 @@ msgstr "Femme"
 #: app/vl/results/pdf/result-pdf-png.php:128
 #: app/vl/results/pdf/result-pdf-rwanda.php:128
 #: app/vl/results/pdf/result-pdf-sierraleone.php:199
-#: app/vl/results/pdf/result-pdf-ssudan.php:224
+#: app/vl/results/pdf/result-pdf-ssudan.php:225
 #: app/vl/results/pdf/result-pdf-who.php:217
 #: app/vl/results/vlPrintResult.php:180 app/vl/results/vlPrintResult.php:437
 #: app/vl/results/vlResultMail.php:185 app/vl/results/vlTestResult.php:157
@@ -7052,7 +7090,7 @@ msgstr "Télécharger le PDF"
 #: app/vl/requests/forms/edit-cameroon.php:839
 #: app/vl/requests/sample-storage.php:455
 #: app/vl/results/vl-failed-results.php:291
-#: app/vl/results/vlPrintResult.php:673
+#: app/vl/results/vlPrintResult.php:678
 msgid "Select Province"
 msgstr "Sélectionner la région"
 
@@ -7092,7 +7130,7 @@ msgstr "Sélectionner la région"
 #: app/vl/requests/forms/edit-cameroon.php:842
 #: app/vl/requests/sample-storage.php:458
 #: app/vl/results/vl-failed-results.php:294
-#: app/vl/results/vlPrintResult.php:677
+#: app/vl/results/vlPrintResult.php:682
 msgid "Select District"
 msgstr "Sélectionner le district"
 
@@ -7147,7 +7185,7 @@ msgstr "Sélectionner le district"
 #: app/vl/requests/sample-storage.php:461 app/vl/requests/vl-requests.php:809
 #: app/vl/results/email-results.php:365
 #: app/vl/results/vl-failed-results.php:300
-#: app/vl/results/vlPrintResult.php:681 app/vl/results/vlResultApproval.php:288
+#: app/vl/results/vlPrintResult.php:686 app/vl/results/vlResultApproval.php:288
 #: app/vl/results/vlResultMail.php:365 app/vl/results/vlTestResult.php:301
 msgid "Select Facilities"
 msgstr "Sélectionnez les FOSA"
@@ -7173,27 +7211,27 @@ msgstr "Voulez-vous les marquer comme terminé ?"
 #: app/cd4/management/cd4-clinic-report.php:1284
 #: app/cd4/management/cd4-export-data.php:567
 #: app/cd4/results/cd4-print-results.php:858
-#: app/cd4/results/cd4-print-results.php:903
+#: app/cd4/results/cd4-print-results.php:907
 #: app/cd4/results/email-results-confirm.php:123
 #: app/covid-19/management/covid-19-clinic-report.php:1287
 #: app/covid-19/management/covid-19-export-data.php:587
 #: app/covid-19/results/covid-19-print-results.php:886
-#: app/covid-19/results/covid-19-print-results.php:931
+#: app/covid-19/results/covid-19-print-results.php:935
 #: app/covid-19/results/email-results-confirm.php:124
 #: app/eid/management/eid-clinic-report.php:1291
 #: app/eid/management/eid-export-data.php:654
 #: app/eid/results/eid-print-results.php:928
-#: app/eid/results/eid-print-results.php:972
+#: app/eid/results/eid-print-results.php:976
 #: app/eid/results/email-results-confirm.php:124
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:425
 #: app/generic-tests/results/email-results-confirm.php:123
 #: app/generic-tests/results/generic-print-result.php:1004
-#: app/generic-tests/results/generic-print-result.php:1048
+#: app/generic-tests/results/generic-print-result.php:1052
 #: app/hepatitis/management/hepatitis-clinic-report.php:1285
 #: app/hepatitis/management/hepatitis-export-data.php:572
 #: app/hepatitis/results/email-results-confirm.php:124
 #: app/hepatitis/results/hepatitis-print-results.php:854
-#: app/hepatitis/results/hepatitis-print-results.php:898
+#: app/hepatitis/results/hepatitis-print-results.php:902
 #: app/import-result/import-stats-covid-19.php:151
 #: app/import-result/import-stats-eid.php:148
 #: app/import-result/import-stats-hepatitis.php:129
@@ -7202,10 +7240,10 @@ msgstr "Voulez-vous les marquer comme terminé ?"
 #: app/tb/management/tb-export-data.php:577
 #: app/tb/results/email-results-confirm.php:122
 #: app/tb/results/tb-print-results.php:853
-#: app/tb/results/tb-print-results.php:897
+#: app/tb/results/tb-print-results.php:901
 #: app/vl/program-management/highViralLoad.php:2013
 #: app/vl/results/email-results-confirm.php:123
-#: app/vl/results/vlPrintResult.php:1127 app/vl/results/vlPrintResult.php:1171
+#: app/vl/results/vlPrintResult.php:1159 app/vl/results/vlPrintResult.php:1210
 msgid "Unable to generate download"
 msgstr "Impossible de générer un téléchargement"
 
@@ -7510,7 +7548,6 @@ msgstr "Partenaires de mise en oeuvre"
 #: app/cd4/management/cd4-export-data.php:159
 #: app/cd4/requests/cd4-requests.php:270
 #: app/cd4/requests/forms/add-rwanda.php:178
-#: app/cd4/requests/forms/edit-rwanda.php:223
 #: app/covid-19/management/covid-19-export-data.php:180
 #: app/covid-19/requests/covid-19-requests.php:202
 #: app/covid-19/requests/forms/add-rwanda.php:113
@@ -7736,7 +7773,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/requests/forms/add-burkina-faso.php:232
 #: app/tb/requests/forms/add-burkina-faso.php:254
 #: app/tb/requests/forms/add-burkina-faso.php:398
-#: app/tb/requests/forms/add-sierraleone.php:195
+#: app/tb/requests/forms/add-sierraleone.php:202
 #: app/tb/requests/forms/add-southsudan.php:170
 #: app/tb/requests/forms/edit-burkina-faso.php:188
 #: app/tb/requests/forms/edit-burkina-faso.php:229
@@ -7744,7 +7781,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/requests/forms/edit-burkina-faso.php:253
 #: app/tb/requests/forms/edit-burkina-faso.php:275
 #: app/tb/requests/forms/edit-burkina-faso.php:419
-#: app/tb/requests/forms/edit-sierraleone.php:234
+#: app/tb/requests/forms/edit-sierraleone.php:239
 #: app/tb/requests/forms/edit-southsudan.php:199
 #: app/tb/requests/tb-requests.php:208 app/tb/requests/tb-requests.php:245
 #: app/tb/requests/tb-requests.php:263 app/tb/results/email-results.php:195
@@ -7793,7 +7830,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/vl/requests/forms/edit-drc.php:239
 #: app/vl/requests/forms/edit-png.php:291
 #: app/vl/requests/forms/edit-rwanda.php:231
-#: app/vl/requests/forms/edit-sierraleone.php:329
+#: app/vl/requests/forms/edit-sierraleone.php:326
 #: app/vl/requests/forms/edit-southsudan.php:309
 #: app/vl/requests/vl-requests.php:240 app/vl/requests/vl-requests.php:260
 #: app/vl/requests/vl-requests.php:276 app/vl/requests/vl-requests.php:384
@@ -7948,7 +7985,7 @@ msgstr "Oui"
 #: app/tb/requests/forms/add-burkina-faso.php:233
 #: app/tb/requests/forms/add-burkina-faso.php:255
 #: app/tb/requests/forms/add-burkina-faso.php:399
-#: app/tb/requests/forms/add-sierraleone.php:194
+#: app/tb/requests/forms/add-sierraleone.php:201
 #: app/tb/requests/forms/add-southsudan.php:169
 #: app/tb/requests/forms/edit-burkina-faso.php:187
 #: app/tb/requests/forms/edit-burkina-faso.php:232
@@ -7956,7 +7993,7 @@ msgstr "Oui"
 #: app/tb/requests/forms/edit-burkina-faso.php:252
 #: app/tb/requests/forms/edit-burkina-faso.php:274
 #: app/tb/requests/forms/edit-burkina-faso.php:420
-#: app/tb/requests/forms/edit-sierraleone.php:233
+#: app/tb/requests/forms/edit-sierraleone.php:238
 #: app/tb/requests/forms/edit-southsudan.php:198
 #: app/tb/requests/tb-requests.php:209 app/tb/requests/tb-requests.php:246
 #: app/tb/requests/tb-requests.php:264 app/tb/results/email-results.php:196
@@ -8005,7 +8042,7 @@ msgstr "Oui"
 #: app/vl/requests/forms/edit-drc.php:238
 #: app/vl/requests/forms/edit-png.php:290
 #: app/vl/requests/forms/edit-rwanda.php:230
-#: app/vl/requests/forms/edit-sierraleone.php:328
+#: app/vl/requests/forms/edit-sierraleone.php:325
 #: app/vl/requests/forms/edit-southsudan.php:308
 #: app/vl/requests/vl-requests.php:243 app/vl/requests/vl-requests.php:263
 #: app/vl/requests/vl-requests.php:279 app/vl/requests/vl-requests.php:387
@@ -8333,8 +8370,8 @@ msgstr "Date de réception au labo"
 #: app/hepatitis/management/hepatitis-sample-status.php:118
 #: app/tb/management/tb-sample-status.php:117
 #: app/vl/program-management/vl-sample-status.php:173
-msgid "Sample Print Date"
-msgstr "Exemple de la Date d'impression"
+msgid "Result Print Date"
+msgstr "Résultat Date d'impression"
 
 #: app/cd4/management/cd4-sample-status.php:121
 #: app/covid-19/management/covid-19-sample-status.php:116
@@ -8591,19 +8628,6 @@ msgid "Date of Birth"
 msgstr "Date de naissance"
 
 #: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/management/export-cd4-results.php:44
-#: app/cd4/requests/export-cd4-requests.php:28
-#: app/cd4/requests/export-cd4-requests.php:35
-#: app/vl/program-management/export-vl-results.php:32
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/program-management/export-vl-results.php:48
-#: app/vl/requests/export-vl-requests.php:36
-#: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/export-vl-requests.php:45
-msgid "KP"
-msgstr "KP"
-
-#: app/cd4/management/export-cd4-results.php:32
 #: app/vl/program-management/export-vl-results.php:35
 msgid "Patient Cellphone Number"
 msgstr "Numéro de téléphone portable du patient"
@@ -8637,7 +8661,7 @@ msgstr "Date d’initiation du traitement ARV"
 #: app/cd4/requests/get-request-list.php:361
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/get-request-list.php:408
+#: app/vl/requests/get-request-list.php:407
 msgid "Current Regimen"
 msgstr "Protocole actuel"
 
@@ -8819,7 +8843,7 @@ msgstr "Commentaires"
 #: app/vl/program-management/vl-export-data.php:450
 #: app/vl/program-management/vl-export-data.php:519
 #: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/get-request-list.php:395
+#: app/vl/requests/get-request-list.php:394
 msgid "Request Created On"
 msgstr "Demande Créé le"
 
@@ -8867,7 +8891,7 @@ msgstr "Non autorisé"
 #: app/tb/results/get-results-for-print.php:238
 #: app/vl/program-management/getPatientTestHistoryReport.php:139
 #: app/vl/results/get-manual-results.php:278
-#: app/vl/results/getVlTestResultDetails.php:249
+#: app/vl/results/getVlTestResultDetails.php:235
 msgid "Print"
 msgstr "Imprimer"
 
@@ -9898,12 +9922,12 @@ msgstr ""
 "Veuillez remplir tous les champs obligatoires pour enregistrer la demande de "
 "test"
 
-#: app/cd4/requests/cd4-add-request-helper.php:314
+#: app/cd4/requests/cd4-add-request-helper.php:318
 msgid "CD4 request added successfully"
 msgstr "Demande de CD4 ajoutée avec succès"
 
-#: app/cd4/requests/cd4-add-request-helper.php:344
-#: app/cd4/requests/cd4-edit-request-helper.php:329
+#: app/cd4/requests/cd4-add-request-helper.php:348
+#: app/cd4/requests/cd4-edit-request-helper.php:333
 #: app/cd4/results/cd4-update-result-helper.php:143
 #: app/covid-19/requests/covid-19-edit-request-helper.php:430
 #: app/covid-19/results/covid-19-update-result-helper.php:189
@@ -9928,7 +9952,7 @@ msgstr "Veuillez réessayer plus tard"
 msgid "Could not save this form. Please try again."
 msgstr "Impossible d'enregistrer ce formulaire. Veuillez réessayer."
 
-#: app/cd4/requests/cd4-edit-request-helper.php:321
+#: app/cd4/requests/cd4-edit-request-helper.php:325
 #: app/cd4/results/cd4-update-result-helper.php:133
 msgid "CD4 request updated successfully"
 msgstr "Mise à jour réussie de la demande de CD4"
@@ -10288,12 +10312,12 @@ msgstr "Résultat CD4 (%)"
 #: app/hepatitis/requests/forms/edit-rwanda.php:102
 #: app/hepatitis/results/forms/update-rwanda-result.php:92
 #: app/tb/requests/forms/add-burkina-faso.php:94
-#: app/tb/requests/forms/add-sierraleone.php:110
+#: app/tb/requests/forms/add-sierraleone.php:117
 #: app/tb/requests/forms/edit-burkina-faso.php:114
-#: app/tb/requests/forms/edit-sierraleone.php:149
+#: app/tb/requests/forms/edit-sierraleone.php:154
 #: app/tb/requests/forms/edit-southsudan.php:119
 #: app/tb/results/forms/update-burkina-faso.php:113
-#: app/tb/results/forms/update-sierraleone.php:135
+#: app/tb/results/forms/update-sierraleone.php:139
 #: app/tb/results/forms/update-southsudan.php:134
 #: app/vl/requests/forms/add-burkina-faso.php:108
 #: app/vl/requests/forms/add-cameroon.php:111
@@ -10305,7 +10329,7 @@ msgstr "Résultat CD4 (%)"
 #: app/vl/requests/forms/edit-cameroon.php:162
 #: app/vl/requests/forms/edit-png.php:198
 #: app/vl/requests/forms/edit-rwanda.php:152
-#: app/vl/requests/forms/edit-sierraleone.php:210
+#: app/vl/requests/forms/edit-sierraleone.php:207
 #: app/vl/requests/forms/edit-southsudan.php:191
 #: app/vl/requests/forms/edit-who.php:199
 #: app/vl/results/forms/update-burkina-faso-result.php:206
@@ -10327,7 +10351,7 @@ msgstr ""
 #: app/vl/requests/forms/add-rwanda.php:180
 #: app/vl/requests/forms/edit-cameroon.php:288
 #: app/vl/requests/forms/edit-rwanda.php:226
-#: app/vl/requests/forms/edit-sierraleone.php:324
+#: app/vl/requests/forms/edit-sierraleone.php:321
 #: app/vl/requests/forms/edit-southsudan.php:304
 msgid ""
 "Patient is from Defence Forces (Patient Name and Patient ID will not be "
@@ -10354,7 +10378,7 @@ msgstr ""
 #: app/hepatitis/requests/forms/add-rwanda.php:80
 #: app/patients/add-patient.php:45 app/patients/edit-patient.php:62
 #: app/tb/requests/forms/add-burkina-faso.php:165
-#: app/tb/requests/forms/add-sierraleone.php:192
+#: app/tb/requests/forms/add-sierraleone.php:199
 #: app/tb/requests/forms/add-southsudan.php:167
 #: app/tb/requests/forms/edit-burkina-faso.php:185
 #: app/tb/results/forms/update-burkina-faso.php:184
@@ -10365,16 +10389,16 @@ msgstr ""
 #: app/vl/requests/forms/add-southsudan.php:228
 #: app/vl/requests/forms/edit-cameroon.php:290
 #: app/vl/requests/forms/edit-rwanda.php:228
-#: app/vl/requests/forms/edit-sierraleone.php:326
+#: app/vl/requests/forms/edit-sierraleone.php:323
 #: app/vl/requests/forms/edit-southsudan.php:306
 msgid "Encrypt Patient Identifying Information"
 msgstr "Cryptage des données d'identification des patients"
 
-#: app/cd4/requests/forms/add-rwanda.php:792
-#: app/cd4/requests/forms/edit-rwanda.php:883
+#: app/cd4/requests/forms/add-rwanda.php:834
+#: app/cd4/requests/forms/edit-rwanda.php:929
 #: app/vl/requests/forms/add-burkina-faso.php:729
 #: app/vl/requests/forms/add-cameroon.php:766
-#: app/vl/requests/forms/add-drc.php:979 app/vl/requests/forms/add-png.php:660
+#: app/vl/requests/forms/add-drc.php:978 app/vl/requests/forms/add-png.php:660
 #: app/vl/requests/forms/add-rwanda.php:767
 #: app/vl/requests/forms/add-sierraleone.php:953
 #: app/vl/requests/forms/add-southsudan.php:833
@@ -10384,11 +10408,11 @@ msgstr "Cryptage des données d'identification des patients"
 msgid "No. of times Test Requested for this Patient"
 msgstr "Nombre de fois où le test a été demandé pour ce patient"
 
-#: app/cd4/requests/forms/add-rwanda.php:795
-#: app/cd4/requests/forms/edit-rwanda.php:886
+#: app/cd4/requests/forms/add-rwanda.php:837
+#: app/cd4/requests/forms/edit-rwanda.php:932
 #: app/vl/requests/forms/add-burkina-faso.php:732
 #: app/vl/requests/forms/add-cameroon.php:769
-#: app/vl/requests/forms/add-drc.php:982 app/vl/requests/forms/add-png.php:663
+#: app/vl/requests/forms/add-drc.php:981 app/vl/requests/forms/add-png.php:663
 #: app/vl/requests/forms/add-rwanda.php:770
 #: app/vl/requests/forms/add-sierraleone.php:956
 #: app/vl/requests/forms/add-southsudan.php:836
@@ -10398,11 +10422,11 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 msgid "Last Test Request Added On LIS/STS"
 msgstr "Dernière demande ajouté à LIS/STS"
 
-#: app/cd4/requests/forms/add-rwanda.php:798
-#: app/cd4/requests/forms/edit-rwanda.php:889
+#: app/cd4/requests/forms/add-rwanda.php:840
+#: app/cd4/requests/forms/edit-rwanda.php:935
 #: app/vl/requests/forms/add-burkina-faso.php:735
 #: app/vl/requests/forms/add-cameroon.php:772
-#: app/vl/requests/forms/add-drc.php:985 app/vl/requests/forms/add-png.php:666
+#: app/vl/requests/forms/add-drc.php:984 app/vl/requests/forms/add-png.php:666
 #: app/vl/requests/forms/add-rwanda.php:773
 #: app/vl/requests/forms/add-sierraleone.php:959
 #: app/vl/requests/forms/add-southsudan.php:839
@@ -10412,11 +10436,11 @@ msgstr "Dernière demande ajouté à LIS/STS"
 msgid "Sample Collection Date for Last Request"
 msgstr "Date du dernier prélèvement de l'échantillon"
 
-#: app/cd4/requests/forms/add-rwanda.php:801
-#: app/cd4/requests/forms/edit-rwanda.php:892
+#: app/cd4/requests/forms/add-rwanda.php:843
+#: app/cd4/requests/forms/edit-rwanda.php:938
 #: app/vl/requests/forms/add-burkina-faso.php:738
 #: app/vl/requests/forms/add-cameroon.php:775
-#: app/vl/requests/forms/add-drc.php:988 app/vl/requests/forms/add-png.php:669
+#: app/vl/requests/forms/add-drc.php:987 app/vl/requests/forms/add-png.php:669
 #: app/vl/requests/forms/add-rwanda.php:776
 #: app/vl/requests/forms/add-sierraleone.php:962
 #: app/vl/requests/forms/add-southsudan.php:842
@@ -10426,8 +10450,8 @@ msgstr "Date du dernier prélèvement de l'échantillon"
 msgid "Total No. of times Patient tested for HIV VL"
 msgstr "Nombre total de fois où le patient a été testé pour le la CV VIH"
 
-#: app/cd4/requests/forms/add-rwanda.php:1080
-#: app/cd4/requests/forms/edit-rwanda.php:1183
+#: app/cd4/requests/forms/add-rwanda.php:1122
+#: app/cd4/requests/forms/edit-rwanda.php:1229
 #: app/vl/requests/forms/add-cameroon.php:1197
 #: app/vl/requests/forms/add-rwanda.php:1183
 #: app/vl/requests/forms/edit-cameroon.php:1289
@@ -10442,7 +10466,7 @@ msgstr "Veuillez saisir la date de naissance ou l'âge du patient"
 #: app/generic-tests/requests/get-request-list.php:125
 #: app/hepatitis/requests/get-request-list.php:276
 #: app/tb/requests/get-request-list.php:259
-#: app/vl/requests/get-request-list.php:362
+#: app/vl/requests/get-request-list.php:361
 msgid "Generating..."
 msgstr "Génération…"
 
@@ -10453,7 +10477,7 @@ msgstr "Génération…"
 #: app/hepatitis/requests/get-request-list.php:289
 #: app/specimen-referral-manifest/view-manifests.php:57
 #: app/tb/requests/get-request-list.php:272
-#: app/vl/requests/get-request-list.php:376
+#: app/vl/requests/get-request-list.php:375
 msgid "Manifest Code"
 msgstr "Code du manifeste"
 
@@ -10476,7 +10500,7 @@ msgstr "DoB du patient"
 #: app/generic-tests/requests/get-request-list.php:140
 #: app/hepatitis/requests/get-request-list.php:298
 #: app/tb/requests/get-request-list.php:281
-#: app/vl/requests/get-request-list.php:402
+#: app/vl/requests/get-request-list.php:401
 msgid "Patient Age"
 msgstr "Age du Patient"
 
@@ -10488,8 +10512,8 @@ msgstr "Age du Patient"
 #: app/generic-tests/requests/get-request-list.php:143
 #: app/hepatitis/requests/get-request-list.php:301
 #: app/tb/requests/get-request-list.php:284
-#: app/vl/requests/get-request-list.php:405
-msgid "Patient Gender"
+#: app/vl/requests/get-request-list.php:404
+msgid "Patient Sex"
 msgstr "Sexe du patient"
 
 #: app/cd4/requests/get-request-list.php:400
@@ -10505,9 +10529,9 @@ msgstr "Sexe du patient"
 #: app/hepatitis/results/hepatitis-samples-for-manual-result-entry.php:161
 #: app/tb/requests/get-request-list.php:320
 #: app/tb/results/tb-samples-for-manual-result-entry.php:222
-#: app/vl/requests/get-request-list.php:453
+#: app/vl/requests/get-request-list.php:452
 #: app/vl/results/get-manual-results.php:283
-#: app/vl/results/getVlTestResultDetails.php:253
+#: app/vl/results/getVlTestResultDetails.php:239
 msgid "Locked"
 msgstr "Verrouillé"
 
@@ -10516,7 +10540,7 @@ msgstr "Verrouillé"
 #: app/eid/requests/get-request-list.php:392
 #: app/hepatitis/requests/get-request-list.php:351
 #: app/tb/requests/get-request-list.php:336
-#: app/vl/requests/get-request-list.php:459
+#: app/vl/requests/get-request-list.php:458
 msgid "Barcode"
 msgstr "Code barre"
 
@@ -10525,7 +10549,7 @@ msgstr "Code barre"
 #: app/eid/requests/get-request-list.php:384
 #: app/hepatitis/requests/get-request-list.php:346
 #: app/tb/requests/get-request-list.php:328
-#: app/vl/requests/get-request-list.php:464
+#: app/vl/requests/get-request-list.php:463
 msgid "Sync Sample"
 msgstr "Échantillon de synchronisation"
 
@@ -10534,7 +10558,7 @@ msgstr "Échantillon de synchronisation"
 #: app/eid/requests/get-request-list.php:384
 #: app/hepatitis/requests/get-request-list.php:346
 #: app/tb/requests/get-request-list.php:328
-#: app/vl/requests/get-request-list.php:464
+#: app/vl/requests/get-request-list.php:463
 msgid "Sync"
 msgstr "Synchroniser"
 
@@ -10916,53 +10940,43 @@ msgstr "Imprimer les résultats sélectionnés PDF"
 msgid "Print selected Results PDF"
 msgstr "Imprimer les résultats sélectionnés PDF"
 
-#: app/cd4/results/cd4-print-results.php:886
+#: app/cd4/results/cd4-print-results.php:890
 #: app/cd4/results/email-results.php:423 app/cd4/results/email-results.php:432
 #: app/cd4/results/getRequestSampleCodeDetails.php:141
 #: app/cd4/results/getRequestSampleCodeDetails.php:150
-#: app/covid-19/results/covid-19-print-results.php:914
+#: app/covid-19/results/covid-19-print-results.php:918
 #: app/covid-19/results/email-results.php:425
 #: app/covid-19/results/email-results.php:434
 #: app/covid-19/results/getRequestSampleCodeDetails.php:141
 #: app/covid-19/results/getRequestSampleCodeDetails.php:150
-#: app/eid/results/eid-print-results.php:955
+#: app/eid/results/eid-print-results.php:959
 #: app/eid/results/email-results.php:422 app/eid/results/email-results.php:431
 #: app/eid/results/getRequestSampleCodeDetails.php:136
 #: app/eid/results/getRequestSampleCodeDetails.php:145
 #: app/generic-tests/results/email-results.php:425
 #: app/generic-tests/results/email-results.php:434
-#: app/generic-tests/results/generic-print-result.php:1031
+#: app/generic-tests/results/generic-print-result.php:1035
 #: app/generic-tests/results/getRequestSampleCodeDetails.php:141
 #: app/generic-tests/results/getRequestSampleCodeDetails.php:150
 #: app/hepatitis/results/email-results.php:425
 #: app/hepatitis/results/email-results.php:434
 #: app/hepatitis/results/getRequestSampleCodeDetails.php:141
 #: app/hepatitis/results/getRequestSampleCodeDetails.php:150
-#: app/hepatitis/results/hepatitis-print-results.php:881
+#: app/hepatitis/results/hepatitis-print-results.php:885
 #: app/mail/getRequestSampleCodeDetails.php:141
 #: app/mail/getRequestSampleCodeDetails.php:150 app/mail/vlResultMail.php:425
 #: app/mail/vlResultMail.php:434 app/tb/results/email-results.php:425
 #: app/tb/results/email-results.php:434
 #: app/tb/results/getRequestSampleCodeDetails.php:141
 #: app/tb/results/getRequestSampleCodeDetails.php:150
-#: app/tb/results/tb-print-results.php:880 app/vl/results/email-results.php:425
+#: app/tb/results/tb-print-results.php:884 app/vl/results/email-results.php:425
 #: app/vl/results/email-results.php:434
 #: app/vl/results/getRequestSampleCodeDetails.php:141
 #: app/vl/results/getRequestSampleCodeDetails.php:150
-#: app/vl/results/vlPrintResult.php:1154 app/vl/results/vlResultMail.php:425
+#: app/vl/results/vlPrintResult.php:1193 app/vl/results/vlResultMail.php:425
 #: app/vl/results/vlResultMail.php:434
 msgid "You have selected"
 msgstr "Vous avez sélectionnée"
-
-#: app/cd4/results/cd4-print-results.php:886
-#: app/covid-19/results/covid-19-print-results.php:914
-#: app/eid/results/eid-print-results.php:955
-#: app/generic-tests/results/generic-print-result.php:1031
-#: app/hepatitis/results/hepatitis-print-results.php:881
-#: app/tb/results/tb-print-results.php:880
-#: app/vl/results/vlPrintResult.php:1154
-msgid "results out of the maximum allowed 100 at a time"
-msgstr "résultats sur le maximum autorisé de 100 à la fois"
 
 #: app/cd4/results/cd4-print-results.php:890
 #: app/covid-19/results/covid-19-print-results.php:918
@@ -10970,9 +10984,19 @@ msgstr "résultats sur le maximum autorisé de 100 à la fois"
 #: app/generic-tests/results/generic-print-result.php:1035
 #: app/hepatitis/results/hepatitis-print-results.php:885
 #: app/tb/results/tb-print-results.php:884
-#: app/vl/results/vlPrintResult.php:1158
-msgid "Maximum 100 results allowed to print at a time"
-msgstr "100 résultats maximum à être imprimés à la fois"
+#: app/vl/results/vlPrintResult.php:1193
+msgid "results out of the maximum allowed 100 at a time"
+msgstr "résultats sur le maximum autorisé de 100 à la fois"
+
+#: app/cd4/results/cd4-print-results.php:894
+#: app/covid-19/results/covid-19-print-results.php:922
+#: app/eid/results/eid-print-results.php:963
+#: app/generic-tests/results/generic-print-result.php:1039
+#: app/hepatitis/results/hepatitis-print-results.php:889
+#: app/tb/results/tb-print-results.php:888
+#: app/vl/results/vlPrintResult.php:1197
+msgid "Maximum of 100 results allowed to print at a time"
+msgstr "Un maximum de 100 résultats peut être imprimé à la fois"
 
 #: app/cd4/results/cd4-result-status.php:8
 #: app/covid-19/results/covid-19-result-status.php:2
@@ -11696,7 +11720,7 @@ msgstr "Retester"
 #: app/hepatitis/results/hepatitis-samples-for-manual-result-entry.php:158
 #: app/tb/results/tb-samples-for-manual-result-entry.php:219
 #: app/vl/results/get-manual-results.php:280
-#: app/vl/results/getVlTestResultDetails.php:251
+#: app/vl/results/getVlTestResultDetails.php:237
 msgid "Enter Result"
 msgstr "Saisir le résultat"
 
@@ -12939,7 +12963,7 @@ msgstr ""
 
 #: app/covid-19/requests/covid-19-add-request.php:202
 #: app/hepatitis/requests/hepatitis-quick-add.php:161
-#: app/tb/results/tb-update-result.php:191 app/vl/vl.js.php:90
+#: app/tb/results/tb-update-result.php:235 app/vl/vl.js.php:90
 msgid "This Sample ID already exists"
 msgstr "Ce numéro d'identification d'échantillon existe déjà"
 
@@ -12978,7 +13002,7 @@ msgstr "COVID 19-Modifier la demande de test"
 #: app/hepatitis/requests/hepatitis-add-request.php:180
 #: app/hepatitis/requests/hepatitis-edit-request.php:161
 #: app/tb/requests/tb-add-request.php:179
-#: app/tb/requests/tb-edit-request.php:192
+#: app/tb/requests/tb-edit-request.php:241
 msgid "This Sample Code already exists"
 msgstr "Le code de cet échantillon existe déjà"
 
@@ -13377,11 +13401,11 @@ msgstr "Aucun patient trouvé"
 #: app/hepatitis/requests/forms/edit-rwanda.php:160
 #: app/hepatitis/requests/forms/edit-rwanda.php:162
 #: app/tb/requests/forms/add-burkina-faso.php:163
-#: app/tb/requests/forms/add-sierraleone.php:190
+#: app/tb/requests/forms/add-sierraleone.php:197
 #: app/tb/requests/forms/add-southsudan.php:165
 #: app/tb/requests/forms/edit-burkina-faso.php:183
-#: app/tb/requests/forms/edit-sierraleone.php:229
-#: app/tb/requests/forms/edit-sierraleone.php:231
+#: app/tb/requests/forms/edit-sierraleone.php:234
+#: app/tb/requests/forms/edit-sierraleone.php:236
 #: app/tb/requests/forms/edit-southsudan.php:194
 #: app/tb/requests/forms/edit-southsudan.php:196
 #: app/tb/results/forms/update-burkina-faso.php:182
@@ -13840,11 +13864,11 @@ msgstr "Date de réception"
 #: app/tb/requests/forms/add-burkina-faso.php:361
 #: app/tb/requests/forms/add-burkina-faso.php:380
 #: app/tb/requests/forms/add-burkina-faso.php:384
-#: app/tb/requests/forms/add-sierraleone.php:146
-#: app/tb/requests/forms/add-sierraleone.php:427
-#: app/tb/requests/forms/add-sierraleone.php:433
-#: app/tb/requests/forms/add-sierraleone.php:438
-#: app/tb/requests/forms/add-sierraleone.php:450
+#: app/tb/requests/forms/add-sierraleone.php:153
+#: app/tb/requests/forms/add-sierraleone.php:434
+#: app/tb/requests/forms/add-sierraleone.php:440
+#: app/tb/requests/forms/add-sierraleone.php:445
+#: app/tb/requests/forms/add-sierraleone.php:457
 #: app/tb/requests/forms/add-southsudan.php:125
 #: app/tb/requests/forms/add-southsudan.php:332
 #: app/tb/requests/forms/add-southsudan.php:357
@@ -13853,11 +13877,11 @@ msgstr "Date de réception"
 #: app/tb/requests/forms/edit-burkina-faso.php:382
 #: app/tb/requests/forms/edit-burkina-faso.php:401
 #: app/tb/requests/forms/edit-burkina-faso.php:405
-#: app/tb/requests/forms/edit-sierraleone.php:185
-#: app/tb/requests/forms/edit-sierraleone.php:460
-#: app/tb/requests/forms/edit-sierraleone.php:466
-#: app/tb/requests/forms/edit-sierraleone.php:470
-#: app/tb/requests/forms/edit-sierraleone.php:482
+#: app/tb/requests/forms/edit-sierraleone.php:190
+#: app/tb/requests/forms/edit-sierraleone.php:465
+#: app/tb/requests/forms/edit-sierraleone.php:471
+#: app/tb/requests/forms/edit-sierraleone.php:475
+#: app/tb/requests/forms/edit-sierraleone.php:487
 #: app/tb/requests/forms/edit-southsudan.php:155
 #: app/tb/requests/forms/edit-southsudan.php:355
 #: app/tb/requests/forms/edit-southsudan.php:380
@@ -13866,21 +13890,21 @@ msgstr "Date de réception"
 #: app/tb/results/forms/update-burkina-faso.php:397
 #: app/tb/results/forms/update-burkina-faso.php:403
 #: app/tb/results/forms/update-burkina-faso.php:408
-#: app/tb/results/forms/update-sierraleone.php:171
-#: app/tb/results/forms/update-sierraleone.php:317
-#: app/tb/results/forms/update-sierraleone.php:381
-#: app/tb/results/forms/update-sierraleone.php:388
-#: app/tb/results/forms/update-sierraleone.php:401
-#: app/tb/results/forms/update-sierraleone.php:406
+#: app/tb/results/forms/update-sierraleone.php:175
+#: app/tb/results/forms/update-sierraleone.php:321
+#: app/tb/results/forms/update-sierraleone.php:385
+#: app/tb/results/forms/update-sierraleone.php:392
+#: app/tb/results/forms/update-sierraleone.php:405
+#: app/tb/results/forms/update-sierraleone.php:410
 #: app/tb/results/forms/update-southsudan.php:170
 #: app/tb/results/forms/update-southsudan.php:310
 #: app/tb/results/forms/update-southsudan.php:373
 #: app/tb/results/forms/update-southsudan.php:379
 #: app/vl/requests/forms/add-burkina-faso.php:624
-#: app/vl/requests/forms/add-drc.php:146 app/vl/requests/forms/add-drc.php:302
-#: app/vl/requests/forms/add-drc.php:327 app/vl/requests/forms/add-drc.php:352
-#: app/vl/requests/forms/add-drc.php:379 app/vl/requests/forms/add-drc.php:416
-#: app/vl/requests/forms/add-drc.php:439 app/vl/requests/forms/add-drc.php:471
+#: app/vl/requests/forms/add-drc.php:146 app/vl/requests/forms/add-drc.php:301
+#: app/vl/requests/forms/add-drc.php:326 app/vl/requests/forms/add-drc.php:351
+#: app/vl/requests/forms/add-drc.php:378 app/vl/requests/forms/add-drc.php:415
+#: app/vl/requests/forms/add-drc.php:438 app/vl/requests/forms/add-drc.php:470
 #: app/vl/requests/forms/add-sierraleone.php:832
 #: app/vl/requests/forms/add-southsudan.php:728
 #: app/vl/requests/forms/add-who.php:688
@@ -13888,26 +13912,26 @@ msgstr "Date de réception"
 #: app/vl/requests/forms/edit-drc.php:144
 #: app/vl/requests/forms/edit-drc.php:205
 #: app/vl/requests/forms/edit-drc.php:251
-#: app/vl/requests/forms/edit-drc.php:343
-#: app/vl/requests/forms/edit-drc.php:371
-#: app/vl/requests/forms/edit-drc.php:396
-#: app/vl/requests/forms/edit-drc.php:423
-#: app/vl/requests/forms/edit-drc.php:462
-#: app/vl/requests/forms/edit-drc.php:484
-#: app/vl/requests/forms/edit-drc.php:516
-#: app/vl/requests/forms/edit-sierraleone.php:982
+#: app/vl/requests/forms/edit-drc.php:342
+#: app/vl/requests/forms/edit-drc.php:370
+#: app/vl/requests/forms/edit-drc.php:395
+#: app/vl/requests/forms/edit-drc.php:422
+#: app/vl/requests/forms/edit-drc.php:461
+#: app/vl/requests/forms/edit-drc.php:483
+#: app/vl/requests/forms/edit-drc.php:515
+#: app/vl/requests/forms/edit-sierraleone.php:979
 #: app/vl/requests/forms/edit-southsudan.php:846
 #: app/vl/requests/forms/edit-who.php:841
 #: app/vl/results/forms/update-burkina-faso-result.php:712
 #: app/vl/results/forms/update-drc-result.php:172
 #: app/vl/results/forms/update-drc-result.php:204
-#: app/vl/results/forms/update-drc-result.php:285
-#: app/vl/results/forms/update-drc-result.php:312
-#: app/vl/results/forms/update-drc-result.php:342
-#: app/vl/results/forms/update-drc-result.php:392
-#: app/vl/results/forms/update-drc-result.php:435
-#: app/vl/results/forms/update-drc-result.php:456
-#: app/vl/results/forms/update-drc-result.php:491
+#: app/vl/results/forms/update-drc-result.php:284
+#: app/vl/results/forms/update-drc-result.php:311
+#: app/vl/results/forms/update-drc-result.php:341
+#: app/vl/results/forms/update-drc-result.php:391
+#: app/vl/results/forms/update-drc-result.php:434
+#: app/vl/results/forms/update-drc-result.php:455
+#: app/vl/results/forms/update-drc-result.php:490
 #: app/vl/results/forms/update-sierraleone-result.php:868
 #: app/vl/results/forms/update-southsudan-result.php:860
 msgid "Please enter date"
@@ -14005,13 +14029,13 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: app/tb/results/forms/update-burkina-faso.php:447
 #: app/vl/requests/forms/add-burkina-faso.php:531
 #: app/vl/requests/forms/add-cameroon.php:585
-#: app/vl/requests/forms/add-drc.php:511
+#: app/vl/requests/forms/add-drc.php:510
 #: app/vl/requests/forms/edit-burkina-faso.php:617
 #: app/vl/requests/forms/edit-cameroon.php:651
-#: app/vl/requests/forms/edit-drc.php:554
+#: app/vl/requests/forms/edit-drc.php:553
 #: app/vl/results/forms/update-burkina-faso-result.php:615
 #: app/vl/results/forms/update-cameroon-result.php:666
-#: app/vl/results/forms/update-drc-result.php:527
+#: app/vl/results/forms/update-drc-result.php:526
 msgid "Rejection Date"
 msgstr "Date de rejet"
 
@@ -16348,10 +16372,10 @@ msgstr "Sélectionner Approuvé par"
 #: app/generic-tests/results/update-generic-test-result.php:1067
 #: app/generic-tests/results/update-generic-test-result.php:1124
 #: app/vl/requests/forms/add-cameroon.php:845
-#: app/vl/requests/forms/add-drc.php:1079
+#: app/vl/requests/forms/add-drc.php:1078
 #: app/vl/requests/forms/edit-cameroon.php:898
-#: app/vl/requests/forms/edit-drc.php:1103
-#: app/vl/results/forms/update-drc-result.php:797
+#: app/vl/requests/forms/edit-drc.php:1102
+#: app/vl/results/forms/update-drc-result.php:796
 #: public/assets/js/main.js.php:601
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
@@ -16386,27 +16410,27 @@ msgstr "Âge en semaines"
 #: app/vl/program-management/storageHistoryDataToExcel.php:25
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:441 app/vl/requests/forms/edit-drc.php:486
-#: app/vl/requests/get-request-list.php:392
+#: app/vl/requests/forms/add-drc.php:440 app/vl/requests/forms/edit-drc.php:485
+#: app/vl/requests/get-request-list.php:391
 #: app/vl/requests/sample-storage.php:179
 #: app/vl/requests/sample-storage.php:281
-#: app/vl/results/forms/update-drc-result.php:458
+#: app/vl/results/forms/update-drc-result.php:457
 msgid "Freezer"
 msgstr "Congélateur"
 
 #: app/eid/requests/forms/add-drc.php:474
 #: app/eid/requests/forms/edit-drc.php:508
 #: app/eid/results/forms/update-drc-result.php:500
-#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:488
-#: app/vl/results/forms/update-drc-result.php:461
+#: app/vl/requests/forms/add-drc.php:442 app/vl/requests/forms/edit-drc.php:487
+#: app/vl/results/forms/update-drc-result.php:460
 msgid "Enter Freezer"
 msgstr "Entrer dans le congélateur"
 
 #: app/eid/requests/forms/add-drc.php:474
 #: app/eid/requests/forms/edit-drc.php:508
 #: app/eid/results/forms/update-drc-result.php:500
-#: app/vl/requests/forms/add-drc.php:443 app/vl/requests/forms/edit-drc.php:488
-#: app/vl/results/forms/update-drc-result.php:461
+#: app/vl/requests/forms/add-drc.php:442 app/vl/requests/forms/edit-drc.php:487
+#: app/vl/results/forms/update-drc-result.php:460
 msgid "Please enter Freezer"
 msgstr "Veuillez entrer Congélateur"
 
@@ -16425,21 +16449,21 @@ msgstr "Veuillez entrer Congélateur"
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:448 app/vl/requests/forms/add-drc.php:450
-#: app/vl/requests/forms/edit-drc.php:494
-#: app/vl/requests/forms/edit-drc.php:496
-#: app/vl/requests/get-request-list.php:392
+#: app/vl/requests/forms/add-drc.php:447 app/vl/requests/forms/add-drc.php:449
+#: app/vl/requests/forms/edit-drc.php:493
+#: app/vl/requests/forms/edit-drc.php:495
+#: app/vl/requests/get-request-list.php:391
 #: app/vl/requests/sample-storage.php:284
 #: app/vl/requests/upload-storage.php:139
-#: app/vl/results/forms/update-drc-result.php:467
+#: app/vl/results/forms/update-drc-result.php:466
 msgid "Rack"
 msgstr "Coffret"
 
 #: app/eid/requests/forms/add-drc.php:479
 #: app/eid/requests/forms/edit-drc.php:514
 #: app/eid/results/forms/update-drc-result.php:508
-#: app/vl/requests/forms/add-drc.php:450 app/vl/requests/forms/edit-drc.php:496
-#: app/vl/results/forms/update-drc-result.php:469
+#: app/vl/requests/forms/add-drc.php:449 app/vl/requests/forms/edit-drc.php:495
+#: app/vl/results/forms/update-drc-result.php:468
 msgid "Please enter rack"
 msgstr "Veuillez entrer le rack"
 
@@ -16458,21 +16482,21 @@ msgstr "Veuillez entrer le rack"
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:452 app/vl/requests/forms/add-drc.php:454
-#: app/vl/requests/forms/edit-drc.php:498
-#: app/vl/requests/forms/edit-drc.php:500
-#: app/vl/requests/get-request-list.php:392
+#: app/vl/requests/forms/add-drc.php:451 app/vl/requests/forms/add-drc.php:453
+#: app/vl/requests/forms/edit-drc.php:497
+#: app/vl/requests/forms/edit-drc.php:499
+#: app/vl/requests/get-request-list.php:391
 #: app/vl/requests/sample-storage.php:287
 #: app/vl/requests/upload-storage.php:140
-#: app/vl/results/forms/update-drc-result.php:471
+#: app/vl/results/forms/update-drc-result.php:470
 msgid "Box"
 msgstr "Boîte"
 
 #: app/eid/requests/forms/add-drc.php:486
 #: app/eid/requests/forms/edit-drc.php:521
 #: app/eid/results/forms/update-drc-result.php:512
-#: app/vl/requests/forms/add-drc.php:454 app/vl/requests/forms/edit-drc.php:500
-#: app/vl/results/forms/update-drc-result.php:474
+#: app/vl/requests/forms/add-drc.php:453 app/vl/requests/forms/edit-drc.php:499
+#: app/vl/results/forms/update-drc-result.php:473
 msgid "Please enter box"
 msgstr "Veuillez entrer dans la case"
 
@@ -16491,22 +16515,22 @@ msgstr "Veuillez entrer dans la case"
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:458 app/vl/requests/forms/add-drc.php:460
-#: app/vl/requests/forms/edit-drc.php:504
-#: app/vl/requests/forms/edit-drc.php:506
-#: app/vl/requests/get-request-list.php:392
+#: app/vl/requests/forms/add-drc.php:457 app/vl/requests/forms/add-drc.php:459
+#: app/vl/requests/forms/edit-drc.php:503
+#: app/vl/requests/forms/edit-drc.php:505
+#: app/vl/requests/get-request-list.php:391
 #: app/vl/requests/sample-storage.php:290
 #: app/vl/requests/upload-storage.php:141
-#: app/vl/results/forms/update-drc-result.php:478
-#: app/vl/results/forms/update-drc-result.php:480
+#: app/vl/results/forms/update-drc-result.php:477
+#: app/vl/results/forms/update-drc-result.php:479
 msgid "Position"
 msgstr "Position"
 
 #: app/eid/requests/forms/add-drc.php:490
 #: app/eid/requests/forms/edit-drc.php:525
 #: app/eid/results/forms/update-drc-result.php:518
-#: app/vl/requests/forms/add-drc.php:460 app/vl/requests/forms/edit-drc.php:506
-#: app/vl/results/forms/update-drc-result.php:480
+#: app/vl/requests/forms/add-drc.php:459 app/vl/requests/forms/edit-drc.php:505
+#: app/vl/results/forms/update-drc-result.php:479
 msgid "Please enter position"
 msgstr "Veuillez saisir la position"
 
@@ -16517,24 +16541,24 @@ msgstr "Veuillez saisir la position"
 #: app/vl/program-management/export-vl-results.php:48
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:45
-#: app/vl/requests/forms/add-drc.php:462 app/vl/requests/forms/edit-drc.php:508
-#: app/vl/results/forms/update-drc-result.php:482
+#: app/vl/requests/forms/add-drc.php:461 app/vl/requests/forms/edit-drc.php:507
+#: app/vl/results/forms/update-drc-result.php:481
 msgid "Volume (ml)"
 msgstr "Volume (ml)"
 
 #: app/eid/requests/forms/add-drc.php:497
 #: app/eid/requests/forms/edit-drc.php:532
 #: app/eid/results/forms/update-drc-result.php:523
-#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:510
-#: app/vl/results/forms/update-drc-result.php:485
+#: app/vl/requests/forms/add-drc.php:463 app/vl/requests/forms/edit-drc.php:509
+#: app/vl/results/forms/update-drc-result.php:484
 msgid "Volume"
 msgstr "Volume"
 
 #: app/eid/requests/forms/add-drc.php:497
 #: app/eid/requests/forms/edit-drc.php:532
 #: app/eid/results/forms/update-drc-result.php:523
-#: app/vl/requests/forms/add-drc.php:464 app/vl/requests/forms/edit-drc.php:510
-#: app/vl/results/forms/update-drc-result.php:485
+#: app/vl/requests/forms/add-drc.php:463 app/vl/requests/forms/edit-drc.php:509
+#: app/vl/results/forms/update-drc-result.php:484
 msgid "Please enter volume"
 msgstr "Veuillez saisir le volume"
 
@@ -16599,8 +16623,8 @@ msgid "Child Age"
 msgstr "Âge de l'enfant"
 
 #: app/eid/requests/get-request-list.php:337
-msgid "Child Gender"
-msgstr "Sexe de l'enfant"
+msgid "Child Sex"
+msgstr "Sexe des enfants"
 
 #: app/eid/requests/patientModal.php:93
 msgid "Infant Code/ID"
@@ -19107,11 +19131,11 @@ msgstr "Veuillez sélectionner les sous-épreuves"
 
 #: app/generic-tests/requests/add-request.php:634
 #: app/vl/requests/forms/add-burkina-faso.php:584
-#: app/vl/requests/forms/add-drc.php:531
+#: app/vl/requests/forms/add-drc.php:530
 #: app/vl/requests/forms/edit-burkina-faso.php:671
-#: app/vl/requests/forms/edit-drc.php:578
+#: app/vl/requests/forms/edit-drc.php:577
 #: app/vl/results/forms/update-burkina-faso-result.php:668
-#: app/vl/results/forms/update-drc-result.php:548
+#: app/vl/results/forms/update-drc-result.php:547
 msgid "Reason for Failure"
 msgstr "Motif de l'échec"
 
@@ -23596,7 +23620,7 @@ msgstr "Tuberculose-Demande de test"
 #: app/tb/requests/forms/add-burkina-faso.php:60
 #: app/tb/requests/forms/edit-burkina-faso.php:80
 #: app/tb/results/forms/update-burkina-faso.php:80
-#: app/tb/results/forms/update-sierraleone.php:99
+#: app/tb/results/forms/update-sierraleone.php:103
 #: app/tb/results/forms/update-southsudan.php:99
 msgid "TB LABORATORY TEST REQUEST FORM"
 msgstr "TUBERCULOSE-FORMULAIRE DE DEMANDE DE TEST"
@@ -23823,8 +23847,8 @@ msgstr "Résultat Xpert MTB"
 msgid "TB LAM Result"
 msgstr "TB LAM Résultat"
 
-#: app/tb/requests/forms/add-sierraleone.php:150
-#: app/tb/requests/forms/edit-sierraleone.php:189
+#: app/tb/requests/forms/add-sierraleone.php:157
+#: app/tb/requests/forms/edit-sierraleone.php:194
 msgid "Enter clinician name"
 msgstr "Saisir le nom du clinicien"
 
@@ -23833,22 +23857,22 @@ msgstr "Saisir le nom du clinicien"
 msgid "Edit TB Request"
 msgstr "Modifier la demande TB"
 
-#: app/tb/requests/tb-add-request-helper.php:305
+#: app/tb/requests/tb-add-request-helper.php:358
 msgid "TB test request added successfully"
 msgstr "Demande de test TB ajoutée avec succès"
 
-#: app/tb/requests/tb-add-request-helper.php:313
+#: app/tb/requests/tb-add-request-helper.php:366
 msgid "Unable to add this TB sample. Please try again later"
 msgstr "Impossible d'ajouter cet échantillon TB. Veuillez réessayer plus tard"
 
-#: app/tb/requests/tb-edit-request-helper.php:301
-#: app/tb/results/tb-update-result-helper.php:225
+#: app/tb/requests/tb-edit-request-helper.php:353
+#: app/tb/results/tb-update-result-helper.php:278
 msgid "TB test request updated successfully"
 msgstr ""
 "Mise à jour réussie de la demande de test de dépistage de la tuberculose"
 
-#: app/tb/requests/tb-edit-request-helper.php:309
-#: app/tb/results/tb-update-result-helper.php:233
+#: app/tb/requests/tb-edit-request-helper.php:361
+#: app/tb/results/tb-update-result-helper.php:286
 msgid "Unable to update this TB sample. Please try again later"
 msgstr ""
 "Impossible de mettre à jour cet échantillon de la tuberculose. Veuillez "
@@ -23871,7 +23895,7 @@ msgid "Email TB Test Results"
 msgstr ""
 "Envoyer par courriel les résultats du test de dépistage de la tuberculose"
 
-#: app/tb/results/forms/update-sierraleone.php:102
+#: app/tb/results/forms/update-sierraleone.php:106
 #: app/tb/results/forms/update-southsudan.php:102
 msgid "Edit New Request"
 msgstr "Modifier la nouvelle demande"
@@ -25491,14 +25515,6 @@ msgstr "Veuillez saisir la date de naissance"
 msgid "Please enter Patient age"
 msgstr "Veuillez indiquer l'âge du patient"
 
-#: app/vl/requests/forms/add-drc.php:217 app/vl/requests/forms/add-drc.php:221
-#: app/vl/requests/forms/add-drc.php:225
-#: app/vl/results/forms/update-drc-result.php:222
-#: app/vl/results/forms/update-drc-result.php:226
-#: app/vl/results/forms/update-drc-result.php:230
-msgid "Please select a gender"
-msgstr "Veuillez sélectionner un sexe"
-
 #: app/vl/requests/forms/add-drc.php:229 app/vl/requests/forms/edit-drc.php:269
 #: app/vl/results/forms/update-drc-result.php:233
 msgid "M"
@@ -25514,37 +25530,37 @@ msgstr "F"
 msgid "Please choose KP"
 msgstr "Veuillez choisir KP"
 
-#: app/vl/requests/forms/add-drc.php:245
+#: app/vl/requests/forms/add-drc.php:244
 msgid "Please choose Allaitante"
 msgstr "Veuillez choisir Allaitante"
 
-#: app/vl/requests/forms/add-drc.php:253
+#: app/vl/requests/forms/add-drc.php:252
 msgid "Please choose Ou enceinte"
 msgstr "Veuillez choisir Ou enceinte"
 
-#: app/vl/requests/forms/add-drc.php:261
+#: app/vl/requests/forms/add-drc.php:260
 msgid "Please choose Si Femme enceinte"
 msgstr "Veuillez choisir Si Femme enceinte"
 
-#: app/vl/requests/forms/add-drc.php:312 app/vl/requests/forms/add-drc.php:316
-#: app/vl/requests/forms/edit-drc.php:355
-#: app/vl/requests/forms/edit-drc.php:359
-#: app/vl/results/forms/update-drc-result.php:296
-#: app/vl/results/forms/update-drc-result.php:300
+#: app/vl/requests/forms/add-drc.php:311 app/vl/requests/forms/add-drc.php:315
+#: app/vl/requests/forms/edit-drc.php:354
+#: app/vl/requests/forms/edit-drc.php:358
+#: app/vl/results/forms/update-drc-result.php:295
+#: app/vl/results/forms/update-drc-result.php:299
 msgid "Please choose if ARV Regimen changed"
 msgstr "Veuillez choisir si le régime ARV a été modifié"
 
-#: app/vl/requests/forms/add-drc.php:705 app/vl/requests/forms/edit-drc.php:915
+#: app/vl/requests/forms/add-drc.php:704 app/vl/requests/forms/edit-drc.php:914
 #: app/vl/results/forms/update-drc-result.php:240
 msgid "PS"
 msgstr "PS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:918
+#: app/vl/requests/forms/add-drc.php:707 app/vl/requests/forms/edit-drc.php:917
 #: app/vl/results/forms/update-drc-result.php:241
 msgid "CPS"
 msgstr "CPS"
 
-#: app/vl/requests/forms/add-drc.php:708 app/vl/requests/forms/edit-drc.php:918
+#: app/vl/requests/forms/add-drc.php:707 app/vl/requests/forms/edit-drc.php:917
 #: app/vl/results/forms/update-drc-result.php:242
 msgid "MSM"
 msgstr "MSM"
@@ -25571,14 +25587,14 @@ msgstr "Raison de la demande de charge virale"
 msgid "Enter new reason of testing"
 msgstr "Saisir une nouvelle raison pour le contrôle"
 
-#: app/vl/requests/forms/edit-drc.php:614
-#: app/vl/requests/forms/edit-drc.php:618
-#: app/vl/results/forms/update-drc-result.php:587
-#: app/vl/results/forms/update-drc-result.php:594
+#: app/vl/requests/forms/edit-drc.php:613
+#: app/vl/requests/forms/edit-drc.php:617
+#: app/vl/results/forms/update-drc-result.php:586
+#: app/vl/results/forms/update-drc-result.php:593
 msgid "Enter reason for changing the result"
 msgstr "Indiquer la raison de la modification du résultat"
 
-#: app/vl/requests/get-request-list.php:399
+#: app/vl/requests/get-request-list.php:398
 msgid "Patient Date of Birth"
 msgstr "Date de naissance du patient"
 
@@ -25785,19 +25801,19 @@ msgstr "Âge en année"
 msgid "If Age < 1, Age in Month"
 msgstr "Si âge < 1, âge en mois"
 
-#: app/vl/results/forms/update-drc-result.php:469
+#: app/vl/results/forms/update-drc-result.php:468
 msgid "rack"
 msgstr "coffret"
 
-#: app/vl/results/forms/update-drc-result.php:474
+#: app/vl/results/forms/update-drc-result.php:473
 msgid "box"
 msgstr "boite"
 
-#: app/vl/results/forms/update-drc-result.php:507
+#: app/vl/results/forms/update-drc-result.php:506
 msgid "Please select if sample is rejected"
 msgstr "Veuillez sélectionner si l'échantillon est rejeté"
 
-#: app/vl/results/forms/update-drc-result.php:517
+#: app/vl/results/forms/update-drc-result.php:516
 msgid "Please select reason for rejection"
 msgstr "Veuillez sélectionner le motif du rejet"
 
@@ -26106,6 +26122,27 @@ msgstr ""
 #: public/assets/js/main.js.php:972
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
+
+#~ msgid "Gender"
+#~ msgstr "Sexe"
+
+#~ msgid "Please choose gender"
+#~ msgstr "Veuillez choisir le sexe"
+
+#~ msgid "Sample Print Date"
+#~ msgstr "Exemple de la Date d'impression"
+
+#~ msgid "KP"
+#~ msgstr "KP"
+
+#~ msgid "Patient Gender"
+#~ msgstr "Sexe du patient"
+
+#~ msgid "Child Gender"
+#~ msgstr "Sexe de l'enfant"
+
+#~ msgid "Please select a gender"
+#~ msgstr "Veuillez sélectionner un sexe"
 
 #~ msgid "Please select vl lab"
 #~ msgstr "Veuillez sélectionner un laboratoire virtuel"
