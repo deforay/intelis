@@ -270,11 +270,11 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP </label></td>
+										<!-- <td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 											</select>
-										</td>
+										</td> -->
 									</tr>
 									<tr class="femaleSection">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
@@ -911,10 +911,10 @@ $storageInfo = $storageService->getLabStorage();
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "ps") ? 'selected="selected"' : ''; ?>><?= _translate("PS"); ?> </option>');
 			showFemaleSection();
 		} else if ($(this).val() == 'male') {
-			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option><option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>');
 			hideFemaleSection();
 		}
 	});

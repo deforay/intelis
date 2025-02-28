@@ -206,7 +206,7 @@ try {
         'sample_dispatched_datetime' => DateUtility::isoDateFormat($_POST['sampleDispatchedDate'] ?? '', true),
         'patient_gender' => $_POST['gender'] ?? null,
         'health_insurance_code' => $_POST['healthInsuranceCode'] ?? null,
-        'key_population' => $_POST['keyPopulation'] ?? null,
+        //'key_population' => $_POST['keyPopulation'] ?? null,
         //'system_patient_code' => $systemGeneratedCode,
         'patient_dob' => DateUtility::isoDateFormat($_POST['dob'] ?? ''),
         'patient_age_in_years' => _castVariable($_POST['ageInYears'] ?? null, 'int'),

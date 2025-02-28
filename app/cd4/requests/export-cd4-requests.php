@@ -25,15 +25,12 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 $output = [];
 
-$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate('KP'), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for CD4 Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("CD4 Result"), _translate("Result Printed Date"), _translate("CD4 Result (%)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Gender"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for CD4 Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("CD4 Result"), _translate("Result Printed Date"), _translate("CD4 Result (%)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
 if ($general->isStandaloneInstance()) {
 	$headings = MiscUtility::removeMatchingElements($headings, [_translate("Remote Sample ID")]);
 }
 
-if ($formId != COUNTRY\DRC) {
-	$headings = MiscUtility::removeMatchingElements($headings, [_translate("KP")]);
-}
 
 $no = 1;
 
@@ -105,9 +102,6 @@ foreach ($resultSet as $aRow) {
 	$aRow['patient_age_in_years'] ??= 0;
 	$row[] = ($aRow['patient_age_in_years'] > 0) ? $aRow['patient_age_in_years'] : 0;
 	$row[] = $gender;
-	if ($formId == COUNTRY\DRC) {
-		$row[] = _toUpperCase($aRow['key_population']);
-	}
 	$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 	$row[] = $aRow['sample_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date'] ?? '');

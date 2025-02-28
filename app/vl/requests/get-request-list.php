@@ -96,7 +96,6 @@ try {
                vl.request_clinician_phone_number,
                vl.patient_dob,
                vl.patient_gender,
-               vl.key_population,
                vl.health_insurance_code,
                vl.patient_age_in_years,
                vl.sample_collection_date,

@@ -230,12 +230,12 @@ $sFormat = '';
 												<option value="female"><?= _translate("F"); ?></option>
 											</select>
 										</td>
-										<td style="width: 15% !important;"><label>KP </label></td>
+										<!-- <td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
-										</td>
+										</td> -->
 									</tr>
 									<tr class="femaleSection" style="display:none;">
 										<td style="width:10% !important;"><strong>Si Femme : </strong></td>
@@ -701,10 +701,10 @@ $sFormat = '';
 	});
 	$("#gender").change(function() {
 		if ($(this).val() == 'female') {
-			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps"><?= _translate("PS"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="ps"><?= _translate("PS"); ?> </option>');
 			showFemaleSection();
 		} else if ($(this).val() == 'male') {
-			$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps"><?= _translate("CPS"); ?> </option><option value="msm"><?= _translate("MSM"); ?> </option>');
+			//$('#keyPopulation').html('<option value=""><?= _translate("-- Select --"); ?> </option><option value="cps"><?= _translate("CPS"); ?> </option><option value="msm"><?= _translate("MSM"); ?> </option>');
 			hideFemaleSection();
 		}
 	});

@@ -233,7 +233,7 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option </select>
 										</td>
-										<td style="width: 15% !important;"><label>KP </label></td>
+										<!-- <td style="width: 15% !important;"><label>KP </label></td>
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>" <?php echo $disable; ?>>
 												<option value=""><?= _translate("-- Select --"); ?> </option>
@@ -241,7 +241,7 @@ $storageInfo = $storageService->getLabStorage();
 												<option value="cps" <?php echo (trim((string) $vlQueryInfo['key_population']) == "cps") ? 'selected="selected"' : ''; ?>><?= _translate("CPS"); ?> </option>
 												<option value="msm" <?php echo (trim((string) $vlQueryInfo['key_population']) == "msm") ? 'selected="selected"' : ''; ?>><?= _translate("MSM"); ?> </option>
 											</select>
-										</td>
+										</td> -->
 
 									</tr>
 									<tr>
