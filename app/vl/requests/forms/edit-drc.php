@@ -67,7 +67,7 @@ $formAttributes = json_decode($vlQueryInfo['form_attributes']);
 if(is_object($formAttributes->storage))
 {
 	$formAttributes->storage = json_encode($formAttributes->storage);
-} 
+}
 $storageObj = json_decode($formAttributes->storage);
 $storageInfo = $storageService->getLabStorage();
 
@@ -265,7 +265,7 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 15% !important;"><label for="sex">Sexe <span class="mandatory">*</span></label></td>
 										<td style="width: 35% !important;">
 
-											<select name="gender" id="gender" class="form-control isRequired" title="Please choose gender">
+											<select name="gender" id="gender" class="form-control isRequired" title="Please select sex">
 												<option value="male" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "male") ? 'selected="selected"' : ''; ?>><?= _translate("M"); ?></option>
 												<option value="female" <?php echo (trim((string) $vlQueryInfo['patient_gender']) == "female") ? 'selected="selected"' : ''; ?>><?= _translate("F"); ?></option>
 											</select>
@@ -274,7 +274,6 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 35% !important;">
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 											</select>
-											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
 									</tr>
 									<tr class="femaleSection">

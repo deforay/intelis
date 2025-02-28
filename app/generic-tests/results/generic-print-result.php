@@ -135,7 +135,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>">
+														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -362,7 +362,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td>
-														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>">
+														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>

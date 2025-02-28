@@ -147,7 +147,7 @@ if (str_contains($httpReferer, "updateVlTestResult.php") || str_contains($httpRe
 									<?php echo _translate("Gender"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select name="gender" id="gender" class="form-control" title="Please choose gender" style="width:220px;">
+								<select name="gender" id="gender" class="form-control" title="Please select sex" style="width:220px;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>

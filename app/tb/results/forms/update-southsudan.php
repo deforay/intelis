@@ -227,7 +227,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 								<tr>
 									<th scope="row">Age (years)</th>
 									<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-									<th scope="row"><label for="patientGender">Gender </label></th>
+									<th scope="row"><label for="patientGender">Sex </label></th>
 									<td>
 										<select class="form-control" name="patientGender" id="patientGender" title="Please select the gender">
 											<option value=''> -- Select -- </option>

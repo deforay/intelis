@@ -214,17 +214,17 @@ $sFormat = '';
 										<td style="width: 35% !important;">
 											<!--<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">M</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select a gender"); ?>">
+												<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate("Please select sex"); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">F</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select a gender"); ?>">
+												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate("Please select sex"); ?>">
 											</label>
 											<label class="radio-inline" style="padding-left:17px !important;margin-left:0;">KP</label>
 											<label class="radio-inline" style="width:4%;padding-bottom:22px;margin-left:0;">
-												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select a gender"); ?>">
+												<input type="radio" class="" id="genderKp" name="gender" value="kp" title="<?= _translate("Please select sex"); ?>">
 											</label> -->
-											<select name="gender" id="gender" class="form-control isRequired" title="Please choose gender">
+											<select name="gender" id="gender" class="form-control isRequired" title="Please select sex">
 												<option value=""><?= _translate("-- Select --"); ?></option>
 												<option value="male"><?= _translate("M"); ?></option>
 												<option value="female"><?= _translate("F"); ?></option>
@@ -235,7 +235,6 @@ $sFormat = '';
 											<select class="form-control" name="keyPopulation" id="keyPopulation" title="<?= _translate('Please choose KP'); ?>">
 
 											</select>
-											<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="Enter Régime ARV" title="Please enter régime ARV" style="margin-top:1vh;display:none;">
 										</td>
 									</tr>
 									<tr class="femaleSection" style="display:none;">

@@ -287,15 +287,15 @@ foreach ($testReasonsResultDetails as $row) {
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="gender"><?= _translate('Gender'); ?> <span class="mandatory">*</span></label><br>
+                                                       <label for="gender"><?= _translate('Sex'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Male'); ?>
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _translate('Please select sex'); ?>"><?= _translate('Male'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Female'); ?>
+                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please select sex'); ?>"><?= _translate('Female'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>"><?= _translate('Unreported'); ?>
+                                                            <input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please select sex'); ?>"><?= _translate('Unreported'); ?>
                                                        </label>
                                                   </div>
                                              </div>

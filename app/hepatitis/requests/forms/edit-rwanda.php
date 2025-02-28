@@ -196,7 +196,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row" style="width:15%"><label for="patientAge">Patient Age (years)</label></th>
                                         <td style="width:35%;"><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" value="<?php echo $hepatitisInfo['patient_age']; ?>" /></td>
-                                        <th scope="row" style="width:15%"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" style="width:15%"><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
                                         <td style="width:35%;">
                                             <select class="form-control isRequired" name="patientGender" id="patientGender">
                                                 <option value=''> -- Select -- </option>

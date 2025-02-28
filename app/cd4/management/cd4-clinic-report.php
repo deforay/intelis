@@ -160,7 +160,7 @@ $state = $geolocationService->getProvinces("yes");
 													</td>
 													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -259,7 +259,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>
@@ -362,7 +362,7 @@ $state = $geolocationService->getProvinces("yes");
 												<tr>
 													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
 													<td>
-														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please choose gender'); ?>" style="width:220px;" onchange="">
+														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 															<option value="male"><?php echo _translate("Male"); ?></option>
 															<option value="female"><?php echo _translate("Female"); ?></option>

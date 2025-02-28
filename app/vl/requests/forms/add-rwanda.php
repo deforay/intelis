@@ -223,10 +223,10 @@ $sFormat = '';
                                                   <div class="form-group">
                                                        <label for="gender">Gender <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please choose gender">Male
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please select sex">Male
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="Please choose gender">Female
+                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="Please select sex">Female
                                                        </label>&nbsp;&nbsp;
                                                        <!--<label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
@@ -461,7 +461,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       </div> 
+                                                       </div>
                                                      <!---  <div class="row confirmRecencyTesting hideTestData well" style="display:none;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>

@@ -263,7 +263,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 									<tr>
 										<th scope="row">Age (years)<span class="mandatory">*</span></th>
 										<td><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
-										<th scope="row"><label for="patientGender">Gender <span class="mandatory">*</span> </label></th>
+										<th scope="row"><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
 										<td>
 											<select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
 												<option value=''> -- Select -- </option>
@@ -589,7 +589,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 											<td colspan="5">
 											<table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
 													<thead>
-														
+
 														<tr>
 															<th scope="row" style="width: 30%;" class="text-center">Test Name</th>
 															<th scope="row" style="width: 40%;" class="text-center">Result</th>
@@ -685,7 +685,7 @@ $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_acti
 												</select>
 											</td>
 										</tr>-->
-										
+
 										<tr>
 											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
 											<td>

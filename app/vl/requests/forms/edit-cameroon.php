@@ -341,13 +341,13 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                   <div class="form-group">
                                                        <label for="gender"><?= _translate('Gender'); ?> <span class="mandatory">*</span></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _translate('Please choose gender'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>><?= _translate('Male'); ?>
+                                                            <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="<?= _translate('Please select sex'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>><?= _translate('Male'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please choose gender'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>><?= _translate('Female'); ?>
+                                                            <input type="radio" id="genderFemale" name="gender" value="female" title="<?= _translate('Please select sex'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>><?= _translate('Female'); ?>
                                                        </label>&nbsp;&nbsp;
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please choose gender'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>><?= _translate('Unreported'); ?>
+                                                            <input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please select sex'); ?>" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>><?= _translate('Unreported'); ?>
                                                        </label>
                                                   </div>
                                              </div>

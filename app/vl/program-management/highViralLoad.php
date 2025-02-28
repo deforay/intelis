@@ -236,7 +236,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select name="hvlGender" id="hvlGender" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
+														<select name="hvlGender" id="hvlGender" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -402,7 +402,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2 vfvlnsfilters" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
+														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2 vfvlnsfilters" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -557,7 +557,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select name="rjtGender" id="rjtGender" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
+														<select name="rjtGender" id="rjtGender" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
@@ -782,7 +782,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Gender"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
-														<select name="noResultGender" id="noResultGender" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please choose gender'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
+														<select name="noResultGender" id="noResultGender" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
 															<option value="">
 																<?php echo _translate("-- Select --"); ?>
 															</option>
