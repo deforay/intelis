@@ -223,7 +223,7 @@ $storageInfo = $storageService->getLabStorage();
 									<td>
 										<input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
 									</td>
-									<th scope="row"><label for="childGender">Gender </label></th>
+									<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> </label></th>
 									<td>
 										<select class="form-control " name="childGender" id="childGender">
 											<option value=''><?= _translate("-- Select --"); ?></option>

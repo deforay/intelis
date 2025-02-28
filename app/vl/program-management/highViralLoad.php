@@ -233,7 +233,7 @@ $state = $geolocationService->getProvinces("yes");
 														</select>
 													</td>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select name="hvlGender" id="hvlGender" class="form-control select2 highViralLoadReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'hvlPatientPregnant','hvlPatientBreastfeeding');">
@@ -399,7 +399,7 @@ $state = $geolocationService->getProvinces("yes");
 														<input type="text" id="vfVlnsSampleTestDate" name="vfVlnsSampleTestDate" class="form-control vfvlnsfilters daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" style="background:#fff;" />
 													</td>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select name="vfvlnGender" id="vfvlnGender" class="form-control select2 vfvlnsfilters" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'pregnancy','breastfeeding');">
@@ -554,7 +554,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select name="rjtGender" id="rjtGender" class="form-control select2 sampleRjtReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'rjtPatientPregnant','rjtPatientBreastfeeding');">
@@ -779,7 +779,7 @@ $state = $geolocationService->getProvinces("yes");
 												</tr>
 												<tr>
 													<td style="width: 10%;"><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td style="width: 23.33%;">
 														<select name="noResultGender" id="noResultGender" class="form-control select2 notAvailReportFilter" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value,'noResultPatientPregnant','noResultPatientBreastfeeding');">
@@ -1795,7 +1795,7 @@ $state = $geolocationService->getProvinces("yes");
 				Batch_Code: $("#hvlBatchCode  option:selected").text(),
 				Sample_Type: $("#hvlSampleType  option:selected").text(),
 				Facility_Name: $("#hvlFacilityName  option:selected").text(),
-				Gender: $("#hvlGender  option:selected").text(),
+				Sex: $("#hvlGender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				Pregnant: $("#hvlPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#hvlPatientBreastfeeding  option:selected").text(),
@@ -1824,7 +1824,7 @@ $state = $geolocationService->getProvinces("yes");
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
-				Gender: $("#rjtGender  option:selected").text(),
+				Sex: $("#rjtGender  option:selected").text(),
 				patientInfo: $("#patientRejectedInfo  option:selected").val(),
 				Pregnant: $("#rjtPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#rjtPatientBreastfeeding  option:selected").text(),
@@ -1851,7 +1851,7 @@ $state = $geolocationService->getProvinces("yes");
 				Batch_Code: $("#noResultBatchCode  option:selected").text(),
 				Sample_Type: $("#noResultSampleType  option:selected").text(),
 				Facility_Name: $("#noResultFacilityName  option:selected").text(),
-				Gender: $("#noResultGender  option:selected").text(),
+				Sex: $("#noResultGender  option:selected").text(),
 				patientInfo: $("#patientNtAvailInfo  option:selected").val(),
 				Pregnant: $("#noResultPatientPregnant  option:selected").text(),
 				Breastfeeding: $("#noResultPatientBreastfeeding  option:selected").text()

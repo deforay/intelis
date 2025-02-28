@@ -207,7 +207,7 @@ $state = $geolocationService->getProvinces("yes");
 									<?php } ?>
 								</select>
 							</td>
-							<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
+							<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
 							<td><select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<option value="male"><?php echo _translate("Male"); ?></option>
@@ -647,7 +647,7 @@ $state = $geolocationService->getProvinces("yes");
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
-				Gender: $("#gender  option:selected").text(),
+				Sex: $("#gender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				Status: $("#status  option:selected").text(),
 				Show_Reorder_Sample: $("#showReordSample option:selected").text(),

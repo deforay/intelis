@@ -166,7 +166,7 @@ $headings = [
      'Testing Platform',
      'Lab Name',
      'Age',
-     'Gender',
+     'Sex',
      'Pregnant',
      'Breastfeeding',
      'ART Start Date',

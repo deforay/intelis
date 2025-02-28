@@ -216,7 +216,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td>
                                             <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="" />
                                         </td>
-                                        <th scope="row"><label for="childGender">Gender </label></th>
+                                        <th scope="row"><label for="childGender"><?= _translate("Sex"); ?> </label></th>
                                         <td>
                                             <select class="form-control " name="childGender" id="childGender">
                                                 <option value=''> -- Select -- </option>

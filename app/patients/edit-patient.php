@@ -146,7 +146,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">
-                                        <label for="gender" class="col-lg-4 control-label"><?= _translate('Gender'); ?><span class="mandatory">*</span></label>
+                                        <label for="gender" class="col-lg-4 control-label"><?= _translate('Sex'); ?><span class="mandatory">*</span></label>
                                         <div class="col-lg-7">
                                             <label class="radio-inline control-label" style="margin-left:0px;">
                                                 <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($patientQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>Male

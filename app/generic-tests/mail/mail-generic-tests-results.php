@@ -142,7 +142,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 												<?php } ?>
 											</select>
 										</td>
-										<td><strong>Gender&nbsp;:</strong></td>
+										<td><strong>Sex&nbsp;:</strong></td>
 										<td>
 											<select name="gender" id="gender" class="form-control" title="Please select sex" onchange="enablePregnant(this);">
 												<option value=""> -- Select -- </option>
@@ -226,7 +226,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 											<option value="Sample Collection Date" <?php echo (in_array("Sample Collection Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Collection Date"); ?></option>
 											<option value="Sample Received Date" <?php echo (in_array("Sample Received Date", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sample Received Date"); ?></option>
 											<option value="Collected by (Initials)" <?php echo (in_array("Collected by (Initials)", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Collected by (Initials)"); ?></option>
-											<option value="Gender" <?php echo (in_array("Gender", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Gender"); ?></option>
+											<option value="Sex" <?php echo (in_array("Sex", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Sex"); ?></option>
 											<option value="Date Of Birth" <?php echo (in_array("Date Of Birth", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Date Of Birth"); ?></option>
 											<option value="Age in years" <?php echo (in_array("Age in years", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in years"); ?></option>
 											<option value="Age in months" <?php echo (in_array("Age in months", $resultArr) ? "selected='selected'" : ""); ?>><?php echo _translate("Age in months"); ?></option>

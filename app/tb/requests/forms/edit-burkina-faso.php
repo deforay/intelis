@@ -212,7 +212,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
                                     <tr>
                                         <th scope="row" class="th-label"><?= _translate("Age (years)"); ?></th>
                                         <td class="td-input"><input type="number" value="<?php echo $tbInfo['patient_age']; ?>" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" /></td>
-                                        <th scope="row" class="th-label"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row" class="th-label"><label for="patientGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span> </label></th>
                                         <td class="td-input">
                                             <select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
                                                 <option value=''> -- <?= _translate("Select"); ?> -- </option>

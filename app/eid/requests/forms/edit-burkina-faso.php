@@ -174,7 +174,7 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
                                         <td style="width:35%">
                                             <input type="text" class="form-control date" value="<?php echo $eidInfo['child_dob'] ?? null; ?>" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" onchange="calculateAgeInMonths();" />
                                         </td>
-                                        <th style="width:15%" scope="row" class="labels"><label for="childGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th style="width:15%" scope="row" class="labels"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span> </label></th>
                                         <td style="width:35%">
                                             <select class="form-control isRequired" name="childGender" id="childGender">
                                                 <option value=''> -- Select -- </option>

@@ -111,7 +111,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
                          'hvlSampleType' => 'Sample Type',
                          'hvlFacilityName' => 'Facility Name',
                          'hvlContactStatus' => 'Contact Status',
-                         'hvlGender' => 'Gender'
+                         'hvlGender' => 'Sex'
                     );*/
 
 

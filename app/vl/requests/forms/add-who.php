@@ -237,7 +237,7 @@ $sFormat = '';
                                              </div>
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
-                                                       <label for="gender">Gender</label><br>
+                                                       <label for="gender"><?= _translate("Sex"); ?></label><br>
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender">Male
                                                        </label>

@@ -124,7 +124,7 @@ $batchResult = $db->rawQuery($batchQuery);
                         ?>
                       </select>
                     </td>
-                    <td><strong>Gender&nbsp;:</strong></td>
+                    <td><strong>Sex&nbsp;:</strong></td>
                     <td>
                       <select name="gender" id="gender" class="form-control" title="Please select sex" onchange="enablePregnant(this);">
                         <option value=""> -- Select -- </option>

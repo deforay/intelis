@@ -241,7 +241,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                         <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control" id="ageInYears" name="ageInYears" placeholder="<?= _translate('Case Age (in years)'); ?>" title="<?= _translate('Case Age'); ?>" style="width:100%;" onchange="" /></td>
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="patientGender"><?= _translate("Gender"); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="patientGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?= _translate('Please select the gender'); ?>">
                                                 <option value=''> <?= _translate("-- Select --"); ?> </option>

@@ -145,7 +145,7 @@ if ($lastUrl1 != '' || $lastUrl2 != '') {
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Gender"); ?>&nbsp;:
+									<?php echo _translate("Sex"); ?>&nbsp;:
 								</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="Please select sex" style="width:220px;">

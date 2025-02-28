@@ -268,7 +268,7 @@ $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left
 $html .= '</tr>';
 
 $html .= '<tr>';
-$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:10px;font-weight:normal;">Gender</span></td>';
+$html .= '<td width="40%" style="line-height:14px;font-size:12px;text-align:left;font-weight:bold;">Sexe<br><span style="font-size:10px;font-weight:normal;">Sex</span></td>';
 $html .= '<td width="5%" style="line-height:14px;font-size:12px;text-align:center;">:</td>';
 $html .= '<td width="55%" style="line-height:14px;font-size:12px;text-align:left;">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
 $html .= '</tr>';

@@ -401,7 +401,7 @@ try {
                $patientTooltip[] = _translate("Patient Age") . " : " . $aRow['patient_age_in_years'];
           }
           if (!empty($aRow['patient_gender'])) {
-               $patientTooltip[] = _translate("Patient Gender") . " : " . $aRow['patient_gender'];
+               $patientTooltip[] = _translate("Patient Sex") . " : " . $aRow['patient_gender'];
           }
           if (!empty($aRow['current_regimen'])) {
                $patientTooltip[] = _translate("Current Regimen") . " : " . $aRow['current_regimen'];

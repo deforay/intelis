@@ -299,7 +299,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                         </div>
                                         <div class="col-xs-3 col-md-3">
                                              <div class="form-group">
-                                                  <label for="gender">Gender <span class="mandatory">*</span></label><br>
+                                                  <label for="gender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label><br>
                                                   <label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please select sex" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'male') ? "checked='checked'" : ""; ?>>Male
                                                   </label>&nbsp;&nbsp;

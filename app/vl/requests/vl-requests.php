@@ -327,7 +327,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Gender"); ?>&nbsp;:
+									<?php echo _translate("Sex"); ?>&nbsp;:
 								</strong></td>
 							<td>
 								<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="hideFemaleDetails(this.value)">

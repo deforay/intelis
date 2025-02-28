@@ -80,7 +80,7 @@ $pResult = $db->rawQuery($pQuery);
 										<?= _translate("Age"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _translate("Gender"); ?>
+										<?= _translate("Sex"); ?>
 									</th>
 									<th style="width:10%;">
 										<?= _translate("Facility Name"); ?>

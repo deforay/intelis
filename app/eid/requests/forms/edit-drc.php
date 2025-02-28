@@ -256,7 +256,7 @@ $storageInfo = $storageService->getLabStorage();
 										<td>
 											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
 										</td>
-										<th scope="row"><label for="childGender">Gender <span class="mandatory">*</span></label></th>
+										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="childGender" id="childGender">
 												<option value=''> -- Sélectionner -- </option>

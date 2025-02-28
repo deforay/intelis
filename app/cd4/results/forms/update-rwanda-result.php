@@ -249,14 +249,14 @@ $disable = "disabled = 'disabled'";
 								</div>
 								<div class="col-xs-3 col-md-3">
 									<div class="form-group">
-										<label for="gender">Gender <span class="mandatory">*</span></label><br>
+										<label for="gender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label><br>
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
 										</label>&nbsp;&nbsp;
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
-										
+
 									</div>
 								</div>
 								<div class="col-xs-3 col-md-3">
@@ -755,7 +755,7 @@ $disable = "disabled = 'disabled'";
 																				<option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
                                                                                 <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
                                                                                 <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
-                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>                                                                           
+                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
 																			</select>
                                                                       </div>
                                                                  </div>

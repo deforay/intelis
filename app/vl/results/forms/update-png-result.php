@@ -265,7 +265,7 @@ $disable = "disabled = 'disabled'";
 										<input type="text" class="form-control" name="surName" id="surName" placeholder="Last Name" <?php echo $disable; ?> title="Enter Last Name" style="width:100%;" value="<?php echo $patientLastName; ?>">
 									</td>
 									<td colspan="2" class="labels">
-										<label for="gender">Gender &nbsp;&nbsp;</label>
+										<label for="gender"><?= _translate("Sex"); ?> &nbsp;&nbsp;</label>
 										<label class="radio-inline">
 											<input type="radio" class="" id="genderMale" name="gender" value="male" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
 										</label>

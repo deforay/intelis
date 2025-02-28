@@ -266,7 +266,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                   </div>
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
-                                                            <label for="gender">Gender <span class="mandatory">*</span></label><br>
+                                                            <label for="gender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label><br>
                                                             <label class="radio-inline" style="margin-left:0px;">
                                                                  <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
                                                             </label>&nbsp;&nbsp;

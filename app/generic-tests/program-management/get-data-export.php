@@ -202,7 +202,7 @@ try {
                $ePrintDate = DateUtility::isoDateFormat(trim($s_p_date[1]));
           }
      }
-     /* Gender filter */
+     /* Sex filter */
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
           if (trim((string) $_POST['gender']) == "unreported") {
                $sWhere[] =  ' (vl.patient_gender = "unreported" OR vl.patient_gender ="" OR vl.patient_gender IS NULL)';

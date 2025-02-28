@@ -334,7 +334,7 @@ try {
                $childTooltip .= _translate("Child Age", true) . " : " . $aRow['child_age'] . '<br>';
           }
           if (!empty($aRow['child_gender'])) {
-               $childTooltip .= _translate("Child Gender", true) . " : " . $aRow['child_gender'] . '<br>';
+               $childTooltip .= _translate("Child Sex", true) . " : " . $aRow['child_gender'] . '<br>';
           }
 
           //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['eid_id'] . '"  value="' . $aRow['eid_id'] . '" onclick="toggleTest(this);"  />';

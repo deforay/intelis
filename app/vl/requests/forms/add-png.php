@@ -157,7 +157,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</td>
 
 										<td>
-											<label for="gender" class="labels">Gender &nbsp;&nbsp;</label>
+											<label for="gender" class="labels">Sex &nbsp;&nbsp;</label>
 										</td>
 										<td colspan="1">
 											<select class="form-control" name="gender" id="gender" title="Please choose patient gender" style="width:100%;" onchange="">

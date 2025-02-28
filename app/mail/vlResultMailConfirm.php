@@ -151,7 +151,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                   $field = 'sample_received_at_lab_datetime';
                } elseif ($filedGroup[$f] == "Collected by (Initials)") {
                   $field = 'sample_collected_by';
-               } elseif ($filedGroup[$f] == "Gender") {
+               } elseif ($filedGroup[$f] == "Sex") {
                   $field = 'patient_gender';
                } elseif ($filedGroup[$f] == "Date Of Birth") {
                   $field = 'patient_dob';

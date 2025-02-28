@@ -163,7 +163,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">
@@ -420,7 +420,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</tr>
 												<tr>
 													<td><strong>
-															<?php echo _translate("Gender"); ?>&nbsp;:
+															<?php echo _translate("Sex"); ?>&nbsp;:
 														</strong></td>
 													<td>
 														<select name="gender" id="printGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>">

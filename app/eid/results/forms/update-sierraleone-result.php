@@ -181,7 +181,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                     <td>
                                         <input type="text" class="form-control date" id="childDob" name="childDob" placeholder="Date of birth" title="Please enter Date of birth" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="" />
                                     </td>
-                                    <th class="labels" scope="row"><label for="childGender">Gender </label></th>
+                                    <th class="labels" scope="row"><label for="childGender"><?= _translate("Sex"); ?> </label></th>
                                     <td>
                                         <select class="form-control " name="childGender" id="childGender">
                                             <option value=''> -- Select -- </option>

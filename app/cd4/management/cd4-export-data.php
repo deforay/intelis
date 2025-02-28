@@ -586,7 +586,7 @@ $state = $geolocationService->getProvinces("yes");
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
-				Gender: $("#gender  option:selected").text(),
+				Sex: $("#gender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: $("#status  option:selected").text(),

@@ -195,7 +195,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
 
                                 </tr>
                                 <tr>
-                                    <th class="labels" scope="row"><label for="childGender"><?= _translate('Gender'); ?> </label></th>
+                                    <th class="labels" scope="row"><label for="childGender"><?= _translate('Sex'); ?> </label></th>
                                     <td>
                                         <select class="form-control " name="childGender" id="childGender">
                                             <option value=''> <?= _translate('-- Select --'); ?> </option>
@@ -523,7 +523,7 @@ if (isset($eidInfo['facility_id']) && $eidInfo['facility_id'] > 0) {
                                                 <?= $general->generateSelectOptions($testPlatformList, $eidInfo['eid_test_platform'], '-- Select --'); ?>
                                             </select>
                                         </td>
-                                       
+
                                     <tr>
                                         <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> <span class="mandatory">*</span></label></th>
                                         <td>

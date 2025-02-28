@@ -32,7 +32,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Patient Name"); ?></th>
 									<th scope="row"><?php echo _translate("Patient Code"); ?></th>
-									<th scope="row"><?php echo _translate("Gender"); ?></th>
+									<th scope="row"><?php echo _translate("Sex"); ?></th>
 									<th scope="row"><?php echo _translate("Age"); ?></th>
 									<th scope="row"><?php echo _translate("Phone Number"); ?></th>
 									<th scope="row"><?php echo _translate("Address"); ?></th>

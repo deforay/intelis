@@ -219,7 +219,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
 
                                     </tr>
                                     <tr>
-                                        <th scope="row"><label for="childGender"><?= _translate('Gender'); ?> <span class="mandatory">*</span> </label></th>
+                                        <th scope="row"><label for="childGender"><?= _translate('Sex'); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
                                             <select class="form-control isRequired" name="childGender" id="childGender">
                                                 <option value=''> <?= _translate('-- Select --'); ?> </option>

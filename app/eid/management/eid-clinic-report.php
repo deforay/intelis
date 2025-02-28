@@ -155,7 +155,7 @@ foreach ($rejectionTypeResult as $type) {
 															<option value="all" selected="selected"><?php echo _translate("All"); ?></option>
 														</select>
 													</td>
-													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="hvlGender" id="hvlGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -255,7 +255,7 @@ foreach ($rejectionTypeResult as $type) {
 
 												</tr>
 												<tr>
-													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="rjtGender" id="rjtGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -362,7 +362,7 @@ foreach ($rejectionTypeResult as $type) {
 
 												</tr>
 												<tr>
-													<td><strong><?php echo _translate("Gender"); ?>&nbsp;:</strong></td>
+													<td><strong><?php echo _translate("Sex"); ?>&nbsp;:</strong></td>
 													<td>
 														<select name="noResultGender" id="noResultGender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:220px;" onchange="">
 															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
@@ -1106,7 +1106,7 @@ foreach ($rejectionTypeResult as $type) {
 				Batch_Code: $("#hvlBatchCode  option:selected").text(),
 				Sample_Type: $("#hvlSampleType  option:selected").text(),
 				Facility_Name: $("#hvlFacilityName  option:selected").text(),
-				Gender: $("#hvlGender  option:selected").text(),
+				Sex: $("#hvlGender  option:selected").text(),
 				markAsComplete: markAsComplete
 			},
 			function(data) {
@@ -1130,7 +1130,7 @@ foreach ($rejectionTypeResult as $type) {
 				Batch_Code: $("#rjtBatchCode  option:selected").text(),
 				Sample_Type: $("#rjtSampleType  option:selected").text(),
 				Facility_Name: $("#rjtFacilityName  option:selected").text(),
-				Gender: $("#rjtGender  option:selected").text(),
+				Sex: $("#rjtGender  option:selected").text(),
 				Rejection_Reason: $("#sampleRejectionReason  option:selected").val()
 			},
 			function(data) {
@@ -1154,7 +1154,7 @@ foreach ($rejectionTypeResult as $type) {
 				Batch_Code: $("#noResultBatchCode  option:selected").text(),
 				Sample_Type: $("#noResultSampleType  option:selected").text(),
 				Facility_Name: $("#noResultFacilityName  option:selected").text(),
-				Gender: $("#noResultGender  option:selected").text()
+				Sex: $("#noResultGender  option:selected").text()
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {

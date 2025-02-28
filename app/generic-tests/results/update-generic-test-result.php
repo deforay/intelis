@@ -557,7 +557,7 @@ $reasonForChange = $reasonForChangeArr[1];
 									</div>
 								</div>
 								<div class="col-md-6">
-									<label class="col-lg-5" for="gender"><?= _translate('Gender'); ?></label>
+									<label class="col-lg-5" for="gender"><?= _translate('Sex'); ?></label>
 									<div class="col-lg-7">
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate('Please check gender'); ?>" <?php echo ($genericResultInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>

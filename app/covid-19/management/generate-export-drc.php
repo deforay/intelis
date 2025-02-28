@@ -48,7 +48,7 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
         _translate("Patient Name"),
         _translate("Patient DoB"),
         _translate("Patient Age"),
-        _translate("Patient Gender"),
+        _translate("Patient Sex"),
         _translate("Is Patient Pregnant"),
         _translate("Patient Phone Number"),
         _translate("Patient Email"),

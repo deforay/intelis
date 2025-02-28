@@ -299,7 +299,7 @@ if ($formId == COUNTRY\CAMEROON) {
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Gender"); ?>&nbsp;:
+									<?php echo _translate("Sex"); ?>&nbsp;:
 								</strong></td>
 							<td><select name="gender" id="gender" class="form-control" title="<?php echo _translate('Please select sex'); ?>" style="width:100%;" onchange="hideFemaleDetails(this.value)">
 									<option value="">
@@ -861,7 +861,7 @@ if ($formId == COUNTRY\CAMEROON) {
 				sample_Test_Date: $("#sampleTestDate").val(),
 				Viral_Load: $("#vLoad  option:selected").text(),
 				Print_Date: $("#printDate").val(),
-				Gender: $("#gender  option:selected").text(),
+				Sex: $("#gender  option:selected").text(),
 				patientInfo: $("#patientInfo  option:selected").val(),
 				Community_Sample: $("#communitySample  option:selected").text(),
 				Status: $("#status  option:selected").text(),

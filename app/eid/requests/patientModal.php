@@ -99,7 +99,7 @@ $pResult = $db->get("form_eid vl", 25, "fd.facility_id,
 										<?= _translate("Age"); ?>
 									</th>
 									<th style="width:10%;">
-										<?= _translate("Gender"); ?>
+										<?= _translate("Sex"); ?>
 									</th>
 									<th style="width:10%;">
 										<?= _translate("Facility Name"); ?>

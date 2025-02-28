@@ -140,7 +140,7 @@ try {
                $patientTooltip .= _translate("Patient Age", true) . " : " . $aRow['patient_age_in_years'] . '<br>';
           }
           if (!empty($aRow['patient_gender'])) {
-               $patientTooltip .= _translate("Patient Gender", true) . " : " . $aRow['patient_gender'] . '<br>';
+               $patientTooltip .= _translate("Patient Sex", true) . " : " . $aRow['patient_gender'] . '<br>';
           }
 
           if (!empty($sampleCodeTooltip)) {

@@ -334,8 +334,8 @@ $disable = "disabled = 'disabled'";
                                         </div>
                                         <div class="col-xs-3 col-md-3">
                                              <div class="form-group" style=" width: 100%; ">
-                                                  <label for="gender"><?= _translate("Gender"); ?> <span class="mandatory">*</span></label><br>
-                                                  <select class="form-control ajax-select2" id="gender" name="gender" placeholder="Gender" <?php echo $disable; ?> style="width:100%;">
+                                                  <label for="gender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label><br>
+                                                  <select class="form-control ajax-select2" id="gender" name="gender" placeholder="Sex" <?php echo $disable; ?> style="width:100%;">
                                                        <option value="">-- Select --</option>
                                                        <option value="male" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "selected='selected'" : "" ?>><?= _translate("Male"); ?></option>
                                                        <option value="female" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "selected='selected'" : "" ?>><?= _translate("Female"); ?></option>
