@@ -109,7 +109,7 @@ if ($module == 'generic-tests') {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-				
+
 				<!-- form start -->
 				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
 					<div class="box-body">
@@ -131,7 +131,7 @@ if ($module == 'generic-tests') {
 								</div>
 							</div>
 						<?php } ?>
-					
+
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -227,7 +227,7 @@ if ($module == 'generic-tests') {
 								</div>
 							</div>
 						</div>
-					
+
 					<br>
 					<div class="row">
 						<div class="col-md-6">
@@ -328,6 +328,7 @@ if ($module == 'generic-tests') {
 				endDate = end.format('YYYY-MM-DD');
 			});
 
+		$("#daterange").val("");
 		getSampleCodeDetails();
 
 		$(".select2").select2();

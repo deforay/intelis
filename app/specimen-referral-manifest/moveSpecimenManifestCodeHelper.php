@@ -27,18 +27,21 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
+
+    $db->beginTransaction();
+
     if (isset($_POST['assignLab']) && trim((string) $_POST['assignLab']) != "" && !empty($_POST['packageCode'])) {
 
 
         $lastId = $_POST['packageId'];
-        
+
         $db->where('package_code', $packageCode);
         $previousData = $db->getOne("package_details");
         $oldReason = json_decode($previousData['manifest_change_history']);
 
-        $newReason = array('reason' => $_POST['reasonForChange'],'changedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldReason[] = $newReason;
-      
+
 
         $value = [
             'lab_id' => $_POST['assignLab'],
@@ -73,12 +76,16 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
+
+    $db->commitTransaction();
     header("Location:view-manifests.php?t=" . ($_POST['testType']));
 } catch (Throwable $e) {
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
+    $db->rollbackTransaction();
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError()
     ]);
 }
