@@ -56,7 +56,7 @@ try {
     $token = $stsTokensService->validateToken($authToken, $labId);
 
     if ($token === false || empty($token)) {
-        throw new SystemException('Unauthorized Access', 401);
+        throw new SystemException('Unauthorized Access. Token Missing.', 401);
     }
 
     if (is_string($token)) {

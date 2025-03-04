@@ -9,6 +9,7 @@ class PassphraseHelper
     private static $consonants = ['b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'y', 'z'];
     private static $vowels = ['a', 'e', 'i', 'o', 'u'];
     private static $separators = ['-', '.', '_', ' '];
+    private static $allowedSeparators = ['-', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0'];
 
     /**
      * Generate a passphrase using a word list if available, or a custom method otherwise.
@@ -25,13 +26,33 @@ class PassphraseHelper
         bool $capitalize = false,
         ?string $separator = '-'
     ): string {
+        // Ensure separator is allowed (only hyphen or numbers)
+        if (!in_array($separator, self::$allowedSeparators)) {
+            $separator = '-';
+        }
+
         // Use HumanPasswordGenerator if word list is available
         if (file_exists('/usr/share/dict/words')) {
             $generator = new HumanPasswordGenerator();
             $generator->setWordList('/usr/share/dict/words')
                 ->setWordCount($wordCount)
-                ->setWordSeparator($separator ?? '-');
-            return $generator->generatePasswords(1)[0];
+                ->setWordSeparator($separator);
+
+            $password = $generator->generatePasswords(1)[0];
+
+            // Clean the generated password to ensure it only has alphabets in words
+            $words = explode($separator, $password);
+            $cleanWords = [];
+
+            foreach ($words as $word) {
+                // Remove any special characters, keep only alphabets
+                $cleanWord = preg_replace('/[^a-z]/i', '', $word);
+                // Convert to lowercase as required
+                $cleanWord = strtolower($cleanWord);
+                $cleanWords[] = $cleanWord;
+            }
+
+            return implode($separator, $cleanWords);
         }
 
         // Otherwise, use custom generation method
@@ -53,7 +74,11 @@ class PassphraseHelper
         bool $capitalize,
         ?string $separator
     ): string {
-        $sep = $separator ?? self::$separators[array_rand(self::$separators)];
+        // Ensure separator is allowed (only hyphen or numbers)
+        if (!in_array($separator, self::$allowedSeparators)) {
+            $separator = '-';
+        }
+
         $passphrase = [];
         $useConsonant = (bool)random_int(0, 1);
 
@@ -68,10 +93,12 @@ class PassphraseHelper
                 $useConsonant = !$useConsonant;
             }
 
-            $passphrase[] = $capitalize ? ucfirst($word) : $word;
+            // Always make words lowercase as required
+            $word = strtolower($word);
+            $passphrase[] = $word;
         }
 
-        return implode($sep, $passphrase);
+        return implode($separator, $passphrase);
     }
 
     /**
