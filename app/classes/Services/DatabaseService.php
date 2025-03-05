@@ -49,6 +49,11 @@ final class DatabaseService extends MysqliDb
         }
     }
 
+    public function isTransactionActive(): bool
+    {
+        return $this->isTransactionActive;
+    }
+
 
     /**
      * Execute a query and return a generator to fetch results row by row.

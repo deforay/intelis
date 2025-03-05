@@ -38,17 +38,20 @@ final class TestRequestsService
         ]);
     }
 
-
     public function processSampleCodeQueue($uniqueIds = [], $parallelProcess = false, $maxTries = 5, $interval = 5)
     {
         $response = [];
         try {
             $isCli = CommonService::isCliRequest();
-            if ($parallelProcess === false) {
-                $lockFile = TEMP_PATH . '/sample_code_generation.lock';
+            $lockFile = TEMP_PATH . '/sample_code_generation.lock';
 
-                // Check if another instance is already running
-                if (file_exists($lockFile) && (filemtime($lockFile) > (time() - $interval * 2))) {
+            if ($parallelProcess === false) {
+                // Check if another instance is already running (with timeout protection)
+                if (
+                    file_exists($lockFile) &&
+                    (filemtime($lockFile) > (time() - $interval * 2)) &&
+                    (filemtime($lockFile) > (time() - 1800))
+                ) {
                     if ($isCli) {
                         echo 'Another instance of the sample code generation script is already running' . PHP_EOL;
                     }
@@ -70,13 +73,14 @@ final class TestRequestsService
 
             if (!empty($queueItems)) {
                 foreach ($queueItems as $item) {
-
                     if ($parallelProcess === false) {
                         // Touch the lock file to keep it live
                         touch($lockFile);
                     }
 
                     if (empty($item['test_type']) || empty($item['sample_collection_date']) || empty($item['unique_id'])) {
+                        // Skip invalid items and mark them as processed with error
+                        $this->updateQueueItem($item['id'], 2, 'Missing required fields');
                         continue;
                     }
 
@@ -120,33 +124,16 @@ final class TestRequestsService
                             'insertOperation' => true,
                         ];
 
-                        $tries = 0;
-                        $sampleData = [];
+                        // Generate the sample code using the improved method
+                        $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
+                        $sampleData = json_decode((string)$sampleJson, true);
 
-                        do {
-                            $sampleCodeParams['tries'] = $tries;
-                            $sampleJson = $testTypeService->getSampleCode($sampleCodeParams);
-                            $sampleData = json_decode((string)$sampleJson, true);
-
-                            $singleRowData = [];
-                            if (!empty($sampleData) && !empty($sampleData['sampleCode'])) {
-                                $sQuery = "SELECT $primaryKey FROM $formTable WHERE $sampleCodeColumn = ?";
-                                $singleRowData = $this->db->rawQueryOne($sQuery, [$sampleData['sampleCode']]);
-                            }
-
-                            $tries++;
-                        } while (!empty($singleRowData) && $tries < $maxTries);
-
-                        if ($tries >= $maxTries) {
-                            throw new SystemException("Maximum tries for generating sample code for {$item['unique_id']} exceeded");
+                        if (empty($sampleData) || empty($sampleData['sampleCode'])) {
+                            throw new SystemException("Failed to generate sample code for {$item['unique_id']}");
                         }
 
                         $accessType = $item['access_type'] ?? null;
                         $tesRequestData = [];
-
-                        // $resultStatusQuery = "SELECT result_status FROM $formTable WHERE unique_id = ?";
-                        // $resultData = $this->db->rawQueryOne($resultStatusQuery, [$item['unique_id']]);
-
 
                         if ($this->commonService->isSTSInstance()) {
                             $tesRequestData['remote_sample'] = 'yes';
@@ -165,14 +152,37 @@ final class TestRequestsService
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                         }
 
-                        if (!empty($sampleData['sampleCode'])) {
-                            $response[$item['unique_id']] = $tesRequestData;
-                            $this->db->where('unique_id', $item['unique_id']);
-                            $this->db->update($formTable, $tesRequestData);
+                        // Use conditional update to handle potential race conditions
+                        $this->db->where('unique_id', $item['unique_id']);
 
+                        // Add condition to only update if sample code is still empty
+                        // This prevents overwriting if another process has already set it
+                        $this->db->where("($sampleCodeColumn IS NULL OR $sampleCodeColumn = '' OR $sampleCodeColumn = 'null')");
+
+                        $success = $this->db->update($formTable, $tesRequestData);
+
+                        if ($success && $this->db->count > 0) {
+                            // Update was successful and actually modified a row
+                            $response[$item['unique_id']] = $tesRequestData;
                             $this->updateQueueItem($item['id'], 1);
+                        } else {
+                            // The update didn't modify any rows - possibly a race condition
+                            // Check if another process set the sample code
+                            $checkQuery = "SELECT $sampleCodeColumn FROM $formTable WHERE unique_id = ?";
+                            $checkData = $this->db->rawQueryOne($checkQuery, [$item['unique_id']]);
+
+                            if (!empty($checkData) && !empty($checkData[$sampleCodeColumn])) {
+                                // Another process set the sample code, that's fine
+                                LoggerUtility::logInfo("Sample code for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
+                                $this->updateQueueItem($item['id'], 1);
+                            } else {
+                                // Something else went wrong
+                                throw new SystemException("Failed to update record with sample code for {$item['unique_id']}");
+                            }
                         }
                     } catch (Throwable $e) {
+                        // Mark the item as processed with error
+                        $this->updateQueueItem($item['id'], 2, $e->getMessage());
 
                         LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
                             'exception' => $e,
@@ -186,18 +196,27 @@ final class TestRequestsService
                     }
                 }
             }
-        } finally {
-            if ($parallelProcess === false) {
-                // Remove the lock file when the script ends
-                unlink($lockFile);
-            }
+
             return $response;
+        } finally {
+            if ($parallelProcess === false && isset($lockFile) && file_exists($lockFile)) {
+                // Remove the lock file when the script ends
+                @unlink($lockFile);
+            }
         }
     }
 
-    private function updateQueueItem($id, $processed)
+    private function updateQueueItem($id, $processed, $error = null)
     {
-        $data = ['processed' => $processed];
+        $data = [
+            'processed' => $processed,
+            'updated_datetime' => DateUtility::getCurrentDateTime()
+        ];
+
+        if ($error !== null) {
+            $data['processing_error'] = $error;
+        }
+
         $this->db->where('id', $id);
         return $this->db->update('queue_sample_code_generation', $data);
     }

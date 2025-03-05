@@ -62,3 +62,7 @@ ALTER TABLE `audit_form_tb` ADD `culture_result_date` DATE NULL DEFAULT NULL AFT
 ALTER TABLE `audit_form_tb` ADD `identification_result_date` DATE NULL DEFAULT NULL AFTER `culture_result_date`;
 ALTER TABLE `audit_form_tb` ADD `drug_mgit_result_date` DATE NULL DEFAULT NULL AFTER `identification_result_date`;
 ALTER TABLE `audit_form_tb` ADD `drug_lpa_result_date` DATE NULL DEFAULT NULL AFTER `drug_mgit_result_date`;
+
+
+-- Amit 05-mar-2025
+ALTER TABLE queue_sample_code_generation  ADD COLUMN processing_error TEXT NULL;
