@@ -250,10 +250,10 @@ $state = $geolocationService->getProvinces("yes");
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="facility_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Facility Name"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hcv_vl_result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HCV Results"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hcv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HCV Results"); ?></label>
 								</div>
 								<div class="col-md-3">
-									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hbv_vl_result" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HBV Result"); ?></label>
+									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="hbv_vl_count" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("HBV Result"); ?></label>
 								</div>
 								<div class="col-md-3">
 									<input type="checkbox" onclick="fnShowHide(this.value);" value="<?php echo $i = $i + 1; ?>" id="iCol<?php echo $i; ?>" data-showhide="status_name" class="showhideCheckBox" /> <label for="iCol<?php echo $i; ?>"><?php echo _translate("Status"); ?></label>

@@ -31,9 +31,7 @@ try {
      /* Indexed column (used for fast and accurate table cardinality) */
      $sIndexColumn = $primaryKey;
 
-     /*
-     * Paging
-     */
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -48,10 +46,6 @@ try {
           $sWhere[] = $columnSearch;
      }
 
-     /*
-     * SQL queries
-     * Get data to display
-     */
      $aWhere = '';
      $sQuery = '';
 

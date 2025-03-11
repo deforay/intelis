@@ -30,8 +30,8 @@ try {
      $tableName = "form_hepatitis";
      $primaryKey = "hepatitis_id";
 
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name', 'funding_source_name', 'i_partner_name');
      $sampleCode = 'sample_code';
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
@@ -189,11 +189,11 @@ try {
      }
      if (isset($_POST['hcvVLoad']) && trim((string) $_POST['hcvVLoad']) != '') {
 
-          $sWhere[] = ' vl.hcv_vl_result = "' . $_POST['hcvVLoad'] . '"';
+          $sWhere[] = ' vl.hcv_vl_count = "' . $_POST['hcvVLoad'] . '"';
      }
      if (isset($_POST['hbvVLoad']) && trim((string) $_POST['hbvVLoad']) != '') {
 
-          $sWhere[] = ' vl.hbv_vl_result = "' . $_POST['hbvVLoad'] . '"';
+          $sWhere[] = ' vl.hbv_vl_count = "' . $_POST['hbvVLoad'] . '"';
      }
 
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
@@ -268,8 +268,8 @@ try {
           $row[] = $aRow['patient_id'];
           $row[] = $patientFname . " " . $patientLname;
           $row[] = $aRow['facility_name'];
-          $row[] = $aRow['hcv_vl_result'];
-          $row[] = $aRow['hbv_vl_result'];
+          $row[] = $aRow['hcv_vl_count'];
+          $row[] = $aRow['hbv_vl_count'];
           $row[] = $aRow['status_name'];
           $row[] = $aRow['funding_source_name'] ?? null;
           $row[] = $aRow['i_partner_name'] ?? null;

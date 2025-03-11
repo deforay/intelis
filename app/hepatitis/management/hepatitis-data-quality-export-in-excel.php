@@ -69,8 +69,8 @@ if (isset($_SESSION['vlIncompleteForm']) && trim((string) $_SESSION['vlIncomplet
           $row[] = ($aRow['facility_state']);
           $row[] = ($aRow['facility_district']);
           $row[] = ($aRow['sample_name']);
-          $row[] = ($aRow['hcv_vl_result']);
-          $row[] = ($aRow['hbv_vl_result']);
+          $row[] = ($aRow['hcv_vl_count']);
+          $row[] = ($aRow['hbv_vl_count']);
           $row[] = ($aRow['status_name']);
           $output[] = $row;
      }

@@ -36,7 +36,7 @@ $type = $_POST['type'];
 //print_r($_POST);die;
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
-$query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_result is NOT NULL AND hepatitis.hcv_vl_result !='') OR (hepatitis.hbv_vl_result is NOT NULL AND hepatitis.hbv_vl_result !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_result is NULL AND hepatitis.hcv_vl_result ='') OR (hepatitis.hbv_vl_result is NULL AND hepatitis.hbv_vl_result =''))))";
+$query = "SELECT hepatitis.sample_code,hepatitis.hepatitis_id,hepatitis.facility_id,f.facility_name,f.facility_code FROM form_hepatitis as hepatitis LEFT JOIN facility_details as f ON hepatitis.facility_id=f.facility_id where ((hepatitis.result_status = 7 AND ((hepatitis.hcv_vl_count is NOT NULL AND hepatitis.hcv_vl_count !='') OR (hepatitis.hbv_vl_count is NOT NULL AND hepatitis.hbv_vl_count !=''))) OR (hepatitis.result_status = 4 AND ((hepatitis.hcv_vl_count is NULL AND hepatitis.hcv_vl_count ='') OR (hepatitis.hbv_vl_count is NULL AND hepatitis.hbv_vl_count =''))))";
 if (isset($facility) && !empty(array_filter($facility))) {
   $query = $query . " AND hepatitis.facility_id IN (" . implode(',', $facility) . ")";
 }
@@ -62,7 +62,7 @@ if (trim((string) $mailSentStatus) != '') {
   if (trim((string) $type) == 'request') {
     $query = $query . " AND hepatitis.is_request_mail_sent='" . $mailSentStatus . "'";
   } elseif (trim((string) $type) == 'result') {
-    $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_result!= '' OR hepatitis.hbv_vl_result!= '')";
+    $query = $query . " AND hepatitis.is_result_mail_sent='" . $mailSentStatus . "' AND (hepatitis.hcv_vl_count!= '' OR hepatitis.hbv_vl_count!= '')";
   }
 }
 if (!empty($_POST['sampleCollectionDate'])) {

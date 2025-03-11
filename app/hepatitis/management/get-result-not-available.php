@@ -99,7 +99,7 @@ try {
                     INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                     WHERE vl.result_status != " . SAMPLE_STATUS\REJECTED . "
                     AND vl.sample_code is NOT NULL
-                    AND (vl.hcv_vl_result IS NULL OR vl.hcv_vl_result='') AND (vl.hbv_vl_result IS NULL OR vl.hbv_vl_result='')";
+                    AND (vl.hcv_vl_count IS NULL OR vl.hcv_vl_count='') AND (vl.hbv_vl_count IS NULL OR vl.hbv_vl_count='')";
     $start_date = '';
     $end_date = '';
     if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCode']) != '') {

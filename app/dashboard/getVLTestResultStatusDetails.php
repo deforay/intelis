@@ -85,20 +85,20 @@ try {
           $sWhere[] = $sWhereSub;
      }
 
+     $sQuery = "SELECT * FROM form_vl as vl
+                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
+                    LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
+                    LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id
+                    LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-
-     $sQuery = "SELECT * FROM form_vl as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) = "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] =  " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
      if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
           $sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -114,29 +114,28 @@ try {
      }
 
      if (!empty($sWhere)) {
-          $sWhere = implode(' AND ', $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE ". implode(' AND ', $sWhere);
      }
-     $sQuery = $sQuery . " ORDER BY vl.last_modified_datetime DESC";
+
+     $sQuery = "$sQuery ORDER BY vl.last_modified_datetime DESC";
+
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . "," . $sOrder;
+          $sQuery = "$sQuery,$sOrder";
      }
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
-
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
 
 
      foreach ($rResult as $aRow) {
@@ -150,11 +149,11 @@ try {
           $row[] = $aRow['sample_collection_date'];
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['facility_state']);
-          $row[] = ($aRow['facility_district']);
-          $row[] = ($aRow['sample_name']);
+          $row[] = "$patientFname $patientMname $patientLname";
+          $row[] = $aRow['facility_name'];
+          $row[] = $aRow['facility_state'];
+          $row[] = $aRow['facility_district'];
+          $row[] = $aRow['sample_name'];
           $row[] = $aRow['result'];
           $output['aaData'][] = $row;
      }

@@ -342,20 +342,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                             <th style="width:15%;" scope="row">Rejection Date<span class="mandatory">*</span></th>
                                             <td style="width:35%;"><input value="<?php echo DateUtility::humanReadableDateFormat($hepatitisInfo['rejection_on']); ?>" class="form-control date rejection-date" type="text" name="rejectionDate" id="rejectionDate" placeholder="Select Rejection Date" /></td>
                                         </tr>
-                                        <!-- <tr>
-                                            <th scope="row" class="hcvFields"><label for="hcv">HCV VL Result</label></th>
-                                            <td class="hcvFields">
-                                                <select class="hcvFields result-focus labSecInput form-control rejected-input" name="hcv" id="hcv" title="Please select HCV VL Result">
-                                                    < ?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hcv_vl_result'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                            <th scope="row" class="hbvFields"><label for="hbv">HBV VL Result</label></th>
-                                            <td class="hbvFields">
-                                                <select class="hbvFields result-focus labSecInput form-control rejected-input" name="hbv" id="hbv" title="Please select the HBV VL Result">
-                                                    < ?= $general->generateSelectOptions($hepatitisResults, $hepatitisInfo['hbv_vl_result'], '-- Select --'); ?>
-                                                </select>
-                                            </td>
-                                        </tr> -->
                                         <tr>
                                             <th style="width:15%;" scope="row" class="hcvFields"><label for="hcvCount">HCV VL Count</label></th>
                                             <td style="width: 35%;" class="hcvFields">

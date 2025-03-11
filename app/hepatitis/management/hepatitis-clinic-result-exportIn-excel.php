@@ -73,8 +73,8 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
           $row[] = $sampleCollectionDate;
           $row[] = $sampleTestDate;
           $row[] = $aRow['labName'];
-          $row[] = ($aRow['hcv_vl_result']);
-          $row[] = ($aRow['hbv_vl_result']);
+          $row[] = ($aRow['hcv_vl_count']);
+          $row[] = ($aRow['hbv_vl_count']);
           $vlSampleId[] = $aRow['hepatitis_id'];
           $output[] = $row;
      }

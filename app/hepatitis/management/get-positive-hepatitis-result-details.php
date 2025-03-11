@@ -22,8 +22,8 @@ $primaryKey = "hepatitis_id";
 $thresholdLimit = $general->getGlobalConfig('viral_load_threshold_limit');
 
 $sampleCode = 'sample_code';
-$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result'];
-$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result'];
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -87,8 +87,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-$sQuery = "SELECT vl.*,f.facility_name,s.sample_id,b.batch_code,fd.facility_name as labName 
-FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_result = 'positive' OR vl.hbv_vl_result = 'positive'";
+$sQuery = "SELECT vl.*,f.facility_name,s.sample_id,b.batch_code,fd.facility_name as labName
+FROM form_hepatitis as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_hepatitis_sample_type as s ON s.sample_id=vl.specimen_type LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.hcv_vl_count = 'positive' OR vl.hbv_vl_count = 'positive'";
 $start_date = '';
 $end_date = '';
 
@@ -201,8 +201,8 @@ foreach ($rResult as $aRow) {
     $row[] = $aRow['sample_collection_date'];
     $row[] = $aRow['sample_tested_datetime'];
     $row[] = $aRow['labName'];
-    $row[] = $aRow['hcv_vl_result'];
-    $row[] = $aRow['hbv_vl_result'];
+    $row[] = $aRow['hcv_vl_count'];
+    $row[] = $aRow['hbv_vl_count'];
     $row[] = '';
     $output['aaData'][] = $row;
 }

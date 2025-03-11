@@ -149,7 +149,7 @@ if (!empty($sOrder) && $sOrder !== '') {
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -160,9 +160,7 @@ $output = [
      "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 ];
-
 foreach ($rResult as $aRow) {
-
      $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
@@ -201,5 +199,4 @@ foreach ($rResult as $aRow) {
 
      $output['aaData'][] = $row;
 }
-
 echo json_encode($output);

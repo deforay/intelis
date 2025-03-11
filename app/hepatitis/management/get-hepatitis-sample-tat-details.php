@@ -105,8 +105,8 @@ try {
 				LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 				WHERE (vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00')
 					AND (vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00')
-					AND vl.hcv_vl_result is not null
-					AND vl.hcv_vl_result != '' ";
+					AND vl.hcv_vl_count is not null
+					AND vl.hcv_vl_count != '' ";
 	if ($general->isSTSInstance()) {
 		$whereCondition = '';
 		if (!empty($_SESSION['facilityMap'])) {

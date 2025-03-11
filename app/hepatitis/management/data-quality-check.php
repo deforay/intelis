@@ -38,8 +38,8 @@ try {
     $primaryKey = "hepatitis_id";
 
 
-    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name');
-    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_result', 'vl.hbv_vl_result', 'ts.status_name');
+    $aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name');
+    $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_name', 'f.facility_name', 'f.facility_state', 'f.facility_district', 's.sample_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count', 'ts.status_name');
     if ($general->isStandaloneInstance()) {
         $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
         $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
@@ -209,14 +209,14 @@ try {
         }
         $row[] = $aRow['sample_collection_date'];
         $row[] = $aRow['batch_code'];
-        $row[] = ($patientFname);
-        $row[] = ($aRow['facility_name']);
-        $row[] = ($aRow['facility_state']);
-        $row[] = ($aRow['facility_district']);
-        $row[] = ($aRow['sample_name']);
-        $row[] = ($aRow['hcv_vl_result']);
-        $row[] = ($aRow['hbv_vl_result']);
-        $row[] = ($aRow['status_name']);
+        $row[] = $patientFname;
+        $row[] = $aRow['facility_name'];
+        $row[] = $aRow['facility_state'];
+        $row[] = $aRow['facility_district'];
+        $row[] = $aRow['sample_name'];
+        $row[] = $aRow['hcv_vl_count'];
+        $row[] = $aRow['hbv_vl_count'];
+        $row[] = $aRow['status_name'];
         $output['aaData'][] = $row;
     }
 

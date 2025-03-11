@@ -89,27 +89,29 @@ if (!empty($whereCondition)) {
 
 $vlSuppressionQuery = "SELECT   COUNT(hepatitis_id) as total,
                                 SUM(CASE
-                                        WHEN (vl.hcv_vl_result = 'positive') THEN 1
+                                        WHEN (vl.hcv_vl_count = 'positive') THEN 1
                                             ELSE 0
                                         END) AS positiveResult,
                                 (SUM(CASE
-                                        WHEN (vl.hcv_vl_result = 'negative') THEN 1
+                                        WHEN (vl.hcv_vl_count = 'negative') THEN 1
                                             ELSE 0
                                         END)) AS negativeResult,
                                 SUM(CASE
-                                        WHEN (vl.hbv_vl_result = 'positive') THEN 1
+                                        WHEN (vl.hbv_vl_count = 'positive') THEN 1
                                             ELSE 0
                                         END) AS hbvpositiveResult,
                                 (SUM(CASE
-                                        WHEN (vl.hbv_vl_result = 'negative') THEN 1
+                                        WHEN (vl.hbv_vl_count = 'negative') THEN 1
                                             ELSE 0
                                         END)) AS hbvnegativeResult,
                                 status_id,
                                 status_name
+                                FROM form_hepatitis as vl
+                                INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                                JOIN facility_details as f ON vl.facility_id=f.facility_id
+                                LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
-                                FROM form_hepatitis as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
-
-$sWhere[] = " (vl.hcv_vl_result!='' and vl.hcv_vl_result is not null) ";
+$sWhere[] = " (vl.hcv_vl_count!='' and vl.hcv_vl_count is not null) ";
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';

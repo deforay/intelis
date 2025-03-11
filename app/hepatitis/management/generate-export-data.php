@@ -94,8 +94,8 @@ if (isset($_SESSION['hepatitisResultQuery']) && trim((string) $_SESSION['hepatit
 		$row[] = $aRow['rejection_reason'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		//$row[] = $hepatitisResults[$aRow['result']] ?? $aRow['result'];
-		$row[] = $aRow['hcv_vl_result'];
-		$row[] = $aRow['hbv_vl_result'];
+		$row[] = $aRow['hcv_vl_count'];
+		$row[] = $aRow['hbv_vl_count'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 		$row[] = $aRow['status_name'];
 		$row[] = ($aRow['lab_tech_comments']);

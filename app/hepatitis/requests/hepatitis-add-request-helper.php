@@ -145,8 +145,6 @@ try {
 		'hbsag_result' => $_POST['HBsAg'] ?? null,
 		'anti_hcv_result' => $_POST['antiHcv'] ?? null,
 		'result' => $_POST['result'] ?? null,
-		'hcv_vl_result' => $_POST['hcv'] ?? null,
-		'hbv_vl_result' => $_POST['hbv'] ?? null,
 		'hcv_vl_count' => $_POST['hcvCount'] ?? null,
 		'hbv_vl_count' => $_POST['hbvCount'] ?? null,
 		'hepatitis_test_platform' => $testingPlatform ?? null,
