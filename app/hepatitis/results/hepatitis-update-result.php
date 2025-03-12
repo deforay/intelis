@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -50,6 +51,8 @@ if(empty($id)){
 	header('Location: /hepatitis/results/hepatitis-manual-results.php');
 	exit;
 }
+
+$id = MiscUtility::desqid((string) $id);
 
 
 // get instruments
