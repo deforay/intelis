@@ -76,8 +76,7 @@ try {
 	$resultSentToSource = 'pending';
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-		$_POST['hcvCount'] = null;
-		$_POST['hbvCount'] = null;
+		$_POST['hcvCount'] = $_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
 	} elseif (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;

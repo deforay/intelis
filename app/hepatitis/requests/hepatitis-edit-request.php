@@ -138,7 +138,15 @@ $fileArray = array(
     COUNTRY\RWANDA => 'forms/edit-rwanda.php'
 );
 
-require_once($fileArray[$arr['vl_form']]);
+require_once $fileArray[$arr['vl_form']];
+
+?>
+
+
+<?php
+// Common JS functions in a PHP file
+// Why PHP? Because we can use PHP variables in the JS code
+require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 
 ?>
 

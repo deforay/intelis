@@ -42,8 +42,7 @@ try {
 	$resultSentToSource = 'pending';
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {
-		$_POST['hcvCount'] = null;
-		$_POST['hbvCount'] = null;
+		$_POST['hcvCount'] = $_POST['hbvCount'] = null;
 		$resultSentToSource = 'pending';
 	} else if (empty($_POST['hcvCount']) && empty($_POST['hbvCount'])) {
 		$resultSentToSource = null;
@@ -56,34 +55,34 @@ try {
 		$_POST['reviewedOn'] = null;
 	}
 
-	$hepatitisData = array(
-		'sample_received_at_lab_datetime'  => $_POST['sampleReceivedDate'],
-		'lab_id'                              => $_POST['labId'] ?? null,
-		'sample_condition'  				  => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
-		'sample_tested_datetime'  			  => $_POST['sampleTestedDateTime'] ?? null,
-		'vl_testing_site'  			  		  => $_POST['vlTestingSite'] ?? null,
-		'is_sample_rejected'                  => ($_POST['isSampleRejected'] ?? null),
-		'result'                              => $_POST['result'] ?? null,
-		'hcv_vl_count'                       => $_POST['hcvCount'] ?? null,
-		'hbv_vl_count'                       => $_POST['hbvCount'] ?? null,
-		'hepatitis_test_platform'             => $_POST['hepatitisPlatform'] ?? null,
-		'import_machine_name'                 => $_POST['machineName'] ?? null,
-		'is_result_authorised'                => $_POST['isResultAuthorized'] ?? null,
-		'result_reviewed_by' 				  => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
-		'result_reviewed_datetime' 			  => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
-		'authorized_by'                       => $_POST['authorizedBy'] ?? null,
-		'authorized_on' 					  => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
-		'revised_by' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
-		'revised_on' 						  => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'result_status'                       => 8,
-		'result_sent_to_source'               => $resultSentToSource,
-		'data_sync'                           => 0,
-		'last_modified_by'                     => $_SESSION['userId'],
-		'last_modified_datetime'               => DateUtility::getCurrentDateTime(),
-		'result_printed_datetime' 			  => null,
-		'result_dispatched_datetime' 		  => null,
-		'reason_for_vl_test'				  => $_POST['reasonVlTest'] ?? null,
-	);
+	$hepatitisData = [
+		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
+		'lab_id' => $_POST['labId'] ?? null,
+		'sample_condition' => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
+		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
+		'vl_testing_site' => $_POST['vlTestingSite'] ?? null,
+		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
+		'result' => $_POST['result'] ?? null,
+		'hcv_vl_count' => $_POST['hcvCount'] ?? null,
+		'hbv_vl_count' => $_POST['hbvCount'] ?? null,
+		'hepatitis_test_platform' => $_POST['hepatitisPlatform'] ?? null,
+		'import_machine_name' => $_POST['machineName'] ?? null,
+		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
+		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
+		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+		'authorized_by' => $_POST['authorizedBy'] ?? null,
+		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
+		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
+		'result_status' => 8,
+		'result_sent_to_source' => $resultSentToSource,
+		'data_sync' => 0,
+		'last_modified_by' => $_SESSION['userId'],
+		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+		'result_printed_datetime' => null,
+		'result_dispatched_datetime' => null,
+		'reason_for_vl_test' => $_POST['reasonVlTest'] ?? null,
+	];
 
 	$db->where('hepatitis_id', $_POST['hepatitisSampleId']);
 	$getPrevResult = $db->getOne('form_hepatitis');

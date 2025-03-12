@@ -149,7 +149,7 @@ require_once($fileArray[$formId]);
 <?php
 // Common JS functions in a PHP file
 // Why PHP? Because we can use PHP variables in the JS code
-require_once APPLICATION_PATH . "/vl/vl.js.php";
+require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 ?>
 <script>
     function insertSampleCode(formId, vlSampleId = null, sampleCode = null, sampleCodeKey = null, sampleCodeFormat = null, countryId = null, sampleCollectionDate = null, provinceCode = null, provinceId = null) {

@@ -2,11 +2,11 @@
 
 // imported in /hepatitis/results/hepatitis-update-result.php based on country in global config
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -395,8 +395,6 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
     <!-- /.content -->
 </div>
 
-
-
 <script type="text/javascript">
     changeProvince = true;
     changeFacility = true;
@@ -505,6 +503,19 @@ $facility = $general->generateSelectOptions($healthFacilities, $hepatitisInfo['f
     }
 
     $(document).ready(function() {
+
+        hepatitisTestResults();
+
+        // Set up event listeners for both inputs
+        $("#hcvCount, #hbvCount").on("input", function() {
+            hepatitisTestResults();
+        });
+
+        // Update when test type changes
+        $("#hepatitisTestType").on("change", function() {
+            hepatitisTestResults();
+        });
+
         $('.disabledForm input, .disabledForm select , .disabledForm textarea ').attr('disabled', true);
         $('#facilityId').select2({
             placeholder: "Select Clinic/Health Center"
