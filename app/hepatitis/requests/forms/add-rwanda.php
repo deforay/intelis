@@ -91,7 +91,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         </td>
                                     </tr>
                                     <tr>
-                                        <td style="width:15%"><label for="hepatitisTestType">Type of Hepatitis Test </label><span class="mandatory">*</span></td>
+                                        <td style="width:15%"><label for="hepatitisTestType">Hepatitis Test Type </label><span class="mandatory">*</span></td>
                                         <td style="width:35%">
                                             <select class="form-control isRequired" name="hepatitisTestType" id="hepatitisTestType" title="Please choose type hepatitis test" style="width:100%;" onchange="hepatitisTestTypeFn(this.value);">
                                                 <option value="">--Select--</option>

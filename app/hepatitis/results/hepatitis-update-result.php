@@ -44,7 +44,12 @@ foreach ($userResult as $user) {
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$id = (isset($_GET['id'])) ? base64_decode($_GET['id']) : null;
+$id = $_GET['id'] ?? null;
+
+if(empty($id)){
+	header('Location: /hepatitis/results/hepatitis-manual-results.php');
+	exit;
+}
 
 
 // get instruments
@@ -63,8 +68,8 @@ $comorbidityInfo = $hepatitisService->getComorbidityByHepatitisId($id);
 $riskFactorsData = $hepatitisService->getHepatitisRiskFactors();
 $riskFactorsInfo = $hepatitisService->getRiskFactorsByHepatitisId($id);
 
-$hepatitisQuery = "SELECT * FROM form_hepatitis where hepatitis_id=?";
-$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, array($id));
+$hepatitisQuery = "SELECT * FROM form_hepatitis WHERE hepatitis_id=?";
+$hepatitisInfo = $db->rawQueryOne($hepatitisQuery, [$id]);
 
 //sample rejection reason
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_hepatitis_sample_rejection_reasons WHERE rejection_reason_status ='active'";
@@ -156,9 +161,9 @@ if (!empty($hepatitisInfo['is_encrypted']) && $hepatitisInfo['is_encrypted'] == 
 </style>
 <?php
 
-$fileArray = array(
+$fileArray = [
 	7 => 'forms/update-rwanda-result.php'
-);
+];
 
 require_once $fileArray[$arr['vl_form']];
 

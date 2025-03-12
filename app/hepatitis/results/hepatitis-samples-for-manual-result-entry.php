@@ -63,7 +63,7 @@ try {
           $sWhere[] = $columnSearch;
      }
 
-     $sQuery = "SELECT vl.hepatitis_id,vl.sample_code, vl.external_sample_code,
+     $sQuery = "SELECT vl.hepatitis_id,vl.unique_id,vl.sample_code, vl.external_sample_code,
           vl.remote_sample_code, vl.patient_id, vl.patient_name,
           vl.patient_surname,vl.patient_phone_number,vl.patient_gender,vl.is_sample_collected,vl.reason_for_hepatitis_test,
           vl.specimen_type,vl.hepatitis_test_platform,vl.result_status,vl.locked,vl.is_sample_rejected,vl.reason_for_sample_rejection,
@@ -155,7 +155,7 @@ try {
      $hepatitisResults = $hepatitisService->getHepatitisResults();
      foreach ($rResult as $aRow) {
           $row = [];
-          $print = '<a href="/hepatitis/results/hepatitis-update-result.php?id=' . base64_encode($aRow['unique_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
+          $print = '<a href="/hepatitis/results/hepatitis-update-result.php?id=' . ($aRow['unique_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
           if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {
                if (!_isAllowed("/hepatitis/requests/edit-locked-hepatitis-samples")) {
                     $print = '<a href="javascript:void(0);" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Locked") . '" disabled><em class="fa-solid fa-lock"></em> ' . _translate("Locked") . '</a>';
