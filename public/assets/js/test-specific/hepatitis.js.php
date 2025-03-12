@@ -6,6 +6,10 @@
     function hepatitisTestResults() {
         let testType = $("#hepatitisTestType").val().toLowerCase();
 
+        if (testType === '' || testType === null) {
+            alert("<?= _translate("Please select the test type", true); ?>");
+        }
+
         // Handle initial state based on the test type parameter
         if (testType === "hcv") {
             $("#hbvCount").val("");
