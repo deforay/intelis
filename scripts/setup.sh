@@ -242,7 +242,7 @@ sudo -u www-data composer config process-timeout 30000
 
 sudo -u www-data composer clear-cache
 
-sudo -u www-data composer install --no-dev &&
+sudo -u www-data composer install --prefer-dist --no-dev &&
     sudo -u www-data composer dump-autoload -o
 
 # Function to configure Apache Virtual Host
