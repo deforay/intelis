@@ -82,7 +82,7 @@ jobs:
           sha256sum vendor.zip > vendor.zip.sha256
 
       - name: Upload vendor.zip as artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: vendor-package
           path: |
