@@ -1,0 +1,105 @@
+name: Build Vendor Package
+
+on:
+  push:
+    branches:
+      - main
+      - master
+    paths:
+      - 'composer.json'
+      - 'composer.lock'
+  workflow_dispatch:  # Allow manual triggering if needed
+
+jobs:
+  check_changes:
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check_composer.outputs.should_build }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 2  # Need history to check for changes
+
+      - name: Check for composer changes
+        id: check_composer
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Manual trigger, proceeding with build"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          elif git diff --name-only HEAD^ HEAD | grep -q "composer\.\(json\|lock\)"; then
+            echo "Changes detected in composer files, proceeding with build"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes in composer files, skipping build"
+            echo "should_build=false" >> $GITHUB_OUTPUT
+          fi
+
+  build:
+    needs: check_changes
+    if: needs.check_changes.outputs.should_build == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          extensions: gd, zip, pdo, json, curl, gettext, openssl, fileinfo, sodium, zlib, intl, bcmath
+          tools: composer:v2
+
+      - name: Get Composer Cache Directory
+        id: composer-cache
+        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.composer-cache.outputs.dir }}
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install dependencies
+        run: |
+          composer config --no-interaction
+          composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
+
+      - name: Create vendor zip
+        run: |
+          # Remove unnecessary files to reduce size
+          find vendor -name ".git" -type d -exec rm -rf {} +
+          find vendor -name "tests" -type d -exec rm -rf {} +
+          find vendor -name "docs" -type d -exec rm -rf {} +
+          find vendor -name ".github" -type d -exec rm -rf {} +
+
+          # Create zip file
+          zip -r vendor.zip vendor/
+
+          # Calculate checksums
+          md5sum vendor.zip > vendor.zip.md5
+          sha256sum vendor.zip > vendor.zip.sha256
+
+      - name: Upload vendor.zip as artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: vendor-package
+          path: |
+            vendor.zip
+            vendor.zip.md5
+            vendor.zip.sha256
+          retention-days: 90
+
+      - name: Create vendor release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: vendor-latest
+          name: Latest Vendor Package
+          body: "Latest vendor.zip package generated from composer dependencies. Generated on ${{ github.event.repository.updated_at }}"
+          files: |
+            vendor.zip
+            vendor.zip.md5
+            vendor.zip.sha256
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

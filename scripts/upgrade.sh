@@ -576,9 +576,19 @@ if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
 
+
 # Run Composer Install as www-data
 echo "Running composer install as www-data user..."
 cd "${lis_path}"
+
+
+# In your setup.sh or upgrade.sh
+wget https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip
+# Optional verification
+wget https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5
+echo "$(cat vendor.zip.md5) vendor.zip" | md5sum -c
+# Extract
+unzip -o vendor.zip
 
 sudo -u www-data composer config process-timeout 30000
 
