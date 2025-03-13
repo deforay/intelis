@@ -4,8 +4,9 @@
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
+    echo PHP_EOL;
     echo "=========================" . PHP_EOL;
-    echo "Starting requests sync" . PHP_EOL;
+    echo "Starting test requests sync" . PHP_EOL;
 }
 
 ini_set('memory_limit', -1);
@@ -127,6 +128,7 @@ try {
     if (!empty($responsePayload['vl']) && $responsePayload['vl'] != '[]' && JsonUtility::isJSON($responsePayload['vl'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for HIV VL" . PHP_EOL;
         }
@@ -287,6 +289,7 @@ try {
     if (!empty($responsePayload['eid']) && $responsePayload['eid'] != '[]' && JsonUtility::isJSON($responsePayload['eid'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for EID" . PHP_EOL;
         }
@@ -428,6 +431,7 @@ try {
     if (!empty($responsePayload['covid19']) && $responsePayload['covid19'] != '[]' && JsonUtility::isJSON($responsePayload['covid19'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for Covid-19" . PHP_EOL;
         }
@@ -626,6 +630,7 @@ try {
     if (!empty($responsePayload['hepatitis']) && $responsePayload['hepatitis'] != '[]' && JsonUtility::isJSON($responsePayload['hepatitis'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for Hepatitis" . PHP_EOL;
         }
@@ -807,6 +812,7 @@ try {
 
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for TB" . PHP_EOL;
         }
@@ -962,6 +968,7 @@ try {
     if (!empty($responsePayload['cd4']) && $responsePayload['cd4'] != '[]' && JsonUtility::isJSON($responsePayload['cd4'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for CD4" . PHP_EOL;
         }
@@ -1108,6 +1115,7 @@ try {
     if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] != '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
 
         if ($cliMode) {
+            echo PHP_EOL;
             echo "=========================" . PHP_EOL;
             echo "Processing for Custom Tests" . PHP_EOL;
         }

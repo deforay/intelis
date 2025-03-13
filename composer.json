@@ -75,17 +75,25 @@
     "repositories": [
         {
             "type": "composer",
-            "url": "https://satis.labsinformatics.com"
-        },
-        {
-            "type": "composer",
-            "url": "https://repo.packagist.org"
+            "url": "https://satis.labsinformatics.com",
+            "options": {
+                "ssl": {
+                    "verify_peer": true
+                },
+                "http": {
+                    "timeout": 5
+                }
+            }
         }
     ],
-    "config": {},
+    "config": {
+        "preferred-install": "dist",
+        "sort-packages": true,
+        "secure-http": true
+    },
     "require-dev": {
         "kint-php/kint": "^5.1",
-        "squizlabs/php_codesniffer": "*",
+        "squizlabs/php_codesniffer": "^3.11",
         "symfony/var-dumper": "^7.1"
     },
     "scripts": {
