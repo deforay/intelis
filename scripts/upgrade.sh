@@ -581,14 +581,30 @@ fi
 echo "Running composer install as www-data user..."
 cd "${lis_path}"
 
+# Check if vendor-latest release files exist before downloading
+echo "Checking for vendor packages..."
+if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
+    echo "Vendor package found. Downloading..."
+    wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || { echo "Failed to download vendor.zip"; exit 1; }
 
-# In your setup.sh or upgrade.sh
-wget https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip
-# Optional verification
-wget https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5
-echo "$(cat vendor.zip.md5) vendor.zip" | md5sum -c
-# Extract
-unzip -o vendor.zip
+    echo "Downloading checksum..."
+    wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || { echo "Failed to download vendor.zip.md5"; exit 1; }
+
+    echo "Verifying checksum..."
+    md5sum -c vendor.zip.md5 || { echo "Checksum verification failed"; exit 1; }
+
+    echo "Extracting files..."
+    unzip -o vendor.zip || { echo "Failed to extract vendor.zip"; exit 1; }
+
+    # Fix permissions on the vendor directory
+    chown -R www-data:www-data "${lis_path}/vendor"
+    chmod -R 755 "${lis_path}/vendor"
+
+    echo "Vendor files successfully installed"
+else
+    echo "Vendor package not found in GitHub releases. Skipping vendor download."
+    echo "Will proceed with regular composer install instead."
+fi
 
 sudo -u www-data composer config process-timeout 30000
 
