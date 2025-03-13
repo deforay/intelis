@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "78602e283759e249d0124e81e502d4aa",
+    "content-hash": "264a18ee5910a0968638aac7cae73c5e",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -16,9 +16,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/brick/phonenumber/zipball/66331c3db851544a76908b83b8a250a738690c14",
+                "url": "https://satis.labsinformatics.com/dist/brick/phonenumber/brick-phonenumber-66331c3db851544a76908b83b8a250a738690c14-zip-f1f4b9.zip",
                 "reference": "66331c3db851544a76908b83b8a250a738690c14",
-                "shasum": ""
+                "shasum": "5b37d6da03ea5fa0ddfad56aa21e380ca25251d6"
             },
             "require": {
                 "giggsey/libphonenumber-for-php": "^7.0 || ^8.0",
@@ -216,9 +216,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/crunzphp/crunz/zipball/9da5f9ff358557992666b50f7ad6365efa9a7ca9",
+                "url": "https://satis.labsinformatics.com/dist/crunzphp/crunz/crunzphp-crunz-9da5f9ff358557992666b50f7ad6365efa9a7ca9-zip-b84b92.zip",
                 "reference": "9da5f9ff358557992666b50f7ad6365efa9a7ca9",
-                "shasum": ""
+                "shasum": "f7b3396c35bf0e4191e685124db90edd13086383"
             },
             "require": {
                 "composer-runtime-api": "^2.0",
@@ -571,9 +571,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/filp/whoops/zipball/075bc0c26631110584175de6523ab3f1652eb28e",
+                "url": "https://satis.labsinformatics.com/dist/filp/whoops/filp-whoops-075bc0c26631110584175de6523ab3f1652eb28e-zip-4fb0d5.zip",
                 "reference": "075bc0c26631110584175de6523ab3f1652eb28e",
-                "shasum": ""
+                "shasum": "3fcd02fa2e82ddc680e43de6b6420bf03c7f7b17"
             },
             "require": {
                 "php": "^7.1 || ^8.0",
@@ -642,9 +642,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-gettext/Gettext/zipball/95820f020e4f2f05e0bbaa5603e4c6ec3edc50f1",
+                "url": "https://satis.labsinformatics.com/dist/gettext/gettext/gettext-gettext-95820f020e4f2f05e0bbaa5603e4c6ec3edc50f1-zip-5633bb.zip",
                 "reference": "95820f020e4f2f05e0bbaa5603e4c6ec3edc50f1",
-                "shasum": ""
+                "shasum": "cb0caa102a2a0300c4510ae235d13dfe97bd82a2"
             },
             "require": {
                 "gettext/languages": "^2.3",
@@ -923,9 +923,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Gregwar/Captcha/zipball/229d3cdfe33d6f1349e0aec94a26e9205a6db08e",
+                "url": "https://satis.labsinformatics.com/dist/gregwar/captcha/gregwar-captcha-229d3cdfe33d6f1349e0aec94a26e9205a6db08e-zip-f597ef.zip",
                 "reference": "229d3cdfe33d6f1349e0aec94a26e9205a6db08e",
-                "shasum": ""
+                "shasum": "f97fc41ea7f57a9a303ae6c7cb5dff086220f54d"
             },
             "require": {
                 "ext-gd": "*",
@@ -980,9 +980,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/guzzle/guzzle/zipball/d281ed313b989f213357e3be1a179f02196ac99b",
+                "url": "https://satis.labsinformatics.com/dist/guzzlehttp/guzzle/guzzlehttp-guzzle-d281ed313b989f213357e3be1a179f02196ac99b-zip-8f51dd.zip",
                 "reference": "d281ed313b989f213357e3be1a179f02196ac99b",
-                "shasum": ""
+                "shasum": "0a6455154bf8a834153ffdca9c80014e0fdfbf9a"
             },
             "require": {
                 "ext-json": "*",
@@ -1305,9 +1305,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/hackzilla/password-generator/zipball/743c8493d2c33ebf9496a1c3c248efeb568fe134",
+                "url": "https://satis.labsinformatics.com/dist/hackzilla/password-generator/hackzilla-password-generator-743c8493d2c33ebf9496a1c3c248efeb568fe134-zip-15c0e6.zip",
                 "reference": "743c8493d2c33ebf9496a1c3c248efeb568fe134",
-                "shasum": ""
+                "shasum": "487a94ca3d3184169543357019951c0efe20904c"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -1350,9 +1350,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/halaxa/json-machine/zipball/c889fdff2d5a51affae0033464ff24b0ae936b72",
+                "url": "https://satis.labsinformatics.com/dist/halaxa/json-machine/halaxa-json-machine-c889fdff2d5a51affae0033464ff24b0ae936b72-zip-8411bb.zip",
                 "reference": "c889fdff2d5a51affae0033464ff24b0ae936b72",
-                "shasum": ""
+                "shasum": "bd5856ddaddb5d342a76e843165ee67e98071329"
             },
             "require": {
                 "php": "7.2 - 8.4"
@@ -1412,9 +1412,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/ifsnop/mysqldump-php/zipball/2d3a43fc0c49f23bf7dee392b0dd1f8c799f89d3",
+                "url": "https://satis.labsinformatics.com/dist/ifsnop/mysqldump-php/ifsnop-mysqldump-php-2d3a43fc0c49f23bf7dee392b0dd1f8c799f89d3-zip-26a7ab.zip",
                 "reference": "2d3a43fc0c49f23bf7dee392b0dd1f8c799f89d3",
-                "shasum": ""
+                "shasum": "1ac77aef661c2ef2721104d9677cd66919a71298"
             },
             "require": {
                 "php": ">=5.3.0"
@@ -1471,9 +1471,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-config/zipball/0f50adbf2b2e01e0fe99c13e37d3a6c1ef645185",
+                "url": "https://satis.labsinformatics.com/dist/laminas/laminas-config/laminas-laminas-config-0f50adbf2b2e01e0fe99c13e37d3a6c1ef645185-zip-0de7cf.zip",
                 "reference": "0f50adbf2b2e01e0fe99c13e37d3a6c1ef645185",
-                "shasum": ""
+                "shasum": "4b65871a311d408890b2f661ed060a6fb435aae9"
             },
             "require": {
                 "ext-json": "*",
@@ -1540,9 +1540,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-diactoros/zipball/143a16306602ce56b8b092a7914fef03c37f9ed2",
+                "url": "https://satis.labsinformatics.com/dist/laminas/laminas-diactoros/laminas-laminas-diactoros-143a16306602ce56b8b092a7914fef03c37f9ed2-zip-6a8c4c.zip",
                 "reference": "143a16306602ce56b8b092a7914fef03c37f9ed2",
-                "shasum": ""
+                "shasum": "06c511af1ac1dfe8a511c30b767cf9b6e155bab4"
             },
             "require": {
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
@@ -1689,9 +1689,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-filter/zipball/9b32ba7c45a302ed349bf42061308e854d56e75b",
+                "url": "https://satis.labsinformatics.com/dist/laminas/laminas-filter/laminas-laminas-filter-9b32ba7c45a302ed349bf42061308e854d56e75b-zip-4bbc2e.zip",
                 "reference": "9b32ba7c45a302ed349bf42061308e854d56e75b",
-                "shasum": ""
+                "shasum": "0cea7d94e062d60b68323eada855e0deb8b771d4"
             },
             "require": {
                 "ext-mbstring": "*",
@@ -1768,9 +1768,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-httphandlerrunner/zipball/c428d9f67f280d155637cbe2b7245b5188c8cdae",
+                "url": "https://satis.labsinformatics.com/dist/laminas/laminas-httphandlerrunner/laminas-laminas-httphandlerrunner-c428d9f67f280d155637cbe2b7245b5188c8cdae-zip-de4f5d.zip",
                 "reference": "c428d9f67f280d155637cbe2b7245b5188c8cdae",
-                "shasum": ""
+                "shasum": "26eceae6c746e3bc213eb8a86c47108752de3eb2"
             },
             "require": {
                 "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0",
@@ -1984,9 +1984,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laminas/laminas-stratigility/zipball/3df57528b5c8e9d958515c51006825a83f76d62b",
+                "url": "https://satis.labsinformatics.com/dist/laminas/laminas-stratigility/laminas-laminas-stratigility-3df57528b5c8e9d958515c51006825a83f76d62b-zip-6f99c3.zip",
                 "reference": "3df57528b5c8e9d958515c51006825a83f76d62b",
-                "shasum": ""
+                "shasum": "e49b67e5f22232dfc95631c2ca27a58a995a8d1b"
             },
             "require": {
                 "fig/http-message-util": "^1.1",
@@ -2124,9 +2124,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/csv/zipball/afc109aa11f3086b8be8dfffa04ac31480b36b76",
+                "url": "https://satis.labsinformatics.com/dist/league/csv/league-csv-afc109aa11f3086b8be8dfffa04ac31480b36b76-zip-1a753d.zip",
                 "reference": "afc109aa11f3086b8be8dfffa04ac31480b36b76",
-                "shasum": ""
+                "shasum": "c587c793efa39fe28fae6f1f09dfedf733291c5e"
             },
             "require": {
                 "ext-filter": "*",
@@ -2400,9 +2400,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Seldaek/monolog/zipball/aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
+                "url": "https://satis.labsinformatics.com/dist/monolog/monolog/monolog-monolog-aef6ee73a77a66e404dd6540934a9ef1b3c855b4-zip-104852.zip",
                 "reference": "aef6ee73a77a66e404dd6540934a9ef1b3c855b4",
-                "shasum": ""
+                "shasum": "a96e19746814d16bc3b2c65a326d148482093683"
             },
             "require": {
                 "php": ">=8.1",
@@ -2503,9 +2503,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/CarbonPHP/carbon/zipball/ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
+                "url": "https://satis.labsinformatics.com/dist/nesbot/carbon/nesbot-carbon-ff2f20cf83bd4d503720632ce8a426dc747bf7fd-zip-55cc46.zip",
                 "reference": "ff2f20cf83bd4d503720632ce8a426dc747bf7fd",
-                "shasum": ""
+                "shasum": "38369c1884b3f49bddd634580ca4bbd7a59b85b8"
             },
             "require": {
                 "carbonphp/carbon-doctrine-types": "<100.0",
@@ -2659,9 +2659,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/iter/zipball/3f031ae08d82c4394410e76b88b441331a6fa15f",
+                "url": "https://satis.labsinformatics.com/dist/nikic/iter/nikic-iter-3f031ae08d82c4394410e76b88b441331a6fa15f-zip-5a100e.zip",
                 "reference": "3f031ae08d82c4394410e76b88b441331a6fa15f",
-                "shasum": ""
+                "shasum": "edee70d33723661e55962e714b51bf0e672161ed"
             },
             "require": {
                 "php": ">=7.1"
@@ -2711,9 +2711,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/openspout/openspout/zipball/ab05a09fe6fce57c90338f83280648a9786ce36b",
+                "url": "https://satis.labsinformatics.com/dist/openspout/openspout/openspout-openspout-ab05a09fe6fce57c90338f83280648a9786ce36b-zip-f52d2a.zip",
                 "reference": "ab05a09fe6fce57c90338f83280648a9786ce36b",
-                "shasum": ""
+                "shasum": "6f3c68a1fc05d91767ba414c7c798937cf91a735"
             },
             "require": {
                 "ext-dom": "*",
@@ -2859,9 +2859,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHP-DI/PHP-DI/zipball/d8480267f5cf239650debba704f3ecd15b638cde",
+                "url": "https://satis.labsinformatics.com/dist/php-di/php-di/php-di-php-di-d8480267f5cf239650debba704f3ecd15b638cde-zip-4fb478.zip",
                 "reference": "d8480267f5cf239650debba704f3ecd15b638cde",
-                "shasum": ""
+                "shasum": "3d74c05006f55919011fe677054229435fe4acad"
             },
             "require": {
                 "laravel/serializable-closure": "^1.0 || ^2.0",
@@ -2932,9 +2932,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPMailer/PHPMailer/zipball/2f5c94fe7493efc213f643c23b1b1c249d40f47e",
+                "url": "https://satis.labsinformatics.com/dist/phpmailer/phpmailer/phpmailer-phpmailer-2f5c94fe7493efc213f643c23b1b1c249d40f47e-zip-da333c.zip",
                 "reference": "2f5c94fe7493efc213f643c23b1b1c249d40f47e",
-                "shasum": ""
+                "shasum": "3ecc2186c33183e2ca9cfbb4765a62716b79051f"
             },
             "require": {
                 "ext-ctype": "*",
@@ -3013,9 +3013,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpmyadmin/sql-parser/zipball/07044bc8c13abd542756c3fd34dc66a5d6dee8e4",
+                "url": "https://satis.labsinformatics.com/dist/phpmyadmin/sql-parser/phpmyadmin-sql-parser-07044bc8c13abd542756c3fd34dc66a5d6dee8e4-zip-fd6787.zip",
                 "reference": "07044bc8c13abd542756c3fd34dc66a5d6dee8e4",
-                "shasum": ""
+                "shasum": "28a3e056f38345d72c16d0c081a80e5df920a0e2"
             },
             "require": {
                 "php": "^7.2 || ^8.0",
@@ -3056,6 +3056,12 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/phpunit.xml.dist"
+                ]
+            },
             "license": [
                 "GPL-2.0-or-later"
             ],
@@ -3102,9 +3108,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
+                "url": "https://satis.labsinformatics.com/dist/phpoffice/phpspreadsheet/phpoffice-phpspreadsheet-6ff18c3a8df3a945492f75ce455d77f7ad55dd5c-zip-3c268d.zip",
                 "reference": "6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
-                "shasum": ""
+                "shasum": "e90f152fcb4bae4c773b5ae085be2e25bb75d6c7"
             },
             "require": {
                 "composer/pcre": "^1||^2||^3",
@@ -3675,9 +3681,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/php-fig/log/zipball/f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
+                "url": "https://satis.labsinformatics.com/dist/psr/log/psr-log-f16e1d5863e37f8d8c2a01719f5b34baa2b714d3-zip-94d951.zip",
                 "reference": "f16e1d5863e37f8d8c2a01719f5b34baa2b714d3",
-                "shasum": ""
+                "shasum": "8b8ebb44edafd45f5a3ed33a0db0fac86f391498"
             },
             "require": {
                 "php": ">=8.0.0"
@@ -3820,9 +3826,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/Setasign/FPDI/zipball/67c31f5e50c93c20579ca9e23035d8c540b51941",
+                "url": "https://satis.labsinformatics.com/dist/setasign/fpdi/setasign-fpdi-67c31f5e50c93c20579ca9e23035d8c540b51941-zip-b274e7.zip",
                 "reference": "67c31f5e50c93c20579ca9e23035d8c540b51941",
-                "shasum": ""
+                "shasum": "22392d243ba91e91e30b6dde5e5011973a5a2337"
             },
             "require": {
                 "ext-zlib": "*",
@@ -3892,9 +3898,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim-Psr7/zipball/753e9646def5ff4db1a06e5cf4ef539bfd30f467",
+                "url": "https://satis.labsinformatics.com/dist/slim/psr7/slim-psr7-753e9646def5ff4db1a06e5cf4ef539bfd30f467-zip-d0395b.zip",
                 "reference": "753e9646def5ff4db1a06e5cf4ef539bfd30f467",
-                "shasum": ""
+                "shasum": "d040eb58e6eac69583fd6db62e90149faf0bbe2a"
             },
             "require": {
                 "fig/http-message-util": "^1.1.5",
@@ -3926,6 +3932,12 @@
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
+            "archive": {
+                "exclude": [
+                    "/tests",
+                    "/phpunit.xml.dist"
+                ]
+            },
             "license": [
                 "MIT"
             ],
@@ -3974,9 +3986,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/slimphp/Slim/zipball/5943393b88716eb9e82c4161caa956af63423913",
+                "url": "https://satis.labsinformatics.com/dist/slim/slim/slim-slim-5943393b88716eb9e82c4161caa956af63423913-zip-9531f4.zip",
                 "reference": "5943393b88716eb9e82c4161caa956af63423913",
-                "shasum": ""
+                "shasum": "40e0883a92ec606577d8cbe50ae4af87182aae1f"
             },
             "require": {
                 "ext-json": "*",
@@ -4090,9 +4102,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/spatie/once/zipball/25252b821765d72566be17c52ea05b35329f0f8f",
+                "url": "https://satis.labsinformatics.com/dist/spatie/once/spatie-once-25252b821765d72566be17c52ea05b35329f0f8f-zip-f69532.zip",
                 "reference": "25252b821765d72566be17c52ea05b35329f0f8f",
-                "shasum": ""
+                "shasum": "7a8039238c4cf6f536d6686dd1d29354850eb42f"
             },
             "require": {
                 "php": "^8.0"
@@ -4152,9 +4164,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/sqids/sqids-php/zipball/ff3d1214c0c2119ae4b676cc00f3abb22f61da42",
+                "url": "https://satis.labsinformatics.com/dist/sqids/sqids/sqids-sqids-ff3d1214c0c2119ae4b676cc00f3abb22f61da42-zip-43fea2.zip",
                 "reference": "ff3d1214c0c2119ae4b676cc00f3abb22f61da42",
-                "shasum": ""
+                "shasum": "affbe5ed072bf395562754e1bceae7c1ab20d19e"
             },
             "require": {
                 "php": "^8.1"
@@ -4207,9 +4219,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/cache/zipball/d33cd9e14326e14a4145c21e600602eaf17cc9e7",
+                "url": "https://satis.labsinformatics.com/dist/symfony/cache/symfony-cache-d33cd9e14326e14a4145c21e600602eaf17cc9e7-zip-b2bb25.zip",
                 "reference": "d33cd9e14326e14a4145c21e600602eaf17cc9e7",
-                "shasum": ""
+                "shasum": "0a7c3edf2b931504b22992e3964405d2a1181b77"
             },
             "require": {
                 "php": ">=8.2",
@@ -4530,9 +4542,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/console/zipball/fefcc18c0f5d0efe3ab3152f15857298868dc2c3",
+                "url": "https://satis.labsinformatics.com/dist/symfony/console/symfony-console-fefcc18c0f5d0efe3ab3152f15857298868dc2c3-zip-18dfa8.zip",
                 "reference": "fefcc18c0f5d0efe3ab3152f15857298868dc2c3",
-                "shasum": ""
+                "shasum": "92592745394909c98a6a0c2af9efe704d02ce34f"
             },
             "require": {
                 "php": ">=8.2",
@@ -4926,9 +4938,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/filesystem/zipball/b8dce482de9d7c9fe2891155035a7248ab5c7fdb",
+                "url": "https://satis.labsinformatics.com/dist/symfony/filesystem/symfony-filesystem-b8dce482de9d7c9fe2891155035a7248ab5c7fdb-zip-91febd.zip",
                 "reference": "b8dce482de9d7c9fe2891155035a7248ab5c7fdb",
-                "shasum": ""
+                "shasum": "02cc3e6988b57ef841a4e3cbb24c52dfde35436b"
             },
             "require": {
                 "php": ">=8.2",
@@ -6223,9 +6235,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/string/zipball/73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f",
+                "url": "https://satis.labsinformatics.com/dist/symfony/string/symfony-string-73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f-zip-3a253c.zip",
                 "reference": "73a5e66ea2e1677c98d4449177c5a9cf9d8b4c6f",
-                "shasum": ""
+                "shasum": "bee9a675a4793c1872080e3f163ccccab79af635"
             },
             "require": {
                 "php": ">=8.1",
@@ -6482,9 +6494,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/uid/zipball/2d294d0c48df244c71c105a169d0190bfb080426",
+                "url": "https://satis.labsinformatics.com/dist/symfony/uid/symfony-uid-2d294d0c48df244c71c105a169d0190bfb080426-zip-45b513.zip",
                 "reference": "2d294d0c48df244c71c105a169d0190bfb080426",
-                "shasum": ""
+                "shasum": "0e56c2865a48a73bb99bdca2d90aee7e259ff44e"
             },
             "require": {
                 "php": ">=8.2",
@@ -6704,9 +6716,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/tecnickcom/TCPDF/zipball/f7a781073e1645062f163e058139e2f89355d420",
+                "url": "https://satis.labsinformatics.com/dist/tecnickcom/tcpdf/tecnickcom-tcpdf-f7a781073e1645062f163e058139e2f89355d420-zip-d860d6.zip",
                 "reference": "f7a781073e1645062f163e058139e2f89355d420",
-                "shasum": ""
+                "shasum": "f78d46721040e98901c9d1711d0ad01e620e8569"
             },
             "require": {
                 "ext-curl": "*",
@@ -6827,9 +6839,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/voku/anti-xss/zipball/bca1f8607e55a3c5077483615cd93bd8f11bd675",
+                "url": "https://satis.labsinformatics.com/dist/voku/anti-xss/voku-anti-xss-bca1f8607e55a3c5077483615cd93bd8f11bd675-zip-971dfe.zip",
                 "reference": "bca1f8607e55a3c5077483615cd93bd8f11bd675",
-                "shasum": ""
+                "shasum": "5f2959edd6ce5dca7227b8e0a6ed5050469190fd"
             },
             "require": {
                 "php": ">=7.0.0",
@@ -7392,6 +7404,6 @@
         "ext-intl": "*",
         "ext-bcmath": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

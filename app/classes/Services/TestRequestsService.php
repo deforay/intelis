@@ -64,6 +64,7 @@ final class TestRequestsService
 
             $sampleCodeColumn = $this->commonService->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
 
+            $this->db->reset();
             if (!empty($uniqueIds)) {
                 $uniqueIds = is_array($uniqueIds) ? $uniqueIds : [$uniqueIds];
                 $this->db->where('unique_id', $uniqueIds, 'IN');
@@ -152,6 +153,7 @@ final class TestRequestsService
                             $tesRequestData['sample_code_key'] = $sampleData['sampleCodeKey'];
                         }
 
+                        $this->db->reset();
                         // Use conditional update to handle potential race conditions
                         $this->db->where('unique_id', $item['unique_id']);
 
@@ -217,6 +219,7 @@ final class TestRequestsService
             $data['processing_error'] = $error;
         }
 
+        $this->db->reset();
         $this->db->where('id', $id);
         return $this->db->update('queue_sample_code_generation', $data);
     }
@@ -312,6 +315,8 @@ final class TestRequestsService
                 $dataToUpdate['sample_tested_datetime'] = null;
                 $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
             }
+
+            $this->db->reset();
             $this->db->where('result_status = ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
             $this->db->where('sample_code is NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);

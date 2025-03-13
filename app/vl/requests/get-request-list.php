@@ -482,6 +482,13 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
-} catch (Throwable $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
+          'exception' => $e,
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_query' => $db->getLastQuery(),
+          'last_db_error' => $db->getLastError(),
+          'stacktrace' => $e->getTraceAsString()
+     ]);
 }
