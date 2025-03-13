@@ -72,20 +72,6 @@
             "App\\": "app/classes/"
         }
     },
-    "repositories": [
-        {
-            "type": "composer",
-            "url": "https://satis.labsinformatics.com",
-            "options": {
-                "ssl": {
-                    "verify_peer": true
-                },
-                "http": {
-                    "timeout": 5
-                }
-            }
-        }
-    ],
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
