@@ -576,44 +576,91 @@ if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
 
-
 # Run Composer Install as www-data
-echo "Running composer install as www-data user..."
+echo "Running composer operations as www-data user..."
 cd "${lis_path}"
 
-# Check if vendor-latest release files exist before downloading
-echo "Checking for vendor packages..."
-if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
-    echo "Vendor package found. Downloading..."
-    wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || { echo "Failed to download vendor.zip"; exit 1; }
-
-    echo "Downloading checksum..."
-    wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || { echo "Failed to download vendor.zip.md5"; exit 1; }
-
-    echo "Verifying checksum..."
-    md5sum -c vendor.zip.md5 || { echo "Checksum verification failed"; exit 1; }
-
-    echo "Extracting files..."
-    unzip -o vendor.zip || { echo "Failed to extract vendor.zip"; exit 1; }
-
-    # Fix permissions on the vendor directory
-    chown -R www-data:www-data "${lis_path}/vendor"
-    chmod -R 755 "${lis_path}/vendor"
-
-    echo "Vendor files successfully installed"
+# Check if the vendor directory exists and if the lock file exists
+if [ ! -d "${lis_path}/vendor" ] || [ ! -f "${lis_path}/composer.lock" ]; then
+    echo "Vendor directory or composer.lock missing. Full installation needed."
+    NEED_FULL_INSTALL=true
 else
-    echo "Vendor package not found in GitHub releases. Skipping vendor download."
-    echo "Will proceed with regular composer install instead."
+    # Use composer's status check to see if dependencies are up to date
+    echo "Checking if composer dependencies are in sync with lock file..."
+    OUT=$(sudo -u www-data composer status -n 2>&1)
+    STATUS=$?
+
+    if [ $STATUS -ne 0 ]; then
+        echo "Composer dependencies are out of date or modified: $OUT"
+        NEED_FULL_INSTALL=true
+    else
+        echo "Composer dependencies are in sync with lock file."
+        NEED_FULL_INSTALL=false
+    fi
+
+    # Also check if composer.lock is outdated compared to composer.json
+    echo "Checking if composer.lock is in sync with composer.json..."
+    sudo -u www-data composer validate --no-check-all --no-check-publish
+    if [ $? -ne 0 ]; then
+        echo "composer.lock is out of sync with composer.json. Update needed."
+        NEED_FULL_INSTALL=true
+    fi
 fi
 
+# Configure composer timeout regardless of installation path
 sudo -u www-data composer config process-timeout 30000
-
 sudo -u www-data composer clear-cache
 
-sudo -u www-data composer install --prefer-dist --no-dev &&
-    sudo -u www-data composer dump-autoload -o
+# Download vendor.zip if needed
+if [ "$NEED_FULL_INSTALL" = true ]; then
+    echo "Dependency update needed. Checking for vendor packages..."
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
+        echo "Vendor package found. Downloading..."
+        wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || {
+            echo "Failed to download vendor.zip"
+            exit 1
+        }
 
-log_action "Composer install completed."
+        echo "Downloading checksum..."
+        wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || {
+            echo "Failed to download vendor.zip.md5"
+            exit 1
+        }
+
+        echo "Verifying checksum..."
+        md5sum -c vendor.zip.md5 || {
+            echo "Checksum verification failed"
+            exit 1
+        }
+
+        echo "Extracting files..."
+        unzip -o vendor.zip || {
+            echo "Failed to extract vendor.zip"
+            exit 1
+        }
+
+        # Fix permissions on the vendor directory
+        chown -R www-data:www-data "${lis_path}/vendor"
+        chmod -R 755 "${lis_path}/vendor"
+
+        echo "Vendor files successfully installed"
+
+        # Update the composer.lock file to match the current state
+        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
+    else
+        echo "Vendor package not found in GitHub releases. Proceeding with regular composer install."
+
+        # Perform full install if vendor.zip isn't available
+        sudo -u www-data composer install --prefer-dist --no-dev
+    fi
+else
+    echo "Dependencies are up to date. Skipping vendor download."
+fi
+
+# Always generate the optimized autoloader, regardless of install path
+sudo -u www-data composer dump-autoload -o
+
+log_action "Composer operations completed."
 
 # Run the database migrations and other post-update tasks
 echo "Running database migrations and other post-update tasks..."
@@ -699,7 +746,9 @@ service apache2 restart
 echo "Apache Restarted."
 log_action "Apache Restarted."
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+# Set proper permissions
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+chown -R www-data:www-data "${lis_path}"
 
 echo "LIS update complete."
 log_action "LIS update complete."

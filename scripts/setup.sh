@@ -103,7 +103,7 @@ handle_database_setup_and_import() {
     mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
     mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
-    local sql_file="${1:-${vlsm_path}/sql/init.sql}"
+    local sql_file="${1:-${lis_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then
         gunzip -c "$sql_file" | mysql vlsm
     elif [[ "$sql_file" == *".zip" ]]; then
@@ -111,8 +111,8 @@ handle_database_setup_and_import() {
     else
         mysql vlsm <"$sql_file"
     fi
-    mysql vlsm <"${vlsm_path}/sql/audit-triggers.sql"
-    mysql interfacing <"${vlsm_path}/sql/interface-init.sql"
+    mysql vlsm <"${lis_path}/sql/audit-triggers.sql"
+    mysql interfacing <"${lis_path}/sql/interface-init.sql"
 }
 
 spinner() {
@@ -146,17 +146,17 @@ current_trap=$(trap -p ERR)
 trap - ERR
 
 echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
-read -t 60 vlsm_path
+read -t 60 lis_path
 
 # Check if read command timed out or no input was provided
-if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
-    vlsm_path="/var/www/vlsm"
-    echo "Using default path: $vlsm_path"
+if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
+    lis_path="/var/www/vlsm"
+    echo "Using default path: $lis_path"
 else
-    echo "LIS installation path is set to ${vlsm_path}."
+    echo "LIS installation path is set to ${lis_path}."
 fi
 
-log_action "LIS installation path is set to ${vlsm_path}."
+log_action "LIS installation path is set to ${lis_path}."
 
 # Restore the previous error trap
 eval "$current_trap"
@@ -215,66 +215,116 @@ unzip master.zip -d "$temp_dir"
 log_action "LIS downloaded."
 
 # backup old code if it exists
-if [ -d "${vlsm_path}" ]; then
-    cp -R "${vlsm_path}" "${vlsm_path}"-$(date +%Y%m%d-%H%M%S)
+if [ -d "${lis_path}" ]; then
+    cp -R "${lis_path}" "${lis_path}"-$(date +%Y%m%d-%H%M%S)
 else
-    mkdir -p "${vlsm_path}"
+    mkdir -p "${lis_path}"
 fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-# cp -R "$temp_dir/vlsm-master/"* "${vlsm_path}"
-rsync -av "$temp_dir/vlsm-master/" "$vlsm_path/"
+# cp -R "$temp_dir/vlsm-master/"* "${lis_path}"
+rsync -av "$temp_dir/vlsm-master/" "$lis_path/"
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
-log_action "LIS copied to ${vlsm_path}."
+log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
-chown -R www-data:www-data "${vlsm_path}"
+chown -R www-data:www-data "${lis_path}"
 
-# Run Composer install as www-data
-echo "Running composer install as www-data user..."
-cd "${vlsm_path}"
-# Check if vendor-latest release files exist before downloading
-echo "Checking for vendor packages..."
-if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
-    echo "Vendor package found. Downloading..."
-    wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || { echo "Failed to download vendor.zip"; exit 1; }
+# Run Composer Install as www-data
+echo "Running composer operations as www-data user..."
+cd "${lis_path}"
 
-    echo "Downloading checksum..."
-    wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || { echo "Failed to download vendor.zip.md5"; exit 1; }
-
-    echo "Verifying checksum..."
-    md5sum -c vendor.zip.md5 || { echo "Checksum verification failed"; exit 1; }
-
-    echo "Extracting files..."
-    unzip -o vendor.zip || { echo "Failed to extract vendor.zip"; exit 1; }
-
-    # Fix permissions on the vendor directory
-    chown -R www-data:www-data "${lis_path}/vendor"
-    chmod -R 755 "${lis_path}/vendor"
-
-    echo "Vendor files successfully installed"
+# Check if the vendor directory exists and if the lock file exists
+if [ ! -d "${lis_path}/vendor" ] || [ ! -f "${lis_path}/composer.lock" ]; then
+    echo "Vendor directory or composer.lock missing. Full installation needed."
+    NEED_FULL_INSTALL=true
 else
-    echo "Vendor package not found in GitHub releases. Skipping vendor download."
-    echo "Will proceed with regular composer install instead."
+    # Use composer's status check to see if dependencies are up to date
+    echo "Checking if composer dependencies are in sync with lock file..."
+    OUT=$(sudo -u www-data composer status -n 2>&1)
+    STATUS=$?
+
+    if [ $STATUS -ne 0 ]; then
+        echo "Composer dependencies are out of date or modified: $OUT"
+        NEED_FULL_INSTALL=true
+    else
+        echo "Composer dependencies are in sync with lock file."
+        NEED_FULL_INSTALL=false
+    fi
+
+    # Also check if composer.lock is outdated compared to composer.json
+    echo "Checking if composer.lock is in sync with composer.json..."
+    sudo -u www-data composer validate --no-check-all --no-check-publish
+    if [ $? -ne 0 ]; then
+        echo "composer.lock is out of sync with composer.json. Update needed."
+        NEED_FULL_INSTALL=true
+    fi
 fi
 
-
+# Configure composer timeout regardless of installation path
 sudo -u www-data composer config process-timeout 30000
-
 sudo -u www-data composer clear-cache
 
-sudo -u www-data composer install --prefer-dist --no-dev &&
-    sudo -u www-data composer dump-autoload -o
+# Download vendor.zip if needed
+if [ "$NEED_FULL_INSTALL" = true ]; then
+    echo "Dependency update needed. Checking for vendor packages..."
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
+        echo "Vendor package found. Downloading..."
+        wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || {
+            echo "Failed to download vendor.zip"
+            exit 1
+        }
+
+        echo "Downloading checksum..."
+        wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || {
+            echo "Failed to download vendor.zip.md5"
+            exit 1
+        }
+
+        echo "Verifying checksum..."
+        md5sum -c vendor.zip.md5 || {
+            echo "Checksum verification failed"
+            exit 1
+        }
+
+        echo "Extracting files..."
+        unzip -o vendor.zip || {
+            echo "Failed to extract vendor.zip"
+            exit 1
+        }
+
+        # Fix permissions on the vendor directory
+        chown -R www-data:www-data "${lis_path}/vendor"
+        chmod -R 755 "${lis_path}/vendor"
+
+        echo "Vendor files successfully installed"
+
+        # Update the composer.lock file to match the current state
+        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
+    else
+        echo "Vendor package not found in GitHub releases. Proceeding with regular composer install."
+
+        # Perform full install if vendor.zip isn't available
+        sudo -u www-data composer install --prefer-dist --no-dev
+    fi
+else
+    echo "Dependencies are up to date. Skipping vendor download."
+fi
+
+# Always generate the optimized autoloader, regardless of install path
+sudo -u www-data composer dump-autoload -o
+
+log_action "Composer operations completed."
 
 # Function to configure Apache Virtual Host
 configure_vhost() {
     local vhost_file=$1
-    local document_root="${vlsm_path}/public"
-    local directory_block="<Directory ${vlsm_path}/public>\n\
+    local document_root="${lis_path}/public"
+    local directory_block="<Directory ${lis_path}/public>\n\
         AddDefaultCharset UTF-8\n\
         Options -Indexes -MultiViews +FollowSymLinks\n\
         AllowOverride All\n\
@@ -324,8 +374,8 @@ else
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
-    DocumentRoot ${vlsm_path}/public
-    <Directory ${vlsm_path}/public>
+    DocumentRoot ${lis_path}/public
+    <Directory ${lis_path}/public>
         AddDefaultCharset UTF-8
         Options -Indexes -MultiViews +FollowSymLinks
         AllowOverride All
@@ -347,9 +397,9 @@ service apache2 restart
 
 # cron job
 
-chmod +x ${vlsm_path}/cron.sh
+chmod +x ${lis_path}/cron.sh
 
-cron_job="* * * * * cd ${vlsm_path} && ./cron.sh"
+cron_job="* * * * * cd ${lis_path} && ./cron.sh"
 
 # Check if the cron job already exists
 if ! crontab -l | grep -qF "${cron_job}"; then
@@ -365,8 +415,8 @@ else
 fi
 
 # Update LIS config.production.php with database credentials
-config_file="${vlsm_path}/configs/config.production.php"
-source_file="${vlsm_path}/configs/config.production.dist.php"
+config_file="${lis_path}/configs/config.production.php"
+source_file="${lis_path}/configs/config.production.dist.php"
 
 if [ ! -e "${config_file}" ]; then
     echo "Renaming config.production.dist.php to config.production.php..."
@@ -465,7 +515,7 @@ while true; do
         # Define desired_sts_url
         desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
 
-        config_file="${vlsm_path}/configs/config.production.php"
+        config_file="${lis_path}/configs/config.production.php"
 
         # Check if the desired configuration already exists in the file
         if ! grep -qF "$desired_sts_url" "${config_file}"; then
@@ -487,10 +537,10 @@ if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
 
 # Run the database migrations and other post-install tasks
-cd "${vlsm_path}"
+cd "${lis_path}"
 echo "Running database migrations and other post-install tasks..."
 sudo -u www-data composer post-install &
 pid=$!
@@ -500,7 +550,7 @@ wait $pid
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
     echo "Available maintenance scripts to run:"
-    files=("${vlsm_path}/maintenance/"*.php)
+    files=("${lis_path}/maintenance/"*.php)
     for i in "${!files[@]}"; do
         filename=$(basename "${files[$i]}")
         echo "$((i + 1))) $filename"
@@ -536,11 +586,17 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     fi
 fi
 
-if [ -f "${vlsm_path}/cache/CompiledContainer.php" ]; then
-    rm "${vlsm_path}/cache/CompiledContainer.php"
+if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
+    rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
 service apache2 restart
+
+
+# Set proper permissions
+setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+chown -R www-data:www-data "${lis_path}"
+
 
 echo "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."

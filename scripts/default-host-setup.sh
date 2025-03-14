@@ -13,7 +13,7 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 # Initialize the LIS path
-vlsm_path=""
+lis_path=""
 
 # Function to check if the provided path is a valid LIS installation
 is_valid_application_path() {
@@ -29,41 +29,41 @@ is_valid_application_path() {
 # Parse command-line options
 while getopts ":p:" opt; do
     case $opt in
-    p) vlsm_path="$OPTARG" ;;
+    p) lis_path="$OPTARG" ;;
         # Ignore invalid options silently
     esac
 done
 
 # Prompt for the LIS path if not provided via -p
-if [ -z "$vlsm_path" ]; then
+if [ -z "$lis_path" ]; then
     echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
-    read -t 60 vlsm_path
+    read -t 60 lis_path
 
     # Check if read command timed out or no input was provided
-    if [ $? -ne 0 ] || [ -z "$vlsm_path" ]; then
-        vlsm_path="/var/www/vlsm"
-        echo "Using default path: $vlsm_path"
+    if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
+        lis_path="/var/www/vlsm"
+        echo "Using default path: $lis_path"
     else
-        echo "LIS installation path is set to ${vlsm_path}"
+        echo "LIS installation path is set to ${lis_path}"
     fi
 fi
 
 # Convert relative path to absolute path if necessary
-if [[ "$vlsm_path" != /* ]]; then
-    vlsm_path="$(realpath "$vlsm_path")"
-    echo "Converted to absolute path: $vlsm_path"
+if [[ "$lis_path" != /* ]]; then
+    lis_path="$(realpath "$lis_path")"
+    echo "Converted to absolute path: $lis_path"
 fi
 
 # Check if the specified path is a valid LIS installation
-if ! is_valid_application_path "$vlsm_path"; then
+if ! is_valid_application_path "$lis_path"; then
     echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
     exit 1
 fi
 
 # Update /etc/apache2/sites-available/000-default.conf
 vhost_file="/etc/apache2/sites-available/000-default.conf"
-document_root="${vlsm_path}/public"
-directory_block="<Directory ${vlsm_path}/public>\n\
+document_root="${lis_path}/public"
+directory_block="<Directory ${lis_path}/public>\n\
     AddDefaultCharset UTF-8\n\
     Options -Indexes -MultiViews +FollowSymLinks\n\
     AllowOverride All\n\
