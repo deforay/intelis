@@ -393,7 +393,7 @@ spinner() {
     local pid=$!
     local delay=0.75
     local spinstr='|/-\'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    while kill -0 $pid 2>/dev/null; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
@@ -509,6 +509,20 @@ fi
 
 rm -rf "${lis_path}/run-once"
 
+echo "Calculating checksums of current composer files..."
+CURRENT_COMPOSER_JSON_CHECKSUM="none"
+CURRENT_COMPOSER_LOCK_CHECKSUM="none"
+
+if [ -f "${lis_path}/composer.json" ]; then
+    CURRENT_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" | awk '{print $1}')
+    echo "Current composer.json checksum: ${CURRENT_COMPOSER_JSON_CHECKSUM}"
+fi
+
+if [ -f "${lis_path}/composer.lock" ]; then
+    CURRENT_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" | awk '{print $1}')
+    echo "Current composer.lock checksum: ${CURRENT_COMPOSER_LOCK_CHECKSUM}"
+fi
+
 echo "Downloading LIS..."
 wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
@@ -517,26 +531,27 @@ wait ${download_pid}      # Wait for the download to finish
 
 # Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
-unzip master.zip -d "$temp_dir" &
+echo "Extracting files from master.zip..."
+unzip -qq master.zip -d "$temp_dir" &
 unzip_pid=$!           # Save the process ID of the unzip command
 spinner "${unzip_pid}" # Start the spinner
 wait ${unzip_pid}      # Wait for the unzip process to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -a --inplace --whole-file --exclude 'public/uploads' --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/"
+rsync -a --inplace --whole-file --exclude 'public/uploads' --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/" &
+rsync_pid=$!           # Save the process ID of the rsync command
+spinner "${rsync_pid}" # Start the spinner
+wait ${rsync_pid}      # Wait for the rsync process to finish
+rsync_status=$?        # Capture the exit status after waiting
 
 # Check if rsync command succeeded
-if [ $? -ne 0 ]; then
+if [ $rsync_status -ne 0 ]; then
     echo "Error occurred during rsync. Logging and continuing..."
     log_action "Error during rsync operation. Path was: $lis_path"
 else
     echo "Files copied successfully, preserving symlinks where necessary."
     log_action "Files copied successfully."
 fi
-
-cp_pid=$!           # Save the process ID of the cp command
-spinner "${cp_pid}" # Start the spinner
-wait ${cp_pid}      # Wait for the copy process to finish
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
@@ -580,36 +595,55 @@ fi
 echo "Running composer operations as www-data user..."
 cd "${lis_path}"
 
-# Check if the vendor directory exists and if the lock file exists
-if [ ! -d "${lis_path}/vendor" ] || [ ! -f "${lis_path}/composer.lock" ]; then
-    echo "Vendor directory or composer.lock missing. Full installation needed."
-    NEED_FULL_INSTALL=true
-else
-    # Use composer's status check to see if dependencies are up to date
-    echo "Checking if composer dependencies are in sync with lock file..."
-    OUT=$(sudo -u www-data composer status -n 2>&1)
-    STATUS=$?
-
-    if [ $STATUS -ne 0 ]; then
-        echo "Composer dependencies are out of date or modified: $OUT"
-        NEED_FULL_INSTALL=true
-    else
-        echo "Composer dependencies are in sync with lock file."
-        NEED_FULL_INSTALL=false
-    fi
-
-    # Also check if composer.lock is outdated compared to composer.json
-    echo "Checking if composer.lock is in sync with composer.json..."
-    sudo -u www-data composer validate --no-check-all --no-check-publish
-    if [ $? -ne 0 ]; then
-        echo "composer.lock is out of sync with composer.json. Update needed."
-        NEED_FULL_INSTALL=true
-    fi
-fi
-
 # Configure composer timeout regardless of installation path
 sudo -u www-data composer config process-timeout 30000
 sudo -u www-data composer clear-cache
+
+# Replace the checksum comparison part with this improved version:
+
+echo "Checking if composer dependencies need updating..."
+NEED_FULL_INSTALL=false
+
+# Check if the vendor directory exists
+if [ ! -d "${lis_path}/vendor" ]; then
+    echo "Vendor directory doesn't exist. Full installation needed."
+    NEED_FULL_INSTALL=true
+else
+    # Calculate new checksums
+    NEW_COMPOSER_JSON_CHECKSUM="none"
+    NEW_COMPOSER_LOCK_CHECKSUM="none"
+
+    if [ -f "${lis_path}/composer.json" ]; then
+        NEW_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" 2>/dev/null | awk '{print $1}')
+        echo "New composer.json checksum: ${NEW_COMPOSER_JSON_CHECKSUM}"
+    else
+        echo "Warning: composer.json is missing after extraction. Full installation needed."
+        NEED_FULL_INSTALL=true
+    fi
+
+    if [ -f "${lis_path}/composer.lock" ] && [ "$NEED_FULL_INSTALL" = false ]; then
+        NEW_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" 2>/dev/null | awk '{print $1}')
+        echo "New composer.lock checksum: ${NEW_COMPOSER_LOCK_CHECKSUM}"
+    else
+        echo "Warning: composer.lock is missing after extraction. Full installation needed."
+        NEED_FULL_INSTALL=true
+    fi
+
+    # Only do checksum comparison if we haven't already determined we need a full install
+    if [ "$NEED_FULL_INSTALL" = false ]; then
+        # Compare checksums - only if both files existed before and after
+        if [ "$CURRENT_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
+            [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
+            [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
+            [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
+            echo "Composer files have changed or were missing. Full installation needed."
+            NEED_FULL_INSTALL=true
+        else
+            echo "Composer files haven't changed. Skipping full installation."
+            NEED_FULL_INSTALL=false
+        fi
+    fi
+fi
 
 # Download vendor.zip if needed
 if [ "$NEED_FULL_INSTALL" = true ]; then
@@ -633,11 +667,16 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
             exit 1
         }
 
-        echo "Extracting files..."
-        unzip -o vendor.zip || {
+        echo "Extracting files from vendor.zip..."
+        unzip -qq -o vendor.zip &
+        vendor_unzip_pid=$!
+        spinner "${vendor_unzip_pid}"
+        wait ${vendor_unzip_pid}
+        vendor_unzip_status=$?
+        if [ $vendor_unzip_status -ne 0 ]; then
             echo "Failed to extract vendor.zip"
             exit 1
-        }
+        fi
 
         # Fix permissions on the vendor directory
         chown -R www-data:www-data "${lis_path}/vendor"
