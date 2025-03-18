@@ -340,7 +340,7 @@ $aResult = $db->query($aQuery);
                                         </td>
                                     </tr>
                                     <tr class="pcrBox">
-                                        <th scope="row" class="labels">Previous PCR Test Result :<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Previous PCR Test Result :</th>
                                         <td>
                                             <select class="form-control" name="prePcrTestResult" id="prePcrTestResult">
                                                 <option value=''> -- Select -- </option>
@@ -350,13 +350,13 @@ $aResult = $db->query($aQuery);
                                             </select>
                                         </td>
 
-                                        <th scope="row" class="labels">Previous PCR test date :<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Previous PCR test date :</th>
                                         <td>
                                             <input class="form-control date" type="text" name="previousPCRTestDate" id="previousPCRTestDate" placeholder="if yes, test date" />
                                         </td>
                                     </tr>
                                     <tr class="pcrBox">
-                                        <th scope="row" class="labels">Reason for Repeat PCR :<span class="mandatory">*</span></th>
+                                        <th scope="row" class="labels">Reason for Repeat PCR :</th>
                                         <td>
                                             <select class="form-control" name="pcrTestReason" id="pcrTestReason" onchange="checkPCRTestReason();">
                                                 <option value=''> -- Select -- </option>
@@ -833,15 +833,15 @@ $aResult = $db->query($aQuery);
 
         $("#pcrTestNumber").on("change", function() {
             if ($(this).val() == 1) {
-                $("#prePcrTestResult").removeClass("isRequired");
-                $("#previousPCRTestDate").removeClass("isRequired");
-                $("#pcrTestReason").removeClass("isRequired");
+               // $("#prePcrTestResult").removeClass("isRequired");
+              //  $("#previousPCRTestDate").removeClass("isRequired");
+              //  $("#pcrTestReason").removeClass("isRequired");
                 $('.pcrBox').hide();
             } else {
                 $('.pcrBox').show();
-                $("#prePcrTestResult").addClass("isRequired");
-                $("#previousPCRTestDate").addClass("isRequired");
-                $("#pcrTestReason").addClass("isRequired");
+              //  $("#prePcrTestResult").addClass("isRequired");
+             //   $("#previousPCRTestDate").addClass("isRequired");
+               // $("#pcrTestReason").addClass("isRequired");
             }
         });
 

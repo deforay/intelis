@@ -792,14 +792,10 @@ $aResult = $db->query($aQuery);
 
         $("#pcrTestNumber").on("change", function() {
             if ($("#pcrTestNumber").val() == 1) {
-                $("#prePcrTestResult").removeClass("isRequired");
-                $("#previousPCRTestDate").removeClass("isRequired");
-                $("#pcrTestReason").removeClass("isRequired");
+              
                 $('.pcrBox').hide();
             } else {
-                $("#prePcrTestResult").addClass("isRequired");
-                $("#previousPCRTestDate").addClass("isRequired");
-                $("#pcrTestReason").addClass("isRequired");
+               
                 $('.pcrBox').show();
             }
         });

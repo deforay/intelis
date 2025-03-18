@@ -295,6 +295,7 @@ if ($module == 'generic-tests') {
 
 	//$("#auditRndNo").multiselect({height: 100,minWidth: 150});
 	$(document).ready(function() {
+		$('#daterange').val('');
 		$('#daterange').daterangepicker({
 				locale: {
 					cancelLabel: "<?= _translate("Clear", true); ?>",
