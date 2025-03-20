@@ -984,7 +984,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
 
                if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-                    $('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
+                    //$('#sampleDispatchedDate').val($('#sampleCollectionDate').val());
                }
                if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                     $('#sampleReceivedDate').val($('#sampleCollectionDate').val());

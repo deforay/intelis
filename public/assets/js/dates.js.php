@@ -111,8 +111,11 @@
                 $('#sampleReceivedAtHubOn').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleDispatchedDate').datetimepicker('option', 'minDate', selectedDate);
-
+                var countryForm = '<?php echo $arr["vl_form"]; ?>';
+                if(countryForm != 2){
+               
                 checkSampleDispatchDate();
+            }
             });
         }
 
