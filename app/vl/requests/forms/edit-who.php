@@ -1385,6 +1385,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});

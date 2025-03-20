@@ -1395,6 +1395,9 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 	}
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		if ($('#isSampleRejected').val() == "yes") {
 			$('.vlResult, #vlResult').removeClass('isRequired');
 		}

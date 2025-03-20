@@ -912,6 +912,9 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 	});
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		flag = deforayValidator.init({
 			formId: 'vlRequestForm'
 		});

@@ -1567,6 +1567,9 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 	}
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		flag = deforayValidator.init({
 			formId: 'vlRequestFormRwd'
 		});

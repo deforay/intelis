@@ -722,6 +722,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
+
 		var provinceCode = ($("#province").find(":selected").attr("data-code") == null || $("#province").find(":selected").attr("data-code") == '') ? $("#province").find(":selected").attr("data-name") : $("#province").find(":selected").attr("data-code");
 		$("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
 		flag = deforayValidator.init({

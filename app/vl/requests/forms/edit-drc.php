@@ -1059,6 +1059,9 @@ $storageInfo = $storageService->getLabStorage();
 	}
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		flag = deforayValidator.init({
 			formId: 'editVlRequestForm'
 		});

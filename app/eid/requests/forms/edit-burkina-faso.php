@@ -619,6 +619,10 @@ $eidInfo['child_treatment_initiation_date'] = DateUtility::humanReadableDateForm
 
 
     function validateNow() {
+
+        clearDatePlaceholderValues('input.date, input.dateTime');
+
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({

@@ -1200,6 +1200,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 
      function validateNow() {
 
+          clearDatePlaceholderValues('input.date, input.dateTime');
+
           flag = deforayValidator.init({
                formId: 'vlRequestFormRwd'
           });

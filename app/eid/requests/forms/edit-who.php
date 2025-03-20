@@ -646,6 +646,10 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
     }
 
     function validateNow() {
+
+        clearDatePlaceholderValues('input.date, input.dateTime');
+
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({

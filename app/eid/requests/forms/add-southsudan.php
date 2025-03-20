@@ -672,6 +672,10 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 
 
     function validateNow() {
+
+        clearDatePlaceholderValues('input.date, input.dateTime');
+
+
         flag = deforayValidator.init({
             formId: 'addEIDRequestForm'
         });

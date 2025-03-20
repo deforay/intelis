@@ -818,13 +818,12 @@ $sFormat = '';
 
 	$('#serialNo').on('change', function() {
 		$(".du").show();
-		if($(this).val() != ""){
+		if ($(this).val() != "") {
 			$("#reasonForVLTesting").removeClass("isRequired");
 			$("#artRegimen").removeClass("isRequired");
 			$("#dateOfArtInitiation").removeClass("isRequired");
 			$("#viralLoadNo").removeClass("isRequired");
-		}
-		else{
+		} else {
 			$("#reasonForVLTesting").addClass("isRequired");
 			$("#artRegimen").addClass("isRequired");
 			$("#dateOfArtInitiation").addClass("isRequired");
@@ -879,6 +878,9 @@ $sFormat = '';
 	}
 
 	function validateNow() {
+
+		clearDatePlaceholderValues('input.date, input.dateTime');
+
 		if ($("#sampleCode").val() == '') {
 			generateSampleCode();
 		}

@@ -749,8 +749,7 @@ $remoteURL = $general->getRemoteURL();
         if (artRegimen == 'not_reported') {
             $(".curRegimenDate .mandatory").remove();
             $("#regimenInitiatedOn").removeClass("isRequired");
-        }
-        else{ 
+        } else {
             $(".curRegimenDate").append(' <span class="mandatory">*</span>');
             $("#regimenInitiatedOn").addClass("isRequired");
             if (artRegimen == 'other') {
@@ -784,6 +783,23 @@ $remoteURL = $general->getRemoteURL();
                 $("#dateOfArtInitiation").val("");
             }
         }
+    }
+
+    /**
+     * Clears any date fields with placeholder-like values and triggers necessary events
+     * @param {string} selector - jQuery selector for the elements to check
+     * @returns {void}
+     */
+    function clearDatePlaceholderValues(selector) {
+        $(selector).each(function() {
+            var value = $(this).val();
+            // Check if the value contains placeholder characters (* or _ or --)
+            if (value && (/[*_]|--/.test(value))) {
+                $(this).val(''); // Clear the field
+                // Trigger multiple events to ensure all handlers are notified
+                $(this).trigger('change input blur');
+            }
+        });
     }
 
     function getfacilityProvinceDetails(obj) {
@@ -840,8 +856,7 @@ $remoteURL = $general->getRemoteURL();
         // Run the scheduler with the defined scripts and intervals
         //runScheduledScripts(scriptsToRun);
         existingPatientId = "";
-        if($('.patientId').val() !== "")
-        {
+        if ($('.patientId').val() !== "") {
             existingPatientId = $('.patientId').val();
         }
 
@@ -955,11 +970,10 @@ $remoteURL = $general->getRemoteURL();
 
             var patientId = $(this).val();
 
-            if(existingPatientId !== "" && existingPatientId != patientId){
-                if (confirm("Are you sure you want to change the Patient ID from '" +existingPatientId+ "' to '" +patientId+ "'? This can lead to data mismatch or data loss.")){
+            if (existingPatientId !== "" && existingPatientId != patientId) {
+                if (confirm("Are you sure you want to change the Patient ID from '" + existingPatientId + "' to '" + patientId + "'? This can lead to data mismatch or data loss.")) {
                     $(this).val(patientId);
-                }
-                else{
+                } else {
                     $(this).val(existingPatientId);
                 }
             }

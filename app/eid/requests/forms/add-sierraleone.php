@@ -734,6 +734,10 @@ $aResult = $db->query($aQuery);
 
 
     function validateNow() {
+
+        clearDatePlaceholderValues('input.date, input.dateTime');
+
+
         var provinceCode = $("#province").find(":selected").attr("data-code");
         var provinceId = $("#province").find(":selected").attr("data-province-id");
         $("#provinceId").val(provinceId);
@@ -833,15 +837,15 @@ $aResult = $db->query($aQuery);
 
         $("#pcrTestNumber").on("change", function() {
             if ($(this).val() == 1) {
-               // $("#prePcrTestResult").removeClass("isRequired");
-              //  $("#previousPCRTestDate").removeClass("isRequired");
-              //  $("#pcrTestReason").removeClass("isRequired");
+                // $("#prePcrTestResult").removeClass("isRequired");
+                //  $("#previousPCRTestDate").removeClass("isRequired");
+                //  $("#pcrTestReason").removeClass("isRequired");
                 $('.pcrBox').hide();
             } else {
                 $('.pcrBox').show();
-              //  $("#prePcrTestResult").addClass("isRequired");
-             //   $("#previousPCRTestDate").addClass("isRequired");
-               // $("#pcrTestReason").addClass("isRequired");
+                //  $("#prePcrTestResult").addClass("isRequired");
+                //   $("#previousPCRTestDate").addClass("isRequired");
+                // $("#pcrTestReason").addClass("isRequired");
             }
         });
 

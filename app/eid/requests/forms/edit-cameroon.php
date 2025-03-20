@@ -771,6 +771,10 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
     }
 
     function validateNow() {
+
+        clearDatePlaceholderValues('input.date, input.dateTime');
+
+
         $("#provinceCode").val($("#province").find(":selected").attr("data-code"));
         $("#provinceId").val($("#province").find(":selected").attr("data-province-id"));
         flag = deforayValidator.init({
