@@ -4,9 +4,42 @@
 # sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
 # sudo intelis-update
 
+# Define a unified print function that colors the entire message
+print() {
+    local type=$1
+    local message=$2
+
+    case $type in
+    error)
+        echo -e "\033[0;31mError: $message\033[0m"
+        ;;
+    success)
+        echo -e "\033[0;32mSuccess: $message\033[0m"
+        ;;
+    warning)
+        echo -e "\033[0;33mWarning: $message\033[0m"
+        ;;
+    info)
+        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
+        echo -e "\033[0;36mInfo: $message\033[0m"
+        ;;
+    debug)
+        # Using a lighter cyan color for debug messages
+        echo -e "\033[1;36mDebug: $message\033[0m"
+        ;;
+    header)
+        # Changed from blue to a brighter cyan/teal
+        echo -e "\033[1;36m==== $message ====\033[0m"
+        ;;
+    *)
+        echo "$message"
+        ;;
+    esac
+}
+
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
 
@@ -58,15 +91,15 @@ error_handling() {
     local last_cmd=$1
     local last_line=$2
     local last_error=$3
-    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    print error "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
 
     # Check if the error is critical
     if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
-        echo "This error is critical, exiting..."
+        print error "This error is critical, exiting..."
         exit 1
     else
-        echo "This error is not critical, continuing..."
+        print warning "This error is not critical, continuing..."
     fi
 }
 
@@ -94,7 +127,7 @@ update_configuration() {
         if [ "$mysql_root_password" == "$mysql_root_password_confirm" ]; then
             break
         else
-            echo "Passwords do not match. Please try again."
+            print error "Passwords do not match. Please try again."
         fi
     done
 
@@ -114,7 +147,7 @@ update_configuration() {
         sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|\$systemConfig['remoteURL'] = '$remote_sts_url';|" "${config_file}"
     fi
 
-    echo "Configuration file updated."
+    print info "Configuration file updated."
 }
 
 # Check if Ubuntu version is 20.04 or newer
@@ -122,7 +155,7 @@ min_version="20.04"
 current_version=$(get_ubuntu_version)
 
 if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
+    print error "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
 
@@ -140,18 +173,18 @@ if [ -z "$lis_path" ]; then
     # Check if read command timed out or no input was provided
     if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
         lis_path="/var/www/vlsm"
-        echo "Using default path: $lis_path"
+        print info "Using default path: $lis_path"
     else
-        echo "LIS path is set to ${lis_path}"
+        print info "LIS path is set to ${lis_path}"
     fi
 else
-    echo "LIS path is set to ${lis_path}"
+    print info "LIS path is set to ${lis_path}"
 fi
 
 # Convert relative path to absolute path if necessary
 if [[ "$lis_path" != /* ]]; then
     lis_path="$(realpath "$lis_path")"
-    echo "Converted to absolute path: $lis_path"
+    print info "Converted to absolute path: $lis_path"
 fi
 
 # Convert VLSM path to absolute path
@@ -159,7 +192,7 @@ lis_path=$(to_absolute_path "$lis_path")
 
 # Check if the LIS path is valid
 if ! is_valid_application_path "$lis_path"; then
-    echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+    print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
     log_action "Invalid LIS path specified: $lis_path"
     exit 1
 fi
@@ -178,12 +211,12 @@ eval "$current_trap"
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
-    echo "MySQL is not installed. Please first run the setup script."
+    print error "MySQL is not installed. Please first run the setup script."
     log_action "MySQL is not installed. Please first run the setup script."
     exit 1
 fi
 
-echo "Configuring MySQL..."
+print header "Configuring MySQL"
 desired_sql_mode="sql_mode ="
 desired_innodb_strict_mode="innodb_strict_mode = 0"
 desired_charset="character-set-server=utf8mb4"
@@ -251,14 +284,14 @@ fi
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
-    echo "Apache is not installed. Please first run the setup script."
+    print error "Apache is not installed. Please first run the setup script."
     log_action "Apache is not installed. Please first run the setup script."
     exit 1
 fi
 
 # Check for PHP
 if ! command -v php &>/dev/null; then
-    echo "PHP is not installed. Please first run the setup script."
+    print error "PHP is not installed. Please first run the setup script."
     log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
@@ -314,11 +347,11 @@ if [[ "${php_version}" != "${desired_php_version}" ]]; then
         exit 1
     fi
 else
-    echo "PHP version is already ${desired_php_version}."
+    print success "PHP version is already ${desired_php_version}."
 fi
 
 # Modify php.ini as needed
-echo "Modifying PHP configurations..."
+print header "Configuring PHP"
 
 desired_error_reporting="error_reporting = E_ALL & ~E_DEPRECATED & ~E_STRICT & ~E_NOTICE & ~E_WARNING"
 desired_post_max_size="post_max_size = 1G"
@@ -346,11 +379,11 @@ fi
 
 # Proceed with the rest of the script if all checks pass
 
-echo "All system checks passed. Continuing with the update..."
+print success "All system checks passed. Continuing with the update..."
 
 # Update Ubuntu Packages
 if [ "$skip_ubuntu_updates" = false ]; then
-    echo "Updating Ubuntu packages..."
+    print header "Updating Ubuntu packages"
     apt-get update && apt-get upgrade -y
 
     if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
@@ -358,31 +391,31 @@ if [ "$skip_ubuntu_updates" = false ]; then
         apt-get upgrade apache2 -y
     fi
 
-    echo "Configuring any partially installed packages..."
+    print info "Configuring any partially installed packages..."
     sudo dpkg --configure -a
 fi
 
 # Clean up
 apt-get autoremove -y
 if [ "$skip_ubuntu_updates" = false ]; then
-    echo "Installing basic packages..."
+    print info "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh
 fi
 
 # Check if SSH service is enabled
 if ! systemctl is-enabled ssh >/dev/null 2>&1; then
-    echo "Enabling SSH service..."
+    print info "Enabling SSH service..."
     systemctl enable ssh
 else
-    echo "SSH service is already enabled."
+    print success "SSH service is already enabled."
 fi
 
 # Check if SSH service is running
 if ! systemctl is-active ssh >/dev/null 2>&1; then
-    echo "Starting SSH service..."
+    print info "Starting SSH service..."
     systemctl start ssh
 else
-    echo "SSH service is already running."
+    print success "SSH service is already running."
 fi
 
 log_action "Ubuntu packages updated/installed."
@@ -405,7 +438,7 @@ spinner() {
 
 # Function to list databases and get the database list
 get_databases() {
-    echo "Fetching available databases..."
+    print info "Fetching available databases..."
     local IFS=$'\n'
     # Exclude the databases you do not want to back up from the list
     databases=($(mysql -u root -p"${mysql_root_password}" -e "SHOW DATABASES;" | sed 1d | egrep -v 'information_schema|mysql|performance_schema|sys|phpmyadmin'))
@@ -424,13 +457,13 @@ backup_database() {
     local timestamp=$(date +%Y%m%d-%H%M%S) # Adding timestamp with hours, minutes, and seconds
     for i in "$@"; do
         local db="${db_list[$i]}"
-        echo "Backing up database: $db"
+        print info "Backing up database: $db"
         mysqldump -u root -p"${mysql_root_password}" "$db" | gzip >"${backup_location}/${db}_${timestamp}.sql.gz"
         if [[ $? -eq 0 ]]; then
-            echo "Backup of $db completed successfully."
+            print success "Backup of $db completed successfully."
             log_action "Backup of $db completed successfully."
         else
-            echo "Failed to backup database: $db"
+            print error "Failed to backup database: $db"
             log_action "Failed to backup database: $db"
         fi
     done
@@ -449,10 +482,10 @@ if [ "$skip_backup" = false ]; then
 
         # Create the backup directory if it does not exist
         if [ ! -d "$backup_location" ]; then
-            echo "Backup directory does not exist. Creating it now..."
+            print info "Backup directory does not exist. Creating it now..."
             mkdir -p "$backup_location"
             if [ $? -ne 0 ]; then
-                echo "Failed to create backup directory. Please check your permissions."
+                print error "Failed to create backup directory. Please check your permissions."
                 exit 1
             fi
         fi
@@ -487,14 +520,14 @@ if [ "$skip_backup" = false ]; then
         backup_database "${selected_indexes[@]}"
         log_action "Database backup completed."
     else
-        echo "Skipping database backup as per user request."
+        print info "Skipping database backup as per user request."
         log_action "Skipping database backup as per user request."
     fi
 
     # Ask the user if they want to backup the LIS folder
     if ask_yes_no "Do you want to backup the LIS folder before updating?" "no"; then
         # Backup Old LIS Folder
-        echo "Backing up old LIS folder..."
+        print info "Backing up old LIS folder..."
         timestamp=$(date +%Y%m%d-%H%M%S) # Using this timestamp for consistency with database backup filenames
         backup_folder="/var/intelis-backup/www/intelis-backup-$timestamp"
         mkdir -p "${backup_folder}"
@@ -502,28 +535,28 @@ if [ "$skip_backup" = false ]; then
         spinner # This will show the spinner until the above process is completed
         log_action "LIS folder backed up to ${backup_folder}"
     else
-        echo "Skipping LIS folder backup as per user request."
+        print info "Skipping LIS folder backup as per user request."
         log_action "Skipping LIS folder backup as per user request."
     fi
 fi
 
 rm -rf "${lis_path}/run-once"
 
-echo "Calculating checksums of current composer files..."
+print info "Calculating checksums of current composer files..."
 CURRENT_COMPOSER_JSON_CHECKSUM="none"
 CURRENT_COMPOSER_LOCK_CHECKSUM="none"
 
 if [ -f "${lis_path}/composer.json" ]; then
     CURRENT_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" | awk '{print $1}')
-    echo "Current composer.json checksum: ${CURRENT_COMPOSER_JSON_CHECKSUM}"
+    print info "Current composer.json checksum: ${CURRENT_COMPOSER_JSON_CHECKSUM}"
 fi
 
 if [ -f "${lis_path}/composer.lock" ]; then
     CURRENT_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" | awk '{print $1}')
-    echo "Current composer.lock checksum: ${CURRENT_COMPOSER_LOCK_CHECKSUM}"
+    print info "Current composer.lock checksum: ${CURRENT_COMPOSER_LOCK_CHECKSUM}"
 fi
 
-echo "Downloading LIS..."
+print header "Downloading LIS"
 wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 download_pid=$!           # Save the process ID of the wget command
 spinner "${download_pid}" # Start the spinner
@@ -531,7 +564,7 @@ wait ${download_pid}      # Wait for the download to finish
 
 # Unzip the file into a temporary directory
 temp_dir=$(mktemp -d)
-echo "Extracting files from master.zip..."
+print info "Extracting files from master.zip..."
 unzip -qq master.zip -d "$temp_dir" &
 unzip_pid=$!           # Save the process ID of the unzip command
 spinner "${unzip_pid}" # Start the spinner
@@ -546,10 +579,10 @@ rsync_status=$?        # Capture the exit status after waiting
 
 # Check if rsync command succeeded
 if [ $rsync_status -ne 0 ]; then
-    echo "Error occurred during rsync. Logging and continuing..."
+    print error "Error occurred during rsync. Logging and continuing..."
     log_action "Error during rsync operation. Path was: $lis_path"
 else
-    echo "Files copied successfully, preserving symlinks where necessary."
+    print success "Files copied successfully, preserving symlinks where necessary."
     log_action "Files copied successfully."
 fi
 
@@ -557,6 +590,7 @@ fi
 rm -rf "$temp_dir/vlsm-master/"
 rm master.zip
 
+print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
@@ -592,7 +626,7 @@ if grep -q "\['cache_di'\] => false" "${config_file}"; then
 fi
 
 # Run Composer Install as www-data
-echo "Running composer operations as www-data user..."
+print header "Running composer operations"
 cd "${lis_path}"
 
 # Configure composer timeout regardless of installation path
@@ -606,7 +640,7 @@ NEED_FULL_INSTALL=false
 
 # Check if the vendor directory exists
 if [ ! -d "${lis_path}/vendor" ]; then
-    echo "Vendor directory doesn't exist. Full installation needed."
+    print warning "Vendor directory doesn't exist. Full installation needed."
     NEED_FULL_INSTALL=true
 else
     # Calculate new checksums
@@ -615,17 +649,17 @@ else
 
     if [ -f "${lis_path}/composer.json" ]; then
         NEW_COMPOSER_JSON_CHECKSUM=$(md5sum "${lis_path}/composer.json" 2>/dev/null | awk '{print $1}')
-        echo "New composer.json checksum: ${NEW_COMPOSER_JSON_CHECKSUM}"
+        print info "New composer.json checksum: ${NEW_COMPOSER_JSON_CHECKSUM}"
     else
-        echo "Warning: composer.json is missing after extraction. Full installation needed."
+        print warning "Warning: composer.json is missing after extraction. Full installation needed."
         NEED_FULL_INSTALL=true
     fi
 
     if [ -f "${lis_path}/composer.lock" ] && [ "$NEED_FULL_INSTALL" = false ]; then
         NEW_COMPOSER_LOCK_CHECKSUM=$(md5sum "${lis_path}/composer.lock" 2>/dev/null | awk '{print $1}')
-        echo "New composer.lock checksum: ${NEW_COMPOSER_LOCK_CHECKSUM}"
+        print info "New composer.lock checksum: ${NEW_COMPOSER_LOCK_CHECKSUM}"
     else
-        echo "Warning: composer.lock is missing after extraction. Full installation needed."
+        print warning "Warning: composer.lock is missing after extraction. Full installation needed."
         NEED_FULL_INSTALL=true
     fi
 
@@ -636,10 +670,10 @@ else
             [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
             [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
             [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
-            echo "Composer files have changed or were missing. Full installation needed."
+            print warning "Composer files have changed or were missing. Full installation needed."
             NEED_FULL_INSTALL=true
         else
-            echo "Composer files haven't changed. Skipping full installation."
+            print info "Composer files haven't changed. Skipping full installation."
             NEED_FULL_INSTALL=false
         fi
     fi
@@ -693,20 +727,23 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
         sudo -u www-data composer install --prefer-dist --no-dev
     fi
 else
-    echo "Dependencies are up to date. Skipping vendor download."
+    print info "Dependencies are up to date. Skipping vendor download."
 fi
 
 # Always generate the optimized autoloader, regardless of install path
 sudo -u www-data composer dump-autoload -o
 
+print success "Composer operations completed."
 log_action "Composer operations completed."
 
 # Run the database migrations and other post-update tasks
-echo "Running database migrations and other post-update tasks..."
+print header "Running database migrations and other post-update tasks"
 sudo -u www-data composer post-update &
 pid=$!
 spinner "$pid"
 wait $pid
+
+print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
 # Check if there are any PHP scripts in the run-once directory
@@ -717,7 +754,7 @@ if [ -e "${run_once_scripts[0]}" ]; then
         php $script
     done
 else
-    echo "No scripts found in the run-once directory."
+    print error "No scripts found in the run-once directory."
     log_action "No scripts found in the run-once directory."
 fi
 
@@ -738,7 +775,7 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # Run selected files
     if [[ "$files_to_run" == "all" ]]; then
         for file in "${files[@]}"; do
-            echo "Running $file..."
+            print info "Running $file..."
             sudo -u www-data php "$file"
         done
     else
@@ -754,7 +791,7 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
                 echo "Running $file..."
                 sudo -u www-data php "$file"
             else
-                echo "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
+                print error "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
             fi
         done
     fi
@@ -767,7 +804,7 @@ sudo -u www-data composer metadata-sync &
 pid=$!
 spinner "$pid"
 wait $pid
-echo "Remote data sync completed."
+print success "Remote data sync completed."
 log_action "Remote data sync completed."
 
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
@@ -782,12 +819,12 @@ fi
 
 service apache2 restart
 
-echo "Apache Restarted."
+print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # Set proper permissions
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
 chown -R www-data:www-data "${lis_path}"
 
-echo "LIS update complete."
+print success "LIS update complete."
 log_action "LIS update complete."
