@@ -79,7 +79,7 @@ if (!empty($result)) {
 
 
 	// set font
-	$pdf->SetFont('helvetica', '', 18);
+	$pdf->SetFont('freesans', '', 18);
 
 	$pdf->AddPage();
 	if (!isset($result['facility_code']) || trim((string) $result['facility_code']) == '') {
@@ -98,22 +98,7 @@ if (!empty($result)) {
 		$result['labName'] = '';
 	}
 	//Set Age
-	$age = 'Unknown';
-	if (isset($result['patient_dob']) && trim((string) $result['patient_dob']) != '' && $result['patient_dob'] != '0000-00-00') {
-		$todayDate = strtotime(date('Y-m-d'));
-		$dob = strtotime((string) $result['patient_dob']);
-		$difference = $todayDate - $dob;
-		$seconds_per_year = 60 * 60 * 24 * 365;
-		$age = round($difference / $seconds_per_year);
-	} elseif (isset($result['patient_age_in_years']) && trim((string) $result['patient_age_in_years']) != '' && trim((string) $result['patient_age_in_years']) > 0) {
-		$age = $result['patient_age_in_years'];
-	} elseif (isset($result['patient_age_in_months']) && trim((string) $result['patient_age_in_months']) != '' && trim((string) $result['patient_age_in_months']) > 0) {
-		if ($result['patient_age_in_months'] > 1) {
-			$age = $result['patient_age_in_months'] . ' months';
-		} else {
-			$age = $result['patient_age_in_months'] . ' month';
-		}
-	}
+	$age = DateUtility::calculatePatientAge($result);
 
 	if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
 		$expStr = explode(" ", (string) $result['sample_collection_date']);
@@ -258,7 +243,7 @@ if (!empty($result)) {
 	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
 	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
 	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_name'] . '</td>';
-	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['instrument_machine_name'] . '</td>';
+	$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['vl_test_platform']) . '</td>';
 	$html .= '</tr>';
 	$html .= '<tr>';
 	$html .= '<td colspan="4" style="line-height:16px;"></td>';

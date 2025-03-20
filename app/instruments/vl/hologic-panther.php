@@ -166,13 +166,13 @@ try {
 
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_NEG') {
                             $sampleType = 'NC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         }
                     }
 
@@ -206,7 +206,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -224,7 +224,7 @@ try {
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
-            );
+            ];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['txtVal'] != "") {

@@ -46,7 +46,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	foreach ($resultSet as $aRow) {
 		$row = [];
 
-		$age = null;
+		$age = _translate('Not Reported');
 		$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
 		$age = DateUtility::ageInYearMonthDays($aRow['patient_dob'] ?? '');
 		if (!empty($age) && $age['year'] > 0) {
