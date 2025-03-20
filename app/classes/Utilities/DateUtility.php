@@ -26,7 +26,9 @@ final class DateUtility
     {
         $date = trim((string) $date);
 
-        if (empty($date) || 'undefined' === $date || 'null' === $date) {
+        // Immediately return false if date is blank or contains any placeholder characters
+        // like underscores, asterisks, or multiple consecutive hyphens
+        if (empty($date) || 'undefined' === $date || 'null' === $date || preg_match('/[_*]|--/', $date)) {
             return false;
         }
 
@@ -110,8 +112,8 @@ final class DateUtility
         return false;
     }
     private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = true): ?Carbon
-
     {
+
         if ($ignoreTime === true) {
             $dateStr = explode(' ', $dateStr)[0]; // Extract only the date part
         }
