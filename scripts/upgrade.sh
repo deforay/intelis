@@ -267,17 +267,17 @@ awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
 
 # Check if changes were made
 if ! cmp -s ${config_file} tmpfile; then
-    echo "Changes detected, updating configuration and restarting MySQL..."
+    print info "Changes detected, updating configuration and restarting MySQL..."
     log_action "Changes detected in MySQL configuration. Updating configuration and restarting MySQL..."
     mv tmpfile ${config_file}
     service mysql restart || {
         mv ${config_file}.bak ${config_file}
-        echo "Failed to restart MySQL. Exiting..."
+        print error "Failed to restart MySQL. Exiting..."
         log_action "Failed to restart MySQL. Exiting..."
         exit 1
     }
 else
-    echo "No changes made to the MySQL configuration."
+    print info "No changes made to the MySQL configuration."
     log_action "No changes made to the MySQL configuration."
     rm tmpfile # Clean up, no changes
 fi

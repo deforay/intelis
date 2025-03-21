@@ -6,9 +6,43 @@
 # sudo chmod u+x intelis-setup.sh;
 # sudo ./intelis-setup.sh;
 
+# Define a unified print function that colors the entire message
+print() {
+    local type=$1
+    local message=$2
+
+    case $type in
+    error)
+        echo -e "\033[0;31mError: $message\033[0m"
+        ;;
+    success)
+        echo -e "\033[0;32mSuccess: $message\033[0m"
+        ;;
+    warning)
+        echo -e "\033[0;33mWarning: $message\033[0m"
+        ;;
+    info)
+        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
+        echo -e "\033[0;36mInfo: $message\033[0m"
+        ;;
+    debug)
+        # Using a lighter cyan color for debug messages
+        echo -e "\033[1;36mDebug: $message\033[0m"
+        ;;
+    header)
+        # Changed from blue to a brighter cyan/teal
+        echo -e "\033[1;36m==== $message ====\033[0m"
+        ;;
+    *)
+        echo "$message"
+        ;;
+    esac
+}
+
+
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
 
@@ -22,15 +56,15 @@ error_handling() {
     local last_cmd=$1
     local last_line=$2
     local last_error=$3
-    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    print error "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
 
     # Check if the error is critical
     if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
-        echo "This error is critical, exiting..."
+        print error "This error is critical, exiting..."
         exit 1
     else
-        echo "This error is not critical, continuing..."
+        print info "This error is not critical, continuing..."
     fi
 }
 
@@ -219,7 +253,7 @@ if [ -f "${lis_path}/composer.lock" ]; then
 fi
 
 # LIS Setup
-echo "Downloading LIS..."
+print header "Downloading LIS"
 wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
 
 # Unzip the file into a temporary directory
@@ -253,7 +287,7 @@ log_action "LIS copied to ${lis_path}."
 chown -R www-data:www-data "${lis_path}"
 
 # Run Composer Install as www-data
-echo "Running composer operations as www-data user..."
+print header "Running composer operations"
 cd "${lis_path}"
 
 # Configure composer timeout regardless of installation path
@@ -392,11 +426,11 @@ log_action "Hostname: $hostname"
 
 # Check if the hostname entry is already in /etc/hosts
 if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
-    echo "Adding ${hostname} to hosts file..."
+    print info "Adding ${hostname} to hosts file..."
     echo "127.0.0.1 ${hostname}" | tee -a /etc/hosts
     log_action "${hostname} entry added to hosts file."
 else
-    echo "${hostname} entry is already in the hosts file."
+    print info "${hostname} entry is already in the hosts file."
     log_action "${hostname} entry is already in the hosts file."
 fi
 
@@ -427,7 +461,7 @@ fi
 
 # Restart Apache to apply changes
 service apache2 restart || {
-    echo "Failed to restart Apache. Please check the configuration."
+    print error "Failed to restart Apache. Please check the configuration."
     log_action "Failed to restart Apache. Please check the configuration."
     exit 1
 }
@@ -443,14 +477,14 @@ cron_job="* * * * * cd ${lis_path} && ./cron.sh"
 
 # Check if the cron job already exists
 if ! crontab -l | grep -qF "${cron_job}"; then
-    echo "Adding cron job for LIS..."
+    print info  "Adding cron job for LIS..."
     log_action "Adding cron job for LIS..."
     (
         crontab -l
         echo "${cron_job}"
     ) | crontab -
 else
-    echo "Cron job for LIS already exists. Skipping."
+    print info "Cron job for LIS already exists. Skipping."
     log_action "Cron job for LIS already exists. Skipping."
 fi
 
@@ -459,7 +493,7 @@ config_file="${lis_path}/configs/config.production.php"
 source_file="${lis_path}/configs/config.production.dist.php"
 
 if [ ! -e "${config_file}" ]; then
-    echo "Renaming config.production.dist.php to config.production.php..."
+    print info  "Renaming config.production.dist.php to config.production.php..."
     log_action "Renaming config.production.dist.php to config.production.php..."
     mv "${source_file}" "${config_file}"
 else
@@ -483,9 +517,9 @@ else
         echo
 
         if [ "$mysql_root_password" != "$mysql_root_password_confirm" ]; then
-            echo "Passwords do not match. Please try again."
+            print error "Passwords do not match. Please try again."
         elif [ -z "$mysql_root_password" ]; then
-            echo "Password cannot be empty. Please try again."
+            print error "Password cannot be empty. Please try again."
         else
             break
         fi
@@ -494,7 +528,7 @@ else
     # Verify the password
     echo "Verifying MySQL root password..."
     if ! mysqladmin ping -u root -p"$mysql_root_password" &>/dev/null; then
-        echo "Error: Unable to verify the password. Please check and try again."
+        print error "Unable to verify the password. Please check and try again."
         exit 1
     fi
 
@@ -528,7 +562,7 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$sy
 if [[ -n "$vlsm_sql_file" && -f "$vlsm_sql_file" ]]; then
     handle_database_setup_and_import "$vlsm_sql_file"
 elif [[ -n "$vlsm_sql_file" ]]; then
-    echo "SQL file not found: $vlsm_sql_file. Please check the path."
+    print error "SQL file not found: $vlsm_sql_file. Please check the path."
     exit 1
 else
     handle_database_setup_and_import # Default to init.sql
@@ -549,7 +583,7 @@ while true; do
     response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
 
     if [ "$response_code" -eq 200 ]; then
-        echo "STS URL validation successful."
+        print success "STS URL validation successful."
         log_action "STS URL validation successful."
 
         # Define desired_sts_url
@@ -561,13 +595,13 @@ while true; do
         if ! grep -qF "$desired_sts_url" "${config_file}"; then
             # The desired configuration does not exist, so update the file
             sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
-            echo "Remote STS URL updated in the configuration file."
+            print info "Remote STS URL updated in the configuration file."
         else
-            echo "Remote STS URL is already set as desired in the configuration file."
+            print info "Remote STS URL is already set as desired in the configuration file."
         fi
         break
     else
-        echo "Error: Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
+        print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
         log_action "STS URL validation failed with response code $response_code."
     fi
 done
@@ -578,9 +612,8 @@ fi
 
 setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
 
-# Run the database migrations and other post-install tasks
+print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
-echo "Running database migrations and other post-install tasks..."
 sudo -u www-data composer post-install &
 pid=$!
 spinner "$pid"
@@ -635,5 +668,5 @@ chown -R www-data:www-data "${lis_path}"
 
 service apache2 restart
 
-echo "Setup complete. Proceed to LIS setup."
+print success "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."
