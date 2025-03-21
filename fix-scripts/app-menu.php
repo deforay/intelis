@@ -107,7 +107,7 @@ try {
         $menuData = array_combine($menuKeys, $menuValues);
         $appMenuService->insertMenu($menuData);
 
-        $menuValues = ['cd4', null, 'no', 'Import Result From File', '/import-result/import-file.php?t=cd4', '/import-result/imported-results.php?t=cd4,/import-result/importedStatistics.php?t=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ImportResultMenu', $cd4ResultMenuId, 3, 'active', DateUtility::getCurrentDateTime()];
+        $menuValues = ['cd4', null, 'no', 'Import Results From File', '/import-result/import-file.php?t=cd4', '/import-result/imported-results.php?t=cd4,/import-result/importedStatistics.php?t=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ImportResultMenu', $cd4ResultMenuId, 3, 'active', DateUtility::getCurrentDateTime()];
         $menuData = array_combine($menuKeys, $menuValues);
         $appMenuService->insertMenu($menuData);
 

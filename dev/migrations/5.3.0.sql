@@ -64,5 +64,21 @@ ALTER TABLE `audit_form_tb` ADD `drug_mgit_result_date` DATE NULL DEFAULT NULL A
 ALTER TABLE `audit_form_tb` ADD `drug_lpa_result_date` DATE NULL DEFAULT NULL AFTER `drug_mgit_result_date`;
 
 
--- Amit 05-mar-2025
+-- Amit 05-Mar-2025
 ALTER TABLE queue_sample_code_generation  ADD COLUMN processing_error TEXT NULL;
+
+-- Amit 21-Mar-2025
+UPDATE `s_app_menu` SET `display_text` = 'Import Results From File' WHERE `display_text` LIKE 'Import result from file';
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --

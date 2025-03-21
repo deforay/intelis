@@ -127,7 +127,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 													<div class="form-group">
 														<label class="col-lg-4 control-label"><?php echo _translate("Upload"); ?> <?= strtoupper(htmlspecialchars((string) $type)); ?> <?php echo _translate("File"); ?> <span class="mandatory">*</span></label>
 														<div class="col-lg-7">
-															<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt" name="resultFile" id="resultFile" title="<?php echo _translate('Please choose result file'); ?>">
+															<input type="file" class="isRequired" accept=".xls,.xlsx,.csv,.txt,.lis" name="resultFile" id="resultFile" title="<?php echo _translate('Please choose result file'); ?>">
 															<?php echo _translate("(Upload xls, xlsx, csv, txt format)"); ?>
 														</div>
 													</div>

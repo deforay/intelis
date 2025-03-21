@@ -11,6 +11,7 @@ require_once __DIR__ . "/../../bootstrap.php";
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
+use PHP_CodeSniffer\Tokenizers\PHP;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -32,7 +33,11 @@ function getCurrentVersion($versionFilePath)
     }
     return null;
 }
+
 try {
+    // Set migrations path
+    $migrationsPath = ROOT_PATH . '/dev/migrations/';
+
     // Get the current version from version.php
     $currentVersion = getCurrentVersion($versionFilePath);
 
@@ -49,12 +54,56 @@ try {
         // Extract the current build number
         $currentBuildNumber = intval(end($currentVersionParts));
 
-        if ($currentVersionCore !== $currentMajorVersion) {
-            // If the major.minor.patch version has changed, reset the build number to 1
-            $newVersion = "{$currentMajorVersion}.1";
+        // Ask user for version update preference
+        echo "Current version is: {$currentVersion}\n";
+        echo "Would you like to:\n";
+        echo "1. Change major version (from {$currentVersionCore} to a new major version)\n";
+        echo "2. Just increment the current version (from {$currentVersion} to " .
+             $currentVersionCore . "." . ($currentBuildNumber + 1) . ")\n";
+
+        $choice = null;
+        while ($choice !== '1' && $choice !== '2') {
+            echo "Enter your choice (1 or 2): ";
+            $choice = trim(fgets(STDIN));
+        }
+
+        if ($choice === '1') {
+            // User wants to change major version
+            echo "Enter the new major version (current is {$currentVersionCore}): ";
+            $newMajorVersion = trim(fgets(STDIN));
+
+            // Validate input (check for x.y.z format)
+            while (!preg_match('/^\d+\.\d+\.\d+$/', $newMajorVersion)) {
+                echo "Invalid format. Please enter in format x.y.z (e.g., 2.0.0): ";
+                $newMajorVersion = trim(fgets(STDIN));
+            }
+
+            // Validate that new version is greater than current version
+            $newVersionNumeric = str_replace('.', '', $newMajorVersion);
+            $currentVersionNumeric = str_replace('.', '', $currentVersionCore);
+
+            while (version_compare($newMajorVersion, $currentVersionCore, '<=')) {
+                echo "New version must be greater than the current version ({$currentVersionCore}). Please enter a higher version: ";
+                $newMajorVersion = trim(fgets(STDIN));
+
+                // Re-validate format
+                while (!preg_match('/^\d+\.\d+\.\d+$/', $newMajorVersion)) {
+                    echo "Invalid format. Please enter in format x.y.z (e.g., 2.0.0): ";
+                    $newMajorVersion = trim(fgets(STDIN));
+                }
+            }
+
+            // When changing major version, start with .0 for the build number
+            $newVersion = "{$newMajorVersion}.0";
         } else {
-            // Otherwise, increment the build number
-            $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
+            // User wants to increment build number
+            if ($currentVersionCore !== $currentMajorVersion) {
+                // If the major.minor.patch version has changed, reset the build number to 1
+                $newVersion = "{$currentMajorVersion}.1";
+            } else {
+                // Otherwise, increment the build number
+                $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
+            }
         }
     }
 
@@ -73,7 +122,37 @@ PHP;
     // Write the new version content to version.php
     file_put_contents($versionFilePath, $versionFileContent);
 
-    echo "version.php has been updated to version " . htmlspecialchars($newVersion) . "\n";
+    // Extract the major.minor.patch portion for the migration filename
+    $versionParts = explode('.', $newVersion);
+    $migrationVersion = implode('.', array_slice($versionParts, 0, min(3, count($versionParts))));
+    $migrationFileName = $migrationsPath . $migrationVersion . '.sql';
+
+    // For the previous version migration file
+    $currentVersionParts = explode('.', $currentVersion);
+    $currentMigrationVersion = implode('.', array_slice($currentVersionParts, 0, min(3, count($currentVersionParts))));
+    $currentMigrationFileName = $migrationsPath . $currentMigrationVersion . '.sql';
+
+    // Check if migrations directory exists, create it if it doesn't
+    if (!is_dir($migrationsPath)) {
+        mkdir($migrationsPath, 0755, true);
+    }
+
+    // If this is a major version change and the previous migration file exists,
+    // add the END OF VERSION markers to the previous file
+    if ($choice === '1' && file_exists($currentMigrationFileName)) {
+        $endOfVersionMarker = str_repeat("\n-- END OF VERSION --", 12);
+        file_put_contents($currentMigrationFileName, $endOfVersionMarker, FILE_APPEND);
+        echo "Added end markers to previous migration file: $currentMigrationFileName" . PHP_EOL;
+    }
+
+    // Create the new migration file only if it doesn't already exist
+    if (!file_exists($migrationFileName)) {
+        $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n";
+        file_put_contents($migrationFileName, $migrationContent);
+        echo "Created migration file: $migrationFileName". PHP_EOL;
+    }
+
+    echo "version.php has been updated to version " . htmlspecialchars($newVersion) . PHP_EOL;
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
