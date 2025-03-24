@@ -5,10 +5,11 @@ use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
-use App\Registries\ContainerRegistry;
 
+use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
 
@@ -40,7 +41,14 @@ function _isAllowed($currentRequest, $privileges = null)
     return $usersService->isAllowed($currentRequest, $privileges);
 }
 
-function _sanitizeInput($input, $nullifyEmptyStrings = false)
+/**
+ * Sanitizes input data against XSS and other injection attacks
+ *
+ * @param mixed $input The input to sanitize
+ * @param bool $nullifyEmptyStrings Whether to convert empty strings to null
+ * @return mixed The sanitized input
+ */
+function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
 {
     $antiXss = new AntiXSS();
 
@@ -50,10 +58,17 @@ function _sanitizeInput($input, $nullifyEmptyStrings = false)
             $input[$key] = _sanitizeInput($value, $nullifyEmptyStrings);
         }
     } elseif (is_object($input)) {
-        foreach ($input as $key => $value) {
-            $input->$key = _sanitizeInput($value, $nullifyEmptyStrings);
+        $reflection = new ReflectionObject($input);
+        $properties = $reflection->getProperties();
+        foreach ($properties as $property) {
+            $property->setAccessible(true);
+            $value = $property->getValue($input);
+            $property->setValue($input, _sanitizeInput($value, $nullifyEmptyStrings));
         }
-    } else {
+    } elseif (is_string($input)) {
+        // Normalize encoding to UTF-8 and remove invisible characters
+        $input = MiscUtility::toUtf8($input);
+
         // Trim and sanitize using AntiXSS
         $input = trim($input);
         $input = $antiXss->xss_clean($input);
@@ -67,7 +82,16 @@ function _sanitizeInput($input, $nullifyEmptyStrings = false)
     return $input;
 }
 
-function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $maxSize = null)
+/**
+ * Sanitizes uploaded files, validating type, size, and name
+ *
+ * @param UploadedFile|array $files The file(s) to sanitize
+ * @param array $allowedTypes Allowed file extensions
+ * @param bool $sanitizeFileName Whether to sanitize filenames
+ * @param int|null $maxSize Maximum file size in bytes
+ * @return UploadedFile|array|null The sanitized file(s)
+ */
+function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName = true, ?int $maxSize = null): UploadedFile|array|null
 {
     if ($maxSize === null) {
         $uploadMaxSize = ini_get('upload_max_filesize');
@@ -87,30 +111,65 @@ function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $m
         if ($file instanceof UploadedFile) {
             try {
                 if ($file->getError() === UPLOAD_ERR_NO_FILE) {
-                    // No file was uploaded
                     throw new SystemException("No file was uploaded");
                 }
 
                 if ($file->getError() !== UPLOAD_ERR_OK) {
-                    throw new SystemException('File upload error');
+                    $errorMessages = [
+                        UPLOAD_ERR_INI_SIZE => 'File exceeds upload_max_filesize directive in php.ini',
+                        UPLOAD_ERR_FORM_SIZE => 'File exceeds MAX_FILE_SIZE directive specified in the HTML form',
+                        UPLOAD_ERR_PARTIAL => 'File was only partially uploaded',
+                        UPLOAD_ERR_NO_TMP_DIR => 'Missing a temporary folder',
+                        UPLOAD_ERR_CANT_WRITE => 'Failed to write file to disk',
+                        UPLOAD_ERR_EXTENSION => 'A PHP extension stopped the file upload'
+                    ];
+
+                    $errorMessage = $errorMessages[$file->getError()] ?? 'Unknown upload error';
+                    throw new SystemException("File upload error: $errorMessage");
                 }
 
                 if ($file->getSize() > $maxSize) {
-                    throw new SystemException('File size exceeds the maximum allowed size');
+                    throw new SystemException('File size exceeds the maximum allowed size of ' .
+                        round($maxSize / 1048576, 2) . ' MB');
                 }
 
                 $fileExtension = strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
                 $fileMimeType = $file->getClientMediaType();
 
-                if (!empty($allowedTypes) && (!in_array($fileExtension, $allowedTypes) || !in_array($fileMimeType, $allowedMimeTypes))) {
-                    throw new SystemException('File type is not allowed');
+                if (
+                    !empty($allowedTypes) &&
+                    (!in_array($fileExtension, $allowedTypes) ||
+                        !in_array($fileMimeType, $allowedMimeTypes))
+                ) {
+                    throw new SystemException('File type is not allowed. Allowed types: ' .
+                        implode(', ', $allowedTypes));
+                }
+
+                // Additional MIME type validation if possible
+                if (function_exists('mime_content_type') && $file->getStream()->isReadable()) {
+                    $tempFile = $file->getStream()->getMetadata('uri');
+                    if ($tempFile && file_exists($tempFile)) {
+                        $actualMimeType = mime_content_type($tempFile);
+                        if (!empty($allowedMimeTypes) && !in_array($actualMimeType, $allowedMimeTypes)) {
+                            throw new SystemException('File content type does not match the allowed types');
+                        }
+                    }
                 }
 
                 if ($sanitizeFileName) {
+                    // Option 1: Preserve original filename with sanitization
                     $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientFilename());
-                    if ($sanitizedFilename[0] === '.') {
+                    if (strlen($sanitizedFilename) > 0 && $sanitizedFilename[0] === '.') {
                         $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
                     }
+
+                    // Option 2: Generate a random filename while preserving the extension
+                    // Uncomment to use this approach instead
+                    /*
+                    $fileExtension = strtolower(pathinfo($file->getClientFilename(), PATHINFO_EXTENSION));
+                    $sanitizedFilename = bin2hex(random_bytes(8)) . '.' . $fileExtension;
+                    */
+
                     $file = new UploadedFile(
                         $file->getStream(),
                         $file->getSize(),
@@ -121,15 +180,151 @@ function _sanitizeFiles($files, $allowedTypes = [], $sanitizeFileName = true, $m
                 }
 
                 $sanitizedFiles[] = $file;
-            } catch (Throwable $e) {
-                //error_log($e->getMessage());
-                // You can choose to handle the error differently, e.g., add null to the array or skip the file
+            } catch (SystemException $e) {
                 $sanitizedFiles[] = null;
+                LoggerUtility::logError('File validation error: ' . $e->getMessage());
+            } catch (Throwable $e) {
+                $sanitizedFiles[] = null;
+                LoggerUtility::logError('Unexpected file processing error: ' . $e->getMessage());
             }
+        } else {
+            $sanitizedFiles[] = null;
         }
     }
 
     return $isSingleFile ? $sanitizedFiles[0] : $sanitizedFiles;
+}
+
+/**
+ * Sanitizes and validates JSON input
+ *
+ * @param string $jsonString The JSON string to sanitize
+ * @param bool $nullifyEmptyStrings Whether to convert empty strings to null
+ * @param bool $returnAsArray Whether to return sanitized data as array instead of JSON string
+ * @return string|array Sanitized JSON string or array
+ */
+function _sanitizeJson(string $jsonString, bool $nullifyEmptyStrings = false, bool $returnAsArray = false): string|array
+{
+    // Decode JSON string
+    $decoded = json_decode($jsonString, true);
+
+    // Check for JSON errors
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        return $returnAsArray ? [] : '{}';
+    }
+
+    // Sanitize the decoded data
+    $sanitized = _sanitizeInput($decoded, $nullifyEmptyStrings);
+
+    return $returnAsArray ? $sanitized : json_encode($sanitized);
+}
+
+/**
+ * Securely serves a file for download or inline display with proper headers
+ *
+ * @param string $filePath Path to the file to serve
+ * @param string|null $fileName Optional custom filename for the download
+ * @param string|null $contentType Optional content type (defaults to autodetect)
+ * @param bool $forceDownload Whether to force download (attachment) or allow inline display
+ * @return bool Returns false if file doesn't exist, otherwise exits after serving
+ */
+function _serveSecureFile(
+    string $filePath,
+    ?string $fileName = null,
+    ?string $contentType = null,
+    bool $forceDownload = true
+): bool {
+    if (!file_exists($filePath) || !is_readable($filePath)) {
+        return false;
+    }
+
+    // Use provided filename or original filename
+    $fileName ??= basename($filePath);
+    $fileName = _sanitizeInput($fileName);
+
+    // Determine content type if not provided
+    if ($contentType === null) {
+        $contentType = mime_content_type($filePath) ?: 'application/octet-stream';
+    }
+
+    // Prevent caching
+    header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+    header('Cache-Control: private', false);
+    header('Pragma: public');
+    header('Expires: 0');
+
+    // Set security headers
+    header('Content-Security-Policy: default-src \'none\'; img-src \'self\'; script-src \'self\'; style-src \'self\'');
+
+    // Set appropriate headers
+    header("Content-Type: $contentType");
+
+    // Determine disposition (attachment forces download, inline allows browser display if possible)
+    $disposition = $forceDownload ? 'attachment' : 'inline';
+    header("Content-Disposition: $disposition; filename=\"$fileName\"");
+
+    header('Content-Length: ' . filesize($filePath));
+    header('Content-Transfer-Encoding: binary');
+
+    // Clear output buffer before sending the file
+    if (ob_get_level()) {
+        ob_end_clean();
+    }
+
+    // Send file
+    readfile($filePath);
+    exit;
+}
+
+/**
+ * Checks if a string potentially contains an injection attempt
+ *
+ * @param string $input String to check
+ * @return bool True if potentially malicious, false otherwise
+ */
+function _isPotentiallyMalicious(string $input): bool
+{
+    // Common SQL injection patterns
+    $sqlPatterns = [
+        '/(\%27)|(\')|(\-\-)|(\%23)|(#)/',
+        '/((\%3D)|(=))[^\n]*((\%27)|(\')|(\-\-)|(\%3B)|;)/',
+        '/\w*((\%27)|(\'))((\%6F)|o|(\%4F))((\%72)|r|(\%52))/',
+        '/((\%27)|(\'))union/',
+        '/exec(\s|\+)+(s|x)p\w+/',
+        '/UNION\s+ALL\s+SELECT/i',
+        '/SELECT\s+.*\s+FROM/i',
+        '/INSERT\s+INTO/i',
+        '/DELETE\s+FROM/i',
+        '/DROP\s+TABLE/i'
+    ];
+
+    // Common XSS patterns
+    $xssPatterns = [
+        '/<script[^>]*>.*?<\/script>/is',
+        '/on\w+\s*=\s*["\'][^"\']*["\']/',
+        '/<\s*embed[^>]*>.*?<\s*\/\s*embed\s*>/is',
+        '/<\s*object[^>]*>.*?<\s*\/\s*object\s*>/is',
+        '/<\s*iframe[^>]*>.*?<\s*\/\s*iframe\s*>/is',
+        '/javascript\s*:/i',
+        '/vbscript\s*:/i',
+        '/data\s*:/i'
+    ];
+
+    // Check SQL patterns
+    foreach ($sqlPatterns as $pattern) {
+        if (preg_match($pattern, $input)) {
+            return true;
+        }
+    }
+
+    // Check XSS patterns
+    foreach ($xssPatterns as $pattern) {
+        if (preg_match($pattern, $input)) {
+            return true;
+        }
+    }
+
+    return false;
 }
 
 

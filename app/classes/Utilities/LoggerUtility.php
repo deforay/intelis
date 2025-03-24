@@ -58,7 +58,7 @@ final class LoggerUtility
 
         $context['file'] ??= $callerInfo['file'] ?? '';
         $context['line'] ??= $callerInfo['line'] ?? '';
-        $logger->log($level, $message, $context);
+        $logger->log($level, MiscUtility::toUtf8($message), $context);
     }
 
     public static function logError($message, array $context = []): void
@@ -69,5 +69,10 @@ final class LoggerUtility
     public static function logInfo($message, array $context = []): void
     {
         self::log('info', $message, $context);
+    }
+
+    public static function logWarning($message, array $context = []): void
+    {
+        self::log('warning', $message, $context);
     }
 }

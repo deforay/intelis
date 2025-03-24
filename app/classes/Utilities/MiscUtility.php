@@ -668,4 +668,37 @@ final class MiscUtility
         }
         exit;
     }
+
+
+
+    /**
+     * Recursively convert input to valid UTF-8 and remove invisible characters.
+     *
+     * @param array|string|null $input
+     * @return array|string|null
+     */
+    public static function toUtf8(array|string|null $input): array|string|null
+    {
+        if (is_array($input)) {
+            return array_map([self::class, 'toUtf8'], $input);
+        }
+
+        if (is_string($input)) {
+            // Normalize encoding
+            $input = trim($input);
+            if (!mb_check_encoding($input, 'UTF-8')) {
+                $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
+                $input = mb_convert_encoding($input, 'UTF-8', $encoding);
+            }
+
+            // Remove BOM, zero-width spaces, non-breaking space, etc.
+            $input = preg_replace(
+                '/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u',
+                '',
+                $input
+            );
+        }
+
+        return $input;
+    }
 }

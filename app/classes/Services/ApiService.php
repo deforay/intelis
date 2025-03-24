@@ -293,7 +293,6 @@ final class ApiService
         return $apiResponse;
     }
 
-
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
         try {
@@ -319,22 +318,20 @@ final class ApiService
                 }
                 $jsonData = $decodedData;
             }
-            // If decoding is requested, decode the JSON string
+
+            // Sanitize the JSON before returning it
             if ($decode) {
-                $decodedJson = json_decode($jsonData, true);
-                if (json_last_error() !== JSON_ERROR_NONE) {
-                    throw new SystemException("JSON decoding error: " . json_last_error_msg());
-                }
-                return $decodedJson;
+                // Return as sanitized array
+                return _sanitizeJson($jsonData, true, true);
             } else {
-                return JsonUtility::isJSON($jsonData) ? $jsonData : '{}'; // Ensure valid JSON or return empty object
+                // Return as sanitized JSON string
+                return _sanitizeJson($jsonData);
             }
         } catch (Throwable $e) {
             $this->logError($e, "Unable to retrieve json");
-            return null;
+            return $decode ? [] : '{}';
         }
     }
-
 
     /**
      * Download a file from a given URL and save it to a specified path.

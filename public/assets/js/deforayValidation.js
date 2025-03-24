@@ -178,6 +178,11 @@ function findPos(obj) {
 function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
     // change color of inputs on focus
     let valid = false;
+    let elementTitle = "";
+    let errorMsg = "";
+    let innerParts = [];
+    let valu = "";
+
     for (let i = 0; i < formInputs.length; i++) {
         let classes = formInputs[i].className;
         if (classes == "" || classes == null) {
@@ -206,18 +211,18 @@ function deforayValidatorInternal(formInputs, useTitleToShowMessage) {
 
                 }
                 else {
-                    let valu = (formInputs[i].value);
+                    valu = formInputs[i].value;
                     valid = !isRequired(valu);
                     if (elementTitle != null && elementTitle != "") {
                         errorMsg = elementTitle;
                     }
                     else {
-                        errorMsg = "Please don't leave this field blank";
+                        errorMsg = "This field is required";
                     }
                 }
             }
             else if (parts[cCount] == "isEmail") {
-                let valu = (formInputs[i].value);
+                valu = formInputs[i].value;
                 valid = isEmail(valu, required);
                 if (elementTitle != null && elementTitle != "") {
                     errorMsg = elementTitle;

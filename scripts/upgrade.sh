@@ -337,13 +337,13 @@ wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch
 chmod u+x /usr/local/bin/switch-php
 
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
-    echo "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
+    print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
 
     # Switch to PHP 8.2
     switch-php ${desired_php_version}
 
     if [ $? -ne 0 ]; then
-        echo "Failed to switch to PHP ${desired_php_version}. Please check your setup."
+        print error "Failed to switch to PHP ${desired_php_version}. Please check your setup."
         exit 1
     fi
 else

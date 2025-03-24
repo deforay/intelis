@@ -34,19 +34,6 @@ final class JsonUtility
         }
     }
 
-    // Convert input to UTF-8 encoding
-    public static function toUtf8(array|string|null $input): array|string|null
-    {
-        if (is_array($input)) {
-            return array_map([self::class, 'toUtf8'], $input);
-        }
-        if (is_string($input) && !mb_check_encoding($input, 'UTF-8')) {
-            $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
-            return mb_convert_encoding($input, 'UTF-8', $encoding);
-        }
-        return $input;
-    }
-
     // Encode data to JSON with UTF-8 encoding
     public static function encodeUtf8Json(array|string|null $data): string|null
     {
@@ -59,7 +46,7 @@ final class JsonUtility
         } elseif (is_string($data) && self::isJSON($data, checkUtf8Encoding: true)) {
             $result = $data;
         } else {
-            $result = self::toJSON(self::toUtf8($data));
+            $result = self::toJSON(MiscUtility::toUtf8($data));
         }
 
         return $result;

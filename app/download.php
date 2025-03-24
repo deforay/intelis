@@ -48,7 +48,6 @@ $allowedMimeTypes = [
 ];
 
 $file = realpath($fileName);
-
 $webRootPath = realpath(WEB_ROOT);
 
 if (
@@ -67,22 +66,13 @@ if (!$mimeType) {
     throw new SystemException('Invalid file. Cannot download this file', 400);
 }
 
+// Sanitize filename
 $filename = basename($file);
 $filename = preg_replace('/[^a-zA-Z0-9_\-.]/', '', $filename);
 
-if ($mimeType === 'text/plain' || $mimeType === 'text/csv') {
-    $disposition = 'attachment';
-} else {
-    $disposition = (isset($_GET['d']) && $_GET['d'] === 'a') ? 'attachment' : 'inline';
-}
+// Check if the file should be forced to download or can be viewed inline
+$forceDownload = ($mimeType === 'text/plain' || $mimeType === 'text/csv' ||
+    (isset($_GET['d']) && $_GET['d'] === 'a'));
 
-header('Content-Description: File Transfer');
-header('Content-Type: ' . ((!empty($mimeType)) ? $mimeType : 'application/octet-stream'));
-header('Content-Security-Policy: default-src \'none\'; img-src \'self\'; script-src \'self\'; style-src \'self\'');
-header('Content-Disposition: ' . $disposition . '; filename=' . $filename);
-header('Content-Transfer-Encoding: binary');
-header('Expires: 0');
-header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
-header('Pragma: public');
-header('Content-Length: ' . filesize($file));
-readfile($file);
+// Serve the file
+_serveSecureFile($file, $filename, $mimeType, $forceDownload);
