@@ -418,3 +418,7 @@ function _getIteratorCount($iterator): int
     }
     return 0;
 }
+
+function _sanitizeOutput($string){
+    return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}

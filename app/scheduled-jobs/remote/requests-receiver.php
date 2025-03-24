@@ -101,7 +101,7 @@ foreach ($systemConfig['modules'] as $module => $status) {
             }
         })->otherwise(function ($reason) use ($module, $cliMode) {
             if ($cliMode) {
-                echo "STS Request sync for $module failed: " . $reason . PHP_EOL;
+                echo _sanitizeOutput("STS Request sync for $module failed: " . $reason) . PHP_EOL;
             }
             LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
         });
