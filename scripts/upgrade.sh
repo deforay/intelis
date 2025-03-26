@@ -759,8 +759,8 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
         fi
 
         # Fix permissions on the vendor directory
-        chown -R www-data:www-data "${lis_path}/vendor"
-        chmod -R 755 "${lis_path}/vendor"
+        find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
+        chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
 
         echo "Vendor files successfully installed"
 
@@ -870,7 +870,7 @@ log_action "Apache Restarted."
 
 # Set proper permissions
 set_permissions "${lis_path}" "full"
-chown -R www-data:www-data "${lis_path}"
+find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
 
 print success "LIS update complete."
 log_action "LIS update complete."
