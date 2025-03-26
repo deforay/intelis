@@ -1,7 +1,0 @@
-{
-    "sonarlint.connectedMode.project": {
-        "connectionId": "deforay-sonar",
-        "projectKey": "deforay_vlsm"
-    },
-    "php.version": "8.2"
-}
