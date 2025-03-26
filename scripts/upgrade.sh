@@ -420,7 +420,11 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+# Set ACLs on directories only (synchronous)
+find "${lis_path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \;
+
+# Set ACLs on files recursively (asynchronous)
+find "${lis_path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} &
 
 spinner() {
     local pid=$!
@@ -557,18 +561,22 @@ if [ -f "${lis_path}/composer.lock" ]; then
 fi
 
 print header "Downloading LIS"
-wget -c -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
-download_pid=$!           # Save the process ID of the wget command
-spinner "${download_pid}" # Start the spinner
-wait ${download_pid}      # Wait for the download to finish
 
-# Unzip the file into a temporary directory
+# Download the tar.gz file in background
+wget -c --show-progress --progress=dot:giga -O master.tar.gz \
+    https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master &
+download_pid=$!           # Save wget PID
+spinner "${download_pid}" # Spinner tracks download
+wait ${download_pid}      # Wait for download to finish
+
+# Extract the tar.gz file into temporary directory
 temp_dir=$(mktemp -d)
-print info "Extracting files from master.zip..."
-unzip -qq master.zip -d "$temp_dir" &
-unzip_pid=$!           # Save the process ID of the unzip command
-spinner "${unzip_pid}" # Start the spinner
-wait ${unzip_pid}      # Wait for the unzip process to finish
+print info "Extracting files from master.tar.gz..."
+
+tar -xzf master.tar.gz -C "$temp_dir" &
+tar_pid=$!           # Save tar PID
+spinner "${tar_pid}" # Spinner tracks extraction
+wait ${tar_pid}      # Wait for extraction to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
 rsync -a --inplace --whole-file --exclude 'public/uploads' --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/" &
@@ -586,15 +594,19 @@ else
     log_action "Files copied successfully."
 fi
 
-# Remove the empty directory and the downloaded zip file
+# Remove the empty directory and the downloaded tar file
 rm -rf "$temp_dir/vlsm-master/"
-rm master.zip
+rm master.tar.gz
 
 print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+# Set ACLs on directories only (synchronous)
+find "${lis_path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \;
+
+# Set ACLs on files recursively (asynchronous)
+find "${lis_path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} &
 
 # Check for config.production.php and its content
 config_file="${lis_path}/configs/config.production.php"
@@ -679,36 +691,36 @@ else
     fi
 fi
 
-# Download vendor.zip if needed
+# Download vendor.tar.gz if needed
 if [ "$NEED_FULL_INSTALL" = true ]; then
     echo "Dependency update needed. Checking for vendor packages..."
-    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz"; then
         echo "Vendor package found. Downloading..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || {
-            echo "Failed to download vendor.zip"
+        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz || {
+            echo "Failed to download vendor.tar.gz"
             exit 1
         }
 
         echo "Downloading checksum..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || {
-            echo "Failed to download vendor.zip.md5"
+        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5 || {
+            echo "Failed to download vendor.tar.gz.md5"
             exit 1
         }
 
         echo "Verifying checksum..."
-        md5sum -c vendor.zip.md5 || {
+        md5sum -c vendor.tar.gz.md5 || {
             echo "Checksum verification failed"
             exit 1
         }
 
-        echo "Extracting files from vendor.zip..."
-        unzip -qq -o vendor.zip &
-        vendor_unzip_pid=$!
-        spinner "${vendor_unzip_pid}"
-        wait ${vendor_unzip_pid}
-        vendor_unzip_status=$?
-        if [ $vendor_unzip_status -ne 0 ]; then
-            echo "Failed to extract vendor.zip"
+        echo "Extracting files from vendor.tar.gz..."
+        tar -xzf vendor.tar.gz -C "${lis_path}" &
+        vendor_tar_pid=$!
+        spinner "${vendor_tar_pid}"
+        wait ${vendor_tar_pid}
+        vendor_tar_status=$?
+        if [ $vendor_tar_status -ne 0 ]; then
+            echo "Failed to extract vendor.tar.gz"
             exit 1
         fi
 
@@ -723,7 +735,7 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
     else
         echo "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
-        # Perform full install if vendor.zip isn't available
+        # Perform full install if vendor.tar.gz isn't available
         sudo -u www-data composer install --prefer-dist --no-dev
     fi
 else

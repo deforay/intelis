@@ -66,7 +66,7 @@ jobs:
           composer config --no-interaction
           composer install --no-dev --prefer-dist --optimize-autoloader --no-interaction
 
-      - name: Create vendor zip
+      - name: Create vendor tarball
         run: |
           # Remove unnecessary files to reduce size
           find vendor -name ".git" -type d -exec rm -rf {} +
@@ -74,21 +74,21 @@ jobs:
           find vendor -name "docs" -type d -exec rm -rf {} +
           find vendor -name ".github" -type d -exec rm -rf {} +
 
-          # Create zip file
-          zip -r vendor.zip vendor/
+          # Create tarball
+          tar -czf vendor.tar.gz vendor/
 
           # Calculate checksums
-          md5sum vendor.zip > vendor.zip.md5
-          sha256sum vendor.zip > vendor.zip.sha256
+          md5sum vendor.tar.gz > vendor.tar.gz.md5
+          sha256sum vendor.tar.gz > vendor.tar.gz.sha256
 
-      - name: Upload vendor.zip as artifact
+      - name: Upload vendor.tar.gz as artifact
         uses: actions/upload-artifact@v4
         with:
           name: vendor-package
           path: |
-            vendor.zip
-            vendor.zip.md5
-            vendor.zip.sha256
+            vendor.tar.gz
+            vendor.tar.gz.md5
+            vendor.tar.gz.sha256
           retention-days: 90
 
       - name: Create vendor release
@@ -96,10 +96,10 @@ jobs:
         with:
           tag_name: vendor-latest
           name: Latest Vendor Package
-          body: "Latest vendor.zip package generated from composer dependencies. Generated on ${{ github.event.repository.updated_at }}"
+          body: "Latest vendor.tar.gz package generated from composer dependencies. Generated on ${{ github.event.repository.updated_at }}"
           files: |
-            vendor.zip
-            vendor.zip.md5
-            vendor.zip.sha256
+            vendor.tar.gz
+            vendor.tar.gz.md5
+            vendor.tar.gz.sha256
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
