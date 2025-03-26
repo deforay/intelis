@@ -60,7 +60,8 @@ try {
         $configFile = ROOT_PATH . "/configs/config.production.php";
     }
 
-    $systemConfig = ConfigFactory::fromFile($configFile);
+     // Load configuration directly using PHP's include
+     $systemConfig = include $configFile;
 
     // Detect if debug mode is enabled
     $debugMode = $systemConfig['system']['debug_mode'] ?? false;
