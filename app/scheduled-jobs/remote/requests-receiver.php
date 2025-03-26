@@ -1,17 +1,44 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
     echo PHP_EOL;
     echo "=========================" . PHP_EOL;
     echo "Starting test requests sync" . PHP_EOL;
-}
 
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
+    // Parse command line arguments if in CLI mode
+    $forceSyncModule = null;
+    $manifestCode = null;
+
+    // Format 1: php requests-receiver.php -t vl -m ABCD1234
+    $options = getopt("t:m:");
+    if (isset($options['t'])) {
+        $forceSyncModule = $options['t'];
+        if (isset($options['m'])) {
+            $manifestCode = $options['m'];
+        }
+    } else {
+        // Format 2: php requests-receiver.php vl ABCD1234
+        $args = array_slice($_SERVER['argv'], 1);
+        if (isset($args[0]) && !empty($args[0])) {
+            $forceSyncModule = $args[0];
+            if (isset($args[1]) && !empty($args[1])) {
+                $manifestCode = $args[1];
+            }
+        }
+    }
+} else {
+    // Use GET parameters if in web mode
+    $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
+    $manifestCode = !empty($_GET['manifestCode']) ? $_GET['manifestCode'] : null;
+}
 
 use JsonMachine\Items;
 use App\Services\ApiService;
@@ -59,8 +86,6 @@ if (empty($labId)) {
     echo "No Lab ID set in System Config";
     exit(0);
 }
-$forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
-$manifestCode = !empty($_GET['manifestCode']) ? $_GET['manifestCode'] : null;
 
 // if only one module is getting synced, lets only sync that one module
 if (!empty($forceSyncModule)) {

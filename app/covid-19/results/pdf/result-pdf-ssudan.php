@@ -22,7 +22,7 @@ if (!class_exists('SouthSudanCovid19PDFHelper')) {
 
                 if (isset($this->formId) && $this->formId == 1) {
                     if (!empty($this->logo) && trim($this->logo) != '') {
-                        if (MiscUtility::imageExists($this->logo)) {
+                        if (MiscUtility::isImageValid($this->logo)) {
                             $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                         }
                     }
@@ -57,7 +57,7 @@ if (!class_exists('SouthSudanCovid19PDFHelper')) {
                     // $this->writeHTMLCell(0, 0, 25, 35, '<hr>', 0, 0, 0, true, 'C', true);
                 } else {
                     if (!empty($this->logo) && trim($this->logo) != '') {
-                        if (MiscUtility::imageExists($this->logo)) {
+                        if (MiscUtility::isImageValid($this->logo)) {
                             $this->Image($this->logo, 10, 5, 25, '', '', '', 'T');
                         }
                     }
@@ -133,7 +133,7 @@ if (!empty($requestResult)) {
         }
         // create new PDF document
         $pdf = new SouthSudanCovid19PDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
         } else {
             $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];
@@ -191,8 +191,8 @@ if (!empty($requestResult)) {
         }
 
         $stamp = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . 'stamps' . DIRECTORY_SEPARATOR . 'hrl-stamp.png';
-        
-        if (MiscUtility::imageExists($stamp)) {
+
+        if (MiscUtility::isImageValid($stamp)) {
             $pdf->SetAlpha(0.6);
             $pdf->Image($stamp, 90, 165, 40, null);
         }
@@ -460,7 +460,7 @@ if (!empty($requestResult)) {
             foreach ($signResults as $key => $row) {
                 $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
                 $signature = '';
-                if (MiscUtility::imageExists($lmSign)) {
+                if (MiscUtility::isImageValid($lmSign)) {
                     $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
                 }
                 $html .= '<tr>';

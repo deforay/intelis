@@ -360,7 +360,7 @@ if (!empty($result)) {
         foreach ($signResults as $key => $row) {
             $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
             $signature = '';
-            if (MiscUtility::imageExists($lmSign)) {
+            if (MiscUtility::isImageValid($lmSign)) {
                 $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
             }
             $html .= '<tr>';

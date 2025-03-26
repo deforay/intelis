@@ -100,7 +100,7 @@ if (!empty($result)) {
      $pdf = new VLResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $reportTemplatePath, false);
 
      if (empty($reportTemplatePath)) {
-          if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+          if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
           } else {
                $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $arr['logo'];
@@ -306,13 +306,13 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr><td></td></tr>';
 
-     if (!empty($reviewedSignaturePath) && MiscUtility::imageExists($reviewedSignaturePath)) {
+     if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid($reviewedSignaturePath)) {
           $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
      } else {
           $signImg = '';
      }
 
-     if (!empty($approvedSignaturePath) && MiscUtility::imageExists($approvedSignaturePath)) {
+     if (!empty($approvedSignaturePath) && MiscUtility::isImageValid($approvedSignaturePath)) {
           $signImgApproved = '<img src="' . $approvedSignaturePath . '" style="width:50px;" />';
      } else {
           $signImgApproved = '';

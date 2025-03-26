@@ -24,17 +24,17 @@ if (!class_exists('DRCCovid19PDF6')) {
                 $inrbImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "inrb.png";
 
                 //left logo
-                if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) &&   MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
+                if (!empty($this->facilityInfo) && !empty($this->facilityInfo['facility_logo']) &&   MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'])) {
                     $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $this->facilityInfo['facility_logo'];
                     $this->Image($imageFilePath, 10, 5, 25, '', '', '', 'T');
                 } else {
-                    if (MiscUtility::imageExists($inrbImage)) {
+                    if (MiscUtility::isImageValid($inrbImage)) {
                         $this->Image($inrbImage, 10, 5, 25, '', '', '', 'T');
                     }
                 }
 
                 //right logo
-                if (MiscUtility::imageExists($inrbImage)) {
+                if (MiscUtility::isImageValid($inrbImage)) {
                     $this->Image($inrbImage, 175, 5, 25, '', '', '', 'T');
                 }
 
@@ -64,7 +64,7 @@ if (!class_exists('DRCCovid19PDF6')) {
 
                 // Define the path to the image that you want to use as watermark.
                 $watermarkImage = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . '4999' . DIRECTORY_SEPARATOR . "actual-inrb.png";
-                if (MiscUtility::imageExists($watermarkImage)) {
+                if (MiscUtility::isImageValid($watermarkImage)) {
                     $this->SetAlpha(0.1);
                     $this->Image($watermarkImage, 20, 75, 150, null, '', '', '', false, 300, 'M');
                 }

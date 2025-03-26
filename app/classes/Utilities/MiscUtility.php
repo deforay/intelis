@@ -46,13 +46,20 @@ final class MiscUtility
 
     public static function generateRandomString(int $length = 32): string
     {
-        $bytes = ceil($length * 3 / 4);
         try {
-            $randomBytes = random_bytes($bytes);
-            $base64String = base64_encode($randomBytes);
-            // Replace base64 characters with some alphanumeric characters
-            $customBase64String = strtr($base64String, '+/=', 'ABC');
-            return substr($customBase64String, 0, $length);
+            $bytes = random_bytes($length);
+            $result = '';
+
+            // Create a character set of alphanumeric characters
+            $charSet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            $charSetLength = strlen($charSet);
+
+            // Convert random bytes to characters from our character set
+            for ($i = 0; $i < $length; $i++) {
+                $result .= $charSet[ord($bytes[$i]) % $charSetLength];
+            }
+
+            return $result;
         } catch (Throwable $e) {
             throw new SystemException('Failed to generate random string: ' . $e->getMessage());
         }
@@ -154,22 +161,211 @@ final class MiscUtility
         $filesystem = new Filesystem();
 
         // The exists() method checks if the file exists (whether it's a file or directory)
-        return $filesystem->exists($filePath) && is_file($filePath);
+        return $filesystem->exists($filePath) && is_file($filePath) && is_readable($filePath);
     }
-    public static function imageExists($filePath): bool
-    {
-        // Check if the file exists and is a file
+
+    /**
+     * Check if a file is a valid, non-corrupted image with caching support.
+     *
+     * @param string $filePath Path to the image file
+     * @param array $allowedMimeTypes Array of allowed MIME types
+     * @param int $minWidth Minimum valid width in pixels
+     * @param int $minHeight Minimum valid height in pixels
+     * @param int $maxFileSize Maximum file size in bytes
+     * @param int $cacheDays Number of days to cache validation results (0 to disable cache)
+     * @param string $cacheDir Directory to store cache files
+     * @return bool True if the image is valid, false otherwise
+     */
+    public static function isImageValid(
+        string $filePath,
+        array $allowedMimeTypes = ['image/jpeg', 'image/png', 'image/gif', 'image/webp', 'image/svg+xml'],
+        int $minWidth = 1,
+        int $minHeight = 1,
+        int $maxFileSize = 0,
+        int $cacheDays = 7,
+        string $cacheDir = CACHE_PATH . '/image_validation_cache'
+    ): bool {
+        // Skip cache if cacheDays is 0
+        if ($cacheDays <= 0) {
+            return self::validateImageWithoutCache($filePath, $allowedMimeTypes, $minWidth, $minHeight, $maxFileSize);
+        }
+
+        // Check if file exists and is readable
         if (!self::fileExists($filePath)) {
             return false;
         }
 
-        // Suppress errors from getimagesize() in case it's not a valid image
-        $imageInfo = @getimagesize($filePath);
+        // Create cache directory if it doesn't exist
+        if (!self::makeDirectory($cacheDir)) {
+            // If we can't create the cache directory, fall back to non-cached validation
+            return self::validateImageWithoutCache($filePath, $allowedMimeTypes, $minWidth, $minHeight, $maxFileSize);
+        }
 
-        // Check if getimagesize() was successful and if the image type is valid
-        return $imageInfo !== false && isset($imageInfo[2]) && $imageInfo[2] > 0;
+        // Generate a unique cache key based on file path and modification time
+        $fileModTime = filemtime($filePath);
+        $fileSize = filesize($filePath);
+        $cacheKey = md5($filePath . $fileModTime . $fileSize . implode(',', $allowedMimeTypes) .
+            $minWidth . $minHeight . $maxFileSize);
+        $cacheFile = $cacheDir . '/' . $cacheKey . '.cache';
+
+        // Check if valid cache entry exists
+        if (file_exists($cacheFile)) {
+            $cacheAge = time() - filemtime($cacheFile);
+            $cacheExpiryTime = $cacheDays * 86400; // Convert days to seconds
+
+            if ($cacheAge < $cacheExpiryTime) {
+                // Cache is still valid, return cached result
+                return (bool) file_get_contents($cacheFile);
+            }
+        }
+
+        // Cache doesn't exist or is expired, perform validation
+        $isValid = self::validateImageWithoutCache($filePath, $allowedMimeTypes, $minWidth, $minHeight, $maxFileSize);
+
+        // Store result in cache
+        file_put_contents($cacheFile, $isValid ? '1' : '0');
+
+        return $isValid;
     }
 
+    /**
+     * Internal helper method to validate an image without caching.
+     *
+     * @param string $filePath Path to the image file
+     * @param array $allowedMimeTypes Array of allowed MIME types
+     * @param int $minWidth Minimum valid width in pixels
+     * @param int $minHeight Minimum valid height in pixels
+     * @param int $maxFileSize Maximum file size in bytes
+     * @return bool True if the image is valid, false otherwise
+     */
+    private static function validateImageWithoutCache(
+        string $filePath,
+        array $allowedMimeTypes,
+        int $minWidth,
+        int $minHeight,
+        int $maxFileSize
+    ): bool {
+        // Check if file exists and is readable
+        if (!self::fileExists($filePath)) {
+            return false;
+        }
+
+        // Check file size if specified
+        if ($maxFileSize > 0 && filesize($filePath) > $maxFileSize) {
+            return false;
+        }
+
+        // Validate MIME type
+        $finfo = finfo_open(FILEINFO_MIME_TYPE);
+        if ($finfo === false) {
+            return false;
+        }
+
+        $mimeType = finfo_file($finfo, $filePath);
+        finfo_close($finfo);
+
+        if (!in_array($mimeType, $allowedMimeTypes)) {
+            return false;
+        }
+
+        // Special handling for SVG files
+        if ($mimeType === 'image/svg+xml') {
+            // Try to parse the SVG to check if it's valid
+            $svgContent = @file_get_contents($filePath);
+            if ($svgContent === false) {
+                return false;
+            }
+
+            $isValidXml = @simplexml_load_string($svgContent) !== false;
+            return $isValidXml;
+        }
+
+        // For raster images, use getimagesize() to validate the image data
+        $imageInfo = @getimagesize($filePath);
+
+        // Check if the image data is valid and meets dimension requirements
+        if (
+            $imageInfo === false ||
+            !isset($imageInfo[0]) ||
+            !isset($imageInfo[1]) ||
+            $imageInfo[0] < $minWidth ||
+            $imageInfo[1] < $minHeight
+        ) {
+            return false;
+        }
+
+        // Additional check for JPEG files - try to create a valid image resource
+        if ($mimeType === 'image/jpeg') {
+            $image = @imagecreatefromjpeg($filePath);
+            if ($image === false) {
+                return false;
+            }
+            imagedestroy($image);
+        }
+
+        // Additional check for PNG files
+        if ($mimeType === 'image/png') {
+            $image = @imagecreatefrompng($filePath);
+            if ($image === false) {
+                return false;
+            }
+            imagedestroy($image);
+        }
+
+        // Additional check for GIF files
+        if ($mimeType === 'image/gif') {
+            $image = @imagecreatefromgif($filePath);
+            if ($image === false) {
+                return false;
+            }
+            imagedestroy($image);
+        }
+
+        // Additional check for WebP files if supported
+        if ($mimeType === 'image/webp' && function_exists('imagecreatefromwebp')) {
+            $image = @imagecreatefromwebp($filePath);
+            if ($image === false) {
+                return false;
+            }
+            imagedestroy($image);
+        }
+
+        return true;
+    }
+
+    /**
+     * Clears the image validation cache
+     *
+     * @param int $maxAge Maximum age of cache files to keep in seconds (0 to clear all)
+     * @param string $cacheDir Directory where cache files are stored
+     * @return int Number of cache files removed
+     */
+    public static function clearImageValidationCache(
+        int $maxAge = 0,
+        string $cacheDir = CACHE_PATH . '/image_validation_cache'
+    ): int {
+        if (!is_dir($cacheDir)) {
+            return 0;
+        }
+
+        $count = 0;
+        $now = time();
+
+        foreach (new \DirectoryIterator($cacheDir) as $fileInfo) {
+            if ($fileInfo->isDot() || !$fileInfo->isFile() || !str_ends_with($fileInfo->getFilename(), '.cache')) {
+                continue;
+            }
+
+            // If maxAge is 0, delete all cache files, otherwise check file age
+            if ($maxAge <= 0 || ($now - $fileInfo->getMTime() > $maxAge)) {
+                if (unlink($fileInfo->getPathname())) {
+                    $count++;
+                }
+            }
+        }
+
+        return $count;
+    }
     public static function getMimeType($file, $allowedMimeTypes)
     {
         $finfo = finfo_open(FILEINFO_MIME_TYPE);

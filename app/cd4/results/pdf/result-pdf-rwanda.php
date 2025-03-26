@@ -30,7 +30,7 @@ if (!empty($result)) {
      }
      // create new PDF document
      $pdf = new CD4ResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-     if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+     if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
           $logoPrintInPdf = $result['facilityLogo'];
      } else {
           $logoPrintInPdf = $arr['logo'];
@@ -328,7 +328,7 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
           $html .= '</tr>';
      }
-     if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath)) {
+     if (!empty($userSignaturePath) && MiscUtility::isImageValid($userSignaturePath)) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
           $html .= '</tr>';

@@ -59,7 +59,7 @@ if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
-   
+
     //foreach ($requestResult as $result) {
 
         $covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
@@ -100,7 +100,7 @@ if (!empty($requestResult)) {
 
         if (empty($reportTemplatePath)) {
             // create new PDF document
-            if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+            if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
                 $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'];
             } else {
                 $logoPrintInPdf = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR  . $arr['logo'];
@@ -442,7 +442,7 @@ if (!empty($requestResult)) {
             foreach ($signResults as $key => $row) {
                 $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
                 $signature = '';
-                if (MiscUtility::imageExists($lmSign)) {
+                if (MiscUtility::isImageValid($lmSign)) {
                     $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
                 }
                 $html .= '<tr>';

@@ -28,7 +28,7 @@ class ManifestPdfHelper extends TCPDF
     public function Header()
     {
         if (trim($this->logo) != "") {
-            if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
+            if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                 $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
                 $this->Image($imageFilePath, 15, 10, 15, '', '', '', 'T');
             }

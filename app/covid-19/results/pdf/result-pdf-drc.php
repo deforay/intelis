@@ -19,7 +19,7 @@ if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
-  
+
     //foreach ($requestResult as $result) {
 
         $covid19TestQuery = "SELECT * FROM covid19_tests WHERE covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
@@ -42,7 +42,7 @@ if (!empty($requestResult)) {
         }
         // create new PDF document
         $pdf = new Covid19ResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        if (MiscUtility::imageExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
+        if (MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
             $logoPrintInPdf = $arr['logo'];
@@ -389,7 +389,7 @@ if (!empty($requestResult)) {
 
             $html .= '<tr>';
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-            if (!empty($userSignaturePath) && MiscUtility::imageExists($userSignaturePath)) {
+            if (!empty($userSignaturePath) && MiscUtility::isImageValid($userSignaturePath)) {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:70px;" /></td>';
             } else {
                 $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -411,7 +411,7 @@ if (!empty($requestResult)) {
             foreach ($signResults as $key => $row) {
                 $lmSign = UPLOAD_PATH . "/labs/" . $row['lab_id'] . "/signatures/" . $row['signature'];
                 $signature = '';
-                if (MiscUtility::imageExists($lmSign)) {
+                if (MiscUtility::isImageValid($lmSign)) {
                     $signature = '<img src="' . $lmSign . '" style="width:40px;" />';
                 }
                 $html .= '<tr>';

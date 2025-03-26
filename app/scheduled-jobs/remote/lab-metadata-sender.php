@@ -139,7 +139,7 @@ try {
     if (!empty($users)) {
         foreach ($users as &$user) {
             $signatureImagePath = isset($user['user_signature']) ? $signatureImagePathBase . DIRECTORY_SEPARATOR . $user['user_signature'] : null;
-            if ($signatureImagePath && MiscUtility::imageExists($signatureImagePath)) {
+            if ($signatureImagePath && MiscUtility::isImageValid($signatureImagePath)) {
                 $user['signature_image_content'] = base64_encode(file_get_contents($signatureImagePath));
                 $user['signature_image_filename'] = $user['user_signature'];
             } else {

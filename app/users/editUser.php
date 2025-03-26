@@ -201,7 +201,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        <div class="fileinput-preview thumbnail image-placeholder" data-trigger="fileinput" style="width:200px; height:150px;">
                                                             <?php
 
-                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && MiscUtility::imageExists($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
+                                                            if (isset($userInfo['user_signature']) && trim((string) $userInfo['user_signature']) != '' && MiscUtility::isImageValid($signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'])) {
                                                                  $signFileName = basename($userInfo['user_signature']);
                                                             ?>
                                                                  <img src="/uploads/users-signature/<?php echo $signFileName; ?>" alt="Signature image">

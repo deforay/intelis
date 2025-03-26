@@ -128,7 +128,7 @@ try {
             ]
         ];
 
-        if (!empty($signatureImagePath) && MiscUtility::imageExists($signatureImagePath)) {
+        if (!empty($signatureImagePath) && MiscUtility::isImageValid($signatureImagePath)) {
             $multipart[] = [
                 'name' => 'sign',
                 'contents' => fopen($signatureImagePath, 'r')

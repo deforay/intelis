@@ -151,9 +151,9 @@ try {
                                     OR tb.is_sample_rejected like '' )";
     } elseif ($table == "form_vl") {
         if ($whereCondition == "") {
-            $vlWhereCondition = $recencyWhere . " AND ";
+            $vlWhereCondition = "$recencyWhere AND ";
         } else {
-            $vlWhereCondition = $recencyWhere . " AND " . $whereCondition;
+            $vlWhereCondition = "$recencyWhere AND $whereCondition";
         }
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
@@ -238,7 +238,7 @@ try {
                         LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                         WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
-                        ORDER BY `collection_date`";
+                        ORDER BY vl.sample_collection_date";
     //      echo $accessionQuery; die;
     $tRes = $db->rawQuery($accessionQuery); //overall result
     $tResult = [];
@@ -261,7 +261,7 @@ try {
                             $whereCondition
                             DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `test_date`
-                            ORDER BY `test_date`";
+                            ORDER BY vl.sample_tested_datetime";
     //echo $sampleTestedQuery; die;
     $tRes = $db->rawQuery($sampleTestedQuery); //overall result
     $acceptedResult = [];
@@ -283,7 +283,7 @@ try {
                             WHERE (result_status = 4) AND $whereCondition DATE(vl.sample_collection_date)
                             BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `collection_date`
-                            ORDER BY `collection_date`";
+                            ORDER BY vl.sample_collection_date";
     $tRes = $db->rawQuery($sampleRejectedQuery); //overall result
     $rejectedResult = [];
     foreach ($tRes as $tRow) {
@@ -300,7 +300,7 @@ try {
                         INNER JOIN $table as covid19 ON covid19.result_status=s.status_id
                         WHERE DATE(covid19.sample_collection_date) BETWEEN '$startDate'  AND '$endDate'
                         GROUP BY `collection_date`
-                        ORDER BY `collection_date`";
+                        ORDER BY covid19.sample_collection_date";
         $statusQueryResult = $db->rawQuery($statusQuery); //overall result
         $statusTotal = 0;
         foreach ($statusQueryResult as $statusRow) {
