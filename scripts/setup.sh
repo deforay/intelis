@@ -163,6 +163,34 @@ spinner() {
     printf "    \b\b\b\b"
 }
 
+# Function to set permissions more efficiently
+set_permissions() {
+    local path=$1
+    local mode=${2:-"full"}  # Options: full, quick, critical
+
+    print info "Setting permissions for ${path} (${mode} mode)..."
+
+    case "$mode" in
+        "full")
+            # Full permission setting - all directories and files
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+            ;;
+
+        "quick")
+            # Quick mode - only directories and php files
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            find "${path}" -type f -name "*.php" -print0 |
+                xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+            ;;
+
+        "minimal")
+            # Minimal mode - only directories to ensure structure is accessible
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            ;;
+    esac
+}
+
 # Check if Ubuntu version is 22.04 or newer
 min_version="22.04"
 current_version=$(lsb_release -rs)
@@ -254,15 +282,21 @@ fi
 
 # LIS Setup
 print header "Downloading LIS"
-wget -q --show-progress --progress=dot:giga -O master.zip https://github.com/deforay/vlsm/archive/refs/heads/master.zip
+# Download the tar.gz file in background
+wget -c --show-progress --progress=dot:giga -O master.tar.gz \
+    https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master &
+download_pid=$!           # Save wget PID
+spinner "${download_pid}" # Spinner tracks download
+wait ${download_pid}      # Wait for download to finish
 
-# Unzip the file into a temporary directory
+# Extract the tar.gz file into temporary directory
 temp_dir=$(mktemp -d)
-echo "Extracting files from master.zip..."
-unzip -qq master.zip -d "$temp_dir" &
-unzip_pid=$!           # Save the process ID of the unzip command
-spinner "${unzip_pid}" # Start the spinner
-wait ${unzip_pid}      # Wait for the unzip process to finish
+print info "Extracting files from master.tar.gz..."
+
+tar -xzf master.tar.gz -C "$temp_dir" &
+tar_pid=$!           # Save tar PID
+spinner "${tar_pid}" # Spinner tracks extraction
+wait ${tar_pid}      # Wait for extraction to finish
 
 log_action "LIS downloaded."
 
@@ -275,15 +309,16 @@ fi
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
 # cp -R "$temp_dir/vlsm-master/"* "${lis_path}"
-rsync -av "$temp_dir/vlsm-master/" "$lis_path/"
+rsync -a --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/"
 
 # Remove the empty directory and the downloaded zip file
 rm -rf "$temp_dir/vlsm-master/"
-rm master.zip
+rm master.tar.gz
 
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
+set_permissions "${lis_path}" "quick"
 chown -R www-data:www-data "${lis_path}"
 
 # Run Composer Install as www-data
@@ -610,7 +645,8 @@ if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
 fi
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+# Set ACLs
+set_permissions "${lis_path}" "quick"
 
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
@@ -663,7 +699,7 @@ if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
 fi
 
 # Set proper permissions
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+set_permissions "${lis_path}" "full"
 chown -R www-data:www-data "${lis_path}"
 
 service apache2 restart

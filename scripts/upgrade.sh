@@ -420,11 +420,35 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-# Set ACLs on directories only (synchronous)
-find "${lis_path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \;
+# Function to set permissions more efficiently
+set_permissions() {
+    local path=$1
+    local mode=${2:-"full"}  # Options: full, quick, critical
 
-# Set ACLs on files recursively (asynchronous)
-find "${lis_path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} &
+    print info "Setting permissions for ${path} (${mode} mode)..."
+
+    case "$mode" in
+        "full")
+            # Full permission setting - all directories and files
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+            ;;
+
+        "quick")
+            # Quick mode - only directories and php files
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            find "${path}" -type f -name "*.php" -print0 |
+                xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+            ;;
+
+        "minimal")
+            # Minimal mode - only directories to ensure structure is accessible
+            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+            ;;
+    esac
+}
+
+set_permissions "${lis_path}" "quick"
 
 spinner() {
     local pid=$!
@@ -579,7 +603,21 @@ spinner "${tar_pid}" # Spinner tracks extraction
 wait ${tar_pid}      # Wait for extraction to finish
 
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-rsync -a --inplace --whole-file --exclude 'public/uploads' --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/" &
+# Find all symlinks in the destination directory and create an exclude pattern
+exclude_options=""
+symlinks_found=0
+for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
+    # Extract the relative path from the full path
+    rel_path=${symlink#"$lis_path/"}
+    exclude_options="$exclude_options --exclude '$rel_path'"
+    print debug "Detected symlink: $rel_path"
+    ((symlinks_found++))
+done
+
+print info "Found $symlinks_found symlinks that will be preserved."
+
+# Use the dynamically generated exclude options in the rsync command
+eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/" &
 rsync_pid=$!           # Save the process ID of the rsync command
 spinner "${rsync_pid}" # Start the spinner
 wait ${rsync_pid}      # Wait for the rsync process to finish
@@ -602,11 +640,7 @@ print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
-# Set ACLs on directories only (synchronous)
-find "${lis_path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \;
-
-# Set ACLs on files recursively (asynchronous)
-find "${lis_path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} &
+set_permissions "${lis_path}" "quick"
 
 # Check for config.production.php and its content
 config_file="${lis_path}/configs/config.production.php"
@@ -835,7 +869,7 @@ print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # Set proper permissions
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+set_permissions "${lis_path}" "full"
 chown -R www-data:www-data "${lis_path}"
 
 print success "LIS update complete."
