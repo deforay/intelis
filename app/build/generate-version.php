@@ -11,14 +11,29 @@ require_once __DIR__ . "/../../bootstrap.php";
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
-use PHP_CodeSniffer\Tokenizers\PHP;
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-$currentMajorVersion = $general->getAppVersion();
 
 $versionFilePath = APPLICATION_PATH . '/system/version.php';
+$composerJsonPath = ROOT_PATH . '/composer.json';
+
+// Function to get current version from composer.json
+function getComposerVersion($composerJsonPath)
+{
+    if (!file_exists($composerJsonPath)) {
+        return null;
+    }
+
+    $composerContent = file_get_contents($composerJsonPath);
+    $composerJson = json_decode($composerContent, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE || !isset($composerJson['version'])) {
+        return null;
+    }
+
+    return $composerJson['version'];
+}
+
+// Get the current major version from composer.json (primary source)
+$currentMajorVersion = getComposerVersion($composerJsonPath);
 
 // Function to extract the version number from the version.php file
 function getCurrentVersion($versionFilePath)
@@ -34,12 +49,54 @@ function getCurrentVersion($versionFilePath)
     return null;
 }
 
+// Function to update composer.json version
+function updateComposerJson($composerJsonPath, $newVersion)
+{
+    if (!file_exists($composerJsonPath)) {
+        echo "Warning: composer.json not found at {$composerJsonPath}" . PHP_EOL;
+        return false;
+    }
+
+    // Get the current content of composer.json
+    $composerContent = file_get_contents($composerJsonPath);
+    $composerJson = json_decode($composerContent, true);
+
+    if (json_last_error() !== JSON_ERROR_NONE) {
+        echo "Error parsing composer.json: " . json_last_error_msg() . PHP_EOL;
+        return false;
+    }
+
+    // Extract just the major.minor.patch part for composer.json
+    $versionParts = explode('.', $newVersion);
+    $composerVersion = implode('.', array_slice($versionParts, 0, 3));
+
+    // Update the version in the composer.json array
+    $composerJson['version'] = $composerVersion;
+
+    // Write the updated content back to composer.json with pretty formatting
+    $updatedContent = json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
+    file_put_contents($composerJsonPath, $updatedContent);
+
+    echo "Updated composer.json version to {$composerVersion}" . PHP_EOL;
+    return true;
+}
+
 try {
     // Set migrations path
     $migrationsPath = ROOT_PATH . '/dev/migrations/';
 
     // Get the current version from version.php
     $currentVersion = getCurrentVersion($versionFilePath);
+
+    if ($currentMajorVersion === null) {
+        // If composer.json doesn't exist or has no version
+        /** @var CommonService $general */
+        $general = ContainerRegistry::get(CommonService::class);
+        $fallbackVersion = $general->getAppVersion();
+
+        echo "Warning: Could not read version from composer.json, using fallback version: {$fallbackVersion}" . PHP_EOL;
+        $currentMajorVersion = $fallbackVersion;
+    }
 
     if ($currentVersion === null) {
         // If version.php does not exist or has issues, initialize it with major.minor.patch.1
@@ -59,7 +116,7 @@ try {
         echo "Would you like to:\n";
         echo "1. Change major version (from {$currentVersionCore} to a new major version)\n";
         echo "2. Just increment the current version (from {$currentVersion} to " .
-             $currentVersionCore . "." . ($currentBuildNumber + 1) . ")\n";
+            $currentVersionCore . "." . ($currentBuildNumber + 1) . ")\n";
 
         $choice = null;
         while ($choice !== '1' && $choice !== '2') {
@@ -79,9 +136,6 @@ try {
             }
 
             // Validate that new version is greater than current version
-            $newVersionNumeric = str_replace('.', '', $newMajorVersion);
-            $currentVersionNumeric = str_replace('.', '', $currentVersionCore);
-
             while (version_compare($newMajorVersion, $currentVersionCore, '<=')) {
                 echo "New version must be greater than the current version ({$currentVersionCore}). Please enter a higher version: ";
                 $newMajorVersion = trim(fgets(STDIN));
@@ -95,14 +149,22 @@ try {
 
             // When changing major version, start with .0 for the build number
             $newVersion = "{$newMajorVersion}.0";
+
+            // Update composer.json with the new major version
+            updateComposerJson($composerJsonPath, $newVersion);
         } else {
             // User wants to increment build number
             if ($currentVersionCore !== $currentMajorVersion) {
                 // If the major.minor.patch version has changed, reset the build number to 1
                 $newVersion = "{$currentMajorVersion}.1";
+
+                // Update composer.json with the new version
+                updateComposerJson($composerJsonPath, $newVersion);
             } else {
                 // Otherwise, increment the build number
                 $newVersion = $currentMajorVersion . '.' . ($currentBuildNumber + 1);
+
+                // No need to update composer.json for build number changes
             }
         }
     }
@@ -149,7 +211,7 @@ PHP;
     if (!file_exists($migrationFileName)) {
         $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n";
         file_put_contents($migrationFileName, $migrationContent);
-        echo "Created migration file: $migrationFileName". PHP_EOL;
+        echo "Created migration file: $migrationFileName" . PHP_EOL;
     }
 
     echo "version.php has been updated to version " . htmlspecialchars($newVersion) . PHP_EOL;
@@ -157,8 +219,8 @@ PHP;
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'last_db_query' => $db->getLastQuery(),
-        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery() ?? null,
+        'last_db_error' => $db->getLastError() ?? null,
         'trace' => $e->getTraceAsString(),
     ]);
 }
