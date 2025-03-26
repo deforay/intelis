@@ -338,36 +338,36 @@ else
     fi
 fi
 
-# Download vendor.zip if needed
+# Download vendor.tar.gz if needed
 if [ "$NEED_FULL_INSTALL" = true ]; then
     echo "Dependency update needed. Checking for vendor packages..."
-    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip"; then
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz"; then
         echo "Vendor package found. Downloading..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.zip https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip || {
-            echo "Failed to download vendor.zip"
+        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz || {
+            echo "Failed to download vendor.tar.gz"
             exit 1
         }
 
         echo "Downloading checksum..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.zip.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.zip.md5 || {
-            echo "Failed to download vendor.zip.md5"
+        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5 || {
+            echo "Failed to download vendor.tar.gz.md5"
             exit 1
         }
 
         echo "Verifying checksum..."
-        md5sum -c vendor.zip.md5 || {
+        md5sum -c vendor.tar.gz.md5 || {
             echo "Checksum verification failed"
             exit 1
         }
 
-        echo "Extracting files from vendor.zip..."
-        unzip -qq -o vendor.zip &
-        vendor_unzip_pid=$!
-        spinner "${vendor_unzip_pid}"
-        wait ${vendor_unzip_pid}
-        vendor_unzip_status=$?
-        if [ $vendor_unzip_status -ne 0 ]; then
-            echo "Failed to extract vendor.zip"
+        echo "Extracting files from vendor.tar.gz..."
+        tar -xzf vendor.tar.gz -C "${lis_path}" &
+        vendor_tar_pid=$!
+        spinner "${vendor_tar_pid}"
+        wait ${vendor_tar_pid}
+        vendor_tar_status=$?
+        if [ $vendor_tar_status -ne 0 ]; then
+            echo "Failed to extract vendor.tar.gz"
             exit 1
         fi
 
@@ -382,11 +382,11 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
     else
         echo "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
-        # Perform full install if vendor.zip isn't available
+        # Perform full install if vendor.tar.gz isn't available
         sudo -u www-data composer install --prefer-dist --no-dev
     fi
 else
-    echo "Dependencies are up to date. Skipping vendor download."
+    print info "Dependencies are up to date. Skipping vendor download."
 fi
 
 # Always generate the optimized autoloader, regardless of install path
