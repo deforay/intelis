@@ -6,7 +6,6 @@ use App\Services\DatabaseService;
 use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 if (isset($_SESSION['userId'])) {
 	SecurityService::redirect("/dashboard/index.php");
@@ -44,7 +43,7 @@ if (!isset($_SESSION[$ipAddress])) {
 
 SecurityService::checkLoginAttempts($ipAddress);
 
-$globalConfigResult = $general->getGlobalConfig();
+$logo = $general->getGlobalConfig('logo');
 $systemInfo = $general->getSystemConfig();
 
 if (!empty(SYSTEM_CONFIG['instance-name']) && SYSTEM_CONFIG['instance-name'] != '') {
@@ -80,7 +79,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 <head>
 	<meta charset="utf-8">
 	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<title><?php echo $shortName; ?> | <?php echo _translate("Login"); ?></title>
+	<title><?= $shortName; ?> | <?= _translate("Login"); ?></title>
 	<!-- Tell the browser to be responsive to screen width -->
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 
@@ -106,14 +105,14 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 	<!-- Theme style -->
 	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
-	<link href="/assets/css/deforayModal.css" rel="stylesheet" />
+	<link rel="stylesheet" href="/assets/css/deforayModal.css"/>
 	<!-- iCheck -->
 	<style>
 		body {
 			background: #F6F6F6;
 			background: #000;
 
-			background: url("<?php echo $path; ?>") center;
+			background: url("<?= $path; ?>") center;
 			background-size: cover;
 			background-repeat: no-repeat;
 		}
@@ -136,10 +135,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		$filePath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'login-logos';
 
 
-		if (isset($globalConfigResult[0]['value']) && trim((string) $globalConfigResult[0]['value']) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $globalConfigResult[0]['value'])) {
+		if (!empty($logo) && trim((string) $logo) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
 		?>
 			<div style="margin-top:15px;float:left;">
-				<img src="/uploads/logo/<?php echo $globalConfigResult[0]['value']; ?>" alt="Logo image" style="max-width:120px;">
+				<img src="/uploads/logo/<?= $logo; ?>" alt="Logo image" style="max-width:120px;">
 			</div>
 		<?php
 		}
@@ -155,7 +154,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		?>
 			<div style="margin-top:15px;float:left;">
 				<?php foreach ($loginLogoFiles as $fileName) { ?>
-					&nbsp;<img src="/uploads/login-logos/<?php echo $fileName; ?>" alt="Logo image" style="max-width:80px;">
+					&nbsp;<img src="/uploads/login-logos/<?= $fileName; ?>" alt="Logo image" style="max-width:80px;">
 				<?php }  ?>
 			</div>
 		<?php
@@ -165,7 +164,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		<div id="loginbox" style="margin-top:20px;margin-bottom:70px;float:right;margin-right:10px;" class="mainbox col-md-3 col-sm-8 ">
 			<div class="panel panel-default" style="opacity: 0.93;">
 				<div class="panel-heading">
-					<div class="panel-title"><?php echo $systemDisplayName; ?></div>
+					<div class="panel-title"><?= $systemDisplayName; ?></div>
 				</div>
 
 				<div style="padding-top:10px;" class="panel-body">
@@ -174,33 +173,33 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group hpot">
 							<span class="input-group-addon"><em class="fa-solid fa-x"></em></span>
-							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text" class="form-control" name="labname" value="" placeholder="<?php echo _translate('Lab Name'); ?>" title="<?php echo _translate('Please enter your lab name'); ?>" onchange="$('#captcha').show();">
+							<input id="labname_<?= MiscUtility::generateRandomNumber(4) ?>" type="text" class="form-control" name="labname" value="" placeholder="<?= _translate('Lab Name'); ?>" title="<?= _translate('Please enter your lab name'); ?>" onchange="$('#captcha').show();">
 						</div>
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-user"></em></span>
-							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?php echo _translate('User Name'); ?>" title="<?php echo _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
+							<input id="username" type="text" class="form-control isRequired" name="username" value="" placeholder="<?= _translate('User Name'); ?>" title="<?= _translate('Please enter your user name'); ?>" onblur="checkLoginAttempts()">
 						</div>
 
 						<div style="margin-bottom: 5px" class="input-group">
 							<span class="input-group-addon"><em class="fa-solid fa-lock"></em></span>
-							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter your password'); ?>">
+							<input id="password" type="password" class="form-control isRequired" name="password" placeholder="<?= _translate('Password'); ?>" title="<?= _translate('Please enter your password'); ?>">
 						</div>
 						<div style="margin-bottom: 5px;display:none" id="captcha">
 							<div>
 								<img id="capChaw" width="180px" alt="verification" src="/includes/captcha.php" />
-								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?php echo _translate("Get New Image"); ?></a>
+								<a onclick="getCaptcha('capChaw');return false;" class="mandatory"><em class="fa-solid fa-arrows-rotate"></em> <?= _translate("Get New Image"); ?></a>
 							</div>
 
 							<div style="margin-bottom: 5px" class="input-group">
 								<span class="input-group-addon"><em class="fa-solid fa-shield-halved"></em></span>
-								<input type="text" id="challengeResponse" name="captcha" placeholder="<?php echo _translate('Please enter the text from the image'); ?>" class="form-control" title="<?php echo _translate('Please enter the text from the image'); ?>." maxlength="40">
+								<input type="text" id="challengeResponse" name="captcha" placeholder="<?= _translate('Please enter the text from the image'); ?>" class="form-control" title="<?= _translate('Please enter the text from the image'); ?>." maxlength="40">
 							</div>
 						</div>
 
 						<div style="margin-top:10px" class="form-group">
 							<!-- Button -->
 							<div class="col-sm-12 controls">
-								<button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?php echo _translate("Login"); ?></button>
+								<button class="btn btn-lg btn-success btn-block" onclick="validateNow();return false;"><?= _translate("Login"); ?></button>
 							</div>
 						</div>
 					</form>
@@ -209,7 +208,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		</div>
 	</div>
 	<div style="padding:1% 2%;width:100%;position:absolute;bottom:1.5%;color:#fff;background:rgba(0,0,0,0.1);">
-		<small class="pull-right" style="font-weight:bold;">v <?php echo VERSION; ?></small>
+		<small class="pull-right" style="font-weight:bold;">v <?= VERSION; ?></small>
 	</div>
 	<script src="/assets/js/deforayValidation.js"></script>
 	<script src="/assets/js/jquery.blockUI.js"></script>
@@ -259,7 +258,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 							},
 							function(data) {
 								if (data == 'fail') {
-									alert("<?php echo _translate("Text you entered from the image is incorrect. Please try again", true); ?>");
+									alert("<?= _translate("Text you entered from the image is incorrect. Please try again", true); ?>");
 									getCaptcha('capChaw');
 									document.getElementById("challengeResponse").value = "";
 									return false;
@@ -269,7 +268,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 								}
 							});
 					} else {
-						alert("<?php echo _translate("Please enter the text from the image to proceed.", true); ?>");
+						alert("<?= _translate("Please enter the text from the image to proceed.", true); ?>");
 						return false;
 					}
 				} else {
@@ -290,11 +289,11 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				if (sessionStorage.getItem("crosslogin") == "true") {
 					<?php $_SESSION['logged'] = false; ?>
 					sessionStorage.setItem("crosslogin", "false");
-					$('<iframe src="<?php echo rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
+					$('<iframe src="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/logout'; ?>" frameborder="0" scrolling="no" id="myFrame" style="display:none;"></iframe>').appendTo('body');
 				}
 			<?php }
 			if (isset($_SESSION['alertMsg']) && trim((string) $_SESSION['alertMsg']) != "") { ?>
-				alert("<?php echo $_SESSION['alertMsg']; ?>");
+				alert("<?= $_SESSION['alertMsg']; ?>");
 			<?php $_SESSION['alertMsg'] = '';
 				unset($_SESSION['alertMsg']);
 			} ?>
