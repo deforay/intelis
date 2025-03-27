@@ -605,13 +605,14 @@ wait ${tar_pid}      # Wait for extraction to finish
 # Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
 # Find all symlinks in the destination directory and create an exclude pattern
 exclude_options=""
+# Initialize symlinks_found to 0 before using it
 symlinks_found=0
 for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
     # Extract the relative path from the full path
     rel_path=${symlink#"$lis_path/"}
     exclude_options="$exclude_options --exclude '$rel_path'"
     print debug "Detected symlink: $rel_path"
-    ((symlinks_found++))
+    symlinks_found=$((symlinks_found+1))
 done
 
 print info "Found $symlinks_found symlinks that will be preserved."
