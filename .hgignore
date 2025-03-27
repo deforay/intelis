@@ -9,6 +9,8 @@ key.storage
 .env
 .git
 .git/*
+.vscode
+.vscode/*
 .gitattributes
 .gitignore
 **/node_modules/

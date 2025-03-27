@@ -25,7 +25,6 @@ $facilityInfo = $facilitiesService->getAllFacilities();
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
-$primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
 
 $recencyWhere = "";
 if ($testType == 'eid') {
@@ -38,6 +37,7 @@ if ($testType == 'eid') {
 } elseif ($testType == 'covid19') {
     $samplesCollectionChart = "covid19SamplesCollectionChart";
 } elseif ($testType == 'hepatitis') {
+    $requestCountDataTable = "hepatitisRequestCountDataTable";
     $samplesCollectionChart = "hepatitisSamplesCollectionChart";
 } elseif ($testType == 'recency') {
     $samplesCollectionChart = "recencySamplesCollectionChart";
@@ -46,27 +46,23 @@ if ($testType == 'eid') {
     $recencyWhere = " AND reason_for_vl_testing = 9999";
     $requestCountDataTable = "recencyRequestCountDataTable";
 } elseif ($testType == 'tb') {
+    $requestCountDataTable = "tbRequestCountDataTable";
     $samplesCollectionChart = "tbSamplesCollectionChart";
 } elseif ($testType == 'generic-tests') {
+    $requestCountDataTable = "genericRequestCountDataTable";
     $samplesCollectionChart = "genericSamplesCollectionChart";
+} elseif ($testType == 'cd4') {
+    $requestCountDataTable = "cd4RequestCountDataTable";
+    $samplesCollectionChart = "cd4SamplesCollectionChart";
 }
 
 
+$whereCondition = "";
 if (!$general->isSTSInstance()) {
-    if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
-        $whereCondition = " AND eid.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-    } else {
-        $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-    }
+    $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 } else {
-    $whereCondition = "";
-    //get user facility map ids
     if (!empty($_SESSION['facilityMap'])) {
-        if (isset($_POST['type']) && trim((string) $_POST['type']) == 'eid') {
-            $whereCondition = " AND eid.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
-        } else {
-            $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
-        }
+        $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 }
 
@@ -76,86 +72,31 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $endDate = date('Y-m-d');
     $startDate = date('Y-m-d', strtotime('-7 days'));
 }
-if ($table == "form_eid") {
-    $sQuery = "SELECT
-		eid.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
-		COUNT(*) AS totalCount,
-		NULL AS reorderCount,
-		SUM(CASE
-			WHEN (result_status=9) THEN 1
-				ELSE 0
-			END) AS registerCount,
-		SUM(CASE
-			WHEN (result_status=8) THEN 1
-				ELSE 0
-			END) AS sentToLabCount,
-		SUM(CASE
-			WHEN (result_status=4) THEN 1
-				ELSE 0
-			END) AS rejectCount,
-		SUM(CASE
-			WHEN (result_status=6) THEN 1
-				ELSE 0
-			END) AS pendingCount,
-		SUM(CASE
-			WHEN (result_status=5) THEN 1
-				ELSE 0
-			END) AS invalidCount,
-		SUM(CASE
-			WHEN (result_status=7) THEN 1
-				ELSE 0
-			END) AS acceptCount,
-		SUM(CASE
-			WHEN (eid.result_printed_datetime IS NOT NULL AND DATE(eid.result_printed_datetime) > '0000-00-00') THEN 1
-				ELSE 0
-			END) AS printCount
-		FROM $table as eid JOIN facility_details as f ON f.facility_id=eid.facility_id
-        WHERE DATE(eid.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
-        $whereCondition
-        GROUP BY eid.facility_id ORDER BY totalCount DESC";
-} else {
-    $sQuery = "SELECT
-                vl.facility_id,
-                f.facility_code,
-                f.facility_state,
-                f.facility_district,
-                f.facility_name,
-                COUNT(*) AS totalCount,
-                NULL AS reorderCount,
-                SUM(CASE
-                    WHEN (result_status=9) THEN 1
-                        ELSE 0
-                    END) AS registerCount,
-                SUM(CASE
-                    WHEN (result_status=8) THEN 1
-                        ELSE 0
-                    END) AS sentToLabCount,
-                SUM(CASE
-                    WHEN (result_status=4) THEN 1
-                        ELSE 0
-                    END) AS rejectCount,
-                SUM(CASE
-                    WHEN (result_status=6) THEN 1
-                        ELSE 0
-                    END) AS pendingCount,
-                SUM(CASE
-                    WHEN (result_status=5) THEN 1
-                        ELSE 0
-                    END) AS invalidCount,
-                SUM(CASE
-                    WHEN (result_status=7) THEN 1
-                        ELSE 0
-                    END) AS acceptCount,
-                SUM(CASE
-                    WHEN (vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') THEN 1
-                        ELSE 0
-                    END) AS printCount
-                FROM $table as vl JOIN facility_details as f ON f.facility_id=vl.facility_id
-                WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
-                $whereCondition
-                $recencyWhere
-                GROUP BY vl.facility_id ORDER BY totalCount DESC";
-}
+$sQuery = "SELECT
+    vl.facility_id,
+    f.facility_code,
+    f.facility_state,
+    f.facility_district,
+    f.facility_name,
+    COUNT(*) AS totalCount,
+    NULL AS reorderCount,
+    SUM(CASE WHEN (result_status = 9) THEN 1 ELSE 0 END) AS registerCount,
+    SUM(CASE WHEN (result_status = 8) THEN 1 ELSE 0 END) AS sentToLabCount,
+    SUM(CASE WHEN (result_status = 4) THEN 1 ELSE 0 END) AS rejectCount,
+    SUM(CASE WHEN (result_status = 6) THEN 1 ELSE 0 END) AS pendingCount,
+    SUM(CASE WHEN (result_status = 5) THEN 1 ELSE 0 END) AS invalidCount,
+    SUM(CASE WHEN (result_status = 7) THEN 1 ELSE 0 END) AS acceptCount,
+    SUM(CASE
+        WHEN (vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') THEN 1
+        ELSE 0
+        END) AS printCount
+    FROM $table AS vl
+    JOIN facility_details AS f ON f.facility_id = vl.facility_id
+    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+    $whereCondition
+    $recencyWhere
+    GROUP BY vl.facility_id
+    ORDER BY totalCount DESC";
 
 $tableResult = $db->rawQuery($sQuery);
 ?>

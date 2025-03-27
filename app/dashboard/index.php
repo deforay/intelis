@@ -739,6 +739,26 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#eidNoOfSampleCount").html(data);
 					}
 				});
+		}else if (requestType == 'cd4') {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
+					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+					type: 'cd4'
+				},
+				function(data) {
+					if (data != '') {
+						$("#cd4NoOfSampleCount").html(data);
+					}
+				});
+		}else if (requestType == 'hepatitis') {
+			currentXHR = $.post("/dashboard/getSampleCount.php", {
+					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+					type: 'hepatitis'
+				},
+				function(data) {
+					if (data != '') {
+						$("#hepatitisNoOfSampleCount").html(data);
+					}
+				});
 		} else if (requestType == 'generic-tests') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
