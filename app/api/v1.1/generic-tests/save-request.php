@@ -416,26 +416,76 @@ try {
                 $genericData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
                 $genericData['request_created_by'] = $user['user_id'];
             }
-
             if (isset($data['genericSampleId']) && $data['genericSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
-                if (!empty($data['testResult'])) {
-                    $db->where('sample_id', $data['genericSampleId']);
-                    $db->delete($testTableName);
-
-                    foreach ($data['testResult'] as $testKey => $testResult) {
-                        if (!empty($testResult) && trim((string) $testResult) != "") {
-                            $db->insert($testTableName, [
-                                'sample_id' => $data['genericSampleId'],
-                                'actual_no' => $data['actualNo'][$testKey] ?? null,
-                                'test_result' => $testResult,
-                                'updated_datetime' => DateUtility::getCurrentDateTime()
-                            ]);
+                if (!empty($data['testName'])) {
+                    $finalResult = "";
+                    if (isset($data['subTestResult']) && !empty($data['subTestResult'])) {
+                        foreach ($data['testName'] as $subTestName => $subTests) {
+                            foreach ($subTests as $testKey => $testKitName) {
+                                if (!empty($testKitName)) {
+                                    $testData = array(
+                                        'generic_id' => $data['vlSamplgenericSampleIdeId'],
+                                        'sub_test_name' => $subTestName,
+                                        'result_type' => $data['resultType'][$subTestName],
+                                        'test_name' => ($testKitName == 'other') ? $data['testNameOther'][$subTestName][$testKey] : $testKitName,
+                                        'facility_id' => $data['labId'] ?? null,
+                                        'sample_tested_datetime' => DateUtility::isoDateFormat($data['testDate'][$subTestName][$testKey] ?? ''),
+                                        'testing_platform' => $data['testingPlatform'][$subTestName][$testKey] ?? null,
+                                        'kit_lot_no' => (str_contains((string)$testKitName, 'RDT')) ? $data['lotNo'][$subTestName][$testKey] : null,
+                                        'kit_expiry_date' => (str_contains((string)$testKitName, 'RDT')) ? DateUtility::isoDateFormat($data['expDate'][$subTestName][$testKey]) : null,
+                                        'result_unit' => $data['testResultUnit'][$subTestName][$testKey],
+                                        'result' => $data['testResult'][$subTestName][$testKey],
+                                        'final_result' => $data['finalResult'][$subTestName],
+                                        'final_result_unit' => $data['finalTestResultUnit'][$subTestName],
+                                        'final_result_interpretation' => $data['resultInterpretation'][$subTestName]
+                                    );
+                                    $db->insert('generic_test_results', $testData);
+                                    if (isset($data['finalResult'][$subTestName]) && !empty($data['finalResult'][$subTestName])) {
+                                        $finalResult = $data['finalResult'][$subTestName];
+                                    }
+                                }
+                            }
+                        }
+                    } else {
+                        foreach ($data['testName'] as $testKey => $testKitName) {
+                            if (!empty($data['testName'][$testKey][0])) {
+                                $testData = array(
+                                    'generic_id' => $data['genericSampleId'] ?? null,
+                                    'sub_test_name' => null,
+                                    'result_type' => $data['resultType'][$testKey][0] ?? null,
+                                    'test_name' => ($data['testName'][$testKey][0] == 'other') ? $data['testNameOther'][$testKey][0] : $data['testName'][$testKey][0],
+                                    'facility_id' => $data['labId'] ?? null,
+                                    'sample_tested_datetime' => (isset($data['testDate'][$testKey][0]) && !empty($data['testDate'][$testKey][0])) ? DateUtility::isoDateFormat($data['testDate'][$testKey][0]) : null,
+                                    'testing_platform' => $data['testingPlatform'][$testKey][0] ?? null,
+                                    'kit_lot_no' => (str_contains((string)$data['testName'][$testKey][0], 'RDT')) ? $data['lotNo'][$testKey][0] : null,
+                                    'kit_expiry_date' => (str_contains((string)$data['testName'][$testKey][0], 'RDT')) ? DateUtility::isoDateFormat($data['expDate'][$testKey][0]) : null,
+                                    'result_unit' => $data['testResultUnit'][$testKey][0] ?? null,
+                                    'result' => $data['testResult'][$testKey][0] ?? null
+                                );
+                                foreach ($data['finalResult'] as $key => $value) {
+                                    if (isset($value) && !empty($value)) {
+                                        $testData['final_result'] = $value;
+                                    }
+                                    if (isset($data['finalTestResultUnit'][$key]) && !empty($data['finalTestResultUnit'][$key])) {
+                                        $testData['final_result_unit'] = $data['finalTestResultUnit'][$key];
+                                    }
+                                    if (isset($data['resultInterpretation'][$key]) && !empty($data['resultInterpretation'][$key])) {
+                                        $testData['final_result_interpretation'] = $data['resultInterpretation'][$key];
+                                    }
+                                }
+                                $db->insert('generic_test_results', $testData);
+                                if (isset($testData['final_result']) && !empty($testData['final_result'])) {
+                                    $finalResult = $testData['final_result'];
+                                }
+                            }
                         }
                     }
+                    $genericData['result'] = $finalResult;
                 }
             } else {
-                $db->where('sample_id', $data['genericSampleId']);
+                $db->where('generic_id', $data['genericSampleId']);
                 $db->delete($testTableName);
+                $genericData['sample_tested_datetime'] = null;
             }
             $id = false;
             $genericData = MiscUtility::arrayEmptyStringsToNull($genericData);

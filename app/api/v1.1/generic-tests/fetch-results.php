@@ -68,7 +68,7 @@ try {
         LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
         LEFT JOIN user_details as lt_u_d ON lt_u_d.user_id=vl.lab_technician
         LEFT JOIN user_details as t_b ON t_b.user_id=vl.tested_by
-        LEFT JOIN r_generic_sample_types as rst ON rst.sample_id=vl.specimen_type
+        LEFT JOIN r_generic_sample_types as rst ON rst.sample_type_id=vl.specimen_type
         LEFT JOIN r_generic_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
         LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
