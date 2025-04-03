@@ -1037,7 +1037,6 @@ final class CommonService
 
         // Add last update datetime filter if provided
         if ($updatedDateTime) {
-            $updatedDateTime = $this->db->escape($updatedDateTime);
             $where[] = " p.updated_datetime >= '$updatedDateTime'";
         }
 
@@ -1104,7 +1103,6 @@ final class CommonService
 
         // Add last update datetime filter if provided
         if ($updatedDateTime) {
-            $updatedDateTime = $this->db->escape($updatedDateTime);
             $where[] = " d.updated_datetime >= '$updatedDateTime'";
         }
 

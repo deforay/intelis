@@ -222,11 +222,11 @@ try {
         $data['covid19']['sourceOfAlertList'] = $sourceOfAlertList;
 
         /* Province Details */
-        $data['covid19']['provinceList'] = $general->getProvinceDetailsApi($user['user_id'], true, $updatedDateTime);
+        $data['covid19']['provinceList'] = $data['provinceList'] ?? [];
         /* District Details */
-        $data['covid19']['districtList'] = $general->getDistrictDetailsApi($user['user_id'], true, $updatedDateTime);
+        $data['covid19']['districtList'] = $data['districtList'] ?? [];;
         /* Health Facility Details */
-        $data['covid19']['fundingSourceList'] = $general->generateSelectOptionsAPI($fundingSourceList);
+        $data['covid19']['fundingSourceList'] = $data['fundingSourceList'] ?? [];
         $data['covid19']['implementingPartnerList'] = $implementingPartnerList;
         $data['covid19']['nationalityList'] = $nationalityList;
 
@@ -307,9 +307,9 @@ try {
 
         // SITE INFORMATION SECTION
         // Province Details
-        $data['eid']['provinceList'] = $general->getProvinceDetailsApi($user['user_id'], true, $updatedDateTime);
+        $data['eid']['provinceList'] = $data['provinceList'] ?? [];
         // District Details
-        $data['eid']['districtList'] = $general->getDistrictDetailsApi($user['user_id'], true, $updatedDateTime);
+        $data['eid']['districtList'] = $data['districtList'] ?? [];
 
         // Infant and Mother's Health Information Section
         $data['eid']['mothersHIVStatus'] = $commonResultsList;
