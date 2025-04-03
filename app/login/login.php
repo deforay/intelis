@@ -132,10 +132,10 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 <body class="">
 	<div class="container-fluid">
 		<?php
-		$filePath = $_SERVER['DOCUMENT_ROOT'] . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'login-logos';
 
 
-		if (!empty($logo) && trim((string) $logo) != "" && file_exists('uploads' . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
+
+		if (!empty($logo) && trim((string) $logo) != "" && MiscUtility::isImageValid(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $logo)) {
 		?>
 			<div style="margin-top:15px;float:left;">
 				<img src="/uploads/logo/<?= $logo; ?>" alt="Logo image" style="max-width:120px;">
@@ -143,11 +143,12 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 		<?php
 		}
 
+		$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'login-logos';
 		if (is_dir($filePath) && count(scandir($filePath)) > 2) {
 			$dir = scandir($filePath);
 			$loginLogoFiles = [];
 			foreach ($dir as $fileName) {
-				if ($fileName != '.' && $fileName != '..') {
+				if ($fileName != '.' && $fileName != '..' && MiscUtility::isImageValid($filePath . DIRECTORY_SEPARATOR . $fileName)) {
 					$loginLogoFiles[] = $fileName;
 				}
 			}
@@ -210,8 +211,8 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 	<div style="padding:1% 2%;width:100%;position:absolute;bottom:1.5%;color:#fff;background:rgba(0,0,0,0.1);">
 		<small class="pull-right" style="font-weight:bold;">v <?= VERSION; ?></small>
 	</div>
-	<script src="/assets/js/deforayValidation.js"></script>
-	<script src="/assets/js/jquery.blockUI.js"></script>
+	<script type="text/javascript" src="/assets/js/deforayValidation.js"></script>
+	<script type="text/javascript" src="/assets/js/jquery.blockUI.js"></script>
 	<script type="text/javascript">
 		let idleTime = 0;
 

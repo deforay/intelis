@@ -503,7 +503,19 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             </select>
                                                        </div>
                                                   </div>
+                                                  <div class="col-md-6">
+                                                       <label class="col-lg-5 control-label labels" for="reasonForTesting"><?= _translate("Reason For Testing"); ?> <span class="mandatory result-span">*</span></label>
+                                                       <div class="col-lg-7">
+                                                            <select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="<?php echo _translate('Please choose reason for testing'); ?>">
+                                                                 <option value=""><?= _translate("-- Select --"); ?></option>
+                                                                 <?php foreach ($testReason as $treason) { ?>
+                                                                      <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo (string) $treason['test_reason']; ?></option>
+                                                                 <?php } ?>
+                                                            </select>
+                                                       </div>
+                                                  </div>
                                              </div>
+
                                              <!-- <div id="specimenSection"></div> -->
                                         </div>
                                    </div>
@@ -599,17 +611,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                             <label class="col-lg-5 control-label labels" for="sampleTestingDateAtLab"><?= _translate("Sample Testing Date"); ?> <span class="mandatory result-span">*</span></label>
                                                             <div class="col-lg-7">
                                                                  <input type="text" class="form-control result-fields dateTime" id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?php echo _translate('Sample Testing Date'); ?>" title="<?php echo _translate('Please select sample testing date'); ?>" onchange="checkSampleTestingDate();" disabled />
-                                                            </div>
-                                                       </div>
-                                                       <div class="col-md-6">
-                                                            <label class="col-lg-5 control-label labels" for="reasonForTesting"><?= _translate("Reason For Testing"); ?> <span class="mandatory result-span">*</span></label>
-                                                            <div class="col-lg-7">
-                                                                 <select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="<?php echo _translate('Please choose reason for testing'); ?>">
-                                                                      <option value=""><?= _translate("-- Select --"); ?></option>
-                                                                      <?php foreach ($testReason as $treason) { ?>
-                                                                           <option value="<?php echo $treason['test_reason_id']; ?>"><?php echo ucwords((string) $treason['test_reason']); ?></option>
-                                                                      <?php } ?>
-                                                                 </select>
                                                             </div>
                                                        </div>
                                                   </div>
@@ -840,7 +841,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";

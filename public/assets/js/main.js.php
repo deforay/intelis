@@ -22,9 +22,9 @@
 <script type="text/javascript" src="/assets/js/summernote.min.js"></script>
 <script type="text/javascript" src="/assets/js/selectize.js"></script>
 <script type="text/javascript" src="/assets/js/sqids.min.js"></script>
-<script src="/assets/js/dataTables.buttons.min.js"></script>
-<script src="/assets/js/jszip.min.js"></script>
-<script src="/assets/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="/assets/js/dataTables.buttons.min.js"></script>
+<script type="text/javascript" src="/assets/js/jszip.min.js"></script>
+<script type="text/javascript" src="/assets/js/buttons.html5.min.js"></script>
 
 <?php
 

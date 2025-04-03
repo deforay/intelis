@@ -34,9 +34,9 @@ try {
 
     $uploadOption = $_POST['uploadOption'];
 
-    $ranNumber = "BULK-FACILITIES-" . strtoupper(MiscUtility::generateRandomString(16));
+    $randomFileId = MiscUtility::generateRandomString(8);
     $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-    $fileName = $ranNumber . "." . $extension;
+    $fileName = "BULK-FACILITIES-IMPORT-" . DateUtility::getCurrentDateTime('Y-m-d-h-i-s') . "-" . $randomFileId . "." . $extension;
 
     $output = [];
 
@@ -158,7 +158,7 @@ try {
             }
 
             $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-            $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-FACILITY-ROWS.xlsx';
+            $filename = TEMP_PATH . DIRECTORY_SEPARATOR . "INCORRECT-FACILITY-ROWS-" . DateUtility::getCurrentDateTime('Y-m-d-h-i-s') . "-" . $randomFileId . ".xlsx";
             $writer->save($filename);
         }
 

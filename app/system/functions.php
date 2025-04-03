@@ -328,10 +328,18 @@ function _isPotentiallyMalicious(string $input): bool
 }
 
 
-function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isNullable = true)
+/**
+ * Casts a variable to the specified type
+ *
+ * @param mixed $variable The variable to cast
+ * @param string|null $expectedType The type to cast to ('int', 'float', 'string', 'bool', 'array', 'json')
+ * @param bool $isNullable Whether to return null for empty values
+ * @return mixed The cast variable
+ */
+function _castVariable(mixed $variable, ?string $expectedType = null, bool $isNullable = true): mixed
 {
-
-    if (empty(trim($variable))) {
+    // Check if variable is empty
+    if ($variable === null || (is_string($variable) && trim($variable) === '') || $variable === []) {
         if ($isNullable) {
             return null;
         } else {
@@ -339,55 +347,92 @@ function _castVariable(mixed $variable, ?string $expectedType = null, ?bool $isN
                 'array' => [],
                 'json' => '{}',
                 'string' => '',
+                'int' => 0,
+                'float' => 0.0,
+                'bool' => false,
                 default => null,
             };
         }
-    } else {
-        return match ($expectedType) {
-            'int' => (int)$variable,
-            'float' => (float)$variable,
-            'string' => (string)$variable,
-            'bool' => (bool)$variable,
-            'array' => is_array($variable) ? $variable : (array)$variable,
-            'json' => JsonUtility::toJson($variable),
-            default => $variable,
-        };
     }
+
+    return match ($expectedType) {
+        'int' => (int) $variable,
+        'float' => (float) $variable,
+        'string' => (string) $variable,
+        'bool' => (bool) $variable,
+        'array' => is_array($variable) ? $variable : (array) $variable,
+        'json' => JsonUtility::toJSON($variable),
+        default => $variable,
+    };
 }
 
-function _capitalizeWords($string)
+/**
+ * Capitalizes the first letter of each word in a string
+ *
+ * @param string $string The input string
+ * @param string $encoding The character encoding
+ * @return string The string with the first letter of each word capitalized
+ */
+function _capitalizeWords(string $string, string $encoding = "UTF-8"): string
 {
-    if (empty($string) || $string == '') {
+    // Check if string is empty
+    if (empty($string)) {
         return $string;
     }
-    return mb_convert_case($string, MB_CASE_TITLE, "UTF-8");
+
+    return mb_convert_case($string, MB_CASE_TITLE, $encoding);
 }
 
-function _capitalizeFirstLetter($string, $encoding = "UTF-8")
+/**
+ * Capitalizes only the first letter of a string
+ *
+ * @param string $string The input string
+ * @param string $encoding The character encoding
+ * @return string The string with only the first letter capitalized
+ */
+function _capitalizeFirstLetter(string $string, string $encoding = "UTF-8"): string
 {
-    if (empty($string || $string == '')) {
+    // Check if string is empty
+    if (empty($string)) {
         return $string;
     }
-    $firstChar = mb_substr($string, 0, 1, $encoding);
-    $rest = mb_substr($string, 1, null, $encoding);
-    return mb_strtoupper($firstChar, $encoding) . $rest;
-}
 
-function _toUpperCase(?string $string, $encoding = "UTF-8")
+    return mb_convert_case(mb_substr($string, 0, 1, $encoding), MB_CASE_UPPER, $encoding) .
+        mb_substr($string, 1, null, $encoding);
+}
+/**
+ * Converts a string to uppercase
+ *
+ * @param string|null $string The input string
+ * @param string $encoding The character encoding
+ * @return string|null The uppercase string or null if input was null
+ */
+function _toUpperCase(?string $string, string $encoding = "UTF-8"): ?string
 {
-    if (empty($string || $string == '')) {
+    // Check if string is empty or null
+    if (empty($string)) {
         return $string;
     }
+
     return mb_strtoupper($string, $encoding);
 }
-function _toLowerCase(?string $string, $encoding = "UTF-8")
+
+/**
+ * Converts a string to lowercase
+ *
+ * @param string|null $string The input string
+ * @param string $encoding The character encoding
+ * @return string|null The lowercase string or null if input was null
+ */
+function _toLowerCase(?string $string, string $encoding = "UTF-8"): ?string
 {
-    if (empty($string || $string == '')) {
+    // Check if string is empty or null
+    if (empty($string)) {
         return $string;
     }
+
     return mb_strtolower($string, $encoding);
 }
-
 
 /**
  * Safely converts an iterator to an array and retrieves a specified key.
@@ -419,6 +464,7 @@ function _getIteratorCount($iterator): int
     return 0;
 }
 
-function _sanitizeOutput($string){
+function _sanitizeOutput($string)
+{
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }

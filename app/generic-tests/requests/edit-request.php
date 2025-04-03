@@ -689,14 +689,27 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										</div>
 									</div>
 									<div class="row">
-										<div class="col-md-6" id="specimenSection">
+										<div class="col-md-6">
 											<label class="col-lg-5" for="specimenType"><?= _translate("Sample Type"); ?> <span class="mandatory">*</span></label>
 											<div class="col-lg-7">
 												<select name="specimenType" id="specimenType" class="form-control isRequired" title="<?= _translate('Please choose sample type'); ?>">
 													<option value=""> <?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($sResult as $name) { ?>
 														<option value="<?php echo $name['sample_type_id']; ?>" <?php echo ($genericResultInfo['specimen_type'] == $name['sample_type_id']) ? "selected='selected'" : "" ?>>
-															<?php echo ($name['sample_type_name']); ?></option>
+															<?php echo $name['sample_type_name']; ?></option>
+													<?php } ?>
+												</select>
+											</div>
+										</div>
+
+										<div class="col-md-6">
+											<label class="col-lg-5 control-label labels" for="reasonForTesting"><?= _translate("Reason For Testing"); ?> <span class="mandatory result-span">*</span></label>
+											<div class="col-lg-7">
+												<select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="<?= _translate('Please choose reason for testing'); ?>">
+													<option value=""><?= _translate("-- Select --"); ?></option>
+													<?php foreach ($testReason as $treason) { ?>
+														<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
+															<?php echo (string) $treason['test_reason']; ?></option>
 													<?php } ?>
 												</select>
 											</div>
@@ -814,18 +827,6 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 												<label class="col-lg-5 control-label" for="sampleTestingDateAtLab"><?= _translate("Sample Testing Date"); ?> <span class="mandatory result-span">*</span></label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control labSection dateTime <?php echo ($genericResultInfo['is_sample_rejected'] == 'no') ? 'isRequired' : ''; ?>" <?php echo ($genericResultInfo['is_sample_rejected'] == 'yes') ? ' disabled="disabled" ' : ''; ?> id="sampleTestingDateAtLab" name="sampleTestingDateAtLab" placeholder="<?= _translate('Sample Testing Date'); ?>" title="<?= _translate('Please select sample testing date'); ?>" value="<?php echo $genericResultInfo['sample_tested_datetime']; ?>" />
-												</div>
-											</div>
-											<div class="col-md-6">
-												<label class="col-lg-5 control-label labels" for="reasonForTesting"><?= _translate("Reason For Testing"); ?> <span class="mandatory result-span">*</span></label>
-												<div class="col-lg-7">
-													<select name="reasonForTesting" id="reasonForTesting" class="form-control result-optional" title="<?= _translate('Please choose reason for testing'); ?>">
-														<option value=""><?= _translate("-- Select --"); ?></option>
-														<?php foreach ($testReason as $treason) { ?>
-															<option value="<?php echo $treason['test_reason_id']; ?>" <?php echo ($genericResultInfo['reason_for_testing'] == $treason['test_reason_id']) ? 'selected="selected"' : ''; ?>>
-																<?php echo ucwords((string) $treason['test_reason']); ?></option>
-														<?php } ?>
-													</select>
 												</div>
 											</div>
 										</div>

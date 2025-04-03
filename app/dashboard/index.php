@@ -582,7 +582,7 @@ require_once APPLICATION_PATH . '/header.php';
 					sampleCountsDatatableCounter++;
 					// $.blockUI();
 					$.when(
-						getNoOfSampleCount(currentRequestType),
+						getSampleCountsForDashboard(currentRequestType),
 					).done(function() {
 						getSamplesOverview(currentRequestType);
 					}).done(function() {
@@ -590,12 +590,6 @@ require_once APPLICATION_PATH . '/header.php';
 					});
 				}
 			}
-			// if (samplePieChartCounter == 0) {
-			// 	if ($("." + currentRequestType + " .samplePieChartDiv").isInViewport()) {
-			// 		samplePieChartCounter++;
-			// 		getSamplesOverview(currentRequestType);
-			// 	}
-			// }
 		});
 
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
@@ -708,7 +702,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	}
 
-	function getNoOfSampleCount(requestType) {
+	function getSampleCountsForDashboard(requestType) {
 		if (requestType == 'vl') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
@@ -741,7 +735,7 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		}else if (requestType == 'cd4') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
-					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
 					type: 'cd4'
 				},
 				function(data) {
@@ -751,7 +745,7 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 		}else if (requestType == 'hepatitis') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
-					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
+					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
 				function(data) {

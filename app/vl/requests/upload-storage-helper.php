@@ -33,9 +33,9 @@ try {
 
         $uploadOption = $_POST['uploadOption'];
 
-        $ranNumber = "BULK-LAB-STORAGE-" . MiscUtility::generateRandomString(16);
+        $randomFileId = MiscUtility::generateRandomString(8);
         $extension = strtolower(pathinfo((string) $fileName, PATHINFO_EXTENSION));
-        $fileName = $ranNumber . "." . $extension;
+        $fileName = "BULK-STORAGE-IMPORT-" . DateUtility::getCurrentDateTime('Y-m-d-h-i-s') . "-" . $randomFileId . "." . $extension;
 
         $output = [];
 
@@ -117,7 +117,7 @@ try {
                     }
                 } catch (Throwable $e) {
                     $storageNotAdded[] = $rowData;
-                    $failedRow[] = array($rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']);
+                    $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
                     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
                     LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
@@ -135,7 +135,7 @@ try {
                 }
 
                 $writer = IOFactory::createWriter($spreadsheet, IOFactory::READER_XLSX);
-                $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'INCORRECT-STORAGE-ROWS.xlsx';
+                $filename = TEMP_PATH . DIRECTORY_SEPARATOR . "INCORRECT-STORAGE-ROWS-" . DateUtility::getCurrentDateTime('Y-m-d-h-i-s') . "-" . $randomFileId . ".xlsx";
                 $writer->save($filename);
             }
 

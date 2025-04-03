@@ -759,6 +759,8 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
             exit 1
         fi
 
+        rm vendor.tar.gz
+        rm vendor.tar.gz.md5
         # Fix permissions on the vendor directory
         find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
         chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true

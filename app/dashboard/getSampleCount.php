@@ -80,16 +80,13 @@ $sQuery = "SELECT
     f.facility_name,
     COUNT(*) AS totalCount,
     NULL AS reorderCount,
-    SUM(CASE WHEN (result_status = 9) THEN 1 ELSE 0 END) AS registerCount,
-    SUM(CASE WHEN (result_status = 8) THEN 1 ELSE 0 END) AS sentToLabCount,
-    SUM(CASE WHEN (result_status = 4) THEN 1 ELSE 0 END) AS rejectCount,
-    SUM(CASE WHEN (result_status = 6) THEN 1 ELSE 0 END) AS pendingCount,
-    SUM(CASE WHEN (result_status = 5) THEN 1 ELSE 0 END) AS invalidCount,
-    SUM(CASE WHEN (result_status = 7) THEN 1 ELSE 0 END) AS acceptCount,
-    SUM(CASE
-        WHEN (vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') THEN 1
-        ELSE 0
-        END) AS printCount
+    SUM(result_status = 9) AS registerCount,
+    SUM(result_status = 8) AS sentToLabCount,
+    SUM(result_status = 4) AS rejectCount,
+    SUM(result_status = 6) AS pendingCount,
+    SUM(result_status = 5) AS invalidCount,
+    SUM(result_status = 7) AS acceptCount,
+    SUM(vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') AS printCount
     FROM $table AS vl
     JOIN facility_details AS f ON f.facility_id = vl.facility_id
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'

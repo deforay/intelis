@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "f9a8a8f6994b8e4537ad5082d253019d",
+    "content-hash": "b1e612bb601ea9422a2026fbaeeefae8",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -3418,9 +3418,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://satis.labsinformatics.com/dist/phpoffice/phpspreadsheet/phpoffice-phpspreadsheet-6ff18c3a8df3a945492f75ce455d77f7ad55dd5c-zip-3c268d.zip",
+                "url": "https://api.github.com/repos/PHPOffice/PhpSpreadsheet/zipball/6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
                 "reference": "6ff18c3a8df3a945492f75ce455d77f7ad55dd5c",
-                "shasum": "e90f152fcb4bae4c773b5ae085be2e25bb75d6c7"
+                "shasum": ""
             },
             "require": {
                 "composer/pcre": "^1||^2||^3",
@@ -3510,14 +3510,6 @@
             "support": {
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
                 "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/4.1.0"
-            },
-            "transport-options": {
-                "ssl": {
-                    "verify_peer": true
-                },
-                "http": {
-                    "timeout": 5
-                }
             },
             "time": "2025-03-02T06:52:24+00:00"
         },
@@ -8162,19 +8154,19 @@
     "prefer-lowest": false,
     "platform": {
         "php": "^8.2",
-        "ext-gd": "*",
-        "ext-zip": "*",
-        "ext-pdo": "*",
-        "ext-json": "*",
+        "ext-bcmath": "*",
         "ext-curl": "*",
-        "ext-gettext": "*",
-        "ext-openssl": "*",
         "ext-fileinfo": "*",
-        "ext-sodium": "*",
-        "ext-zlib": "*",
+        "ext-gd": "*",
+        "ext-gettext": "*",
         "ext-intl": "*",
-        "ext-bcmath": "*"
+        "ext-json": "*",
+        "ext-openssl": "*",
+        "ext-pdo": "*",
+        "ext-sodium": "*",
+        "ext-zip": "*",
+        "ext-zlib": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }
