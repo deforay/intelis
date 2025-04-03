@@ -182,10 +182,18 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
                 $sanitizedFiles[] = $file;
             } catch (SystemException $e) {
                 $sanitizedFiles[] = null;
-                LoggerUtility::logError('File validation error: ' . $e->getMessage());
+                LoggerUtility::logError('File validation error: ' . $e->getMessage(), [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString()
+                ]);
             } catch (Throwable $e) {
                 $sanitizedFiles[] = null;
-                LoggerUtility::logError('Unexpected file processing error: ' . $e->getMessage());
+                LoggerUtility::logError('Unexpected file processing error: ' . $e->getMessage(), [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString()
+                ]);
             }
         } else {
             $sanitizedFiles[] = null;

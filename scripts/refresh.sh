@@ -4,9 +4,45 @@
 # sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
 # sudo intelis-refresh
 
+
+
+# Define a unified print function that colors the entire message
+print() {
+    local type=$1
+    local message=$2
+
+    case $type in
+    error)
+        echo -e "\033[0;31mError: $message\033[0m"
+        ;;
+    success)
+        echo -e "\033[0;32mSuccess: $message\033[0m"
+        ;;
+    warning)
+        echo -e "\033[0;33mWarning: $message\033[0m"
+        ;;
+    info)
+        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
+        echo -e "\033[0;36mInfo: $message\033[0m"
+        ;;
+    debug)
+        # Using a lighter cyan color for debug messages
+        echo -e "\033[1;36mDebug: $message\033[0m"
+        ;;
+    header)
+        # Changed from blue to a brighter cyan/teal
+        echo -e "\033[1;36m==== $message ====\033[0m"
+        ;;
+    *)
+        echo "$message"
+        ;;
+    esac
+}
+
+
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
 
@@ -58,15 +94,15 @@ error_handling() {
     local last_cmd=$1
     local last_line=$2
     local last_error=$3
-    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    print error "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
     log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
 
     # Check if the error is critical
     if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
-        echo "This error is critical, exiting..."
+        print error "This error is critical, exiting..."
         exit 1
     else
-        echo "This error is not critical, continuing..."
+        print info "This error is not critical, continuing..."
     fi
 }
 
@@ -84,7 +120,7 @@ min_version="20.04"
 current_version=$(get_ubuntu_version)
 
 if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
+    print error "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
 
@@ -102,18 +138,18 @@ if [ -z "$lis_path" ]; then
     # Check if read command timed out or no input was provided
     if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
         lis_path="/var/www/vlsm"
-        echo "Using default path: $lis_path"
+        print info "Using default path: $lis_path"
     else
-        echo "LIS path is set to ${lis_path}"
+        print info "LIS path is set to ${lis_path}"
     fi
 else
-    echo "LIS path is set to ${lis_path}"
+    print info "LIS path is set to ${lis_path}"
 fi
 
 # Convert relative path to absolute path if necessary
 if [[ "$lis_path" != /* ]]; then
     lis_path="$(realpath "$lis_path")"
-    echo "Converted to absolute path: $lis_path"
+    print info "Converted to absolute path: $lis_path"
 fi
 
 # Convert VLSM path to absolute path
@@ -140,21 +176,21 @@ eval "$current_trap"
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
-    echo "MySQL is not installed. Please first run the setup script."
+    print error "MySQL is not installed. Please first run the setup script."
     log_action "MySQL is not installed. Please first run the setup script."
     exit 1
 fi
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
-    echo "Apache is not installed. Please first run the setup script."
+    print error "Apache is not installed. Please first run the setup script."
     log_action "Apache is not installed. Please first run the setup script."
     exit 1
 fi
 
 # Check for PHP
 if ! command -v php &>/dev/null; then
-    echo "PHP is not installed. Please first run the setup script."
+    print error "PHP is not installed. Please first run the setup script."
     log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
@@ -224,7 +260,35 @@ fi
 
 echo "All system checks passed. Continuing with the refresh..."
 
-setfacl -R -m u:$USER:rwx,u:www-data:rwx "${lis_path}"
+# Function to set permissions more efficiently
+set_permissions() {
+    local path=$1
+    local mode=${2:-"full"} # Options: full, quick, critical
+
+    print info "Setting permissions for ${path} (${mode} mode)..."
+
+    case "$mode" in
+    "full")
+        # Full permission setting - all directories and files
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        ;;
+
+    "quick")
+        # Quick mode - only directories and php files
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        find "${path}" -type f -name "*.php" -print0 |
+            xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        ;;
+
+    "minimal")
+        # Minimal mode - only directories to ensure structure is accessible
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        ;;
+    esac
+}
+
+set_permissions "${lis_path}" "quick"
 
 spinner() {
     local pid=$!
@@ -270,11 +334,12 @@ fi
 
 service apache2 restart
 
-echo "Apache Restarted."
+print success "Apache Restarted."
 log_action "Apache Restarted."
 
-chown -R $USER:www-data "${lis_path}"
-setfacl -R -m u:$USER:rwx,u:www-data:rwx /var/www
+# Set proper permissions
+set_permissions "${lis_path}" "full"
+find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
 
-echo "LIS refresh complete."
+print success info "LIS refresh complete."
 log_action "LIS refresh complete."
