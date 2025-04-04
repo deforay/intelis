@@ -32,8 +32,8 @@ if (!empty($result)) {
 
      $reviewedBy = '';
      $reviewedByRes = [];
-     if (!empty($result['result_reviewed_by'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
+     if (!empty($result['reviewedBy'])) {
+          $reviewedByRes = $usersService->getUserInfo($result['reviewedBy'], array('user_name', 'user_signature'));
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
@@ -48,8 +48,8 @@ if (!empty($result)) {
 
      $revisedBy = '';
      $revisedByRes = [];
-     if (!empty($result['revised_by'])) {
-          $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+     if (!empty($result['revisedBy'])) {
+          $revisedByRes = $usersService->getUserInfo($result['revisedBy'], array('user_name', 'user_signature'));
           if ($revisedByRes) {
                $revisedBy = $revisedByRes['user_name'];
           }

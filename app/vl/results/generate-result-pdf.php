@@ -49,11 +49,11 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					l_f.facility_name as labName,
 					l_f.report_format as reportFormat,
 					l_f.facility_attributes as vl_facility_attributes,
-					u_d.user_name as reviewedBy,
-					a_u_d.user_name as approvedBy,
-                    a_u_d.user_id as approvedByUserId,
-					vl.last_modified_by as modified_by,
-					r_r_b.user_name as revised,
+					reviewer_user.user_name as reviewedBy,
+					approver_user.user_name as approvedBy,
+                    approver_user.user_id as approvedByUserId,
+					vl.last_modified_by as modifiedBy,
+					reviser_user.user_name as revisedBy,
 					l_f.facility_logo as facilityLogo,
 					rsrr.rejection_reason_name,
 					funding.funding_source_name as funding_source_name,
@@ -65,9 +65,9 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
 					LEFT JOIN facility_details as c_f ON vl.facility_id = c_f.facility_id
 					LEFT JOIN r_vl_sample_type as rst ON rst.sample_id = vl.specimen_type
-					LEFT JOIN user_details as u_d ON u_d.user_id = vl.result_reviewed_by
-					LEFT JOIN user_details as a_u_d ON a_u_d.user_id = vl.result_approved_by
-					LEFT JOIN user_details as r_r_b ON r_r_b.user_id = vl.revised_by
+					LEFT JOIN user_details as reviewer_user ON reviewer_user.user_id = vl.result_reviewed_by
+					LEFT JOIN user_details as approver_user ON approver_user.user_id = vl.result_approved_by
+					LEFT JOIN user_details as reviser_user ON reviser_user.user_id = vl.revised_by
 					LEFT JOIN facility_details as l_f ON l_f.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source

@@ -206,7 +206,7 @@ final class MiscUtility
         $fileSize = filesize($filePath);
         $cacheKey = md5($filePath . $fileModTime . $fileSize . implode(',', $allowedMimeTypes) .
             $minWidth . $minHeight . $maxFileSize);
-        $cacheFile = $cacheDir . '/' . $cacheKey . '.cache';
+        $cacheFile = "$cacheDir/$cacheKey.cache";
 
         // Check if valid cache entry exists
         if (file_exists($cacheFile)) {

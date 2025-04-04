@@ -41,14 +41,14 @@ if (!empty($result)) {
      }
      $reviewedBy = '';
      $reviewedByRes = [];
-     if (!empty($result['result_reviewed_by'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
+     if (!empty($result['reviewedBy'])) {
+          $reviewedByRes = $usersService->getUserInfo($result['reviewedBy'], ['user_name', 'user_signature']);
           if ($reviewedByRes) {
                $reviewedBy = $reviewedByRes['user_name'];
           }
      } else {
           if (!empty($result['defaultReviewedBy'])) {
-               $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
+               $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], ['user_name', 'user_signature']);
                if ($reviewedByRes) {
                     $reviewedBy = $reviewedByRes['user_name'];
                }
@@ -60,8 +60,8 @@ if (!empty($result)) {
 
      $revisedBy = '';
      $revisedByRes = [];
-     if (!empty($result['revised_by'])) {
-          $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+     if (!empty($result['revisedBy'])) {
+          $revisedByRes = $usersService->getUserInfo($result['revisedBy'], ['user_name', 'user_signature']);
           if ($revisedByRes) {
                $revisedBy = $revisedByRes['user_name'];
           }
@@ -69,18 +69,15 @@ if (!empty($result)) {
 
      $resultApprovedBy = '';
      $approvedByRes = [];
-     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '' && !empty($result['result_approved_by'])) {
-          $resultApprovedBy = ($result['approvedBy']);
-          $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-     } else {
-          if (!empty($result['defaultApprovedBy'])) {
-               $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-               if ($approvedByRes) {
-                    $resultApprovedBy = $approvedByRes['user_name'];
-               }
-               if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
-                    $result['result_approved_datetime'] = $result['sample_tested_datetime'];
-               }
+
+
+     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
+          $resultApprovedBy = $result['approvedBy'];
+          $approvedByRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
+     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
+          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+          if ($approvedByRes) {
+               $resultApprovedBy = $approvedByRes['user_name'];
           }
      }
 
@@ -199,21 +196,7 @@ if (!empty($result)) {
           $result['patient_gender'] = _translate('Unreported');
      }
      $resultApprovedBy  = '';
-     $userRes = [];
-     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-          $resultApprovedBy = $result['approvedBy'];
-          $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-          if ($approvedByRes) {
-               $resultApprovedBy = $approvedByRes['user_name'];
-          }
-          $userRes = $approvedByRes;
-     }
 
-     if (!empty($userRes['user_signature'])) {
-          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-     }
      $smileyContent = '';
      $showMessage = '';
      $tndMessage = '';
@@ -222,7 +205,7 @@ if (!empty($result)) {
 
      if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-          $showMessage = ($arr['l_vl_msg']);
+          $showMessage = $arr['l_vl_msg'];
      } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
           $showMessage = ($arr['h_vl_msg']);
@@ -497,7 +480,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-          if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid(($reviewedSignaturePath))) {
+          if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid($reviewedSignaturePath)) {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -507,7 +490,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $reviewedBy . '</td>';
-          if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid(($reviewedSignaturePath))) {
+          if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid($reviewedSignaturePath)) {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $reviewedSignaturePath . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
@@ -545,16 +528,16 @@ if (!empty($result)) {
      if (!empty($resultApprovedBy) && !empty($result['result_approved_datetime'])) {
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-          if (!empty($approvedSignaturePath) && MiscUtility::isImageValid(($approvedSignaturePath))) {
+          if (!empty($approvedSignaturePath) && MiscUtility::isImageValid($approvedSignaturePath)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
           $html .= '</tr>';
-          if (!empty($userSignaturePath) && MiscUtility::isImageValid($userSignaturePath) && !empty($resultApprovedBy)) {
+          if (!empty($approvedSignaturePath) && MiscUtility::isImageValid($approvedSignaturePath) && !empty($resultApprovedBy)) {
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
+               $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $approvedSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
                $html .= '</tr>';
           }
           $html .= '<tr>';
