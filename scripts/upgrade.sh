@@ -224,62 +224,139 @@ desired_collation="collation-server=utf8mb4_general_ci"
 desired_auth_plugin="default_authentication_plugin=mysql_native_password"
 config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
-cp ${config_file} ${config_file}.bak
+# Make a backup of the configuration file if we're going to modify it
+cp ${config_file} ${config_file}.bak.$(date +%Y%m%d%H%M%S)
 
-awk -v dsm="${desired_sql_mode}" -v dism="${desired_innodb_strict_mode}" \
-    -v dcharset="${desired_charset}" -v dcollation="${desired_collation}" \
-    -v dauth="${desired_auth_plugin}" \
-    'BEGIN { sql_mode_added=0; innodb_strict_mode_added=0; charset_added=0; collation_added=0; auth_plugin_added=0; }
-        /default_authentication_plugin[[:space:]]*=/ {
-            if ($0 ~ dauth) {auth_plugin_added=1;}
-            else {print ";" $0;}
-            next;
-        }
-        /sql_mode[[:space:]]*=/ {
-            if ($0 ~ dsm) {sql_mode_added=1;}
-            else {print ";" $0;}
-            next;
-        }
-        /innodb_strict_mode[[:space:]]*=/ {
-            if ($0 ~ dism) {innodb_strict_mode_added=1;}
-            else {print ";" $0;}
-            next;
-        }
-        /character-set-server[[:space:]]*=/ {
-            if ($0 ~ dcharset) {charset_added=1;}
-            else {print ";" $0;}
-            next;
-        }
-        /collation-server[[:space:]]*=/ {
-            if ($0 ~ dcollation) {collation_added=1;}
-            else {print ";" $0;}
-            next;
-        }
-        /skip-external-locking|mysqlx-bind-address/ {
-            print;
-            if (sql_mode_added == 0) {print dsm; sql_mode_added=1;}
-            if (innodb_strict_mode_added == 0) {print dism; innodb_strict_mode_added=1;}
-            if (charset_added == 0) {print dcharset; charset_added=1;}
-            if (collation_added == 0) {print dcollation; collation_added=1;}
-            next;
-        }
-        { print; }' ${config_file} >tmpfile
+# Check if the settings are already present and correctly set
+sql_mode_set=$(grep -q "^${desired_sql_mode}" ${config_file} && echo "true" || echo "false")
+innodb_strict_mode_set=$(grep -q "^${desired_innodb_strict_mode}" ${config_file} && echo "true" || echo "false")
+charset_set=$(grep -q "^${desired_charset}" ${config_file} && echo "true" || echo "false")
+collation_set=$(grep -q "^${desired_collation}" ${config_file} && echo "true" || echo "false")
+auth_plugin_set=$(grep -q "^${desired_auth_plugin}" ${config_file} && echo "true" || echo "false")
 
-# Check if changes were made
-if ! cmp -s ${config_file} tmpfile; then
-    print info "Changes detected, updating configuration and restarting MySQL..."
-    log_action "Changes detected in MySQL configuration. Updating configuration and restarting MySQL..."
-    mv tmpfile ${config_file}
+# Check if any changes are needed
+changes_needed=false
+
+if [ "$sql_mode_set" = "false" ]; then
+    print info "Need to set SQL mode"
+    changes_needed=true
+fi
+
+if [ "$innodb_strict_mode_set" = "false" ]; then
+    print info "Need to set InnoDB strict mode"
+    changes_needed=true
+fi
+
+if [ "$charset_set" = "false" ]; then
+    print info "Need to set character set"
+    changes_needed=true
+fi
+
+if [ "$collation_set" = "false" ]; then
+    print info "Need to set collation"
+    changes_needed=true
+fi
+
+if [ "$auth_plugin_set" = "false" ]; then
+    print info "Need to set authentication plugin"
+    changes_needed=true
+fi
+
+if [ "$changes_needed" = "true" ]; then
+    print info "Changes needed. Updating MySQL configuration..."
+
+    # Create a temporary file for the new configuration
+    temp_file=$(mktemp)
+
+    # Process the configuration file line by line
+    while IFS= read -r line; do
+        # Check if the line should be commented out and replaced
+        if [[ "$line" =~ ^[[:space:]]*sql_mode[[:space:]]*= && "$sql_mode_set" = "false" ]]; then
+            echo "# $line" >>"$temp_file"
+            echo "$desired_sql_mode" >>"$temp_file"
+            sql_mode_set="true"
+        elif [[ "$line" =~ ^[[:space:]]*innodb_strict_mode[[:space:]]*= && "$innodb_strict_mode_set" = "false" ]]; then
+            echo "# $line" >>"$temp_file"
+            echo "$desired_innodb_strict_mode" >>"$temp_file"
+            innodb_strict_mode_set="true"
+        elif [[ "$line" =~ ^[[:space:]]*character-set-server[[:space:]]*= && "$charset_set" = "false" ]]; then
+            echo "# $line" >>"$temp_file"
+            echo "$desired_charset" >>"$temp_file"
+            charset_set="true"
+        elif [[ "$line" =~ ^[[:space:]]*collation-server[[:space:]]*= && "$collation_set" = "false" ]]; then
+            echo "# $line" >>"$temp_file"
+            echo "$desired_collation" >>"$temp_file"
+            collation_set="true"
+        elif [[ "$line" =~ ^[[:space:]]*default_authentication_plugin[[:space:]]*= && "$auth_plugin_set" = "false" ]]; then
+            echo "# $line" >>"$temp_file"
+            echo "$desired_auth_plugin" >>"$temp_file"
+            auth_plugin_set="true"
+        else
+            # If it's not one of the lines we're looking to replace, keep it as is
+            echo "$line" >>"$temp_file"
+        fi
+
+        # If the line contains skip-external-locking or mysqlx-bind-address and we haven't added our settings yet,
+        # add them after this line
+        if [[ "$line" =~ skip-external-locking|mysqlx-bind-address ]]; then
+            if [ "$sql_mode_set" = "false" ]; then
+                echo "$desired_sql_mode" >>"$temp_file"
+                sql_mode_set="true"
+            fi
+            if [ "$innodb_strict_mode_set" = "false" ]; then
+                echo "$desired_innodb_strict_mode" >>"$temp_file"
+                innodb_strict_mode_set="true"
+            fi
+            if [ "$charset_set" = "false" ]; then
+                echo "$desired_charset" >>"$temp_file"
+                charset_set="true"
+            fi
+            if [ "$collation_set" = "false" ]; then
+                echo "$desired_collation" >>"$temp_file"
+                collation_set="true"
+            fi
+            if [ "$auth_plugin_set" = "false" ]; then
+                echo "$desired_auth_plugin" >>"$temp_file"
+                auth_plugin_set="true"
+            fi
+        fi
+    done <"$config_file"
+
+    # If we reached the end of the file and still haven't added all our settings, add them at the end
+    if [ "$sql_mode_set" = "false" ]; then
+        echo "$desired_sql_mode" >>"$temp_file"
+    fi
+    if [ "$innodb_strict_mode_set" = "false" ]; then
+        echo "$desired_innodb_strict_mode" >>"$temp_file"
+    fi
+    if [ "$charset_set" = "false" ]; then
+        echo "$desired_charset" >>"$temp_file"
+    fi
+    if [ "$collation_set" = "false" ]; then
+        echo "$desired_collation" >>"$temp_file"
+    fi
+    if [ "$auth_plugin_set" = "false" ]; then
+        echo "$desired_auth_plugin" >>"$temp_file"
+    fi
+
+    # Move the temporary file to the configuration file
+    mv "$temp_file" "$config_file"
+
+    print info "Restarting MySQL service to apply changes..."
     service mysql restart || {
-        mv ${config_file}.bak ${config_file}
+        mv ${config_file}.bak.$(date +%Y%m%d%H%M%S) ${config_file}
         print error "Failed to restart MySQL. Exiting..."
         log_action "Failed to restart MySQL. Exiting..."
         exit 1
     }
+
+    print success "MySQL configuration updated successfully."
+    log_action "MySQL configuration updated successfully."
 else
-    print info "No changes made to the MySQL configuration."
-    log_action "No changes made to the MySQL configuration."
-    rm tmpfile # Clean up, no changes
+    print info "No MySQL configuration changes needed."
+    log_action "No MySQL configuration changes needed."
+    # Remove the backup since we didn't make any changes
+    rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
 fi
 
 # Check for Apache
@@ -358,16 +435,71 @@ desired_post_max_size="post_max_size = 1G"
 desired_upload_max_filesize="upload_max_filesize = 1G"
 desired_strict_mode="session.use_strict_mode = 1"
 
-for phpini in /etc/php/8.2/apache2/php.ini /etc/php/8.2/cli/php.ini; do
-    awk -v er="$desired_error_reporting" -v pms="$desired_post_max_size" \
-        -v umf="$desired_upload_max_filesize" -v dsm="$desired_strict_mode" \
-        '{
-        if ($0 ~ /^error_reporting[[:space:]]*=/) {print ";" $0 "\n" er; next}
-        if ($0 ~ /^post_max_size[[:space:]]*=/) {print ";" $0 "\n" pms; next}
-        if ($0 ~ /^upload_max_filesize[[:space:]]*=/) {print ";" $0 "\n" umf; next}
-        if ($0 ~ /^session.use_strict_mode[[:space:]]*=/) {print ";" $0 "\n" dsm; next}
-        print $0
-    }' $phpini >temp.ini && mv temp.ini $phpini
+# Function to modify PHP ini files with proper idempotency
+update_php_ini() {
+    local ini_file=$1
+    local backup_file="${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
+    local changes_needed=false
+
+    print info "Checking PHP settings in $ini_file..."
+
+    # Check if settings are already correctly set
+    er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo "true" || echo "false")
+    pms_set=$(grep -q "^${desired_post_max_size}$" "$ini_file" && echo "true" || echo "false")
+    umf_set=$(grep -q "^${desired_upload_max_filesize}$" "$ini_file" && echo "true" || echo "false")
+    sm_set=$(grep -q "^${desired_strict_mode}$" "$ini_file" && echo "true" || echo "false")
+
+    # Determine if changes are needed
+    if [ "$er_set" = "false" ] || [ "$pms_set" = "false" ] || [ "$umf_set" = "false" ] || [ "$sm_set" = "false" ]; then
+        changes_needed=true
+        cp "$ini_file" "$backup_file"
+        print info "Changes needed. Backup created at $backup_file"
+    fi
+
+    if [ "$changes_needed" = "true" ]; then
+        # Create a temporary file
+        temp_file=$(mktemp)
+
+        # Process the file line by line
+        while IFS= read -r line; do
+            if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= && "$er_set" = "false" ]]; then
+                # Comment the original line and add the new one
+                echo ";$line" >> "$temp_file"
+                echo "$desired_error_reporting" >> "$temp_file"
+                er_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= && "$pms_set" = "false" ]]; then
+                echo ";$line" >> "$temp_file"
+                echo "$desired_post_max_size" >> "$temp_file"
+                pms_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= && "$umf_set" = "false" ]]; then
+                echo ";$line" >> "$temp_file"
+                echo "$desired_upload_max_filesize" >> "$temp_file"
+                umf_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= && "$sm_set" = "false" ]]; then
+                echo ";$line" >> "$temp_file"
+                echo "$desired_strict_mode" >> "$temp_file"
+                sm_set="true"
+            else
+                # Keep the line as is
+                echo "$line" >> "$temp_file"
+            fi
+        done < "$ini_file"
+
+        # Move the temporary file to replace the original
+        mv "$temp_file" "$ini_file"
+        print success "Updated PHP settings in $ini_file"
+    else
+        print info "PHP settings are already correctly set in $ini_file"
+    fi
+}
+
+# Apply changes to PHP configuration files
+for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
+    if [ -f "$phpini" ]; then
+        update_php_ini "$phpini"
+    else
+        print warning "PHP configuration file not found: $phpini"
+    fi
 done
 
 # Check for Composer
@@ -448,17 +580,17 @@ set_permissions() {
     esac
 }
 
-set_permissions "${lis_path}" "quick"
+# set_permissions "${lis_path}" "quick"
 set_permissions "${lis_path}/logs" "full"
 
 spinner() {
-    local pid=$!
+    local pid=$1
     local delay=0.75
     local spinstr='|/-\'
-    while kill -0 $pid 2>/dev/null; do
+    while kill -0 "$pid" 2>/dev/null; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
+        spinstr=$temp${spinstr%"$temp"}
         sleep $delay
         printf "\b\b\b\b\b\b"
     done
@@ -561,7 +693,8 @@ if [ "$skip_backup" = false ]; then
         backup_folder="/var/intelis-backup/www/intelis-backup-$timestamp"
         mkdir -p "${backup_folder}"
         rsync -a --delete --exclude "public/temporary/" --inplace --whole-file --info=progress2 "${lis_path}/" "${backup_folder}/" &
-        spinner # This will show the spinner until the above process is completed
+        rsync_pid=$!           # Save the process ID of the rsync command
+        spinner "${rsync_pid}" # Start the spinner
         log_action "LIS folder backed up to ${backup_folder}"
     else
         print info "Skipping LIS folder backup as per user request."
