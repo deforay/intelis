@@ -423,32 +423,33 @@ log_action "Ubuntu packages updated/installed."
 # Function to set permissions more efficiently
 set_permissions() {
     local path=$1
-    local mode=${2:-"full"}  # Options: full, quick, critical
+    local mode=${2:-"full"} # Options: full, quick, critical
 
     print info "Setting permissions for ${path} (${mode} mode)..."
 
     case "$mode" in
-        "full")
-            # Full permission setting - all directories and files
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-            ;;
+    "full")
+        # Full permission setting - all directories and files
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        ;;
 
-        "quick")
-            # Quick mode - only directories and php files
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "${path}" -type f -name "*.php" -print0 |
-                xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-            ;;
+    "quick")
+        # Quick mode - only directories and php files
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        find "${path}" -type f -name "*.php" -print0 |
+            xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        ;;
 
-        "minimal")
-            # Minimal mode - only directories to ensure structure is accessible
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            ;;
+    "minimal")
+        # Minimal mode - only directories to ensure structure is accessible
+        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        ;;
     esac
 }
 
 set_permissions "${lis_path}" "quick"
+set_permissions "${lis_path}/logs" "full"
 
 spinner() {
     local pid=$!
@@ -568,7 +569,9 @@ if [ "$skip_backup" = false ]; then
     fi
 fi
 
-rm -rf "${lis_path}/run-once"
+if [ -d "${lis_path}/run-once" ]; then
+    rm -rf "${lis_path}/run-once"
+fi
 
 print info "Calculating checksums of current composer files..."
 CURRENT_COMPOSER_JSON_CHECKSUM="none"
@@ -587,11 +590,42 @@ fi
 print header "Downloading LIS"
 
 # Download the tar.gz file in background
-wget -c --show-progress --progress=dot:giga -O master.tar.gz \
+
+# Example check before installing (can be placed before the main install block)
+if ! command -v aria2c &>/dev/null; then
+    apt-get update
+    apt-get install -y aria2
+    if ! command -v aria2c &>/dev/null; then
+        print error "Failed to install required packages. Exiting."
+        exit 1
+    fi
+fi
+
+# Run aria2c in the background, capturing its PID
+# Using options for potentially faster download (-x, -s)
+# Using -o to specify the output filename
+# Using --summary-interval=0 to minimize aria2c's own console output
+# to avoid interfering with the shell spinner
+aria2c -x 5 -s 5 --summary-interval=0 -o master.tar.gz \
     https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master &
-download_pid=$!           # Save wget PID
+download_pid=$! # Save aria2c PID
+
+# Show the spinner while the download runs
 spinner "${download_pid}" # Spinner tracks download
-wait ${download_pid}      # Wait for download to finish
+
+# Wait for the download process to finish and capture its exit status
+wait ${download_pid}
+download_status=$? # Capture the exit status
+
+# Check if the download was successful (exit code 0 means success)
+# Keep the messages generic
+if [ $download_status -ne 0 ]; then
+    print error "Download failed with status ${download_status}"
+    # Handle the error, maybe exit
+    exit 1
+else
+    print success "Download completed successfully."
+fi
 
 # Extract the tar.gz file into temporary directory
 temp_dir=$(mktemp -d)
@@ -612,7 +646,7 @@ for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
     rel_path=${symlink#"$lis_path/"}
     exclude_options="$exclude_options --exclude '$rel_path'"
     print debug "Detected symlink: $rel_path"
-    symlinks_found=$((symlinks_found+1))
+    symlinks_found=$((symlinks_found + 1))
 done
 
 print info "Found $symlinks_found symlinks that will be preserved."
@@ -634,8 +668,15 @@ else
 fi
 
 # Remove the empty directory and the downloaded tar file
-rm -rf "$temp_dir/vlsm-master/"
-rm master.tar.gz
+# Remove the empty directory if it exists
+if [ -d "$temp_dir/vlsm-master/" ]; then
+    rm -rf "$temp_dir/vlsm-master/"
+fi
+
+# Remove the downloaded tar file if it exists
+if [ -f master.tar.gz ]; then
+    rm master.tar.gz
+fi
 
 print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
@@ -795,16 +836,18 @@ wait $pid
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
-# Check if there are any PHP scripts in the run-once directory
-run_once_scripts=("${lis_path}/run-once/"*.php)
+if [ -d "${lis_path}/run-once" ]; then
+    # Check if there are any PHP scripts in the run-once directory
+    run_once_scripts=("${lis_path}/run-once/"*.php)
 
-if [ -e "${run_once_scripts[0]}" ]; then
-    for script in "${run_once_scripts[@]}"; do
-        php $script
-    done
-else
-    print error "No scripts found in the run-once directory."
-    log_action "No scripts found in the run-once directory."
+    if [ -e "${run_once_scripts[0]}" ]; then
+        for script in "${run_once_scripts[@]}"; do
+            php $script
+        done
+    else
+        print error "No scripts found in the run-once directory."
+        log_action "No scripts found in the run-once directory."
+    fi
 fi
 
 # Ask User to Run 'maintenance' Scripts
@@ -872,8 +915,11 @@ print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # Set proper permissions
-set_permissions "${lis_path}" "full"
-find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
+set_permissions "${lis_path}/logs" "full"
+(print success "Setting final permissions in the background..." &&
+    set_permissions "${lis_path}" "full" &&
+    find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+disown
 
 print success "LIS update complete."
 log_action "LIS update complete."
