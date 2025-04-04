@@ -134,7 +134,7 @@ if (!empty($result)) {
         $resultApprovedBy = '';
     }
 
-    $reviewedBy = '';
+    $reviewedBy = null;
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {

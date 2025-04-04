@@ -138,7 +138,7 @@ if (!empty($result)) {
         $resultApprovedBy = '';
     }
 
-    $reviewedBy = '';
+    $reviewedBy = null;
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {
@@ -166,8 +166,8 @@ if (!empty($result)) {
     if (!empty($result['approvedBySignature'])) {
         $approvedBySignaturePath =  $result['approvedBySignature'];
     }
-    if (!empty($revisedByRes['user_signature'])) {
-        $revisedSignaturePath =  $revisedByRes['user_signature'];
+    if (!empty($revisedByRes['revisedBySignature'])) {
+        $revisedSignaturePath =  $result['revisedBySignature'];
     }
 
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', 'd/M/Y H:i');

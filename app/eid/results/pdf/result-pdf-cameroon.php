@@ -152,7 +152,7 @@ if (!empty($result)) {
         }
     }
 
-    $reviewedBy = '';
+    $reviewedBy = null;
     if (!empty($result['reviewedBy'])) {
         $reviewedBy = $result['reviewedBy'];
     } else {

@@ -30,7 +30,7 @@ if (!empty($result)) {
                $testedBy = $testedByRes['user_name'];
           }
      }
-     $reviewedBy = '';
+     $reviewedBy = null;
      if (!empty($result['reviewedBy'])) {
           $reviewedByRes = $usersService->getUserInfo($result['reviewedBy'], array('user_name', 'user_signature'));
           if ($reviewedByRes) {
