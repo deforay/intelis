@@ -29,43 +29,35 @@ if (!empty($result)) {
      $currentTime = DateUtility::getCurrentDateTime();
 
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
-     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? $result['sample_tested_datetime'], true);
      $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
-     $testedBy = null;
-     if (!empty($result['tested_by'])) {
-          $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
-          if ($testedByRes) {
-               $testedBy = $testedByRes['user_name'];
-          }
-     }
-     $reviewedBy = null;
-     if (!empty($result['reviewedBy'])) {
-          $reviewedBy = $result['reviewedBy'];
-     } elseif (!empty($result['defaultReviewedBy'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], ['user_name', 'user_signature']);
-          if ($reviewedByRes) {
-               $reviewedBy = $reviewedByRes['user_name'];
-          }
-          if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-               $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
-          }
-     }
 
+     $testedBy = $result['testedBy'] ?? null;
      $revisedBy = $result['revisedBy'] ?? null;
 
-     $resultApprovedBy = null;
-     $approvedByRes = [];
-
-
-     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-          $resultApprovedBy = $result['approvedBy'];
-     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], ['user_name', 'user_signature']);
-          if ($approvedByRes) {
-               $resultApprovedBy = $approvedByRes['user_name'];
-          }
+     $reviewedBy = $result['reviewedBy'] ?? null;
+     if (empty($reviewedBy)) {
+          $reviwerInfo = $usersService->getUserNameAndSignature($result['defaultReviewedBy']);
+          $reviewedBy = $reviwerInfo['user_name'];
+          $result['reviewedBySignature'] = $reviwerInfo['user_signature'];
      }
+
+     $resultApprovedBy = $result['approvedBy'] ?? null;
+     if (empty($resultApprovedBy)) {
+          $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+          $resultApprovedBy = $approvedByInfo['user_name'];
+          $result['approvedBySignature'] = $approvedByInfo['user_signature'];
+     }
+
+     if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_approved_datetime'] = $result['sample_tested_datetime'];
+     }
+
+     if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
+     }
+
 
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
 

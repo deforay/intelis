@@ -22,51 +22,27 @@ if (!empty($result)) {
 
      $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
-     $testedBy = null;
-     if (!empty($result['tested_by'])) {
-          $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
-          if ($testedByRes) {
-               $testedBy = $testedByRes['user_name'];
-          }
+
+     $reviewedBy = $result['reviewedBy'] ?? null;
+     if (empty($reviewedBy)) {
+          $reviwerInfo = $usersService->getUserNameAndSignature($result['defaultReviewedBy']);
+          $reviewedBy = $reviwerInfo['user_name'];
+          $result['reviewedBySignature'] = $reviwerInfo['user_signature'];
      }
 
-     $reviewedBy = null;
-     $reviewedByRes = [];
-     if (!empty($result['reviewedBy'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['reviewedBy'], array('user_name', 'user_signature'));
-          if ($reviewedByRes) {
-               $reviewedBy = $reviewedByRes['user_name'];
-          }
-     } else {
-          if (!empty($result['defaultReviewedBy'])) {
-               $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], array('user_name', 'user_signature'));
-               if ($reviewedByRes) {
-                    $reviewedBy = $reviewedByRes['user_name'];
-               }
-          }
+     $resultApprovedBy = $result['approvedBy'] ?? null;
+     if (empty($resultApprovedBy)) {
+          $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+          $resultApprovedBy = $approvedByInfo['user_name'];
+          $result['approvedBySignature'] = $approvedByInfo['user_signature'];
      }
 
-     $revisedBy = null;
-     $revisedByRes = [];
-     if (!empty($result['revisedBy'])) {
-          $revisedByRes = $usersService->getUserInfo($result['revisedBy'], array('user_name', 'user_signature'));
-          if ($revisedByRes) {
-               $revisedBy = $revisedByRes['user_name'];
-          }
+     if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_approved_datetime'] = $result['sample_tested_datetime'];
      }
 
-     $resultApprovedBy = '';
-     $approvedByRes = [];
-     if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-          $resultApprovedBy = ($result['approvedBy']);
-          $approvedByRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
-     } else {
-          if (!empty($result['defaultApprovedBy'])) {
-               $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-               if ($approvedByRes) {
-                    $resultApprovedBy = $approvedByRes['user_name'];
-               }
-          }
+     if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
      }
 
      $reviewedBySignaturePath = $approvedBySignaturePath = null;
@@ -145,7 +121,7 @@ if (!empty($result)) {
      $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '');
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '');
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '');
-     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '');
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? $result['sample_tested_datetime']);
      $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '');
      $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');
 

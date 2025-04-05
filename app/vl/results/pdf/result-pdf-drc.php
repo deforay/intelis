@@ -114,14 +114,20 @@ try {
 			$result['patient_gender'] = _translate('Unreported');
 		}
 
-		$resultApprovedBy = null;
-		if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-			$resultApprovedBy = $result['approvedBy'];
-		} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-			$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], ['user_name', 'user_signature']);
-			if ($approvedByRes) {
-				$resultApprovedBy = $approvedByRes['user_name'];
-			}
+
+		$resultApprovedBy = $result['approvedBy'] ?? null;
+		if (empty($resultApprovedBy)) {
+			$approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+			$resultApprovedBy = $approvedByInfo['user_name'];
+			$result['approvedBySignature'] = $approvedByInfo['user_signature'];
+		}
+
+		if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+			$result['result_approved_datetime'] = $result['sample_tested_datetime'];
+		}
+
+		if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+			$result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
 		}
 
 		$approvedBySignaturePath = null;

@@ -137,23 +137,27 @@ if (!empty($result)) {
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = _translate('Unreported');
     }
-    $resultApprovedBy  = null;
-    $userRes = [];
-    if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-        $resultApprovedBy = ($result['approvedBy']);
-        $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-    } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-        $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-        if ($approvedByRes) {
-            $resultApprovedBy = $approvedByRes['user_name'];
-        }
-        $userRes = $approvedByRes;
-    }
-    $userSignaturePath = null;
 
-    if (!empty($userRes['user_signature'])) {
-        $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+
+    $resultApprovedBy = $result['approvedBy'] ?? null;
+    if (empty($resultApprovedBy)) {
+        $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+        $resultApprovedBy = $approvedByInfo['user_name'];
+        $result['approvedBySignature'] = $approvedByInfo['user_signature'];
     }
+
+    if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_approved_datetime'] = $result['sample_tested_datetime'];
+    }
+
+    if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
+    }
+
+    if (!empty($result['approvedBySignature'])) {
+        $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+    }
+
 
     $vlResult = '';
     $smileyContent = '';
@@ -309,9 +313,9 @@ if (!empty($result)) {
     $html .= '</tr>';
 
     if (empty($signResults)) {
-        if (!empty($userSignaturePath) && file_exists($userSignaturePath) && !empty($resultApprovedBy)) {
+        if (!empty($approvedBySignaturePath) && file_exists($approvedBySignaturePath) && !empty($resultApprovedBy)) {
             $html .= '<tr>';
-            $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;"><img src="' . $userSignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
+            $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;"><img src="' . $approvedBySignaturePath . '" style="width:70px;margin-top:-20px;" /><br></td>';
             $html .= '</tr>';
         }
         $html .= '<tr>';

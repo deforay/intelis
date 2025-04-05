@@ -101,20 +101,27 @@ if (!empty($result)) {
     }
     $resultApprovedBy  = null;
     $userRes = [];
-    if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-        $resultApprovedBy = $result['approvedBy'];
-        $userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-    } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-        $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-        if ($approvedByRes) {
-            $resultApprovedBy = $approvedByRes['user_name'];
-        }
-        $userRes = $approvedByRes;
+
+
+    $resultApprovedBy = $result['approvedBy'] ?? null;
+    if (empty($resultApprovedBy)) {
+        $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+        $resultApprovedBy = $approvedByInfo['user_name'];
+        $result['approvedBySignature'] = $approvedByInfo['user_signature'];
     }
 
-    $userSignaturePath = null;
-    if (!empty($userRes['user_signature'])) {
-        $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+    if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_approved_datetime'] = $result['sample_tested_datetime'];
+    }
+
+    if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
+    }
+
+    $approvedBySignaturePath= null;
+
+    if (!empty($result['approvedBySignature'])) {
+        $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
     }
     $vlResult = '';
     $smileyContent = '';
@@ -293,8 +300,8 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-    if (!empty($userSignaturePath) && file_exists($userSignaturePath)) {
-        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:70px;" /></td>';
+    if (!empty($approvedBySignaturePath) && file_exists($approvedBySignaturePath)) {
+        $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:70px;" /></td>';
     } else {
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
     }

@@ -117,57 +117,50 @@ if (!empty($result)) {
     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
 
 
-    $sampleDispatchDate = '';
-    $sampleDispatchTime = '';
     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-    $testedBy = null;
-    if (!empty($result['tested_by'])) {
-        $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
-        if ($testedByRes) {
-            $testedBy = $testedByRes['user_name'];
-        }
-    }
+
 
     $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
     if ($checkDateIsset !== false) {
         $result['result_approved_datetime'] = null;
     }
-    if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
-        $resultApprovedBy = ($result['approvedBy']);
-    } else {
-        $resultApprovedBy = '';
+
+    $testedBy = $result['testedBy'] ?? null;
+    $revisedBy = $result['revisedBy'] ?? null;
+    $reviewedBy = $result['reviewedBy'] ?? null;
+    if (empty($reviewedBy)) {
+        $reviwerInfo = $usersService->getUserNameAndSignature($result['defaultReviewedBy']);
+        $reviewedBy = $reviwerInfo['user_name'];
+        $result['reviewedBySignature'] = $reviwerInfo['user_signature'];
     }
 
-    $reviewedBy = null;
-    if (!empty($result['reviewedBy'])) {
-        $reviewedBy = $result['reviewedBy'];
-    } else {
-        $reviewedBy = $resultApprovedBy;
-        $result['reviewedBySignature'] = $result['approvedBySignature'];
-        $result['result_reviewed_datetime'] = $result['result_approved_datetime'];
+    $resultApprovedBy = $result['approvedBy'] ?? null;
+    if (empty($resultApprovedBy)) {
+        $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+        $resultApprovedBy = $approvedByInfo['user_name'];
+        $result['approvedBySignature'] = $approvedByInfo['user_signature'];
     }
 
-    $revisedBy = null;
-    $revisedByRes = [];
-    if (!empty($result['revised_by'])) {
-        $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
-        if ($revisedByRes) {
-            $revisedBy = $revisedByRes['user_name'];
-        }
+    if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_approved_datetime'] = $result['sample_tested_datetime'];
     }
 
-    $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = null;
-    if (!empty($testedByRes['user_signature'])) {
-        $testedBySignaturePath =  $testedByRes['user_signature'];
+    if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+        $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
+    }
+
+    $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath= null;
+    if (!empty($result['testedBySignature'])) {
+        $testedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['testedBySignature'];
     }
     if (!empty($result['reviewedBySignature'])) {
-        $reviewedBySignaturePath =  $result['reviewedBySignature'];
+        $reviewedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
     }
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath =  $result['approvedBySignature'];
+        $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
     }
-    if (!empty($revisedByRes['revisedBySignature'])) {
-        $revisedBySignaturePath =  $result['revisedBySignature'];
+    if (!empty($result['reviewedBySignature'])) {
+        $revisedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
     }
 
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', 'd/M/Y H:i');

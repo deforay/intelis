@@ -155,6 +155,30 @@ final class UsersService
         return $this->db->rawQueryOne($uQuery, [$userId]);
     }
 
+
+    public function getUserNameAndSignature(?string $defaultUserId): array
+    {
+        $result = [
+            'user_name' => null,
+            'user_signature' => null
+        ];
+        if (!empty($defaultUserId)) {
+            $userInfo = $this->getUserInfo($defaultUserId, ['user_name', 'user_signature']);
+            if ($userInfo) {
+                $result['user_name'] = $userInfo['user_name'];
+
+                // Process the signature from user info if it exists
+                if (!empty($userInfo['user_signature'])) {
+                    $result['user_signature'] = UPLOAD_PATH . DIRECTORY_SEPARATOR .
+                        "users-signature" . DIRECTORY_SEPARATOR .
+                        $userInfo['user_signature'];
+                }
+            }
+        }
+
+        return $result;
+    }
+
     public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
     {
         return once(function () use ($facilityMap, $status, $type, $updatedDateTime) {

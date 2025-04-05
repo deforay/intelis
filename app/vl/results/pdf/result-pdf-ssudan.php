@@ -26,25 +26,26 @@ if (!empty($result)) {
      $testedBy = $result['testedBy'] ?? null;
      $revisedBy = $result['revisedBy'] ?? null;
 
-     $resultApprovedBy = null;
-     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-          $resultApprovedBy = $result['approvedBy'];
-     } elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-          $approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-          if ($approvedByRes) {
-               $resultApprovedBy = $approvedByRes['user_name'];
-          }
+     $reviewedBy = $result['reviewedBy'] ?? null;
+     if (empty($reviewedBy)) {
+          $reviwerInfo = $usersService->getUserNameAndSignature($result['defaultReviewedBy']);
+          $reviewedBy = $reviwerInfo['user_name'];
+          $result['reviewedBySignature'] = $reviwerInfo['user_signature'];
      }
 
-     $reviewedBy = $result['reviewedBy'] ?? null;
-     if (empty($reviewedBy) && !empty($result['defaultReviewedBy'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['defaultReviewedBy'], ['user_name', 'user_signature']);
-          if ($reviewedByRes) {
-               $reviewedBy = $reviewedByRes['user_name'];
-          }
-          if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
-               $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
-          }
+     $resultApprovedBy = $result['approvedBy'] ?? null;
+     if (empty($resultApprovedBy)) {
+          $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+          $resultApprovedBy = $approvedByInfo['user_name'];
+          $result['approvedBySignature'] = $approvedByInfo['user_signature'];
+     }
+
+     if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_approved_datetime'] = $result['sample_tested_datetime'];
+     }
+
+     if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
      }
 
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
@@ -165,7 +166,7 @@ if (!empty($result)) {
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
      $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
      $result['result_approved_datetime'] = DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
-     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? '', true);
+     $result['result_reviewed_datetime'] = DateUtility::humanReadableDateFormat($result['result_reviewed_datetime'] ?? $result['sample_tested_datetime'], true);
      $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? $currentTime, true);
      $result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');
 
@@ -283,7 +284,7 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' .$result['sample_received_at_lab_datetime'] . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';

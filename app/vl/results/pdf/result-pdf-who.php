@@ -22,31 +22,32 @@ if (!empty($result)) {
 
      $currentTime = DateUtility::getCurrentDateTime();
 
-     $testedBy = null;
-     if (!empty($result['tested_by'])) {
-          $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
-          if ($testedByRes) {
-               $testedBy = $testedByRes['user_name'];
-          }
-     }
-     $reviewedBy = null;
-     if (!empty($result['reviewedBy'])) {
-          $reviewedByRes = $usersService->getUserInfo($result['reviewedBy'], array('user_name', 'user_signature'));
-          if ($reviewedByRes) {
-               $reviewedBy = $reviewedByRes['user_name'];
-          }
+     $testedBy = $result['testedBy'] ?? null;
+     $revisedBy = $result['revisedBy'] ?? null;
+
+     $reviewedBy = $result['reviewedBy'] ?? null;
+     if (empty($reviewedBy)) {
+          $reviwerInfo = $usersService->getUserNameAndSignature($result['defaultReviewedBy']);
+          $reviewedBy = $reviwerInfo['user_name'];
+          $result['reviewedBySignature'] = $reviwerInfo['user_signature'];
      }
 
-     $revisedBy = null;
-     $revisedByRes = [];
-     if (!empty($result['revisedBy'])) {
-          $revisedByRes = $usersService->getUserInfo($result['revisedBy'], array('user_name', 'user_signature'));
-          if ($revisedByRes) {
-               $revisedBy = $revisedByRes['user_name'];
-          }
+     $resultApprovedBy = $result['approvedBy'] ?? null;
+     if (empty($resultApprovedBy)) {
+          $approvedByInfo = $usersService->getUserNameAndSignature($result['defaultApprovedBy']);
+          $resultApprovedBy = $approvedByInfo['user_name'];
+          $result['approvedBySignature'] = $approvedByInfo['user_signature'];
      }
 
-     $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = null;
+     if (empty($result['result_approved_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_approved_datetime'] = $result['sample_tested_datetime'];
+     }
+
+     if (empty($result['result_reviewed_datetime']) && !empty($result['sample_tested_datetime'])) {
+          $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
+     }
+
+     $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath= null;
      if (!empty($testedByRes['user_signature'])) {
           $testedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
      }
@@ -57,22 +58,6 @@ if (!empty($result)) {
           $revisedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
      }
 
-     $resultApprovedBy  = null;
-     $userRes = [];
-     if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
-		$resultApprovedBy = $result['approvedBy'];
-		$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
-	} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-		$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
-		if ($approvedByRes) {
-			$resultApprovedBy = $approvedByRes['user_name'];
-		}
-		$userRes = $approvedByRes;
-	}
-     $userSignaturePath = null;
-     if (!empty($userRes['user_signature'])) {
-          $userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
-     }
      $_SESSION['aliasPage'] = $page;
      if (!isset($result['labName'])) {
           $result['labName'] = '';
@@ -510,8 +495,8 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-          if (!empty($userSignaturePath) && MiscUtility::isImageValid(($userSignaturePath))) {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $userSignaturePath . '" style="width:50px;" /></td>';
+          if (!empty($result['approvedBySignature']) && MiscUtility::isImageValid(($result['approvedBySignature']))) {
+               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $result['approvedBySignature'] . '" style="width:50px;" /></td>';
           } else {
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           }
