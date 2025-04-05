@@ -22,7 +22,7 @@ if (!empty($result)) {
 
      $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
-     $testedBy = '';
+     $testedBy = null;
      if (!empty($result['tested_by'])) {
           $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
           if ($testedByRes) {
@@ -46,7 +46,7 @@ if (!empty($result)) {
           }
      }
 
-     $revisedBy = '';
+     $revisedBy = null;
      $revisedByRes = [];
      if (!empty($result['revisedBy'])) {
           $revisedByRes = $usersService->getUserInfo($result['revisedBy'], array('user_name', 'user_signature'));
@@ -69,18 +69,12 @@ if (!empty($result)) {
           }
      }
 
-     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
-     if (!empty($testedByRes['user_signature'])) {
-          $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+     $reviewedBySignaturePath = $approvedBySignaturePath = null;
+     if (!empty($result['approvedBySignature'])) {
+          $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
      }
-     if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedSignaturePath = $reviewedByRes['user_signature'];
-     }
-     if (!empty($revisedByRes['user_signature'])) {
-          $revisedSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $revisedByRes['user_signature'];
-     }
-     if (!empty($approvedByRes['user_signature'])) {
-          $approvedSignaturePath = $approvedByRes['user_signature'];
+     if (!empty($result['reviewedBySignature'])) {
+          $reviewedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
      }
      $_SESSION['aliasPage'] = $page;
      if (empty($result['labName'])) {
@@ -306,14 +300,14 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr><td></td></tr>';
 
-     if (!empty($reviewedSignaturePath) && MiscUtility::isImageValid($reviewedSignaturePath)) {
-          $signImg = '<img src="' . $reviewedSignaturePath . '" style="width:50px;" />';
+     if (!empty($reviewedBySignaturePath) && MiscUtility::isImageValid($reviewedBySignaturePath)) {
+          $signImg = '<img src="' . $reviewedBySignaturePath . '" style="width:50px;" />';
      } else {
           $signImg = '';
      }
 
-     if (!empty($approvedSignaturePath) && MiscUtility::isImageValid($approvedSignaturePath)) {
-          $signImgApproved = '<img src="' . $approvedSignaturePath . '" style="width:50px;" />';
+     if (!empty($approvedBySignaturePath) && MiscUtility::isImageValid($approvedBySignaturePath)) {
+          $signImgApproved = '<img src="' . $approvedBySignaturePath . '" style="width:50px;" />';
      } else {
           $signImgApproved = '';
      }

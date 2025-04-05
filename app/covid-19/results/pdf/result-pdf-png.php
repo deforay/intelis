@@ -18,7 +18,7 @@ if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
-   
+
     //foreach ($requestResult as $result) {
 
         $covid19TestQuery = "SELECT * from covid19_tests where covid19_id= " . $result['covid19_id'] . " ORDER BY test_id ASC";
@@ -150,7 +150,7 @@ if (!empty($requestResult)) {
             $resultApprovedBy = ($result['approvedBy']);
             $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
         } else {
-            $resultApprovedBy  = '';
+            $resultApprovedBy  = null;
         }
         $userSignaturePath = null;
 

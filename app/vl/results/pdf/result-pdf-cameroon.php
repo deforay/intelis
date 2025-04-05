@@ -63,7 +63,7 @@ if (!empty($result)) {
 
      $reportTemplatePath = $resultPdfService->getReportTemplate($result['lab_id']);
 
-     $testedBy = '';
+     $testedBy = null;
      if (!empty($result['tested_by'])) {
           $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
           if ($testedByRes) {
@@ -90,7 +90,7 @@ if (!empty($result)) {
           }
      }
 
-     $revisedBy = '';
+     $revisedBy = null;
      $revisedByRes = [];
      if (!empty($result['revisedBy'])) {
           $revisedByRes = $usersService->getUserInfo($result['revisedBy'], array('user_name', 'user_signature'));
@@ -118,16 +118,11 @@ if (!empty($result)) {
 
      $sameReviewerAndApprover = (!empty($reviewedBy) && $reviewedBy == $resultApprovedBy);
 
-     $revisedSignaturePath = $reviewedSignaturePath = $testUserSignaturePath = $approvedSignaturePath = null;
+     $approvedBySignaturePath = null;
 
-     if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedSignaturePath =  $reviewedByRes['user_signature'];
-     }
-     if (!empty($revisedByRes['user_signature'])) {
-          $revisedSignaturePath =  $revisedByRes['user_signature'];
-     }
-     if (!empty($approvedByRes['user_signature'])) {
-          $approvedSignaturePath =  $approvedByRes['user_signature'];
+
+     if (!empty($result['approvedBySignature'])) {
+          $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
      }
 
      $_SESSION['aliasPage'] = $page;
@@ -217,7 +212,7 @@ if (!empty($result)) {
                $descriptionText = isset($instrumentInfo['additional_text']) && !empty($instrumentInfo['additional_text']) ? $instrumentInfo['additional_text'] : '';
           }
      }
-     $resultApprovedBy  = '';
+     $resultApprovedBy  = null;
      $userRes = [];
      if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
           $resultApprovedBy = $result['approvedBy'];
@@ -474,19 +469,18 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:1px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
      $modified = "No";
-     if($result['result_modified']=="yes"){
+     if ($result['result_modified'] == "yes") {
           $modified = "Yes";
 
           $resultHistory = json_decode($result['reason_for_result_changes']);
           $dateOfModified = $resultHistory->dateOfChange;
           $prevResult = $resultHistory->previousResult;
-
      }
      $html .= '<tr>';
-     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : '._translate($modified).'</td>';
-     if($modified=='Yes' && ($result['reason_for_result_changes']!="") && $resultHistory->dateOfChange!=""){
-          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified).'</td>';
-          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult.' cp/mL</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Was the result modified?") . ' : ' . _translate($modified) . '</td>';
+     if ($modified == 'Yes' && ($result['reason_for_result_changes'] != "") && $resultHistory->dateOfChange != "") {
+          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Result Modification Date") . ' : ' . DateUtility::humanReadableDateFormat($dateOfModified) . '</td>';
+          $html .= '<td style="line-height:10px;font-size:10px;font-weight:bold;text-align:left;">' . _translate("Previous Result") . ' : ' . $prevResult . ' cp/mL</td>';
      }
      $html .= '</tr>';
 
@@ -558,20 +552,22 @@ if (!empty($result)) {
 
                $approvertext = $sameReviewerAndApprover ? _translate("REVIEWED AND APPROVED BY") : _translate("APPROVED BY");
 
+               $approvedBySignatureExists = !empty($approvedBySignaturePath) && MiscUtility::isImageValid($approvedBySignaturePath);
+
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . $approvertext . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-               if (!empty($userSignaturePath) && MiscUtility::isImageValid($userSignaturePath) && !empty($resultApprovedBy)) {
+               if ($approvedBySignatureExists) {
                     $html .= '<tr>';
                     $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br>came</td>';
                     $html .= '</tr>';
                }
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
-               if (!empty($approvedSignaturePath) && MiscUtility::isImageValid(($approvedSignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedSignaturePath . '" style="width:100px;" /></td>';
+               if ($approvedBySignatureExists) {
+                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $approvedBySignaturePath . '" style="width:100px;" /></td>';
                } else {
                     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
                }

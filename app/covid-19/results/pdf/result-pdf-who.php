@@ -27,7 +27,7 @@ if (!empty($requestResult)) {
     $_SESSION['rVal'] = MiscUtility::generateRandomString(6);
     $pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $_SESSION['rVal'];
     MiscUtility::makeDirectory($pathFront);
- 
+
     //foreach ($requestResult as $result) {
         $currentTime = DateUtility::getCurrentDateTime();
         $_SESSION['aliasPage'] = $page;
@@ -152,7 +152,7 @@ if (!empty($requestResult)) {
         if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
             $resultApprovedBy = ($result['approvedBy']);
         } else {
-            $resultApprovedBy  = '';
+            $resultApprovedBy  = null;
         }
 
         $vlResult = '';

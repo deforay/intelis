@@ -139,7 +139,7 @@ if (!empty($result)) {
           $resultApprovedBy = ($result['approvedBy']);
           $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
      } else {
-          $resultApprovedBy  = '';
+          $resultApprovedBy  = null;
      }
      $userSignaturePath = null;
 

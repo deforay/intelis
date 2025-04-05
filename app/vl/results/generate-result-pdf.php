@@ -59,6 +59,9 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					reviser_user.user_name as revisedBy,
 					reviser_user.user_id as revisedByUserId,
 					reviser_user.user_signature as revisedBySignature,
+					tester_user.user_name as testedBy,
+					tester_user.user_id as testedByUserId,
+					tester_user.user_signature as testedBySignature,
 					l_f.facility_logo as facilityLogo,
 					rsrr.rejection_reason_name,
 					funding.funding_source_name as funding_source_name,
@@ -73,6 +76,7 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					LEFT JOIN user_details as reviewer_user ON reviewer_user.user_id = vl.result_reviewed_by
 					LEFT JOIN user_details as approver_user ON approver_user.user_id = vl.result_approved_by
 					LEFT JOIN user_details as reviser_user ON reviser_user.user_id = vl.revised_by
+					LEFT JOIN user_details as tester_user ON tester_user.user_id = vl.tested_by
 					LEFT JOIN facility_details as l_f ON l_f.facility_id = vl.lab_id
 					LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id = vl.implementing_partner
 					LEFT JOIN r_funding_sources as funding ON funding.funding_source_id = vl.funding_source

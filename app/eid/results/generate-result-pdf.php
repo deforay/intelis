@@ -63,22 +63,28 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                     rst.*,
                     rsrr.rejection_reason_name ,
                     r_c_a.recommended_corrective_action_name,
-                    u_d.user_name as reviewedBy,
-                    u_d.user_id as reviewedByUserId,
-                    u_d.user_signature as reviewedBySignature,
-                    a_u_d.user_name as approvedBy,
-                    a_u_d.user_id as approvedByUserId,
-                    a_u_d.user_signature as approvedBySignature,
-                    r_r_b.user_name as revised,
+                    reviewer_user.user_name as reviewedBy,
+                    reviewer_user.user_id as reviewedByUserId,
+                    reviewer_user.user_signature as reviewedBySignature,
+                    approver_user.user_name as approvedBy,
+                    approver_user.user_id as approvedByUserId,
+                    approver_user.user_signature as approvedBySignature,
+                    reviser_user.user_name as revisedBy,
+					reviser_user.user_id as revisedByUserId,
+					reviser_user.user_signature as revisedBySignature,
+					tester_user.user_name as testedBy,
+					tester_user.user_id as testedByUserId,
+					tester_user.user_signature as testedBySignature,
                     JSON_UNQUOTE(JSON_EXTRACT(i.approved_by, '$.eid')) AS defaultApprovedBy,
                     JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.eid')) AS defaultReviewedBy,
                     i.machine_name AS instrument_machine_name
                     FROM form_eid as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
-                    LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
-                    LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
-                    LEFT JOIN user_details as r_r_b ON r_r_b.user_id=vl.revised_by
+                    LEFT JOIN user_details as reviewer_user ON reviewer_user.user_id=vl.result_reviewed_by
+                    LEFT JOIN user_details as approver_user ON approver_user.user_id=vl.result_approved_by
+                    LEFT JOIN user_details as reviser_user ON reviser_user.user_id=vl.revised_by
+					LEFT JOIN user_details as tester_user ON tester_user.user_id = vl.tested_by
                     LEFT JOIN r_eid_sample_type as rst ON rst.sample_id=vl.specimen_type
                     LEFT JOIN r_eid_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=vl.reason_for_sample_rejection
                     LEFT JOIN r_implementation_partners as rip ON rip.i_partner_id=vl.implementing_partner

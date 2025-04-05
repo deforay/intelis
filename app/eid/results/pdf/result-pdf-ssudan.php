@@ -120,7 +120,7 @@ if (!empty($result)) {
     $sampleDispatchDate = '';
     $sampleDispatchTime = '';
     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-    $testedBy = '';
+    $testedBy = null;
     if (!empty($result['tested_by'])) {
         $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
         if ($testedByRes) {
@@ -147,7 +147,7 @@ if (!empty($result)) {
         $result['result_reviewed_datetime'] = $result['result_approved_datetime'];
     }
 
-    $revisedBy = '';
+    $revisedBy = null;
     $revisedByRes = [];
     if (!empty($result['revised_by'])) {
         $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
@@ -156,9 +156,9 @@ if (!empty($result)) {
         }
     }
 
-    $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = null;
+    $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = null;
     if (!empty($testedByRes['user_signature'])) {
-        $testUserSignaturePath =  $testedByRes['user_signature'];
+        $testedBySignaturePath =  $testedByRes['user_signature'];
     }
     if (!empty($result['reviewedBySignature'])) {
         $reviewedBySignaturePath =  $result['reviewedBySignature'];
@@ -167,7 +167,7 @@ if (!empty($result)) {
         $approvedBySignaturePath =  $result['approvedBySignature'];
     }
     if (!empty($revisedByRes['revisedBySignature'])) {
-        $revisedSignaturePath =  $result['revisedBySignature'];
+        $revisedBySignaturePath =  $result['revisedBySignature'];
     }
 
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', 'd/M/Y H:i');
@@ -386,8 +386,8 @@ if (!empty($result)) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-        if (!empty($testUserSignaturePath) && MiscUtility::isImageValid($testUserSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
+        if (!empty($testedBySignaturePath) && MiscUtility::isImageValid($testedBySignaturePath)) {
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testedBySignaturePath . '" style="width:50px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }
@@ -458,8 +458,8 @@ if (!empty($result)) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-        if (!empty($revisedSignaturePath) && MiscUtility::isImageValid($revisedSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+        if (!empty($revisedBySignaturePath) && MiscUtility::isImageValid($revisedBySignaturePath)) {
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedBySignaturePath . '" style="width:70px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }

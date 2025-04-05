@@ -166,7 +166,7 @@ if (!empty($requestResult)) {
             $approvedOnTime = $expStr[1];
         }
 
-        $testedBy = '';
+        $testedBy = null;
         if (!empty($result['tested_by'])) {
             $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
             if ($testedByRes) {
@@ -174,9 +174,9 @@ if (!empty($requestResult)) {
             }
         }
 
-        $testUserSignaturePath = null;
+        $testedBySignaturePath = null;
         if (!empty($testedByRes['user_signature'])) {
-            $testUserSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
+            $testedBySignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $testedByRes['user_signature'];
         }
 
         if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
@@ -208,7 +208,7 @@ if (!empty($requestResult)) {
             $userApprovedRes = $usersService->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
             $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
-            $resultApprovedBy  = '';
+            $resultApprovedBy  = null;
         }
         $userApprovedSignaturePath = null;
         if (!empty($userApprovedRes['user_signature'])) {

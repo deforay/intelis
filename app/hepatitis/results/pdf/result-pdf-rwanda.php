@@ -151,7 +151,7 @@ if (!empty($requestResult)) {
         if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
             $resultApprovedBy = ($result['approvedBy']);
         } else {
-            $resultApprovedBy  = '';
+            $resultApprovedBy  = null;
         }
         $vlResult = '';
         $showMessage = '';

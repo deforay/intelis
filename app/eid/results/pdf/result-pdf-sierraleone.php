@@ -92,47 +92,11 @@ if (!empty($result)) {
         $age = $result['child_age'];
     }
 
-    if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_collection_date']);
-        $result['sample_collection_date'] = date('d/M/Y', strtotime($expStr[0]));
-        $sampleCollectionTime = $expStr[1];
-    } else {
-        $result['sample_collection_date'] = '';
-        $sampleCollectionTime = '';
-    }
-    $sampleReceivedDate = '';
-    $sampleReceivedTime = '';
-    if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
-        $sampleReceivedDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleReceivedTime = $expStr[1];
-    }
-    $sampleDispatchDate = '';
-    $sampleDispatchTime = '';
-    if (isset($result['result_printed_datetime']) && trim((string) $result['result_printed_datetime']) != '' && $result['result_dispatched_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['result_printed_datetime']);
-        $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleDispatchTime = $expStr[1];
-    } else {
-        $expStr = explode(" ", $currentTime);
-        $sampleDispatchDate = date('d/M/Y', strtotime($expStr[0]));
-        $sampleDispatchTime = $expStr[1];
-    }
-    $testedBy = '';
-    if (!empty($result['tested_by'])) {
-        $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
-        if ($testedByRes) {
-            $testedBy = $testedByRes['user_name'];
-        }
-    }
-    $sampleTestedDatetime = '';
-    if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $expStr = explode(" ", (string) $result['sample_tested_datetime']);
-        $sampleTestedDatetime = $expStr[0];
-        $result['sample_tested_datetime'] = date('d/M/Y', strtotime($expStr[0]));
-    } else {
-        $result['sample_tested_datetime'] = '';
-    }
+
+    $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
+    $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
+    $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
+    $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
 
     $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
     if ($checkDateIsset !== false) {
@@ -166,7 +130,7 @@ if (!empty($result)) {
         }
     }
 
-    $revisedBy = '';
+    $revisedBy = null;
     $revisedByRes = [];
     if (!empty($result['revised_by'])) {
         $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
@@ -175,7 +139,7 @@ if (!empty($result)) {
         }
     }
 
-    $revisedSignaturePath = $reviewedBySignaturePath = $testUserSignaturePath = $approvedBySignaturePath = null;
+    $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
     if (!empty($result['reviewedBySignature'])) {
         $reviewedBySignaturePath = $result['reviewedBySignature'];
     }
@@ -183,13 +147,13 @@ if (!empty($result)) {
         $approvedBySignaturePath = $result['approvedBySignature'];
     }
     if (!empty($revisedByRes['user_signature'])) {
-        $revisedSignaturePath = $revisedByRes['user_signature'];
+        $revisedBySignaturePath = $revisedByRes['user_signature'];
     }
 
     if (!isset($result['child_gender']) || trim((string) $result['child_gender']) == '') {
         $result['child_gender'] = _translate('Unreported');
     }
-    $resultApprovedBy  = '';
+    $resultApprovedBy  = null;
 	$userRes = [];
 	if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
 		$resultApprovedBy = $result['approvedBy'];
@@ -358,8 +322,8 @@ if (!empty($result)) {
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_code'] . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_collection_date'] . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
     $html .= '</tr>';
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:5px;"></td>';
@@ -373,26 +337,10 @@ if (!empty($result)) {
     $html .= '<td colspan="3" style="line-height:5px;"></td>';
     $html .= '</tr>';
     $html .= '<tr>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['sample_name']) . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . (!empty($result['sample_tested_datetime']) ? $result['sample_tested_datetime'] : '-') . '</td>';
-    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $sampleDispatchDate . " " . $sampleDispatchTime . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_name'] . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
+    $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
     $html .= '</tr>';
-
-    // $html .= '<tr>';
-    // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-    // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SAMPLE REJECTION STATUS</td>';
-    // $html .= '</tr>';
-    // // $html .= '<tr>';
-    // // $html .= '<td colspan="3" style="line-height:10px;"></td>';
-    // // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ((!empty($result['is_sample_rejected']) && $result['is_sample_rejected'] == 'yes') ? 'Rejected' : 'Not Rejected') . '</td>';
-    // $html .= '</tr>';
-    // $html .= '<tr>';
-    // $html .= '<td colspan="3" style="line-height:5px;"></td>';
-    // $html .= '</tr>';
 
     $html .= '<tr>';
     $html .= '<td colspan="3">';
@@ -435,24 +383,6 @@ if (!empty($result)) {
     $html .= '<tr>';
     $html .= '<td colspan="3" style="line-height:22px;"></td>';
     $html .= '</tr>';
-
-    // if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
-    //     $html .= '<tr>';
-    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-    //     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
-    //     $html .= '</tr>';
-
-    //     $html .= '<tr>';
-    //     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $testedBy . '</td>';
-    //     if (!empty($testUserSignaturePath) && MiscUtility::isImageValid($testUserSignaturePath)) {
-    //         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $testUserSignaturePath . '" style="width:50px;" /></td>';
-    //     } else {
-    //         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-    //     }
-    //     $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_tested_datetime'] . '</td>';
-    //     $html .= '</tr>';
-    // }
 
     if (!empty($reviewedBy)) {
 
@@ -514,8 +444,8 @@ if (!empty($result)) {
 
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $revisedBy . '</td>';
-        if (!empty($revisedSignaturePath) && MiscUtility::isImageValid($revisedSignaturePath)) {
-            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedSignaturePath . '" style="width:70px;" /></td>';
+        if (!empty($revisedBySignaturePath) && MiscUtility::isImageValid($revisedBySignaturePath)) {
+            $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"><img src="' . $revisedBySignaturePath . '" style="width:70px;" /></td>';
         } else {
             $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
         }

@@ -102,48 +102,34 @@ try {
 		//Set Age
 		$age = DateUtility::calculatePatientAge($result);
 
-		if (isset($result['sample_collection_date']) && trim((string) $result['sample_collection_date']) != '' && $result['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", (string) $result['sample_collection_date']);
-			$result['sample_collection_date'] = DateUtility::humanReadableDateFormat($expStr[0]);
-			$sampleCollectionTime = $expStr[1];
-		} else {
-			$result['sample_collection_date'] = '';
-			$sampleCollectionTime = '';
-		}
-		$sampleReceivedDate = '';
-		$sampleReceivedTime = '';
-		if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['sample_received_at_lab_datetime']) != '' && $result['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-			$expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
-			$sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
-			$sampleReceivedTime = $expStr[1];
-		}
+
 
 		$result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-
+		$result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
+		$result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
 		$result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
 		$result['last_viral_load_date'] = DateUtility::humanReadableDateFormat($result['last_viral_load_date'] ?? '');
 
 		if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']) == '') {
 			$result['patient_gender'] = _translate('Unreported');
 		}
-		$resultApprovedBy  = '';
-		$userRes = [];
+
+		$resultApprovedBy = null;
 		if (isset($result['approvedBy']) && !empty($result['approvedBy'])) {
 			$resultApprovedBy = $result['approvedBy'];
-			$userRes = $usersService->getUserInfo($result['approvedByUserId'], 'user_signature');
 		} elseif (isset($result['defaultApprovedBy']) && !empty($result['defaultApprovedBy'])) {
-			$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], array('user_name', 'user_signature'));
+			$approvedByRes = $usersService->getUserInfo($result['defaultApprovedBy'], ['user_name', 'user_signature']);
 			if ($approvedByRes) {
 				$resultApprovedBy = $approvedByRes['user_name'];
-				$userRes = $approvedByRes;
 			}
 		}
 
-		$userSignaturePath = null;
+		$approvedBySignaturePath = null;
 
-		if (!empty($userRes['user_signature'])) {
-			$userSignaturePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $userRes['user_signature'];
+		if (!empty($result['approvedBySignature'])) {
+			$approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
 		}
+
 		$smileyContent = '';
 		$showMessage = '';
 		$tndMessage = '';
@@ -152,7 +138,7 @@ try {
 
 		if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
 			$smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-			$showMessage = ($arr['l_vl_msg']);
+			$showMessage = $arr['l_vl_msg'];
 		} elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
 			$smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
 			$showMessage = ($arr['h_vl_msg']);
@@ -174,7 +160,7 @@ try {
 		$html .= '</tr>';
 		$html .= '<tr>';
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_code'] . '</td>';
-		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_collection_date'] . '</td>';
 
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['patient_art_no'] . '</td>';
 		$html .= '</tr>';
@@ -242,7 +228,7 @@ try {
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Technique utilisée</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $sampleReceivedDate . " " . $sampleReceivedTime . '</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_received_at_lab_datetime'] . '</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_printed_datetime'] . '</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['sample_name'] . '</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . ($result['instrument_machine_name'] ?? $result['vl_test_platform']) . '</td>';
@@ -295,9 +281,9 @@ try {
 		}
 		//if (empty($signResults)) {
 
-		if (!empty($userSignaturePath) && MiscUtility::isImageValid($userSignaturePath) && !empty($resultApprovedBy)) {
+		if (!empty($approvedBySignaturePath) && MiscUtility::isImageValid($approvedBySignaturePath) && !empty($resultApprovedBy)) {
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $userSignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
+			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $approvedBySignaturePath . '" style="width:100px;margin-top:-20px;" /><br></td>';
 			$html .= '</tr>';
 		}
 		$html .= '<tr>';
