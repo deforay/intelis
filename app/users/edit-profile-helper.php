@@ -65,7 +65,7 @@ try {
 
             if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                if (password_verify((string) $_POST['password'], (string) $userRow['password'])) {
+                if ($usersService->passwordVerify((string) $_POST['userName'], (string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:edit-profile.php");
                 }

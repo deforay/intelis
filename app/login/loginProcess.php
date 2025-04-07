@@ -76,7 +76,7 @@ try {
         );
 
 
-        if (empty($userRow) || !password_verify((string) $_POST['password'], (string) $userRow['password'])) {
+        if (empty($userRow) || !$usersService->passwordVerify((string) $_POST['username'], (string) $_POST['password'], (string) $userRow['password'])) {
             $usersService->recordLoginAttempt($_POST['username'], 'failed', $userRow['user_id']);
             throw new SystemException(_translate("Please check your login credentials"));
         }

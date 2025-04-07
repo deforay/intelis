@@ -18,6 +18,8 @@ final class UsersService
     protected string $table = 'user_details';
     protected $commonService;
 
+    private int $passwordCost = 12;
+
     public function __construct(DatabaseService $db, CommonService $commonService)
     {
         $this->db = $db;
@@ -415,10 +417,30 @@ final class UsersService
         }
 
         $options = [
-            'cost' => 14
+            'cost' => $this->passwordCost
         ];
 
         return password_hash((string) $password, PASSWORD_BCRYPT, $options);
+    }
+
+    public function passwordVerify($loginId, $password, $hash)
+    {
+        if (empty($password) || empty($hash)) {
+            return false;
+        }
+
+        $verified =  password_verify($password, $hash);
+
+        if ($verified) {
+            $options = ['cost' => $this->passwordCost];
+            if (password_needs_rehash($hash, PASSWORD_BCRYPT, $options)) {
+                $newHash = $this->passwordHash($password);
+                $this->db->where('login_id', $loginId);
+                $this->db->update('user_details', ['password' => $newHash]);
+            }
+        }
+
+        return $verified;
     }
 
     public function saveUserAttributes($data, $userId)

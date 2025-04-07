@@ -60,7 +60,7 @@ try {
                         AND ud.login_id = ?";
         $userResult = $db->rawQueryOne($userQuery, [$input['userName']]);
 
-        if (empty($userResult) || !password_verify((string) $input['password'], (string) $userResult['password'])) {
+        if (empty($userResult) || !$usersService->passwordVerify($input['userName'], (string) $input['password'], (string) $userResult['password'])) {
             throw new SystemException('Login failed. Please contact system administrator.');
         }
 
