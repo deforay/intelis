@@ -53,36 +53,25 @@ if (!empty($_SESSION['vlTatData']['sOrder'])) {
 }
 $rResult = $db->rawQuery($sQuery);
 
-$headings = array("Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date");
+$headings = ["Sample ID", "Remote Sample ID", "External Sample ID", "Sample Collection Date", "Sample Dispatch Date", "Sample Received Date in Lab", "Sample Test Date", "Result Print Date"];
 
 $colNo = 1;
 
-$styleArray = array(
-	'font' => array(
+$styleArray = [
+	'font' => [
 		'bold' => true,
 		'size' => '13',
-	),
-	'alignment' => array(
+	],
+	'alignment' => [
 		'horizontal' => Alignment::HORIZONTAL_CENTER,
 		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
+	],
+	'borders' => [
+		'outline' => [
 			'style' => Border::BORDER_THICK,
-		),
-	)
-);
-
-$borderStyle = array(
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
+		],
+	]
+];
 
 $sheet->mergeCells('A1:AE1');
 $nameValue = '';

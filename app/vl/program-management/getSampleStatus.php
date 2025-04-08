@@ -70,6 +70,7 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 
 $tQuery = "SELECT COUNT(vl_sample_id) as total,
+                result_status,
                 status_id,
                 status_name
             FROM $table as vl

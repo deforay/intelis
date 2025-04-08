@@ -112,6 +112,14 @@ get_ubuntu_version() {
     echo "$version"
 }
 
+extract_mysql_password_from_config() {
+    local config_file="$1"
+    php -r "
+        \$config = include '$config_file';
+        echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
+    "
+}
+
 # Function to update configuration
 update_configuration() {
     local mysql_root_password
@@ -359,6 +367,45 @@ else
     rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
 fi
 
+if [ -f ${config_file}.bak.$(date +%Y%m%d%H%M%S) ]
+then
+    print info "Removing backup file ${config_file}.bak.$(date +%Y%m%d%H%M%S)"
+    rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
+fi
+
+print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
+
+# Determine which password to use
+if [ -n "$mysql_root_password" ]; then
+    mysql_pw="$mysql_root_password"
+    print debug "Using user-provided MySQL root password"
+elif [ -f "${lis_path}/configs/config.production.php" ]; then
+    mysql_pw=$(extract_mysql_password_from_config "${lis_path}/configs/config.production.php")
+    print debug "Extracted MySQL root password from config.production.php"
+else
+    print error "MySQL root password not provided and config.production.php not found."
+    exit 1
+fi
+
+if [ -z "$mysql_pw" ]; then
+    print warning "Password in config file is empty or missing. Prompting for manual entry..."
+    read -sp "Please enter MySQL root password: " mysql_pw
+    echo
+fi
+
+persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1)
+persist_status=$?
+
+if [ $persist_status -eq 0 ]; then
+    print success "Successfully persisted sql_mode=''"
+    log_action "Applied SET PERSIST sql_mode = '';"
+else
+    print warning "SET PERSIST failed: $persist_result"
+    log_action "SET PERSIST sql_mode failed: $persist_result"
+fi
+
+
+
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
     print error "Apache is not installed. Please first run the setup script."
@@ -492,6 +539,13 @@ update_php_ini() {
         print info "PHP settings are already correctly set in $ini_file"
     fi
 }
+
+# Remove the backup file if it exists
+if [ -f "${ini_file}.bak.$(date +%Y%m%d%H%M%S)" ]; then
+    print info "Removing backup file ${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
+    rm "${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
+fi
+
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
