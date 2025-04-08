@@ -43,6 +43,13 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Make needrestart non-interactive
+if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
+    sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
+else
+    echo "\$nrconf{restart} = 'a';" >> /etc/needrestart/needrestart.conf
+fi
+
 # Initialize flags
 skip_ubuntu_updates=false
 skip_backup=false

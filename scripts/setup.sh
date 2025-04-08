@@ -46,6 +46,13 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Make needrestart non-interactive
+if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
+    sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
+else
+    echo "\$nrconf{restart} = 'a';" >> /etc/needrestart/needrestart.conf
+fi
+
 # Function to log messages
 log_action() {
     local message=$1
@@ -101,6 +108,14 @@ ask_yes_no() {
             ;;
         esac
     done
+}
+
+extract_mysql_password_from_config() {
+    local config_file="$1"
+    php -r "
+        \$config = include '$config_file';
+        echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
+    "
 }
 
 handle_database_setup_and_import() {
@@ -602,6 +617,40 @@ elif [[ -n "$vlsm_sql_file" ]]; then
 else
     handle_database_setup_and_import # Default to init.sql
 fi
+
+
+print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
+
+# Determine which password to use
+if [ -n "$mysql_root_password" ]; then
+    mysql_pw="$mysql_root_password"
+    print debug "Using user-provided MySQL root password"
+elif [ -f "${lis_path}/configs/config.production.php" ]; then
+    mysql_pw=$(extract_mysql_password_from_config "${lis_path}/configs/config.production.php")
+    print debug "Extracted MySQL root password from config.production.php"
+else
+    print error "MySQL root password not provided and config.production.php not found."
+    exit 1
+fi
+
+if [ -z "$mysql_pw" ]; then
+    print warning "Password in config file is empty or missing. Prompting for manual entry..."
+    read -sp "Please enter MySQL root password: " mysql_pw
+    echo
+fi
+
+persist_result=$(MYSQL_PWD="${mysql_pw}" mysql -u root -e "SET PERSIST sql_mode = '';" 2>&1)
+persist_status=$?
+
+if [ $persist_status -eq 0 ]; then
+    print success "Successfully persisted sql_mode=''"
+    log_action "Applied SET PERSIST sql_mode = '';"
+else
+    print warning "SET PERSIST failed: $persist_result"
+    log_action "SET PERSIST sql_mode failed: $persist_result"
+fi
+
+
 
 # Prompt for Remote STS URL
 while true; do
