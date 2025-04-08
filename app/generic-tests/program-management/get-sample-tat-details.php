@@ -19,8 +19,8 @@ if ($general->isSTSInstance()) {
 } else {
 	$sampleCode = 'sample_code';
 }
-$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_testing_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
-$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_testing_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
+$aColumns = array('vl.' . $sampleCode, "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
+$orderColumns = array('vl.' . $sampleCode, 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -79,7 +79,7 @@ $aWhere = '';
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 			vl.sample_collection_date,
 			vl.sample_tested_datetime,
-			vl.sample_received_at_testing_lab_datetime,
+			vl.sample_received_at_lab_datetime,
 			vl.result_printed_datetime,
 			vl.remote_sample_code,
 			vl.external_sample_code,
@@ -91,8 +91,8 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 			LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type
 			LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 			WHERE
-			(vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00') AND
-			(vl.sample_tested_datetime IS NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00')
+			(vl.sample_collection_date is NOT NULL) AND
+			(vl.sample_tested_datetime IS NOT NULL)
 			AND vl.result is not null
 			AND vl.result != '' ";
 
@@ -120,9 +120,9 @@ if (!empty($_POST['sampleCollectionDate'])) {
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
 	if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-		$sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) = "' . $labStartDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
 	} else {
-		$sWhere[] = ' DATE(vl.sample_received_at_testing_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_testing_lab_datetime) <= "' . $labEndDate . '"';
+		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) >= "' . $labStartDate . '" AND DATE(vl.sample_received_at_lab_datetime) <= "' . $labEndDate . '"';
 	}
 }
 
@@ -175,10 +175,10 @@ foreach ($rResult as $aRow) {
 	} else {
 		$aRow['sample_collection_date'] = '';
 	}
-	if (isset($aRow['sample_received_at_testing_lab_datetime']) && trim((string) $aRow['sample_received_at_testing_lab_datetime']) != '' && $aRow['sample_received_at_testing_lab_datetime'] != '0000-00-00 00:00:00') {
-		$aRow['sample_received_at_testing_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_testing_lab_datetime']);
+	if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
+		$aRow['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
 	} else {
-		$aRow['sample_received_at_testing_lab_datetime'] = '';
+		$aRow['sample_received_at_lab_datetime'] = '';
 	}
 	if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
 		$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
@@ -201,7 +201,7 @@ foreach ($rResult as $aRow) {
 	$row[] = $aRow['external_sample_code'];
 	$row[] = $aRow['sample_collection_date'];
 	$row[] = $aRow['sample_dispatched_datetime'];
-	$row[] = $aRow['sample_received_at_testing_lab_datetime'];
+	$row[] = $aRow['sample_received_at_lab_datetime'];
 	$row[] = $aRow['sample_tested_datetime'];
 	$row[] = $aRow['result_printed_datetime'];
 

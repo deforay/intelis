@@ -80,7 +80,7 @@ if (!empty($id)) {
                         ct.kit_expiry_date,
                         covid19.lot_number,
                         CASE
-                            WHEN covid19.lot_expiration_date IS NOT NULL AND DATE(covid19.lot_expiration_date) > '0000-00-00' THEN NULL
+                            WHEN covid19.lot_expiration_date IS NULL THEN NULL
                             ELSE DATE_FORMAT(covid19.lot_expiration_date, '%d-%b-%Y')
                         END AS lot_expiration_date,
                         covid19.result_printed_datetime
@@ -219,7 +219,7 @@ if (!empty($id)) {
                                                     lot_number,
                                                     is_encrypted,
                                                     CASE
-                                                        WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                                        WHEN lot_expiration_date IS NULL THEN NULL
                                                         ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                                                     END AS lot_expiration_date,
                                                     $patientIdColumn,
@@ -314,7 +314,7 @@ if (!empty($id)) {
                                                 $resultColumn,
                                                 lot_number,is_encrypted,lab_assigned_code,
                                                 CASE
-                                                    WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                                    WHEN lot_expiration_date IS NULL THEN NULL
                                                     ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                                                 END AS lot_expiration_date,
                                                 $patientIdColumn,
@@ -444,7 +444,7 @@ if (!empty($id)) {
                             remote_sample_code,
                             lot_number,
                             CASE
-                                WHEN lot_expiration_date IS NULL OR lot_expiration_date = '0000-00-00' THEN NULL
+                                WHEN lot_expiration_date IS NULL THEN NULL
                                 ELSE DATE_FORMAT(lot_expiration_date, '%d-%b-%Y')
                             END AS lot_expiration_date,
                             $resultColumn,

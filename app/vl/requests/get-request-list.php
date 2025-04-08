@@ -269,7 +269,7 @@ try {
           $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
-          $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL AND DATE(vl.sample_received_at_lab_datetime) > '0000-00-00')";
+          $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
           $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;

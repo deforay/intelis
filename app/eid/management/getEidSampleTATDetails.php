@@ -102,8 +102,8 @@ try {
 				vl.result_printed_on_sts_datetime
 				FROM form_eid as vl INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
 				WHERE
-				(vl.sample_collection_date is NOT NULL AND DATE(vl.sample_collection_date) > '0000-00-00') AND
-				(vl.sample_tested_datetime is NOT NULL AND DATE(vl.sample_tested_datetime) > '0000-00-00') AND
+				(vl.sample_collection_date is NOT NULL) AND
+				(vl.sample_tested_datetime IS NOT NULL) AND
 				vl.result is not null AND vl.result != ''";
 	if ($general->isSTSInstance()) {
 		if (!empty($_SESSION['facilityMap'])) {

@@ -86,7 +86,7 @@ $sQuery = "SELECT
     SUM(result_status = 6) AS pendingCount,
     SUM(result_status = 5) AS invalidCount,
     SUM(result_status = 7) AS acceptCount,
-    SUM(vl.result_printed_datetime IS NOT NULL AND DATE(vl.result_printed_datetime) > '0000-00-00') AS printCount
+    SUM(vl.result_printed_datetime IS NOT NULL) AS printCount
     FROM $table AS vl
     JOIN facility_details AS f ON f.facility_id = vl.facility_id
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'

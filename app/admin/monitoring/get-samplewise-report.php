@@ -193,11 +193,11 @@ try {
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
-    $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime > '0000-00-00') THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
-                SUM(CASE WHEN (vl.request_created_datetime is not null AND vl.request_created_datetime  > '0000-00-00') THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
-                SUM(CASE WHEN (vl.sample_received_at_lab_datetime is not null AND vl.sample_received_at_lab_datetime  > '0000-00-00') THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
-                SUM(CASE WHEN (vl.sample_tested_datetime is not null AND vl.sample_tested_datetime  > '0000-00-00') THEN 1 ELSE 0 END) AS 'totalSamplesTested',
-                SUM(CASE WHEN ((vl.result_dispatched_datetime is not null AND vl.result_dispatched_datetime  > '0000-00-00') OR (vl.result_sent_to_source_datetime is not null AND vl.result_sent_to_source_datetime  > '0000-00-00')) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
+    $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
+                SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
+                SUM(CASE WHEN (vl.sample_received_at_lab_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
+                SUM(CASE WHEN (vl.sample_tested_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesTested',
+                SUM(CASE WHEN ((vl.result_dispatched_datetime is not null) OR (vl.result_sent_to_source_datetime is not null)) THEN 1 ELSE 0 END) AS 'totalSamplesDispatched'
                 FROM $table as vl
             LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
