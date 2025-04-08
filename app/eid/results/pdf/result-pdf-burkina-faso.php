@@ -96,31 +96,11 @@ if (!empty($result)) {
     if (!isset($result['labName']) || trim((string) $result['labName']) == '') {
         $result['labName'] = '';
     }
-    //Set Age
-    // $age = 'Unknown';
-    // if (isset($result['child_dob']) && trim((string) $result['child_dob']) != '' && $result['child_dob'] != '0000-00-00') {
-    //     $todayDate = strtotime(date('Y-m-d'));
-    //     $dob = strtotime((string) $result['child_dob']);
-    //     $difference = $todayDate - $dob;
-    //     $seconds_per_year = 60 * 60 * 24 * 365;
-    //     $age = round($difference / $seconds_per_year);
-    // } elseif (isset($result['child_age']) && trim((string) $result['child_age']) != '' && trim((string) $result['child_age']) > 0) {
-    //     $age = $result['child_age'];
-    // }
 
     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true, 'd/M/Y H:i:s');
     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true, 'd/M/Y H:i:s');
-
-
-
-
-    $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-
-
-    $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
-    if ($checkDateIsset !== false) {
-        $result['result_approved_datetime'] = null;
-    }
+    $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true, 'd/M/Y H:i:s');
+    $result['result_approved_datetime'] =  DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true, 'd/M/Y H:i:s');
     $testedBy = $result['testedBy'] ?? null;
     $revisedBy = $result['revisedBy'] ?? null;
 

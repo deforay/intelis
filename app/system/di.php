@@ -44,7 +44,6 @@ use App\HttpHandlers\LegacyRequestHandler;
 use App\Middlewares\Api\ApiAuthMiddleware;
 use App\Middlewares\App\AppAuthMiddleware;
 use App\Middlewares\ErrorHandlerMiddleware;
-use Laminas\Config\Factory as ConfigFactory;
 use App\ErrorHandlers\ErrorResponseGenerator;
 use App\Middlewares\SystemAdminAuthMiddleware;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
@@ -60,8 +59,8 @@ try {
         $configFile = ROOT_PATH . "/configs/config.production.php";
     }
 
-     // Load configuration directly using PHP's include
-     $systemConfig = include $configFile;
+    // Load configuration directly using PHP's include
+    $systemConfig = include $configFile;
 
     // Detect if debug mode is enabled
     $debugMode = $systemConfig['system']['debug_mode'] ?? false;

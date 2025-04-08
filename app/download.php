@@ -2,6 +2,7 @@
 
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 
 // Sanitized values from $request object
@@ -50,11 +51,19 @@ $allowedMimeTypes = [
 $file = realpath($fileName);
 $webRootPath = realpath(WEB_ROOT);
 
+$fileExists = MiscUtility::fileExists($file);
 if (
     $file === false ||
     !str_starts_with($file, $webRootPath) ||
-    !MiscUtility::fileExists($file)
+    $fileExists === false
 ) {
+    LoggerUtility::logError('File download failed due to missing or invalid path', [
+        'requested_file' => $fileName,
+        'resolved_path' => $file ?: 'NOT FOUND',
+        'web_root' => $webRootPath,
+        'file_exists' => $fileExists ? 'yes' : 'no',
+    ]);
+
     http_response_code(404);
     throw new SystemException('File does not exist. Cannot download this file', 404);
 }
@@ -71,8 +80,7 @@ $filename = basename($file);
 $filename = preg_replace('/[^a-zA-Z0-9_\-.]/', '', $filename);
 
 // Check if the file should be forced to download or can be viewed inline
-$forceDownload = ($mimeType === 'text/plain' || $mimeType === 'text/csv' ||
-    (isset($_GET['d']) && $_GET['d'] === 'a'));
+$forceDownload = $mimeType === 'text/plain' || $mimeType === 'text/csv' || (isset($_GET['d']) && $_GET['d'] === 'a');
 
 // Serve the file
 _serveSecureFile($file, $filename, $mimeType, $forceDownload);

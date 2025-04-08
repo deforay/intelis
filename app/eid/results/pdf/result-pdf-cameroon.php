@@ -128,11 +128,8 @@ if (!empty($result)) {
     $result['sample_collection_date'] = DateUtility::humanReadableDateFormat($result['sample_collection_date'] ?? '', true);
     $result['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($result['sample_tested_datetime'] ?? '', true);
     $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
+    $result['result_approved_datetime'] =  DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
-    $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
-    if ($checkDateIsset !== false) {
-        $result['result_approved_datetime'] = null;
-    }
 
     $testedBy = $result['testedBy'] ?? null;
     $revisedBy = $result['revisedBy'] ?? null;

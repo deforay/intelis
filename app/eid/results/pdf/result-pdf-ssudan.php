@@ -118,12 +118,7 @@ if (!empty($result)) {
 
 
     $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
-
-
-    $checkDateIsset = strpos((string) $result['result_approved_datetime'], "0000-00-00");
-    if ($checkDateIsset !== false) {
-        $result['result_approved_datetime'] = null;
-    }
+    $result['result_approved_datetime'] =  DateUtility::humanReadableDateFormat($result['result_approved_datetime'] ?? '', true);
 
     $testedBy = $result['testedBy'] ?? null;
     $revisedBy = $result['revisedBy'] ?? null;

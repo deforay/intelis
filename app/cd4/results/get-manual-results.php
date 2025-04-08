@@ -211,7 +211,7 @@ try {
           $sWhere[] = $statusCondition;
      } else {      // Only approved results can be printed
 
-          $sWhere[] = ' ((vl.result_status = ' . SAMPLE_STATUS\ACCEPTED . ' AND vl.cd4_result is NOT NULL AND vl.cd4_result !="") OR (vl.result_status = ' . SAMPLE_STATUS\REJECTED . ' AND (vl.cd4_result is NULL OR vl.cd4_result = ""))) AND (result_printed_datetime is NULL OR DATE(result_printed_datetime) = "0000-00-00")';
+          $sWhere[] = ' ((vl.result_status = ' . SAMPLE_STATUS\ACCEPTED . ' AND vl.cd4_result is NOT NULL AND vl.cd4_result !="") OR (vl.result_status = ' . SAMPLE_STATUS\REJECTED . ' AND (vl.cd4_result is NULL OR vl.cd4_result = ""))) AND result_printed_datetime is NULL';
      }
 
      if (isset($_POST['gender']) && trim((string) $_POST['gender']) != '') {
