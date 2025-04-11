@@ -404,6 +404,7 @@ $sFormat = '';
                                                                       if ($general->isLISInstance() === false) { ?>
                                                                            <option value="other">Other</option>
                                                                       <?php } ?>
+                                                                      <option value="Not Reported">Not Reported</option>
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -1039,7 +1040,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";

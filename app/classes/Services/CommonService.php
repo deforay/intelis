@@ -405,11 +405,13 @@ final class CommonService
 
     public function getValueByName($fieldValue = null, $fieldName = null, $tableName = null, $returnFieldName = null)
     {
-        return MemoUtility::remember(function () use ($fieldValue, $fieldName, $tableName, $returnFieldName) {
-            if (empty($fieldValue) || empty($fieldName) || empty($tableName) || empty($returnFieldName)) {
-                return null;
-            }
 
+        if (empty($fieldValue) || empty($fieldName) || empty($tableName) || empty($returnFieldName)) {
+            return null;
+        }
+
+
+        return MemoUtility::remember(function () use ($fieldValue, $fieldName, $tableName, $returnFieldName) {
             $this->db->where($fieldName, $fieldValue);
             return $this->db->getValue($tableName, $returnFieldName);
         });

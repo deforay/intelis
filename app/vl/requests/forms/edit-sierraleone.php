@@ -505,6 +505,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 														if ($general->isLISInstance() === false) {  ?>
 															<option value="other">Other</option>
 														<?php } ?>
+														<option value="Not Reported">Not Reported</option>
 													</select>
 													<input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
 												</div>

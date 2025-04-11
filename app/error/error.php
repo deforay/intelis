@@ -1,13 +1,13 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$errorReason = $errorReason ?? _translate('Internal Server Error') . ' - ';
-$errorMessage = $errorMessage ?? _translate('Sorry, something went wrong. Please try again later.');
+$errorReason ??= _translate('Internal Server Error') . ' - ';
+$errorMessage ??= _translate('Sorry, something went wrong. Please try again later.');
 ?>
 
 <!DOCTYPE html>
@@ -16,7 +16,7 @@ $errorMessage = $errorMessage ?? _translate('Sorry, something went wrong. Please
 <head>
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-  <title>ERROR | LIS</title>
+  <title><?= _translate('ERROR'); ?> | <?= $general->isSTSInstance() ? 'STS' : 'LIS'; ?></title>
   <!-- Tell the browser to be responsive to screen width -->
   <meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
   <meta name="viewport" content="width=1024">
