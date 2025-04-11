@@ -43,7 +43,6 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-
 if ! command -v needrestart &>/dev/null; then
     print info "needrestart not found. Installing it..."
     apt-get install -y needrestart
@@ -62,7 +61,6 @@ if [ -f /etc/needrestart/needrestart.conf ]; then
 else
     print warning "needrestart.conf not found. Skipping non-interactive restart config."
 fi
-
 
 # Initialize flags
 skip_ubuntu_updates=false
@@ -529,7 +527,25 @@ update_php_ini() {
 
         # Process the file line by line
         while IFS= read -r line; do
-            # (line replacements...)
+            if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= && "$er_set" = "false" ]]; then
+                echo ";$line" >>"$temp_file"
+                echo "$desired_error_reporting" >>"$temp_file"
+                er_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= && "$pms_set" = "false" ]]; then
+                echo ";$line" >>"$temp_file"
+                echo "$desired_post_max_size" >>"$temp_file"
+                pms_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= && "$umf_set" = "false" ]]; then
+                echo ";$line" >>"$temp_file"
+                echo "$desired_upload_max_filesize" >>"$temp_file"
+                umf_set="true"
+            elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= && "$sm_set" = "false" ]]; then
+                echo ";$line" >>"$temp_file"
+                echo "$desired_strict_mode" >>"$temp_file"
+                sm_set="true"
+            else
+                echo "$line" >>"$temp_file"
+            fi
         done <"$ini_file"
 
         # Replace the original ini file
@@ -545,7 +561,6 @@ update_php_ini() {
         print info "PHP settings are already correctly set in $ini_file"
     fi
 }
-
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
