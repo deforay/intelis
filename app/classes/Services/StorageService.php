@@ -5,6 +5,7 @@ namespace App\Services;
 
 use Throwable;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -24,7 +25,7 @@ final class StorageService
 
     public function getLabStorage($allColumns = false, $condition = null, $onlyActive = true)
     {
-        return once(function () use ($allColumns, $condition, $onlyActive) {
+        return MemoUtility::remember(function () use ($allColumns, $condition, $onlyActive) {
 
             if ($onlyActive) {
                 $this->db->where('storage_status', 'active');
@@ -86,7 +87,7 @@ final class StorageService
 
     public function getStorageById(?string $storageId = null): ?array
     {
-        return once(function () use ($storageId) {
+        return MemoUtility::remember(function () use ($storageId) {
             if (!empty($storageId)) {
                 $this->db->where('storage_id', $storageId);
                 $this->db->where('storage_status', 'active');
@@ -100,7 +101,7 @@ final class StorageService
 
     public function getStorageByCode(?string $storageCode = null): ?array
     {
-        return once(function () use ($storageCode) {
+        return MemoUtility::remember(function () use ($storageCode) {
             if (!empty($storageCode)) {
                 $this->db->where('storage_code', $storageCode);
                 $this->db->where('storage_status', 'active');
@@ -114,7 +115,7 @@ final class StorageService
 
     public function getFreezerHistoryById($historyId)
     {
-        return once(function () use ($historyId) {
+        return MemoUtility::remember(function () use ($historyId) {
             if (!empty($historyId)) {
                 $this->db->where('history_id', $historyId);
                 $return = $this->db->getOne("lab_storage_history");

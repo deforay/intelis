@@ -47,7 +47,7 @@ fi
 if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
     sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
 else
-    echo "\$nrconf{restart} = 'a';" >> /etc/needrestart/needrestart.conf
+    echo "\$nrconf{restart} = 'a';" >>/etc/needrestart/needrestart.conf
 fi
 
 # Initialize flags
@@ -374,8 +374,7 @@ else
     rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
 fi
 
-if [ -f ${config_file}.bak.$(date +%Y%m%d%H%M%S) ]
-then
+if [ -f ${config_file}.bak.$(date +%Y%m%d%H%M%S) ]; then
     print info "Removing backup file ${config_file}.bak.$(date +%Y%m%d%H%M%S)"
     rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
 fi
@@ -410,8 +409,6 @@ else
     print warning "SET PERSIST failed: $persist_result"
     log_action "SET PERSIST sql_mode failed: $persist_result"
 fi
-
-
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
@@ -518,26 +515,26 @@ update_php_ini() {
         while IFS= read -r line; do
             if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= && "$er_set" = "false" ]]; then
                 # Comment the original line and add the new one
-                echo ";$line" >> "$temp_file"
-                echo "$desired_error_reporting" >> "$temp_file"
+                echo ";$line" >>"$temp_file"
+                echo "$desired_error_reporting" >>"$temp_file"
                 er_set="true"
             elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= && "$pms_set" = "false" ]]; then
-                echo ";$line" >> "$temp_file"
-                echo "$desired_post_max_size" >> "$temp_file"
+                echo ";$line" >>"$temp_file"
+                echo "$desired_post_max_size" >>"$temp_file"
                 pms_set="true"
             elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= && "$umf_set" = "false" ]]; then
-                echo ";$line" >> "$temp_file"
-                echo "$desired_upload_max_filesize" >> "$temp_file"
+                echo ";$line" >>"$temp_file"
+                echo "$desired_upload_max_filesize" >>"$temp_file"
                 umf_set="true"
             elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= && "$sm_set" = "false" ]]; then
-                echo ";$line" >> "$temp_file"
-                echo "$desired_strict_mode" >> "$temp_file"
+                echo ";$line" >>"$temp_file"
+                echo "$desired_strict_mode" >>"$temp_file"
                 sm_set="true"
             else
                 # Keep the line as is
-                echo "$line" >> "$temp_file"
+                echo "$line" >>"$temp_file"
             fi
-        done < "$ini_file"
+        done <"$ini_file"
 
         # Move the temporary file to replace the original
         mv "$temp_file" "$ini_file"
@@ -552,7 +549,6 @@ if [ -f "${ini_file}.bak.$(date +%Y%m%d%H%M%S)" ]; then
     print info "Removing backup file ${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
     rm "${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
 fi
-
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
@@ -577,7 +573,13 @@ print success "All system checks passed. Continuing with the update..."
 # Update Ubuntu Packages
 if [ "$skip_ubuntu_updates" = false ]; then
     print header "Updating Ubuntu packages"
-    apt-get update && apt-get upgrade -y
+    export DEBIAN_FRONTEND=noninteractive
+    export NEEDRESTART_SUSPEND=1
+
+    apt-get update
+    apt-get -o Dpkg::Options::="--force-confdef" \
+        -o Dpkg::Options::="--force-confold" \
+        upgrade -y
 
     if ! grep -q "ondrej/apache2" /etc/apt/sources.list /etc/apt/sources.list.d/*; then
         add-apt-repository ppa:ondrej/apache2 -y
@@ -585,11 +587,14 @@ if [ "$skip_ubuntu_updates" = false ]; then
     fi
 
     print info "Configuring any partially installed packages..."
-    sudo dpkg --configure -a
+    export DEBIAN_FRONTEND=noninteractive
+    dpkg --configure -a
 fi
 
 # Clean up
-apt-get autoremove -y
+export DEBIAN_FRONTEND=noninteractive
+apt-get -y autoremove
+
 if [ "$skip_ubuntu_updates" = false ]; then
     print info "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh

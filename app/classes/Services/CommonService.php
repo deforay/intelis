@@ -19,6 +19,7 @@ use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MemoUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
@@ -296,7 +297,7 @@ final class CommonService
 
     public function getUserMappedProvinces($facilityMap = null)
     {
-        return once(function () use ($facilityMap) {
+        return MemoUtility::remember( function () use ($facilityMap) {
             $facilityMap ??= $_SESSION['facilityMap'] ?? null;
 
             $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
@@ -325,7 +326,7 @@ final class CommonService
 
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
-        return once(function () use ($optionList, $selectedOptions, $emptySelectText) {
+        return MemoUtility::remember( function () use ($optionList, $selectedOptions, $emptySelectText) {
 
             $response = '';
 
@@ -381,7 +382,7 @@ final class CommonService
 
     public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
     {
-        return once(function () use ($tablename, $fieldname, $fieldValue, $condition) {
+        return MemoUtility::remember(function () use ($tablename, $fieldname, $fieldValue, $condition) {
             $query = "SELECT * FROM $tablename WHERE $fieldname = ?";
             if (!empty($condition) && $condition != '') {
                 $query .= " AND $condition";
@@ -404,7 +405,7 @@ final class CommonService
 
     public function getValueByName($fieldValue = null, $fieldName = null, $tableName = null, $returnFieldName = null)
     {
-        return once(function () use ($fieldValue, $fieldName, $tableName, $returnFieldName) {
+        return MemoUtility::remember(function () use ($fieldValue, $fieldName, $tableName, $returnFieldName) {
             if (empty($fieldValue) || empty($fieldName) || empty($tableName) || empty($returnFieldName)) {
                 return null;
             }
@@ -414,9 +415,10 @@ final class CommonService
         });
     }
 
-    public function getLocaleList(int $formId = null)
+
+    public function getLocaleList(?int $formId = null)
     {
-        if (empty($formId)) {
+        if (empty($formId) || $formId == 0) {
             $formId = (int)$this->getGlobalConfig('vl_form') ?? 0;
         }
         // Locale mapping

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b1e612bb601ea9422a2026fbaeeefae8",
+    "content-hash": "951da22c0f3a466ac1602cd2389934db",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -4523,76 +4523,6 @@
             "time": "2024-06-13T08:54:48+00:00"
         },
         {
-            "name": "spatie/once",
-            "version": "3.1.1",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/spatie/once.git",
-                "reference": "25252b821765d72566be17c52ea05b35329f0f8f"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://satis.labsinformatics.com/dist/spatie/once/spatie-once-25252b821765d72566be17c52ea05b35329f0f8f-zip-f69532.zip",
-                "reference": "25252b821765d72566be17c52ea05b35329f0f8f",
-                "shasum": "7a8039238c4cf6f536d6686dd1d29354850eb42f"
-            },
-            "require": {
-                "php": "^8.0"
-            },
-            "require-dev": {
-                "pestphp/pest": "^1.21",
-                "symfony/var-dumper": "^5.1"
-            },
-            "type": "library",
-            "autoload": {
-                "files": [
-                    "src/functions.php"
-                ],
-                "psr-4": {
-                    "Spatie\\Once\\": "src"
-                }
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Freek Van der Herten",
-                    "email": "freek@spatie.be",
-                    "homepage": "https://spatie.be",
-                    "role": "Developer"
-                }
-            ],
-            "description": "A magic memoization function",
-            "homepage": "https://github.com/spatie/once",
-            "keywords": [
-                "cache",
-                "callable",
-                "memoization",
-                "once",
-                "spatie"
-            ],
-            "support": {
-                "source": "https://github.com/spatie/once/tree/3.1.1"
-            },
-            "funding": [
-                {
-                    "url": "https://spatie.be/open-source/support-us",
-                    "type": "custom"
-                }
-            ],
-            "transport-options": {
-                "ssl": {
-                    "verify_peer": true
-                },
-                "http": {
-                    "timeout": 5
-                }
-            },
-            "time": "2024-05-27T09:17:58+00:00"
-        },
-        {
             "name": "sqids/sqids",
             "version": "0.4.1",
             "source": {
@@ -8167,6 +8097,6 @@
         "ext-zip": "*",
         "ext-zlib": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "plugin-api-version": "2.6.0"
 }

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Services\DatabaseService;
 
 final class FacilitiesService
@@ -23,7 +24,7 @@ final class FacilitiesService
 
     public function getAllFacilities($facilityType = null, $onlyActive = true)
     {
-        return once(function () use ($facilityType, $onlyActive) {
+        return MemoUtility::remember(function () use ($facilityType, $onlyActive) {
 
             $this->db->orderBy("facility_name", "asc");
 
@@ -91,7 +92,7 @@ final class FacilitiesService
             return null;
         }
 
-        return once(function () use ($facilityId) {
+        return MemoUtility::remember(function () use ($facilityId) {
 
             $response = null;
             $this->db->where("facility_id", $facilityId);
@@ -109,7 +110,7 @@ final class FacilitiesService
     public function getUserFacilityMap($userId, $facilityType = null)
     {
 
-        return once(function () use ($userId, $facilityType) {
+        return MemoUtility::remember(function () use ($userId, $facilityType) {
 
             if (empty($userId)) {
                 return null;
@@ -136,7 +137,7 @@ final class FacilitiesService
             return null;
         }
 
-        return once(function () use ($labId) {
+        return MemoUtility::remember(function () use ($labId) {
             $this->db->where("vl_lab_id", $labId);
             $fMapResult = $this->db->getValue('testing_lab_health_facilities_map', 'facility_id', null);
 

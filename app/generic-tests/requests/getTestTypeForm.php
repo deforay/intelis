@@ -1,11 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\GenericTestsService;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+use App\Services\GenericTestsService;
 
 /** @var GenericTestsService $genericTestsService */
 $genericTestsService = ContainerRegistry::get(GenericTestsService::class);
@@ -60,7 +61,7 @@ $otherSection = [];
 $s = [];
 function getClassNameFromFieldType($fieldType)
 {
-    return once(function () use ($fieldType) {
+    return MemoUtility::remember(function () use ($fieldType) {
         if ($fieldType == 'number') {
             return " forceNumeric ";
         } elseif ($fieldType == 'date') {
@@ -88,7 +89,7 @@ function getDropDownField($testAttribute, $testAttributeId, $value, $inputClass,
 
     $field = sprintf(
         '<div class="col-lg-7">
-            <select name="%s" id="%s" class="'.$commonClass. $selectizeCls.' %s%s%s%s"
+            <select name="%s" id="%s" class="' . $commonClass . $selectizeCls . ' %s%s%s%s"
                 title="%s" %s style="width:%s;">',
         $fieldName,
         $testAttributeId,
@@ -387,9 +388,9 @@ if (!empty($testResultsAttribute)) {
             if ($resultType == 'qualitative') {
                 $cs = 4;
                 $subTestResultSection .= '<tr><th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>';
-               // $subTestResultSection .= '<td><select class="form-control result-select dynamicSelect2 editableSelect" name="finalResult[' . $subTest . ']" id="finalResult' . $key . '" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');" >';
-               $subTestResultSection .= '<td class="resultInputContainer"><input list="resultListQl' . $key . '" autocomplete="off" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" value="'.$finalTestResults[strtolower($subTest)]['final_result'].'" class="form-control" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
-               $subTestResultSection .= '<datalist id="resultListQl' . $key . '">';
+                // $subTestResultSection .= '<td><select class="form-control result-select dynamicSelect2 editableSelect" name="finalResult[' . $subTest . ']" id="finalResult' . $key . '" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');" >';
+                $subTestResultSection .= '<td class="resultInputContainer"><input list="resultListQl' . $key . '" autocomplete="off" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" class="form-control" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
+                $subTestResultSection .= '<datalist id="resultListQl' . $key . '">';
                 if (!empty($testResultsAttribute[$resultType])) {
                     foreach ($testResultsAttribute[$resultType]['expectedResult'][$key] as $r) {
                         $selected = (isset($finalTestResults[strtolower($subTest)]['final_result']) && $finalTestResults[strtolower($subTest)]['final_result'] == trim((string) $r)) ? "selected='selected'" : "";
@@ -399,16 +400,15 @@ if (!empty($testResultsAttribute)) {
                         } else {
                             $selected = $selectedResult ?? $selected;
                         }
-                       // $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
-                       $subTestResultSection .= '<option value="' . trim((string) $r) . '"> ' . $r . ' </option>';
-
+                        // $subTestResultSection .= '<option value="' . trim((string) $r) . '" ' . $selected . '>' . ($r) . '</option>';
+                        $subTestResultSection .= '<option value="' . trim((string) $r) . '"> ' . $r . ' </option>';
                     }
                 }
                 $subTestResultSection .= '</datalist></td></tr>';
             } else {
                 $cs = 5;
                 $subTestResultSection .= '<tr><th scope="row" colspan="4" class="text-right final-result-row">Final Result</th>';
-                $subTestResultSection .= '<td class="resultInputContainer"><input type="text" autocomplete="off" list="resultList' . $key . '" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" value="'.$finalTestResults[strtolower($subTest)]['final_result'].'" class="form-control result-text" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
+                $subTestResultSection .= '<td class="resultInputContainer"><input type="text" autocomplete="off" list="resultList' . $key . '" id="finalResult' . $key . '" name="finalResult[' . $subTest . ']" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" class="form-control result-text" value="' . $finalTestResults[strtolower($subTest)]['final_result'] . '" placeholder="Enter final result" title="Please enter final results" onchange="updateInterpretationResult(this, \'' . strtolower($subTest) . '\');">';
                 if (!empty($testResultsAttribute['quantitative_result'])) {
                     $subTestResultSection .= '<datalist id="resultList' . $key . '">';
                     if (!empty($testResultsAttribute['quantitative_result'])) {

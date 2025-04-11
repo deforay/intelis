@@ -104,7 +104,9 @@ try {
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
     if (isset($input) && !empty($input)) {
+        $dataCounter = 0;
         foreach ($input as $rootKey => $data) {
+            $dataCounter++;
             $mandatoryFields = [
                 'sampleCollectionDate',
                 'facilityId',
@@ -533,7 +535,7 @@ try {
         }
     }
 
-    if ($noOfFailedRecords > 0 && $noOfFailedRecords == _getIteratorCount($input)) {
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == $dataCounter) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {
         $payloadStatus = 'partial';
@@ -566,7 +568,7 @@ try {
     ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], _getIteratorCount($input), 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'generic-tests', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
 echo ApiService::sendJsonResponse($payload, $request);

@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -183,7 +184,7 @@ final class UsersService
 
     public function getAllUsers($facilityMap = null, $status = null, $type = null, $updatedDateTime = null)
     {
-        return once(function () use ($facilityMap, $status, $type, $updatedDateTime) {
+        return MemoUtility::remember(function () use ($facilityMap, $status, $type, $updatedDateTime) {
 
             if (!empty($facilityMap)) {
                 $facilityMap = explode(",", (string) $facilityMap);

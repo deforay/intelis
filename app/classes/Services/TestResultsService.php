@@ -4,6 +4,7 @@ namespace App\Services;
 
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Services\DatabaseService;
 
 final class TestResultsService
@@ -37,7 +38,7 @@ final class TestResultsService
     // Also checks UTF-8 encoding and converts if needed
     public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
-        return once(function () use ($inputString, $encodeToUTF8) {
+        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
             $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
             if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
                 $inputString = mb_convert_encoding($inputString, 'UTF-8');

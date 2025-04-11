@@ -2,11 +2,12 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Abstracts\AbstractTestService;
@@ -93,7 +94,7 @@ final class VlService extends AbstractTestService
 
     public function getVLResultCategory($resultStatus, $finalResult): ?string
     {
-        return once(function () use ($resultStatus, $finalResult) {
+        return MemoUtility::remember(function () use ($resultStatus, $finalResult) {
             $vlResultCategory = null;
             $orignalResultValue = $finalResult;
             $patterns = [
@@ -212,7 +213,7 @@ final class VlService extends AbstractTestService
 
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
-        return once(function () use ($result, $unit, $defaultLowVlResultText) {
+        return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
 
             $vlResultType = $this->checkViralLoadValueType($result);
 

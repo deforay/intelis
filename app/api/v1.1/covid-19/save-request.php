@@ -112,7 +112,9 @@ try {
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];
+    $dataCounter = 0;
     foreach ($input as $rootKey => $data) {
+        $dataCounter++;
 
 
         $mandatoryFields = [
@@ -420,7 +422,7 @@ try {
             'specimen_type' => !empty($data['specimenType']) ? $data['specimenType'] : null,
             'sample_dispatched_datetime' => $data['sampleDispatchedOn'],
             'result_dispatched_datetime' => $data['resultDispatchedOn'],
-            'sample_collection_date' => DateUtility::isoDateFormat($data['sampleCollectionDate'] ?? '', true),
+            'sample_collection_date' => $sampleCollectionDate,
             'health_outcome' => !empty($data['healthOutcome']) ? $data['healthOutcome'] : null,
             'health_outcome_date' => !empty($data['outcomeDate']) ? DateUtility::isoDateFormat($data['outcomeDate']) : null,
             // 'is_sampledata_mortem'                => !empty($data['isSamplePostMortem']) ? $data['isSamplePostMortem'] : null,

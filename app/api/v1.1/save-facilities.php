@@ -80,15 +80,12 @@ try {
 
     $transactionId = MiscUtility::generateULID();
 
-    $globalConfig = $general->getGlobalConfig();
 
     $authToken = ApiService::getAuthorizationBearerToken($request);
     $user = $usersService->getUserByToken($authToken);
-    $roleUser = $usersService->getUserRole($user['user_id']);
-    $responseData = [];
+
     $instanceId = $general->getInstanceId();
 
-    $version =  $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
     foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
@@ -97,8 +94,10 @@ try {
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
-
+    $responseData = [];
+    $dataCounter = 0;
     foreach ($input as $rootKey => $data) {
+        $dataCounter++;
 
         $mandatoryFields = [
             'facility_name',
@@ -124,10 +123,10 @@ try {
         if (isset($stateInfo['geo_name']) && !empty($stateInfo['geo_name'])) {
             $data['facilityStateId'] = $stateInfo['geo_id'];
         } else {
-            $stateData = array(
+            $stateData = [
                 'geo_name' => $data['state'],
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
+            ];
             $db->insert("geographical_divisions", $stateData);
             $lastStateId = $db->getInsertId();
             $data['facilityStateId'] = $lastStateId;
@@ -259,7 +258,7 @@ try {
 
 
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input), 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
 echo ApiService::sendJsonResponse($payload, $request);

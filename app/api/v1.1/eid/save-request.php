@@ -111,7 +111,9 @@ try {
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
 
     $responseData = [];
+    $dataCounter = 0;
     foreach ($input as $rootKey => $data) {
+        $dataCounter++;
 
         $mandatoryFields = [
             'sampleCollectionDate',
@@ -519,7 +521,7 @@ try {
         }
     }
 
-    if ($noOfFailedRecords > 0 && $noOfFailedRecords == iterator_count($input)) {
+    if ($noOfFailedRecords > 0 && $noOfFailedRecords == $dataCounter) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {
         $payloadStatus = 'partial';
@@ -555,7 +557,7 @@ try {
     ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);
-$general->addApiTracking($transactionId, $user['user_id'], iterator_count($input ?? []), 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
+$general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);
 
