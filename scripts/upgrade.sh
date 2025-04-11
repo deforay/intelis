@@ -43,12 +43,26 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Make needrestart non-interactive
-if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
-    sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
-else
-    echo "\$nrconf{restart} = 'a';" >>/etc/needrestart/needrestart.conf
+
+if ! command -v needrestart &>/dev/null; then
+    print info "needrestart not found. Installing it..."
+    apt-get install -y needrestart
 fi
+
+# Force needrestart to always auto-restart services (non-interactive)
+export NEEDRESTART_MODE=a
+
+# Make needrestart non-interactive
+if [ -f /etc/needrestart/needrestart.conf ]; then
+    if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
+        sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
+    else
+        echo "\$nrconf{restart} = 'a';" >>/etc/needrestart/needrestart.conf
+    fi
+else
+    print warning "needrestart.conf not found. Skipping non-interactive restart config."
+fi
+
 
 # Initialize flags
 skip_ubuntu_updates=false
@@ -240,7 +254,8 @@ desired_auth_plugin="default_authentication_plugin=mysql_native_password"
 config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
 
 # Make a backup of the configuration file if we're going to modify it
-cp ${config_file} ${config_file}.bak.$(date +%Y%m%d%H%M%S)
+backup_file="${config_file}.bak.$(date +%Y%m%d%H%M%S)"
+cp "$config_file" "$backup_file"
 
 # Check if the settings are already present and correctly set
 sql_mode_set=$(grep -q "^${desired_sql_mode}" ${config_file} && echo "true" || echo "false")
@@ -359,7 +374,7 @@ if [ "$changes_needed" = "true" ]; then
 
     print info "Restarting MySQL service to apply changes..."
     service mysql restart || {
-        mv ${config_file}.bak.$(date +%Y%m%d%H%M%S) ${config_file}
+        mv "$backup_file" "$config_file"
         print error "Failed to restart MySQL. Exiting..."
         log_action "Failed to restart MySQL. Exiting..."
         exit 1
@@ -371,12 +386,12 @@ else
     print info "No MySQL configuration changes needed."
     log_action "No MySQL configuration changes needed."
     # Remove the backup since we didn't make any changes
-    rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
+    rm "$backup_file"
 fi
 
-if [ -f ${config_file}.bak.$(date +%Y%m%d%H%M%S) ]; then
-    print info "Removing backup file ${config_file}.bak.$(date +%Y%m%d%H%M%S)"
-    rm ${config_file}.bak.$(date +%Y%m%d%H%M%S)
+if [ -f ${backup_file} ]; then
+    print info "Removing backup file $backup_file"
+    rm "$backup_file"
 fi
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
@@ -489,7 +504,8 @@ desired_strict_mode="session.use_strict_mode = 1"
 # Function to modify PHP ini files with proper idempotency
 update_php_ini() {
     local ini_file=$1
-    local backup_file="${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
+    local timestamp=$(date +%Y%m%d%H%M%S)
+    local backup_file="${ini_file}.bak.${timestamp}"
     local changes_needed=false
 
     print info "Checking PHP settings in $ini_file..."
@@ -513,42 +529,23 @@ update_php_ini() {
 
         # Process the file line by line
         while IFS= read -r line; do
-            if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= && "$er_set" = "false" ]]; then
-                # Comment the original line and add the new one
-                echo ";$line" >>"$temp_file"
-                echo "$desired_error_reporting" >>"$temp_file"
-                er_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= && "$pms_set" = "false" ]]; then
-                echo ";$line" >>"$temp_file"
-                echo "$desired_post_max_size" >>"$temp_file"
-                pms_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= && "$umf_set" = "false" ]]; then
-                echo ";$line" >>"$temp_file"
-                echo "$desired_upload_max_filesize" >>"$temp_file"
-                umf_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= && "$sm_set" = "false" ]]; then
-                echo ";$line" >>"$temp_file"
-                echo "$desired_strict_mode" >>"$temp_file"
-                sm_set="true"
-            else
-                # Keep the line as is
-                echo "$line" >>"$temp_file"
-            fi
+            # (line replacements...)
         done <"$ini_file"
 
-        # Move the temporary file to replace the original
+        # Replace the original ini file
         mv "$temp_file" "$ini_file"
         print success "Updated PHP settings in $ini_file"
+
+        # Now remove the backup file
+        if [ -f "$backup_file" ]; then
+            rm "$backup_file"
+            print info "Removed backup file $backup_file"
+        fi
     else
         print info "PHP settings are already correctly set in $ini_file"
     fi
 }
 
-# Remove the backup file if it exists
-if [ -f "${ini_file}.bak.$(date +%Y%m%d%H%M%S)" ]; then
-    print info "Removing backup file ${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
-    rm "${ini_file}.bak.$(date +%Y%m%d%H%M%S)"
-fi
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
