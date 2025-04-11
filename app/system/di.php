@@ -51,6 +51,7 @@ use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\Services\STS\TokensService as STSTokensService;
 use App\Services\STS\ResultsService as STSResultsService;
 use App\Services\STS\RequestsService as STSRequestsService;
+use App\Utilities\MemoUtility;
 
 try {
     // Load configuration
@@ -144,6 +145,7 @@ $builder->addDefinitions([
     CaptchaUtility::class => DI\create(CaptchaUtility::class),
     FileCacheUtility::class => DI\create(FileCacheUtility::class),
     MiscUtility::class => DI\create(MiscUtility::class),
+    MemoUtility::class => DI\create(MemoUtility::class),
     LoggerUtility::class => DI\create(LoggerUtility::class),
     ValidationUtility::class => DI\create(ValidationUtility::class),
     ErrorResponseGenerator::class => DI\create(ErrorResponseGenerator::class)
