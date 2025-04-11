@@ -502,19 +502,19 @@ desired_strict_mode="session.use_strict_mode = 1"
 # Function to modify PHP ini files with proper idempotency
 update_php_ini() {
     local ini_file=$1
-    local timestamp=$(date +%Y%m%d%H%M%S)
+    local timestamp
+    timestamp=$(date +%Y%m%d%H%M%S)
     local backup_file="${ini_file}.bak.${timestamp}"
     local changes_needed=false
 
     print info "Checking PHP settings in $ini_file..."
 
-    # Check if settings are already correctly set
+    local er_set pms_set umf_set sm_set
     er_set=$(grep -q "^${desired_error_reporting}$" "$ini_file" && echo "true" || echo "false")
     pms_set=$(grep -q "^${desired_post_max_size}$" "$ini_file" && echo "true" || echo "false")
     umf_set=$(grep -q "^${desired_upload_max_filesize}$" "$ini_file" && echo "true" || echo "false")
     sm_set=$(grep -q "^${desired_strict_mode}$" "$ini_file" && echo "true" || echo "false")
 
-    # Determine if changes are needed
     if [ "$er_set" = "false" ] || [ "$pms_set" = "false" ] || [ "$umf_set" = "false" ] || [ "$sm_set" = "false" ]; then
         changes_needed=true
         cp "$ini_file" "$backup_file"
@@ -522,24 +522,23 @@ update_php_ini() {
     fi
 
     if [ "$changes_needed" = "true" ]; then
-        # Create a temporary file
+        local temp_file
         temp_file=$(mktemp)
 
-        # Process the file line by line
         while IFS= read -r line; do
-            if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= && "$er_set" = "false" ]]; then
+            if [[ "$line" =~ ^[[:space:]]*error_reporting[[:space:]]*= ]] && [ "$er_set" = "false" ]; then
                 echo ";$line" >>"$temp_file"
                 echo "$desired_error_reporting" >>"$temp_file"
                 er_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= && "$pms_set" = "false" ]]; then
+            elif [[ "$line" =~ ^[[:space:]]*post_max_size[[:space:]]*= ]] && [ "$pms_set" = "false" ]; then
                 echo ";$line" >>"$temp_file"
                 echo "$desired_post_max_size" >>"$temp_file"
                 pms_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= && "$umf_set" = "false" ]]; then
+            elif [[ "$line" =~ ^[[:space:]]*upload_max_filesize[[:space:]]*= ]] && [ "$umf_set" = "false" ]; then
                 echo ";$line" >>"$temp_file"
                 echo "$desired_upload_max_filesize" >>"$temp_file"
                 umf_set="true"
-            elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= && "$sm_set" = "false" ]]; then
+            elif [[ "$line" =~ ^[[:space:]]*session\.use_strict_mode[[:space:]]*= ]] && [ "$sm_set" = "false" ]; then
                 echo ";$line" >>"$temp_file"
                 echo "$desired_strict_mode" >>"$temp_file"
                 sm_set="true"
@@ -548,11 +547,9 @@ update_php_ini() {
             fi
         done <"$ini_file"
 
-        # Replace the original ini file
         mv "$temp_file" "$ini_file"
         print success "Updated PHP settings in $ini_file"
 
-        # Now remove the backup file
         if [ -f "$backup_file" ]; then
             rm "$backup_file"
             print info "Removed backup file $backup_file"
@@ -561,6 +558,7 @@ update_php_ini() {
         print info "PHP settings are already correctly set in $ini_file"
     fi
 }
+
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
