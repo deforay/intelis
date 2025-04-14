@@ -63,8 +63,8 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ]);
 
-        $appVersionArray = iterator_to_array($appVersion);
-        $appVersion = $appVersionArray['appVersion'] ?? null;
+        $appVersion = _getIteratorKey($appVersion, 'appVersion');
+
     } catch (PathNotFoundException | Throwable $e) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;

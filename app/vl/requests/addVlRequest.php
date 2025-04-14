@@ -45,7 +45,7 @@ $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $reasonForFailure = $vlService->getReasonForFailure();
 $userInfo = [];
 foreach ($userResult as $user) {
-    $userInfo[$user['user_id']] = ($user['user_name']);
+    $userInfo[$user['user_id']] = $user['user_name'];
 }
 
 //sample rejection reason

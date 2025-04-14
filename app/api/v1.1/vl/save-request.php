@@ -64,8 +64,8 @@ try {
             'decoder' => new ExtJsonDecoder(true)
         ]);
 
-        $appVersionArray = iterator_to_array($appVersion);
-        $appVersion = $appVersionArray['appVersion'] ?? null;
+        $appVersion = _getIteratorKey($appVersion, 'appVersion');
+
     } catch (PathNotFoundException | Throwable $e) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;
@@ -85,8 +85,6 @@ try {
 
     $transactionId = MiscUtility::generateULID();
 
-    $globalConfig = $general->getGlobalConfig();
-    $vlsmSystemConfig = $general->getSystemConfig();
     $logVal = null;
     $absDecimalVal = null;
     $absVal = null;
@@ -99,7 +97,7 @@ try {
     $responseData = [];
     $uniqueIdsForSampleCodeGeneration = [];
     $instanceId = $general->getInstanceId();
-    $formId = (int) $globalConfig['vl_form'];
+    $formId = (int) $general->getGlobalConfig('vl_form');
 
     $version =  $general->getAppVersion();
     /* To save the user attributes from API */

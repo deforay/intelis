@@ -205,7 +205,7 @@ final class UsersService
                 $result = $this->db->setQueryOption('DISTINCT')->get('user_details u');
                 $userDetails = [];
                 foreach ($result as $user) {
-                    $userDetails[$user['user_id']] = ($user['user_name']);
+                    $userDetails[$user['user_id']] = $user['user_name'];
                 }
                 return $userDetails;
             } else {

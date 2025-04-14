@@ -5,6 +5,7 @@ namespace App\Utilities;
 use Throwable;
 use Carbon\Carbon;
 use Carbon\CarbonInterval;
+use App\Utilities\MemoUtility;
 use App\Exceptions\SystemException;
 
 final class DateUtility
@@ -37,21 +38,24 @@ final class DateUtility
 
     public static function humanReadableDateFormat($date, $includeTime = false, $format = null, $withSeconds = false)
     {
-        if (!self::isDateValid($date)) {
-            return null;
-        }
+        return MemoUtility::remember(function () use ($date, $includeTime, $format, $withSeconds) {
 
-        $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
+            if (!self::isDateValid($date)) {
+                return null;
+            }
 
-        // Check if the format already includes time components
-        $hasTimeComponent = preg_match('/[HhGgis]/', $format);
+            $format ??= $_SESSION['phpDateFormat'] ?? 'd-M-Y';
 
-        // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
-        if ($includeTime && !$hasTimeComponent) {
-            $format .= $withSeconds ? ' H:i:s' : ' H:i';
-        }
+            // Check if the format already includes time components
+            $hasTimeComponent = preg_match('/[HhGgis]/', $format);
 
-        return Carbon::parse($date)->format($format);
+            // If the format doesn't have a time component and $includeTime is true, append the appropriate time format
+            if ($includeTime && !$hasTimeComponent) {
+                $format .= $withSeconds ? ' H:i:s' : ' H:i';
+            }
+
+            return Carbon::parse($date)->format($format);
+        });
     }
 
 
@@ -62,26 +66,31 @@ final class DateUtility
 
     public static function isoDateFormat($date, $includeTime = false)
     {
-        if (!self::isDateValid($date)) {
-            return null;
-        }
+        return MemoUtility::remember(function () use ($date, $includeTime) {
+            if (!self::isDateValid($date)) {
+                return null;
+            }
 
-        $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
-        return Carbon::parse($date)->format($format);
+            $format = ($includeTime !== true) ? "Y-m-d" : "Y-m-d H:i:s";
+            return Carbon::parse($date)->format($format);
+        });
     }
 
     public static function ageInYearMonthDays($dateOfBirth)
     {
-        if (!self::isDateValid($dateOfBirth)) {
-            return null;
-        }
+        return MemoUtility::remember(function () use ($dateOfBirth) {
 
-        $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
-        return [
-            "year" => $diff->y,
-            "months" => $diff->m,
-            "days" => $diff->d
-        ];
+            if (!self::isDateValid($dateOfBirth)) {
+                return null;
+            }
+
+            $diff = Carbon::now()->diff(Carbon::parse($dateOfBirth));
+            return [
+                "year" => $diff->y,
+                "months" => $diff->m,
+                "days" => $diff->d
+            ];
+        });
     }
 
     public static function dateDiff($dateString1, $dateString2, $format = null)
@@ -210,17 +219,19 @@ final class DateUtility
 
     public static function convertDateRange(?string $dateRange, $seperator = "to"): array
     {
-        if (empty($dateRange)) {
-            return ['', ''];
-        }
+        return MemoUtility::remember(function () use ($dateRange, $seperator) {
+            if (empty($dateRange)) {
+                return ['', ''];
+            }
 
-        $dates = explode($seperator, $dateRange ?? '');
-        $dates = array_map('trim', $dates);
+            $dates = explode($seperator, $dateRange ?? '');
+            $dates = array_map('trim', $dates);
 
-        $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
-        $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
+            $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
+            $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
 
-        return [$startDate, $endDate];
+            return [$startDate, $endDate];
+        });
     }
 
     /**

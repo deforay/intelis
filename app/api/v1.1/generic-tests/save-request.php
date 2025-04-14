@@ -78,8 +78,6 @@ try {
     $tableName = "form_generic";
     $tableName1 = "activity_log";
     $testTableName = 'generic_test_results';
-    $globalConfig = $general->getGlobalConfig();
-    $vlsmSystemConfig = $general->getSystemConfig();
 
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];

@@ -5,32 +5,38 @@ namespace App\Utilities;
 class MemoUtility
 {
     private static array $cache = [];
+    private const MAX_ENTRIES = 1000;
 
-    /**
-     * Generate a safe, consistent hash key for memoization.
-     *
-     * @param string $caller Caller function/class or fallback identifier
-     * @param array $args Arguments to hash
-     * @return string 40-character SHA-1 hash
-     */
-    public static function hashKey(string $caller, array $args): string
+    private static function deepSort(array $array): array
     {
-        return sha1($caller . '|' . serialize($args));
+        foreach ($array as &$value) {
+            if (is_array($value)) {
+                $value = self::deepSort($value);
+            }
+        }
+
+        if (array_keys($array) !== range(0, count($array) - 1)) {
+            ksort($array);
+        }
+
+        return $array;
     }
 
-    /**
-     * Memoize a callable with optional TTL.
-     *
-     * @param string $key Unique key (e.g., hashed by hashKey)
-     * @param callable $callback Logic to cache
-     * @param float|null $ttl Optional TTL in seconds
-     * @return mixed
-     */
+    public static function hashKey(string $caller, array $args): string
+    {
+        $normalizedArgs = self::deepSort($args);
+        return sha1($caller . '|' . serialize($normalizedArgs));
+    }
+
     public static function memo(string $key, callable $callback, ?float $ttl = null): mixed
     {
         $now = microtime(true);
 
         if (!isset(self::$cache[$key])) {
+            if (count(self::$cache) >= self::MAX_ENTRIES) {
+                array_shift(self::$cache); // Remove oldest
+            }
+
             self::$cache[$key] = [
                 'value' => $callback(),
                 'timestamp' => $now
@@ -45,13 +51,6 @@ class MemoUtility
         return self::$cache[$key]['value'];
     }
 
-    /**
-     * Automatically memoize based on caller + args, with optional TTL.
-     *
-     * @param callable $callback The logic to memoize
-     * @param float|null $ttl Optional TTL in seconds
-     * @return mixed
-     */
     public static function remember(callable $callback, ?float $ttl = null): mixed
     {
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1] ?? [];
@@ -62,17 +61,17 @@ class MemoUtility
             $caller = ($trace['file'] ?? '') . ':' . ($trace['line'] ?? 0);
         }
 
-        $args = func_get_args();
-        array_shift($args); // remove callback
+        $args = [];
+        if ($callback instanceof \Closure) {
+            $reflection = new \ReflectionFunction($callback);
+            $args = $reflection->getStaticVariables();
+        }
 
         $key = self::hashKey($caller, $args);
 
         return self::memo($key, $callback, $ttl);
     }
 
-    /**
-     * Clear memo cache manually (useful for long-running scripts).
-     */
     public static function clear(): void
     {
         self::$cache = [];
