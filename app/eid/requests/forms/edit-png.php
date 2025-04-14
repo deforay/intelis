@@ -517,7 +517,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
 
                                             <th scope="row"><label for="">Sample Received Date </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_lab_datetime'] ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" value="<?php echo $eidInfo['sample_received_at_lab_datetime'] ?>" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de l\'échantillon" <?php echo $labFieldDisabled; ?> onchange="" style="width:100%;" />
                                             </td>
 
                                         <tr>

@@ -512,7 +512,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <?php if ($general->isLISInstance()) { ?>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
                                             <td>
-                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Please enter date"); ?>" title="Please enter date de réception de léchantillon" value="<?php if (isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'], true); ?>" onchange="" style="width:100%;" />
+                                                <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="<?= _translate("Sample Reception Date"); ?>" title="<?= _translate("Please enter Sample Reception Date"); ?>" value="<?php if (isset($_SESSION['eidData']['sample_received_at_lab_datetime']) && !empty($_SESSION['eidData']['sample_received_at_lab_datetime'])) echo DateUtility::humanReadableDateFormat($_SESSION['eidData']['sample_received_at_lab_datetime'], true); ?>" onchange="" style="width:100%;" />
                                             </td>
                                         <?php } ?>
                                     </tr>

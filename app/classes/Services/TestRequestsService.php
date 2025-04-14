@@ -335,6 +335,7 @@ final class TestRequestsService
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $buildUpdateData(true));
 
+            // This is to allow users to just update the SAMPLE RECEIVED AT LAB DATETIME in bulk
             // Case 2: When result_status != RECEIVED_AT_CLINIC
             $this->db->reset();
             $this->db->where('result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);

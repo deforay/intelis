@@ -228,7 +228,7 @@ try {
 		$html .= '<td colspan="3">';
 		$html .= '<table style="padding:2px;">';
 		$html .= '<tr>';
-		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Date de réception de léchantillon</td>';
+		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Date de réception de l\'échantillon</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Date de remise du résultat</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Type déchantillon</td>';
 		$html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Technique utilisée</td>';
