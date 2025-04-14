@@ -47,7 +47,7 @@ if ($forceRun && MiscUtility::fileExists($lockFile)) {
 }
 
 // Check if the lock file already exists
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
     if ($cliMode) {
         echo "Another instance of the script is already running." . PHP_EOL;
     }

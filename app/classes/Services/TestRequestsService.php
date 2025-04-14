@@ -304,23 +304,44 @@ final class TestRequestsService
                 'stacktrace' => $e->getTraceAsString()
             ]);
         } finally {
-            $dataToUpdate = [];
-            $dataToUpdate['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-            $dataToUpdate['data_sync'] = 0;
+            $userId = $_SESSION['userId'] ?? null;
+            $sampleReceivedOn = $_POST['sampleReceivedOn'] ?? null;
+            $timestamp = DateUtility::getCurrentDateTime();
 
-            $dataToUpdate['last_modified_by'] = $_SESSION['userId'];
-            $dataToUpdate['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+            // Common logic builder
+            $buildUpdateData = function (bool $isClinic) use ($userId, $sampleReceivedOn, $timestamp) {
+                $data = [
+                    'last_modified_datetime' => $timestamp
+                ];
 
-            if (!empty($_POST['sampleReceivedOn'])) {
-                $dataToUpdate['sample_tested_datetime'] = null;
-                $dataToUpdate['sample_received_at_lab_datetime'] = $_POST['sampleReceivedOn'];
-            }
+                if ($isClinic) {
+                    $data['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                    $data['data_sync'] = 0;
+                    $data['last_modified_by'] = $userId;
+                }
 
+                if (!empty($sampleReceivedOn)) {
+                    $data['sample_tested_datetime'] = null;
+                    $data['sample_received_at_lab_datetime'] = $sampleReceivedOn;
+                }
+
+                return $data;
+            };
+
+            // Case 1: When result_status == RECEIVED_AT_CLINIC
             $this->db->reset();
             $this->db->where('result_status = ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
-            $this->db->where('sample_code is NOT NULL');
+            $this->db->where('sample_code IS NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
-            $this->db->update($tableName, $dataToUpdate);
+            $this->db->update($tableName, $buildUpdateData(true));
+
+            // Case 2: When result_status != RECEIVED_AT_CLINIC
+            $this->db->reset();
+            $this->db->where('result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
+            $this->db->where('sample_code IS NOT NULL');
+            $this->db->where('sample_package_code', $manifestCode);
+            $this->db->update($tableName, $buildUpdateData(false));
+
             return $status;
         }
     }

@@ -1,8 +1,9 @@
 <?php
 
 namespace App\Services\STS;
-use JsonMachine\Items;
+
 use SAMPLE_STATUS;
+use JsonMachine\Items;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -13,9 +14,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
-use App\Utilities\LoggerUtility;
-use App\Utilities\QueryLoggerUtility;
-use App\Exceptions\SystemException;
 
 
 
@@ -71,43 +69,43 @@ final class ResultsService
 
         $this->setTestType($testType);
 
-             //remove unwanted columns
-       $unwantedColumns = [
-        $this->primaryKeyName,
-        'sample_package_id',
-        'sample_package_code',
-     //   'result_printed_datetime',
-        'request_created_by'
-    ];
-
-    // Create an array with all column names set to null
-    $emptyLabArray = $this->commonService->getTableFieldsAsArray($this->tableName, $unwantedColumns);
-
-
-    $sampleCodes = $facilityIds = [];
-    $labId = null;
-
-
-    if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
-
-        $resultData = [];
-        $options = [
-            'decoder' => new ExtJsonDecoder(true)
+        //remove unwanted columns
+        $unwantedColumns = [
+            $this->primaryKeyName,
+            'sample_package_id',
+            'sample_package_code',
+            //   'result_printed_datetime',
+            'request_created_by'
         ];
-        $parsedData = Items::fromString($jsonResponse, $options);
-        foreach ($parsedData as $name => $data) {
-            if ($name === 'labId') {
-                $labId = $data;
-            } elseif ($name === 'results') {
-                $resultData = $data;
-            }
-        }
 
-        $counter = 0;
-        foreach ($resultData as $key => $resultRow) {
+        // Create an array with all column names set to null
+        $emptyLabArray = $this->commonService->getTableFieldsAsArray($this->tableName, $unwantedColumns);
+
+
+        $sampleCodes = $facilityIds = [];
+        $labId = null;
+
+
+        if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+
+            $resultData = [];
+            $options = [
+                'decoder' => new ExtJsonDecoder(true)
+            ];
+            $parsedData = Items::fromString($jsonResponse, $options);
+            foreach ($parsedData as $name => $data) {
+                if ($name === 'labId') {
+                    $labId = $data;
+                } elseif ($name === 'results') {
+                    $resultData = $data;
+                }
+            }
+
+            $counter = 0;
+            foreach ($resultData as $key => $resultRow) {
 
                 $counter++;
-              
+
                 $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
                 // Overwrite the values in $emptyLabArray with the values in $resultRow
                 $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
@@ -124,43 +122,43 @@ final class ResultsService
 
 
                 if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                  
+
                     $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
                 }
 
-            if($testType == "covid19" || $testType == "generic-tests"){
-                $formData = $resultRow['form_data'] ?? [];
-                if (empty($formData)) {
-                    continue;
+                if ($testType == "covid19" || $testType == "generic-tests") {
+                    $formData = $resultRow['form_data'] ?? [];
+                    if (empty($formData)) {
+                        continue;
+                    }
+
+                    // Overwrite the values in $emptyLabArray with the values in $formData
+                    $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
+
+                    if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
+
+                        $lab['result_approved_by'] = $this->usersService->getOrCreateUser($lab['approved_by_name']);
+                        $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
+                        // we dont need this now
+                        //unset($lab['approved_by_name']);
+                    }
+
+                    $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
+                    $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+
+                    if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
+                        $keysToRemove = [
+                            'result',
+                            'is_sample_rejected',
+                            'reason_for_sample_rejection'
+                        ];
+                        $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
+                    }
                 }
-    
-                // Overwrite the values in $emptyLabArray with the values in $formData
-                $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
-    
-                if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
-    
-                    $lab['result_approved_by'] = $this->usersService->getOrCreateUser($lab['approved_by_name']);
-                    $lab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
-                    // we dont need this now
-                    //unset($lab['approved_by_name']);
-                }
-    
-                $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
-                $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-    
-    
-                if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                    $keysToRemove = [
-                        'result',
-                        'is_sample_rejected',
-                        'reason_for_sample_rejection'
-                    ];
-                    $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
-                }
-            }
 
                 $sResult = $this->runQuery($lab);
-              
+
                 $formAttributes = JsonUtility::jsonToSetString($lab['form_attributes'], 'form_attributes');
                 $lab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
@@ -168,12 +166,11 @@ final class ResultsService
                     $this->db->where($this->primaryKeyName, $sResult[$this->primaryKeyName]);
                     $id = $this->db->update($this->tableName, $lab);
                     $primaryKeyValue = $sResult[$this->primaryKeyName];
-
                 } else {
                     $id = $this->db->insert($this->tableName, $lab);
                     $primaryKeyValue = $this->db->getInsertId();
                 }
-                if($testType == "covid19"){
+                if ($testType == "covid19") {
 
                     // Insert covid19_tests
                     $testsData = $resultRow[$key]['data_from_tests'] ?? [];
@@ -197,36 +194,34 @@ final class ResultsService
                         $this->db->insert("covid19_tests", $covid19TestData);
                     }
                 }
-                if($testType == "generic-tests"){
+                if ($testType == "generic-tests") {
                     // Insert generic_test_results
-                $testsData = $resultRow['data_from_tests'] ?? [];
+                    $testsData = $resultRow['data_from_tests'] ?? [];
 
-                $this->db->where('generic_id', $primaryKeyValue);
-                $this->db->delete("generic_test_results");
-                foreach ($testsData as $tRow) {
-                    $customTestData = [
-                        "generic_id" => $primaryKeyValue,
-                        "test_name" => $tRow['test_name'],
-                        "facility_id" => $tRow['facility_id'],
-                        "sample_tested_datetime" => $tRow['sample_tested_datetime'],
-                        "testing_platform" => $tRow['testing_platform'],
-                        "result" => $tRow['result'],
-                        "updated_datetime" => DateUtility::getCurrentDateTime()
-                    ];
-                    $this->db->insert("generic_test_results", $customTestData);
-                }
+                    $this->db->where('generic_id', $primaryKeyValue);
+                    $this->db->delete("generic_test_results");
+                    foreach ($testsData as $tRow) {
+                        $customTestData = [
+                            "generic_id" => $primaryKeyValue,
+                            "test_name" => $tRow['test_name'],
+                            "facility_id" => $tRow['facility_id'],
+                            "sample_tested_datetime" => $tRow['sample_tested_datetime'],
+                            "testing_platform" => $tRow['testing_platform'],
+                            "result" => $tRow['result'],
+                            "updated_datetime" => DateUtility::getCurrentDateTime()
+                        ];
+                        $this->db->insert("generic_test_results", $customTestData);
+                    }
                 }
 
                 if ($id === true && isset($lab['sample_code'])) {
                     array_push($sampleCodes, $lab['sample_code']);
                     array_push($facilityIds, $lab['facility_id']);
                 }
-
+            }
         }
-    }
 
-    return $sampleCodes;
-
+        return $sampleCodes;
     }
 
     private function runQuery($lab)
@@ -268,5 +263,4 @@ final class ResultsService
 
         return [$conditions, $params];
     }
-
 }

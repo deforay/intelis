@@ -65,7 +65,7 @@ if ($overwriteLocked && MiscUtility::fileExists($lockFile)) {
 }
 
 // Check if the lock file already exists
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
     echo "Another instance of the " . basename(__FILE__) . " is already running." . PHP_EOL;
     exit;
 }

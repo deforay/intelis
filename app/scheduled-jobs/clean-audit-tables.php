@@ -14,7 +14,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $cliMode = php_sapi_name() === 'cli';
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
     if ($cliMode) {
         echo "Another instance of the script is already running." . PHP_EOL;
     }
