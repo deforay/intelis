@@ -167,9 +167,7 @@ $aResultTotal = $db->rawQuery("select COUNT(vl_sample_id) as total FROM form_vl"
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

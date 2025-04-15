@@ -22,8 +22,8 @@ $tableName = "form_tb";
 $primaryKey = "tb_id";
 
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'l_f.facility_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'l_f.facility_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
     $sampleCode = 'remote_sample_code';
 } else if ($general->isStandaloneInstance()) {
@@ -217,9 +217,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

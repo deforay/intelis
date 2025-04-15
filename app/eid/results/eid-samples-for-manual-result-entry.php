@@ -201,9 +201,7 @@ try {
 
      $_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
 
-     /*
- * Output
- */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $iTotal,

@@ -93,9 +93,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM instruments");
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

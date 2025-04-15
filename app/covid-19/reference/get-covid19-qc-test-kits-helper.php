@@ -90,9 +90,7 @@ $aResultTotal = $db->rawQuery("select COUNT(testkit_id) as total FROM r_covid19_
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

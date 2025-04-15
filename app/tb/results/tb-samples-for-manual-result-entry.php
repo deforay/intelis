@@ -204,9 +204,7 @@ if (isset($sLimit) && isset($sOffset)) {
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 $_SESSION['tbResultQueryCount'] = $resultCount;
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

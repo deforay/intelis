@@ -43,12 +43,8 @@ try {
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
      } else if ($general->isStandaloneInstance()) {
-          if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-               unset($aColumns[$key]);
-               $aColumns = array_values($aColumns);
-               unset($orderColumns[$key]);
-               $orderColumns = array_values($orderColumns);
-          }
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
      /* Indexed column (used for fast and accurate table cardinality) */
@@ -292,15 +288,15 @@ try {
           }
           $row[] = $aRow['batch_code'];
           $row[] = $aRow['patient_art_no'];
-          $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['lab_name']);
-          $row[] = ($aRow['sample_name']);
+          $row[] = trim("$patientFname $patientMname $patientLname");
+          $row[] = $aRow['facility_name'];
+          $row[] = $aRow['lab_name'];
+          $row[] = $aRow['sample_name'];
           $row[] = $aRow['cd4_result'];
           $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
 
           $row[] = $aRow['last_modified_datetime'];
-          $row[] = ($aRow['status_name']);
+          $row[] = $aRow['status_name'];
           $row[] = $print;
           $output['aaData'][] = $row;
      }
@@ -308,6 +304,13 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
-} catch (Exception $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Exception $e) {
+     LoggerUtility::log('error', $e->getMessage(), [
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'code' => $e->getCode(),
+          'last_db_query' => $db->getLastQuery(),
+          'las_db_error' => $db->getLastError(),
+          'trace' => $e->getTraceAsString()
+     ]);
 }

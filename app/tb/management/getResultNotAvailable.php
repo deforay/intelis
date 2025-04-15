@@ -151,9 +151,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 $_SESSION['resultNotAvailableCount'] = $resultCount;
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

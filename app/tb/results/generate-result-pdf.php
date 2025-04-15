@@ -63,7 +63,19 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				rsrr.rejection_reason_name ,
 				u_d.user_name as reviewedBy,
 				a_u_d.user_name as approvedBy,
-				r_u_d.user_name as requestedBy,
+				requestor_user.user_name as requestedBy,
+                reviewer_user.user_name as reviewedBy,
+                reviewer_user.user_id as reviewedByUserId,
+                reviewer_user.user_signature as reviewedBySignature,
+                approver_user.user_name as approvedBy,
+                approver_user.user_id as approvedByUserId,
+                approver_user.user_signature as approvedBySignature,
+                reviser_user.user_name as revisedBy,
+                reviser_user.user_id as revisedByUserId,
+                reviser_user.user_signature as revisedBySignature,
+                tester_user.user_name as testedBy,
+                tester_user.user_id as testedByUserId,
+                tester_user.user_signature as testedBySignature,
 				rfs.funding_source_name,
 				rst.sample_name,
 				testres.test_reason_name as reasonForTesting,
@@ -72,9 +84,11 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
 				FROM form_tb as tb
 				LEFT JOIN facility_details as f ON tb.facility_id=f.facility_id
 				LEFT JOIN facility_details as l ON l.facility_id=tb.lab_id
-				LEFT JOIN user_details as u_d ON u_d.user_id=tb.result_reviewed_by
-				LEFT JOIN user_details as a_u_d ON a_u_d.user_id=tb.result_approved_by
-				LEFT JOIN user_details as r_u_d ON r_u_d.user_id=tb.request_created_by
+                LEFT JOIN user_details as reviewer_user ON reviewer_user.user_id=tb.result_reviewed_by
+                LEFT JOIN user_details as approver_user ON approver_user.user_id=tb.result_approved_by
+                LEFT JOIN user_details as reviser_user ON reviser_user.user_id=tb.revised_by
+                LEFT JOIN user_details as tester_user ON tester_user.user_id = tb.tested_by
+				LEFT JOIN user_details as requestor_user ON requestor_user.user_id=tb.request_created_by
 				LEFT JOIN r_tb_test_reasons as testres ON testres.test_reason_id=tb.reason_for_tb_test
 				LEFT JOIN r_tb_sample_rejection_reasons as rsrr ON rsrr.rejection_reason_id=tb.reason_for_sample_rejection
                 LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=tb.recommended_corrective_action
@@ -142,15 +156,15 @@ if (!empty($requestResult)) {
         $printDateTime = $expStr[1];
 
 
-            if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-                $pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
-                $db->where('tb_id', $result['tb_id']);
-                $id = $db->update('form_tb', $pData);
-            } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-                $pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
-                $db->where('tb_id', $result['tb_id']);
-                $id = $db->update('form_tb', $pData);
-            }
+        if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
+            $pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+            $db->where('tb_id', $result['tb_id']);
+            $id = $db->update('form_tb', $pData);
+        } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
+            $pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+            $db->where('tb_id', $result['tb_id']);
+            $id = $db->update('form_tb', $pData);
+        }
 
 
         $tbTestQuery = "SELECT * from tb_tests where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id ASC";

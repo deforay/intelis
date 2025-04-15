@@ -141,9 +141,7 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-/*
- * Output
- */
+
 $output = [
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

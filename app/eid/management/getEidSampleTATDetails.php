@@ -165,9 +165,7 @@ try {
 
 	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-	/*
- * Output
- */
+
 	$output = array(
 		"sEcho" => (int) $_POST['sEcho'],
 		"iTotalRecords" => $resultCount,

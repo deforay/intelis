@@ -169,9 +169,7 @@ try {
     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
     $_SESSION['resultNotAvailableCount'] = $iTotal;
 
-    /*
- * Output
- */
+
     $output = array(
         "sEcho" => (int) $_POST['sEcho'],
         "iTotalRecords" => $iTotal,

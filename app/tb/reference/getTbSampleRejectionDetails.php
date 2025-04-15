@@ -90,9 +90,7 @@ $aResultTotal = $db->rawQuery("select COUNT(rejection_reason_id) as total FROM r
 //print_r($aResultTotal);
 $iTotal = $aResultTotal[0]['total'];
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

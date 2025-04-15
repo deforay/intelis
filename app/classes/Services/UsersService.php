@@ -150,12 +150,13 @@ final class UsersService
 
     public function getUserInfo($userId, $columns = '*')
     {
-
-        if (is_array($columns)) {
-            $columns = implode(",", $columns);
-        }
-        $uQuery = "SELECT $columns FROM $this->table WHERE user_id= ?";
-        return $this->db->rawQueryOne($uQuery, [$userId]);
+        return MemoUtility::remember(function () use ($userId, $columns) {
+            if (is_array($columns)) {
+                $columns = implode(",", $columns);
+            }
+            $uQuery = "SELECT $columns FROM $this->table WHERE user_id= ?";
+            return $this->db->rawQueryOne($uQuery, [$userId]);
+        });
     }
 
 

@@ -96,9 +96,7 @@ $aResultTotal = $db->rawQuery("SELECT * FROM other_config WHERE type ='result'")
 // $aResultTotal = $countResult->fetch_row();
 //print_r($aResultTotal);
 $iTotal = count($aResultTotal);
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

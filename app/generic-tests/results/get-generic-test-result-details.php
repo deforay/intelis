@@ -37,12 +37,8 @@ try {
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
      } elseif ($general->isStandaloneInstance()) {
-          if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-               unset($aColumns[$key]);
-               $aColumns = array_values($aColumns);
-               unset($orderColumns[$key]);
-               $orderColumns = array_values($orderColumns);
-          }
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
      /* Indexed column (used for fast and accurate table cardinality) */

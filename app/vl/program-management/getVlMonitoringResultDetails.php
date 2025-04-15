@@ -160,9 +160,7 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-/*
- * Output
- */
+
 $output = array(
      "sEcho" => (int) $_POST['sEcho'],
      "iTotalRecords" => $iTotal,

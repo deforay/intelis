@@ -94,9 +94,7 @@ $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableNam
 // $aResultTotal = $countResult->fetch_row();
 $iTotal = $aResultTotal[0]['total'];
 
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

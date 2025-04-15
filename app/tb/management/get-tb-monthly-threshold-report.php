@@ -179,9 +179,7 @@ $aResultTotal = $db->rawQuery($sQuery);
 // $aResultTotal = $countResult->fetch_row();
 $iTotal = count($aResultTotal);
 
-/*
- * Output
- */
+
 $output = array(
      "sEcho" => (int) $_POST['sEcho'],
      "aaData" => []

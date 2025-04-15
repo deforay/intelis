@@ -175,9 +175,7 @@ $iFilteredTotal = count($aResultFilterTotal);
 $aResultTotal = $db->rawQuery($sQuery);
 $iTotal = count($aResultTotal);
 
-/*
- * Output
- */
+
 $output = array(
      "sEcho" => (int) $_POST['sEcho'],
      // "iTotalRecords" => $cnt,

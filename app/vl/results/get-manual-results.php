@@ -41,13 +41,9 @@ try {
      $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_art_no', "CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,''))", 'f.facility_name', 'testingLab.facility_name', 's.sample_name', 'vl.result', "vl.last_modified_datetime", 'ts.status_name');
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
-     } else if ($general->isStandaloneInstance()) {
-          if (($key = array_search("remote_sample_code", $aColumns)) !== false) {
-               unset($aColumns[$key]);
-               $aColumns = array_values($aColumns);
-               unset($orderColumns[$key]);
-               $orderColumns = array_values($orderColumns);
-          }
+     } elseif ($general->isStandaloneInstance()) {
+          $aColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
+          $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
      /* Indexed column (used for fast and accurate table cardinality) */

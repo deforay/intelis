@@ -101,9 +101,7 @@ $iFilteredTotal = count($aResultFilterTotal);
 
 $aResultTotal = $db->rawQuery("SELECT * FROM r_generic_test_reasons");
 $iTotal = count($aResultTotal);
-/*
- * Output
- */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
