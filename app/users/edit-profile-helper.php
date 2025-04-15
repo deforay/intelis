@@ -13,12 +13,11 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var UsersService $userModel */
-$userModel = ContainerRegistry::get(UsersService::class);
-
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -87,7 +86,7 @@ try {
                     }
                 }
 
-                $newPassword = $userModel->passwordHash($_POST['password']);
+                $newPassword = $usersService->passwordHash($_POST['password']);
                 $data['password'] = $newPassword;
                 $data['force_password_reset'] = 0;
                 unset($_SESSION['forcePasswordReset']);
