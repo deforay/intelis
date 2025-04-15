@@ -17,13 +17,15 @@ $sarr = $general->getSystemConfig();
 $key = (string) $general->getGlobalConfig('key');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
+
+/** @var EidService $eidService */
+$eidService = ContainerRegistry::get(EidService::class);
+$eidResults = $eidService->getEidResults();
+
+
 try {
 
     $db->beginReadOnlyTransaction();
-
-    /** @var EidService $eidService */
-    $eidService = ContainerRegistry::get(EidService::class);
-    $eidResults = $eidService->getEidResults();
 
     $tableName = "form_eid";
     $primaryKey = "eid_id";
@@ -52,8 +54,6 @@ try {
         $sOffset = $_POST['iDisplayStart'];
         $sLimit = $_POST['iDisplayLength'];
     }
-
-
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
@@ -163,7 +163,7 @@ try {
         if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
             $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL";
         } else {
-            $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL";
+            $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NULL";
         }
     } else {
         $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -177,11 +177,11 @@ try {
     //echo $_SESSION['vlResultQuery'];die;
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-        $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
     $_SESSION['eidPrintQuery'] = $sQuery;
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
 
     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
