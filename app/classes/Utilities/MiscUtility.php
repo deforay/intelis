@@ -751,6 +751,25 @@ final class MiscUtility
         return touch($lockFile);
     }
 
+    public static function setupSignalHandler(string $lockFile): void
+    {
+        if (function_exists('pcntl_signal')) {
+
+            declare(ticks=1);
+
+            foreach ([SIGINT => 'Interrupted', SIGTERM => 'Terminated'] as $signal => $label) {
+                pcntl_signal($signal, function () use ($lockFile, $label, $signal) {
+                    echo "$label. Cleaning up lock file..." . PHP_EOL;
+                    if (file_exists($lockFile)) {
+                        unlink($lockFile);
+                    }
+                    exit(128 + $signal);
+                });
+            }
+        }
+    }
+
+
     /**
      * Checks if the given string is base64 encoded.
      *

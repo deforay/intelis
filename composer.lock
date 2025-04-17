@@ -2921,9 +2921,9 @@
             },
             "dist": {
                 "type": "zip",
-                "url": "https://satis.labsinformatics.com/dist/nikic/iter/nikic-iter-3f031ae08d82c4394410e76b88b441331a6fa15f-zip-5a100e.zip",
+                "url": "https://api.github.com/repos/nikic/iter/zipball/3f031ae08d82c4394410e76b88b441331a6fa15f",
                 "reference": "3f031ae08d82c4394410e76b88b441331a6fa15f",
-                "shasum": "edee70d33723661e55962e714b51bf0e672161ed"
+                "shasum": ""
             },
             "require": {
                 "php": ">=7.1"
@@ -2960,14 +2960,6 @@
             "support": {
                 "issues": "https://github.com/nikic/iter/issues",
                 "source": "https://github.com/nikic/iter/tree/v2.4.1"
-            },
-            "transport-options": {
-                "ssl": {
-                    "verify_peer": true
-                },
-                "http": {
-                    "timeout": 5
-                }
             },
             "time": "2024-03-19T20:45:05+00:00"
         },
@@ -8097,6 +8089,6 @@
         "ext-zip": "*",
         "ext-zlib": "*"
     },
-    "platform-dev": {},
+    "platform-dev": [],
     "plugin-api-version": "2.6.0"
 }

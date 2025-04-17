@@ -26,6 +26,8 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
     exit;
 }
 
+
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -61,16 +63,19 @@ $lockFile = MiscUtility::getLockFile(__FILE__);
 
 // If the force flag is set, delete the lock file if it exists
 if ($overwriteLocked && MiscUtility::fileExists($lockFile)) {
-    MiscUtility::deleteLockFile(__FILE__);
+    MiscUtility::deleteLockFile($lockFile);
 }
 
 // Check if the lock file already exists
 if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
-    echo "Another instance of the " . basename(__FILE__) . " is already running." . PHP_EOL;
+    echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
     exit;
 }
 
-MiscUtility::touchLockFile(__FILE__); // Create or update the lock file
+MiscUtility::touchLockFile($lockFile); // Create or update the lock file
+MiscUtility::setupSignalHandler($lockFile);
+
+
 
 $mysqlConnected = false;
 $sqliteConnected = false;
@@ -151,6 +156,66 @@ try {
         $interfaceData = array_merge($interfaceData, $sqliteData); // Add SQLite data
     }
 
+
+    // Group by order_id + test_id
+    $grouped = [];
+    foreach ($interfaceData as $row) {
+        $groupKey = $row['order_id'] . '::' . $row['test_id'];
+        $grouped[$groupKey][] = $row;
+    }
+
+    $filtered = [];
+
+    $copiesPatterns = ['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies', 'cpml'];
+
+    foreach ($grouped as $group) {
+        $hasCopiesUnit = false;
+
+        // First pass to check if any row has "copies"-type unit
+        foreach ($group as $row) {
+            $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
+            foreach ($copiesPatterns as $pattern) {
+                if (str_contains($unit, $pattern)) {
+                    $hasCopiesUnit = true;
+                    break 2; // Exit both loops
+                }
+            }
+        }
+
+        // Second pass to filter
+        foreach ($group as $row) {
+            $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
+            $isLog = str_contains($unit, 'log');
+            if ($hasCopiesUnit && $isLog) {
+                continue;
+            }
+            $filtered[] = $row;
+        }
+    }
+
+    $filteredIds = array_column($filtered, 'id');
+    $skippedIds = [];
+
+    foreach ($interfaceData as $row) {
+        if (!in_array($row['id'], $filteredIds, true)) {
+            $skippedIds[] = $row['id'];
+        }
+    }
+
+
+    $interfaceData = $filtered;
+
+
+    // var_dump(array_map(function ($row) {
+    //     return [
+    //         'order_id' => $row['order_id'] ?? null,
+    //         'results' => $row['results'] ?? null,
+    //         'test_unit' => $row['test_unit'] ?? null,
+    //     ];
+    // }, $interfaceData));
+
+    // die;
+
     if (empty($interfaceData)) {
         if ($isCli) {
             echo "No results to process" . PHP_EOL;
@@ -167,7 +232,7 @@ try {
 
         $totalResults = count($interfaceData); // Get the total number of items
         if ($isCli) {
-            echo "Processing results from Interface Tool" . PHP_EOL;
+            echo "Processing $totalResults filtered results from Interface Tool" . PHP_EOL;
         }
 
         $availableModules = [];
@@ -571,6 +636,8 @@ try {
 
         // Update unsynced IDs
         $updateSyncStatus($db, $sqliteDb, $unsyncedIds, 2, $mysqlConnected, $sqliteConnected);
+        $updateSyncStatus($db, $sqliteDb, $skippedIds, 2, $mysqlConnected, $sqliteConnected);
+
         $db->connection('interface')->commitTransaction();
     } catch (Throwable $e) {
         echo $e->getMessage() . PHP_EOL;

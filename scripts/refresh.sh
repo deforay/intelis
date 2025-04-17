@@ -24,15 +24,25 @@ mode="full"
 log_file="/tmp/intelis-refresh-$(date +'%Y%m%d-%H%M%S').log"
 restart_apache=false
 restart_mysql=false
+no_cron=false
+remove_cron=false
 
-while getopts ":p:m:ad" opt; do
-    case $opt in
-        p) lis_path="$OPTARG" ;;
-        m) mode="$OPTARG" ;;
-        a) restart_apache=true ;;
-        d) restart_mysql=true ;;
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        -p) lis_path="$2"; shift 2 ;;
+        -m) mode="$2"; shift 2 ;;
+        -a) restart_apache=true; shift ;;
+        -d) restart_mysql=true; shift ;;
+        --no-cron) no_cron=true; shift ;;
+        --remove-cron) remove_cron=true; shift ;;
+        -h|--help)
+            echo "Usage: sudo intelis-refresh [-p path] [-m mode] [-a] [-d] [--no-cron] [--remove-cron]"
+            exit 0
+            ;;
+        *) echo "Unknown option: $1"; exit 1 ;;
     esac
 done
+
 
 log_action() {
     echo "$(date +'%F %T') - $1" >> "$log_file"
@@ -118,15 +128,25 @@ fi
 echo "✅ LIS refresh complete."
 log_action "LIS refresh complete"
 
-# Add cron entry if not already present
 cron_line="0 3 * * * /usr/local/bin/intelis-refresh -p ${lis_path} -m quick > /dev/null 2>&1"
 cron_marker="# added_by_intelis_refresh"
+full_cron_entry="${cron_line} ${cron_marker}"
 
-if ! crontab -l 2>/dev/null | grep -F "/usr/local/bin/intelis-refresh" | grep -Fq "$cron_marker"; then
-    (crontab -l 2>/dev/null; echo "$cron_line $cron_marker") | crontab -
-    echo "🕒 Cron job added: $cron_line"
-    log_action "Cron job added"
-else
-    echo "🕒 Cron job already exists — skipping"
-    log_action "Cron job already exists"
+if [ "$remove_cron" = true ]; then
+    current_crontab=$(mktemp)
+    crontab -l 2>/dev/null | grep -vF "$full_cron_entry" > "$current_crontab"
+    crontab "$current_crontab"
+    rm -f "$current_crontab"
+    echo "🗑️ Removed cron job for path: ${lis_path}"
+    log_action "Cron job removed for path: ${lis_path}"
+elif [ "$no_cron" = false ]; then
+    if ! crontab -l 2>/dev/null | grep -Fq "$full_cron_entry"; then
+        (crontab -l 2>/dev/null; echo "$full_cron_entry") | crontab -
+        echo "🕒 Cron job added: $cron_line"
+        log_action "Cron job added for path: ${lis_path}"
+    else
+        echo "🕒 Cron job already exists for path: ${lis_path} — skipping"
+        log_action "Cron job already exists for path: ${lis_path}"
+    fi
 fi
+
