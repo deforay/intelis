@@ -666,5 +666,5 @@ try {
     }
 
     // Delete the lock file after execution completes
-    MiscUtility::deleteLockFile(__FILE__);
+    MiscUtility::deleteLockFile($lockFile);
 }
