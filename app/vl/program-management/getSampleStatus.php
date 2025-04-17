@@ -191,25 +191,30 @@ if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate'
 }
 
 $tatSampleQuery = "SELECT
-        COUNT(DISTINCT vl.unique_id) AS 'totalSamples',
-        COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberCollected',
-        COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberTested',
-        COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS 'numberReceived',
-        DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') as monthDate,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedTested,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_received_at_lab_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedReceived,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.sample_received_at_lab_datetime))) AS DECIMAL (10,2)) as AvgReceivedTested,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_datetime,vl.sample_collection_date))) AS DECIMAL (10,2)) as AvgCollectedPrinted,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.sample_tested_datetime,vl.result_printed_datetime))) AS DECIMAL (10,2)) as AvgTestedPrinted,
-        CAST(ABS(AVG(TIMESTAMPDIFF(DAY,vl.result_printed_on_sts_datetime,vl.result_printed_on_lis_datetime))) AS DECIMAL (10,2)) as AvgTestedPrintedFirstTime
+    COUNT(DISTINCT vl.unique_id) AS totalSamples,
+    COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberCollected,
+    COUNT(DISTINCT CASE WHEN vl.sample_tested_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberTested,
+    COUNT(DISTINCT CASE WHEN vl.sample_received_at_lab_datetime BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberReceived,
 
-        FROM `$table` AS vl
+    DATE_FORMAT(DATE(vl.sample_tested_datetime), '%b-%Y') AS monthDate,
 
-        INNER JOIN facility_details as f ON vl.lab_id=f.facility_id
-        LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
-        WHERE
-        (vl.result IS NOT NULL AND vl.result != '') AND
-        DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'  ";
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_tested_datetime), 0)), 2) AS AvgCollectedTested,
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.sample_received_at_lab_datetime), 0)), 2) AS AvgCollectedReceived,
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_received_at_lab_datetime, vl.sample_tested_datetime), 0)), 2) AS AvgReceivedTested,
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_collection_date, vl.result_printed_datetime), 0)), 2) AS AvgCollectedPrinted,
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_tested_datetime, vl.result_printed_datetime), 0)), 2) AS AvgTestedPrinted,
+    ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.result_printed_on_lis_datetime, vl.result_printed_on_sts_datetime), 0)), 2) AS AvgTestedPrintedFirstTime
+
+FROM `$table` AS vl
+INNER JOIN facility_details AS f ON vl.lab_id = f.facility_id
+LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
+
+WHERE
+    vl.result IS NOT NULL AND vl.result != '' AND
+    DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'
+";
+
+
 
 $sWhere = [];
 if (!empty($whereCondition)) {

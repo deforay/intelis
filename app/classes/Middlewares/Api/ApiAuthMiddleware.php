@@ -11,11 +11,11 @@ use Slim\Psr7\Response;
 
 readonly class ApiAuthMiddleware implements MiddlewareInterface
 {
-    private UsersService $userModel;
+    private UsersService $usersService;
 
-    public function __construct(UsersService $userModel)
+    public function __construct(UsersService $usersService)
     {
-        $this->userModel = $userModel;
+        $this->usersService = $usersService;
     }
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
@@ -74,12 +74,12 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
             return false;
         }
 
-        return $this->userModel->validateAuthToken($token);
+        return $this->usersService->validateAuthToken($token);
     }
 
     private function checkAndResetTokenIfNeeded(string $token): ?string
     {
-        $user = $this->userModel->getAuthToken($token);
+        $user = $this->usersService->getAuthToken($token);
         if (!empty($user) && isset($user['token_updated']) && $user['token_updated'] === true) {
             return $user['new_token'];
         } else {

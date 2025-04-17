@@ -100,6 +100,7 @@ function printBarcodeLabel(barcode, facility = '', patientART = '') {
 		if (text == "Ready to Print") {
 			//selected_printer.send(format_start + bcode + format_end, printComplete, printerError);
 			let strToPrint = zebraFormat.replaceAll("1234567", barcode);
+			strToPrint = strToPrint.replaceAll("BARCODE", barcode);
 			if (facility != '') {
 				strToPrint = strToPrint.replaceAll("FACILITY", facility);
 			}

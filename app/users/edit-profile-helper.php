@@ -73,7 +73,7 @@ try {
                     $_SESSION['crossLoginPass']  = $newCrossLoginPassword = CommonService::encrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
                     $client = new Client();
                     $url = rtrim((string) SYSTEM_CONFIG['recency']['url'], "/");
-                    $result = $client->post($url . '/api/update-password', [
+                    $result = $client->post("$url/api/update-password", [
                         'form_params' => [
                             'u' => $_SESSION['loginId'],
                             't' => $newCrossLoginPassword
