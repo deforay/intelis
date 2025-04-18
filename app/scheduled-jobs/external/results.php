@@ -43,18 +43,19 @@ $lockFile = MiscUtility::getLockFile(__FILE__);
 
 // If the force flag is set, delete the lock file if it exists
 if ($forceRun && MiscUtility::fileExists($lockFile)) {
-    MiscUtility::deleteLockFile(__FILE__);
+    MiscUtility::deleteLockFile($lockFile);
 }
 
 // Check if the lock file already exists
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
+if (!MiscUtility::isLockFileExpired($lockFile)) {
     if ($cliMode) {
         echo "Another instance of the script is already running." . PHP_EOL;
     }
     exit;
 }
 
-MiscUtility::touchLockFile(__FILE__); // Create or update the lock file
+MiscUtility::touchLockFile($lockFile); // Create or update the lock file
+MiscUtility::setupSignalHandler($lockFile);
 
 // ini_set('memory_limit', -1);
 // set_time_limit(0);
@@ -91,7 +92,17 @@ try {
     $numberOfResults = count($resultSet ?? []);
     $numberSent = 0;
     $resultsSentSuccesfully = [];
+    $counter = 0;
     foreach ($resultSet as $row) {
+
+        $counter++;
+        // This is to prevent the lock file from being deleted by the signal handler
+        // and to keep the script running
+        // touch the lock file every 10 iterations to reduce the number of times disk is accessed
+        if ($counter % 10 === 0) {
+            MiscUtility::touchLockFile($lockFile);
+        }
+
         $payload = [
             "id" => $row[$primaryKey],
             "formId" => $row["vlsm_country_id"],

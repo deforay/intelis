@@ -26,12 +26,15 @@ if (!empty($_GET)) {
 $cliMode = php_sapi_name() === 'cli';
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 18000)) {
+if (!MiscUtility::isLockFileExpired($lockFile)) {
     if ($cliMode) {
         echo "Another instance of the script is already running." . PHP_EOL;
     }
     exit;
 }
+
+MiscUtility::touchLockFile($lockFile);
+MiscUtility::setupSignalHandler($lockFile);
 
 // Updates metadata for last processed date
 function updateLastProcessedDate(&$metadata, $tableName, $lastProcessedDate)
@@ -40,7 +43,7 @@ function updateLastProcessedDate(&$metadata, $tableName, $lastProcessedDate)
 }
 
 // Generator function to retrieve records in batches
-function fetchRecords(DatabaseService $db, string $tableName, string $lastProcessedDate = null, int $limit = 1000, $sampleCode = null)
+function fetchRecords(DatabaseService $db, string $tableName, ?string $lastProcessedDate = null, int $limit = 1000, $sampleCode = null)
 {
     $offset = 0;
     while (true) {
@@ -167,7 +170,14 @@ try {
 
         $currentHeaders = getCurrentColumns($db, $auditTable);
 
+        $counter = 0;
         foreach (fetchRecords($db, $auditTable, $lastProcessedDate, 1000, $sampleCode) as $record) {
+
+            $counter++;
+            // touch the lock file every 10 iterations to reduce the number of times disk is accessed
+            if ($counter % 10 === 0) {
+                MiscUtility::touchLockFile($lockFile);
+            }
             $uniqueId = $record['unique_id'];
             MiscUtility::makeDirectory("$archivePath/$testType");
             $filePath = "$archivePath/$testType/{$uniqueId}.csv.gz";

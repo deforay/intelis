@@ -702,72 +702,62 @@ final class MiscUtility
         return null; // Return null if no MAC address was found
     }
 
-    public static function getLockFile($fileName, $lockFileLocation = TEMP_PATH): string
+
+    public static function getLockFile(string $file): string
     {
-        if (file_exists($fileName) || str_contains($fileName, DIRECTORY_SEPARATOR)) {
-            $fullPath = realpath($fileName);
-            if ($fullPath === false) {
-                throw new InvalidArgumentException("Invalid file path provided.");
-            }
-        } else {
-            $fullPath = $fileName;
+        if (!str_starts_with($file, TEMP_PATH)) {
+            $fileName = str_replace(DIRECTORY_SEPARATOR, '-', ltrim($file, DIRECTORY_SEPARATOR));
+            $file = rtrim(TEMP_PATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $fileName . '.lock';
         }
 
-        // Replace non-alphanumeric characters with hyphens
-        $sanitizedFullPath = preg_replace('/[^A-Za-z0-9_\-]/', '-', $fullPath);
-
-        // Remove any leading hyphen
-        $sanitizedFullPath = ltrim($sanitizedFullPath, '-');
-
-        return $lockFileLocation . '/' . strtolower($sanitizedFullPath) . '.lock';
+        return $file;
     }
 
 
-    public static function isLockFileExpired($lockFile, $maxAgeInSeconds = 3600): bool
-    {
-        if (!file_exists($lockFile)) {
-            return false;
-        }
 
-        $fileAge = time() - filemtime($lockFile);
-        return $fileAge > $maxAgeInSeconds;
+    public static function touchLockFile(string $file): void
+    {
+        touch(self::getLockFile($file));
     }
 
-
-    public static function deleteLockFile($fileName, $lockFileLocation = TEMP_PATH): bool
+    public static function deleteLockFile(string $file): void
     {
-        $lockFile = self::getLockFile($fileName, $lockFileLocation);
-
+        $lockFile = self::getLockFile($file);
         if (file_exists($lockFile)) {
-            return unlink($lockFile);
-        }
-
-        return false;
-    }
-
-    public static function touchLockFile($fileName, $lockFileLocation = TEMP_PATH): bool
-    {
-        $lockFile = self::getLockFile($fileName, $lockFileLocation);
-        return touch($lockFile);
-    }
-
-    public static function setupSignalHandler(string $lockFile): void
-    {
-        if (function_exists('pcntl_signal')) {
-
-            declare(ticks=1);
-
-            foreach ([SIGINT => 'Interrupted', SIGTERM => 'Terminated'] as $signal => $label) {
-                pcntl_signal($signal, function () use ($lockFile, $label, $signal) {
-                    echo "$label. Cleaning up lock file..." . PHP_EOL;
-                    if (file_exists($lockFile)) {
-                        unlink($lockFile);
-                    }
-                    exit(128 + $signal);
-                });
-            }
+            unlink($lockFile);
         }
     }
+
+    public static function isLockFileExpired(string $file, int $maxAgeInSeconds = 900): bool
+    {
+        $lockFile = self::getLockFile($file);
+        if (!file_exists($lockFile)) return true;
+
+        return (time() - filemtime($lockFile)) > $maxAgeInSeconds;
+    }
+
+    public static function setupSignalHandler(string $file): void
+    {
+        if (!function_exists('pcntl_signal')) {
+            return;
+        }
+
+        declare(ticks=1);
+
+        pcntl_signal(SIGINT, function () use ($file) {
+            echo "Interrupted. Cleaning up lock file..." . PHP_EOL;
+            self::deleteLockFile($file);
+            exit(130);
+        });
+
+        pcntl_signal(SIGTERM, function () use ($file) {
+            echo "Terminated. Cleaning up lock file..." . PHP_EOL;
+            self::deleteLockFile($file);
+            exit(143);
+        });
+    }
+
+
 
 
     /**

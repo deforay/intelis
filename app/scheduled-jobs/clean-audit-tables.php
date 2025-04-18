@@ -1,5 +1,12 @@
 <?php
 
+// only run from command line
+$isCli = php_sapi_name() === 'cli';
+if ($isCli === false) {
+    exit(0);
+}
+
+
 require_once(__DIR__ . "/../../bootstrap.php");
 
 use App\Services\TestsService;
@@ -11,15 +18,17 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-$cliMode = php_sapi_name() === 'cli';
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
-    if ($cliMode) {
+if (!MiscUtility::isLockFileExpired($lockFile)) {
+    if ($isCli) {
         echo "Another instance of the script is already running." . PHP_EOL;
     }
     exit;
 }
+
+MiscUtility::touchLockFile($lockFile);
+MiscUtility::setupSignalHandler($lockFile);
 
 $tableToTestTypeMap = [
     'audit_form_vl' => 'vl',
@@ -31,8 +40,16 @@ $tableToTestTypeMap = [
 ];
 
 try {
+    $counter = 0;
     foreach ($tableToTestTypeMap as $tableName => $testType) {
-        if ($cliMode) {
+
+        $counter++;
+        // touch the lock file every 10 iterations to reduce the number of times disk is accessed
+        if ($counter % 10 === 0) {
+            MiscUtility::touchLockFile($lockFile);
+        }
+
+        if ($isCli) {
             echo "Processing duplicates for table: $tableName ($testType)" . PHP_EOL;
         }
 
@@ -59,13 +76,13 @@ try {
         $duplicates = $db->rawQuery($checkDuplicatesQuery);
 
         if (empty($duplicates)) {
-            if ($cliMode) {
+            if ($isCli) {
                 echo "No duplicates found in $tableName." . PHP_EOL;
             }
             continue;
         }
 
-        if ($cliMode) {
+        if ($isCli) {
             echo "Processing $tableName ($testType): " . count($duplicates) . " duplicate groups found." . PHP_EOL;
         }
 
@@ -82,12 +99,12 @@ try {
             $db->rawQuery($deleteQuery, [$vlSampleId, $oldestDatetime]);
         }
 
-        if ($cliMode) {
+        if ($isCli) {
             echo "Duplicates removed successfully for $tableName." . PHP_EOL;
         }
     }
 } catch (Throwable $e) {
-    if ($cliMode) {
+    if ($isCli) {
         echo "Error occurred: " . $e->getMessage() . PHP_EOL;
     }
     LoggerUtility::logError($e->getMessage(), [
@@ -99,7 +116,6 @@ try {
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
-
 } finally {
     MiscUtility::deleteLockFile(__FILE__);
 }

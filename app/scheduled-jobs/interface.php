@@ -67,7 +67,7 @@ if ($overwriteLocked && MiscUtility::fileExists($lockFile)) {
 }
 
 // Check if the lock file already exists
-if (MiscUtility::fileExists($lockFile) && !MiscUtility::isLockFileExpired($lockFile, maxAgeInSeconds: 1800)) {
+if (!MiscUtility::isLockFileExpired($lockFile)) {
     echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
     exit;
 }
@@ -248,6 +248,15 @@ try {
         //$allowRepeatedTests = false;
 
         foreach ($interfaceData as $key => $result) {
+
+
+            // This is to prevent the lock file from being deleted by the signal handler
+            // and to keep the script running
+            // touch the lock file every 10 iterations to reduce the number of times disk is accessed
+            if ($key % 10 === 0) {
+                MiscUtility::touchLockFile($lockFile);
+            }
+
             $db->connection('default')->beginTransaction();
             if ($isCli) {
                 MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar

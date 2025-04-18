@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
@@ -43,15 +44,12 @@ final class TestRequestsService
         $response = [];
         try {
             $isCli = CommonService::isCliRequest();
-            $lockFile = TEMP_PATH . '/sample_code_generation.lock';
+
 
             if ($parallelProcess === false) {
+                $lockFile = MiscUtility::getLockFile('sample_code_generation');
                 // Check if another instance is already running (with timeout protection)
-                if (
-                    file_exists($lockFile) &&
-                    (filemtime($lockFile) > (time() - $interval * 2)) &&
-                    (filemtime($lockFile) > (time() - 1800))
-                ) {
+                if (!MiscUtility::isLockFileExpired($lockFile, 1800)) {
                     if ($isCli) {
                         echo 'Another instance of the sample code generation script is already running' . PHP_EOL;
                     }
@@ -59,7 +57,7 @@ final class TestRequestsService
                 }
 
                 // Create or update the lock file
-                touch($lockFile);
+                MiscUtility::touchLockFile($lockFile);
             }
 
             $sampleCodeColumn = $this->commonService->isSTSInstance() ? 'remote_sample_code' : 'sample_code';
@@ -73,10 +71,13 @@ final class TestRequestsService
             $queueItems = $this->db->get('queue_sample_code_generation', 100);
 
             if (!empty($queueItems)) {
+                $counter = 0;
                 foreach ($queueItems as $item) {
-                    if ($parallelProcess === false) {
-                        // Touch the lock file to keep it live
-                        touch($lockFile);
+                    $counter++;
+
+                    // Refresh lock file periodically to prevent timeout
+                    if ($parallelProcess === false && $counter % 10 === 0) {
+                        MiscUtility::touchLockFile($lockFile);
                     }
 
                     if (empty($item['test_type']) || empty($item['sample_collection_date']) || empty($item['unique_id'])) {
@@ -201,9 +202,9 @@ final class TestRequestsService
 
             return $response;
         } finally {
-            if ($parallelProcess === false && isset($lockFile) && file_exists($lockFile)) {
+            if ($parallelProcess === false && isset($lockFile)) {
                 // Remove the lock file when the script ends
-                @unlink($lockFile);
+                MiscUtility::deleteLockFile($lockFile);
             }
         }
     }
