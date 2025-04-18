@@ -422,13 +422,13 @@ foreach ($tatResult as $sRow) {
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")", escapeText: true); ?>"
+                text: "<?php echo _translate("HIV Viral Load Detection (N = " . ($sampleResultQueryResult['numberValue'] + $sampleResultQueryResult['charValue']) . ")", escapeTextOrContext: true); ?>"
             },
             credits: {
                 enabled: false
             },
             tooltip: {
-                pointFormat: "<?php echo _translate("Viral Load Detection", escapeText: true); ?> :<strong>{point.y}</strong>"
+                pointFormat: "<?php echo _translate("Viral Load Detection", escapeTextOrContext: true); ?> :<strong>{point.y}</strong>"
             },
             plotOptions: {
                 pie: {
@@ -471,12 +471,12 @@ foreach ($tatResult as $sRow) {
                 type: 'line'
             },
             title: {
-                text: "<?php echo _translate("Laboratory Turnaround Time", escapeText: true); ?>"
+                text: "<?php echo _translate("Laboratory Turnaround Time", escapeTextOrContext: true); ?>"
             },
             exporting: {
                 chartOptions: {
                     subtitle: {
-                        text: "<?php echo _translate("Laboratory Turnaround Time", escapeText: true); ?>",
+                        text: "<?php echo _translate("Laboratory Turnaround Time", escapeTextOrContext: true); ?>",
                     }
                 },
                 sourceWidth: 1200,
@@ -496,7 +496,7 @@ foreach ($tatResult as $sRow) {
             },
             yAxis: [{
                 title: {
-                    text: "<?php echo _translate("Average TAT in Days", escapeText: true); ?>"
+                    text: "<?php echo _translate("Average TAT in Days", escapeTextOrContext: true); ?>"
                 },
                 labels: {
                     formatter: function() {
@@ -506,7 +506,7 @@ foreach ($tatResult as $sRow) {
             }, { // Secondary yAxis
                 gridLineWidth: 0,
                 title: {
-                    text: "<?php echo _translate("No. of Tests", escapeText: true); ?>"
+                    text: "<?php echo _translate("No. of Tests", escapeTextOrContext: true); ?>"
                 },
                 labels: {
                     format: '{value}'
@@ -536,7 +536,7 @@ foreach ($tatResult as $sRow) {
 
             series: [{
                     type: 'column',
-                    name: "<?php echo _translate("No. of Samples Tested", escapeText: true); ?>",
+                    name: "<?php echo _translate("No. of Samples Tested", escapeTextOrContext: true); ?>",
                     data: [<?php echo implode(",", $result['totalSamples']); ?>],
                     color: '#7CB5ED',
                     yAxis: 1
@@ -546,7 +546,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Tested - Printed", escapeText: true); ?>",
+                        name: "<?php echo _translate("Tested - Printed", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['AvgTestedPrinted']); ?>],
                         color: '#0f3f6e',
                     },
@@ -556,7 +556,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Received at Lab", escapeText: true); ?>",
+                        name: "<?php echo _translate("Collected - Received at Lab", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedDiff']); ?>],
                         color: '#edb47c',
                     },
@@ -566,7 +566,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Received - Tested", escapeText: true); ?>",
+                        name: "<?php echo _translate("Received - Tested", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedTested']); ?>],
                         color: '#0f3f6e',
                     },
@@ -576,7 +576,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Tested", escapeText: true); ?>",
+                        name: "<?php echo _translate("Collected - Tested", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['sampleTestedDiff']); ?>],
                         color: '#ed7c7d',
                     },
@@ -586,7 +586,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed", escapeText: true); ?>",
+                        name: "<?php echo _translate("Collected - Printed", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['sampleReceivedPrinted']); ?>],
                         color: '#000',
                     },
@@ -596,7 +596,7 @@ foreach ($tatResult as $sRow) {
                 ?> {
                         connectNulls: false,
                         showInLegend: true,
-                        name: "<?php echo _translate("Collected - Printed First Time", escapeText: true); ?>",
+                        name: "<?php echo _translate("Collected - Printed First Time", escapeTextOrContext: true); ?>",
                         data: [<?php echo implode(",", $result['AvgTestedPrintedFirstTime']); ?>],
                         color: '#000',
                     },

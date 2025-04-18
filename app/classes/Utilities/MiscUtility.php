@@ -706,12 +706,19 @@ final class MiscUtility
     public static function getLockFile(string $file): string
     {
         if (!str_starts_with($file, TEMP_PATH)) {
-            $fileName = str_replace(DIRECTORY_SEPARATOR, '-', ltrim($file, DIRECTORY_SEPARATOR));
+            $fileName = ltrim($file, DIRECTORY_SEPARATOR);
+
+            // Normalize to use only single hyphens
+            $fileName = preg_replace('/[\/\\\\]+/', '-', $fileName); // Convert slashes to hyphen
+            $fileName = preg_replace('/-+/', '-', $fileName); // Collapse multiple hyphens
+            $fileName = strtolower(trim($fileName, '-')); // Remove leading/trailing hyphens
+
             $file = rtrim(TEMP_PATH, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . $fileName . '.lock';
         }
 
         return $file;
     }
+
 
 
 

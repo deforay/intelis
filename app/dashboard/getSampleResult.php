@@ -519,7 +519,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: '<?= _translate("Samples", escapeText: true); ?>',
+                name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
                 data: [<?php
                         foreach ($tResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -581,7 +581,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: '<?= _translate("Samples", escapeText: true); ?>',
+                name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
                 data: [<?= $waitingTotal; ?>]
 
             }],
@@ -644,7 +644,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: '<?= _translate("Samples", escapeText: true); ?>',
+                name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
                 data: [<?php
                         foreach ($acceptedResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -710,7 +710,7 @@ try {
             },
             series: [{
                 showInLegend: false,
-                name: "<?php echo _translate("Samples", escapeText: true); ?>",
+                name: "<?php echo _translate("Samples", escapeTextOrContext: true); ?>",
                 data: [<?php
                         foreach ($rejectedResult as $tRow) {
                             echo ($tRow['total']) . ",";
@@ -744,12 +744,12 @@ try {
             },
             xAxis: {
                 categories: [
-                    "<?= _translate("Samples Tested", escapeText: true); ?>",
-                    "<?= _translate("Samples Rejected", escapeText: true); ?>",
-                    "<?= _translate("Samples on Hold", escapeText: true); ?>",
-                    "<?= _translate("Samples Registered at Testing Lab", escapeText: true); ?>",
-                    "<?= _translate("Samples Awaiting Approval", escapeText: true); ?>",
-                    "<?= _translate("Samples Registered at Collection Sites", escapeText: true); ?>"
+                    "<?= _translate("Samples Tested", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Rejected", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples on Hold", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Registered at Testing Lab", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Awaiting Approval", escapeTextOrContext: true); ?>",
+                    "<?= _translate("Samples Registered at Collection Sites", escapeTextOrContext: true); ?>"
                 ]
             },
 
@@ -757,7 +757,7 @@ try {
                 allowDecimals: false,
                 min: 0,
                 title: {
-                    text: "<?= _translate("No. of Samples", escapeText: true); ?>"
+                    text: "<?= _translate("No. of Samples", escapeTextOrContext: true); ?>"
                 }
             },
 
@@ -765,7 +765,7 @@ try {
                 formatter: function() {
                     return '<strong>' + this.x + '</strong><br/>' +
                         this.series.name + ': ' + this.y + '<br/>' +
-                        "<?= _translate("Total", escapeText: true); ?>" + ': ' + this.point.stackTotal;
+                        "<?= _translate("Total", escapeTextOrContext: true); ?>" + ': ' + this.point.stackTotal;
                 }
             },
 

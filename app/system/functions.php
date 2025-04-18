@@ -8,33 +8,35 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
-
 use App\Registries\ContainerRegistry;
-use App\Utilities\MemoUtility;
-
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
+use Symfony\Component\String\UnicodeString;
+use Symfony\Component\String\Slugger\AsciiSlugger;
 
 
-function _translate(?string $text, bool $escapeText = false)
+function _translate(?string $text, bool|string $escapeTextOrContext = false): string
 {
-    if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] == 'en_US') {
-        return $text;
+    if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] === 'en_US') {
+        return $text ?? '';
     }
 
-    $translatedString = SystemService::translate($text);
+    $translated = SystemService::translate($text);
 
-    if ($escapeText && $_SESSION['APP_LOCALE'] != 'en_US') {
-        // Use json_encode to ensure it's safe for JavaScript.
-        // json_encode will add double quotes around the string, remove them.
-        $escapedString = trim(json_encode($translatedString), '"');
+    // Backward compatibility: treat true/false as 'js'/'plain'
+    $context = match (gettype($escapeTextOrContext)) {
+        'boolean' => $escapeTextOrContext ? 'js' : 'plain',
+        'string' => $escapeTextOrContext,
+        default => 'plain',
+    };
 
-        // Use htmlspecialchars to convert special characters to HTML entities,
-        $translatedString = htmlspecialchars($escapedString, ENT_QUOTES, 'UTF-8');
-    }
-
-    return $translatedString;
+    return match ($context) {
+        'js' => substr(json_encode($translated), 1, -1), // Escape quotes etc. but remove outer quotes
+        'html' => htmlspecialchars($translated, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
+        default => $translated, // Plain, unescaped
+    };
 }
+
 
 function _isAllowed($currentRequest, $privileges = null)
 {
@@ -70,9 +72,10 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
     } elseif (is_string($input)) {
         // Normalize encoding to UTF-8 and remove invisible characters
         $input = MiscUtility::toUtf8($input);
-
-        // Trim and sanitize using AntiXSS
-        $input = trim($input);
+        $input = (new UnicodeString($input))
+            ->trim()
+            ->replaceMatches('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '')
+            ->toString();
         $input = $antiXss->xss_clean($input);
 
         // Convert empty strings to null if $nullifyEmptyStrings is true
@@ -109,6 +112,8 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
         $files = [$files];
     }
 
+
+    $slugger = new AsciiSlugger();
     foreach ($files as $file) {
         if ($file instanceof UploadedFile) {
             try {
@@ -160,7 +165,7 @@ function _sanitizeFiles($files, array $allowedTypes = [], bool $sanitizeFileName
 
                 if ($sanitizeFileName) {
                     // Option 1: Preserve original filename with sanitization
-                    $sanitizedFilename = preg_replace('/[^A-Za-z0-9._-]/', '_', $file->getClientFilename());
+                    $sanitizedFilename = $slugger->slug(pathinfo($file->getClientFilename(), PATHINFO_FILENAME))->lower() . '.' . pathinfo($file->getClientFilename(), PATHINFO_EXTENSION);
                     if (strlen($sanitizedFilename) > 0 && $sanitizedFilename[0] === '.') {
                         $sanitizedFilename = '_' . ltrim($sanitizedFilename, '.');
                     }
@@ -383,14 +388,9 @@ function _castVariable(mixed $variable, ?string $expectedType = null, bool $isNu
  * @param string $encoding The character encoding
  * @return string The string with the first letter of each word capitalized
  */
-function _capitalizeWords(string $string, string $encoding = "UTF-8"): string
+function _capitalizeWords(string $string): string
 {
-    // Check if string is empty
-    if (empty($string)) {
-        return $string;
-    }
-
-    return mb_convert_case($string, MB_CASE_TITLE, $encoding);
+    return (new UnicodeString($string))->title()->toString();
 }
 
 /**
@@ -400,16 +400,16 @@ function _capitalizeWords(string $string, string $encoding = "UTF-8"): string
  * @param string $encoding The character encoding
  * @return string The string with only the first letter capitalized
  */
-function _capitalizeFirstLetter(string $string, string $encoding = "UTF-8"): string
+function _capitalizeFirstLetter(string $string): string
 {
-    // Check if string is empty
     if (empty($string)) {
         return $string;
     }
 
-    return mb_convert_case(mb_substr($string, 0, 1, $encoding), MB_CASE_UPPER, $encoding) .
-        mb_substr($string, 1, null, $encoding);
+    $str = new UnicodeString($string);
+    return $str->slice(0, 1)->upper()->append($str->slice(1))->toString();
 }
+
 /**
  * Converts a string to uppercase
  *
@@ -417,14 +417,9 @@ function _capitalizeFirstLetter(string $string, string $encoding = "UTF-8"): str
  * @param string $encoding The character encoding
  * @return string|null The uppercase string or null if input was null
  */
-function _toUpperCase(?string $string, string $encoding = "UTF-8"): ?string
+function _toUpperCase(?string $string): ?string
 {
-    // Check if string is empty or null
-    if (empty($string)) {
-        return $string;
-    }
-
-    return mb_strtoupper($string, $encoding);
+    return $string ? (new UnicodeString($string))->upper()->toString() : $string;
 }
 
 /**
@@ -434,14 +429,9 @@ function _toUpperCase(?string $string, string $encoding = "UTF-8"): ?string
  * @param string $encoding The character encoding
  * @return string|null The lowercase string or null if input was null
  */
-function _toLowerCase(?string $string, string $encoding = "UTF-8"): ?string
+function _toLowerCase(?string $string): ?string
 {
-    // Check if string is empty or null
-    if (empty($string)) {
-        return $string;
-    }
-
-    return mb_strtolower($string, $encoding);
+    return $string ? (new UnicodeString($string))->lower()->toString() : $string;
 }
 
 /**

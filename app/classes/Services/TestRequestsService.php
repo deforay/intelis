@@ -47,7 +47,7 @@ final class TestRequestsService
 
 
             if ($parallelProcess === false) {
-                $lockFile = MiscUtility::getLockFile('sample_code_generation');
+                $lockFile = MiscUtility::getLockFile(__CLASS__ . '-' . __FUNCTION__);
                 // Check if another instance is already running (with timeout protection)
                 if (!MiscUtility::isLockFileExpired($lockFile, 1800)) {
                     if ($isCli) {

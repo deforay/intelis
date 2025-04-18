@@ -802,7 +802,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 				return bond._id;
 			},
 			ajax: {
-				placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+				placeholder: "<?= _translate("Type one or more character to search", escapeTextOrContext: true); ?>",
 				url: "/includes/get-data-list-for-generic.php",
 				dataType: 'json',
 				delay: 250,

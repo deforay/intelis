@@ -103,13 +103,13 @@ $remoteURL = $general->getRemoteURL();
 
         function receiveMetaData() {
             if (!navigator.onLine) {
-                alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");
+                alert("<?= _translate("Please connect to internet to sync with STS", escapeTextOrContext: true); ?>");
                 return false;
             }
 
             if (remoteSync) {
                 $.blockUI({
-                    message: "<h3><?= _translate("Receiving Metadata from STS", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                    message: "<h3><?= _translate("Receiving Metadata from STS", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
                 });
                 $.ajax({
                         url: "/scheduled-jobs/remote/sts-metadata-receiver.php",
@@ -120,7 +120,7 @@ $remoteURL = $general->getRemoteURL();
                     })
                     .fail(function() {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
+                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
                     })
                     .always(function() {
                         sendLabMetaData();
@@ -130,13 +130,13 @@ $remoteURL = $general->getRemoteURL();
 
         function sendLabMetaData() {
             if (!navigator.onLine) {
-                alert("<?= _translate("Please connect to internet to sync with STS", escapeText: true); ?>");
+                alert("<?= _translate("Please connect to internet to sync with STS", escapeTextOrContext: true); ?>");
                 return false;
             }
 
             if (remoteSync) {
                 $.blockUI({
-                    message: "<h3><?= _translate("Sending Lab Metadata", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                    message: "<h3><?= _translate("Sending Lab Metadata", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
                 });
                 $.ajax({
                         url: "/scheduled-jobs/remote/lab-metadata-sender.php",
@@ -147,7 +147,7 @@ $remoteURL = $general->getRemoteURL();
                     })
                     .fail(function() {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
+                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
                     })
                     .always(function() {
                         sendTestResults();
@@ -158,7 +158,7 @@ $remoteURL = $general->getRemoteURL();
         function sendTestResults() {
 
             $.blockUI({
-                message: "<h3><?= _translate("Sending Test Results", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                message: "<h3><?= _translate("Sending Test Results", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
             });
 
             if (remoteSync) {
@@ -171,7 +171,7 @@ $remoteURL = $general->getRemoteURL();
                     })
                     .fail(function() {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
+                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
                     })
                     .always(function() {
                         receiveTestRequests();
@@ -182,7 +182,7 @@ $remoteURL = $general->getRemoteURL();
 
         function receiveTestRequests() {
             $.blockUI({
-                message: "<h3><?= _translate("Receiving Test Requests", escapeText: true); ?><br><?= _translate("Please wait...", escapeText: true); ?></h3>"
+                message: "<h3><?= _translate("Receiving Test Requests", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
             });
 
             if (remoteSync) {
@@ -195,7 +195,7 @@ $remoteURL = $general->getRemoteURL();
                     })
                     .fail(function() {
                         $.unblockUI();
-                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeText: true); ?>");
+                        alert("<?= _translate("Unable to do STS Sync. Please contact technical team for assistance.", escapeTextOrContext: true); ?>");
                     });
             }
         }
@@ -254,7 +254,7 @@ $remoteURL = $general->getRemoteURL();
                     },
                     function(data) {
                         $.unblockUI();
-                        alert("<?= _translate("Thank you.Your message has been submitted.", escapeText: true); ?>");
+                        alert("<?= _translate("Thank you.Your message has been submitted.", escapeTextOrContext: true); ?>");
                     });
             });
         } else {
@@ -265,7 +265,7 @@ $remoteURL = $general->getRemoteURL();
                 },
                 function(data) {
                     $.unblockUI();
-                    alert("<?= _translate("Thank you.Your message has been submitted.", escapeText: true); ?>");
+                    alert("<?= _translate("Thank you.Your message has been submitted.", escapeTextOrContext: true); ?>");
                 });
         }
     }
@@ -598,7 +598,7 @@ $remoteURL = $general->getRemoteURL();
                 return bond._id;
             },
             ajax: {
-                placeholder: "<?= _translate("Type one or more character to search", escapeText: true); ?>",
+                placeholder: "<?= _translate("Type one or more character to search", escapeTextOrContext: true); ?>",
                 url: "/includes/get-data-list-for-generic.php",
                 dataType: 'json',
                 delay: 250,
@@ -646,7 +646,7 @@ $remoteURL = $general->getRemoteURL();
             cache: false,
             success: function(data) {
                 Toastify({
-                    text: "<?= _translate('Cache cleared successfully', escapeText: true) ?>",
+                    text: "<?= _translate('Cache cleared successfully', escapeTextOrContext: true) ?>",
                     duration: 3000,
                     style: {
                         background: 'green'
@@ -699,7 +699,7 @@ $remoteURL = $general->getRemoteURL();
                         diff = diff / (60 * 60 * 24 * 10 * 3);
                         var diffMonths = Math.abs(Math.round(diff));
                         if (diffMonths > 6) {
-                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old", escapeText: true); ?>');
+                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old", escapeTextOrContext: true); ?>');
                             $('.expiredCollectionDate').show();
                         } else {
                             $('.expiredCollectionDate').hide();
@@ -936,7 +936,7 @@ $remoteURL = $general->getRemoteURL();
                     success: function(response) {
                         if (!response.isValid) {
                             Toastify({
-                                text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeText: true) ?>",
+                                text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeTextOrContext: true) ?>",
                                 duration: 3000,
                                 style: {
                                     background: 'red'
@@ -983,7 +983,7 @@ $remoteURL = $general->getRemoteURL();
 
             if (patientId.length < minLength) {
                 $(".lengthErr").remove();
-                var txt = "<?= _translate('Please enter minimum length for Patient Id : ', escapeText: true); ?>" + minLength;
+                var txt = "<?= _translate('Please enter minimum length for Patient Id : ', escapeTextOrContext: true); ?>" + minLength;
                 $(this).parent().append('<span class="lengthErr" style="color:red;">' + txt + '</span>');
             } else {
                 $(".lengthErr").remove();
