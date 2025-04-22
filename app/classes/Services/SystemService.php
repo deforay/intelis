@@ -4,20 +4,16 @@ namespace App\Services;
 
 use Whoops\Run;
 use Whoops\Util\Misc;
-use FilesystemIterator;
 use Gettext\Loader\MoLoader;
-use RecursiveIteratorIterator;
 use App\Services\CommonService;
-use RecursiveDirectoryIterator;
 use Whoops\Handler\PrettyPageHandler;
 use Whoops\Handler\JsonResponseHandler;
-use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 
 final class SystemService
 {
     protected CommonService $commonService;
+    private string $defaultLocale = 'en_US';
 
     public function __construct(CommonService $commonService)
     {
@@ -36,12 +32,8 @@ final class SystemService
     // Setup Translation
     public function setLocale($locale = null, $domain = "messages"): void
     {
-        // Set the default locale
-        $defaultLocale = 'en_US';
-
         // Determine the locale to use
-        $_SESSION['APP_LOCALE'] = $locale ?? $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $defaultLocale;
-
+        $_SESSION['APP_LOCALE'] = $locale ?? $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $this->defaultLocale;
 
         // Construct the path to the .mo file
         $moFilePath = sprintf(
@@ -59,7 +51,7 @@ final class SystemService
         $_SESSION['translations'] = null;
 
         // Load translations if the locale is not the default and the .mo file exists
-        if ($_SESSION['APP_LOCALE'] !== $defaultLocale && file_exists($moFilePath)) {
+        if ($_SESSION['APP_LOCALE'] !== $this->defaultLocale && file_exists($moFilePath)) {
             $loader = new MoLoader();
             $translations = $loader->loadFile($moFilePath);
 

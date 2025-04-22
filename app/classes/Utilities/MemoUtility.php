@@ -43,7 +43,7 @@ class MemoUtility
             ];
         } elseif ($ttl !== null && ($now - self::$cache[$key]['timestamp']) > $ttl) {
             self::$cache[$key] = [
-                'value' => $callback(),
+                'value' => is_callable($callback) ? $callback() : null,
                 'timestamp' => $now
             ];
         }
@@ -53,13 +53,13 @@ class MemoUtility
 
     public static function remember(callable $callback, ?float $ttl = null): mixed
     {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2)[1] ?? [];
-        $caller = ($trace['class'] ?? '') . ($trace['type'] ?? '') . ($trace['function'] ?? '');
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
+        $caller = ($trace[1]['class'] ?? '') . ($trace[1]['type'] ?? '') . ($trace[1]['function'] ?? '');
 
         if (empty($caller) || $caller === 'Closure') {
-            $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 1)[0] ?? [];
-            $caller = ($trace['file'] ?? '') . ':' . ($trace['line'] ?? 0);
+            $caller = ($trace[0]['file'] ?? '') . ':' . ($trace[0]['line'] ?? 0);
         }
+
 
         $args = [];
         if ($callback instanceof \Closure) {

@@ -690,16 +690,15 @@ $remoteURL = $general->getRemoteURL();
                     allowFutureDates: allowFutureDate
                 },
                 function(data) {
-                    console.log(data);
                     if (data == "1") {
-                        alert("Please enter valid Sample Collection Date & Date should not be in future")
+                        alert("<?= _translate("Sample Collection date cannot be in the future"); ?>")
                         return false;
                     } else {
                         var diff = (new Date(cDate).getTime() - new Date().getTime()) / 1000;
                         diff = diff / (60 * 60 * 24 * 10 * 3);
                         var diffMonths = Math.abs(Math.round(diff));
                         if (diffMonths > 6) {
-                            $('.expiredCollectionDate').html('<?= _translate("Sample Collection Date is over 6 months old", escapeTextOrContext: true); ?>');
+                            $('.expiredCollectionDate').html("<?= _translate("Sample Collection Date is over 6 months old", escapeTextOrContext: true); ?>");
                             $('.expiredCollectionDate').show();
                         } else {
                             $('.expiredCollectionDate').hide();

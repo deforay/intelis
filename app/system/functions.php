@@ -3,6 +3,7 @@
 use voku\helper\AntiXSS;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
@@ -21,20 +22,27 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
         return $text ?? '';
     }
 
-    $translated = SystemService::translate($text);
+    return MemoUtility::remember(function () use ($text, $escapeTextOrContext) {
 
-    // Backward compatibility: treat true/false as 'js'/'plain'
-    $context = match (gettype($escapeTextOrContext)) {
-        'boolean' => $escapeTextOrContext ? 'js' : 'plain',
-        'string' => $escapeTextOrContext,
-        default => 'plain',
-    };
+        $translated = SystemService::translate($text);
 
-    return match ($context) {
-        'js' => substr(json_encode($translated), 1, -1), // Escape quotes etc. but remove outer quotes
-        'html' => htmlspecialchars($translated, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
-        default => $translated, // Plain, unescaped
-    };
+        // Backward compatibility: treat true/false as 'js'/'plain'
+        $context = match (gettype($escapeTextOrContext)) {
+            'boolean' => $escapeTextOrContext ? 'js' : 'plain',
+            'string' => $escapeTextOrContext,
+            default => 'plain',
+        };
+
+        return match ($context) {
+            'js' => str_replace(
+                ['\\', "'", '"'],
+                ['\\\\', "\\'", '\\"'],
+                substr(json_encode($translated, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES), 1, -1)
+            ),
+            'html' => htmlspecialchars($translated, ENT_QUOTES, 'UTF-8'), // HTML attribute-safe
+            default => $translated, // Plain, unescaped
+        };
+    });
 }
 
 

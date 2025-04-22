@@ -24,7 +24,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
 $tableName = "user_details";
 $upId = 0;
 

@@ -50,7 +50,7 @@ final class SecurityService
         // }
 
         // Validate the CSRF token
-        if (!$csrfToken || !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
+        if (!is_null($csrfToken) && !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
             $_SESSION['errorDisplayMessage'] = $message = _translate('Invalid Request token. Please refresh the page and try again.');
             throw new SystemException($message, 403);
         }
