@@ -10,18 +10,13 @@ $aColumns = array('comorbidity_name', 'comorbidity_status');
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -63,10 +58,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_hepatitis_comorbidities";
 

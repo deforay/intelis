@@ -44,6 +44,7 @@ $configService = ContainerRegistry::get(ConfigService::class);
 
 $activeModulesArr = SystemService::getActiveModules();
 
+$stsURL = $general->getRemoteURL();
 
 function changeModuleWithQuotes($moduleArr)
 {
@@ -154,7 +155,7 @@ try {
             $db->query("INSERT IGNORE INTO roles_privileges_map(role_id,privilege_id) VALUES (1,$privilegeId)");
         }
 
-        if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
+        if (!empty($stsURL) && $general->isLISInstance()) {
             $insertData['userId'] = $userId;
             $insertData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
             $insertData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
@@ -163,10 +164,10 @@ try {
             $insertData['status'] = 'inactive';
 
 
-            $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
+            $apiUrl = $stsURL . "/api/v1.1/user/save-user-profile.php";
             $post = [
                 'post' => json_encode($insertData),
-                'x-api-key' => MiscUtility::generateRandomString(18)
+                'x-api-key' => ConfigService::generateAPIKeyForSTS($stsURL)
             ];
 
             $client = new Client();

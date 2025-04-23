@@ -7,8 +7,7 @@ $tableName = "other_config";
 
 $aColumns = array('display_name', 'value');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 /*

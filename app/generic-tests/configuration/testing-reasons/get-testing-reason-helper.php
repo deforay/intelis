@@ -22,8 +22,7 @@ $primaryKey = "test_reason_id";
 
 $aColumns = array('test_reason', 'test_reason_code', 'test_reason_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

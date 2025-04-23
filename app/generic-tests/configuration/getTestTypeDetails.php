@@ -19,8 +19,7 @@ $primaryKey = "test_type_id";
 
 $aColumns = array('test_standard_name', 'test_generic_name', 'test_short_code', 'test_loinc_code', 'test_status');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 /*

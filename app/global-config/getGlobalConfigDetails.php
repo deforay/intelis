@@ -1,11 +1,10 @@
 <?php
 
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-
 use App\Registries\AppRegistry;
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
@@ -13,24 +12,18 @@ $tableName = "global_config";
 
 
 
-$aColumns = array('name', 'value');
+$aColumns = ['name', 'value'];
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -71,18 +64,14 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM global_config";
+$sQuery = "SELECT * FROM global_config";
 
 if (!empty($sWhere)) {
-    $sWhere = "WHERE status = 'active' AND " . $sWhere;
-    $sQuery = $sQuery . ' ' . $sWhere;
+    $sWhere = "WHERE status = 'active' AND $sWhere";
+    $sQuery = "$sQuery $sWhere";
 } else {
-    $sQuery = $sQuery . " WHERE status = 'active' ";
+    $sQuery = "$sQuery WHERE status = 'active' ";
 }
 
 if (isset($_POST['category']) && $_POST['category']) {
@@ -91,26 +80,21 @@ if (isset($_POST['category']) && $_POST['category']) {
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
-$rResult = $db->rawQuery($sQuery);
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-/*
-         * Output
-        */
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
     $row = [];

@@ -66,7 +66,7 @@ final class CommonService
 
             // Add https:// if no scheme is present
             if (!preg_match("~^(?:f|ht)tps?://~i", $remoteURL)) {
-                $remoteURL = "https://" . $remoteURL;
+                $remoteURL = "https://$remoteURL";
             }
 
             // Parse the URL and get the scheme and host

@@ -8,8 +8,7 @@ $primaryKey = "instrument_id";
 
 $aColumns = array('machine_name', 'status');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 /*

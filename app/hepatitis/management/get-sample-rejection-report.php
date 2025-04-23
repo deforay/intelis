@@ -31,18 +31,13 @@ if ($general->isStandaloneInstance()) {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -159,9 +154,6 @@ if (isset($sLimit) && isset($sOffset)) {
 
 $_SESSION['rejectedViralLoadResultCount'] = $resultCount;
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

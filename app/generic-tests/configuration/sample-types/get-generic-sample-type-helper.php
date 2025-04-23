@@ -22,8 +22,7 @@ $primaryKey = "sample_type_id";
 
 $aColumns = array('sample_type_name', 'sample_type_code', 'sample_type_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

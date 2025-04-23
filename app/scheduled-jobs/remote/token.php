@@ -4,6 +4,7 @@ use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
@@ -27,7 +28,7 @@ if (!$isLIS || !$cliMode) {
 }
 
 // Set the URL for the token generation endpoint
-$remoteURL = trim($general->getRemoteURL(), '/');
+$remoteURL = rtrim($general->getRemoteURL(), '/');
 
 // Check connectivity
 if (empty($remoteURL) || $remoteURL == '') {
@@ -41,7 +42,7 @@ $apiKey = $options['key'] ?? null;
 
 
 if (empty($apiKey)) {
-    $apiKey = MiscUtility::generateUUIDv5($remoteURL);
+    $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {
     echo "Usage: php token.php --key <API_KEY>" . PHP_EOL;

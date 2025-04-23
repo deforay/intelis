@@ -23,8 +23,7 @@ $primaryKey = "test_method_id";
 
 $aColumns = array('test_method_name', 'test_method_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

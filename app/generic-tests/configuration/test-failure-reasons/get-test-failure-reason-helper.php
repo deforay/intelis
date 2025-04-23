@@ -25,8 +25,7 @@ $primaryKey = "test_failure_reason_id";
 
 $aColumns = array('test_failure_reason', 'test_reason_failure_code', 'test_failure_reason_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

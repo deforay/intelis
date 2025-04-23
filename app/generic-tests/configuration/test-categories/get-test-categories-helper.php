@@ -22,8 +22,7 @@ $primaryKey = "test_category_id";
 
 $aColumns = array('test_category_name', 'test_category_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

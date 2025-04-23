@@ -58,10 +58,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM r_covid19_test_reasons";
 
@@ -87,9 +83,6 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

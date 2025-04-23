@@ -31,18 +31,13 @@ if ($general->isSTSInstance()) {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -84,10 +79,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,f.*,s.*,b.*,ts.*,fd.facility_name as labName FROM form_cd4 as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN facility_details as fd ON fd.facility_id=vl.lab_id LEFT JOIN r_cd4_sample_types as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id where vl.result_status=7 AND vl.cd4_result = 'positive' OR vl.cd4_result > 0";
 $start_date = '';
 $end_date = '';
@@ -168,9 +159,6 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 $_SESSION['highViralResultCount'] = $iTotal;
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

@@ -23,8 +23,7 @@ $primaryKey = "unit_id";
 
 $aColumns = array('unit_name', 'unit_status', 'updated_datetime');
 
-/* Indexed column (used for fast and accurate table cardinality) */
-//$sIndexColumn = $primaryKey;
+
 
 $sTable = $tableName;
 

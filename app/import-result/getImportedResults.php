@@ -132,18 +132,13 @@ $orderColumns = array('tsr.sample_code', 'vl.sample_collection_date', 'tsr.sampl
 $sIndexColumn = "temp_sample_id";
 
 $sTable = 'temp_sample_import';
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -184,10 +179,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 $aWhere = '';
 $sQuery = "$dtsQuery";
 $sOrder = 'temp_sample_id ASC';
@@ -215,9 +206,6 @@ if (isset($sLimit) && isset($sOffset)) {
 /* Data set length after filtering */
 
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,

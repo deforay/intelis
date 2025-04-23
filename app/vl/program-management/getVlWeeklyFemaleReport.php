@@ -24,18 +24,13 @@ $orderColumns = array('f.facility_state', 'f.facility_district', 'f.facility_nam
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
   $sOffset = $_POST['iDisplayStart'];
   $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 
@@ -78,10 +73,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $sWhere[] = $sWhereSub;
 }
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS
 
 		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
@@ -190,9 +181,6 @@ $sResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-/*
-         * Output
-        */
 $output = array(
   "sEcho" => (int) $_POST['sEcho'],
   "iTotalRecords" => $iTotal,

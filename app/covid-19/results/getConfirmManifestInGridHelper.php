@@ -1,14 +1,12 @@
 <?php
 
 
-use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
+use App\Registries\ContainerRegistry;
 
 $sCode = 'sample_code';
-$configQuery = "SELECT `value` FROM global_config WHERE name ='vl_form'";
-$configResult = $db->query($configQuery);
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

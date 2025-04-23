@@ -19,18 +19,13 @@ $aColumns = array('test_reason_name', 'test_reason_status');
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -72,10 +67,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS * FROM $tableName";
 
@@ -111,9 +102,6 @@ $iTotal = $aResultTotal[0]['total'];*/
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

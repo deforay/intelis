@@ -17,18 +17,13 @@ $aColumns = array('role_name', 'role_code', 'status');
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-         * Paging
-         */
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-         * Ordering
-        */
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -71,10 +66,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-         * SQL queries
-         * Get data to display
-        */
 
 $sQuery = "SELECT * FROM roles";
 
@@ -93,9 +84,6 @@ if (isset($sLimit) && isset($sOffset)) {
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
-/*
-         * Output
-        */
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
