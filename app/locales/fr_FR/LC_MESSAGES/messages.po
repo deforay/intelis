@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "POT-Creation-Date: 2025-04-11 14:04+0530\n"
-"PO-Revision-Date: 2025-04-11 14:05+0530\n"
+"PO-Revision-Date: 2025-04-24 20:46+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -11208,7 +11208,7 @@ msgstr "S'il vous plaît entrer sujet"
 #: app/tb/results/email-results.php:99 app/vl/results/email-results.php:99
 #: app/vl/results/vlResultMail.php:99
 msgid "Facility Name (To)"
-msgstr "Nom de la structure"
+msgstr "Nom de l'installation (à)"
 
 #: app/cd4/results/email-results.php:119 app/cd4/results/email-results.php:122
 #: app/covid-19/results/email-results.php:121
@@ -12922,7 +12922,7 @@ msgstr "Nom et code de la structure"
 #: app/tb/reference/tb-sample-type.php:38 app/users/addUser.php:235
 #: app/users/editUser.php:306
 msgid "Facility Type"
-msgstr "Nom de la structure"
+msgstr "Type d'installation"
 
 #: app/covid-19/reference/covid19-qc-test-kits.php:9
 #: app/covid-19/reference/covid19-qc-test-kits.php:16

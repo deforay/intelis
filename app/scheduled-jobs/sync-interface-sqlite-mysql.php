@@ -1,0 +1,85 @@
+#!/usr/bin/env php
+<?php
+
+$isCli = php_sapi_name() === 'cli';
+if (!$isCli) exit(0);
+
+require_once __DIR__ . "/../../bootstrap.php";
+
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+// Connect to MySQL "interface" DB
+
+
+$mysqlConnected = false;
+$sqliteConnected = false;
+
+if (!empty(SYSTEM_CONFIG['interfacing']['database']['host']) && !empty(SYSTEM_CONFIG['interfacing']['database']['username'])) {
+    $mysqlConnected = true;
+    $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
+}
+
+if (!$mysqlConnected) {
+    echo "❌ MySQL interface connection not configured.\n";
+    exit(1);
+}
+
+// Get SQLite path from config
+if (empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
+    echo "❌ SQLite path not set in SYSTEM_CONFIG.\n";
+    exit(1);
+}
+
+$sqlitePath = SYSTEM_CONFIG['interfacing']['sqlite3Path'];
+if (!file_exists($sqlitePath)) {
+    echo "❌ SQLite database not found at: $sqlitePath\n";
+    exit(1);
+}
+
+try {
+    $sqlite = new PDO("sqlite:$sqlitePath");
+    $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    echo "❌ Failed to connect to SQLite: " . $e->getMessage() . "\n";
+    exit(1);
+}
+
+// Fetch unsynced orders
+try {
+    $stmt = $sqlite->query("SELECT * FROM orders WHERE mysql_inserted = 0");
+    $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "❌ Failed to fetch records from SQLite: " . $e->getMessage() . "\n";
+    exit(1);
+}
+
+if (empty($records)) {
+    echo "ℹ️ No records to resync.\n";
+    exit(0);
+}
+
+// Insert into MySQL and update SQLite
+foreach ($records as $record) {
+    $mysqlRecord = $record;
+    unset($mysqlRecord['mysql_inserted'], $mysqlRecord['id']);
+
+    try {
+        $inserted = $db->connection('interface')->insert('orders', $mysqlRecord);
+
+        if ($inserted) {
+            $update = $sqlite->prepare("UPDATE orders SET mysql_inserted = 1 WHERE id = :id");
+            $update->bindValue(':id', $record['id'], PDO::PARAM_INT);
+            $update->execute();
+
+            echo "✔ Synced record ID {$record['id']}\n";
+        }
+    } catch (Throwable $e) {
+        echo "❌ Failed to sync record ID {$record['id']}: " . $e->getMessage() . "\n";
+    }
+}
+
+echo "✅ Resync process completed.\n";
