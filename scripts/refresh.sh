@@ -134,14 +134,14 @@ full_cron_entry="${cron_line} ${cron_marker}"
 
 if [ "$remove_cron" = true ]; then
     current_crontab=$(mktemp)
-    crontab -u root -l 2>/dev/null | grep -vF "$cron_marker" > "$current_crontab"
+    crontab -u root -l 2>/dev/null | grep -vF "$cron_marker" > "$current_crontab" || true
     crontab -u root "$current_crontab"
     rm -f "$current_crontab"
     echo "🗑️ Removed cron job for path: ${lis_path}"
     log_action "Cron job removed for path: ${lis_path}"
 elif [ "$no_cron" = false ]; then
     if ! crontab -u root -l 2>/dev/null | grep -Fq "$cron_marker"; then
-        (crontab -u root -l 2>/dev/null; echo "$full_cron_entry") | crontab -u root -
+        ( crontab -u root -l 2>/dev/null || true; echo "$full_cron_entry" ) | crontab -u root -
         echo "🕒 Cron job added: $cron_line"
         log_action "Cron job added for path: ${lis_path}"
     else
