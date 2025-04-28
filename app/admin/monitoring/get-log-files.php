@@ -46,9 +46,9 @@ if (file_exists($file)) {
 
     // Show which log is being viewed
     if ($logType === 'php_error') {
-        echo "<h4>" . _translate("Viewing PHP Error Log") . "</h4><br>";
+        echo "<h2 style='width:100%; background-color:red;padding:1em;color:#fff;font-size:3em;'>" . _translate("Viewing PHP Error Log") . "</h2><br>";
     } else {
-        echo "<h4>" . _translate("Viewing Application Log for Date") . " - " . $_GET['date'] . "</h4><br>";
+        echo "<h2 style='width:100%; background-color:red;padding:1em;color:#fff;font-size:3em;'>" . _translate("Viewing System Log for Date") . " - " . $_GET['date'] . "</h2><br>";
     }
 
     // If no new entries are available, stop further loading

@@ -268,54 +268,53 @@ final class DatabaseService extends MysqliDb
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
-
             $parser = new Parser($sql);
-
-            // Retrieve the first statement
-            $statement = $parser->statements[0];
+            $originalStatement = clone $parser->statements[0];
 
             $limitOffsetSet = isset($limit) && isset($offset);
 
-            if ((!isset($statement->limit) || empty($statement->limit)) && $limitOffsetSet) {
-                $statement->limit = new Limit($limit, $offset);
+            // --- MAIN QUERY ---
+            $statementForQuery = clone $originalStatement;
+
+            if ((!isset($statementForQuery->limit) || empty($statementForQuery->limit)) && $limitOffsetSet) {
+                $statementForQuery->limit = new Limit($limit, $offset);
             }
 
-            $sql = $statement->build();
+            $querySql = $statementForQuery->build();
 
-            // Execute the main query
             if ($returnGenerator === true) {
-                $queryResult = $this->rawQueryGenerator($sql, $params);
+                $queryResult = $this->rawQueryGenerator($querySql, $params);
             } else {
-                $queryResult = $this->rawQuery($sql, $params);
+                $queryResult = $this->rawQuery($querySql, $params);
             }
 
-
+            // --- COUNT QUERY ---
             $count = 0;
-            // Execute the count query if necessary
             if ($limitOffsetSet || $returnGenerator) {
+                $statementForCount = clone $originalStatement;
+                $statementForCount->limit = null;
+                $statementForCount->order = null;
 
-                $statement->limit = null;
-                $statement->order = null;
-
-                if (stripos($sql, 'GROUP BY') !== false) {
-                    $sql = $statement->build();
-                    $countSql = "SELECT COUNT(*) as totalCount FROM ($sql) as subquery";
+                if (!empty($originalStatement->group)) {
+                    // Group By exists — need subquery
+                    $innerSql = $statementForCount->build();
+                    $countSql = "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
                 } else {
-                    // Replacing all SELECT columns with a new COUNT expression
-                    $statement->expr = [new Expression('COUNT(*) as totalCount')];
-                    $countSql = $statement->build();
+                    // No Group By — simpler
+                    $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
+                    $countSql = $statementForCount->build();
                 }
 
-                // Generate a unique session key for the count query
                 $countQuerySessionKey = hash('sha256', $countSql);
-                $count = $_SESSION['queryCounters'][$countQuerySessionKey] ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
+                $count = $_SESSION['queryCounters'][$countQuerySessionKey]
+                    ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
             } else {
                 $count = count($queryResult);
             }
 
             return [$queryResult, max((int)$count, 0)];
         } catch (Throwable $e) {
-            throw new SystemException($e->getMessage(), 500, $e);
+            throw new SystemException('Query Execution Failed. SQL: ' . substr($sql, 0, 500) . ' | Error: ' . $e->getMessage(), 500, $e);
         }
     }
 

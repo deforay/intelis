@@ -5,7 +5,7 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-$title = _translate("Manage Result Status");
+$title = _translate("Manage Sample Status");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -78,7 +78,7 @@ foreach ($rejectionTypeResult as $type) {
   <!-- Content Header (Page header) -->
   <section class="content-header">
     <h1><em class="fa-solid fa-list-check"></em>
-      <?php echo _translate("Results Approval"); ?>
+      <?php echo _translate("Manage Sample Status"); ?>
     </h1>
     <ol class="breadcrumb">
       <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
@@ -196,14 +196,17 @@ foreach ($rejectionTypeResult as $type) {
                 <option value="">
                   <?php echo _translate("-- Select at least one sample to apply bulk action --"); ?>
                 </option>
-                <option value="7">
+                <option value="<?= SAMPLE_STATUS\ACCEPTED; ?>">
                   <?php echo _translate("Accepted"); ?>
                 </option>
-                <option value="4">
+                <option value="<?= SAMPLE_STATUS\REJECTED; ?>">
                   <?php echo _translate("Rejected"); ?>
                 </option>
-                <option value="2">
+                <option value="<?= SAMPLE_STATUS\LOST_OR_MISSING; ?>">
                   <?php echo _translate("Lost"); ?>
+                </option>
+                <option value="<?= SAMPLE_STATUS\CANCELLED; ?>">
+                  <?php echo _translate("Cancelled"); ?>
                 </option>
               </select>
             </div>

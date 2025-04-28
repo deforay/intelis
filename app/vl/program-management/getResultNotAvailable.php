@@ -13,20 +13,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 $key = (string) $general->getGlobalConfig('key');
 
-$tableName = "form_vl";
-$primaryKey = "vl_sample_id";
-
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'fd.facility_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_art_no', 'vl.patient_first_name', 'vl.sample_collection_date', 'fd.facility_name'];
 if ($general->isStandaloneInstance()) {
     $aColumns = MiscUtility::removeMatchingElements($aColumns, ['vl.remote_sample_code']);
     $orderColumns = MiscUtility::removeMatchingElements($orderColumns, ['vl.remote_sample_code']);
 }
-
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
-
-$sTable = $tableName;
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -34,47 +26,16 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+if (!empty($columnSearch) && $columnSearch != '') {
+    $sWhere[] = $columnSearch;
 }
 
-
-
-
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
+$sQuery = "SELECT vl.*,
             f.*,s.*,fd.facility_name as labName,
             ts.status_name
             FROM form_vl as vl
@@ -94,11 +55,7 @@ if (isset($_POST['noResultBatchCode']) && trim((string) $_POST['noResultBatchCod
 
 if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) != '') {
     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['noResultSampleTestDate'] ?? '');
-    if (trim((string) $start_date) == trim((string) $end_date)) {
-        $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-    } else {
-        $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-    }
+    $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['noResultSampleType']) && $_POST['noResultSampleType'] != '') {
     $sWhere[] = ' s.sample_id = "' . $_POST['noResultSampleType'] . '"';
@@ -135,34 +92,28 @@ $sQuery = $sQuery . ' AND ' . $sWhere;
 $sQuery = $sQuery . ' group by vl.vl_sample_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 $_SESSION['resultNotAvailable'] = $sQuery;
 
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
-//echo $sQuery;die;
-$rResult = $db->rawQuery($sQuery);
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-$_SESSION['resultNotAvailableCount'] = $iTotal;
+
+[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+$_SESSION['resultNotAvailableCount'] = $resultCount;
 
 
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
-    if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-        $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-    } else {
-        $aRow['sample_collection_date'] = '';
-    }
+
     if ($aRow['remote_sample'] == 'yes') {
         $decrypt = 'remote_sample_code';
     } else {
@@ -183,12 +134,12 @@ foreach ($rResult as $aRow) {
         $patientMname = $general->crypto('decrypt', $patientMname, $key);
         $patientLname = $general->crypto('decrypt', $patientLname, $key);
     }
-    $row[] = ($aRow['facility_name']);
+    $row[] = $aRow['facility_name'];
     $row[] = $aRow['patient_art_no'];
-    $row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
-    $row[] = $aRow['sample_collection_date'];
-    $row[] = ($aRow['labName']);
-    $row[] = ($aRow['status_name']);
+    $row[] = trim("$patientFname $patientMname $patientLname");
+    $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+    $row[] = $aRow['labName'];
+    $row[] = $aRow['status_name'];
     $output['aaData'][] = $row;
 }
 echo json_encode($output);

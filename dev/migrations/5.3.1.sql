@@ -6,3 +6,7 @@ UPDATE `s_app_menu` SET `show_mode` = 'sts' WHERE link like '/admin/monitoring/s
 
 -- Amit 24-Apr-2025
 ALTER TABLE `form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+
+-- Amit 28-Apr-2025
+INSERT IGNORE INTO roles_privileges_map (role_id, privilege_id)
+SELECT 1, privilege_id FROM privileges;

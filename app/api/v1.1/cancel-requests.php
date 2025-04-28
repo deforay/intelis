@@ -11,6 +11,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
+use App\Abstracts\AbstractTestService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -53,10 +54,15 @@ $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
+$serviceClass = TestsService::getTestServiceClass($testType);
+
+/** @var AbstractTestService $testTypeService */
+$testTypeService = ContainerRegistry::get($serviceClass);
+
 
 try {
     $sQuery = "SELECT * FROM $tableName as vl
-    LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
+                LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
     $where = [];
     /* To check the uniqueId filter */
@@ -72,35 +78,28 @@ try {
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') ) ";
     }
 
-    /* To skip some status */
-    // $where[] = " (vl.result_status NOT IN (4, 7, 8)) ";
     $sQuery .= ' WHERE ' . implode(' AND ', $where);
     $rowData = $db->rawQuery($sQuery);
     $response = [];
     foreach ($rowData as $key => $row) {
-        if (!empty($row['result_status'])) {
-            if (!in_array($row['result_status'], [4, 7, 8])) {
-                $db->where($primaryKeyName, $row[$primaryKeyName]);
-                $status = $db->update($tableName, array('result_status' => 12));
-                if ($status) {
-                    $response[$key]['status'] = 'success';
-                } else {
-                    $response[$key]['status'] = 'fail';
-                    $response[$key]['message'] = 'Already cancelled';
-                }
-            } else {
-                $response[$key]['status'] = 'fail';
-                $response[$key]['message'] = 'Cancellation not allowed';
-            }
+
+        $status = $testTypeService->cancelSample($row['unique_id'], $user['user_id']);
+
+        if ($status) {
+            $response[$key]['status'] = 'success';
+        } else {
+            $response[$key]['status'] = 'fail';
+            $response[$key]['message'] = 'Unable to Cancel Sample';
         }
-        $response[$key]['sampleCode'] = $row['remote_sample_code'] ??  $row['sample_code'];
+        $response[$key]['sampleCode'] = $row['sample_code'] ?? null;
+        $response[$key]['remoteSampleCode'] = $row['remote_sample_code'] ??  null;
     }
     $payload = [
         'status' => 'success',
         'timestamp' => time(),
         'data' => $response
     ];
-} catch (Throwable $exc) {
+} catch (Throwable $e) {
 
     http_response_code(500);
     $payload = [
@@ -110,11 +109,12 @@ try {
         'error' => _translate('Failed to process this request. Please contact the system administrator if the problem persists'),
         'data' => []
     ];
-    LoggerUtility::logError($exc->getMessage(), [
-        'file' => $exc->getFile(),
-        'line' => $exc->getLine(),
+    LoggerUtility::logError($e->getMessage(), [
+        'code' => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'requestUrl' => $requestUrl,
-        'stacktrace' => $exc->getTraceAsString()
+        'stacktrace' => $e->getTraceAsString()
     ]);
 }
 

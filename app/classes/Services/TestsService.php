@@ -17,7 +17,7 @@ final class TestsService
     {
         $testTypes = [
             'vl' => [
-                'testName' => _translate('HIV Viral Load'),
+                'testName' => _translate('HIV Viral Load', escapeTextOrContext:true),
                 'testShortCode' => 'VL',
                 'tableName' => 'form_vl',
                 'primaryKey' => 'vl_sample_id',
@@ -30,7 +30,7 @@ final class TestsService
                 'serviceClass' => VlService::class
             ],
             'recency' => [
-                'testName' => _translate('HIV Recency'),
+                'testName' => _translate('HIV Recency', escapeTextOrContext:true),
                 'testShortCode' => 'VL',
                 'tableName' => 'form_vl',
                 'primaryKey' => 'vl_sample_id',
@@ -43,7 +43,7 @@ final class TestsService
                 'serviceClass' => VlService::class
             ],
             'cd4' => [
-                'testName' => _translate('CD4'),
+                'testName' => _translate('CD4', escapeTextOrContext:true),
                 'testShortCode' => 'CD4',
                 'tableName' => 'form_cd4',
                 'primaryKey' => 'cd4_id',
@@ -56,7 +56,7 @@ final class TestsService
                 'serviceClass' => CD4Service::class
             ],
             'eid' => [
-                'testName' => _translate('Early Infant Diagnosis'),
+                'testName' => _translate('Early Infant Diagnosis', escapeTextOrContext:true),
                 'testShortCode' => 'EID',
                 'tableName' => 'form_eid',
                 'primaryKey' => 'eid_id',
@@ -69,7 +69,7 @@ final class TestsService
                 'serviceClass' => EidService::class
             ],
             'covid19' => [
-                'testName' => _translate('Covid-19'),
+                'testName' => _translate('Covid-19', escapeTextOrContext:true),
                 'testShortCode' => 'C19',
                 'tableName' => 'form_covid19',
                 'primaryKey' => 'covid19_id',
@@ -82,7 +82,7 @@ final class TestsService
                 'serviceClass' => Covid19Service::class
             ],
             'hepatitis' => [
-                'testName' => _translate('Hepatitis'),
+                'testName' => _translate('Hepatitis', escapeTextOrContext:true),
                 'testShortCode' => 'HEP',
                 'tableName' => 'form_hepatitis',
                 'primaryKey' => 'hepatitis_id',
@@ -95,7 +95,7 @@ final class TestsService
                 'serviceClass' => HepatitisService::class
             ],
             'tb' => [
-                'testName' => _translate('Tubercolosis'),
+                'testName' => _translate('Tubercolosis', escapeTextOrContext:true),
                 'testShortCode' => 'TB',
                 'tableName' => 'form_tb',
                 'primaryKey' => 'tb_id',
@@ -108,7 +108,7 @@ final class TestsService
                 'serviceClass' => TbService::class
             ],
             'generic-tests' => [
-                'testName' => _translate('Other Tests'),
+                'testName' => _translate('Other Tests', escapeTextOrContext:true),
                 'testShortCode' => 'T',
                 'tableName' => 'form_generic',
                 'primaryKey' => 'sample_id',

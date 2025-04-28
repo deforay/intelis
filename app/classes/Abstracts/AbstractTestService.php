@@ -5,6 +5,7 @@ namespace App\Abstracts;
 use COUNTRY;
 use Throwable;
 use DateTimeImmutable;
+use SAMPLE_STATUS;
 use App\Services\TestsService;
 
 use App\Utilities\DateUtility;
@@ -244,5 +245,57 @@ abstract class AbstractTestService
                     max_sequence_number = GREATEST(VALUES(max_sequence_number), max_sequence_number)";
 
         $this->db->rawQuery($query, [$year, $year]);
+    }
+    public function isSampleCancelled($uniqueId): bool
+    {
+        try {
+            $uneditableStatus = [
+                SAMPLE_STATUS\CANCELLED,
+                SAMPLE_STATUS\EXPIRED,
+            ];
+
+            $this->db->where('unique_id', $uniqueId);
+            $this->db->where('result_status', $uneditableStatus, 'NOT IN');
+            $sampleIdValue = $this->db->getValue($this->table, 'unique_id');
+
+            return !empty($sampleIdValue);
+        } catch (Throwable $e) {
+            throw new SystemException($e->getMessage(), (int) $e->getCode(), $e);
+        }
+    }
+
+
+    public function cancelSample(string $uniqueId, $userId = null): bool
+    {
+        try {
+            $uncancellableStatus = [
+                SAMPLE_STATUS\ACCEPTED,
+                SAMPLE_STATUS\PENDING_APPROVAL,
+                SAMPLE_STATUS\REJECTED,
+                SAMPLE_STATUS\TEST_FAILED,
+                SAMPLE_STATUS\CANCELLED,
+                SAMPLE_STATUS\EXPIRED,
+            ];
+
+            $this->db->where('unique_id', $uniqueId);
+            $this->db->where('result_status', $uncancellableStatus, 'NOT IN');
+            $sampleRow = $this->db->getValue($this->table, 'unique_id');
+
+            if (empty($sampleRow)) {
+                return false;
+            }
+
+            $this->db->where('unique_id', $uniqueId);
+            $isQuerySuccessful = $this->db->update($this->table, [
+                'data_sync' => 0,
+                'result_status' => SAMPLE_STATUS\CANCELLED,
+                'last_modified_by' => $userId ?? ($_SESSION['userId'] ?? null),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+            ]);
+
+            return $isQuerySuccessful;
+        } catch (Throwable $e) {
+            throw new SystemException($e->getMessage(), (int) $e->getCode(), $e);
+        }
     }
 }

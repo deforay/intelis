@@ -28,7 +28,7 @@ $sResult = $db->rawQuery($sQuery);
             <tr>
               <td><strong><?php echo _translate("Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select User Date'); ?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="userDate" name="userDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
 
               <td><strong><?php echo _translate("Login ID"); ?>&nbsp;:</strong></td>

@@ -1110,24 +1110,24 @@ log_action "Remote data sync completed."
 
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${lis_path}/startup.php" ]; then
-    rm "${lis_path}/startup.php"
-    touch "${lis_path}/startup.php"
+    sudo rm "${lis_path}/startup.php"
+    sudo touch "${lis_path}/startup.php"
 fi
 
 if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
-    rm "${lis_path}/cache/CompiledContainer.php"
+    sudo rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
-service apache2 restart
+sudo service apache2 restart
 
 print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # Set proper permissions
-set_permissions "${lis_path}/logs" "full"
+sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
-    set_permissions "${lis_path}" "full" &&
-    find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+    sudo intelis-refresh -p "${lis_path}" -m full &&
+    sudo find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
 
 print success "LIS update complete."

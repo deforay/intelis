@@ -14,6 +14,11 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
+$isSuperAdmin = false;
+if((int) $id === 1){
+	$isSuperAdmin = true;
+}
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -21,9 +26,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $roleQuery = "SELECT * FROM roles WHERE role_id= ?";
-$roleInfo = $db->rawQuery($roleQuery, [$id]);
+$roleInfo = $db->rawQueryOne($roleQuery, [$id]);
 /* Not allowed to edit API role */
-if (isset($roleInfo[0]['role_code']) && $roleInfo[0]['role_code'] == 'API') {
+if (isset($roleInfo['role_code']) && $roleInfo['role_code'] == 'API') {
 	header("Location:roles.php");
 }
 $activeModules = SystemService::getActiveModules();
@@ -161,8 +166,8 @@ if ($priInfo) {
 										<?php echo _translate("Role Name"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _translate('Role Name'); ?>" title="<?php echo _translate('Please enter a name for this role'); ?>" value="<?php echo $roleInfo[0]['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>',null)" />
-										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode((string) $roleInfo[0]['role_id']); ?>" />
+										<input type="text" class="form-control isRequired" id="roleName" name="roleName" placeholder="<?php echo _translate('Role Name'); ?>" title="<?php echo _translate('Please enter a name for this role'); ?>" value="<?php echo $roleInfo['role_name']; ?>" onblur="checkNameValidation('roles','role_name',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role name that you entered already exists.Try another role name"); ?>',null)" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
+										<input type="hidden" name="roleId" id="roleId" value="<?php echo base64_encode((string) $roleInfo['role_id']); ?>" />
 									</div>
 								</div>
 							</div>
@@ -172,7 +177,7 @@ if ($priInfo) {
 										<?php echo _translate("Role Code"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _translate('Role Code'); ?>" title="<?php echo _translate('Please enter role code'); ?>" value="<?php echo $roleInfo[0]['role_code']; ?>" onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo[0]['role_id']; ?>','<?php echo _translate("This role code that you entered already exists.Try another role code"); ?>',null)" />
+										<input type="text" class="form-control isRequired" id="roleCode" name="roleCode" placeholder="<?php echo _translate('Role Code'); ?>" title="<?php echo _translate('Please enter role code'); ?>" value="<?php echo $roleInfo['role_code']; ?>" onblur="checkNameValidation('roles','role_code',this,'<?php echo "role_id##" . $roleInfo['role_id']; ?>','<?php echo _translate("This role code that you entered already exists.Try another role code"); ?>',null)" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?> />
 									</div>
 								</div>
 							</div>
@@ -184,14 +189,14 @@ if ($priInfo) {
 										<?php echo _translate("Landing Page"); ?>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _translate('Please select landing page'); ?>">
+										<select class="form-control " name='landingPage' id='landingPage' title="<?php echo _translate('Please select landing page'); ?>" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
-											<option value="/dashboard/index.php" <?php echo ($roleInfo[0]['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _translate("Dashboard"); ?></option>
-											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo[0]['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _translate("Add New VL Request"); ?>
+											<option value="/dashboard/index.php" <?php echo ($roleInfo['landing_page'] == '/dashboard/index.php') ? "selected='selected'" : "" ?>><?php echo _translate("Dashboard"); ?></option>
+											<option value="/vl/requests/addVlRequest.php" <?php echo ($roleInfo['landing_page'] == '/vl/requests/addVlRequest.php') ? "selected='selected'" : "" ?>><?php echo _translate("Add New VL Request"); ?>
 											</option>
-											<option value="/import-result/import-file.php?t=vl" <?php echo ($roleInfo[0]['landing_page'] == 'import-result/import-file.php?t=vl') ? "selected='selected'" : "" ?>><?php echo _translate("Import VL Result"); ?>
+											<option value="/import-result/import-file.php?t=vl" <?php echo ($roleInfo['landing_page'] == 'import-result/import-file.php?t=vl') ? "selected='selected'" : "" ?>><?php echo _translate("Import VL Result"); ?>
 											</option>
 										</select>
 									</div>
@@ -203,12 +208,12 @@ if ($priInfo) {
 										<?php echo _translate("Status"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>">
+										<select class="form-control isRequired" name='status' id='status' title="<?php echo _translate('Please select the status'); ?>" <?= ($isSuperAdmin) ? 'readonly="readonly"' : ''; ?>>
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
-											<option value="active" <?php echo ($roleInfo[0]['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
-											<option value="inactive" <?php echo ($roleInfo[0]['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
+											<option value="active" <?php echo ($roleInfo['status'] == 'active') ? "selected='selected'" : "" ?>><?php echo _translate("Active"); ?></option>
+											<option value="inactive" <?php echo ($roleInfo['status'] == 'inactive') ? "selected='selected'" : "" ?>><?php echo _translate("Inactive"); ?></option>
 										</select>
 									</div>
 								</div>
@@ -225,8 +230,8 @@ if ($priInfo) {
 											<option value="">
 												<?php echo _translate("-- Select --"); ?>
 											</option>
-											<option value="testing-lab" <?php echo ($roleInfo[0]['access_type'] == 'testing-lab') ? "selected='selected'" : "" ?>><?php echo _translate("Testing Lab"); ?></option>
-											<option value="collection-site" <?php echo ($roleInfo[0]['access_type'] == 'collection-site') ? "selected='selected'" : "" ?>><?php echo _translate("Collection Site"); ?></option>
+											<option value="testing-lab" <?php echo ($roleInfo['access_type'] == 'testing-lab') ? "selected='selected'" : "" ?>><?php echo _translate("Testing Lab"); ?></option>
+											<option value="collection-site" <?php echo ($roleInfo['access_type'] == 'collection-site') ? "selected='selected'" : "" ?>><?php echo _translate("Collection Site"); ?></option>
 										</select>
 									</div>
 								</div>

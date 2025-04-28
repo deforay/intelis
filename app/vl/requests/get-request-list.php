@@ -265,13 +265,13 @@ try {
      if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) != '') {
           $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
      }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\REJECTED) {
           $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
      }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
      }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\ACCEPTED) {
           $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
@@ -443,7 +443,7 @@ try {
           $row[] = $aRow['status_name'];
 
           if ($editRequest) {
-               if ($general->isLISInstance() && $aRow['result_status'] == 9) {
+               if ($general->isLISInstance() && $aRow['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
                     $edit = '';
                } else {
                     $edit = '<a href="editVlRequest.php?id=' . MiscUtility::sqid((int)$aRow['vl_sample_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';

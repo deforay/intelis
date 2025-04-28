@@ -81,7 +81,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<tr>
 							<td><strong><?php echo _translate("Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="userDate" name="userDate" class="form-control date" placeholder="<?php echo _translate('Select User Date'); ?>" readonly value="<?= date('d-M-Y') ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="userDate" name="userDate" class="form-control date" placeholder="<?php echo _translate('Select Date'); ?>" readonly value="<?= date('d-M-Y') ?>" style="width:220px;background:#fff;" />
 							</td>
 							<td>
 								<button onclick="javascript:void(0);" id="viewLogButton" value="Search" class="btn btn-primary btn-sm"><span><?php echo _translate("Search"); ?></span></button>
@@ -94,6 +94,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 
 					<div style="text-align: right; margin: 1% 1% 20px;">
+						<button class="btn btn-info btn-sm" onclick="document.location.href = document.location"><span><?php echo _translate("View System Error Logs"); ?></span></button>
 						<button class="btn btn-warning btn-sm" onclick="viewPhpErrorLogs()"><span><?php echo _translate("View PHP Error Logs"); ?></span></button>
 					</div>
 

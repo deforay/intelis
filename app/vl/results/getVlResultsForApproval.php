@@ -1,9 +1,8 @@
 <?php
 
-use App\Services\DatabaseService;
-use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
@@ -18,16 +17,9 @@ $key = (string) $general->getGlobalConfig('key');
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-
-$tableName = "form_vl";
-$primaryKey = "vl_sample_id";
-
-$vlsmFormId = (int) $general->getGlobalConfig('vl_form');
-
-
 $sampleCode = 'sample_code';
-$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name');
-$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name');
+$aColumns = ['vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', "DATE_FORMAT(vl.last_modified_datetime,'%d-%b-%Y')", 'ts.status_name'];
+$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'b.batch_code', 'vl.patient_art_no', 'vl.patient_first_name', 'f.facility_name', 'f.facility_code', 's.sample_name', 'vl.result', 'vl.last_modified_datetime', 'ts.status_name'];
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
 } elseif ($general->isStandaloneInstance()) {
@@ -35,62 +27,20 @@ if ($general->isSTSInstance()) {
      $orderColumns = array_values(array_diff($aColumns, ['vl.remote_sample_code']));
 }
 
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
-
-$sTable = $tableName;
-/*
-* Paging
-*/
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
      $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-* Ordering
-*/
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-     $sOrder = "";
-     for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-          if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-               $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-          }
-     }
-     $sOrder = substr_replace($sOrder, "", -2);
-}
-
-
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 $sWhere = [];
-
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-     $searchArray = explode(" ", (string) $_POST['sSearch']);
-     $sWhereSub = "";
-     foreach ($searchArray as $search) {
-          if ($sWhereSub == "") {
-               $sWhereSub .= "(";
-          } else {
-               $sWhereSub .= " AND (";
-          }
-          $colSize = count($aColumns);
-
-          for ($i = 0; $i < $colSize; $i++) {
-               if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-               } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-               }
-          }
-          $sWhereSub .= ")";
-     }
-     $sWhere[] = $sWhereSub;
+if (!empty($columnSearch) && $columnSearch != '') {
+     $sWhere[] = $columnSearch;
 }
-
 
 $sQuery = "SELECT vl.*,
                f.facility_name,
@@ -105,18 +55,12 @@ $sQuery = "SELECT vl.*,
                LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
 
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
-
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-     if (trim((string) $start_date) == trim((string) $end_date)) {
-          $sWhere[] = '  DATE(vl.sample_collection_date) = "' . $start_date . '"';
-     } else {
-          $sWhere[] =  '  DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-     }
+     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+     $sWhere[] =  "  DATE(vl.sample_collection_date) BEWTEEN '$start_date' AND '$end_date' ";
 }
 if (isset($_POST['sampleType']) && $_POST['sampleType'] != '') {
      $sWhere[] =  ' s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -142,10 +86,10 @@ if (!empty($sWhere)) {
      $sWhere = ' WHERE ' . implode(" AND ", $sWhere);
 }
 
-$sQuery = $sQuery . $sWhere;
+$sQuery .= $sWhere;
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+     $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
@@ -160,14 +104,15 @@ $output = [
      "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
 ];
+
 foreach ($rResult as $aRow) {
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
 
      $status = '<select class="form-control"  name="status[]" id="' . $aRow['vl_sample_id'] . '" title="' . _translate("Please select status") . '" onchange="updateStatus(this,' . $aRow['status_id'] . ')">
                <option value="">' . _translate("-- Select --") . '</option>
                <option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>' . _translate("Accepted") . '</option>
                <option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>' . _translate("Rejected") . '</option>
                <option value="' . SAMPLE_STATUS\LOST_OR_MISSING . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\LOST_OR_MISSING  ? "selected=selected" : "") . '>' . _translate("Lost") . '</option>
+               <option value="' . SAMPLE_STATUS\CANCELLED . '" ' . ($aRow['status_id'] == SAMPLE_STATUS\CANCELLED  ? "selected=selected" : "") . '>' . _translate("Cancelled") . '</option>
                </select><br><br>';
 
      $row = [];
@@ -190,7 +135,7 @@ foreach ($rResult as $aRow) {
      $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['patient_art_no'];
-     $row[] = $patientFname . " " . $patientMname . " " . $patientLname;
+     $row[] = trim("$patientFname $patientMname $patientLname");
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
