@@ -10,14 +10,38 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Download and update shared-functions.sh only if needed
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
 SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
-wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"
-chmod +x "$SHARED_FN_PATH"
 
-# source the shared functions
+temp_shared_fn=$(mktemp)
+if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
+    if [ -f "$SHARED_FN_PATH" ]; then
+        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
+        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
+        if [ "$existing_checksum" != "$new_checksum" ]; then
+            cp "$temp_shared_fn" "$SHARED_FN_PATH"
+            chmod +x "$SHARED_FN_PATH"
+            echo "Updated shared-functions.sh."
+        else
+            echo "shared-functions.sh is already up-to-date."
+        fi
+    else
+        mv "$temp_shared_fn" "$SHARED_FN_PATH"
+        chmod +x "$SHARED_FN_PATH"
+        echo "Downloaded shared-functions.sh."
+    fi
+else
+    echo "Failed to download shared-functions.sh."
+    if [ ! -f "$SHARED_FN_PATH" ]; then
+        echo "shared-functions.sh missing. Cannot proceed."
+        exit 1
+    fi
+fi
+
+# Source the shared functions
 source "$SHARED_FN_PATH"
 
 if ! command -v needrestart &>/dev/null; then
@@ -56,38 +80,9 @@ while getopts ":sbp:" opt; do
     esac
 done
 
-# Function to log messages
-log_action() {
-    local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$log_file"
-}
-
-error_handling() {
-    local last_cmd=$1
-    local last_line=$2
-    local last_error=$3
-    print error "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-    log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-
-    # Check if the error is critical
-    if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
-        print error "This error is critical, exiting..."
-        exit 1
-    else
-        print warning "This error is not critical, continuing..."
-    fi
-}
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
-
-extract_mysql_password_from_config() {
-    local config_file="$1"
-    php -r "
-        \$config = include '$config_file';
-        echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
-    "
-}
 
 # Function to update configuration
 update_configuration() {
@@ -293,37 +288,6 @@ if ! command -v php &>/dev/null; then
     exit 1
 fi
 
-ask_yes_no() {
-    local timeout=15
-    local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided
-    local answer=""
-
-    while true; do
-        echo -n "$1 (y/n): "
-        read -t $timeout answer
-        if [ $? -ne 0 ]; then
-            answer=$default
-        fi
-
-        answer=$(echo "$answer" | awk '{print tolower($0)}')
-        case "$answer" in
-        "yes" | "y") return 0 ;;
-        "no" | "n") return 1 ;;
-        *)
-            if [ -z "$answer" ]; then
-                # If no input is given and it times out, apply the default value
-                if [ "$default" == "yes" ] || [ "$default" == "y" ]; then
-                    return 0
-                else
-                    return 1
-                fi
-            else
-                echo "Invalid response. Please answer 'yes/y' or 'no/n'."
-            fi
-            ;;
-        esac
-    done
-}
 
 # Check for PHP version 8.2.x
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
@@ -483,27 +447,8 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-
 # set_permissions "${lis_path}" "quick"
 set_permissions "${lis_path}/logs" "full"
-
-spinner() {
-    local pid=$1
-    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
-    local delay=0.1
-    local i=0
-    local color="\033[1;36m" # Bold cyan
-    local reset="\033[0m"
-
-    tput civis # Hide cursor
-    while kill -0 "$pid" 2>/dev/null; do
-        printf "\r${color}%s${reset}" "${frames[i]}"
-        i=$(((i + 1) % ${#frames[@]}))
-        sleep "$delay"
-    done
-    printf "\r \r"
-    tput cnorm # Show cursor
-}
 
 # Function to list databases and get the database list
 get_databases() {

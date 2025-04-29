@@ -12,15 +12,40 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Download and update shared-functions.sh only if needed
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
 SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
-wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"
-chmod +x "$SHARED_FN_PATH"
 
-# source the shared functions
+temp_shared_fn=$(mktemp)
+if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
+    if [ -f "$SHARED_FN_PATH" ]; then
+        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
+        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
+        if [ "$existing_checksum" != "$new_checksum" ]; then
+            cp "$temp_shared_fn" "$SHARED_FN_PATH"
+            chmod +x "$SHARED_FN_PATH"
+            echo "Updated shared-functions.sh."
+        else
+            echo "shared-functions.sh is already up-to-date."
+        fi
+    else
+        mv "$temp_shared_fn" "$SHARED_FN_PATH"
+        chmod +x "$SHARED_FN_PATH"
+        echo "Downloaded shared-functions.sh."
+    fi
+else
+    echo "Failed to download shared-functions.sh."
+    if [ ! -f "$SHARED_FN_PATH" ]; then
+        echo "shared-functions.sh missing. Cannot proceed."
+        exit 1
+    fi
+fi
+
+# Source the shared functions
 source "$SHARED_FN_PATH"
+
 
 # Make needrestart non-interactive
 if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
@@ -29,70 +54,10 @@ else
     echo "\$nrconf{restart} = 'a';" >> /etc/needrestart/needrestart.conf
 fi
 
-# Function to log messages
-log_action() {
-    local message=$1
-    echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>~/logsetup.log
-}
-
-error_handling() {
-    local last_cmd=$1
-    local last_line=$2
-    local last_error=$3
-    print error "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-    log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
-
-    # Check if the error is critical
-    if [ "$last_error" -eq 1 ]; then # Adjust according to the error codes you consider critical
-        print error "This error is critical, exiting..."
-        exit 1
-    else
-        print info "This error is not critical, continuing..."
-    fi
-}
+log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
-
-ask_yes_no() {
-    local timeout=15
-    local default=${2:-"no"} # set default value from the argument, fallback to "no" if not provided
-    local answer=""
-
-    while true; do
-        echo -n "$1 (y/n): "
-        read -t $timeout answer
-        if [ $? -ne 0 ]; then
-            answer=$default
-        fi
-
-        answer=$(echo "$answer" | awk '{print tolower($0)}')
-        case "$answer" in
-        "yes" | "y") return 0 ;;
-        "no" | "n") return 1 ;;
-        *)
-            if [ -z "$answer" ]; then
-                # If no input is given and it times out, apply the default value
-                if [ "$default" == "yes" ] || [ "$default" == "y" ]; then
-                    return 0
-                else
-                    return 1
-                fi
-            else
-                echo "Invalid response. Please answer 'yes/y' or 'no/n'."
-            fi
-            ;;
-        esac
-    done
-}
-
-extract_mysql_password_from_config() {
-    local config_file="$1"
-    php -r "
-        \$config = include '$config_file';
-        echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
-    "
-}
 
 handle_database_setup_and_import() {
     db_exists=$(mysql -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
