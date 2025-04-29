@@ -106,6 +106,8 @@ log_action() {
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$log_file"
 }
 
+
+
 error_handling() {
     local last_cmd=$1
     local last_line=$2
@@ -243,154 +245,62 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
-print header "Configuring MySQL"
-desired_sql_mode="sql_mode ="
-desired_innodb_strict_mode="innodb_strict_mode = 0"
-desired_charset="character-set-server=utf8mb4"
-desired_collation="collation-server=utf8mb4_general_ci"
-desired_auth_plugin="default_authentication_plugin=mysql_native_password"
 config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+backup_timestamp=$(date +%Y%m%d%H%M%S)
 
-# Make a backup of the configuration file if we're going to modify it
-backup_file="${config_file}.bak.$(date +%Y%m%d%H%M%S)"
-cp "$config_file" "$backup_file"
+# --- define what we want ---
+declare -A mysql_settings=(
+    ["sql_mode"]=""
+    ["innodb_strict_mode"]="0"
+    ["character-set-server"]="utf8mb4"
+    ["collation-server"]="utf8mb4_general_ci"
+    ["default_authentication_plugin"]="mysql_native_password"
+    ["max_connect_errors"]="10000"
+)
 
-# Check if the settings are already present and correctly set
-sql_mode_set=$(grep -q "^${desired_sql_mode}" ${config_file} && echo "true" || echo "false")
-innodb_strict_mode_set=$(grep -q "^${desired_innodb_strict_mode}" ${config_file} && echo "true" || echo "false")
-charset_set=$(grep -q "^${desired_charset}" ${config_file} && echo "true" || echo "false")
-collation_set=$(grep -q "^${desired_collation}" ${config_file} && echo "true" || echo "false")
-auth_plugin_set=$(grep -q "^${desired_auth_plugin}" ${config_file} && echo "true" || echo "false")
-
-# Check if any changes are needed
 changes_needed=false
 
-if [ "$sql_mode_set" = "false" ]; then
-    print info "Need to set SQL mode"
-    changes_needed=true
-fi
+# --- dry-run check first ---
+for setting in "${!mysql_settings[@]}"; do
+    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+        changes_needed=true
+        break
+    fi
+done
 
-if [ "$innodb_strict_mode_set" = "false" ]; then
-    print info "Need to set InnoDB strict mode"
-    changes_needed=true
-fi
+if [ "$changes_needed" = true ]; then
+    print info "Changes needed. Backing up and updating MySQL config..."
+    cp "$config_file" "${config_file}.bak.${backup_timestamp}"
 
-if [ "$charset_set" = "false" ]; then
-    print info "Need to set character set"
-    changes_needed=true
-fi
-
-if [ "$collation_set" = "false" ]; then
-    print info "Need to set collation"
-    changes_needed=true
-fi
-
-if [ "$auth_plugin_set" = "false" ]; then
-    print info "Need to set authentication plugin"
-    changes_needed=true
-fi
-
-if [ "$changes_needed" = "true" ]; then
-    print info "Changes needed. Updating MySQL configuration..."
-
-    # Create a temporary file for the new configuration
-    temp_file=$(mktemp)
-
-    # Process the configuration file line by line
-    while IFS= read -r line; do
-        # Check if the line should be commented out and replaced
-        if [[ "$line" =~ ^[[:space:]]*sql_mode[[:space:]]*= && "$sql_mode_set" = "false" ]]; then
-            echo "# $line" >>"$temp_file"
-            echo "$desired_sql_mode" >>"$temp_file"
-            sql_mode_set="true"
-        elif [[ "$line" =~ ^[[:space:]]*innodb_strict_mode[[:space:]]*= && "$innodb_strict_mode_set" = "false" ]]; then
-            echo "# $line" >>"$temp_file"
-            echo "$desired_innodb_strict_mode" >>"$temp_file"
-            innodb_strict_mode_set="true"
-        elif [[ "$line" =~ ^[[:space:]]*character-set-server[[:space:]]*= && "$charset_set" = "false" ]]; then
-            echo "# $line" >>"$temp_file"
-            echo "$desired_charset" >>"$temp_file"
-            charset_set="true"
-        elif [[ "$line" =~ ^[[:space:]]*collation-server[[:space:]]*= && "$collation_set" = "false" ]]; then
-            echo "# $line" >>"$temp_file"
-            echo "$desired_collation" >>"$temp_file"
-            collation_set="true"
-        elif [[ "$line" =~ ^[[:space:]]*default_authentication_plugin[[:space:]]*= && "$auth_plugin_set" = "false" ]]; then
-            echo "# $line" >>"$temp_file"
-            echo "$desired_auth_plugin" >>"$temp_file"
-            auth_plugin_set="true"
-        else
-            # If it's not one of the lines we're looking to replace, keep it as is
-            echo "$line" >>"$temp_file"
+    for setting in "${!mysql_settings[@]}"; do
+        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+            # Comment existing wrong setting if found
+            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$config_file"; then
+                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$config_file"
+            fi
+            echo "$setting = ${mysql_settings[$setting]}" >>"$config_file"
         fi
-
-        # If the line contains skip-external-locking or mysqlx-bind-address and we haven't added our settings yet,
-        # add them after this line
-        if [[ "$line" =~ skip-external-locking|mysqlx-bind-address ]]; then
-            if [ "$sql_mode_set" = "false" ]; then
-                echo "$desired_sql_mode" >>"$temp_file"
-                sql_mode_set="true"
-            fi
-            if [ "$innodb_strict_mode_set" = "false" ]; then
-                echo "$desired_innodb_strict_mode" >>"$temp_file"
-                innodb_strict_mode_set="true"
-            fi
-            if [ "$charset_set" = "false" ]; then
-                echo "$desired_charset" >>"$temp_file"
-                charset_set="true"
-            fi
-            if [ "$collation_set" = "false" ]; then
-                echo "$desired_collation" >>"$temp_file"
-                collation_set="true"
-            fi
-            if [ "$auth_plugin_set" = "false" ]; then
-                echo "$desired_auth_plugin" >>"$temp_file"
-                auth_plugin_set="true"
-            fi
-        fi
-    done <"$config_file"
-
-    # If we reached the end of the file and still haven't added all our settings, add them at the end
-    if [ "$sql_mode_set" = "false" ]; then
-        echo "$desired_sql_mode" >>"$temp_file"
-    fi
-    if [ "$innodb_strict_mode_set" = "false" ]; then
-        echo "$desired_innodb_strict_mode" >>"$temp_file"
-    fi
-    if [ "$charset_set" = "false" ]; then
-        echo "$desired_charset" >>"$temp_file"
-    fi
-    if [ "$collation_set" = "false" ]; then
-        echo "$desired_collation" >>"$temp_file"
-    fi
-    if [ "$auth_plugin_set" = "false" ]; then
-        echo "$desired_auth_plugin" >>"$temp_file"
-    fi
-
-    # Move the temporary file to the configuration file
-    mv "$temp_file" "$config_file"
+    done
 
     print info "Restarting MySQL service to apply changes..."
     service mysql restart || {
-        mv "$backup_file" "$config_file"
-        print error "Failed to restart MySQL. Exiting..."
-        log_action "Failed to restart MySQL. Exiting..."
+        print error "Failed to restart MySQL. Restoring backup and exiting..."
+        mv "${config_file}.bak.${backup_timestamp}" "$config_file"
+        service mysql restart
         exit 1
     }
 
     print success "MySQL configuration updated successfully."
-    log_action "MySQL configuration updated successfully."
+
 else
-    print info "No MySQL configuration changes needed."
-    log_action "No MySQL configuration changes needed."
-    # Remove the backup since we didn't make any changes
-    rm "$backup_file"
+    print success "MySQL configuration already correct. No changes needed."
 fi
 
-if [ -f ${backup_file} ]; then
-    print info "Removing backup file $backup_file"
-    rm "$backup_file"
-fi
+# --- Always clean up old .bak files ---
+find "$(dirname "$config_file")" -maxdepth 1 -type f -name "$(basename "$config_file").bak.*" -exec rm -f {} \;
+print info "Removed all MySQL backup files matching *.bak.*"
+
+
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 
@@ -558,7 +468,6 @@ update_php_ini() {
         print info "PHP settings are already correctly set in $ini_file"
     fi
 }
-
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
