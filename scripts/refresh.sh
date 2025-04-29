@@ -9,6 +9,48 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Define a unified print function that colors the entire message
+print() {
+    local type=$1
+    local message=$2
+    local header_char="="
+
+    case $type in
+    error)
+        printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
+        ;;
+    success)
+        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
+        ;;
+    warning)
+        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
+        ;;
+    info)
+        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
+        ;;
+    debug)
+        printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
+        ;;
+    header)
+        local term_width
+        term_width=$(tput cols 2>/dev/null || echo 80)
+        local msg_length=${#message}
+        local padding=$(((term_width - msg_length) / 2))
+        ((padding < 0)) && padding=0
+
+        local pad_str
+        pad_str=$(printf '%*s' "$padding" '')
+
+        printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
+        printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
+        printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
+        ;;
+    *)
+        printf "%s\n" "$message"
+        ;;
+    esac
+}
+
 # Show help if requested
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "Usage: sudo intelis-refresh [-p path] [-m mode] [-a] [-d]"
@@ -61,7 +103,7 @@ is_valid_application_path() {
 # Cron-safe default path
 if [ -z "$lis_path" ]; then
     lis_path="/var/www/vlsm"
-    echo "No path specified. Using default: $lis_path"
+    print info "No path specified. Using default: $lis_path"
 fi
 
 lis_path=$(to_absolute_path "$lis_path")
@@ -105,27 +147,27 @@ done
 # Restart Apache or httpd
 if [ "$restart_apache" = true ]; then
     if systemctl list-units --type=service | grep -q apache2; then
-        echo "Restarting Apache (apache2)..."
+        print info "Restarting Apache (apache2)..."
         log_action "Restarting apache2"
         systemctl restart apache2 || { echo "Apache restart failed"; log_action "Apache restart failed"; }
     elif systemctl list-units --type=service | grep -q httpd; then
-        echo "Restarting Apache (httpd)..."
+        eprint infocho "Restarting Apache (httpd)..."
         log_action "Restarting httpd"
         systemctl restart httpd || { echo "httpd restart failed"; log_action "httpd restart failed"; }
     else
-        echo "Apache/httpd service not found"
+        print info "Apache/httpd service not found"
         log_action "Apache/httpd not found"
     fi
 fi
 
 # Restart MySQL
 if [ "$restart_mysql" = true ]; then
-    echo "Restarting MySQL..."
+    print info "Restarting MySQL..."
     log_action "Restarting MySQL"
     systemctl restart mysql || { echo "MySQL restart failed"; log_action "MySQL restart failed"; }
 fi
 
-echo "✅ LIS refresh complete."
+print success "✅ LIS refresh complete."
 log_action "LIS refresh complete"
 
 cron_line="0 3 * * * /usr/local/bin/intelis-refresh -p ${lis_path} -m quick > /dev/null 2>&1"
@@ -137,15 +179,15 @@ if [ "$remove_cron" = true ]; then
     crontab -u root -l 2>/dev/null | grep -vF "$cron_marker" > "$current_crontab" || true
     crontab -u root "$current_crontab"
     rm -f "$current_crontab"
-    echo "🗑️ Removed cron job for path: ${lis_path}"
+    print info "🗑️ Removed cron job for path: ${lis_path}"
     log_action "Cron job removed for path: ${lis_path}"
 elif [ "$no_cron" = false ]; then
     if ! crontab -u root -l 2>/dev/null | grep -Fq "$cron_marker"; then
         ( crontab -u root -l 2>/dev/null || true; echo "$full_cron_entry" ) | crontab -u root -
-        echo "🕒 Cron job added: $cron_line"
+        print success "🕒 Cron job added: $cron_line"
         log_action "Cron job added for path: ${lis_path}"
     else
-        echo "🕒 Cron job already exists for path: ${lis_path} — skipping"
+        print info "🕒 Cron job already exists for path: ${lis_path} — skipping"
         log_action "Cron job already exists for path: ${lis_path}"
     fi
 fi

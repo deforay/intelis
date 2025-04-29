@@ -4,44 +4,21 @@
 # sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
 # sudo intelis-update
 
-# Define a unified print function that colors the entire message
-print() {
-    local type=$1
-    local message=$2
-
-    case $type in
-    error)
-        echo -e "\033[0;31mError: $message\033[0m"
-        ;;
-    success)
-        echo -e "\033[0;32mSuccess: $message\033[0m"
-        ;;
-    warning)
-        echo -e "\033[0;33mWarning: $message\033[0m"
-        ;;
-    info)
-        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
-        echo -e "\033[0;36mInfo: $message\033[0m"
-        ;;
-    debug)
-        # Using a lighter cyan color for debug messages
-        echo -e "\033[1;36mDebug: $message\033[0m"
-        ;;
-    header)
-        # Changed from blue to a brighter cyan/teal
-        echo -e "\033[1;36m==== $message ====\033[0m"
-        ;;
-    *)
-        echo "$message"
-        ;;
-    esac
-}
-
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
+
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
+wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"
+chmod +x "$SHARED_FN_PATH"
+
+# source the shared functions
+source "$SHARED_FN_PATH"
 
 if ! command -v needrestart &>/dev/null; then
     print info "needrestart not found. Installing it..."
@@ -79,34 +56,11 @@ while getopts ":sbp:" opt; do
     esac
 done
 
-# Function to check if the provided path is a valid application installation
-is_valid_application_path() {
-    local path=$1
-    # Check for a specific file or directory that should exist in the application installation
-    if [ -f "$path/configs/config.production.php" ] && [ -d "$path/public" ]; then
-        return 0 # Path is valid
-    else
-        return 1 # Path is not valid
-    fi
-}
-
-# Function to convert relative path to absolute path
-to_absolute_path() {
-    local path=$1
-    if [[ "$path" != /* ]]; then
-        # If the path is relative, convert it to an absolute path
-        path="$(pwd)/$path"
-    fi
-    echo "$path"
-}
-
 # Function to log messages
 log_action() {
     local message=$1
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$log_file"
 }
-
-
 
 error_handling() {
     local last_cmd=$1
@@ -126,12 +80,6 @@ error_handling() {
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
-
-# Function to get Ubuntu version
-get_ubuntu_version() {
-    local version=$(lsb_release -rs)
-    echo "$version"
-}
 
 extract_mysql_password_from_config() {
     local config_file="$1"
@@ -299,8 +247,6 @@ fi
 # --- Always clean up old .bak files ---
 find "$(dirname "$config_file")" -maxdepth 1 -type f -name "$(basename "$config_file").bak.*" -exec rm -f {} \;
 print info "Removed all MySQL backup files matching *.bak.*"
-
-
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 
@@ -495,7 +441,7 @@ if [ "$skip_ubuntu_updates" = false ]; then
     export DEBIAN_FRONTEND=noninteractive
     export NEEDRESTART_SUSPEND=1
 
-    apt-get update
+    apt-get update --allow-releaseinfo-change
     apt-get -o Dpkg::Options::="--force-confdef" \
         -o Dpkg::Options::="--force-confold" \
         upgrade -y
@@ -537,49 +483,26 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-# Function to set permissions more efficiently
-set_permissions() {
-    local path=$1
-    local mode=${2:-"full"} # Options: full, quick, critical
-
-    print info "Setting permissions for ${path} (${mode} mode)..."
-
-    case "$mode" in
-    "full")
-        # Full permission setting - all directories and files
-        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-        find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-        ;;
-
-    "quick")
-        # Quick mode - only directories and php files
-        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-        find "${path}" -type f -name "*.php" -print0 |
-            xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-        ;;
-
-    "minimal")
-        # Minimal mode - only directories to ensure structure is accessible
-        find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-        ;;
-    esac
-}
 
 # set_permissions "${lis_path}" "quick"
 set_permissions "${lis_path}/logs" "full"
 
 spinner() {
     local pid=$1
-    local delay=0.75
-    local spinstr='|/-\'
+    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+    local delay=0.1
+    local i=0
+    local color="\033[1;36m" # Bold cyan
+    local reset="\033[0m"
+
+    tput civis # Hide cursor
     while kill -0 "$pid" 2>/dev/null; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
+        printf "\r${color}%s${reset}" "${frames[i]}"
+        i=$(((i + 1) % ${#frames[@]}))
+        sleep "$delay"
     done
-    printf "    \b\b\b\b"
+    printf "\r \r"
+    tput cnorm # Show cursor
 }
 
 # Function to list databases and get the database list
@@ -846,7 +769,7 @@ NEED_FULL_INSTALL=false
 
 # Check if the vendor directory exists
 if [ ! -d "${lis_path}/vendor" ]; then
-    print warning "Vendor directory doesn't exist. Full installation needed."
+    print info "Vendor directory doesn't exist. Full installation needed."
     NEED_FULL_INSTALL=true
 else
     # Calculate new checksums
@@ -1035,7 +958,7 @@ log_action "Apache Restarted."
 # Set proper permissions
 sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
-    sudo intelis-refresh -p "${lis_path}" -m full &&
+    sudo intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
     sudo find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
 

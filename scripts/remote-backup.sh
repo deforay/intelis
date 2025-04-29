@@ -27,32 +27,40 @@ fi
 
 
 # Define a unified print function that colors the entire message
-# Using printf instead of echo -e for better compatibility with sh
 print() {
     local type=$1
     local message=$2
+    local header_char="="
 
     case $type in
     error)
-        printf "\033[0;31mError: %s\033[0m\n" "$message"
+        printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
         ;;
     success)
-        printf "\033[0;32mSuccess: %s\033[0m\n" "$message"
+        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
         ;;
     warning)
-        printf "\033[0;33mWarning: %s\033[0m\n" "$message"
+        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
         ;;
     info)
-        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
-        printf "\033[0;36mInfo: %s\033[0m\n" "$message"
+        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
         ;;
     debug)
-        # Using a lighter cyan color for debug messages
-        printf "\033[1;36mDebug: %s\033[0m\n" "$message"
+        printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
         ;;
     header)
-        # Changed from blue to a brighter cyan/teal
-        printf "\033[1;36m==== %s ====\033[0m\n" "$message"
+        local term_width
+        term_width=$(tput cols 2>/dev/null || echo 80)
+        local msg_length=${#message}
+        local padding=$(((term_width - msg_length) / 2))
+        ((padding < 0)) && padding=0
+
+        local pad_str
+        pad_str=$(printf '%*s' "$padding" '')
+
+        printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
+        printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
+        printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
         ;;
     *)
         printf "%s\n" "$message"
@@ -229,16 +237,16 @@ print() {
 
     case \$type in
     error)
-        printf "\033[0;31mError: %s\033[0m\n" "\$message"
+        printf "\033[1;91m❌ Error:\033[0m %s\n" "\$message"
         ;;
     success)
-        printf "\033[0;32mSuccess: %s\033[0m\n" "\$message"
+        printf "\033[1;92m✅ Success:\033[0m %s\n" "\$message"
         ;;
     warning)
-        printf "\033[0;33mWarning: %s\033[0m\n" "\$message"
+        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "\$message"
         ;;
     info)
-        printf "\033[0;36mInfo: %s\033[0m\n" "\$message"
+        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "\$message"
         ;;
     *)
         printf "%s\n" "\$message"

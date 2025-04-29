@@ -6,45 +6,21 @@
 # sudo chmod u+x intelis-setup.sh;
 # sudo ./intelis-setup.sh;
 
-# Define a unified print function that colors the entire message
-print() {
-    local type=$1
-    local message=$2
-
-    case $type in
-    error)
-        echo -e "\033[0;31mError: $message\033[0m"
-        ;;
-    success)
-        echo -e "\033[0;32mSuccess: $message\033[0m"
-        ;;
-    warning)
-        echo -e "\033[0;33mWarning: $message\033[0m"
-        ;;
-    info)
-        # Changed from blue (\033[0;34m) to teal/turquoise (\033[0;36m)
-        echo -e "\033[0;36mInfo: $message\033[0m"
-        ;;
-    debug)
-        # Using a lighter cyan color for debug messages
-        echo -e "\033[1;36mDebug: $message\033[0m"
-        ;;
-    header)
-        # Changed from blue to a brighter cyan/teal
-        echo -e "\033[1;36m==== $message ====\033[0m"
-        ;;
-    *)
-        echo "$message"
-        ;;
-    esac
-}
-
-
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
     print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
+
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
+wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"
+chmod +x "$SHARED_FN_PATH"
+
+# source the shared functions
+source "$SHARED_FN_PATH"
 
 # Make needrestart non-interactive
 if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
@@ -164,57 +140,15 @@ handle_database_setup_and_import() {
     mysql interfacing <"${lis_path}/sql/interface-init.sql"
 }
 
-spinner() {
-    local pid=$!
-    local delay=0.75
-    local spinstr='|/-\'
-    while kill -0 $pid 2>/dev/null; do
-        local temp=${spinstr#?}
-        printf " [%c]  " "$spinstr"
-        local spinstr=$temp${spinstr%"$temp"}
-        sleep $delay
-        printf "\b\b\b\b\b\b"
-    done
-    printf "    \b\b\b\b"
-}
-
-# Function to set permissions more efficiently
-set_permissions() {
-    local path=$1
-    local mode=${2:-"full"}  # Options: full, quick, critical
-
-    print info "Setting permissions for ${path} (${mode} mode)..."
-
-    case "$mode" in
-        "full")
-            # Full permission setting - all directories and files
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "${path}" -type f -print0 | xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-            ;;
-
-        "quick")
-            # Quick mode - only directories and php files
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "${path}" -type f -name "*.php" -print0 |
-                xargs -0 -P $(nproc) -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
-            ;;
-
-        "minimal")
-            # Minimal mode - only directories to ensure structure is accessible
-            find "${path}" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-            ;;
-    esac
-}
-
-# Check if Ubuntu version is 22.04 or newer
-min_version="22.04"
-current_version=$(lsb_release -rs)
+# Check if Ubuntu version is 20.04 or newer
+min_version="20.04"
+current_version=$(get_ubuntu_version)
 
 if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    echo "This script is not compatible with Ubuntu versions older than ${min_version}."
-    log_action "This script is not compatible with Ubuntu versions older than ${min_version}."
+    print error "This script is not compatible with Ubuntu versions older than ${min_version}."
     exit 1
 fi
+
 
 # Save the current trap settings
 current_trap=$(trap -p ERR)
