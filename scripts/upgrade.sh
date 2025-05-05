@@ -248,10 +248,10 @@ print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 # Determine which password to use
 if [ -n "$mysql_root_password" ]; then
     mysql_pw="$mysql_root_password"
-    print debug "Using user-provided MySQL root password"
+    print info "Using user-provided MySQL root password"
 elif [ -f "${lis_path}/configs/config.production.php" ]; then
     mysql_pw=$(extract_mysql_password_from_config "${lis_path}/configs/config.production.php")
-    print debug "Extracted MySQL root password from config.production.php"
+    print info "Extracted MySQL root password from config.production.php"
 else
     print error "MySQL root password not provided and config.production.php not found."
     exit 1
@@ -631,7 +631,7 @@ for symlink in $(find "$lis_path" -type l -not -path "*/\.*" 2>/dev/null); do
     # Extract the relative path from the full path
     rel_path=${symlink#"$lis_path/"}
     exclude_options="$exclude_options --exclude '$rel_path'"
-    print debug "Detected symlink: $rel_path"
+    print info "Detected symlink: $rel_path"
     symlinks_found=$((symlinks_found + 1))
 done
 

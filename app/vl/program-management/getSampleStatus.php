@@ -205,13 +205,13 @@ $tatSampleQuery = "SELECT
     ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.sample_tested_datetime, vl.result_printed_datetime), 0)), 2) AS AvgTestedPrinted,
     ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.result_printed_on_lis_datetime, vl.result_printed_on_sts_datetime), 0)), 2) AS AvgTestedPrintedFirstTime
 
-FROM `$table` AS vl
-INNER JOIN facility_details AS f ON vl.lab_id = f.facility_id
-LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
+    FROM `$table` AS vl
+    INNER JOIN facility_details AS f ON vl.lab_id = f.facility_id
+    LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
 
-WHERE
-    vl.result IS NOT NULL AND vl.result != '' AND
-    DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'
+    WHERE
+        vl.result IS NOT NULL AND vl.result != '' AND
+        DATE(vl.sample_tested_datetime) BETWEEN '$tatStartDate' AND '$tatEndDate'
 ";
 
 
