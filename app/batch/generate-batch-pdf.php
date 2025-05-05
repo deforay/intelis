@@ -105,11 +105,11 @@ if (!empty($id)) {
         $pdf->setHeading($logo, $headerText, $bResult['batch_code'], $resulted, $reviewed, $bResult['user_name'], $worksheetName);
 
         // set document information
-        $pdf->SetCreator(_translate('VLSM'));
-        $pdf->SetAuthor(_translate('VLSM BATCH'));
-        $pdf->SetTitle(_translate('VLSM BATCH'));
-        $pdf->SetSubject(_translate('VLSM BATCH'));
-        $pdf->SetKeywords(_translate('VLSM BATCH'));
+        $pdf->SetCreator(_translate('INTELIS'));
+        $pdf->SetAuthor(_translate('INTELIS'));
+        $pdf->SetTitle(_translate('LIS BATCH PDF'));
+        $pdf->SetSubject(_translate('LIS BATCH'));
+        $pdf->SetKeywords(_translate('LIS BATCH'));
 
         $pdf->SetMargins(0, 0, 0);
         $pdf->SetHeaderMargin(0);
@@ -119,8 +119,8 @@ if (!empty($id)) {
         $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
         // set header and footer fonts
-        $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-        $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+        $pdf->setHeaderFont(['freesans', '', PDF_FONT_SIZE_MAIN]);
+        $pdf->setFooterFont(['freesans', '', PDF_FONT_SIZE_DATA]);
 
         // set default monospaced font
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -136,10 +136,8 @@ if (!empty($id)) {
         // set image scale factor
         $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
-
-
         // set font
-        $pdf->SetFont('helvetica', '', 10);
+        $pdf->SetFont('freesans', '', 10);
 
         // add a page
         $pdf->AddPage();

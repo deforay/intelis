@@ -108,11 +108,11 @@ try {
 
 
             // set document information
-            $pdf->SetCreator(_translate('VLSM'));
-            $pdf->SetAuthor(_translate('VLSM BATCH'));
-            $pdf->SetTitle(_translate('VLSM BATCH'));
-            $pdf->SetSubject(_translate('VLSM BATCH'));
-            $pdf->SetKeywords(_translate('VLSM BATCH'));
+            $pdf->SetCreator(_translate('INTELIS'));
+            $pdf->SetAuthor(_translate('INTELIS'));
+            $pdf->SetTitle(_translate('LIS BATCH'));
+            $pdf->SetSubject(_translate('LIS BATCH'));
+            $pdf->SetKeywords(_translate('LIS BATCH'));
 
             $pdf->SetMargins(0, 0, 0);
             $pdf->SetHeaderMargin(0);
@@ -122,8 +122,8 @@ try {
             $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE, PDF_HEADER_STRING);
 
             // set header and footer fonts
-            $pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-            $pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
+            $pdf->setHeaderFont(['freesans', '', PDF_FONT_SIZE_MAIN]);
+            $pdf->setFooterFont(['freesans', '', PDF_FONT_SIZE_DATA]);
 
             // set default monospaced font
             $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
@@ -140,7 +140,7 @@ try {
             $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
             // set font
-            $pdf->SetFont('helvetica', '', 10);
+            $pdf->SetFont('freesans', '', 10);
 
             // add a page
             $pdf->AddPage();
@@ -194,7 +194,8 @@ try {
                         if (count($xplodJsonToArray) > 1 && $xplodJsonToArray[0] == "s") {
                             if ((isset($_GET['type']) && $_GET['type'] == 'tb') || (isset($_GET['type']) && $_GET['type'] == 'cd4')) {
                                 $sampleQuery = "SELECT sample_code,
-                                                    remote_sample_code, lab_assigned_code,
+                                                    remote_sample_code,
+                                                    lab_assigned_code,
                                                     $resultColumn,
                                                     is_encrypted,
                                                     $patientIdColumn,

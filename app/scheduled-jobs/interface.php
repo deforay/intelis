@@ -166,7 +166,10 @@ try {
 
     $filtered = [];
 
-    $copiesPatterns = ['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies', 'cpml'];
+
+
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
 
     foreach ($grouped as $group) {
         $hasCopiesUnit = false;
@@ -174,7 +177,7 @@ try {
         // First pass to check if any row has "copies"-type unit
         foreach ($group as $row) {
             $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
-            foreach ($copiesPatterns as $pattern) {
+            foreach ($vlService->copiesPatterns as $pattern) {
                 if (str_contains($unit, $pattern)) {
                     $hasCopiesUnit = true;
                     break 2; // Exit both loops
@@ -204,17 +207,6 @@ try {
 
 
     $interfaceData = $filtered;
-
-
-    // var_dump(array_map(function ($row) {
-    //     return [
-    //         'order_id' => $row['order_id'] ?? null,
-    //         'results' => $row['results'] ?? null,
-    //         'test_unit' => $row['test_unit'] ?? null,
-    //     ];
-    // }, $interfaceData));
-
-    // die;
 
     if (empty($interfaceData)) {
         if ($isCli) {
@@ -350,8 +342,6 @@ try {
 
             if ($matchedTable === 'form_vl') {
 
-                /** @var VlService $vlService */
-                $vlService = ContainerRegistry::get(VlService::class);
                 $absDecimalVal = null;
                 $absVal = null;
                 $logVal = null;

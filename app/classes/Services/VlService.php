@@ -37,9 +37,58 @@ final class VlService extends AbstractTestService
         'negative',
         'negat'
     ];
+
+    public array $copiesPatterns = [
+        'c/ml',
+        'cp/ml',
+        'copies/ml',
+        'cop/ml',
+        'copies',
+        'c0pies/ml',
+        'cpml'
+    ];
+
     protected int $suppressionLimit = 1000;
     public string $testType = 'vl';
 
+
+    /**
+     * Preprocesses viral load input by removing patterns and units
+     * @param string $input The input to preprocess
+     * @return string The preprocessed input
+     */
+    private function preprocessViralLoadInput(string $input): string
+    {
+        $input = trim(htmlspecialchars_decode($input));
+        $input = str_ireplace($this->copiesPatterns, '', $input);
+
+        // Text patterns to clean up
+        $textPatterns = [
+            'hiv-1'      => 'hiv1',
+            'hiv-2'      => 'hiv2',
+            'hiv-'       => 'hiv',
+            'not-'       => 'not',
+            'hcv-'       => 'hcv',
+            'hcv-rna'    => 'hcv'
+        ];
+
+        $input = str_ireplace(array_keys($textPatterns), array_values($textPatterns), $input);
+
+        // Common phrases to remove
+        $phrasePatterns = [
+            'hiv1 detected',
+            'hiv2 detected',
+            'hiv1 notdetected',
+            'hiv2 notdetected',
+            'hiv1 not detected',
+            'hiv2 not detected',
+            'hcv detected'
+        ];
+
+        $input = str_ireplace($phrasePatterns, '', $input);
+
+        return trim($input);
+    }
 
     public function getSampleCode($params)
     {
@@ -214,39 +263,36 @@ final class VlService extends AbstractTestService
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
         return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
-
             $vlResultType = $this->checkViralLoadValueType($result);
 
             if ($vlResultType == 'empty') {
                 return null;
             }
 
-            $finalResult = $vlResult = trim(htmlspecialchars_decode((string) $result));
-            $vlResult = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $vlResult);
-            $vlResult = str_ireplace('-', '', $vlResult);
-            $vlResult = trim(str_ireplace(['hiv1 detected', 'hiv1 notdetected'], '', $vlResult));
+            $originalResult = $result;
 
-
-
-            if ($vlResult == "-1.00") {
-                $finalResult = $vlResult = "Not Detected";
+            // Special case for -1.00
+            if ($result == "-1.00") {
+                $result = "Not Detected";
             }
 
-            if (in_array($finalResult, ['fail', 'failed', 'failure', 'error', 'err'])) {
+            // Check for failure cases
+            $failureCases = ['fail', 'failed', 'failure', 'error', 'err'];
+            if (in_array(strtolower($originalResult), $failureCases, true)) {
                 return [
                     'logVal' => null,
                     'result' => null,
                     'absDecimalVal' => null,
                     'absVal' => null,
-                    'txtVal' => $finalResult,
+                    'txtVal' => $originalResult,
                     'resultStatus' => SAMPLE_STATUS\TEST_FAILED
                 ];
-            } elseif ($vlResultType == 'numeric') {
-                //passing only number
-                return $this->interpretViralLoadNumericResult($vlResult, $unit);
+            }
+
+            if ($vlResultType == 'numeric') {
+                return $this->interpretViralLoadNumericResult($result, $unit);
             } else {
-                //Passing orginal result value for text results
-                return $this->interpretViralLoadTextResult($finalResult, $unit, $defaultLowVlResultText);
+                return $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
             }
         });
     }
@@ -535,7 +581,7 @@ final class VlService extends AbstractTestService
         $result = [];
         $this->db->where('status', 'active');
         if ($updatedDateTime) {
-            $this->db->where('updated_datetime >= "' . $updatedDateTime . '"');
+            $this->db->where("updated_datetime >= '$updatedDateTime'");
         }
         $results = $this->db->get('r_vl_test_failure_reasons');
         if ($option) {
@@ -575,54 +621,83 @@ final class VlService extends AbstractTestService
                                                 AND (parent_reason IS NULL OR parent_reason = 0)");
     }
 
-    public function checkViralLoadValueType($input)
+    /**
+     * Determines the type of viral load value (empty, numeric, or text).
+     *
+     * This function analyzes input to categorize it as empty, numeric, or text.
+     * It handles various number formats including scientific notation, commas,
+     * and numbers with operators (<, >). It also processes custom text patterns
+     * and specific hardcoded cases.
+     *
+     * @param mixed $input The viral load value to analyze
+     * @param array $customTextPatterns Optional array of exact strings to treat as text (e.g., ['< 500', '> 999'])
+     * @return string Returns 'empty', 'numeric', or 'text'
+     *
+     * Numeric formats supported:
+     * - Regular numbers: 123, 123.45
+     * - Numbers with commas: 1,234,567.89
+     * - Scientific notation: 5.69E03, 1.23E-02
+     * - Numbers with operators: < 1000, > 500
+     *
+     * Processing steps:
+     * 1. Checks for null/empty input
+     * 2. Checks against custom text patterns
+     * 3. Handles hardcoded special case "< 839"
+     * 4. Removes units and text patterns
+     * 5. Removes detection phrases
+     * 6. Validates remaining string as numeric
+     */
+    public function checkViralLoadValueType($input, $customTextPatterns = [])
     {
-
-        $input = str_ireplace(['c/ml', 'cp/ml', 'copies/ml', 'cop/ml', 'copies'], '', $input);
-        // Check if it's null or empty
-        if (is_null($input) || trim((string) $input) == '') {
-            return 'empty';
-        }
-
-        // Explicitly handle "< 839" as text
-        if ($input === '< 839') {
-            return 'text'; // Treat this specific case as text
-        }
-
-        // Check if it is a numeric value, including scientific notation
-        if (is_numeric($input)) {
-            return 'numeric';
-        } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $input, $matches)) {
-            // Ensure the numeric value after < or > is handled correctly
-            if (isset($matches[2]) && is_numeric($matches[2])) {
-                return 'numeric'; // The part after < or > is numeric
+        return MemoUtility::remember(function () use ($input, $customTextPatterns) {
+            // Check if it's null or empty first
+            if (is_null($input) || trim((string) $input) == '') {
+                return 'empty';
             }
-        }
 
-        // If not null, not empty, and not numeric, it's text
-        return 'text';
+            // Check for any custom text patterns (exact match)
+            if (!empty($customTextPatterns) && in_array($input, $customTextPatterns, true)) {
+                return 'text';
+            }
+
+            // Hardcoded cases (can be expanded via customTextPatterns)
+            $hardcodedTextCases = ['< 839'];
+            if (in_array($input, $hardcodedTextCases, true)) {
+                return 'text';
+            }
+
+            $processed = $this->preprocessViralLoadInput($input);
+
+            // Check if it's a pure number (including scientific notation and commas)
+            if (preg_match('/^-?\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)) {
+                return 'numeric';
+            }
+            // Check if it's a number with < or > operator
+            elseif (preg_match('/^[<>]\s*\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?$/', $processed)) {
+                return 'numeric';
+            }
+
+            return 'text';
+        });
     }
 
     public function extractViralLoadValue($input, $returnWithOperator = true): ?string
     {
-        // Trim the input to remove leading/trailing whitespace
-        $input = trim((string) $input);
+        return MemoUtility::remember(function () use ($input, $returnWithOperator) {
+            $processed = $this->preprocessViralLoadInput($input);
 
-        if (is_numeric($input)) {
-            return floatval($input);
-        } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $input, $matches)) {
-            // Ensure the numeric value after < or > is handled correctly
-            if ($returnWithOperator) {
-                $operator = $matches[1] ?? '';
-            } else {
-                $operator = '';
+            if (is_numeric($processed)) {
+                return floatval($processed);
             }
-            if (isset($matches[2]) && is_numeric($matches[2])) {
-                return trim("$operator " . floatval($matches[2])); // The part after < or > is numeric
-            }
-        }
 
-        return null;
+            if (preg_match('/^([<>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)$/i', $processed, $matches)) {
+                $operator = $returnWithOperator ? $matches[1] : '';
+                $number = str_replace(',', '', $matches[2]);
+                return trim("$operator " . floatval($number));
+            }
+
+            return null;
+        });
     }
 
     public function getLabStorage($labId = null, $onlyActive = true)
@@ -643,5 +718,4 @@ final class VlService extends AbstractTestService
         }
         return $response;
     }
-
 }

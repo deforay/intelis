@@ -85,7 +85,7 @@ if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
 /* Facility filter */
 if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
      $facilityIdsString = implode(',', $_POST['facilityName']);
-     $sWhere[] =  ' f.facility_id IN (' . $facilityIdsString . ')';
+     $sWhere[] = " f.facility_id IN ($facilityIdsString)";
 }
 
 if (isset($_POST['gender']) && $_POST['gender'] != '') {
@@ -256,7 +256,7 @@ $highestRow = $vfSheet->getHighestRow(); // e.g. 10
 $highestCol = $vfSheet->getHighestColumn(); // e.g 'F'
 
 // Apply the border style to all cells
-$vfSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
+$vfSheet->getStyle("A1:$highestCol$highestRow")->applyFromArray($styleArray);
 
 foreach (range('A', 'O') as $columnID) {
      $vfSheet->getColumnDimension($columnID)->setAutoSize(true);
@@ -280,7 +280,7 @@ foreach ($vlnsData as $rowNo => $rowData) {
 $highestRow = $vlnsSheet->getHighestRow(); // e.g. 10
 $highestCol = $vlnsSheet->getHighestColumn(); // e.g 'F'
 
-$vlnsSheet->getStyle('A1:' . $highestCol . $highestRow)->applyFromArray($styleArray);
+$vlnsSheet->getStyle("A1:$highestCol$highestRow")->applyFromArray($styleArray);
 
 foreach (range('A', 'O') as $columnID) {
      $vlnsSheet->getColumnDimension($columnID)->setAutoSize(true);
