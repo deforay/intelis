@@ -9,6 +9,10 @@ if ($isCli === false) {
 
 require_once __DIR__ . "/../../bootstrap.php";
 
+
+declare(ticks=1);
+
+
 use App\Services\VlService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -166,17 +170,21 @@ try {
 
     $filtered = [];
 
-
-
     /** @var VlService $vlService */
     $vlService = ContainerRegistry::get(VlService::class);
 
     foreach ($grouped as $group) {
         $hasCopiesUnit = false;
 
-        // First pass to check if any row has "copies"-type unit
+        // First pass to check if any row has "copies"-type unit (but NOT containing "log")
         foreach ($group as $row) {
             $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
+
+            // Skip if it contains "log" - it's not a pure copies unit
+            if (str_contains($unit, 'log')) {
+                continue;
+            }
+
             foreach ($vlService->copiesPatterns as $pattern) {
                 if (str_contains($unit, $pattern)) {
                     $hasCopiesUnit = true;
@@ -189,6 +197,8 @@ try {
         foreach ($group as $row) {
             $unit = strtolower(preg_replace('/\s+/', '', (string) ($row['test_unit'] ?? '')));
             $isLog = str_contains($unit, 'log');
+
+            // If we have pure copies (not log), skip log results
             if ($hasCopiesUnit && $isLog) {
                 continue;
             }

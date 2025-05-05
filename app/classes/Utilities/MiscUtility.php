@@ -5,7 +5,6 @@ namespace App\Utilities;
 use Throwable;
 use ZipArchive;
 use Sqids\Sqids;
-use InvalidArgumentException;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use App\Exceptions\SystemException;
@@ -749,21 +748,30 @@ final class MiscUtility
             return;
         }
 
-        declare(ticks=1);
+        // Make sure ticks is declared globally
+        if (!ini_get('zend.enable_gc')) {
+            echo "Note: Garbage collection should be enabled for better signal handling" . PHP_EOL;
+        }
 
         pcntl_signal(SIGINT, function () use ($file) {
-            echo "Interrupted. Cleaning up lock file..." . PHP_EOL;
+            echo PHP_EOL . "Interrupted. Cleaning up lock file..." . PHP_EOL;
             self::deleteLockFile($file);
             exit(130);
         });
 
         pcntl_signal(SIGTERM, function () use ($file) {
-            echo "Terminated. Cleaning up lock file..." . PHP_EOL;
+            echo PHP_EOL . "Terminated. Cleaning up lock file..." . PHP_EOL;
             self::deleteLockFile($file);
             exit(143);
         });
-    }
 
+        // Add SIGQUIT handler too
+        pcntl_signal(SIGQUIT, function () use ($file) {
+            echo PHP_EOL . "Quit signal received. Cleaning up lock file..." . PHP_EOL;
+            self::deleteLockFile($file);
+            exit(131);
+        });
+    }
 
 
 

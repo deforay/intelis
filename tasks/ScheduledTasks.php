@@ -60,6 +60,15 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sam
 
 // MACHINE INTERFACING
 if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] === true) {
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sync-interface-sqlite-mysql.php")
+        ->everyFiveMinutes()
+        ->timezone($timeZone)
+        ->preventOverlapping()
+        ->description('Importing data from sqlite db into mysql db');
+}
+
+// MACHINE INTERFACING
+if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] === true) {
     $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
         ->everyMinute()
         ->timezone($timeZone)

@@ -8,10 +8,14 @@ $forceRun = false;
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
 
+    declare(ticks=1);
+
     // Check for the force flag in command-line arguments
     $options = getopt("f", ["force"]);
     $forceRun = isset($options['f']) || isset($options['force']);
 }
+
+
 $configFile = APPLICATION_PATH . '/../configs/config.interop.php';
 if (file_exists($configFile)) {
     require_once $configFile;

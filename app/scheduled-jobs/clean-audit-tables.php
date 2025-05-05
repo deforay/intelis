@@ -9,6 +9,8 @@ if ($isCli === false) {
 
 require_once(__DIR__ . "/../../bootstrap.php");
 
+declare(ticks=1);
+
 use App\Services\TestsService;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
