@@ -884,7 +884,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
+			"sAjaxSource": "/vl/results/get-results-for-print.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
@@ -1053,7 +1053,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			},
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "/vl/results/getVlTestResultDetails.php",
+			"sAjaxSource": "/vl/results/get-results-for-print.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				aoData.push({
 					"name": "state",
@@ -1142,7 +1142,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		$.unblockUI();
 	}
 
-	function convertResultToPdf(id, newData) {
+	function generateResultPDF(id, newData) {
 		$.blockUI();
 		<?php
 		$path = '';
@@ -1156,7 +1156,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
 					$.unblockUI();
-					alert("<?= _translate("Unable to generate download", true); ?>");
+					alert("<?= _translate("Unable to generate result PDF", true); ?>");
 				} else {
 					$.unblockUI();
 					if (unprintedTable) {

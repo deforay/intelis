@@ -14,3 +14,8 @@ ALTER TABLE `audit_form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACT
 -- Amit 28-Apr-2025
 INSERT IGNORE INTO roles_privileges_map (role_id, privilege_id)
 SELECT 1, privilege_id FROM privileges;
+
+-- Amit 06-May-2025
+UPDATE `privileges` SET `privilege_name`= '/vl/results/vl-print-results.php' WHERE `privilege_name` LIKE '/vl/results/vlPrintResult.php';
+UPDATE `s_app_menu` SET `link`= '/vl/results/vl-print-results.php' WHERE `link` LIKE '/vl/results/vlPrintResult.php';
+

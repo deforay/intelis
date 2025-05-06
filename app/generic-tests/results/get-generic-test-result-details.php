@@ -240,7 +240,7 @@ try {
                } else {
                     $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['sample_id'] . '"  value="' . $aRow['sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
-               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
           } else {
                $print = '<a href="/generic-tests/results/update-generic-test-result.php?id=' . base64_encode((string) $aRow['sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes') {

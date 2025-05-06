@@ -409,7 +409,7 @@ $state = $geolocationService->getProvinces("yes");
 		return currentXHR;
 	}
 
-	function convertResultToPdf(id) {
+	function generateResultPDF(id) {
 		//$.blockUI();
 		<?php
 		$path = '';

@@ -232,7 +232,7 @@ try {
                } else {
                     $row[] = '<input type="checkbox" name="chkPrinted[]" class="checkPrintedRows" id="chkPrinted' . $aRow['vl_sample_id'] . '"  value="' . $aRow['vl_sample_id'] . '" onclick="checkedPrintedRow(this);"  />';
                }
-               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="convertResultToPdf(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
+               $print = '<a href="javascript:void(0);" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Print") . '" onclick="generateResultPDF(' . $aRow['vl_sample_id'] . ')"><em class="fa-solid fa-print"></em> ' . _translate("Print") . '</a>';
           } else {
                $print = '<a href="updateVlTestResult.php?id=' . MiscUtility::sqid((int) $aRow['vl_sample_id']) . '" class="btn btn-success btn-xs" style="margin-right: 2px;" title="' . _translate("Result") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Enter Result") . '</a>';
                if ($aRow['result_status'] == 7 && $aRow['locked'] == 'yes' && !_isAllowed("/vl/requests/edit-locked-vl-samples")) {
@@ -279,6 +279,13 @@ try {
      echo JsonUtility::encodeUtf8Json($output);
 
      $db->commitTransaction();
-} catch (Throwable $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     LoggerUtility::log('error', $e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery(),
+          'request' => $_POST,
+     ]);
 }

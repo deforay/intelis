@@ -96,11 +96,11 @@ unset($_SESSION['controllertrack']);
                                 <?php
                                 if (isset($tsResult['totalCount']) && $tsResult['totalCount'] > 0) { ?>
                                     <input type="button" onclick="convertSearchResultToPdf();return false;" value="Print all results" class="btn btn-success btn-sm">&nbsp;&nbsp;
-                                    <a href="/vl/results/vlPrintResult.php" class="btn btn-success btn-sm">
+                                    <a href="/vl/results/vl-print-results.php" class="btn btn-success btn-sm">
                                         <?= _translate("Continue without printing results"); ?>
                                     </a>
                                 <?php } else { ?>
-                                    <a href="/vl/results/vlPrintResult.php" class="btn btn-success btn-sm">
+                                    <a href="/vl/results/vl-print-results.php" class="btn btn-success btn-sm">
                                         <?= _translate("Continue"); ?>
                                     </a>
                                 <?php } ?>
@@ -137,7 +137,7 @@ unset($_SESSION['controllertrack']);
                 } else {
                     $.unblockUI();
                     window.open('/download.php?f=' + data, '_blank');
-                    window.location.href = "/vl/results/vlPrintResult.php";
+                    window.location.href = "/vl/results/vl-print-results.php";
                 }
 
             });

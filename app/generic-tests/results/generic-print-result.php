@@ -987,7 +987,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.unblockUI();
 	}
 
-	function convertResultToPdf(id, newData) {
+	function generateResultPDF(id, newData) {
 		// $.blockUI();
 		<?php
 		$path = '';
