@@ -209,7 +209,10 @@ PHP;
 
     // Create the new migration file only if it doesn't already exist
     if (!file_exists($migrationFileName)) {
-        $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n";
+        // Create migration content with the version update SQL
+        $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n\n";
+        $migrationContent .= "UPDATE `system_config` SET `value` = '{$migrationVersion}' WHERE `system_config`.`name` = 'sc_version';\n\n";
+
         file_put_contents($migrationFileName, $migrationContent);
         echo "Created migration file: $migrationFileName" . PHP_EOL;
     }

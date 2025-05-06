@@ -15,8 +15,6 @@ use App\Registries\ContainerRegistry;
 use App\Abstracts\AbstractTestService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
-
-
 final class ResultsService
 {
     protected CommonService $commonService;
@@ -49,22 +47,7 @@ final class ResultsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    public function setFieldsToRemoveForAcceptedResults($fieldsToRemove)
-    {
-        $this->fieldsToRemoveForAcceptedResults = $fieldsToRemove;
-    }
-
-    public function setUnwantedColumns($unwantedColumns)
-    {
-        $this->unwantedColumns = $unwantedColumns;
-    }
-
-    public function getApproverName($approverId)
-    {
-        return $this->usersService->getOrCreateUser($approverId);
-    }
-
-    public function getResults($testType, $jsonResponse)
+    public function receiveResults($testType, $jsonResponse)
     {
 
         $this->setTestType($testType);
@@ -74,7 +57,6 @@ final class ResultsService
             $this->primaryKeyName,
             'sample_package_id',
             'sample_package_code',
-            //   'result_printed_datetime',
             'request_created_by'
         ];
 
@@ -120,9 +102,7 @@ final class ResultsService
                 $lab['data_sync'] = 1;
                 $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-
                 if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
-
                     $lab = MiscUtility::removeFromAssociativeArray($lab, $unwantedColumns);
                 }
 
@@ -145,7 +125,6 @@ final class ResultsService
 
                     $lab['data_sync'] = 1; //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
                     $lab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
 
                     if ($lab['result_status'] != SAMPLE_STATUS\ACCEPTED && $lab['result_status'] != SAMPLE_STATUS\REJECTED) {
                         $keysToRemove = [
@@ -193,8 +172,7 @@ final class ResultsService
                         ];
                         $this->db->insert("covid19_tests", $covid19TestData);
                     }
-                }
-                if ($testType == "generic-tests") {
+                } elseif ($testType == "generic-tests") {
                     // Insert generic_test_results
                     $testsData = $resultRow['data_from_tests'] ?? [];
 

@@ -9,7 +9,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
-use App\Services\STS\ResultsService;
+use App\Services\STS\ResultsService as STSResultsService;
 use App\Registries\ContainerRegistry;
 
 header('Content-Type: application/json');
@@ -23,13 +23,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-/** @var ResultsService $stsResultsService */
-$stsResultsService = ContainerRegistry::get(ResultsService::class);
+/** @var STSResultsService $stsResultsService */
+$stsResultsService = ContainerRegistry::get(STSResultsService::class);
 
 /** @var TokensService $stsTokensService */
 $stsTokensService = ContainerRegistry::get(TokensService::class);
-
-
 
 try {
     /** @var Laminas\Diactoros\ServerRequest $request */
@@ -53,15 +51,13 @@ try {
         throw new SystemException('Unauthorized Access', 401);
     }
 
-
     $testType = $data['testType'] ?? null;
 
     if (empty($testType)) {
         throw new SystemException('Test Type is missing in the request', 400);
     }
 
-
-    $sampleCodes = $stsResultsService->getResults($testType, json_encode($data));
+    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data));
 
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 

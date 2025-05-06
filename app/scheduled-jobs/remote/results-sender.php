@@ -49,6 +49,9 @@ $stsBearerToken = $general->getSTSToken();
 
 $apiService->setBearerToken($stsBearerToken);
 
+//Sending results to /v2/results.php for all test types
+$url = "$remoteURL/remote/v2/results.php";
+
 try {
     // Checking if the network connection is available
     if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
@@ -67,9 +70,6 @@ try {
         $systemConfig['modules'][$forceSyncModule] = true;
     }
 
-    //Sending results to results.php for all test
-    $url = "$remoteURL/remote/v2/results.php";
-
 
     // GERNERIC TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
@@ -81,8 +81,7 @@ try {
                     FROM `form_generic` AS generic
                     LEFT JOIN `user_details` AS a ON generic.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND sample_code !=''
-                    AND sample_code is not null
+                    AND IFNULL(generic.sample_code, '') != ''
                     AND generic.data_sync=0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -104,15 +103,14 @@ try {
             $customTestResultData[$r['unique_id']]['data_from_tests'] = $genericService->getTestsByGenericSampleIds($r['sample_id']);
         }
 
-        $url = "$remoteURL/remote/remote/generic-test-results.php";
-
-
         $payload = [
             "labId" => $labId,
             "results" => $customTestResultData,
+            "testType" => "generic-tests",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
+
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
@@ -129,7 +127,6 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
-
     // VIRAL LOAD TEST RESULTS
     if (isset($systemConfig['modules']['vl']) && $systemConfig['modules']['vl'] === true) {
         if ($cliMode) {
@@ -139,8 +136,7 @@ try {
             FROM `form_vl` AS vl
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND (facility_id != '' AND facility_id is not null)
-            AND (sample_code !='' AND sample_code is not null)
+            AND IFNULL(vl.sample_code, '') != ''
             AND vl.data_sync = 0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -150,17 +146,16 @@ try {
         $db->reset();
         $vlLabResult = $db->rawQuery($vlQuery);
 
-        $url = "$remoteURL/remote/remote/testResults.php";
-
         $payload = [
             "labId" => $labId,
-            "result" => $vlLabResult,
+            "results" => $vlLabResult,
+            "testType" => "vl",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
-    
+
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -185,8 +180,7 @@ try {
                     FROM `form_eid` AS vl
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND sample_code !=''
-                    AND sample_code is not null
+                    AND IFNULL(vl.sample_code, '') != ''
                     AND vl.data_sync=0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -195,10 +189,10 @@ try {
         $db->reset();
         $eidLabResult = $db->rawQuery($eidQuery);
 
-        $url = "$remoteURL/remote/remote/eid-test-results.php";
         $payload = [
             "labId" => $labId,
-            "result" => $eidLabResult,
+            "results" => $eidLabResult,
+            "testType" => "eid",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
@@ -227,8 +221,7 @@ try {
                     FROM `form_covid19` AS c19
                     LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND sample_code !=''
-                    AND sample_code is not null
+                    AND IFNULL(c19.sample_code, '') != ''
                     AND c19.data_sync=0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -251,10 +244,11 @@ try {
             $c19ResultData[$r['unique_id']]['data_from_tests'] = $covid19Service->getCovid19TestsByFormId($r['covid19_id']);
         }
 
-        $url = "$remoteURL/remote/remote/covid-19-test-results.php";
+
         $payload = [
             "labId" => $labId,
             "results" => $c19ResultData,
+            "testType" => "covid19",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
@@ -284,8 +278,7 @@ try {
                     FROM `form_hepatitis` AS hep
                     LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND sample_code != ''
-                    AND sample_code is not null
+                    AND IFNULL(hep.sample_code, '') != ''
                     AND hep.data_sync=0";
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $hepQuery .= " AND sample_code like '$sampleCode'";
@@ -293,10 +286,12 @@ try {
         $db->reset();
         $hepLabResult = $db->rawQuery($hepQuery);
 
-        $url = "$remoteURL/remote/remote/hepatitis-test-results.php";
+
+
         $payload = [
             "labId" => $labId,
-            "result" => $hepLabResult,
+            "results" => $hepLabResult,
+            "testType" => "hepatitis",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
@@ -317,8 +312,8 @@ try {
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
-     // TB TEST RESULTS
-     if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
+    // TB TEST RESULTS
+    if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
         if ($cliMode) {
             echo "Trying to send test results from TB...\n";
         }
@@ -326,8 +321,7 @@ try {
             FROM `form_tb` AS tb
             LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND (facility_id != '' AND facility_id is not null)
-            AND (sample_code !='' AND sample_code is not null)
+            AND IFNULL(vl.sample_code, '') != ''
             AND tb.data_sync = 0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -337,8 +331,6 @@ try {
         $db->reset();
         $tbLabResult = $db->rawQuery($tbQuery);
 
-        //$url = "$remoteURL/remote/remote/tb-test-results.php";
-        $url = "$remoteURL/remote/remote/tb-test-results.php";
 
         $payload = [
             "labId" => $labId,
@@ -349,7 +341,7 @@ try {
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
-   
+
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {
@@ -374,8 +366,7 @@ try {
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND (facility_id != '' AND facility_id is not null)
-            AND (sample_code !='' AND sample_code is not null)
+            AND IFNULL(vl.sample_code, '') != ''
             AND cd4.data_sync = 0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -384,15 +375,14 @@ try {
         $db->reset();
         $cd4LabResult = $db->rawQuery($cd4Query);
 
-        $url = "$remoteURL/remote/remote/cd4-test-results.php";
 
         $payload = [
             "labId" => $labId,
-            "result" => $cd4LabResult,
+            "results" => $cd4LabResult,
+            "testType" => "cd4",
             'time' => time(),
             "instanceId" => $general->getInstanceId()
         ];
-
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 
@@ -411,11 +401,11 @@ try {
     $db->where('vlsm_instance_id', $instanceId);
     $id = $db->update('s_vlsm_instance', ['last_remote_results_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Exception $e) {
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-    LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastQuery());
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
     ]);
 }

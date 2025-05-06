@@ -88,6 +88,10 @@ try {
         $general->activityLog($eventType, $action, $resource);
         echo $result;
     }
-} catch (Throwable $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+} catch (Throwable $e) {
+    throw new SystemException(
+        $e->getMessage(),
+        $e->getCode(),
+        $e
+    );
 }

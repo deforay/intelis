@@ -1,15 +1,15 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-use App\Services\DatabaseService;
 use App\Utilities\MiscUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Style\Alignment;
 use PhpOffice\PhpSpreadsheet\Style\Border;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use PhpOffice\PhpSpreadsheet\Style\Alignment;
 
 
 ini_set('memory_limit', -1);
@@ -27,9 +27,9 @@ $formId = (int) $arr['vl_form'];
 $delimiter = $arr['default_csv_delimiter'] ?? ',';
 $enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-$excel = new Spreadsheet();
+
 $output = [];
-$sheet = $excel->getActiveSheet();
+
 
 if ($formId == COUNTRY\CAMEROON && $arr['vl_excel_export_format'] == "cresar") {
 	//$headings = array(_translate('No.'), _translate("Region of sending facility"), _translate("District of sending facility"), _translate("Sending facility"), _translate("Name of reference Lab"), _translate("Category of testing site"), _translate("Project"), _translate("CV Number"),  _translate("TAT"), _translate("Sample ID"), _translate("Existing ART Code"), _translate("ARV Protocol"), _translate("Sex"), _translate("Date of Birth"), _translate("Age"), _translate("Age Range"), _translate("Requested by contact"), _translate("Sample collection date"),  _translate("Sample reception date"), _translate("Sample Type"), _translate("Treatment start date"), _translate("Treatment Protocol"), _translate("Was sample send to another reference lab"), _translate("If sample was send to another lab, give name of lab"), _translate("Sample Rejected"), _translate("Sample Tested"), _translate("Test Platform"), _translate("Test platform detection limit"), _translate("Invalid test (yes or no)"), _translate("Invalid sample repeated (yes or no)"), _translate("Error codes (yes or no)"), _translate("Error codes values"), _translate("Tests repeated due to error codes (yes or no)"), _translate("New CV number"), _translate("Date of test"), _translate("Date of repeat test"), _translate("Result sent back to facility (yes or no)"), _translate("Date of result sent to facility"), _translate("Result Type"), _translate("Result Value"), _translate("Result Value Log"), _translate("Is suppressed"), _translate("Communication of rejected samples or high viral load (yes, no or NA)"), _translate("Observations"));
@@ -50,59 +50,6 @@ if ($formId != COUNTRY\CAMEROON) {
 }
 // ... and a writer to create the new file
 $colNo = 1;
-
-$styleArray = array(
-	'font' => array(
-		'bold' => true,
-		'size' => 12,
-	),
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-		'vertical' => Alignment::VERTICAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
-
-$borderStyle = array(
-	'alignment' => array(
-		'horizontal' => Alignment::HORIZONTAL_CENTER,
-	),
-	'borders' => array(
-		'outline' => array(
-			'style' => Border::BORDER_THIN,
-		),
-	)
-);
-
-$sheet->mergeCells('A1:AH1');
-$nameValue = '';
-foreach ($_POST as $key => $value) {
-	if (trim($value) != '' && trim($value) != '-- Select --') {
-		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
-	}
-}
-$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
-	->setValueExplicit(html_entity_decode($nameValue));
-if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
-	foreach ($headings as $field => $value) {
-		$string = str_replace(' ', '', $value);
-		$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
-		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
-		$colNo++;
-	}
-} else {
-	foreach ($headings as $field => $value) {
-		$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
-			->setValueExplicit(html_entity_decode($value));
-		$colNo++;
-	}
-}
-$sheet->getStyle('A3:AX3')->applyFromArray($styleArray);
 
 $key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['vlRequestQuery']);
@@ -168,12 +115,12 @@ foreach ($resultSet as $aRow) {
 		$row[] = ($patientFname . " " . $patientMname . " " . $patientLname);
 		$row[] = $gender;
 		if ($formId == COUNTRY\CAMEROON) {
-			$row[] = $aRow['health_insurance_code'] ?? null;
+			$row[] = $aRow['health_insurance_code'];
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '');
 		$row[] = $aRow['createdBy'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-		$row[] = $aRow['sample_name'] ?: null;
+		$row[] = $aRow['sample_name'];
 		$row[] = $aRow['request_clinician_name'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['treatment_initiated_date']);
 		$row[] = $lineOfTreatment;
@@ -186,18 +133,14 @@ foreach ($resultSet as $aRow) {
 		} else {
 			$row[] = "";
 		}
-		if ($aRow['sample_tested_datetime'] != "")
-			$row[] = "Yes";
-		else
-			$row[] = "No";
-
+		$row[] = !empty($aRow['sample_tested_datetime']) ? "Yes" : "No";
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime']);
 		$row[] = $sampleRejection;
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $aRow['result'];
 		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
-		$row[] = $logVal;
+		$row[] = $aRow['result_value_log'];
 		$row[] = $aRow['vl_result_category'];
 		$row[] = "Reference Lab";
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
@@ -214,7 +157,7 @@ foreach ($resultSet as $aRow) {
 		$row[] = "";    //New CV Number
 		$row[] = "";    //Date of repeat test
 		$row[] = "";     //Result sent back to facility (yes or no)
-		$ROW[] = ""; //Result type
+		$row[] = ""; //Result type
 		$row[] = "";    //Observations
 
 	} else {
@@ -224,7 +167,7 @@ foreach ($resultSet as $aRow) {
 			$row[] = $aRow["remote_sample_code"];
 		}
 
-		$row[] = $aRow['lab_name'] ?? null;
+		$row[] = $aRow['lab_name'];
 		if ($formId == COUNTRY\CAMEROON) {
 			$row[] = $aRow['lab_assigned_code'];
 		}
@@ -300,6 +243,69 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 	unset($output);
 	echo base64_encode((string) $fileName);
 } else {
+
+
+
+	$styleArray = [
+		'font' => [
+			'bold' => true,
+			'size' => 12,
+		],
+		'alignment' => [
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
+			'vertical' => Alignment::VERTICAL_CENTER,
+		],
+		'borders' => [
+			'outline' => [
+				'style' => Border::BORDER_THIN,
+			],
+		]
+	];
+
+	$borderStyle = [
+		'alignment' => [
+			'horizontal' => Alignment::HORIZONTAL_CENTER,
+		],
+		'borders' => [
+			'outline' => [
+				'style' => Border::BORDER_THIN,
+			],
+		]
+	];
+
+	$excel = new Spreadsheet();
+	$sheet = $excel->getActiveSheet();
+
+	// Turn off calculations for speed
+	$excel->getCalculationEngine()->disableCalculationCache();
+
+
+	$sheet->mergeCells('A1:AH1');
+	$nameValue = '';
+	foreach ($_POST as $key => $value) {
+		if (trim($value) != '' && trim($value) != '-- Select --') {
+			$nameValue .= str_replace("_", " ", $key) . " : " . $value . "&nbsp;&nbsp;";
+		}
+	}
+	$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '1')
+		->setValueExplicit(html_entity_decode($nameValue));
+	if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+		foreach ($headings as $field => $value) {
+			$string = str_replace(' ', '', $value);
+			$value = preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value));
+			$colNo++;
+		}
+	} else {
+		foreach ($headings as $field => $value) {
+			$sheet->getCell(Coordinate::stringFromColumnIndex($colNo) . '3')
+				->setValueExplicit(html_entity_decode($value));
+			$colNo++;
+		}
+	}
+	$sheet->getStyle('A3:AX3')->applyFromArray($styleArray);
+
 
 	$start = (count($output)) + 2;
 	foreach ($output as $rowNo => $rowData) {

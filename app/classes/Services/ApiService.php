@@ -11,7 +11,6 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use GuzzleHttp\RequestOptions;
 use App\Utilities\LoggerUtility;
-use App\Exceptions\SystemException;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Http\Message\ServerRequestInterface;
 
