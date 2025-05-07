@@ -142,35 +142,25 @@ try {
      LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
      //echo $sQuery;die;
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-     [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+
+
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-          }
+          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
      }
 
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-          }
+          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
           $sWhere[] = ' f.facility_id IN (' . $_POST['facilityName'] . ')';
@@ -225,7 +215,7 @@ try {
           $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') like 'yes'";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
@@ -249,7 +239,7 @@ try {
           $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
      }
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-          $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') like '" . $_POST['rejectedSamples'] . "'";
      }
 
 
@@ -262,30 +252,30 @@ try {
      }
      if (!empty($sWhere)) {
           $_SESSION['eidRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE $sWhere";
      }
-     //die($sQuery);
      if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['eidRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
      $_SESSION['eidRequestSearchResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
+
+     //error_log($sQuery);
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
      $_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;
 
-
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
      $editRequest = false;
      $syncRequest = false;
      if (_isAllowed("/eid/requests/eid-edit-request.php")) {

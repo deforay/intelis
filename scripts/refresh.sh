@@ -167,6 +167,8 @@ if [ "$restart_mysql" = true ]; then
     systemctl restart mysql || { echo "MySQL restart failed"; log_action "MySQL restart failed"; }
 fi
 
+sudo chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+
 print success "✅ LIS refresh complete."
 log_action "LIS refresh complete"
 

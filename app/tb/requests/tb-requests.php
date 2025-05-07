@@ -260,8 +260,8 @@ foreach ($srcResults as $list) {
                             <td><strong><?php echo _translate("Show Rejected Samples"); ?>&nbsp;:</strong></td>
                             <td>
                                 <select name="rejectedSamples" id="rejectedSamples" class="form-control" title="<?php echo _translate('Please choose show rejected samples'); ?>" style="width:100%;">
-                                    <option value="yes"><?php echo _translate("Yes"); ?></option>
-                                    <option value="no" selected="selected"><?php echo _translate("No"); ?></option>
+                                    <option value="yes" selected="selected"><?php echo _translate("Yes"); ?></option>
+                                    <option value="no"><?php echo _translate("No"); ?></option>
                                 </select>
                             </td>
                         </tr>
