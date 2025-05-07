@@ -159,9 +159,7 @@ try {
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
-    // error_log($sQuery);
 
-    //echo $sQuery;
     $rResult = $db->rawQuery($sQuery);
 
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

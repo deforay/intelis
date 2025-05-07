@@ -161,35 +161,23 @@ try {
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-     [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-     [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
+
 
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $startDate) == trim((string) $endDate)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) =  "' . $startDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
-          }
+          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
      }
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-          }
+          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
      }
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
-               $sWhere[] = " DATE(vl.sample_tested_datetime) = '$testedStartDate ' ";
-          } else {
-               $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-          }
+          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
      /* Viral load filter */
      if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
@@ -288,20 +276,12 @@ try {
      }
      if (!empty($_POST['requestCreatedDatetime'])) {
           [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
-
-          if (trim((string) $sRequestCreatedDatetime) == trim((string) $eRequestCreatedDatetime)) {
-               $sWhere[] = " DATE(vl.request_created_datetime) = '$sRequestCreatedDatetime' ";
-          } else {
-               $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
-          }
+          $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-          if (trim((string) $sPrintDate) == trim((string) $ePrintDate)) {
-               $sWhere[] = "  DATE(vl.result_printed_datetime) = '$sPrintDate'";
-          } else {
-               $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
-          }
+          [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
+          $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
 
      if ($general->isSTSInstance()) {
@@ -311,6 +291,8 @@ try {
      } elseif (!$_POST['hidesrcofreq']) {
           $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      }
+
+     $sWhere[] = ' vl.result_status != ' . SAMPLE_STATUS\CANCELLED;
 
      if (!empty($sWhere)) {
           $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
@@ -442,6 +424,7 @@ try {
           $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 
+          // BUTTONS
           if ($editRequest) {
                if ($general->isLISInstance() && $aRow['result_status'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
                     $edit = '';
@@ -458,12 +441,11 @@ try {
                $barcode = "<br><a href='javascript:void(0)' onclick=\"printBarcodeLabel('{$aRow[$sampleCode]}', '{$fac}', '{$aRow['patient_art_no']}')\" class='btn btn-default btn-xs' style='margin-right: 2px;' title='" . _translate("Barcode") . "'><em class='fa-solid fa-barcode'></em> " . _translate("Barcode") . " </a>";
           }
 
+          $sync = "";
           if ($syncRequest && $general->isLISInstance() && ($aRow['result_status'] == 7 || $aRow['result_status'] == 4)) {
                if ($aRow['data_sync'] == 0) {
                     $sync = '<a href="javascript:void(0);" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Sync Sample") . '" onclick="forceResultSync(\'' . ($aRow['sample_code']) . '\')"> ' . _translate("Sync") . '</a>';
                }
-          } else {
-               $sync = "";
           }
 
           $actions = "";
@@ -483,7 +465,7 @@ try {
 
      $db->commitTransaction();
 } catch (Throwable $e) {
-     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getCode() . " - " . $e->getMessage(), [
+     LoggerUtility::logError($e->getMessage(), [
           'exception' => $e,
           'file' => $e->getFile(),
           'line' => $e->getLine(),

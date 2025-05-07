@@ -56,10 +56,6 @@ if ($_POST['type'] == 'cd4') {
     $resultColumn = 'cd4_result';
 }
 
-[$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-[$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
-[$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
-
 $query = "(SELECT vl.sample_code,
                     vl.$primaryKeyColumn,
                     vl.$patientIdColumn,
@@ -98,27 +94,18 @@ if (!empty($_POST['testType'])) {
 }
 
 if (!empty($_POST['sampleCollectionDate'])) {
-    if (trim((string) $startDate) == trim((string) $endDate)) {
-        $swhere[] = $where[] = " DATE(sample_collection_date) = '$startDate' ";
-    } else {
-        $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
-    }
+    [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+    $swhere[] = $where[] = " DATE(sample_collection_date) BETWEEN '$startDate' AND '$endDate' ";
 }
 
 if (!empty($_POST['sampleReceivedAtLab']) && trim((string) $_POST['sampleReceivedAtLab']) != '') {
-    if (trim((string) $sampleReceivedStartDate) == trim((string) $sampleReceivedEndDate)) {
-        $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) = '$sampleReceivedStartDate' ";
-    } else {
-        $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
-    }
+    [$sampleReceivedStartDate, $sampleReceivedEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedAtLab'] ?? '');
+    $swhere[] = $where[] = " DATE(sample_received_at_lab_datetime) BETWEEN '$sampleReceivedStartDate' AND '$sampleReceivedEndDate' ";
 }
 
 if (!empty($_POST['lastModifiedDateTime']) && trim((string) $_POST['lastModifiedDateTime']) != '') {
-    if (trim((string) $lastModifiedStartDate) == trim((string) $lastModifiedEndDate)) {
-        $swhere[] = $where[] = " DATE(last_modified_datetime) = '$lastModifiedStartDate' ";
-    } else {
-        $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
-    }
+    [$lastModifiedStartDate, $lastModifiedEndDate] = DateUtility::convertDateRange($_POST['lastModifiedDateTime'] ?? '');
+    $swhere[] = $where[] = " DATE(last_modified_datetime) BETWEEN '$lastModifiedStartDate' AND '$lastModifiedEndDate' ";
 }
 
 if (!empty($_POST['fundingSource']) && trim((string) $_POST['fundingSource']) != '') {

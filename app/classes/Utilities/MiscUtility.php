@@ -133,8 +133,7 @@ final class MiscUtility
         }
 
         // Additional context
-        $timestamp = date('Y-m-d H:i:s');
-        $output = "[{$timestamp}]:::DUMP:::$output";
+        $output = "[{".DateUtility::getCurrentDateTime(). "}]:::DUMP:::$output";
 
         LoggerUtility::logInfo($output);
     }

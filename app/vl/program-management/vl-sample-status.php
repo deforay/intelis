@@ -71,13 +71,13 @@ $batResult = $db->rawQuery($batQuery);
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
 							<td>&nbsp;<strong>
 									<?php echo _translate("Batch Code"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" >
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -92,7 +92,7 @@ $batResult = $db->rawQuery($batQuery);
 									<?php echo _translate("Sample Type"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select style="width:220px;" class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
+								<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
@@ -126,7 +126,7 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),reloadTATData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 										<?= _translate('Reset'); ?>
 									</span></button>
@@ -182,7 +182,7 @@ $batResult = $db->rawQuery($batQuery);
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty">
+									<td colspan="10" class="dataTables_empty">
 										<?php echo _translate("Loading data from server"); ?>
 									</td>
 								</tr>
@@ -241,8 +241,8 @@ $batResult = $db->rawQuery($batQuery);
 			endDate = end.format('YYYY-MM-DD');
 		});
 		searchResultData();
-		loadVlTATData();
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
+		loadTATData();
+		$('#sampleReceivedDateAtLab, #sampleTestedDate').val("");
 		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
@@ -267,13 +267,13 @@ $batResult = $db->rawQuery($batQuery);
 		$.unblockUI();
 	}
 
-	function searchVlTATData() {
+	function reloadTATData() {
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
 	}
 
-	function loadVlTATData() {
+	function loadTATData() {
 		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {

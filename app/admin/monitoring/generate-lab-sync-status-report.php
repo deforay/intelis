@@ -37,7 +37,7 @@ foreach ($resultSet as $aRow) {
     $row = [];
     $color[]['color'] = $aRow['color'];
 
-    $aRow['latest'] = $aRow['latest'] ?? $aRow['requested_on'];
+    $aRow['latest'] ??= $aRow['requested_on'];
 
     $row[] = $aRow['facility_name'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['latest']);

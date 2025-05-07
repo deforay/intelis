@@ -9,7 +9,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -19,27 +18,18 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 try {
 	$db->beginReadOnlyTransaction();
-	/** @var CommonService $general */
-	$general = ContainerRegistry::get(CommonService::class);
-	$whereCondition = '';
-	$tableName = "form_eid";
-	$primaryKey = "eid_id";
+
+	$sampleCode = ($general->isSTSInstance()) ? 'remote_sample_code' : 'sample_code';
+	$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_dispatched_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')"];
+	$orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', 'vl.sample_collection_date', 'vl.sample_dispatched_datetime', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_printed_on_sts_datetime', 'vl.result_printed_on_lis_datetime'];
 
 
-	if ($general->isSTSInstance()) {
-		$sampleCode = 'remote_sample_code';
-	} else {
-		$sampleCode = 'sample_code';
-	}
-	$aColumns = array('vl.sample_code', 'vl.remote_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_mail_datetime,'%d-%b-%Y')");
-	$orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'vl.sample_collection_date', 'vl.sample_received_at_lab_datetime', 'vl.sample_tested_datetime', 'vl.result_printed_datetime', 'vl.result_mail_datetime');
-
-	/* Indexed column (used for fast and accurate table cardinality) */
-	$sIndexColumn = $primaryKey;
-
-	$sTable = $tableName;
 
 	$sOffset = $sLimit = null;
 	if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -48,47 +38,13 @@ try {
 	}
 
 
+	$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-	$sOrder = "";
-	if (isset($_POST['iSortCol_0'])) {
-		$sOrder = "";
-		for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-			if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-				$sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-			}
-		}
-		$sOrder = substr_replace($sOrder, "", -2);
-	}
-
-
-
+	$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 	$sWhere = [];
-	if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-		$searchArray = explode(" ", (string) $_POST['sSearch']);
-		$sWhereSub = "";
-		foreach ($searchArray as $search) {
-			if ($sWhereSub == "") {
-				$sWhereSub .= " (";
-			} else {
-				$sWhereSub .= " AND (";
-			}
-			$colSize = count($aColumns);
-
-			for ($i = 0; $i < $colSize; $i++) {
-				if ($i < $colSize - 1) {
-					$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-				} else {
-					$sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-				}
-			}
-			$sWhereSub .= ")";
-		}
-		$sWhere[] = $sWhereSub;
+	if (!empty($columnSearch) && $columnSearch != '') {
+		$sWhere[] = $columnSearch;
 	}
-
-
-
 
 	$sQuery = "SELECT vl.sample_code,
 				vl.remote_sample_code,
@@ -151,7 +107,7 @@ try {
 
 	if (!empty($sWhere)) {
 		$_SESSION['eidTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-		$sQuery = $sQuery . ' AND ' . $sWhere;
+		$sQuery = "$sQuery AND $sWhere";
 	}
 
 	if (!empty($sOrder) && $sOrder !== '') {
@@ -166,65 +122,39 @@ try {
 	[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
 
 
-	$output = array(
+	$output = [
 		"sEcho" => (int) $_POST['sEcho'],
 		"iTotalRecords" => $resultCount,
 		"iTotalDisplayRecords" => $resultCount,
 		"aaData" => []
-	);
+	];
 
 	foreach ($rResult as $aRow) {
-		if (isset($aRow['sample_collection_date']) && trim((string) $aRow['sample_collection_date']) != '' && $aRow['sample_collection_date'] != '0000-00-00 00:00:00') {
-			$aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-		} else {
-			$aRow['sample_collection_date'] = '';
-		}
-		if (isset($aRow['sample_received_at_lab_datetime']) && trim((string) $aRow['sample_received_at_lab_datetime']) != '' && $aRow['sample_received_at_lab_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime']);
-		} else {
-			$aRow['sample_received_at_lab_datetime'] = '';
-		}
-		if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime']);
-		} else {
-			$aRow['sample_tested_datetime'] = '';
-		}
-		if (isset($aRow['result_printed_datetime']) && trim((string) $aRow['result_printed_datetime']) != '' && $aRow['result_printed_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['result_printed_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime']);
-		} else {
-			$aRow['result_printed_datetime'] = '';
-		}
-		if (isset($aRow['result_mail_datetime']) && trim((string) $aRow['result_mail_datetime']) != '' && $aRow['result_mail_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['result_mail_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_mail_datetime']);
-		} else {
-			$aRow['result_mail_datetime'] = '';
-		}
-		if (isset($aRow['result_printed_on_sts_datetime']) && trim((string) $aRow['result_printed_on_sts_datetime']) != '' && $aRow['result_printed_on_sts_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['result_printed_on_sts_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime']);
-		} else {
-			$aRow['result_printed_on_sts_datetime'] = '';
-		}
-		if (isset($aRow['result_printed_on_lis_datetime']) && trim((string) $aRow['result_printed_on_lis_datetime']) != '' && $aRow['result_printed_on_lis_datetime'] != '0000-00-00 00:00:00') {
-			$aRow['result_printed_on_lis_datetime'] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime']);
-		} else {
-			$aRow['result_printed_on_lis_datetime'] = '';
-		}
 		$row = [];
 		$row[] = $aRow['sample_code'];
 		$row[] = $aRow['remote_sample_code'];
-		$row[] = $aRow['sample_collection_date'];
-		$row[] = $aRow['sample_received_at_lab_datetime'];
-		$row[] = $aRow['sample_tested_datetime'];
-		$row[] = $aRow['result_printed_datetime'];
-		$row[] = $aRow['result_mail_datetime'];
-		$row[] = $aRow['result_printed_on_sts_datetime'];
-		$row[] = $aRow['result_printed_on_lis_datetime'];
+		$row[] = $aRow['external_sample_code'];
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_dispatched_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_sts_datetime'] ?? '');
+		$row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_on_lis_datetime'] ?? '');
+
 		$output['aaData'][] = $row;
 	}
 
 	echo JsonUtility::encodeUtf8Json($output);
 
 	$db->commitTransaction();
-} catch (Exception $exc) {
-	LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Exception $e) {
+	LoggerUtility::log('error', $e->getMessage(), [
+		'code' => $e->getCode(),
+		'line' => $e->getLine(),
+		'file' => $e->getFile(),
+		'last_db_query' => $db->getLastQuery(),
+		'last_db_error' => $db->getLastError(),
+		'trace' => $e->getTraceAsString()
+	]);
 }

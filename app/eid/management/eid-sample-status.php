@@ -60,11 +60,11 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
 							</td>
 							<td>&nbsp;<strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:100%;">
 									<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 									<?php foreach ($batResult as $code) { ?>
 										<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
@@ -75,7 +75,7 @@ $batResult = $db->rawQuery($batQuery);
 						<tr>
 							<td>&nbsp;<strong><?php echo _translate("Testing Lab"); ?> &nbsp;:</strong></td>
 							<td>
-								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>">
+								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>" style="width:100%;">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
@@ -92,7 +92,7 @@ $batResult = $db->rawQuery($batQuery);
 							<td></td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
+							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),reloadTATData();" value="<?php echo _translate("Search"); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 							</td>
 						</tr>
@@ -110,22 +110,43 @@ $batResult = $db->rawQuery($batQuery);
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="eidExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 						<table aria-describedby="table" id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
-							<thead>
+						<thead>
 								<tr>
-									<th><?php echo _translate("Sample ID"); ?></th>
-									<th><?php echo _translate("Remote Sample ID"); ?></th>
-									<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
-									<th><?php echo _translate("Sample Received Date in Lab"); ?></th>
-									<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
-									<th><?php echo _translate("Result Print Date"); ?></th>
-									<th><?php echo _translate("Sample Email Date"); ?></th>
-									<th><?php echo _translate("STS Result Print Date"); ?></th>
-									<th><?php echo _translate("LIS Result Print Date"); ?></th>
+									<th>
+										<?php echo _translate("Sample ID"); ?>
+									</th>
+									<th>
+										<?php echo _translate("Remote Sample ID"); ?>
+									</th>
+									<th>
+										<?php echo _translate("External Sample ID"); ?>
+									</th>
+									<th scope="row">
+										<?php echo _translate("Sample Collection Date"); ?>
+									</th>
+									<th>
+										<?php echo _translate("Sample Dispatch Date"); ?>
+									</th>
+									<th>
+										<?php echo _translate("Sample Received Date in Lab"); ?>
+									</th>
+									<th scope="row">
+										<?php echo _translate("Sample Test Date"); ?>
+									</th>
+									<th>
+										<?php echo _translate("Result Print Date"); ?>
+									</th>
+									<th>
+										<?php echo _translate("STS Result Print Date"); ?>
+									</th>
+									<th>
+										<?php echo _translate("LIS Result Print Date"); ?>
+									</th>
 								</tr>
 							</thead>
 							<tbody>
 								<tr>
-									<td colspan="6" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+									<td colspan="10" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
 								</tr>
 							</tbody>
 						</table>
@@ -184,8 +205,8 @@ $batResult = $db->rawQuery($batQuery);
 				endDate = end.format('YYYY-MM-DD');
 			});
 		searchResultData();
-		loadVlTATData();
-		$('#sampleCollectionDate, #sampleReceivedDateAtLab, #sampleTestedDate').val("");
+		loadTATData();
+		$('#sampleReceivedDateAtLab, #sampleTestedDate').val("");
 
 		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
@@ -211,14 +232,14 @@ $batResult = $db->rawQuery($batQuery);
 		$.unblockUI();
 	}
 
-	function searchVlTATData() {
+	function reloadTATData() {
 		searchExecuted = true;
 		$.blockUI();
 		oTable.fnDraw();
 		$.unblockUI();
 	}
 
-	function loadVlTATData() {
+	function loadTATData() {
 		$.blockUI();
 		oTable = $('#eidRequestDataTable').dataTable({
 			"oLanguage": {
@@ -257,7 +278,10 @@ $batResult = $db->rawQuery($batQuery);
 				},
 				{
 					"sClass": "center"
-				}
+				},
+				{
+					"sClass": "center"
+				},
 			],
 			"aaSorting": [
 				[3, "desc"],

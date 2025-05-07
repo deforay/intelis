@@ -825,8 +825,8 @@ $remoteURL = $general->getRemoteURL();
         } else if (pName == '' && cName == '') {
             provinceName = true;
             facilityName = true;
-            $("#province").html("<?php echo $province ?? ""; ?>");
-            $("#facilityId").html("<?= (string) $facility ?? ""; ?>");
+            $("#province").html("<?= !empty($province) ? $province : ''; ?>");
+            $("#facilityId").html("<?= !empty($facility) ? $facility : ''; ?>");
         }
         $.unblockUI();
     }
