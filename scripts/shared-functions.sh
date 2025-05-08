@@ -78,20 +78,43 @@ prepare_system() {
 
 spinner() {
     local pid=$1
+    local message="${2:-Processing...}"
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
     local delay=0.1
     local i=0
-    local color="\033[1;36m"
+    local blue="\033[1;36m"  # Bright cyan/blue
+    local green="\033[1;32m" # Bright green
     local reset="\033[0m"
+    local success_symbol="✓"
+    local last_status=0
 
+    # Save cursor position and hide it
+    tput sc
     tput civis
+
+    # Show spinner while the process is running
     while kill -0 "$pid" 2>/dev/null; do
-        printf "\r${color}%s${reset}" "${frames[i]}"
+        printf "\r${blue}%s${reset} %s" "${frames[i]}" "$message"
         i=$(((i + 1) % ${#frames[@]}))
         sleep "$delay"
     done
-    printf "\r \r"
+
+    # Get the exit status of the process
+    wait "$pid"
+    last_status=$?
+
+    # Replace spinner with completion symbol and appropriate color
+    if [ $last_status -eq 0 ]; then
+        printf "\r${green}%s${reset} %s\n" "$success_symbol" "$message"
+    else
+        printf "\r${red}✗${reset} %s (failed with status $last_status)\n" "$message"
+    fi
+
+    # Show cursor again
     tput cnorm
+
+    # Return the process exit status
+    return $last_status
 }
 
 # Ubuntu version check
