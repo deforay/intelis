@@ -82,10 +82,12 @@ spinner() {
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
     local delay=0.1
     local i=0
-    local blue="\033[1;36m"  # Bright cyan/blue
-    local green="\033[1;32m" # Bright green
+    local blue="\033[1;36m"    # Bright cyan/blue
+    local green="\033[1;32m"   # Bright green
+    local red="\033[1;31m"     # Bright red
     local reset="\033[0m"
-    local success_symbol="✓"
+    local success_symbol="✅"
+    local failure_symbol="❌"
     local last_status=0
 
     # Save cursor position and hide it
@@ -107,7 +109,7 @@ spinner() {
     if [ $last_status -eq 0 ]; then
         printf "\r${green}%s${reset} %s\n" "$success_symbol" "$message"
     else
-        printf "\r${red}✗${reset} %s (failed with status $last_status)\n" "$message"
+        printf "\r${red}%s${reset} %s (failed with status $last_status)\n" "$failure_symbol" "$message"
     fi
 
     # Show cursor again
@@ -115,6 +117,51 @@ spinner() {
 
     # Return the process exit status
     return $last_status
+}
+
+download_file() {
+    local output_file="$1"
+    local url="$2"
+    local message="Downloading $(basename "$output_file")..."
+
+    # Create directory if it doesn't exist
+    local output_dir=$(dirname "$output_file")
+    if [ ! -d "$output_dir" ]; then
+        mkdir -p "$output_dir"
+    fi
+
+    # Remove existing file if it exists
+    if [ -f "$output_file" ]; then
+        rm -f "$output_file"
+    fi
+
+    print info "$message"
+
+    # Create a temporary file for the download logs
+    local log_file=$(mktemp)
+
+    # Run aria2c with reduced verbosity, redirecting all output to the log file
+    aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 --allow-overwrite=true -o "$output_file" "$url" > "$log_file" 2>&1 &
+    download_pid=$!
+
+    # Use the spinner to show progress
+    spinner "$download_pid" "$message"
+    wait $download_pid
+    download_status=$?
+
+    # Only show detailed output on failure
+    if [ $download_status -ne 0 ]; then
+        print error "Download failed"
+        print info "Detailed download logs:"
+        cat "$log_file"
+    else
+        print success "Download completed successfully"
+    fi
+
+    # Clean up the log file
+    rm -f "$log_file"
+
+    return $download_status
 }
 
 # Ubuntu version check

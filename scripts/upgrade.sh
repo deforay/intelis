@@ -550,20 +550,7 @@ fi
 
 print header "Downloading LIS"
 
-# Run aria2c in the background, capturing its PID
-# Using options for potentially faster download (-x, -s)
-# Using -o to specify the output filename
-# Using --summary-interval=0 to minimize aria2c's own console output
-# to avoid interfering with the shell spinner
-aria2c -x 5 -s 5 --summary-interval=0 -o master.tar.gz \
-    https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master &
-download_pid=$! # Save aria2c PID
-
-# Show the spinner while the download runs
-spinner "${download_pid}" # Spinner tracks download
-
-# Wait for the download process to finish and capture its exit status
-wait ${download_pid}
+download_file "master.tar.gz" "https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master" "Downloading LIS package..."
 download_status=$? # Capture the exit status
 
 # Check if the download was successful (exit code 0 means success)
@@ -718,51 +705,62 @@ fi
 
 # Download vendor.tar.gz if needed
 if [ "$NEED_FULL_INSTALL" = true ]; then
-    echo "Dependency update needed. Checking for vendor packages..."
+    print info "Dependency update needed. Checking for vendor packages..."
+
+    # Check if the vendor package exists
     if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz"; then
-        echo "Vendor package found. Downloading..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz || {
-            echo "Failed to download vendor.tar.gz"
-            exit 1
-        }
-
-        echo "Downloading checksum..."
-        wget -c -q --show-progress --progress=dot:giga -O vendor.tar.gz.md5 https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5 || {
-            echo "Failed to download vendor.tar.gz.md5"
-            exit 1
-        }
-
-        echo "Verifying checksum..."
-        md5sum -c vendor.tar.gz.md5 || {
-            echo "Checksum verification failed"
-            exit 1
-        }
-
-        echo "Extracting files from vendor.tar.gz..."
-        tar -xzf vendor.tar.gz -C "${lis_path}" &
-        vendor_tar_pid=$!
-        spinner "${vendor_tar_pid}"
-        wait ${vendor_tar_pid}
-        vendor_tar_status=$?
-        if [ $vendor_tar_status -ne 0 ]; then
-            echo "Failed to extract vendor.tar.gz"
+        # Download the vendor archive
+        download_file "vendor.tar.gz" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
+        if [ $? -ne 0 ]; then
+            print error "Failed to download vendor.tar.gz"
             exit 1
         fi
 
+        # Download the checksum file
+        download_file "vendor.tar.gz.md5" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
+        if [ $? -ne 0 ]; then
+            print error "Failed to download vendor.tar.gz.md5"
+            exit 1
+        fi
+
+        print info "Verifying checksum..."
+        if ! md5sum -c vendor.tar.gz.md5; then
+            print error "Checksum verification failed"
+            exit 1
+        fi
+        print success "Checksum verification passed"
+
+        print info "Extracting files from vendor.tar.gz..."
+        tar -xzf vendor.tar.gz -C "${lis_path}" &
+        vendor_tar_pid=$!
+        spinner "${vendor_tar_pid}" "Extracting vendor files..."
+        wait ${vendor_tar_pid}
+        vendor_tar_status=$?
+
+        if [ $vendor_tar_status -ne 0 ]; then
+            print error "Failed to extract vendor.tar.gz"
+            exit 1
+        fi
+
+        # Clean up downloaded files
         rm vendor.tar.gz
         rm vendor.tar.gz.md5
+
         # Fix permissions on the vendor directory
+        print info "Setting permissions on vendor directory..."
         find "${lis_path}/vendor" -exec chown www-data:www-data {} \; 2>/dev/null || true
         chmod -R 755 "${lis_path}/vendor" 2>/dev/null || true
 
-        echo "Vendor files successfully installed"
+        print success "Vendor files successfully installed"
 
         # Update the composer.lock file to match the current state
+        print info "Finalizing composer installation..."
         sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
     else
-        echo "Vendor package not found in GitHub releases. Proceeding with regular composer install."
+        print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
         # Perform full install if vendor.tar.gz isn't available
+        print info "Running full composer install (this may take a while)..."
         sudo -u www-data composer install --prefer-dist --no-dev
     fi
 else
@@ -864,10 +862,11 @@ print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # Set proper permissions
-sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
+download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh
+chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
-    sudo intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
-    sudo find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
+    intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
+    find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
 
 print success "LIS update complete."
