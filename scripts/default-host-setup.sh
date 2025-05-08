@@ -12,19 +12,43 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
+# Download and update shared-functions.sh only if needed
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
+
+temp_shared_fn=$(mktemp)
+if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
+    if [ -f "$SHARED_FN_PATH" ]; then
+        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
+        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
+        if [ "$existing_checksum" != "$new_checksum" ]; then
+            cp "$temp_shared_fn" "$SHARED_FN_PATH"
+            chmod +x "$SHARED_FN_PATH"
+            echo "Updated shared-functions.sh."
+        else
+            echo "shared-functions.sh is already up-to-date."
+        fi
+    else
+        mv "$temp_shared_fn" "$SHARED_FN_PATH"
+        chmod +x "$SHARED_FN_PATH"
+        echo "Downloaded shared-functions.sh."
+    fi
+else
+    echo "Failed to download shared-functions.sh."
+    if [ ! -f "$SHARED_FN_PATH" ]; then
+        echo "shared-functions.sh missing. Cannot proceed."
+        exit 1
+    fi
+fi
+
+# Source the shared functions
+source "$SHARED_FN_PATH"
+
+
 # Initialize the LIS path
 lis_path=""
-
-# Function to check if the provided path is a valid LIS installation
-is_valid_application_path() {
-    local path=$1
-    # Check for specific files or directories that should exist in the LIS installation
-    if [ -f "$path/configs/config.production.php" ] && [ -d "$path/public" ]; then
-        return 0 # Path is valid
-    else
-        return 1 # Path is not valid
-    fi
-}
 
 # Parse command-line options
 while getopts ":p:" opt; do
@@ -48,15 +72,13 @@ if [ -z "$lis_path" ]; then
     fi
 fi
 
-# Convert relative path to absolute path if necessary
-if [[ "$lis_path" != /* ]]; then
-    lis_path="$(realpath "$lis_path")"
-    echo "Converted to absolute path: $lis_path"
-fi
+# Convert VLSM path to absolute path
+lis_path=$(to_absolute_path "$lis_path")
 
-# Check if the specified path is a valid LIS installation
+# Check if the LIS path is valid
 if ! is_valid_application_path "$lis_path"; then
-    echo "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+    print error "The specified path does not appear to be a valid LIS installation. Please check the path and try again."
+    log_action "Invalid LIS path specified: $lis_path"
     exit 1
 fi
 

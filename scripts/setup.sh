@@ -158,7 +158,12 @@ fi
 PHP_VERSION=8.2
 
 # Download and install lamp-setup script
-download_file "lamp-setup.sh" "https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh" "Downloading lamp-setup.sh..."
+download_file  "lamp-setup.sh" "https://raw.githubusercontent.com/deforay/utility-scripts/master/lamp/lamp-setup.sh" "Downloading lamp-setup.sh..." || {
+    print error "LAMP Setup file download failed - cannot continue with update"
+    log_action "LAMP Setup file download failed - update aborted"
+    exit 1
+}
+
 chmod u+x ./lamp-setup.sh
 
 ./lamp-setup.sh $PHP_VERSION
@@ -182,18 +187,11 @@ fi
 # LIS Setup
 print header "Downloading LIS"
 
-download_file "master.tar.gz" "https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master" "Downloading LIS package..."
-download_status=$? # Capture the exit status
-
-# Check if the download was successful (exit code 0 means success)
-# Keep the messages generic
-if [ $download_status -ne 0 ]; then
-    print error "Download failed with status ${download_status}"
-    # Handle the error, maybe exit
+download_file "master.tar.gz" "https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master" "Downloading LIS package..." || {
+    print error "LIS download failed - cannot continue with setup"
+    log_action "LIS download failed - setup aborted"
     exit 1
-else
-    print success "Download completed successfully."
-fi
+}
 
 # Extract the tar.gz file into temporary directory
 temp_dir=$(mktemp -d)
