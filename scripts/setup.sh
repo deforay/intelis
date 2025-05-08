@@ -386,17 +386,22 @@ else
     log_action "${hostname} entry is already in the hosts file."
 fi
 
-# Ask user if they want to install LIS as the default host or along with other apps
-read -p "Install LIS as the default host? (yes for default, no for alongside other apps) [yes/no]: " install_as_default
-install_as_default="${install_as_default:-yes}"
+# Ask user if they're installing LIS or STS
+read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
+# Default to LIS if empty
+installation_type="${installation_type:-LIS}"
+# Convert to lowercase first character for case-insensitive comparison
+first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
 
-if [ "$install_as_default" = "yes" ]; then
+if [[ "$first_char" == "l" ]]; then
     echo "Installing LIS as the default host..."
+    log_action "Installing LIS as the default host..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
-else
-    echo "Installing LIS alongside other apps..."
+elif [[ "$first_char" == "s" ]]; then
+    echo "Installing STS alongside other apps..."
+    log_action "Installing STS alongside other apps..."
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
@@ -409,6 +414,12 @@ else
     </Directory>
 </VirtualHost>" >"$vhost_file"
     a2ensite "${hostname}.conf"
+else
+    echo "Invalid installation type '$installation_type'. Defaulting to LIS installation..."
+    log_action "Invalid installation type '$installation_type'. Defaulting to LIS installation..."
+    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
+    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
+    configure_vhost "$apache_vhost_file"
 fi
 
 # Restart Apache to apply changes
