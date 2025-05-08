@@ -372,7 +372,32 @@ configure_vhost() {
 
 # Ask user for the hostname
 read -p "Enter domain name (press enter to use 'vlsm'): " hostname
-hostname="${hostname:-vlsm}"
+
+# Clean up the hostname: remove protocol and trailing slashes
+if [[ -n "$hostname" ]]; then
+    # Remove http:// or https:// if present
+    hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
+
+    # Remove trailing slashes
+    hostname=$(echo "$hostname" | sed -E 's|/*$||')
+
+    # Remove any port number if present
+    hostname=$(echo "$hostname" | sed -E 's|:[0-9]+$||')
+
+    # Remove any path components
+    hostname=$(echo "$hostname" | cut -d'/' -f1)
+
+    # If user entered something that became empty after cleanup, use default
+    if [[ -z "$hostname" ]]; then
+        hostname="vlsm"
+        print info "Using default hostname: $hostname"
+    else
+        print info "Using cleaned hostname: $hostname"
+    fi
+else
+    hostname="vlsm"
+    print info "Using default hostname: $hostname"
+fi
 
 log_action "Hostname: $hostname"
 
