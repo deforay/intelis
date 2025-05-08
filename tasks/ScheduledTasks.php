@@ -21,6 +21,8 @@ $timeZone = $_SESSION['APP_TIMEZONE'];
 
 $schedule = new Schedule();
 
+# Touch heartbeat file if Crunz runs
+touch(ROOT_PATH. DIRECTORY_SEPARATOR . ".cron_heartbeat");
 
 // Archive Data from Audit Tables
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")

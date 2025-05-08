@@ -1,58 +1,68 @@
-# Ignore configuration files that are not distribution templates
-syntax: glob
-!configs/config.*.dist.php
+##################################
+# .hgignore — Project Ignore List
+##################################
 
-# Ignore common system files and directories
-.DS_Store
-.DS_Store.orig
-key.storage
-.env
-.git
-.git/*
-.vscode
-.vscode/*
-.gitattributes
-.gitignore
-**/node_modules/
-.user.ini
-*.db
-*.log
-*.orig
-*.pid
-*.idea
-*.lock
-*.vendor
-*error_log
-*.DS_Store
-*.neon
+########## [Glob Rules] ##########
+syntax: glob
+
+# Configs (except distribution templates)
+!configs/config.*.dist.php
 configs/config.*.php
 configs/*.png
 configs/*.jpg
 secret-key.txt
 rector.php
 temp.ini
-vendor/
+key.storage
+.env
 
-# Now switching to regexp syntax for more complex patterns
+# System & OS files
+*.DS_Store
+*.DS_Store.orig
+.user.ini
+*.swp
+
+# IDE/editor files
+.vscode/
+.idea/
+
+# Logs, DBs, runtime state
+*.log
+*error_log
+*.pid
+*.orig
+*.db
+*.lock
+.cron_heartbeat
+
+# Node & Composer dependencies
+vendor/
+**/node_modules/
+
+# Git-related
+.git/
+.gitattributes
+.gitignore
+
+########## [Regexp Rules] ##########
 syntax: regexp
+
+# Ignore everything except index.php or .htaccess in specific folders
 ^public/uploads/(?!index\.php|\.htaccess).*
 ^public/temporary/(?!index\.php|\.htaccess).*
+^cache/(?!\.htaccess).*
+^docker/mysql/data/(?!\.htaccess).*
+^interop/dhis2/examples/(?!index\.php).*
+^backups/(?!index\.php).*
+^backup/(?!index\.php).*
 
-# Ignore everything in these directories except .htaccess or index.php
-cache/(?!.htaccess)
-docker/mysql/data/(?!.htaccess)
-interop/dhis2/examples/(?!index.php)
-backups/(?!index.php)
-backup/(?!index.php)
-^vendor/*
+# DDEV-specific
 ^\.ddev/db_snapshots/
 ^\.ddev/sequelpro/
 ^\.ddev/commands/.*\.log$
 ^\.ddev/import-db/
 ^\.ddev/import-files/
 
-# Ignore everything inside audit-trail/ but keep the folder
-^audit-trail/.*
-
-# Ignore everything inside metadata/ but keep the folder
-^metadata/.*
+# Internal data directories
+^audit-trail/(?!\.hgkeep).*
+^metadata/(?!\.hgkeep).*

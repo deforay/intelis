@@ -123,17 +123,17 @@ log_action "LIS installation path is set to ${lis_path}."
 eval "$current_trap"
 
 # Initialize variable for database file path
-vlsm_sql_file=""
+intelis_sql_file=""
 
 # Parse command-line arguments for --database or --db flag
 for arg in "$@"; do
     case $arg in
     --database=* | --db=*)
-        vlsm_sql_file="${arg#*=}"
+        intelis_sql_file="${arg#*=}"
         shift # Remove --database or --db argument from processing
         ;;
     --database | --db)
-        vlsm_sql_file="$2"
+        intelis_sql_file="$2"
         shift # Remove --database or --db argument
         shift # Remove its associated value
         ;;
@@ -141,16 +141,16 @@ for arg in "$@"; do
 done
 
 # Check if the specified SQL file exists
-if [[ -n "$vlsm_sql_file" ]]; then
+if [[ -n "$intelis_sql_file" ]]; then
     # Check if the file path is absolute or relative
-    if [[ "$vlsm_sql_file" != /* ]]; then
+    if [[ "$intelis_sql_file" != /* ]]; then
         # File path is relative, check in the current directory
-        vlsm_sql_file="$(pwd)/$vlsm_sql_file"
+        intelis_sql_file="$(pwd)/$intelis_sql_file"
     fi
 
-    if [[ ! -f "$vlsm_sql_file" ]]; then
-        echo "SQL file not found: $vlsm_sql_file. Please check the path."
-        log_action "SQL file not found: $vlsm_sql_file. Please check the path."
+    if [[ ! -f "$intelis_sql_file" ]]; then
+        echo "SQL file not found: $intelis_sql_file. Please check the path."
+        log_action "SQL file not found: $intelis_sql_file. Please check the path."
         exit 1
     fi
 fi
@@ -419,14 +419,14 @@ installation_type="${installation_type:-LIS}"
 first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
 
 if [[ "$first_char" == "l" ]]; then
-    echo "Installing LIS as the default host..."
-    log_action "Installing LIS as the default host..."
+    echo "Installing Intelis as the default host..."
+    log_action "Installing Intelis as the default host..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 elif [[ "$first_char" == "s" ]]; then
-    echo "Installing STS alongside other apps..."
-    log_action "Installing STS alongside other apps..."
+    echo "Installing Intelis alongside other apps..."
+    log_action "Installing Intelis alongside other apps..."
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
@@ -440,8 +440,8 @@ elif [[ "$first_char" == "s" ]]; then
 </VirtualHost>" >"$vhost_file"
     a2ensite "${hostname}.conf"
 else
-    echo "Invalid installation type '$installation_type'. Defaulting to LIS installation..."
-    log_action "Invalid installation type '$installation_type'. Defaulting to LIS installation..."
+    echo "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
+    log_action "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
@@ -543,10 +543,10 @@ sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['username'\]\s*=.*|\$sy
 sed -i "s|\$systemConfig\['interfacing'\]\['database'\]\['password'\]\s*=.*|\$systemConfig['interfacing']['database']['password'] = '$escaped_mysql_root_password';|" "${config_file}"
 
 # Handle database setup and SQL file import
-if [[ -n "$vlsm_sql_file" && -f "$vlsm_sql_file" ]]; then
-    handle_database_setup_and_import "$vlsm_sql_file"
-elif [[ -n "$vlsm_sql_file" ]]; then
-    print error "SQL file not found: $vlsm_sql_file. Please check the path."
+if [[ -n "$intelis_sql_file" && -f "$intelis_sql_file" ]]; then
+    handle_database_setup_and_import "$intelis_sql_file"
+elif [[ -n "$intelis_sql_file" ]]; then
+    print error "SQL file not found: $intelis_sql_file. Please check the path."
     exit 1
 else
     handle_database_setup_and_import # Default to init.sql
