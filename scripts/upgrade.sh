@@ -44,24 +44,7 @@ fi
 # Source the shared functions
 source "$SHARED_FN_PATH"
 
-if ! command -v needrestart &>/dev/null; then
-    print info "needrestart not found. Installing it..."
-    apt-get install -y needrestart
-fi
-
-# Force needrestart to always auto-restart services (non-interactive)
-export NEEDRESTART_MODE=a
-
-# Make needrestart non-interactive
-if [ -f /etc/needrestart/needrestart.conf ]; then
-    if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
-        sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
-    else
-        echo "\$nrconf{restart} = 'a';" >>/etc/needrestart/needrestart.conf
-    fi
-else
-    print warning "needrestart.conf not found. Skipping non-interactive restart config."
-fi
+prepare_system
 
 # Initialize flags
 skip_ubuntu_updates=false
@@ -79,7 +62,6 @@ while getopts ":sbp:" opt; do
         # Ignore invalid options silently
     esac
 done
-
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
@@ -121,15 +103,6 @@ update_configuration() {
 
     print info "Configuration file updated."
 }
-
-# Check if Ubuntu version is 20.04 or newer
-min_version="20.04"
-current_version=$(get_ubuntu_version)
-
-if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    print error "This script is not compatible with Ubuntu versions older than ${min_version}."
-    exit 1
-fi
 
 # Save the current trap settings
 current_trap=$(trap -p ERR)
@@ -226,10 +199,10 @@ if [ "$changes_needed" = true ]; then
     done
 
     print info "Restarting MySQL service to apply changes..."
-    service mysql restart || {
+    restart_service mysql || {
         print error "Failed to restart MySQL. Restoring backup and exiting..."
         mv "${config_file}.bak.${backup_timestamp}" "$config_file"
-        service mysql restart
+        restart_service mysql
         exit 1
     }
 
@@ -274,6 +247,9 @@ else
     log_action "SET PERSIST sql_mode failed: $persist_result"
 fi
 
+chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+restart_service mysql
+
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
     print error "Apache is not installed. Please first run the setup script."
@@ -287,7 +263,6 @@ if ! command -v php &>/dev/null; then
     log_action "PHP is not installed. Please first run the setup script."
     exit 1
 fi
-
 
 # Check for PHP version 8.2.x
 php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
@@ -574,18 +549,6 @@ if [ -f "${lis_path}/composer.lock" ]; then
 fi
 
 print header "Downloading LIS"
-
-# Download the tar.gz file in background
-
-# Example check before installing (can be placed before the main install block)
-if ! command -v aria2c &>/dev/null; then
-    apt-get update
-    apt-get install -y aria2
-    if ! command -v aria2c &>/dev/null; then
-        print error "Failed to install required packages. Exiting."
-        exit 1
-    fi
-fi
 
 # Run aria2c in the background, capturing its PID
 # Using options for potentially faster download (-x, -s)
@@ -895,7 +858,7 @@ if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
     sudo rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
-sudo service apache2 restart
+restart_service apache
 
 print success "Apache Restarted."
 log_action "Apache Restarted."

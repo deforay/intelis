@@ -9,47 +9,40 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Define a unified print function that colors the entire message
-print() {
-    local type=$1
-    local message=$2
-    local header_char="="
 
-    case $type in
-    error)
-        printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
-        ;;
-    success)
-        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
-        ;;
-    warning)
-        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
-        ;;
-    info)
-        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
-        ;;
-    debug)
-        printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
-        ;;
-    header)
-        local term_width
-        term_width=$(tput cols 2>/dev/null || echo 80)
-        local msg_length=${#message}
-        local padding=$(((term_width - msg_length) / 2))
-        ((padding < 0)) && padding=0
+# Download and update shared-functions.sh only if needed
+SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
 
-        local pad_str
-        pad_str=$(printf '%*s' "$padding" '')
+mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-        printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
-        printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
-        printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
-        ;;
-    *)
-        printf "%s\n" "$message"
-        ;;
-    esac
-}
+temp_shared_fn=$(mktemp)
+if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
+    if [ -f "$SHARED_FN_PATH" ]; then
+        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
+        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
+        if [ "$existing_checksum" != "$new_checksum" ]; then
+            cp "$temp_shared_fn" "$SHARED_FN_PATH"
+            chmod +x "$SHARED_FN_PATH"
+            echo "Updated shared-functions.sh."
+        else
+            echo "shared-functions.sh is already up-to-date."
+        fi
+    else
+        mv "$temp_shared_fn" "$SHARED_FN_PATH"
+        chmod +x "$SHARED_FN_PATH"
+        echo "Downloaded shared-functions.sh."
+    fi
+else
+    echo "Failed to download shared-functions.sh."
+    if [ ! -f "$SHARED_FN_PATH" ]; then
+        echo "shared-functions.sh missing. Cannot proceed."
+        exit 1
+    fi
+fi
+
+# Source the shared functions
+source "$SHARED_FN_PATH"
 
 # Show help if requested
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
@@ -116,26 +109,6 @@ fi
 
 log_action "LIS path: $lis_path"
 
-set_permissions() {
-    local target="$1"
-    local mode="$2"
-    echo "Setting permissions ($mode)..."
-
-    case "$mode" in
-        full)
-            find "$target" -type d -not -path "*/.git*" -not -path "*/node_modules*" -exec setfacl -m u:"$USER":rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "$target" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 | xargs -0 -P "$(nproc)" -I{} setfacl -m u:"$USER":rw,u:www-data:rw {} 2>/dev/null &
-            ;;
-        quick)
-            find "$target" -type d -exec setfacl -m u:"$USER":rwx,u:www-data:rwx {} \; 2>/dev/null
-            find "$target" -type f -name "*.php" -print0 | xargs -0 -P "$(nproc)" -I{} setfacl -m u:"$USER":rw,u:www-data:rw {} 2>/dev/null &
-            ;;
-        minimal)
-            find "$target" -type d -exec setfacl -m u:"$USER":rwx,u:www-data:rwx {} \; 2>/dev/null
-            ;;
-    esac
-}
-
 set_permissions "$lis_path" "$mode"
 wait  # Ensure background ACL jobs are done
 
@@ -144,28 +117,8 @@ for d in cache logs public/temporary public/uploads; do
     [ -d "${lis_path}/$d" ] && chown -R www-data:www-data "${lis_path}/$d"
 done
 
-# Restart Apache or httpd
-if [ "$restart_apache" = true ]; then
-    if systemctl list-units --type=service | grep -q apache2; then
-        print info "Restarting Apache (apache2)..."
-        log_action "Restarting apache2"
-        systemctl restart apache2 || { echo "Apache restart failed"; log_action "Apache restart failed"; }
-    elif systemctl list-units --type=service | grep -q httpd; then
-        eprint infocho "Restarting Apache (httpd)..."
-        log_action "Restarting httpd"
-        systemctl restart httpd || { echo "httpd restart failed"; log_action "httpd restart failed"; }
-    else
-        print info "Apache/httpd service not found"
-        log_action "Apache/httpd not found"
-    fi
-fi
-
-# Restart MySQL
-if [ "$restart_mysql" = true ]; then
-    print info "Restarting MySQL..."
-    log_action "Restarting MySQL"
-    systemctl restart mysql || { echo "MySQL restart failed"; log_action "MySQL restart failed"; }
-fi
+restart_service apache
+restart_service mysql
 
 sudo chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
 

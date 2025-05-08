@@ -46,13 +46,7 @@ fi
 # Source the shared functions
 source "$SHARED_FN_PATH"
 
-
-# Make needrestart non-interactive
-if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
-    sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
-else
-    echo "\$nrconf{restart} = 'a';" >> /etc/needrestart/needrestart.conf
-fi
+prepare_system
 
 log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
 
@@ -104,15 +98,6 @@ handle_database_setup_and_import() {
     mysql vlsm <"${lis_path}/sql/audit-triggers.sql"
     mysql interfacing <"${lis_path}/sql/interface-init.sql"
 }
-
-# Check if Ubuntu version is 20.04 or newer
-min_version="20.04"
-current_version=$(get_ubuntu_version)
-
-if [[ "$(printf '%s\n' "$min_version" "$current_version" | sort -V | head -n1)" != "$min_version" ]]; then
-    print error "This script is not compatible with Ubuntu versions older than ${min_version}."
-    exit 1
-fi
 
 
 # Save the current trap settings
@@ -409,17 +394,13 @@ else
 fi
 
 # Restart Apache to apply changes
-service apache2 restart || {
+restart_service apache || {
     print error "Failed to restart Apache. Please check the configuration."
     log_action "Failed to restart Apache. Please check the configuration."
     exit 1
 }
 
-# Restart Apache to apply changes
-service apache2 restart
-
 # cron job
-
 chmod +x ${lis_path}/cron.sh
 
 cron_job="* * * * * cd ${lis_path} && ./cron.sh"
@@ -518,6 +499,62 @@ else
 fi
 
 
+config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+backup_timestamp=$(date +%Y%m%d%H%M%S)
+
+# --- define what we want ---
+declare -A mysql_settings=(
+    ["sql_mode"]=""
+    ["innodb_strict_mode"]="0"
+    ["character-set-server"]="utf8mb4"
+    ["collation-server"]="utf8mb4_general_ci"
+    ["default_authentication_plugin"]="mysql_native_password"
+    ["max_connect_errors"]="10000"
+)
+
+changes_needed=false
+
+# --- dry-run check first ---
+for setting in "${!mysql_settings[@]}"; do
+    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+        changes_needed=true
+        break
+    fi
+done
+
+if [ "$changes_needed" = true ]; then
+    print info "Changes needed. Backing up and updating MySQL config..."
+    cp "$config_file" "${config_file}.bak.${backup_timestamp}"
+
+    for setting in "${!mysql_settings[@]}"; do
+        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+            # Comment existing wrong setting if found
+            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$config_file"; then
+                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$config_file"
+            fi
+            echo "$setting = ${mysql_settings[$setting]}" >>"$config_file"
+        fi
+    done
+
+    print info "Restarting MySQL service to apply changes..."
+    restart_service mysql || {
+        print error "Failed to restart MySQL. Restoring backup and exiting..."
+        mv "${config_file}.bak.${backup_timestamp}" "$config_file"
+        restart_service mysql
+        exit 1
+    }
+
+    print success "MySQL configuration updated successfully."
+
+else
+    print success "MySQL configuration already correct. No changes needed."
+fi
+
+# --- Always clean up old .bak files ---
+find "$(dirname "$config_file")" -maxdepth 1 -type f -name "$(basename "$config_file").bak.*" -exec rm -f {} \;
+print info "Removed all MySQL backup files matching *.bak.*"
+
+
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
 
 # Determine which password to use
@@ -549,6 +586,8 @@ else
     log_action "SET PERSIST sql_mode failed: $persist_result"
 fi
 
+chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+restart_service mysql
 
 
 # Prompt for Remote STS URL
@@ -650,7 +689,7 @@ fi
 set_permissions "${lis_path}" "full"
 find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true
 
-service apache2 restart
+restart_service apache
 
 print success "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."

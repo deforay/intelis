@@ -304,18 +304,8 @@ if (isset($_SESSION['vlRequestQueryCount']) && $_SESSION['vlRequestQueryCount'] 
 			$colNo++;
 		}
 	}
-	$sheet->getStyle('A3:AX3')->applyFromArray($styleArray);
 
-
-	$start = (count($output)) + 2;
-	foreach ($output as $rowNo => $rowData) {
-		$colNo = 1;
-		$rRowCount = $rowNo + 4;
-		foreach ($rowData as $field => $value) {
-			$sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode($value));
-			$colNo++;
-		}
-	}
+	$sheet->fromArray($output, null, 'A4');  // Write data starting from row 2
 	$writer = IOFactory::createWriter($excel, 'Xlsx');
 	$filename = 'VLSM-VL-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
