@@ -87,7 +87,7 @@ final class AppMenuService
     public function insertMenu(array $menuData): bool|int
     {
         // Check if the item already exists based on parent_id and link
-        $this->db->where('parent_id', $menuData['parent_id']);
+        $this->db->where('module', $menuData['module']);
         $this->db->where('link', $menuData['link']);
         $exists = $this->db->getOne($this->table);
 
