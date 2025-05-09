@@ -228,10 +228,18 @@ $remoteURL = $general->getRemoteURL();
                         success: function(data) {
                             $('.is-remote-server-reachable').fadeIn(1000);
                             $('.is-remote-server-reachable').css('color', '#4dbc3c');
+                            if ($('.sts-server-reachable').length > 0) {
+                                $('.sts-server-reachable').show();
+                                $('.sts-server-reachable-span').html("<strong class='text-info'><?= _translate("STS server is reachable", escapeTextOrContext: true); ?></strong>");
+                            }
                         },
                         error: function() {
                             $('.is-remote-server-reachable').fadeIn(1000);
                             $('.is-remote-server-reachable').css('color', 'red');
+                            if ($('.sts-server-reachable').length > 0) {
+                                $('.sts-server-reachable').show();
+                                $('.sts-server-reachable-span').html("<strong class='mandatory'><?= _translate("STS server is unreachable", escapeTextOrContext: true); ?></strong>");
+                            }
                         }
                     });
                 }

@@ -214,7 +214,7 @@ PHP;
         $migrationContent .= "UPDATE `system_config` SET `value` = '{$migrationVersion}' WHERE `system_config`.`name` = 'sc_version';\n\n";
 
         file_put_contents($migrationFileName, $migrationContent);
-        echo "Created migration file: $migrationFileName" . PHP_EOL;
+        echo "Created migration file: " . htmlspecialchars($migrationFileName) . PHP_EOL;
     }
 
     echo "version.php has been updated to version " . htmlspecialchars($newVersion) . PHP_EOL;

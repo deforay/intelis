@@ -107,27 +107,10 @@ $activeModules = SystemService::getActiveModules();
                             </td>
 
                             <td>
-                                <!-- <strong><?php echo _translate("Test Type"); ?>&nbsp;:</strong> -->
+
                             </td>
                             <td>
-                                <!-- <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>">
-                                    <option value=""><?php echo _translate("--Select--"); ?></option>
-                                    <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
-                                        <option value="vl"><?php echo _translate("Viral Load"); ?></option>
-                                    <?php }
-                                    if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
-                                        <option value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
-                                    <?php }
-                                    if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
-                                        <option value="covid19"><?php echo _translate("Covid-19"); ?></option>
-                                    <?php }
-                                    if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
-                                        <option value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
-                                    <?php }
-                                    if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
-                                        <option value='tb'><?php echo _translate("TB"); ?></option>
-                                    <?php } ?>
-                                </select> -->
+
                             </td>
                         </tr>
                         <tr>

@@ -69,6 +69,15 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 					</table>
+
+					<div class="container-fluid">
+						<span class="pull-right sts-server-reachable">
+							<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+							<span class="sts-server-reachable-span">
+
+							</span>
+						</span>
+					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
 						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">

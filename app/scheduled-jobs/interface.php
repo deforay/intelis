@@ -649,7 +649,9 @@ try {
 
         $db->connection('interface')->commitTransaction();
     } catch (Throwable $e) {
-        echo $e->getMessage() . PHP_EOL;
+        if ($isCli) {
+            echo $e->getFile() . ":" . $e->getLine() . ": " . $e->getMessage() . PHP_EOL;
+        }
         $db->connection('interface')->rollbackTransaction();
         LoggerUtility::logError($e->getMessage(),  [
             'file' => $e->getFile(),

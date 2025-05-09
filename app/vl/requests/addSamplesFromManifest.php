@@ -49,9 +49,11 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();">
+									<span>
 										<?php echo _translate("Submit"); ?>
-									</span></button>
+									</span>
+								</button>
 							</td>
 						</tr>
 						<tr class="activateSample" style="display:none;">
@@ -66,6 +68,14 @@ require_once APPLICATION_PATH . '/header.php';
 							</td>
 						</tr>
 					</table>
+					<div class="container-fluid">
+						<span class="pull-right sts-server-reachable">
+							<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+							<span class="sts-server-reachable-span">
+
+							</span>
+						</span>
+					</div>
 					<!-- /.box-header -->
 					<div class="box-body table-responsive">
 						<table aria-describedby="table" id="manifestDataTable" class="table table-bordered table-striped table-vcenter">

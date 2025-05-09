@@ -6,6 +6,7 @@ if (!$isCli) exit(0);
 
 require_once __DIR__ . "/../../bootstrap.php";
 
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -43,8 +44,13 @@ if (!file_exists($sqlitePath)) {
 try {
     $sqlite = new PDO("sqlite:$sqlitePath");
     $sqlite->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch (PDOException $e) {
-    echo "❌ Failed to connect to SQLite: " . $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    LoggerUtility::logError("❌ Failed to connect to SQLite: " . $e->getMessage(), [
+        'sqlitePath' => $sqlitePath,
+        'line' => $e->getLine(),
+        'file' => $e->getFile(),
+        'trace' => $e->getTraceAsString()
+    ]);
     exit(1);
 }
 
@@ -52,8 +58,13 @@ try {
 try {
     $stmt = $sqlite->query("SELECT * FROM orders WHERE mysql_inserted = 0");
     $records = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "❌ Failed to fetch records from SQLite: " . $e->getMessage() . "\n";
+} catch (Throwable $e) {
+    LoggerUtility::logError("❌ Failed to fetch records from SQLite: " . $e->getMessage(), [
+        'sqlitePath' => $sqlitePath,
+        'line' => $e->getLine(),
+        'file' => $e->getFile(),
+        'trace' => $e->getTraceAsString()
+    ]);
     exit(1);
 }
 
@@ -78,7 +89,12 @@ foreach ($records as $record) {
             echo "✔ Synced record ID {$record['id']}\n";
         }
     } catch (Throwable $e) {
-        echo "❌ Failed to sync record ID {$record['id']}: " . $e->getMessage() . "\n";
+        LoggerUtility::logError("❌ Failed to sync record ID {$record['id']}: " . $e->getMessage(), [
+            'sqlitePath' => $sqlitePath,
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'trace' => $e->getTraceAsString()
+        ]);
     }
 }
 

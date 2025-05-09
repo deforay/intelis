@@ -105,10 +105,6 @@ try {
      LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
      LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
-     //echo $sQuery;die;
-
-
-
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
@@ -255,9 +251,6 @@ try {
           $edit = '';
           $sync = '';
           $barcode = '';
-          $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
-          $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-
 
           $row = [];
           $sampleCodeTooltip = '';
@@ -304,10 +297,10 @@ try {
                     $row[] = '<span>' . $aRow['remote_sample_code'] . '</span>';
                }
           }
-          $row[] = $aRow['sample_collection_date'];
+          $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '');
           $row[] = $aRow['batch_code'];
-          $row[] = ($aRow['labName']);
-          $row[] = ($aRow['facility_name']);
+          $row[] = $aRow['labName'];
+          $row[] = $aRow['facility_name'];
           if (!empty($childTooltip)) {
                $row[] = '<span class="top-tooltip" title="' . $childTooltip . '">' . $aRow['child_id'] . '</span>';
           } else {
@@ -317,13 +310,13 @@ try {
           $row[] = $aRow['mother_id'];
           $row[] = $aRow['mother_name'];
 
-          $row[] = ($aRow['facility_state']);
-          $row[] = ($aRow['facility_district']);
+          $row[] = $aRow['facility_state'];
+          $row[] = $aRow['facility_district'];
           $row[] = ucwords($eidResults[$aRow['result']] ?? $aRow['result']);
           if ($formId == COUNTRY\CAMEROON) {
-               $row[] = ($aRow['lab_assigned_code']);
+               $row[] = $aRow['lab_assigned_code'];
           }
-          $row[] = $aRow['last_modified_datetime'];
+          $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
           $row[] = $aRow['status_name'];
 
           if ($editRequest) {
