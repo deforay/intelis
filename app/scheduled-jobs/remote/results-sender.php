@@ -321,7 +321,7 @@ try {
             FROM `form_tb` AS tb
             LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND IFNULL(vl.sample_code, '') != ''
+            AND IFNULL(tb.sample_code, '') != ''
             AND tb.data_sync = 0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
@@ -366,7 +366,7 @@ try {
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND IFNULL(vl.sample_code, '') != ''
+            AND IFNULL(cd4.sample_code, '') != ''
             AND cd4.data_sync = 0";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
