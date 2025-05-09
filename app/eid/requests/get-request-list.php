@@ -70,50 +70,14 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
+     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
-     $sOrder = "";
-     if (isset($_POST['iSortCol_0'])) {
-          $sOrder = "";
-          for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-               if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-               }
-          }
-          $sOrder = substr_replace($sOrder, "", -2);
-     }
-
-
+     $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
      $sWhere = [];
-     if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-          $searchArray = explode(" ", (string) $_POST['sSearch']);
-          $sWhereSub = "";
-          foreach ($searchArray as $search) {
-               if ($sWhereSub == "") {
-                    $sWhereSub .= " (";
-               } else {
-                    $sWhereSub .= " AND (";
-               }
-               $colSize = count($aColumns);
-
-               for ($i = 0; $i < $colSize; $i++) {
-                    if ($i < $colSize - 1) {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                    } else {
-                         $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                    }
-               }
-               $sWhereSub .= ")";
-          }
-          $sWhere[] = $sWhereSub;
+     if (!empty($columnSearch) && $columnSearch != '') {
+          $sWhere[] = $columnSearch;
      }
-
-
-
-
-     $aWhere = '';
 
      $sQuery = "SELECT vl.*, f.*,
      b.batch_code,
@@ -239,7 +203,7 @@ try {
           $sWhere[] = ' vl.mother_name like "%' . $_POST['motherName'] . '%"';
      }
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') like '" . $_POST['rejectedSamples'] . "'";
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
 
 

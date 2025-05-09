@@ -202,7 +202,7 @@ try {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_name,''), COALESCE(vl.patient_surname,'')) like '%" . $_POST['patientName'] . "%'";
      }
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-          $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
      if ($general->isSTSInstance()) {
           if (!empty($_SESSION['facilityMap'])) {

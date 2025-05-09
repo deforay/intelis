@@ -263,7 +263,7 @@ try {
           $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
-          $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+          $sWhere[] = " IFNULL(vl.result_sent_to_source, '') like 'sent' ";
      }
      if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
           $sWhere[] = ' vl.patient_art_no like "' . $_POST['patientId'] . '"';

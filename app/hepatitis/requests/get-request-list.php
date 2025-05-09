@@ -9,7 +9,7 @@ use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
-
+use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -54,11 +54,6 @@ try {
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
-     /* Indexed column (used for fast and accurate table cardinality) */
-     $sIndexColumn = $primaryKey;
-
-     $sTable = $tableName;
-
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
@@ -75,11 +70,6 @@ try {
      if (!empty($columnSearch) && $columnSearch != '') {
           $sWhere[] = $columnSearch;
      }
-
-
-
-
-     $aWhere = '';
 
      $sQuery = "SELECT vl.*,
                b.batch_code,
@@ -110,35 +100,23 @@ try {
                LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-     [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $start_date) == trim((string) $end_date)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) like  "' . $start_date . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
-          }
+          [$start, $end] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-          }
+          [$start, $end] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) = "' . $testedStartDate . '"';
-          } else {
-               $sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
-          }
+          [$start, $end] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start' AND '$end'";
      }
 
      if (isset($_POST['facilityName']) && trim((string) $_POST['facilityName']) != '') {
@@ -213,11 +191,11 @@ try {
           $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
-          $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+          $sWhere[] = " IFNULL(vl.result_sent_to_source, '') like 'sent' ";
      }
 
      if (isset($_POST['rejectedSamples']) && $_POST['rejectedSamples'] != "") {
-          $sWhere[] = ' (vl.is_sample_rejected like "' . $_POST['rejectedSamples'] . '" OR vl.is_sample_rejected is null OR vl.is_sample_rejected like "")';
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
 
      if ($general->isSTSInstance()) {
@@ -229,18 +207,18 @@ try {
      }
      if (!empty($sWhere)) {
           $_SESSION['hepatitisRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE $sWhere";
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['hepatitisRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
      $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
@@ -248,12 +226,12 @@ try {
      $_SESSION['hepatitisRequestSearchResultQueryCount'] = $resultCount;
 
 
-     $output = array(
+     $output = [
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,
           "iTotalDisplayRecords" => $resultCount,
           "aaData" => []
-     );
+     ];
      $editRequest = false;
      $syncRequest = false;
      if ((_isAllowed("/hepatitis/requests/hepatitis-edit-request.php"))) {

@@ -139,35 +139,21 @@ try {
                LEFT JOIN r_implementation_partners as r_i_p ON r_i_p.i_partner_id=vl.implementing_partner";
 
 
-     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-     [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-     [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
-
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          if (trim((string) $startDate) == trim((string) $endDate)) {
-               $sWhere[] = ' DATE(vl.sample_collection_date) =  "' . $startDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
-          }
+          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
      }
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-               $sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-          } else {
-               $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
-          }
+          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
+          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
      }
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          if (trim((string) $testedStartDate) == trim((string) $testedEndDate)) {
-               $sWhere[] = " DATE(vl.sample_tested_datetime) = '$testedStartDate ' ";
-          } else {
-               $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
-          }
+          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
 
 
@@ -258,22 +244,15 @@ try {
      if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
           $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
      }
+
      if (!empty($_POST['requestCreatedDatetime'])) {
           [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
-
-          if (trim((string) $sRequestCreatedDatetime) == trim((string) $eRequestCreatedDatetime)) {
-               $sWhere[] = " DATE(vl.request_created_datetime) = '$sRequestCreatedDatetime' ";
-          } else {
-               $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
-          }
+          $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-          if (trim((string) $sPrintDate) == trim((string) $eTestDate)) {
-               $sWhere[] = "  DATE(vl.result_printed_datetime) = '$sPrintDate'";
-          } else {
-               $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
-          }
+          [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
+          $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
 
      if ($general->isSTSInstance()) {
