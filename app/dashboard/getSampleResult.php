@@ -93,7 +93,7 @@ if ($testType == 'eid') {
 
 try {
     $whereConditionArray = [];
-    $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
+    $whereConditionArray[] = " result_status != " . SAMPLE_STATUS\CANCELLED;
     if (!$general->isSTSInstance()) {
         $whereConditionArray[] = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {

@@ -50,29 +50,29 @@ $stsBearerToken = $general->getSTSToken();
 $apiService->setBearerToken($stsBearerToken);
 
 $syncSinceDate = null;
-
-if ($cliMode && count($argv) > 2) {
-    echo "Too many arguments provided. Only one optional date or number of days is allowed.\n";
-    exit(1);
-}
-
-if ($cliMode && isset($argv[1])) {
-    $arg = trim($argv[1]);
-
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
-        $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
-    } elseif (is_numeric($arg)) {
-        $syncSinceDate = DateUtility::daysAgo((int) $arg);
-    } else {
-        echo "Invalid date or day offset: $arg" . PHP_EOL;
-        $syncSinceDate = null;
+if ($cliMode) {
+    if (count($argv) > 2) {
+        echo "Too many arguments provided. Only one optional date or number of days is allowed.\n";
+        exit(1);
     }
 
-    if ($syncSinceDate !== null) {
-        echo "Syncing results since: $syncSinceDate" . PHP_EOL;
+    if (isset($argv[1])) {
+        $arg = trim($argv[1]);
+
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+            $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
+        } elseif (is_numeric($arg)) {
+            $syncSinceDate = DateUtility::daysAgo((int) $arg);
+        } else {
+            echo "Invalid date or day offset: $arg" . PHP_EOL;
+            $syncSinceDate = null;
+        }
+
+        if ($syncSinceDate !== null) {
+            echo "Syncing results since: $syncSinceDate" . PHP_EOL;
+        }
     }
 }
-
 
 //Sending results to /v2/results.php for all test types
 $url = "$remoteURL/remote/v2/results.php";
