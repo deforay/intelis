@@ -391,7 +391,7 @@ final class VlService extends AbstractTestService
         }
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
-        $originalResultValue = $result;
+        $originalResultValue = trim($result . " " . $unit);
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
         $extracted = $this->extractViralLoadValue($result, true);
