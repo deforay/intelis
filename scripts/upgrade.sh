@@ -242,7 +242,6 @@ else
 fi
 
 chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
-restart_service mysql
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
