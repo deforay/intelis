@@ -53,27 +53,25 @@ install_packages() {
 }
 
 prepare_system() {
-
     install_packages
     check_ubuntu_version "20.04"
+
     if ! command -v needrestart &>/dev/null; then
-        print info "needrestart not found. Installing it..."
+        print info "Installing needrestart..."
         apt-get install -y needrestart
     fi
 
-    # Force needrestart to always auto-restart services (non-interactive)
-    export NEEDRESTART_MODE=a
+    export NEEDRESTART_MODE=a # Auto-restart services non-interactively
 
-    # Make needrestart non-interactive
-    if [ -f /etc/needrestart/needrestart.conf ]; then
-        if grep -q "^\$nrconf{restart}" /etc/needrestart/needrestart.conf; then
-            sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" /etc/needrestart/needrestart.conf
-        else
-            echo "\$nrconf{restart} = 'a';" >>/etc/needrestart/needrestart.conf
-        fi
+    # Configure needrestart to non-interactive
+    local conf_file="/etc/needrestart/needrestart.conf"
+    if [ -f "$conf_file" ]; then
+        sed -i "s/^\(\$nrconf{restart}\s*=\s*\).*/\1'a';/" "$conf_file" || echo "\$nrconf{restart} = 'a';" >>"$conf_file"
     else
-        print warning "needrestart.conf not found. Skipping non-interactive restart config."
+        echo "\$nrconf{restart} = 'a';" >"$conf_file"
     fi
+
+    print success "System preparation complete with non-interactive restarts configured."
 }
 
 spinner() {
@@ -82,9 +80,9 @@ spinner() {
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
     local delay=0.1
     local i=0
-    local blue="\033[1;36m"    # Bright cyan/blue
-    local green="\033[1;32m"   # Bright green
-    local red="\033[1;31m"     # Bright red
+    local blue="\033[1;36m"  # Bright cyan/blue
+    local green="\033[1;32m" # Bright green
+    local red="\033[1;31m"   # Bright red
     local reset="\033[0m"
     local success_symbol="✅"
     local failure_symbol="❌"
@@ -122,12 +120,21 @@ spinner() {
 download_file() {
     local output_file="$1"
     local url="$2"
+
     local message="Downloading $(basename "$output_file")..."
 
-    # Create directory if it doesn't exist
-    local output_dir=$(dirname "$output_file")
+    # Get output directory and filename
+    local output_dir
+    output_dir=$(dirname "$output_file")
+    local filename
+    filename=$(basename "$output_file")
+
+    # Create the directory if it doesn't exist
     if [ ! -d "$output_dir" ]; then
-        mkdir -p "$output_dir"
+        mkdir -p "$output_dir" || {
+            print error "Failed to create directory $output_dir"
+            return 1
+        }
     fi
 
     # Remove existing file if it exists
@@ -137,19 +144,18 @@ download_file() {
 
     print info "$message"
 
-    # Create a temporary file for the download logs
-    local log_file=$(mktemp)
+    local log_file
+    log_file=$(mktemp)
 
-    # Run aria2c with reduced verbosity, redirecting all output to the log file
-    aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 --allow-overwrite=true -o "$output_file" "$url" > "$log_file" 2>&1 &
-    download_pid=$!
+    # Correctly specify both download directory (-d) and output file (-o)
+    aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 \
+        --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
+    local download_pid=$!
 
-    # Use the spinner to show progress
     spinner "$download_pid" "$message"
     wait $download_pid
-    download_status=$?
+    local download_status=$?
 
-    # Only show detailed output on failure
     if [ $download_status -ne 0 ]; then
         print error "Download failed"
         print info "Detailed download logs:"
@@ -158,9 +164,7 @@ download_file() {
         print success "Download completed successfully"
     fi
 
-    # Clean up the log file
     rm -f "$log_file"
-
     return $download_status
 }
 
@@ -208,6 +212,13 @@ to_absolute_path() {
 set_permissions() {
     local path=$1
     local mode=${2:-"full"}
+
+    if ! command -v setfacl &>/dev/null; then
+        print warning "setfacl not found. Falling back to chown/chmod..."
+        chown -R "$USER":www-data "$path"
+        chmod -R u+rwX,g+rwX "$path"
+        return
+    fi
 
     print info "Setting permissions for ${path} (${mode} mode)..."
 
@@ -269,39 +280,63 @@ restart_service() {
 ask_yes_no() {
     local prompt="$1"
     local default="${2:-no}"
+    local timeout=15
     local answer
 
-    while true; do
-        echo -n "$prompt (y/n): "
-        read -t 15 answer
-        [ $? -ne 0 ] && answer="$default"
-        answer=$(echo "$answer" | awk '{print tolower($0)}')
-        case "$answer" in
-        y | yes) return 0 ;;
-        n | no) return 1 ;;
+    # Normalize default to lowercase
+    default=$(echo "$default" | awk '{print tolower($0)}')
+    [[ "$default" != "yes" && "$default" != "no" ]] && default="no"
+
+    # If stdin is not a terminal (e.g., non-interactive mode), use default immediately
+    if [ ! -t 0 ]; then
+        [[ "$default" == "yes" ]] && return 0 || return 1
+    fi
+
+    echo -n "$prompt (y/n) [default: $default, auto in ${timeout}s]: "
+
+    read -t "$timeout" answer
+    if [ $? -ne 0 ]; then
+        print info "No input received in ${timeout} seconds. Using default: $default"
+        [[ "$default" == "yes" ]] && return 0 || return 1
+    fi
+
+    answer=$(echo "$answer" | awk '{print tolower($0)}')
+
+    case "$answer" in
+        y|yes) return 0 ;;
+        n|no)  return 1 ;;
         *)
-            if [ -z "$answer" ]; then
-                [ "$default" = "yes" ] || [ "$default" = "y" ] && return 0 || return 1
-            else
-                echo "Invalid response. Please answer yes/y or no/n."
-            fi
+            print warning "Invalid input. Using default: $default"
+            [[ "$default" == "yes" ]] && return 0 || return 1
             ;;
-        esac
-    done
+    esac
 }
 
 # Extract MySQL root password from config file
 extract_mysql_password_from_config() {
     local config_file="$1"
+    if [ ! -f "$config_file" ]; then
+        print error "Config file not found: $config_file"
+        return 1
+    fi
     php -r "
+        error_reporting(0);
         \$config = include '$config_file';
         echo isset(\$config['database']['password']) ? trim(\$config['database']['password']) : '';
     "
 }
 
+
 # Log action to log file
 log_action() {
     local message=$1
     local logfile="${log_file:-/tmp/intelis-$(date +'%Y%m%d').log}"
+
+    # Rotate if larger than 10MB
+    if [ -f "$logfile" ] && [ $(stat -c %s "$logfile") -gt 10485760 ]; then
+        mv "$logfile" "${logfile}.old"
+    fi
+
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$logfile"
 }
+
