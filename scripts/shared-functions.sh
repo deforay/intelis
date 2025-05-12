@@ -76,7 +76,7 @@ prepare_system() {
 
 spinner() {
     local pid=$1
-    local message="${2:-Processing...}"
+    local message="${2:-""}"
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
     local delay=0.1
     local i=0
