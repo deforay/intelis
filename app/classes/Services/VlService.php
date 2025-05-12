@@ -391,7 +391,7 @@ final class VlService extends AbstractTestService
         }
 
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
-        $originalResultValue = trim($result . " " . $unit);
+        $originalResultValue = trim("$result $unit");
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
         $extracted = $this->extractViralLoadValue($result, true);
@@ -420,7 +420,6 @@ final class VlService extends AbstractTestService
                 $vlResult = $absDecimalVal;
             }
 
-
             $absVal = $absDecimalVal;
             $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
         } else {
@@ -429,28 +428,6 @@ final class VlService extends AbstractTestService
             $absVal = $absDecimalVal;
             $vlResult = $absDecimalVal;
         }
-
-
-        // // Extract operator and scientific/decimal number
-        // if (preg_match('/([<>])?\s*(\d+(\.\d+)?(?:[eE][+-]?\d+)?)/', $result, $matches)) {
-        //     $operator = $matches[1] ?? '';
-        //     $numericValue = floatval($matches[2]);
-
-        //     if (!empty($unit) && str_contains($unit, 'Log')) {
-        //         $logVal = $numericValue;
-        //         $absDecimalVal = round(pow(10, $logVal), 2);
-        //     } else {
-        //         $absDecimalVal = $numericValue;
-        //     }
-
-        //     $absVal = $absDecimalVal;
-        //     $vlResult = $operator ? "{$operator} {$absDecimalVal}" : $absDecimalVal;
-        // } else {
-        //     // Fallback parsing (rare)
-        //     $absDecimalVal = floatval($result);
-        //     $absVal = $absDecimalVal;
-        //     $vlResult = $absDecimalVal;
-        // }
 
         if (empty($logVal) && is_numeric($absDecimalVal) && $absDecimalVal > 0) {
             $logVal = round(log10($absDecimalVal), 2);

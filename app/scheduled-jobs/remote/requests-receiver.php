@@ -18,44 +18,45 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
+
+$forceSyncModule = null;
+$manifestCode = null;
+$syncSinceDate = null;
+
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
     echo PHP_EOL;
     echo "=========================" . PHP_EOL;
     echo "Starting test requests sync" . PHP_EOL;
-}
 
-$forceSyncModule = null;
-$manifestCode = null;
-$syncSinceDate = null;
+    $args = array_slice($_SERVER['argv'], 1);
 
-$args = array_slice($_SERVER['argv'], 1);
+    // Use getopt if present
+    $options = getopt("t:m:");
 
-// Use getopt if present
-$options = getopt("t:m:");
-
-if (isset($options['t'])) {
-    $forceSyncModule = $options['t'];
-}
-if (isset($options['m'])) {
-    $manifestCode = $options['m'];
-}
-
-// Scan all args to find a valid date or number-of-days
-foreach ($args as $arg) {
-    // Skip if it's already parsed as -t or -m
-    if (in_array($arg, [$forceSyncModule, $manifestCode], true)) {
-        continue;
+    if (isset($options['t'])) {
+        $forceSyncModule = $options['t'];
+    }
+    if (isset($options['m'])) {
+        $manifestCode = $options['m'];
     }
 
-    $arg = trim($arg);
-    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
-        $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
-        break;
-    } elseif (is_numeric($arg)) {
-        $syncSinceDate = DateUtility::daysAgo((int) $arg);
-        break;
+    // Scan all args to find a valid date or number-of-days
+    foreach ($args as $arg) {
+        // Skip if it's already parsed as -t or -m
+        if (in_array($arg, [$forceSyncModule, $manifestCode], true)) {
+            continue;
+        }
+
+        $arg = trim($arg);
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+            $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
+            break;
+        } elseif (is_numeric($arg)) {
+            $syncSinceDate = DateUtility::daysAgo((int) $arg);
+            break;
+        }
     }
 }
 

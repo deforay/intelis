@@ -284,8 +284,8 @@ if (!empty($result)) {
 
      $html .= '<tr>';
      $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TEL</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">EMAIL</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUSTING FACILITY PHONE</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUSTING FACILITY EMAIL</td>';
      $html .= '</tr>';
      $html .= '<tr>';
      if (!empty($result['request_clinician_name'])) {
@@ -392,11 +392,7 @@ if (!empty($result)) {
           if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';
-               if (!empty($testedBySignaturePath) && MiscUtility::isImageValid(($testedBySignaturePath))) {
-                    $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-               } else {
-                    $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-               }
+               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
                $html .= '</tr>';
 
@@ -419,11 +415,7 @@ if (!empty($result)) {
 
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REVIEWED BY</td>';
-          if ($reviewedBySignatureExists) {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          }
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
           $html .= '</tr>';
 
@@ -442,11 +434,7 @@ if (!empty($result)) {
           $revisedBySignatureExists = !empty($revisedBySignaturePath) && MiscUtility::isImageValid($revisedBySignaturePath);
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REPORT REVISED BY</td>';
-          if ($revisedBySignatureExists) {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          }
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
           $html .= '</tr>';
 
@@ -468,11 +456,7 @@ if (!empty($result)) {
           $approvedBySignatureExists = !empty($approvedBySignaturePath) && MiscUtility::isImageValid($approvedBySignaturePath);
           $html .= '<tr>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">APPROVED BY</td>';
-          if ($approvedBySignatureExists) {
-               $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
-          } else {
-               $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
-          }
+          $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SIGNATURE</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE</td>';
           $html .= '</tr>';
           $html .= '<tr>';
@@ -486,20 +470,6 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['result_approved_datetime'] . '</td>';
           $html .= '</tr>';
      }
-
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     // $html .= '</tr>';
-
-     // if (!empty($result['lab_tech_comments'])) {
-     //      $html .= '<tr>';
-     //      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">Comments</td>';
-     //      $html .= '</tr>';
-     //      $html .= '<tr>';
-     //      $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $result['lab_tech_comments'] . '</td>';
-     //      $html .= '</tr>';
-     // }
-
 
      if (!empty($result['lab_tech_comments'])) {
 
@@ -517,15 +487,13 @@ if (!empty($result)) {
      $html .= '<tr>';
      $html .= '<td colspan="3" style="line-height:2px;border-bottom:2px solid #d3d3d3;"></td>';
      $html .= '</tr>';
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     // $html .= '</tr>';
+
      $html .= '<tr>';
      $html .= '<td colspan="3">';
      $html .= '<table>';
      $html .= '<tr>';
      $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < = 1000 copies/ml: Continue on current regimen</td>';
-     $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
+     $html .= "<td style='font-size:10px;text-align:left;'>Printed on : $printDate &nbsp;&nbsp; </td>";
      $html .= '</tr>';
      $html .= '<tr>';
      $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL > 1000 copies/ml: copies/ml: Clinical and counselling action required</td>';
@@ -579,7 +547,7 @@ if (!empty($result)) {
           $vlResult = $db->query($vlQuery);
           if ($vlResult[0]['result_printed_datetime'] == null || trim((string) $vlResult[0]['result_printed_datetime']) == '' || $vlResult[0]['result_printed_datetime'] == '0000-00-00 00:00:00') {
                $db->where('vl_sample_id', $result['vl_sample_id']);
-               $db->update($tableName2, array('result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime));
+               $db->update($tableName2, ['result_printed_datetime' => $currentTime, 'result_dispatched_datetime' => $currentTime]);
           }
      }
 }
