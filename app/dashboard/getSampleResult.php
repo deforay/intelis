@@ -92,15 +92,17 @@ if ($testType == 'eid') {
 }
 
 try {
-
+    $whereConditionArray = [];
+    $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
     if (!$general->isSTSInstance()) {
-        $whereCondition = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "  AND ";
+        $whereConditionArray[] = " result_status!= " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
     } else {
-        $whereCondition = "";
         if (!empty($_SESSION['facilityMap'])) {
-            $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")  AND ";
+            $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
         }
     }
+
+    $whereCondition = implode(" AND ", $whereConditionArray);
 
     if (!empty($_POST['sampleCollectionDate'])) {
         $selectedRange = $_POST['sampleCollectionDate'];
@@ -118,7 +120,7 @@ try {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as eid
                         LEFT JOIN facility_details as f ON f.facility_id=eid.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (eid.result is null or eid.result = '')
                         AND (eid.is_sample_rejected like 'no'
                                     OR eid.is_sample_rejected is null
@@ -127,14 +129,14 @@ try {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as covid19
                         LEFT JOIN facility_details as f ON f.facility_id=covid19.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (covid19.result is null or covid19.result = '')
                         AND (covid19.is_sample_rejected like 'no' or covid19.is_sample_rejected is null or covid19.is_sample_rejected like '')";
     } elseif ($table == "form_hepatitis") {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as hepatitis
                         LEFT JOIN facility_details as f ON f.facility_id=hepatitis.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (((hepatitis.hcv_vl_count IS NULL OR hepatitis.hcv_vl_count = '')
                         AND (hepatitis.hbv_vl_count IS NULL OR hepatitis.hbv_vl_count = '')))
                         AND (hepatitis.is_sample_rejected like 'no'
@@ -144,7 +146,7 @@ try {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as tb
                         LEFT JOIN facility_details as f ON f.facility_id=tb.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (tb.result is null or tb.result = '')
                         AND (tb.is_sample_rejected like 'no'
                                     OR tb.is_sample_rejected is null
@@ -157,7 +159,7 @@ try {
         }
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
-                        WHERE $vlWhereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $vlWhereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (vl.result is null or vl.result = '')
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
@@ -165,7 +167,7 @@ try {
     } elseif ($table == "form_cd4") {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as vl LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (vl.cd4_result is null or vl.cd4_result = '')
                         AND (vl.is_sample_rejected like 'no'
                                 OR vl.is_sample_rejected is null
@@ -174,7 +176,7 @@ try {
         $waitingQuery = "SELECT COUNT(unique_id) as total
                         FROM $table as vl
                         LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
-                        WHERE $whereCondition (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
+                        WHERE $whereCondition AND (sample_collection_date > DATE_SUB('$currentDateTime', INTERVAL 6 MONTH))
                         AND (vl.result is null or vl.result = '')
                         AND (vl.is_sample_rejected like 'no'
                                     OR vl.is_sample_rejected is null
@@ -236,7 +238,7 @@ try {
                         COUNT(unique_id) as `count`
                         FROM $table as vl
                         LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
-                        WHERE $whereCondition DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                        WHERE $whereCondition AND DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY vl.sample_collection_date";
     //      echo $accessionQuery; die;
@@ -258,7 +260,7 @@ try {
                             LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
                             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
                             WHERE (result_status = 7) AND
-                            $whereCondition
+                            $whereCondition AND
                             DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `test_date`
                             ORDER BY vl.sample_tested_datetime";
@@ -280,7 +282,7 @@ try {
                             COUNT(unique_id) as `count`
                             FROM $table as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
                             INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-                            WHERE (result_status = 4) AND $whereCondition DATE(vl.sample_collection_date)
+                            WHERE (result_status = 4) AND $whereCondition AND DATE(vl.sample_collection_date)
                             BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `collection_date`
                             ORDER BY vl.sample_collection_date";

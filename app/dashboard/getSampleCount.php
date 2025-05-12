@@ -56,15 +56,17 @@ if ($testType == 'eid') {
     $samplesCollectionChart = "cd4SamplesCollectionChart";
 }
 
-
-$whereCondition = "";
+$whereConditionArray = [];
+$whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
 if (!$general->isSTSInstance()) {
-    $whereCondition = " AND vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+    $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 } else {
     if (!empty($_SESSION['facilityMap'])) {
-        $whereCondition = " AND vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
+        $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ") ";
     }
 }
+
+$whereCondition = implode(' AND ', $whereConditionArray);
 
 if (!empty($_POST['sampleCollectionDate'])) {
     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -90,7 +92,7 @@ $sQuery = "SELECT
     FROM $table AS vl
     JOIN facility_details AS f ON f.facility_id = vl.facility_id
     WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
-    $whereCondition
+    AND $whereCondition
     $recencyWhere
     GROUP BY vl.facility_id
     ORDER BY totalCount DESC";

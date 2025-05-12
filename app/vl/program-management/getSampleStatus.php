@@ -17,11 +17,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$whereCondition = '';
-
+$whereConditionArray = [];
+$whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
 if (!empty($_SESSION['facilityMap'])) {
-    $whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    $whereConditionArray = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
+
+$whereCondition = implode(" AND ", $whereConditionArray);
 
 if (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
     $recencyWhere = " reason_for_vl_testing = 9999 ";
@@ -79,8 +81,9 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];
-if (!empty($whereCondition))
+if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
+}
 $sWhere[] = $recencyWhere;
 if (!$general->isSTSInstance()) {
     $sWhere[] = ' result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -124,6 +127,7 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         JOIN facility_details as f ON vl.lab_id=f.facility_id
 
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }

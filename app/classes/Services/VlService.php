@@ -42,6 +42,7 @@ final class VlService extends AbstractTestService
         'c/ml',
         'cp/ml',
         'copies/ml',
+        '{copies}/ml',
         'cop/ml',
         'copies',
         'c0pies/ml',
@@ -62,7 +63,7 @@ final class VlService extends AbstractTestService
         $input = trim(htmlspecialchars_decode($input));
 
         // Remove copy number units like cp/mL, copies/mL, etc.
-        $input = str_ireplace($this->copiesPatterns, '', $input);
+        $input = str_ireplace($this->copiesPatterns, '', strtolower($input));
 
         // Explicitly remove (Ct 38.24) or similar values
         $input = preg_replace('/\(Ct\s*[0-9.]+\)/i', '', $input);
@@ -394,17 +395,31 @@ final class VlService extends AbstractTestService
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
         $extracted = $this->extractViralLoadValue($result, true);
-
+        $numericValue = null;
+        $operator = '';
         if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(\.\d+)?)/', $extracted, $matches)) {
             $operator = $matches[1] ?? '';
             $numericValue = floatval($matches[2]);
 
-            if (!empty($unit) && str_contains($unit, 'Log')) {
-                $logVal = $numericValue;
-                $absDecimalVal = round(pow(10, $logVal), 2);
+            if ($numericValue !== null) {
+                if (!empty($unit) && str_contains($unit, 'Log')) {
+                    $logVal = $numericValue;
+                    $absDecimalVal = round(pow(10, $logVal), 2);
+                } elseif (!empty($unit)) {
+                    [$absDecimalVal, $unit] = $this->processResultAndUnit($numericValue, $unit);
+                } else {
+                    $absDecimalVal = $numericValue;
+                }
+
+                $absVal = $absDecimalVal;
+                $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
             } else {
-                $absDecimalVal = $numericValue;
+                // fallback
+                $absDecimalVal = floatval($result);
+                $absVal = $absDecimalVal;
+                $vlResult = $absDecimalVal;
             }
+
 
             $absVal = $absDecimalVal;
             $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
@@ -459,6 +474,7 @@ final class VlService extends AbstractTestService
     {
         // Ensure result is converted to a float
         $processedResult = is_numeric($result) ? floatval($result) : 0;
+        $unit = str_ireplace(['×10^', 'x10^'], '10*', $unit);
         $processedUnit = $unit;
 
         // Check if the unit contains scientific notation (e.g., "10*2", "E-1")

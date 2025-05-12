@@ -1,12 +1,10 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\DateUtility;
-
-
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -19,13 +17,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$whereCondition = '';
-
-$whereCondition = '';
-
-if ($general->isSTSInstance() && !empty($_SESSION['facilityMap'])) {
-	$whereCondition = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
+$whereConditionArray = [];
+$whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
+if (!empty($_SESSION['facilityMap'])) {
+	$whereConditionArray = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
+
+$whereCondition = implode(" AND ", $whereConditionArray);
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
@@ -43,17 +41,11 @@ $sampleStatusColors[7] = "#639e11"; // Accepted
 $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
-//date
-
-
-[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-
-[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-
-[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 $sWhere = [];
-if (!empty($whereCondition))
+
+if (!empty($whereCondition)) {
 	$sWhere[] = $whereCondition;
+}
 
 $tQuery = "SELECT COUNT(eid_id) as total,status_id,status_name
                 FROM form_eid as vl
@@ -67,13 +59,16 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+	$sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-	$sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (!empty($_POST['labName'])) {
 	$sWhere[] = ' vl.lab_id = ' . $_POST['labName'];
@@ -111,13 +106,16 @@ if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
 	$sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	$sWhere[] = ' DATE(vl.sample_collection_date) >= "' . $start_date . '" AND DATE(vl.sample_collection_date) <= "' . $end_date . '"';
+	[$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$start_date' AND '$end_date'";
 }
 if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
+	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
 	$sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-	$sWhere[] = ' DATE(vl.sample_tested_datetime) >= "' . $testedStartDate . '" AND DATE(vl.sample_tested_datetime) <= "' . $testedEndDate . '"';
+	[$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
+	$sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
 }
 if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
 	$sWhere[] = ' s.sample_id = "' . $_POST['sampleType'] . '"';
@@ -136,8 +134,7 @@ if (!empty($whereCondition)) {
 	$sWhere[] = $whereCondition;
 }
 if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-	$tatStartDate = $testedStartDate;
-	$tatEndDate = $testedEndDate;
+	[$tatStartDate, $tatEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 } else {
 	$date = new DateTime();
 	$tatEndDate = $date->format('Y-m-d');

@@ -12,8 +12,6 @@ require_once __DIR__ . "/../../bootstrap.php";
 
 declare(ticks=1);
 
-use PDO;
-use Carbon\Carbon;
 use App\Services\VlService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -114,7 +112,7 @@ $addedOnValues = []; // Array to store added_on values
 
 if (!empty(SYSTEM_CONFIG['interfacing']['sqlite3Path'])) {
     $sqliteConnected = true;
-    $sqliteDb = new PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
+    $sqliteDb = new \PDO("sqlite:" . SYSTEM_CONFIG['interfacing']['sqlite3Path']);
 }
 
 try {
