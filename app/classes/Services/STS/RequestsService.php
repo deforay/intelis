@@ -12,7 +12,6 @@ use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Abstracts\AbstractTestService;
 
-
 final class RequestsService
 {
     protected CommonService $commonService;
@@ -96,7 +95,7 @@ final class RequestsService
             }
         }
 
-        $condition = $this->buildCondition($labId, $facilityMapResult, $manifestCode);
+        $condition = $this->buildCondition($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
 
         $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE $condition";
 
