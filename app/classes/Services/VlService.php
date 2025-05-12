@@ -60,9 +60,14 @@ final class VlService extends AbstractTestService
     private function preprocessViralLoadInput(string $input): string
     {
         $input = trim(htmlspecialchars_decode($input));
+
+        // Remove copy number units like cp/mL, copies/mL, etc.
         $input = str_ireplace($this->copiesPatterns, '', $input);
 
-        // Text patterns to clean up
+        // Explicitly remove (Ct 38.24) or similar values
+        $input = preg_replace('/\(Ct\s*[0-9.]+\)/i', '', $input);
+
+        // Replace common text patterns
         $textPatterns = [
             'hiv-1'      => 'hiv1',
             'hiv-2'      => 'hiv2',
@@ -71,10 +76,9 @@ final class VlService extends AbstractTestService
             'hcv-'       => 'hcv',
             'hcv-rna'    => 'hcv'
         ];
-
         $input = str_ireplace(array_keys($textPatterns), array_values($textPatterns), $input);
 
-        // Common phrases to remove
+        // Remove full phrases like 'HIV1 not detected'
         $phrasePatterns = [
             'hiv1 detected',
             'hiv2 detected',
@@ -84,7 +88,6 @@ final class VlService extends AbstractTestService
             'hiv2 not detected',
             'hcv detected'
         ];
-
         $input = str_ireplace($phrasePatterns, '', $input);
 
         return trim($input);
@@ -177,7 +180,12 @@ final class VlService extends AbstractTestService
                     if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
                         $interpretedResult = 10;
                     } else {
-                        $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT);
+                        // Extract scientific notation if present
+                        if (preg_match('/\d+(\.\d+)?[eE][+-]?\d+/', $finalResult, $matches)) {
+                            $interpretedResult = floatval($matches[0]);
+                        } else {
+                            $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_SCIENTIFIC);
+                        }
                     }
                 }
 
@@ -374,10 +382,9 @@ final class VlService extends AbstractTestService
     {
         $result = trim($result);
         if (empty($result)) {
-            return null; // Return early if the result is empty
+            return null;
         }
 
-        // Check the type of the value and process non-numeric types as text results
         if ($this->checkViralLoadValueType($result) == 'text') {
             return $this->interpretViralLoadTextResult($result, $unit);
         }
@@ -386,42 +393,54 @@ final class VlService extends AbstractTestService
         $originalResultValue = $result;
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
-        // Handling inequality operators (< and >), and scientific notation in the result
-        if (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $result, $matches)) {
-            $operator = $matches[1];
+        $extracted = $this->extractViralLoadValue($result, true);
+
+        if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(\.\d+)?)/', $extracted, $matches)) {
+            $operator = $matches[1] ?? '';
             $numericValue = floatval($matches[2]);
 
             if (!empty($unit) && str_contains($unit, 'Log')) {
-                $logVal = floatval($numericValue);
+                $logVal = $numericValue;
                 $absDecimalVal = round(pow(10, $logVal), 2);
             } else {
                 $absDecimalVal = $numericValue;
             }
 
             $absVal = $absDecimalVal;
-            $vlResult = "$operator $absDecimalVal";
-        } elseif (is_numeric($result)) {
-            // Handle all numeric results here, whether they need logarithmic conversion.
-            if (!empty($unit) && str_contains($unit, 'Log')) {
-                // Assume the numeric result is a log value needing conversion to absolute count.
-                $logVal = floatval($result);
-                $absDecimalVal = round(pow(10, $logVal), 2);
-                $vlResult = $absVal = $absDecimalVal;
-            } elseif (!empty($unit)) {
-                [$absDecimalVal, $unit] = $this->processResultAndUnit($result, $unit);
-                $vlResult = $absVal = $absDecimalVal;
-            } else {
-                // It's a simple numeric result, not requiring conversion from log scale.
-                $vlResult = $absVal = $absDecimalVal = floatval($result);
-            }
+            $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
         } else {
-            $vlResult = $absVal = $absDecimalVal = floatval($result);
+            // Fallback parsing (rare)
+            $absDecimalVal = floatval($result);
+            $absVal = $absDecimalVal;
+            $vlResult = $absDecimalVal;
         }
+
+
+        // // Extract operator and scientific/decimal number
+        // if (preg_match('/([<>])?\s*(\d+(\.\d+)?(?:[eE][+-]?\d+)?)/', $result, $matches)) {
+        //     $operator = $matches[1] ?? '';
+        //     $numericValue = floatval($matches[2]);
+
+        //     if (!empty($unit) && str_contains($unit, 'Log')) {
+        //         $logVal = $numericValue;
+        //         $absDecimalVal = round(pow(10, $logVal), 2);
+        //     } else {
+        //         $absDecimalVal = $numericValue;
+        //     }
+
+        //     $absVal = $absDecimalVal;
+        //     $vlResult = $operator ? "{$operator} {$absDecimalVal}" : $absDecimalVal;
+        // } else {
+        //     // Fallback parsing (rare)
+        //     $absDecimalVal = floatval($result);
+        //     $absVal = $absDecimalVal;
+        //     $vlResult = $absDecimalVal;
+        // }
 
         if (empty($logVal) && is_numeric($absDecimalVal) && $absDecimalVal > 0) {
             $logVal = round(log10($absDecimalVal), 2);
         }
-        // Use the converted or original value based on configuration
+
         $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
 
         return [
@@ -434,6 +453,7 @@ final class VlService extends AbstractTestService
             'resultStatus' => $resultStatus
         ];
     }
+
 
     private function processResultAndUnit(string $result, ?string $unit): array
     {
@@ -690,7 +710,8 @@ final class VlService extends AbstractTestService
                 return floatval($processed);
             }
 
-            if (preg_match('/^([<>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)$/i', $processed, $matches)) {
+            // More lenient: allows trailing units or (Ct ...)
+            if (preg_match('/([<>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)/i', $processed, $matches)) {
                 $operator = $returnWithOperator ? $matches[1] : '';
                 $number = str_replace(',', '', $matches[2]);
                 return trim("$operator " . floatval($number));
