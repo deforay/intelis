@@ -23,6 +23,22 @@ final class DateUtility
         return $carbonDate && (!$strict || $carbonDate->format($format) === $date);
     }
 
+    public static function getDateTime(?string $date, string $format = 'Y-m-d H:i:s'): ?string
+    {
+        if (!self::isDateValid($date)) {
+            return null;
+        }
+
+        return Carbon::parse($date)->format($format);
+    }
+
+    public static function daysAgo(int $days, string $format = 'Y-m-d'): string
+    {
+        return Carbon::now()->subDays($days)->format($format);
+    }
+
+
+
     public static function isDateValid($date): bool
     {
         $date = trim((string) $date);

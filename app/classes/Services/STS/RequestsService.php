@@ -32,11 +32,12 @@ final class RequestsService
         $this->dataSyncInterval = (int) $this->commonService->getGlobalConfig('data_sync_interval') ?? 30;
     }
 
-    public function getRequests($testType, $labId, $facilityMapResult = [], $manifestCode = null)
+    public function getRequests($testType, $labId, $facilityMapResult = [], $manifestCode = null, $syncSinceDate = null)
     {
         $this->setTestType($testType);
 
-        [$rResult, $resultCount] = $this->runQuery($labId, $facilityMapResult, $manifestCode);
+
+        [$rResult, $resultCount] = $this->runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
 
         // Handle specific test types with additional logic
         if ($testType === 'covid19') {
@@ -68,7 +69,7 @@ final class RequestsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    private function runQuery($labId, $facilityMapResult, $manifestCode)
+    private function runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate = null)
     {
         // Start with selecting all columns
         $columnSelection = "*";
@@ -103,7 +104,7 @@ final class RequestsService
 
         return [$rResult, $resultCount];
     }
-    private function buildCondition($labId, $facilityMapResult = [], $manifestCode = null): string
+    private function buildCondition($labId, $facilityMapResult = [], $manifestCode = null, $syncSinceDate = null): string
     {
         $condition = !empty($facilityMapResult)
             ? "(lab_id = $labId OR facility_id IN ($facilityMapResult))"
@@ -111,6 +112,8 @@ final class RequestsService
 
         if ($manifestCode) {
             $condition .= " AND sample_package_code like '$manifestCode'";
+        }elseif ($syncSinceDate) {
+            $condition .= " AND DATE(last_modified_datetime) >= '$syncSinceDate'";
         } else {
             $condition .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $this->dataSyncInterval DAY)";
         }

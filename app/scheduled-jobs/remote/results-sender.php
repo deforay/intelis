@@ -49,6 +49,31 @@ $stsBearerToken = $general->getSTSToken();
 
 $apiService->setBearerToken($stsBearerToken);
 
+$syncSinceDate = null;
+
+if ($cliMode && count($argv) > 2) {
+    echo "Too many arguments provided. Only one optional date or number of days is allowed.\n";
+    exit(1);
+}
+
+if ($cliMode && isset($argv[1])) {
+    $arg = trim($argv[1]);
+
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+        $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
+    } elseif (is_numeric($arg)) {
+        $syncSinceDate = DateUtility::daysAgo((int) $arg);
+    } else {
+        echo "Invalid date or day offset: $arg" . PHP_EOL;
+        $syncSinceDate = null;
+    }
+
+    if ($syncSinceDate !== null) {
+        echo "Syncing results since: $syncSinceDate" . PHP_EOL;
+    }
+}
+
+
 //Sending results to /v2/results.php for all test types
 $url = "$remoteURL/remote/v2/results.php";
 
@@ -71,22 +96,28 @@ try {
     }
 
 
-    // GERNERIC TEST RESULTS
+    // CUSTOM TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
         if ($cliMode) {
-            echo "Trying to send test results from Custom Tests...\n";
+            echo "Trying to send test results from Custom Tests..." . PHP_EOL;
         }
 
         $genericQuery = "SELECT generic.*, a.user_name as 'approved_by_name'
                     FROM `form_generic` AS generic
                     LEFT JOIN `user_details` AS a ON generic.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND IFNULL(generic.sample_code, '') != ''
-                    AND generic.data_sync=0";
+                    AND IFNULL(generic.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "generic-tests" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
-            $genericQuery .= " AND sample_code like '$sampleCode'";
+            $genericQuery .= " AND generic.sample_code like '$sampleCode'";
         }
+
+        if (null !== $syncSinceDate) {
+            $genericQuery .= " AND DATE(generic.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $genericQuery .= " AND generic.data_sync = 0";
+        }
+
         $db->reset();
         $genericLabResult = $db->rawQuery($genericQuery);
 
@@ -121,7 +152,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from Custom Tests...\n";
+            echo "Sent $totalResults test results from Custom Tests..." . PHP_EOL;
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
@@ -136,11 +167,16 @@ try {
             FROM `form_vl` AS vl
             LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND IFNULL(vl.sample_code, '') != ''
-            AND vl.data_sync = 0";
+            AND IFNULL(vl.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "vl" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $vlQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        if (null !== $syncSinceDate) {
+            $vlQuery .= " AND DATE(vl.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $vlQuery .= " AND vl.data_sync = 0";
         }
 
         $db->reset();
@@ -180,12 +216,18 @@ try {
                     FROM `form_eid` AS vl
                     LEFT JOIN `user_details` AS a ON vl.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND IFNULL(vl.sample_code, '') != ''
-                    AND vl.data_sync=0";
+                    AND IFNULL(vl.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "eid" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $eidQuery .= " AND sample_code like '$sampleCode'";
         }
+
+        if (null !== $syncSinceDate) {
+            $eidQuery .= " AND DATE(vl.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $eidQuery .= " AND vl.data_sync = 0";
+        }
+
         $db->reset();
         $eidLabResult = $db->rawQuery($eidQuery);
 
@@ -221,12 +263,18 @@ try {
                     FROM `form_covid19` AS c19
                     LEFT JOIN `user_details` AS a ON c19.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND IFNULL(c19.sample_code, '') != ''
-                    AND c19.data_sync=0";
+                    AND IFNULL(c19.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "covid19" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $covid19Query .= " AND sample_code like '$sampleCode'";
         }
+
+        if (null !== $syncSinceDate) {
+            $covid19Query .= " AND DATE(c19.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $covid19Query .= " AND c19.data_sync = 0";
+        }
+
         $db->reset();
         $c19LabResult = $db->rawQuery($covid19Query);
 
@@ -278,11 +326,17 @@ try {
                     FROM `form_hepatitis` AS hep
                     LEFT JOIN `user_details` AS a ON hep.result_approved_by = a.user_id
                     WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-                    AND IFNULL(hep.sample_code, '') != ''
-                    AND hep.data_sync=0";
+                    AND IFNULL(hep.sample_code, '') != ''";
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "hepatitis" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $hepQuery .= " AND sample_code like '$sampleCode'";
         }
+
+        if (null !== $syncSinceDate) {
+            $hepQuery .= " AND DATE(hep.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $hepQuery .= " AND hep.data_sync = 0";
+        }
+
         $db->reset();
         $hepLabResult = $db->rawQuery($hepQuery);
 
@@ -321,11 +375,16 @@ try {
             FROM `form_tb` AS tb
             LEFT JOIN `user_details` AS a ON tb.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND IFNULL(tb.sample_code, '') != ''
-            AND tb.data_sync = 0";
+            AND IFNULL(tb.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "tb" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $tbQuery .= " AND sample_code like '$sampleCode'";
+        }
+
+        if (null !== $syncSinceDate) {
+            $tbQuery .= " AND DATE(tb.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $tbQuery .= " AND tb.data_sync = 0";
         }
 
         $db->reset();
@@ -366,12 +425,18 @@ try {
             FROM `form_cd4` AS cd4
             LEFT JOIN `user_details` AS a ON cd4.result_approved_by = a.user_id
             WHERE result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . "
-            AND IFNULL(cd4.sample_code, '') != ''
-            AND cd4.data_sync = 0";
+            AND IFNULL(cd4.sample_code, '') != ''";
 
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == "cd4" && !empty($sampleCode) && trim((string) $sampleCode) != "") {
             $cd4Query .= " AND sample_code like '$sampleCode'";
         }
+
+        if (null !== $syncSinceDate) {
+            $cd4Query .= " AND DATE(cd4.last_modified_datetime) >= '$syncSinceDate'";
+        } else {
+            $cd4Query .= " AND cd4.data_sync = 0";
+        }
+
         $db->reset();
         $cd4LabResult = $db->rawQuery($cd4Query);
 

@@ -1,45 +1,6 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
-
-ini_set('memory_limit', -1);
-set_time_limit(0);
-ini_set('max_execution_time', 300000);
-
-$cliMode = php_sapi_name() === 'cli';
-if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
-    echo PHP_EOL;
-    echo "=========================" . PHP_EOL;
-    echo "Starting test requests sync" . PHP_EOL;
-
-    // Parse command line arguments if in CLI mode
-    $forceSyncModule = null;
-    $manifestCode = null;
-
-    // Format 1: php requests-receiver.php -t vl -m ABCD1234
-    $options = getopt("t:m:");
-    if (isset($options['t'])) {
-        $forceSyncModule = $options['t'];
-        if (isset($options['m'])) {
-            $manifestCode = $options['m'];
-        }
-    } else {
-        // Format 2: php requests-receiver.php vl ABCD1234
-        $args = array_slice($_SERVER['argv'], 1);
-        if (isset($args[0]) && !empty($args[0])) {
-            $forceSyncModule = $args[0];
-            if (isset($args[1]) && !empty($args[1])) {
-                $manifestCode = $args[1];
-            }
-        }
-    }
-} else {
-    // Use GET parameters if in web mode
-    $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
-    $manifestCode = !empty($_GET['manifestCode']) ? $_GET['manifestCode'] : null;
-}
-
 use JsonMachine\Items;
 use App\Services\ApiService;
 use GuzzleHttp\Promise\Utils;
@@ -51,6 +12,56 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+
+
+ini_set('memory_limit', -1);
+set_time_limit(0);
+ini_set('max_execution_time', 300000);
+
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+    echo PHP_EOL;
+    echo "=========================" . PHP_EOL;
+    echo "Starting test requests sync" . PHP_EOL;
+}
+
+$forceSyncModule = null;
+$manifestCode = null;
+$syncSinceDate = null;
+
+$args = array_slice($_SERVER['argv'], 1);
+
+// Use getopt if present
+$options = getopt("t:m:");
+
+if (isset($options['t'])) {
+    $forceSyncModule = $options['t'];
+}
+if (isset($options['m'])) {
+    $manifestCode = $options['m'];
+}
+
+// Scan all args to find a valid date or number-of-days
+foreach ($args as $arg) {
+    // Skip if it's already parsed as -t or -m
+    if (in_array($arg, [$forceSyncModule, $manifestCode], true)) {
+        continue;
+    }
+
+    $arg = trim($arg);
+    if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+        $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
+        break;
+    } elseif (is_numeric($arg)) {
+        $syncSinceDate = DateUtility::daysAgo((int) $arg);
+        break;
+    }
+}
+
+if ($syncSinceDate !== null) {
+    echo "Filtering requests from: $syncSinceDate" . PHP_EOL;
+}
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -97,10 +108,7 @@ $stsBearerToken = $general->getSTSToken();
 
 $apiService->setBearerToken($stsBearerToken);
 
-$basePayload = [
-    'labId' => $labId,
-    'transactionId' => $transactionId
-];
+
 
 $promises = [];
 
@@ -109,10 +117,17 @@ $startTime = microtime(true);
 
 $responsePayload = [];
 foreach ($systemConfig['modules'] as $module => $status) {
+    $basePayload = [
+        'labId' => $labId,
+        'transactionId' => $transactionId
+    ];
     if ($status === true) {
         $basePayload['testType'] = $module;
         if (!empty($forceSyncModule) && trim((string) $forceSyncModule) == $module && !empty($manifestCode) && trim((string) $manifestCode) != "") {
             $basePayload['manifestCode'] = $manifestCode;
+        }
+        if (!empty($syncSinceDate)) {
+            $basePayload['syncSinceDate'] = $syncSinceDate;
         }
         $promises[$module] = $apiService->post(
             "$remoteURL/remote/v2/requests.php",

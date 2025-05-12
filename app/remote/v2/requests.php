@@ -63,7 +63,10 @@ try {
         $payload['token'] = $token;
     }
 
+    $syncSinceDate = $data['syncSinceDate'] ?? null;
+
     $testType = $data['testType'] ?? null;
+
 
     if (empty($testType)) {
         throw new SystemException('Test Type is missing in the request', 400);
@@ -75,7 +78,7 @@ try {
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
-    $requestsData = $stsRequestsService->getRequests($testType, $labId, $facilityMapResult ?? [],  $data['manifestCode'] ?? null);
+    $requestsData = $stsRequestsService->getRequests($testType, $labId, $facilityMapResult ?? [],  $data['manifestCode'] ?? null, $syncSinceDate);
 
     $sampleIds = $requestsData['sampleIds'] ?? [];
     $facilityIds = $requestsData['facilityIds'] ?? [];
@@ -85,6 +88,8 @@ try {
     $payload['status'] = 'success';
     $payload['requests'] = $requests;
     $payload['testType'] = $testType;
+    $payload['labId'] = $labId;
+    $payload['syncSinceDate'] = $syncSinceDate;
 
     $general->addApiTracking($transactionId, 'system', $resultCount, 'requests', $testType, $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 

@@ -3,16 +3,17 @@
 
 // only run from command line
 $isCli = php_sapi_name() === 'cli';
+use Carbon\Doctrine\DateTimeType;
 if ($isCli === false) {
     exit(0);
 }
 
 require_once __DIR__ . "/../../bootstrap.php";
 
-
 declare(ticks=1);
 
-
+use PDO;
+use Carbon\Carbon;
 use App\Services\VlService;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -50,18 +51,21 @@ $lastInterfaceSync = null;
 
 foreach ($argv as $arg) {
     if (str_contains($arg, 'force')) {
-        $overwriteLocked = true; // Allow locked samples
-    } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg)) {
-        $lastInterfaceSync = $arg; // Use provided date as $lastInterfaceSync
-    } elseif (is_numeric($arg)) {
-        $daysToSubtract = (int) $arg;
-        $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
-    } elseif (preg_match('/^(\d+)force/', $arg, $matches)) {
-        $daysToSubtract = (int) $matches[1];
-        $lastInterfaceSync = date('Y-m-d', strtotime("-$daysToSubtract days"));
         $overwriteLocked = true;
     }
+
+    if (!isset($lastInterfaceSync)) {
+        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+            $lastInterfaceSync = DateUtility::getDateTime($arg, 'Y-m-d');
+        } elseif (is_numeric($arg)) {
+            $lastInterfaceSync = DateUtility::daysAgo((int) $arg);
+        } elseif (preg_match('/^(\d+)force/', $arg, $matches)) {
+            $lastInterfaceSync = DateUtility::daysAgo((int) $matches[1]);
+            $overwriteLocked = true;
+        }
+    }
 }
+
 
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
@@ -669,8 +673,8 @@ try {
     }
 
     if (!empty($addedOnValues)) {
-        $maxAddedOnTimestamp = max($addedOnValues);
-        $maxAddedOn = date('Y-m-d H:i:s', $maxAddedOnTimestamp);
+
+        $maxAddedOn = DateUtility::getDateTime(max($addedOnValues));
 
         // Update s_vlsm_instance with the maximum added_on
         $db->connection('default')->update('s_vlsm_instance', ['last_interface_sync' => $maxAddedOn]);
