@@ -6,11 +6,11 @@ use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\DrcVlPDFHelper;
-use App\Utilities\LoggerUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -24,11 +24,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 try {
 
 	if (!empty($result)) {
-
-		// $signQuery = "SELECT * FROM lab_report_signatories
-		// 					WHERE lab_id=? AND test_types LIKE '%vl%' AND signatory_status like 'active' ORDER BY display_order ASC";
-		// $signResults = $db->rawQuery($signQuery, array($result['lab_id']));
-
 		$_SESSION['aliasPage'] = $page;
 		if (!isset($result['labName'])) {
 			$result['labName'] = '';

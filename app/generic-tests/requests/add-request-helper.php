@@ -186,12 +186,8 @@ try {
         $sampleCodeKey = 'sample_code_key';
     }
 
-    if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-        $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-    } else {
-        $_POST['reviewedOn'] = null;
-    }
+    $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
     if (isset($_POST['treatmentIndication']) && $_POST['treatmentIndication'] == "Other") {
         $_POST['treatmentIndication'] = $_POST['newTreatmentIndication'] . '_Other';

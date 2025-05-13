@@ -62,7 +62,6 @@ try {
         ]);
 
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
-
     } catch (PathNotFoundException | Throwable $e) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;
@@ -175,7 +174,20 @@ try {
         $data['api'] = "yes";
         $provinceCode = (!empty($data['provinceCode'])) ? $data['provinceCode'] : null;
         $provinceId = (!empty($data['provinceId'])) ? $data['provinceId'] : null;
-        $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
+
+
+        $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'] ?? '', true);
+        $data['sampleReceivedDate'] = DateUtility::isoDateFormat($data['sampleReceivedDate'] ?? '');
+        $data['sampleReceivedHubDate'] = DateUtility::isoDateFormat($data['sampleReceivedHubDate'] ?? '');
+        $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($data['sampleTestedDateTime'] ?? '');
+        $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'] ?? '');
+        $data['revisedOn'] = DateUtility::isoDateFormat($data['revisedOn'] ?? '');
+        $data['resultDispatchedOn'] = DateUtility::isoDateFormat($data['resultDispatchedOn'] ?? '');
+        $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($data['sampleDispatchedOn'] ?? '');
+        $data['sampleDispatchedDate'] = DateUtility::isoDateFormat($data['sampleDispatchedDate'] ?? '');
+        $data['arrivalDateTime'] = DateUtility::isoDateFormat($data['arrivalDateTime'] ?? '');
+
+
 
         $update = "no";
         $rowData = null;
@@ -236,7 +248,7 @@ try {
             $params['provinceCode'] = $provinceCode;
             $params['provinceId'] = $provinceId;
             $params['uniqueId'] = $uniqueId ?? MiscUtility::generateULID();
-            $params['sampleCollectionDate'] = $sampleCollectionDate;
+            $params['sampleCollectionDate'] = $data['sampleCollectionDate'];
             $params['userId'] = $user['user_id'];
             $params['accessType'] = $user['access_type'];
             $params['instanceType'] = $general->getInstanceType();
@@ -266,12 +278,7 @@ try {
             $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
         }
 
-        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
-        } else {
-            $data['arrivalDateTime'] = null;
-        }
+
         if (isset($data['isSampleRejected']) && $data['isSampleRejected'] == "yes") {
             $data['result'] = null;
             $status = SAMPLE_STATUS\REJECTED;
@@ -286,69 +293,6 @@ try {
             $status = SAMPLE_STATUS\PENDING_APPROVAL;
         }
 
-        if (!empty($data['sampleCollectionDate']) && trim((string) $data['sampleCollectionDate']) != "") {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
-        } else {
-            $sampleCollectionDate = $data['sampleCollectionDate'] = null;
-        }
-
-
-        //Set sample received date
-        if (!empty($data['sampleReceivedDate']) && trim((string) $data['sampleReceivedDate']) != "") {
-            $sampleReceivedDate = explode(" ", (string) $data['sampleReceivedDate']);
-            $data['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
-        } else {
-            $data['sampleReceivedDate'] = null;
-        }
-
-        if (!empty($data['sampleReceivedHubDate']) && trim((string) $data['sampleReceivedHubDate']) != "") {
-            $sampleReceivedHubDate = explode(" ", (string) $data['sampleReceivedHubDate']);
-            $data['sampleReceivedHubDate'] = DateUtility::isoDateFormat($sampleReceivedHubDate[0]) . " " . $sampleReceivedHubDate[1];
-        } else {
-            $data['sampleReceivedHubDate'] = null;
-        }
-        if (!empty($data['sampleTestedDateTime']) && trim((string) $data['sampleTestedDateTime']) != "") {
-            $sampleTestedDate = explode(" ", (string) $data['sampleTestedDateTime']);
-            $data['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
-        } else {
-            $data['sampleTestedDateTime'] = null;
-        }
-
-        if (!empty($data['arrivalDateTime']) && trim((string) $data['arrivalDateTime']) != "") {
-            $arrivalDate = explode(" ", (string) $data['arrivalDateTime']);
-            $data['arrivalDateTime'] = DateUtility::isoDateFormat($arrivalDate[0]) . " " . $arrivalDate[1];
-        } else {
-            $data['arrivalDateTime'] = null;
-        }
-
-        if (!empty($data['revisedOn']) && trim((string) $data['revisedOn']) != "") {
-            $revisedOn = explode(" ", (string) $data['revisedOn']);
-            $data['revisedOn'] = DateUtility::isoDateFormat($revisedOn[0]) . " " . $revisedOn[1];
-        } else {
-            $data['revisedOn'] = null;
-        }
-
-        if (isset($data['resultDispatchedOn']) && trim((string) $data['resultDispatchedOn']) != "") {
-            $resultDispatchedOn = explode(" ", (string) $data['resultDispatchedOn']);
-            $data['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
-        } else {
-            $data['resultDispatchedOn'] = null;
-        }
-
-        if (isset($data['sampleDispatchedOn']) && trim((string) $data['sampleDispatchedOn']) != "") {
-            $sampleDispatchedOn = explode(" ", (string) $data['sampleDispatchedOn']);
-            $data['sampleDispatchedOn'] = DateUtility::isoDateFormat($sampleDispatchedOn[0]) . " " . $sampleDispatchedOn[1];
-        } else {
-            $data['sampleDispatchedOn'] = null;
-        }
-
-        if (isset($data['sampleDispatchedDate']) && trim((string) $data['sampleDispatchedDate']) != "") {
-            $sampleDispatchedDate = explode(" ", (string) $data['sampleDispatchedDate']);
-            $data['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-        } else {
-            $data['sampleDispatchedDate'] = null;
-        }
-
         $formAttributes = [
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
@@ -360,11 +304,11 @@ try {
         $allChange = [];
         if (isset($data['reasonForResultChanges']) && !empty($data['reasonForResultChanges'])) {
             foreach ($data['reasonForResultChanges'] as $row) {
-                $allChange[] = array(
+                $allChange[] = [
                     'usr' => $row['changed_by'],
                     'msg' => $row['reason'],
                     'dtime' => $row['change_datetime']
-                );
+                ];
             }
         }
         if (!empty($allChange)) {

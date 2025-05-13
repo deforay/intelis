@@ -108,12 +108,8 @@ try {
 		$resultSentToSource = null;
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
+	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
 	$testingPlatform = null;
 	$instrumentId = null;

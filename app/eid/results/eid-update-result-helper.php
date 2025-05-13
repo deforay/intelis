@@ -20,40 +20,12 @@ $tableName2 = "log_result_updates";
 
 
 try {
-  //Set sample received date
-  if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
-    $sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
-    $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
-  } else {
-    $_POST['sampleReceivedDate'] = null;
-  }
+  $_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
+  $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true);
+  $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
+	$_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true);
 
-  if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
-    $sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
-    $_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
-  } else {
-    $_POST['sampleTestedDateTime'] = null;
-  }
-
-  if (isset($_POST['approvedOnDateTime']) && trim((string) $_POST['approvedOnDateTime']) != "") {
-    $approvedOnDateTime = explode(" ", (string) $_POST['approvedOnDateTime']);
-    $_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
-  } else {
-    $_POST['approvedOnDateTime'] = null;
-  }
-
-  if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-    $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-    $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-  } else {
-    $_POST['reviewedOn'] = null;
-  }
-  if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != "") {
-    $resultDispatchedOn = explode(" ", (string) $_POST['resultDispatchedOn']);
-    $_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
-  } else {
-    $_POST['resultDispatchedOn'] = null;
-  }
 
   if (!empty($_POST['newRejectionReason'])) {
     $rejectionReasonQuery = "SELECT rejection_reason_id

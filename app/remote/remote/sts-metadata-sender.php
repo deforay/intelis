@@ -327,6 +327,7 @@ foreach ($userIds as $userId) {
         }
     }
 }
+
 $response['labReportSignatories'] = $general->fetchDataFromTable('lab_report_signatories', $signatureCondition);
 
 

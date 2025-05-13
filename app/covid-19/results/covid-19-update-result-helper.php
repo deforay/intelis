@@ -69,26 +69,11 @@ try {
 		$resultSentToSource = 'pending';
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
+	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
+	$_POST['authorizedOn'] = DateUtility::isoDateFormat($_POST['authorizedOn'] ?? '', true);
 
-	if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", (string) $_POST['approvedOn']);
-		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-	} else {
-		$_POST['approvedOn'] = null;
-	}
 
-	if (isset($_POST['authorizedOn']) && trim((string) $_POST['authorizedOn']) != "") {
-		$authorizedOn = explode(" ", (string) $_POST['authorizedOn']);
-		$_POST['authorizedOn'] = DateUtility::isoDateFormat($authorizedOn[0]) . " " . $authorizedOn[1];
-	} else {
-		$_POST['authorizedOn'] = null;
-	}
 
 	$covid19Data = array(
 		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],

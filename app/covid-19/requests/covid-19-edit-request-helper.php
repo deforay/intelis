@@ -144,19 +144,8 @@ try {
 		$_POST['status'] = $_POST['oldStatus'];
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
-
-	if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", (string) $_POST['approvedOn']);
-		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-	} else {
-		$_POST['approvedOn'] = null;
-	}
+	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
 	//Update patient Information in Patients Table
 	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_covid19');

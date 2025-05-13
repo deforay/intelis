@@ -94,7 +94,6 @@ final class MiscUtility
             $filesystem->mkdir($path, $mode); // Handles recursive creation automatically
             return true;
         } catch (IOExceptionInterface $exception) {
-            // You can log the exception or handle the error here
             return false; // Directory creation failed
         }
     }

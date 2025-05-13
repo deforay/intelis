@@ -113,12 +113,9 @@ try {
     } elseif (trim($reasonForChanges) != '') {
         $allChange = $reasonForChanges;
     }
-    if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-        $reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-        $_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-    } else {
-        $_POST['reviewedOn'] = null;
-    }
+
+    $_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
     $interpretationResult = null;
     if (!empty($_POST['resultInterpretation'])) {
@@ -127,7 +124,7 @@ try {
         }
     }
 
-    $dataToUpdate = array(
+    $dataToUpdate = [
         'vlsm_instance_id' => $instanceId,
         'lab_id' => (isset($_POST['labId']) && $_POST['labId'] != '') ? $_POST['labId'] : null,
         'test_platform' => $testingPlatform,
@@ -159,7 +156,7 @@ try {
         'data_sync' => 0,
         'sub_tests' => (isset($_POST['subTestResult']) && is_array($_POST['subTestResult'])) ? implode("##", $_POST['subTestResult']) : $_POST['subTestResult'],
         'result_printed_datetime' => null
-    );
+    ];
 
 
     if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {

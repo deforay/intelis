@@ -34,155 +34,29 @@ try {
 		$instanceId = $_SESSION['instanceId'];
 	}
 
-	if (isset($_POST['sampleCollectionDate']) && trim((string) $_POST['sampleCollectionDate']) != "") {
-		$sampleCollectionDate = explode(" ", (string) $_POST['sampleCollectionDate']);
-		$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($sampleCollectionDate[0]) . " " . $sampleCollectionDate[1];
-	} else {
-		$_POST['sampleCollectionDate'] = null;
-	}
+	$_POST['sampleCollectionDate'] = DateUtility::isoDateFormat($_POST['sampleCollectionDate'] ?? '', true);
+	$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true);
+	$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true);
+	$_POST['rapidtestDate'] = DateUtility::isoDateFormat($_POST['rapidtestDate'] ?? '');
+	$_POST['startedArtDate'] = DateUtility::isoDateFormat($_POST['startedArtDate'] ?? '');
+	$_POST['motherHivTestDate'] = DateUtility::isoDateFormat($_POST['motherHivTestDate'] ?? '');
+	$_POST['test1Date'] = DateUtility::isoDateFormat($_POST['test1Date'] ?? '');
+	$_POST['test2Date'] = DateUtility::isoDateFormat($_POST['test2Date'] ?? '');
+	$_POST['childDob'] = DateUtility::isoDateFormat($_POST['childDob'] ?? '');
+	$_POST['mothersDob'] = DateUtility::isoDateFormat($_POST['mothersDob'] ?? '');
+	$_POST['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($_POST['motherTreatmentInitiationDate'] ?? '');
+	$_POST['childTreatmentInitiationDate'] = DateUtility::isoDateFormat($_POST['childTreatmentInitiationDate'] ?? '');
+	$_POST['nextAppointmentDate'] = DateUtility::isoDateFormat($_POST['nextAppointmentDate'] ?? '');
+	$_POST['childStartedCotrimDate'] = DateUtility::isoDateFormat($_POST['childStartedCotrimDate'] ?? '');
+	$_POST['childStartedArtDate'] = DateUtility::isoDateFormat($_POST['childStartedArtDate'] ?? '');
+	$_POST['pcr1TestDate'] = DateUtility::isoDateFormat($_POST['pcr1TestDate'] ?? '');
+	$_POST['pcr2TestDate'] = DateUtility::isoDateFormat($_POST['pcr2TestDate'] ?? '');
+	$_POST['pcr3TestDate'] = DateUtility::isoDateFormat($_POST['pcr3TestDate'] ?? '');
+	$_POST['dateOfWeaning'] = DateUtility::isoDateFormat($_POST['dateOfWeaning'] ?? '');
+	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true);
+	$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($_POST['approvedOnDateTime'] ?? '', true);
 
-	if (isset($_POST['sampleDispatchedDate']) && trim((string) $_POST['sampleDispatchedDate']) != "") {
-		$sampleDispatchedDate = explode(" ", (string) $_POST['sampleDispatchedDate']);
-		$_POST['sampleDispatchedDate'] = DateUtility::isoDateFormat($sampleDispatchedDate[0]) . " " . $sampleDispatchedDate[1];
-	} else {
-		$_POST['sampleDispatchedDate'] = null;
-	}
-
-	if (isset($_POST['approvedOnDateTime']) && trim((string) $_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", (string) $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
-	} else {
-		$_POST['approvedOnDateTime'] = null;
-	}
-
-
-
-	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
-	} else {
-		$_POST['sampleReceivedDate'] = null;
-	}
-
-	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
-	} else {
-		$_POST['sampleTestedDateTime'] = null;
-	}
-
-	if (isset($_POST['rapidtestDate']) && trim((string) $_POST['rapidtestDate']) != "") {
-		$rapidtestDate = explode(" ", (string) $_POST['rapidtestDate']);
-		$_POST['rapidtestDate'] = DateUtility::isoDateFormat($rapidtestDate[0]) . " " . $rapidtestDate[1];
-	} else {
-		$_POST['rapidtestDate'] = null;
-	}
-
-	if (isset($_POST['startedArtDate']) && trim((string) $_POST['startedArtDate']) != "") {
-		$startedArtDate = explode(" ", (string) $_POST['startedArtDate']);
-		$_POST['startedArtDate'] = DateUtility::isoDateFormat($startedArtDate[0]) . " " . $startedArtDate[1];
-	} else {
-		$_POST['startedArtDate'] = null;
-	}
-
-	if (isset($_POST['motherHivTestDate']) && trim((string) $_POST['motherHivTestDate']) != "") {
-		$motherHivTestDate = explode(" ", (string) $_POST['motherHivTestDate']);
-		$_POST['motherHivTestDate'] = DateUtility::isoDateFormat($motherHivTestDate[0]) . " " . $motherHivTestDate[1];
-	} else {
-		$_POST['motherHivTestDate'] = null;
-	}
-
-	if (isset($_POST['test1Date']) && trim((string) $_POST['test1Date']) != "") {
-		$test1Date = explode(" ", (string) $_POST['test1Date']);
-		$_POST['test1Date'] = DateUtility::isoDateFormat($test1Date[0]) . " " . $test1Date[1];
-	} else {
-		$_POST['test1Date'] = null;
-	}
-
-	if (isset($_POST['test2Date']) && trim((string) $_POST['test2Date']) != "") {
-		$test2Date = explode(" ", (string) $_POST['test2Date']);
-		$_POST['test2Date'] = DateUtility::isoDateFormat($test2Date[0]) . " " . $test2Date[1];
-	} else {
-		$_POST['test2Date'] = null;
-	}
-
-	if (isset($_POST['childDob']) && trim((string) $_POST['childDob']) != "") {
-		$childDob = explode(" ", (string) $_POST['childDob']);
-		$_POST['childDob'] = DateUtility::isoDateFormat($childDob[0]) . " " . $childDob[1];
-	} else {
-		$_POST['childDob'] = null;
-	}
-
-	if (isset($_POST['mothersDob']) && trim((string) $_POST['mothersDob']) != "") {
-		$mothersDob = explode(" ", (string) $_POST['mothersDob']);
-		$_POST['mothersDob'] = DateUtility::isoDateFormat($mothersDob[0]) . " " . $mothersDob[1];
-	} else {
-		$_POST['mothersDob'] = null;
-	}
-
-	if (isset($_POST['motherTreatmentInitiationDate']) && trim((string) $_POST['motherTreatmentInitiationDate']) != "") {
-		$motherTreatmentInitiationDate = explode(" ", (string) $_POST['motherTreatmentInitiationDate']);
-		$_POST['motherTreatmentInitiationDate'] = DateUtility::isoDateFormat($motherTreatmentInitiationDate[0]) . " " . $motherTreatmentInitiationDate[1];
-	} else {
-		$_POST['motherTreatmentInitiationDate'] = null;
-	}
-
-	if (isset($_POST['childTreatmentInitiationDate']) && trim((string) $_POST['childTreatmentInitiationDate']) != "") {
-		$childTreatmentInitiationDate = explode(" ", (string) $_POST['childTreatmentInitiationDate']);
-		$_POST['childTreatmentInitiationDate'] = DateUtility::isoDateFormat($childTreatmentInitiationDate[0]) . " " . $childTreatmentInitiationDate[1];
-	} else {
-		$_POST['childTreatmentInitiationDate'] = null;
-	}
-
-	if (isset($_POST['nextAppointmentDate']) && trim((string) $_POST['nextAppointmentDate']) != "") {
-		$nextAppointmentDate = explode(" ", (string) $_POST['nextAppointmentDate']);
-		$_POST['nextAppointmentDate'] = DateUtility::isoDateFormat($nextAppointmentDate[0]) . " " . $nextAppointmentDate[1];
-	} else {
-		$_POST['nextAppointmentDate'] = null;
-	}
-
-	if (isset($_POST['childStartedCotrimDate']) && trim((string) $_POST['childStartedCotrimDate']) != "") {
-		$childStartedCotrimDate = explode(" ", (string) $_POST['childStartedCotrimDate']);
-		$_POST['childStartedCotrimDate'] = DateUtility::isoDateFormat($childStartedCotrimDate[0]) . " " . $childStartedCotrimDate[1];
-	} else {
-		$_POST['childStartedCotrimDate'] = null;
-	}
-
-	if (isset($_POST['childStartedArtDate']) && trim((string) $_POST['childStartedArtDate']) != "") {
-		$childStartedArtDate = explode(" ", (string) $_POST['childStartedArtDate']);
-		$_POST['childStartedArtDate'] = DateUtility::isoDateFormat($childStartedArtDate[0]) . " " . $childStartedArtDate[1];
-	} else {
-		$_POST['childStartedArtDate'] = null;
-	}
-
-	if (isset($_POST['pcr1TestDate']) && trim((string) $_POST['pcr1TestDate']) != "") {
-		$pcr1TestDate = explode(" ", (string) $_POST['pcr1TestDate']);
-		$_POST['pcr1TestDate'] = DateUtility::isoDateFormat($pcr1TestDate[0]) . " " . $pcr1TestDate[1];
-	} else {
-		$_POST['pcr1TestDate'] = null;
-	}
-
-	if (isset($_POST['pcr2TestDate']) && trim((string) $_POST['pcr2TestDate']) != "") {
-		$pcr2TestDate = explode(" ", (string) $_POST['pcr2TestDate']);
-		$_POST['pcr2TestDate'] = DateUtility::isoDateFormat($pcr2TestDate[0]) . " " . $pcr2TestDate[1];
-	} else {
-		$_POST['pcr2TestDate'] = null;
-	}
-
-	if (isset($_POST['pcr3TestDate']) && trim((string) $_POST['pcr3TestDate']) != "") {
-		$pcr3TestDate = explode(" ", (string) $_POST['pcr3TestDate']);
-		$_POST['pcr3TestDate'] = DateUtility::isoDateFormat($pcr3TestDate[0]) . " " . $pcr3TestDate[1];
-	} else {
-		$_POST['pcr3TestDate'] = null;
-	}
-
-	if (isset($_POST['dateOfWeaning']) && trim((string) $_POST['dateOfWeaning']) != "") {
-		$nextAppointmentDate = explode(" ", (string) $_POST['dateOfWeaning']);
-		$_POST['dateOfWeaning'] = DateUtility::isoDateFormat($dateOfWeaning[0]) . " " . $dateOfWeaning[1];
-	} else {
-		$_POST['dateOfWeaning'] = null;
-	}
 
 	if (!empty($_POST['newRejectionReason'])) {
 		$rejectionReasonQuery = "SELECT rejection_reason_id
@@ -190,12 +64,12 @@ try {
                     WHERE rejection_reason_name like ?";
 		$rejectionResult = $db->rawQueryOne($rejectionReasonQuery, [$_POST['newRejectionReason']]);
 		if (empty($rejectionResult)) {
-			$data = array(
+			$data = [
 				'rejection_reason_name' => $_POST['newRejectionReason'],
 				'rejection_type' => 'general',
 				'rejection_reason_status' => 'active',
 				'updated_datetime' => DateUtility::getCurrentDateTime()
-			);
+			];
 			$id = $db->insert('r_eid_sample_rejection_reasons', $data);
 			$_POST['sampleRejectionReason'] = $id;
 		} else {
@@ -208,11 +82,11 @@ try {
 		$artQuery = "SELECT art_id,art_code FROM r_vl_art_regimen where (art_code='" . $_POST['newArtRegimen'] . "' OR art_code='" . strtolower((string) $_POST['newArtRegimen']) . "' OR art_code='" . (strtolower((string) $_POST['newArtRegimen'])) . "')";
 		$artResult = $db->rawQuery($artQuery);
 		if (!isset($artResult[0]['art_id'])) {
-			$data = array(
+			$data = [
 				'art_code' => $_POST['newArtRegimen'],
 				'parent_art' => '1',
 				'updated_datetime' => DateUtility::getCurrentDateTime(),
-			);
+			];
 			$result = $db->insert('r_vl_art_regimen', $data);
 			$_POST['motherRegimen'] = $_POST['newArtRegimen'];
 		} else {
@@ -256,18 +130,6 @@ try {
 		$status = SAMPLE_STATUS\REJECTED;
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
-	if (isset($_POST['resultDispatchedOn']) && trim((string) $_POST['resultDispatchedOn']) != "") {
-		$resultDispatchedOn = explode(" ", (string) $_POST['resultDispatchedOn']);
-		$_POST['resultDispatchedOn'] = DateUtility::isoDateFormat($resultDispatchedOn[0]) . " " . $resultDispatchedOn[1];
-	} else {
-		$_POST['resultDispatchedOn'] = null;
-	}
 	if ($general->isSTSInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
 		$_POST['status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
 	} elseif ($general->isLISInstance() && $_POST['oldStatus'] == SAMPLE_STATUS\RECEIVED_AT_CLINIC) {
@@ -275,13 +137,6 @@ try {
 	}
 	if ($_POST['status'] == '') {
 		$_POST['status'] = $_POST['oldStatus'];
-	}
-
-	if (isset($_POST['approvedOnDateTime']) && trim((string) $_POST['approvedOnDateTime']) != "") {
-		$approvedOnDateTime = explode(" ", (string) $_POST['approvedOnDateTime']);
-		$_POST['approvedOnDateTime'] = DateUtility::isoDateFormat($approvedOnDateTime[0]) . " " . $approvedOnDateTime[1];
-	} else {
-		$_POST['approvedOnDateTime'] = null;
 	}
 
 	$testingPlatform = null;
@@ -292,14 +147,13 @@ try {
 		$instrumentId = $platForm[1];
 	}
 
-
 	//Update patient Information in Patients Table
 	//$systemPatientCode = $patientsService->savePatient($_POST, 'form_eid');
 
 	//$systemGeneratedCode = $patientsService->getSystemPatientId($_POST['childId'], $_POST['childGender'], DateUtility::isoDateFormat($_POST['childDob'] ?? ''));
 
 
-	$eidData = array(
+	$eidData = [
 		'facility_id' => $_POST['facilityId'] ?? null,
 		'province_id' => $_POST['provinceId'] ?? null,
 		'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
@@ -432,7 +286,7 @@ try {
 		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
 		// 'last_modified_by' 									=> $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
-	);
+	];
 
 	$db->where('eid_id', $_POST['eidSampleId']);
 	$getPrevResult = $db->getOne('form_eid');
@@ -481,12 +335,12 @@ try {
 		$eidData['is_encrypted'] = 'yes';
 	}
 
-	// //Update patient Information in Patients Table
+	//Update patient Information in Patients Table
 	// $patientsService->savePatient($_POST, 'form_eid');
 
 	$formAttributes = [
-		'applicationVersion' => $this->commonService->getAppVersion(),
-		'ip_address' => $this->commonService->getClientIpAddress()
+		'applicationVersion' => $general->getAppVersion(),
+		'ip_address' => $general->getClientIpAddress()
 	];
 	if (isset($_POST['freezer']) && $_POST['freezer'] != "" && $_POST['freezer'] != null) {
 

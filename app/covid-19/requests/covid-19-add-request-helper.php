@@ -132,19 +132,8 @@ try {
 		$resultSentToSource = 'pending';
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
-
-	if (isset($_POST['approvedOn']) && trim((string) $_POST['approvedOn']) != "") {
-		$approvedOn = explode(" ", (string) $_POST['approvedOn']);
-		$_POST['approvedOn'] = DateUtility::isoDateFormat($approvedOn[0]) . " " . $approvedOn[1];
-	} else {
-		$_POST['approvedOn'] = null;
-	}
+	$_POST['reviewedOn'] = DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true);
+	$_POST['approvedOn'] = DateUtility::isoDateFormat($_POST['approvedOn'] ?? '', true);
 
 	if (!empty($_POST['patientProvince'])) {
 		$pprovince = explode("##", (string) $_POST['patientProvince']);
@@ -153,7 +142,7 @@ try {
 		}
 	}
 
-	// //Update patient Information in Patients Table
+	// Update patient Information in Patients Table
 	// $patientsService->savePatient($_POST, 'form_covid19');
 
 	// $systemGeneratedCode = $patientsService->getSystemPatientId($_POST['patientId'], $_POST['patientGender'], DateUtility::isoDateFormat($_POST['dob'] ?? ''));
@@ -250,7 +239,7 @@ try {
 		'tested_by' => !empty($_POST['testedBy']) ? $_POST['testedBy'] : null,
 		'is_result_authorised' => !empty($_POST['isResultAuthorized']) ? $_POST['isResultAuthorized'] : null,
 		'authorized_by' => !empty($_POST['authorizedBy']) ? $_POST['authorizedBy'] : null,
-		'authorized_on' => !empty($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
+		'authorized_on' => !empty($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn'], true) : null,
 		'rejection_on' => (!empty($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		'result_status' => $status,
 		'data_sync' => 0,

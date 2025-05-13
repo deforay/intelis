@@ -23,21 +23,6 @@ $resultSentToSource = null;
 
 try {
 	//Set sample received date
-	if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != "") {
-		$sampleReceivedDate = explode(" ", (string) $_POST['sampleReceivedDate']);
-		$_POST['sampleReceivedDate'] = DateUtility::isoDateFormat($sampleReceivedDate[0]) . " " . $sampleReceivedDate[1];
-	} else {
-		$_POST['sampleReceivedDate'] = null;
-	}
-
-	if (isset($_POST['sampleTestedDateTime']) && trim((string) $_POST['sampleTestedDateTime']) != "") {
-		$sampleTestedDate = explode(" ", (string) $_POST['sampleTestedDateTime']);
-		$_POST['sampleTestedDateTime'] = DateUtility::isoDateFormat($sampleTestedDate[0]) . " " . $sampleTestedDate[1];
-	} else {
-		$_POST['sampleTestedDateTime'] = null;
-	}
-
-
 
 	$resultSentToSource = 'pending';
 
@@ -48,18 +33,11 @@ try {
 		$resultSentToSource = null;
 	}
 
-	if (isset($_POST['reviewedOn']) && trim((string) $_POST['reviewedOn']) != "") {
-		$reviewedOn = explode(" ", (string) $_POST['reviewedOn']);
-		$_POST['reviewedOn'] = DateUtility::isoDateFormat($reviewedOn[0]) . " " . $reviewedOn[1];
-	} else {
-		$_POST['reviewedOn'] = null;
-	}
-
 	$hepatitisData = [
-		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
+		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
 		'sample_condition' => $_POST['sampleCondition'] ?? ($_POST['specimenQuality'] ?? null),
-		'sample_tested_datetime' => $_POST['sampleTestedDateTime'] ?? null,
+		'sample_tested_datetime' => DateUtility::isoDateFormat($_POST['sampleTestedDateTime'] ?? '', true),
 		'vl_testing_site' => $_POST['vlTestingSite'] ?? null,
 		'is_sample_rejected' => ($_POST['isSampleRejected'] ?? null),
 		'result' => $_POST['result'] ?? null,
@@ -69,7 +47,7 @@ try {
 		'import_machine_name' => $_POST['machineName'] ?? null,
 		'is_result_authorised' => $_POST['isResultAuthorized'] ?? null,
 		'result_reviewed_by' => (isset($_POST['reviewedBy']) && $_POST['reviewedBy'] != "") ? $_POST['reviewedBy'] : null,
-		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
+		'result_reviewed_datetime' => DateUtility::isoDateFormat($_POST['reviewedOn'] ?? '', true),
 		'authorized_by' => $_POST['authorizedBy'] ?? null,
 		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
