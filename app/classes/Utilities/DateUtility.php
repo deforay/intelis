@@ -32,12 +32,20 @@ final class DateUtility
         return Carbon::parse($date)->format($format);
     }
 
+    /**
+     * Returns the current timestamp in Unix format.
+     *
+     * @return int The current Unix timestamp.
+     */
+    public static function getCurrentTimestamp(): int
+    {
+        return Carbon::now()->timestamp;
+    }
+
     public static function daysAgo(int $days, string $format = 'Y-m-d'): string
     {
         return Carbon::now()->subDays($days)->format($format);
     }
-
-
 
     public static function isDateValid($date): bool
     {

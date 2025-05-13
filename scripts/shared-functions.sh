@@ -76,7 +76,7 @@ prepare_system() {
 
 spinner() {
     local pid=$1
-    local message="${2:-""}"
+    local message="${2:-Processing...}"
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
     local delay=0.1
     local i=0
@@ -201,11 +201,11 @@ is_valid_application_path() {
 
 # Convert to absolute path
 to_absolute_path() {
-    local path=$1
-    if [[ "$path" != /* ]]; then
-        path="$(pwd)/$path"
-    fi
-    echo "$path"
+    local p="$1"
+    # expand leading “~” → $HOME
+    [[ "$p" == "~"* ]] && p="${p/#\~/$HOME}"
+    # canonicalize, resolving ., .., and symlinks
+    readlink -f -- "$p"
 }
 
 # Set ACL-based permissions
@@ -303,12 +303,12 @@ ask_yes_no() {
     answer=$(echo "$answer" | awk '{print tolower($0)}')
 
     case "$answer" in
-        y|yes) return 0 ;;
-        n|no)  return 1 ;;
-        *)
-            print warning "Invalid input. Using default: $default"
-            [[ "$default" == "yes" ]] && return 0 || return 1
-            ;;
+    y | yes) return 0 ;;
+    n | no) return 1 ;;
+    *)
+        print warning "Invalid input. Using default: $default"
+        [[ "$default" == "yes" ]] && return 0 || return 1
+        ;;
     esac
 }
 
@@ -326,7 +326,6 @@ extract_mysql_password_from_config() {
     "
 }
 
-
 # Log action to log file
 log_action() {
     local message=$1
@@ -339,4 +338,3 @@ log_action() {
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$logfile"
 }
-

@@ -138,7 +138,7 @@ try {
             "labId" => $labId,
             "results" => $customTestResultData,
             "testType" => "generic-tests",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
 
@@ -186,7 +186,7 @@ try {
             "labId" => $labId,
             "results" => $vlLabResult,
             "testType" => "vl",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
 
@@ -235,7 +235,7 @@ try {
             "labId" => $labId,
             "results" => $eidLabResult,
             "testType" => "eid",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
 
@@ -297,7 +297,7 @@ try {
             "labId" => $labId,
             "results" => $c19ResultData,
             "testType" => "covid19",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
@@ -346,7 +346,7 @@ try {
             "labId" => $labId,
             "results" => $hepLabResult,
             "testType" => "hepatitis",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
 
@@ -395,7 +395,7 @@ try {
             "labId" => $labId,
             "results" => $tbLabResult,
             "testType" => "tb",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
 
@@ -445,7 +445,7 @@ try {
             "labId" => $labId,
             "results" => $cd4LabResult,
             "testType" => "cd4",
-            'time' => time(),
+            'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
         $jsonResponse = $apiService->post($url, $payload, gzip: true);

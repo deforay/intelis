@@ -1,9 +1,16 @@
 <?php
 
+/**
+ * Core system constants
+ */
 
 namespace CORE {
     const SYSADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
 }
+
+/**
+ * Sample status constants
+ */
 
 namespace SAMPLE_STATUS {
     const ON_HOLD = 1; // Sample is on hold
@@ -19,6 +26,10 @@ namespace SAMPLE_STATUS {
     const NO_RESULT = 11; // Sample has no result
     const CANCELLED = 12; // Sample Cancelled - No Testing required
 }
+
+/**
+ * Country identifiers
+ */
 
 namespace COUNTRY {
     const SOUTH_SUDAN = 1;

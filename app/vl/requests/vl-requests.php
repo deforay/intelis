@@ -1,13 +1,14 @@
 <?php
 
+
+require_once APPLICATION_PATH . '/header.php';
+
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-
-
 
 $title = _translate("View All Requests");
 $hidesrcofreq = false;
@@ -32,8 +33,6 @@ if (isset($_GET['facilityId']) && $_GET['facilityId'] != "" && isset($_GET['labI
 	$facilityId = base64_decode((string) $_GET['facilityId']);
 	$labId = base64_decode((string) $_GET['labId']);
 }
-
-require_once APPLICATION_PATH . '/header.php';
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
@@ -308,8 +307,6 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 
 						</tr>
 						<tr>
-
-
 							<td><strong>
 									<?php echo _translate("Implementing Partners"); ?>&nbsp;:
 								</strong></td>
@@ -799,10 +796,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
 		<?php
 		if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-			               $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
-               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
+			$sampleCode = htmlspecialchars($_GET['s']);
+			$facilityCode = htmlspecialchars($_GET['f']);
+			$patientID = htmlspecialchars($_GET['p']);
+			echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
 		}
 		?>
 		$("#facilityName").select2({
@@ -1234,7 +1231,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 						url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=vl",
 					})
 					.done(function(data) {
-						////console.log(data);
+						//console.log(data);
 						//alert( "success" );
 					})
 					.fail(function() {
@@ -1258,7 +1255,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				url: "/vl/interop/fhir/vl-receive.php",
 			})
 			.done(function(data) {
-				////console.log(data);
+				//console.log(data);
 				//alert( "success" );
 				$.unblockUI();
 				//alert(data.processed + " records added from EMR/FHIR");
@@ -1307,7 +1304,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			});
 
 	}
-
 
 	function getByProvince(provinceId) {
 		$("#district").html('');
