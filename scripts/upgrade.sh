@@ -120,14 +120,16 @@ if [ -z "$lis_path" ]; then
         lis_path="/var/www/vlsm"
         print info "Using default path: $lis_path"
     else
-        print info "LIS path is set to ${lis_path}"
+        print info "LIS path entered as ${lis_path}"
     fi
 else
-    print info "LIS path is set to ${lis_path}"
+    print info "LIS path entered as ${lis_path}"
 fi
 
 # Convert VLSM path to absolute path
 lis_path=$(to_absolute_path "$lis_path")
+print info "LIS path is set to ${lis_path}"
+log_action "LIS path is set to ${lis_path}"
 
 # Check if the LIS path is valid
 if ! is_valid_application_path "$lis_path"; then
@@ -135,8 +137,6 @@ if ! is_valid_application_path "$lis_path"; then
     log_action "Invalid LIS path specified: $lis_path"
     exit 1
 fi
-
-log_action "LIS path is set to ${lis_path}"
 
 # Restore the previous error trap
 eval "$current_trap"
