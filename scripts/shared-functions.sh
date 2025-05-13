@@ -168,6 +168,39 @@ download_file() {
     return $download_status
 }
 
+# Download a file only if the remote version has changed
+download_if_changed() {
+    local output_file="$1"
+    local url="$2"
+
+    local tmpfile
+    tmpfile=$(mktemp)
+
+    if ! wget -q -O "$tmpfile" "$url"; then
+        print error "Failed to download $(basename "$output_file") from $url"
+        rm -f "$tmpfile"
+        return 1
+    fi
+
+    if [ -f "$output_file" ]; then
+        local new_checksum old_checksum
+        new_checksum=$(md5sum "$tmpfile" | awk '{print $1}')
+        old_checksum=$(md5sum "$output_file" | awk '{print $1}')
+
+        if [ "$new_checksum" = "$old_checksum" ]; then
+            print info "$(basename "$output_file") is already up-to-date."
+            rm -f "$tmpfile"
+            return 0
+        fi
+    fi
+
+    mv "$tmpfile" "$output_file"
+    chmod +x "$output_file"
+    print success "Downloaded and updated $(basename "$output_file")"
+    return 0
+}
+
+
 # Ubuntu version check
 check_ubuntu_version() {
     local min_version=$1

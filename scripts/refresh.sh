@@ -10,29 +10,15 @@ if [ "$EUID" -ne 0 ]; then
 fi
 
 
-# Download and update shared-functions.sh only if needed
+# Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
 SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-temp_shared_fn=$(mktemp)
-if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
-    if [ -f "$SHARED_FN_PATH" ]; then
-        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
-        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
-        if [ "$existing_checksum" != "$new_checksum" ]; then
-            cp "$temp_shared_fn" "$SHARED_FN_PATH"
-            chmod +x "$SHARED_FN_PATH"
-            echo "Updated shared-functions.sh."
-        else
-            echo "shared-functions.sh is already up-to-date."
-        fi
-    else
-        mv "$temp_shared_fn" "$SHARED_FN_PATH"
-        chmod +x "$SHARED_FN_PATH"
-        echo "Downloaded shared-functions.sh."
-    fi
+if wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
+    chmod +x "$SHARED_FN_PATH"
+    echo "Downloaded shared-functions.sh."
 else
     echo "Failed to download shared-functions.sh."
     if [ ! -f "$SHARED_FN_PATH" ]; then

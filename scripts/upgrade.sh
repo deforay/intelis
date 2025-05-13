@@ -10,29 +10,15 @@ if [ "$EUID" -ne 0 ]; then
     exit 1
 fi
 
-# Download and update shared-functions.sh only if needed
+# Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
 SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
-temp_shared_fn=$(mktemp)
-if wget -q -O "$temp_shared_fn" "$SHARED_FN_URL"; then
-    if [ -f "$SHARED_FN_PATH" ]; then
-        existing_checksum=$(md5sum "$SHARED_FN_PATH" | awk '{print $1}')
-        new_checksum=$(md5sum "$temp_shared_fn" | awk '{print $1}')
-        if [ "$existing_checksum" != "$new_checksum" ]; then
-            cp "$temp_shared_fn" "$SHARED_FN_PATH"
-            chmod +x "$SHARED_FN_PATH"
-            echo "Updated shared-functions.sh."
-        else
-            echo "shared-functions.sh is already up-to-date."
-        fi
-    else
-        mv "$temp_shared_fn" "$SHARED_FN_PATH"
-        chmod +x "$SHARED_FN_PATH"
-        echo "Downloaded shared-functions.sh."
-    fi
+if wget -q -O "$SHARED_FN_PATH" "$SHARED_FN_URL"; then
+    chmod +x "$SHARED_FN_PATH"
+    echo "Downloaded shared-functions.sh."
 else
     echo "Failed to download shared-functions.sh."
     if [ ! -f "$SHARED_FN_PATH" ]; then
@@ -43,6 +29,7 @@ fi
 
 # Source the shared functions
 source "$SHARED_FN_PATH"
+
 
 prepare_system
 
@@ -128,6 +115,7 @@ fi
 
 # Convert VLSM path to absolute path
 lis_path=$(to_absolute_path "$lis_path")
+
 print info "LIS path is set to ${lis_path}"
 log_action "LIS path is set to ${lis_path}"
 
@@ -140,13 +128,6 @@ fi
 
 # Restore the previous error trap
 eval "$current_trap"
-
-# # Check if LIS folder exists
-# if [ ! -d "${lis_path}" ]; then
-#     echo "LIS folder does not exist at ${lis_path}. Please first run the setup script."
-#     log_action "LIS folder does not exist at ${lis_path}. Please first run the setup script."
-#     exit 1
-# fi
 
 # Check for MySQL
 if ! command -v mysql &>/dev/null; then
@@ -262,7 +243,7 @@ php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
 
 # Download and install switch-php script
-wget https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php -O /usr/local/bin/switch-php
+download_file "/usr/local/bin/switch-php" "https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php"
 chmod u+x /usr/local/bin/switch-php
 
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
