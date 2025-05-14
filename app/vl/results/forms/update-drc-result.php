@@ -334,7 +334,7 @@ $storageInfo = $storageService->getLabStorage();
 										<td style="width: 15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label>
 										</td>
 										<td style="width: 35% !important;">
-											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>" style="width:100%;" />copies/ml
+											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" <?php echo $disable; ?> value="<?php echo $vlQueryInfo['last_viral_load_result']; ?>" style="width:100%;" />copies/mL
 										</td>
 										<td style="width: 15% !important;"><label for="">Date dernière charge virale (demande) </label></td>
 										<td style="width: 35% !important;">
@@ -538,7 +538,7 @@ $storageInfo = $storageService->getLabStorage();
 										<td class="vlLog"><label for="vlLog">Log </label>
 										</td>
 										<td class="vlLog">
-											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars((string) $vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/ml)
+											<input type="text" class="form-control forceNumeric other-failed-results" id="vlLog" name="vlLog" placeholder="Log" title="Please enter log" value="<?= htmlspecialchars((string) $vlQueryInfo['result_value_log']); ?>" <?php echo $labFieldDisabled; ?> oninput="calculateLogValue(this)" style="width:100%;" />&nbsp;(copies/mL)
 										</td>
 									</tr>
 									<?php if (count($reasonForFailure) > 0) { ?>

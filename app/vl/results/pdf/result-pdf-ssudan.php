@@ -325,13 +325,13 @@ if (!empty($result)) {
                $logValue = '';
           }
      }
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
      if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
      if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
+          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
@@ -385,7 +385,7 @@ if (!empty($result)) {
      //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date of Last VL Test&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
      //      $html .= '</tr>';
      //      $html .= '<tr>';
-     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
+     //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Result of previous viral load(copies/mL)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
      //      $html .= '</tr>';
      // }
      $html .= '<tr>';
@@ -515,11 +515,11 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table>';
      $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < 1000 copies/ml: Continue on current regimen</td>';
+     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> VL < 1000 copies/mL: Continue on current regimen</td>';
      $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL >= 1000 copies/ml:  Clinical and counselling action required</td>';
+     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 1000 copies/mL:  Clinical and counselling action required</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';

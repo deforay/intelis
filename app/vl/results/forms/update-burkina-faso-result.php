@@ -479,7 +479,7 @@ $disable = "disabled = 'disabled'";
                                              <div class="row">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group" style=" width: 100%; ">
-                                                            <label for="cd8Result"><?= _translate("Last HIV-1 Viral Load"); ?> <small>(copies/ml)</small></label>
+                                                            <label for="cd8Result"><?= _translate("Last HIV-1 Viral Load"); ?> <small>(copies/mL)</small></label>
                                                             <input type="text" class="form-control" name="cd8Result" id="cd8Result" <?php echo $disable; ?> placeholder="Enter CD4 count" title="Please enter HIV-1 Result" style="width:100%;margin-top:2px;" value="<?php echo $vlQueryInfo['last_cd8_result']; ?>">
                                                        </div>
                                                   </div>
@@ -626,7 +626,7 @@ $disable = "disabled = 'disabled'";
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6 vlResult">
-                                                                      <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/ml)"); ?> </label>
+                                                                      <label class="col-lg-5 control-label  labels" for="vlResult"><?= _translate("Viral Load Result (copies/mL)"); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)" disabled>
                                                                            <datalist id="possibleVlResults">

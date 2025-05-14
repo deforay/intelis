@@ -609,7 +609,7 @@ $disable = "disabled = 'disabled'";
 										</td>
 									</tr>
 									<tr>
-										<td class="labels"><label for="finalViralLoadResult">Final Viral Load Result (copies/ml)</label></td>
+										<td class="labels"><label for="finalViralLoadResult">Final Viral Load Result (copies/mL)</label></td>
 										<td class="resultInputContainer">
 											<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
 											<datalist id="finalPossibleVlResults"></datalist>

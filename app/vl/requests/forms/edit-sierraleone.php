@@ -905,7 +905,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 										<div class="row">
 										<?php } ?>
 										<div class="col-md-4 vlResult" style="margin-top: 10px;display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
-											<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
+											<label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/mL) </label>
 											<div class="col-lg-7 resultInputContainer">
 												<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 												<datalist id="possibleVlResults" title="Please enter viral load result">

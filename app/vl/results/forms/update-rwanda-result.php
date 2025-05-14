@@ -418,7 +418,7 @@ $disable = "disabled = 'disabled'";
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlValue; ?>" <?php echo $disable; ?> />
-													(copies/ml)<br>
+													(copies/mL)<br>
 													<input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_routine'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" <?php echo $disable; ?> title="Please check VL Result">
 													&lt; 20<br>
 													<input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_routine'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" <?php echo $disable; ?> title="Please check VL Result"> Target Not Detected
@@ -464,7 +464,7 @@ $disable = "disabled = 'disabled'";
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlValue; ?>" <?php echo $disable; ?> />
-													(copies/ml)<br>
+													(copies/mL)<br>
 													<input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" <?php echo $disable; ?> title="Please check VL Result">
 													< 20<br>
 														<input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" <?php echo $disable; ?> title="Please check VL Result"> Target Not
@@ -512,7 +512,7 @@ $disable = "disabled = 'disabled'";
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlValue; ?>" <?php echo $disable; ?> />
-													(copies/ml)<br>
+													(copies/mL)<br>
 													<input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == '<20') ? 'checked="checked"' : ''; ?> value="<20" <?php echo $disable; ?> title="Please check VL Result">
 													< 20<br>
 														<input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlCheckValue" <?php echo ($vlQueryInfo['last_vl_result_failure_ac'] == 'tnd') ? 'checked="checked"' : ''; ?> value="tnd" <?php echo $disable; ?> title="Please check VL Result"> Target Not
@@ -679,7 +679,7 @@ $disable = "disabled = 'disabled'";
 												</div>
 												<div class="col-md-4 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 													<label class="col-lg-5 control-label" for="vlResult">
-														Viral Load Result<span class="mandatory">*</span> (copies/ml) </label>
+														Viral Load Result<span class="mandatory">*</span> (copies/mL) </label>
 													<div class="col-lg-7 resultInputContainer">
 														<input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= $vlQueryInfo['result']; ?>" onchange="calculateLogValue(this)">
 														<datalist id="possibleVlResults">

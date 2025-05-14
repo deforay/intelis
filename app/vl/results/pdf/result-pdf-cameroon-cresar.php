@@ -255,7 +255,7 @@ if (!empty($result)) {
 
      $html .= '<tr><td></td></tr>';
      $html .= '<tr>';
-     $html .= '<td width="15%" style="line-height:15px;font-size:10px;text-align:left;">' . _translate('Result (copies/ml)') . ' : </td>';
+     $html .= '<td width="15%" style="line-height:15px;font-size:10px;text-align:left;">' . _translate('Result (copies/mL)') . ' : </td>';
      $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . htmlspecialchars((string) $result['result']) . '</td>';
      $html .= '<td width="12%" style="line-height:15px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : &nbsp;</td>';
      $html .= '<td width="10%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $logValue . '</td>';
@@ -265,7 +265,7 @@ if (!empty($result)) {
      $html .= '</tr>';
      $html .= '<tr><td width="100%" style="line-height:17px;font-size:10px;">';
      $html .= '<br>';
-     $html .= '<p>' . "N.B : Le test Abbott 0.6ml a une limite inférieure de quantification de 40 copies/ml et une limite supérieure de quantification de 10.000.000 copies/ml. Pour tout résultat entre ces limites, le nombre de copies par ml est signalé. Lorsque le virus est détecté au dessus ou en dessous des limites de quantification, ceci est signalé. Si le test est réussi et qu'aucun virus n'est détecté, le résultat est signalé comme cible non détectée. Pour qu'une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit d'au moins 0.5 Log10 soit une réduction ou une augmentation d'un facteur de 3 du nombre de copies/ml" . '</p>';
+     $html .= '<p>' . "N.B : Le test Abbott 0.6ml a une limite inférieure de quantification de 40 copies/mL et une limite supérieure de quantification de 10.000.000 copies/mL. Pour tout résultat entre ces limites, le nombre de copies par ml est signalé. Lorsque le virus est détecté au dessus ou en dessous des limites de quantification, ceci est signalé. Si le test est réussi et qu'aucun virus n'est détecté, le résultat est signalé comme cible non détectée. Pour qu'une variation de la charge virale soit significative, il faut que la différence entre deux mesures soit d'au moins 0.5 Log10 soit une réduction ou une augmentation d'un facteur de 3 du nombre de copies/mL" . '</p>';
      $html .= '<table border="0">';
      $html .= '<tr>';
      $html .= '<td width="20%" style="line-height:18px;font-size:10px;text-align:left;">' . _translate('Comment, if applicable') . ' : </td>';

@@ -382,7 +382,7 @@ $sFormat = '';
                                                                  <label for="rmTestingVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)<br>
+                                                                      (copies/mL)<br>
                                                                       <input type="checkbox" id="rmTestingVlCheckValuelt20" name="rmTestingVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
                                                                            <input type="checkbox" id="rmTestingVlCheckValueTnd" name="rmTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
@@ -412,7 +412,7 @@ $sFormat = '';
                                                                  <label for="suspendTreatmentVlValue" class="col-lg-3 control-label">Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)<br>
+                                                                      (copies/mL)<br>
                                                                       <input type="checkbox" id="suspendTreatmentVlCheckValuelt20" name="suspendTreatmentVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
                                                                            <input type="checkbox" id="suspendTreatmentVlCheckValueTnd" name="suspendTreatmentVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
@@ -442,7 +442,7 @@ $sFormat = '';
                                                                  <label for="repeatTestingVlValue" class="col-lg-3 control-label"> Result Value</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)<br>
+                                                                      (copies/mL)<br>
                                                                       <input type="checkbox" id="repeatTestingVlCheckValuelt20" name="repeatTestingVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
                                                                            <input type="checkbox" id="repeatTestingVlCheckValueTnd" name="repeatTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
@@ -473,7 +473,7 @@ $sFormat = '';
                                                                  <label for="confirmRecencyTestingVlValue" class="col-lg-3 control-label">VL Result</label>
                                                                  <div class="col-lg-7">
                                                                       <input type="text" class="form-control forceNumeric viralTestData" id="confirmRecencyTestingVlValue" name="confirmRecencyTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" />
-                                                                      (copies/ml)<br>
+                                                                      (copies/mL)<br>
                                                                       <input type="checkbox" id="confirmRecencyTestingVlCheckValuelt20" name="confirmRecencyTestingVlValue" value="<20" title="Please check VL Result">
                                                                       < 20<br>
                                                                            <input type="checkbox" id="confirmRecencyTestingVlCheckValueTnd" name="confirmRecencyTestingVlValue" value="tnd" title="Please check VL Result"> Target Not Detected
@@ -608,7 +608,7 @@ $sFormat = '';
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/ml) </label>
+                                                                      <label class="col-lg-5 control-label" for="vlResult">Viral Load Result (copies/mL) </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="Viral Load Result" title="Please enter viral load result" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <datalist id="possibleVlResults">

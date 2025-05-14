@@ -259,7 +259,7 @@ try {
 			$logValue = '<br/>&nbsp;&nbsp;' . _translate("Log Value") . '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logResult;
 		}
 
-		$html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Résultat(copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars((string) $result['result']) . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
+		$html .= '<tr style="background-color:#dbdbdb;"><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Résultat(copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp; ' . htmlspecialchars((string) $result['result']) . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
 		$html .= '<tr><td colspan="3"></td></tr>';
 		$html .= '</table>';
 		$html .= '</td>';
@@ -314,7 +314,7 @@ try {
 			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Date dernière charge virale (demande)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_date'] . '</span></td>';
 			$html .= '</tr>';
 			$html .= '<tr>';
-			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Resultats dernière charge virale(copies/ml)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
+			$html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">Resultats dernière charge virale(copies/mL)&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . $result['last_viral_load_result'] . '</span></td>';
 			$html .= '</tr>';
 			$html .= '<tr>';
 			$html .= '<td colspan="3" style="line-height:30px;border-bottom:2px solid #d3d3d3;"></td>';
@@ -364,11 +364,11 @@ try {
 		$html .= '<td colspan="3">';
 		$html .= '<table>';
 		$html .= '<tr>';
-		$html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < 1000 copies/ml: Continue on current regimen</td>';
+		$html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> VL < 1000 copies/mL: Continue on current regimen</td>';
 		$html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
 		$html .= '</tr>';
 		$html .= '<tr>';
-		$html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL >= 1000 copies/ml:  Clinical and counselling action required</td>';
+		$html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 1000 copies/mL:  Clinical and counselling action required</td>';
 		$html .= '</tr>';
 		$html .= '</table>';
 		$html .= '</td>';

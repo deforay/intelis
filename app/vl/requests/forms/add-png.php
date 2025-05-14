@@ -554,7 +554,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
 										</tr>
 										<tr>
 											<td class="labels"><label for="finalVlResult">Final Viral Load
-													Result(copies/ml)</label></td>
+													Result(copies/mL)</label></td>
 											<td class="resultInputContainer">
 												<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalVlResult" id="finalVlResult" placeholder="Viral Load Result" title="Enter VL Result" style="width:100%;">
 												<datalist id="finalPossibleVlResults">

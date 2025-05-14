@@ -538,7 +538,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="rmTestingVlValue" name="rmTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_routine']; ?>" <?php echo $disable; ?> />
-													(copies/ml)
+													(copies/mL)
 												</div>
 											</div>
 										</div>
@@ -578,7 +578,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="repeatTestingVlValue" name="repeatTestingVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure_ac']; ?>" <?php echo $disable; ?> />
-													(copies/ml)
+													(copies/mL)
 												</div>
 											</div>
 										</div>
@@ -617,7 +617,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 													Result</label>
 												<div class="col-lg-7">
 													<input type="text" class="form-control forceNumeric viralTestData" id="suspendTreatmentVlValue" name="suspendTreatmentVlValue" placeholder="Enter VL Result" title="Please enter VL Result" value="<?php echo $vlQueryInfo['last_vl_result_failure']; ?>" <?php echo $disable; ?> />
-													(copies/ml)
+													(copies/mL)
 												</div>
 											</div>
 										</div>
@@ -770,7 +770,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												<div class="row">
 													<div class="col-md-6 vlResult" style="display:<?php echo ($vlQueryInfo['is_sample_rejected'] == 'yes') ? 'none' : 'block'; ?>;">
 														<label class="col-lg-5 control-label" for="vlResult">Viral Load
-															Result (copies/ml) <span class="mandatory">*</span></label>
+															Result (copies/mL) <span class="mandatory">*</span></label>
 														<div class="col-lg-7 resultInputContainer">
 															<input list="possibleVlResults" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" value="<?= ($vlQueryInfo['result']); ?>" onchange="calculateLogValue(this)">
 															<datalist id="possibleVlResults">

@@ -591,7 +591,7 @@ foreach ($testReasonsResultDetails as $row) {
 
                                                             <div class="row">
                                                                  <div class="col-md-6 vlResult">
-                                                                      <label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/ml)'); ?> </label>
+                                                                      <label class="col-lg-5 control-label" for="vlResult"><?= _translate('Viral Load Result (copies/mL)'); ?> </label>
                                                                       <div class="col-lg-7 resultInputContainer">
                                                                            <input list="possibleVlResults" autocomplete="off" class="form-control" id="vlResult" name="vlResult" placeholder="<?= _translate('Viral Load Result'); ?>" title="<?= _translate('Please enter viral load result'); ?>" <?php echo $labFieldDisabled; ?> style="width:100%;" onchange="calculateLogValue(this)" disabled />
                                                                            <datalist id="possibleVlResults">

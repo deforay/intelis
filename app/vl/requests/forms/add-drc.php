@@ -352,7 +352,7 @@ $sFormat = '';
 										</td>
 										<td style="width:15% !important;"><label for="lastViralLoadResult">Résultat dernière charge virale </label></td>
 										<td style="width:35% !important;">
-											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" />copies/ml
+											<input type="text" class="form-control" id="lastViralLoadResult" name="lastViralLoadResult" placeholder="Résultat dernière charge virale" title="Please enter résultat dernière charge virale" />copies/mL
 										</td>
 									</tr>
 									<tr style="display:none;" class="newreasonForVLTesting">

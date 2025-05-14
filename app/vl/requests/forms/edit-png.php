@@ -709,7 +709,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 									</tr>
 									<tr>
 										<td class="labels"><label for="finalViralLoadResult">Final Viral Load
-												Result(copies/ml)</label></td>
+												Result(copies/mL)</label></td>
 										<td class="resultInputContainer">
 											<input list="finalPossibleVlResults" disabled="disabled" type="text" class="form-control" name="finalViralLoadResult" id="finalViralLoadResult" placeholder="Final VL Result" title="Enter VL Result" style="width:100%;" value="<?php echo $vlQueryInfo['result']; ?>">
 											<datalist id="finalPossibleVlResults"></datalist>

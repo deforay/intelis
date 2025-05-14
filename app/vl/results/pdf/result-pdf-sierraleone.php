@@ -328,7 +328,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:10px 2px 2px 2px;">';
 
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '</td><td >' . $smileyContent . '</td></tr>';
      if ($result['reason_for_sample_rejection'] != '') {
           $corrective = '';
           if ($result["recommended_corrective_action_name"] != "") {
@@ -338,7 +338,7 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
+          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';
@@ -477,11 +477,11 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table>';
      $html .= '<tr>';
-     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> = VL < 200 copies/ml: Good!! continue to liaise with your clinician for advice</td>';
+     $html .= '<td style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:10px;height:10px;"/> VL < 200 copies/mL: Good!! continue to liaise with your clinician for advice</td>';
      $html .= '<td style="font-size:10px;text-align:left;">Printed on : ' . $printDate . '&nbsp;' . '</td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> = VL >= 200 copies/ml: Engage your clinician for clinical care</td>';
+     $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:60%;"><img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:10px;height:10px;"/> VL >= 200 copies/mL: Engage your clinician for clinical care</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';

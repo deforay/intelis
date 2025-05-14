@@ -536,7 +536,7 @@ if (!empty($requestResult)) {
           }
           if (str_contains(strtolower((string)$result['vl_test_platform']), 'abbott')) {
                $html .= '<tr>';
-               $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/ml - 10 million copies/ml</td>';
+               $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
                $html .= '</tr>';
           }
           //$html .= '<tr><td colspan="3"></td></tr>';

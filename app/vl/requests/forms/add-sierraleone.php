@@ -767,7 +767,7 @@ $sFormat = '';
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-4 vlResult">
-                                                                 <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/ml) </label>
+                                                                 <label class="col-lg-5 control-label  labels" for="vlResult">Viral Load Result (copies/mL) </label>
                                                                  <div class="col-lg-7 resultInputContainer">
                                                                       <input list="possibleVlResults" autocomplete="off" class="form-control result-fields labSection" id="vlResult" name="vlResult" placeholder="Select or Type VL Result" title="Please enter viral load result" onchange="calculateLogValue(this)" disabled>
                                                                       <datalist id="possibleVlResults">

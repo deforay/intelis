@@ -416,7 +416,7 @@ if (!empty($result)) {
                $logValue = '';
           }
      }
-     $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/ml)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);
+     $vlFinalResult = '&nbsp;&nbsp;' . _translate("Viral Load Result") . ' (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']);
      $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">' . $vlFinalResult . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
@@ -507,13 +507,12 @@ if (!empty($result)) {
      $bottomHtml .= '<td colspan="3">';
      $bottomHtml .= '<table>';
      $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> VL < 1000 copies/mL: ' . _translate("Continue on current regimen") . '</td>';
      $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '<tr>';
      $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
-                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL >= 1000 copies/ml: ' .
-          _translate("Clinical and counselling action required") .
+                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> VL >= 1000 copies/mL: ' . _translate("Clinical and counselling action required") .
           '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '</table>';
