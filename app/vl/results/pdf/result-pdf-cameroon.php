@@ -507,12 +507,12 @@ if (!empty($result)) {
      $bottomHtml .= '<td colspan="3">';
      $bottomHtml .= '<table>';
      $bottomHtml .= '<tr>';
-     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
+     $bottomHtml .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
      $bottomHtml .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
      $bottomHtml .= '</tr>';
      $bottomHtml .= '<tr>';
      $bottomHtml .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
-                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
+                              <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL >= 1000 copies/ml: ' .
           _translate("Clinical and counselling action required") .
           '</td>';
      $bottomHtml .= '</tr>';
@@ -576,54 +576,6 @@ if (!empty($result)) {
      $html .= '<td colspan="3" style="line-height:1px;"></td>';
      $html .= '</tr>';
      $html .= '</table>';
-
-     //$html .= '<br><br><br><br><br><br><br><br>';
-
-     // $html .= '<table>';
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="font-size:10px;text-align:left;">';
-     // $html .= '<u><strong>NB</strong></u> : ' . _translate("For a variation in Viral Load to be significant, the difference between two measurements must be at least 0.5 Log<sub>10</sub> or a reduction or increase of a factor of 3 in the number of copies/mL") . ' </td>';
-     // $html .= '</tr>';
-
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     // $html .= '</tr>';
-
-
-     // $html .= '<tr><td colspan="3" style="font-size:11px;text-align:left;color:#808080;">(*)&nbsp;';
-     // $html .= '<u><strong>' . _translate("Detection Limit (DL)") . '</strong></u> : ' . _translate("&lt; 40 (1.60 Log<sub>10</sub>) copies/mL  for Plasma and 839 (2.92 Log<sub>10</sub>) copies/mL for DBS");
-     // $html .= '<br> &nbsp;&nbsp;&nbsp;&nbsp;';
-     // $html .= '<u><strong>' . _translate("Quantification Limits (QL)") . '</strong></u> : ' .  _translate("Between 40 and 10,000000 (1.60 and 7.0 Log<sub>10</sub>) copies/mL for Plasma and 839 and 10,000000 (2.92 and 7.0 Log<sub>10</sub>) copies/mL for DBS");
-     // $html .= '</td></tr>';
-
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     // $html .= '</tr>';
-
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3" style="line-height:2px;font-size:2em;border-bottom:2px solid #d3d3d3;padding-"><br><br></td>';
-     // $html .= '</tr>';
-     // // $html .= '<tr>';
-     // // $html .= '<td colspan="3" style="line-height:2px;"></td>';
-     // // $html .= '</tr>';
-     // $html .= '<tr>';
-     // $html .= '<td colspan="3">';
-     // $html .= '<table>';
-     // $html .= '<tr>';
-     // $html .= '<td style="font-size:10px;text-align:left;width:75%;"><img src="/assets/img/smiley_smile.png" alt="smile_face" style="width:8px;height:8px;"/> = VL < = 1000 copies/ml: ' . _translate("Continue on current regimen") . '</td>';
-     // $html .= '<td style="font-size:10px;text-align:left;">' . _translate("Printed on") . ' : ' . $printDate . '&nbsp;&nbsp;' . '</td>';
-     // $html .= '</tr>';
-     // $html .= '<tr>';
-     // $html .= '<td colspan="2" style="font-size:10px;text-align:left;width:75%;">
-     //                <img src="/assets/img/smiley_frown.png" alt="frown_face" style="width:8px;height:8px;"/> = VL > 1000 copies/ml: ' .
-     //      _translate("Clinical and counselling action required") .
-     //      '</td>';
-     // $html .= '</tr>';
-     // $html .= '</table>';
-     // $html .= '</td>';
-     // $html .= '</tr>';
-     // $html .= '</table>';
-
 
      if ($result['result'] != '' || (empty($result['result']) && $result['result_status'] == SAMPLE_STATUS\REJECTED)) {
 
