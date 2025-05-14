@@ -393,14 +393,14 @@ try {
                 }
 
                 $testedByUserId = null;
+                $tester = $result['tested_by'];
                 // if ^ exists it means the Operator Name has both tester and releaser name
                 if (str_contains(strtolower((string)$result['tested_by']), '^')) {
                     $operatorArray = explode("^", (string) $result['tested_by']);
                     $tester = $operatorArray[0];
-                    $testedByUserId = $usersService->getOrCreateUser($tester);
-                } else {
-                    $testedByUserId = $usersService->getOrCreateUser($result['tested_by']);
                 }
+
+                $testedByUserId = $usersService->getOrCreateUser($tester);
 
                 $data = [
                     'lab_id' => $labId,

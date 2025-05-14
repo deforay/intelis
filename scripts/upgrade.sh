@@ -828,6 +828,24 @@ restart_service apache
 print success "Apache Restarted."
 log_action "Apache Restarted."
 
+# cron job
+chmod +x ${lis_path}/cron.sh
+
+cron_job="* * * * * cd ${lis_path} && ./cron.sh"
+
+# Check if the cron job already exists
+if ! crontab -l | grep -qF "${cron_job}"; then
+    print info  "Adding cron job for LIS..."
+    log_action "Adding cron job for LIS..."
+    (
+        crontab -l
+        echo "${cron_job}"
+    ) | crontab -
+else
+    print info "Cron job for LIS already exists. Skipping."
+    log_action "Cron job for LIS already exists. Skipping."
+fi
+
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh

@@ -60,15 +60,17 @@ if (!empty($result)) {
 
 
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
-
+     if (!empty($result['testedBySignature'])) {
+          $testedBySignaturePath =  MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+     }
      if (!empty($result['reviewedBySignature'])) {
-          $reviewedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['reviewedBySignature'];
+          $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['approvedBySignature'])) {
-          $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
      if (!empty($result['revisedBySignature'])) {
-          $revisedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['revisedBySignature'];
+          $revisedBySignaturePath =  MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
      $_SESSION['aliasPage'] = $page;
@@ -373,7 +375,7 @@ if (!empty($result)) {
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:8px;"></td>';
      // $html .= '</tr>';
-     if ($result['is_sample_rejected'] == 'no') {
+     if (empty($result['is_sample_rejected']) || $result['is_sample_rejected'] === 'no') {
           if (!empty($testedBy) && !empty($result['sample_tested_datetime'])) {
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">TESTED BY</td>';

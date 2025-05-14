@@ -60,18 +60,20 @@ if (!empty($result)) {
           $result['result_reviewed_datetime'] = $result['sample_tested_datetime'];
      }
 
+
      $revisedBySignaturePath = $reviewedBySignaturePath = $testedBySignaturePath = $approvedBySignaturePath = null;
-     if (!empty($testedByRes['user_signature'])) {
-          $testedBySignaturePath = $testedByRes['user_signature'];
+
+     if (!empty($result['testedBySignature'])) {
+          $testedBySignaturePath =  MiscUtility::getFullImagePath($result['testedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
-     if (!empty($reviewedByRes['user_signature'])) {
-          $reviewedBySignaturePath = $reviewedByRes['user_signature'];
+     if (!empty($result['reviewedBySignature'])) {
+          $reviewedBySignaturePath =  MiscUtility::getFullImagePath($result['reviewedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
-     if (!empty($revisedByRes['user_signature'])) {
-          $revisedBySignaturePath = $revisedByRes['user_signature'];
+     if (!empty($result['approvedBySignature'])) {
+          $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
-     if (!empty($approvedByRes['user_signature'])) {
-          $approvedBySignaturePath =  $approvedByRes['user_signature'];
+     if (!empty($result['revisedBySignature'])) {
+          $revisedBySignaturePath =  MiscUtility::getFullImagePath($result['revisedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
      }
 
      $_SESSION['aliasPage'] = $page;

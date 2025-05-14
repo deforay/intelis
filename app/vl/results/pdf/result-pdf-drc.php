@@ -128,7 +128,7 @@ try {
 		$approvedBySignaturePath = null;
 
 		if (!empty($result['approvedBySignature'])) {
-			$approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+			$approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
 		}
 
 		$smileyContent = '';

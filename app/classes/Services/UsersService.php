@@ -173,9 +173,11 @@ final class UsersService
 
                 // Process the signature from user info if it exists
                 if (!empty($userInfo['user_signature'])) {
-                    $result['user_signature'] = UPLOAD_PATH . DIRECTORY_SEPARATOR .
-                        "users-signature" . DIRECTORY_SEPARATOR .
-                        $userInfo['user_signature'];
+
+                    $result['user_signature'] = MiscUtility::getFullImagePath(
+                        $userInfo['user_signature'],
+                        UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR
+                    );
                 }
             }
         }

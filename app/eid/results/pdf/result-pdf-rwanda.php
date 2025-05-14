@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
 use App\Helpers\ResultPDFHelpers\EIDResultPDFHelper;
@@ -121,7 +122,7 @@ if (!empty($result)) {
     $approvedBySignaturePath= null;
 
     if (!empty($result['approvedBySignature'])) {
-        $approvedBySignaturePath =  UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature" . DIRECTORY_SEPARATOR . $result['approvedBySignature'];
+        $approvedBySignaturePath =  MiscUtility::getFullImagePath($result['approvedBySignature'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
     }
     $vlResult = '';
     $smileyContent = '';

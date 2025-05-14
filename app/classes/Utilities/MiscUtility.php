@@ -132,7 +132,7 @@ final class MiscUtility
         }
 
         // Additional context
-        $output = "[{".DateUtility::getCurrentDateTime(). "}]:::DUMP:::$output";
+        $output = "[{" . DateUtility::getCurrentDateTime() . "}]:::DUMP:::$output";
 
         LoggerUtility::logInfo($output);
     }
@@ -918,5 +918,22 @@ final class MiscUtility
         }
 
         return $input;
+    }
+
+    public static function getFullImagePath(string $imageName, string $basePath): ?string
+    {
+        if (empty($imageName)) {
+            return null;
+        }
+
+        // Normalize slashes for comparison
+        $normalizedImageName = str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $imageName);
+        $normalizedBasePath = rtrim(str_replace(['/', '\\'], DIRECTORY_SEPARATOR, $basePath), DIRECTORY_SEPARATOR);
+
+        if (str_starts_with($normalizedImageName, $normalizedBasePath)) {
+            return $normalizedImageName;
+        }
+
+        return $normalizedBasePath . DIRECTORY_SEPARATOR . $imageName;
     }
 }
