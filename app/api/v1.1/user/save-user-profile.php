@@ -1,9 +1,9 @@
 <?php
 
-use App\Utilities\JsonUtility;
 use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -83,7 +83,11 @@ try {
         if (!$apiKey) {
             throw new SystemException(_translate("Please check your request parameters."));
         }
-        $userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
+        //$userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
+        $userId = $post['userId'] ?? null;
+        if (MiscUtility::isBase64($userId)) {
+            $userId = base64_decode($userId);
+        }
     } else {
         $userId = !empty($post['userId']) ? $db->escape($post['userId']) : null;
     }

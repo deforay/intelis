@@ -226,9 +226,11 @@ final class UsersService
     {
         $uQuery = "SELECT `user_id`
                     FROM $this->table
-                    WHERE LOWER(`user_name`) = LOWER(?)
-                        OR (JSON_VALID(interface_user_name)
-                        AND JSON_SEARCH(interface_user_name COLLATE utf8mb4_general_ci, 'one', ?) IS NOT NULL)";
+                    WHERE user_name = ?
+                    OR (JSON_VALID(interface_user_name)
+                            AND JSON_CONTAINS(interface_user_name, JSON_QUOTE(?), '$')
+                        )";
+
 
         $result = $this->db->rawQueryOne($uQuery, [$name, $name]);
         if ($result == null) {
