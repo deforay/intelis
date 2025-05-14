@@ -31,7 +31,7 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
 
      $output = [];
 
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's Name", "Patient ART Number", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient's Name", "Patient ART Number", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL");
      if ($general->isStandaloneInstance()) {
           $headings = MiscUtility::removeMatchingElements($headings, ['Remote Sample ID']);
      }

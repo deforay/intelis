@@ -1,9 +1,9 @@
 <?php
 
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Services\GeoLocationsService;
 
 $title = _translate("Export Data");
@@ -157,20 +157,15 @@ if ($formId == COUNTRY\CAMEROON) {
 								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
-									<?php echo _translate("Viral Load"); ?> &nbsp;:
+									<?php echo _translate("Viral Load Suppression"); ?> &nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
+								<select class="form-control" id="vLoad" name="vLoad" title="Please select Viral Load Suppression" style="width:220px;">
 									<option value="">
-										<?php echo _translate("-- Select --"); ?>
+										<?= _translate("-- Select --"); ?>
 									</option>
-									<option value="suppressed">
-										<= <?php echo $arr['viral_load_threshold_limit']; ?> <?php echo _translate("cp/ml"); ?> </option>
-									<option value="not suppressed">
-										>
-										<?php echo $arr['viral_load_threshold_limit']; ?>
-										<?php echo _translate("cp/ml"); ?>
-									</option>
+									<option value="suppressed"><?= _translate("Suppressed"); ?></option>
+									<option value="not suppressed"><?= _translate("Not Suppressed"); ?></option>
 								</select>
 							</td>
 

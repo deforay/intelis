@@ -141,7 +141,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="default_time_zone" class="col-lg-4 control-label"><?php echo _translate("Default Time Zone"); ?> </label>
@@ -177,7 +177,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="header" class="col-lg-4 control-label"><?php echo _translate("Header"); ?> </label>
@@ -221,7 +221,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="edit_profile" class="col-lg-4 control-label"><?php echo _translate("Allow users to Edit Profile"); ?> </label>
@@ -244,7 +244,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="barcode_format" class="col-lg-4 control-label"><?php echo _translate("Barcode Format"); ?></label>
@@ -285,11 +285,11 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="barcodeFormat">
 									<div class="col-md-6">
 										<div class="form-group contentDiv">
-											
+
 										</div>
 									</div>
 								</div>
@@ -299,14 +299,14 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group">
 											<label for="import_non_matching_sample" class="col-lg-4 control-label"><?php echo _translate("Allow Samples not matching the System Sample IDs while importing results manually"); ?></label>
 											<div class="col-lg-8">
-												
+
 												<input class="readPage" type="radio" id="import_non_matching_sample_yes" name="import_non_matching_sample" value="yes" <?php echo ($arr['import_non_matching_sample'] == 'yes') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("Yes"); ?>&nbsp;&nbsp;
 												<input class="readPage" type="radio" id="import_non_matching_sample_no" name="import_non_matching_sample" value="no" <?php echo ($arr['import_non_matching_sample'] == 'no') ? 'checked' : ''; ?>>&nbsp;&nbsp;<?php echo _translate("No"); ?>
-												
+
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Support Email"); ?></label>
@@ -315,9 +315,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									
+
 								</div>
-								
+
 								<div class="row">
 									<div class="col-md-6" style="text-align:center;">
 										<code><?php echo _translate("While importing results from CSV/Excel file, should we import results of Sample IDs that do not match the Sample IDs present in System database"); ?></code>
@@ -347,7 +347,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 								</div>
 								<div class="row">
-								
+
 									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Default Phone Prefix"); ?></label>
@@ -356,7 +356,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-							
+
 									<div class="col-md-6" style="height:38px;">
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Minimum Length of Phone Number"); ?></label>
@@ -365,7 +365,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 								</div>
 								<div class="row">
 									<div class="col-md-6" style="height:38px;">
@@ -385,8 +385,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
-									
+
+
 								</div>
 								<div class="row">
 									<div class="col-md-6" style="height:38px;">
@@ -428,7 +428,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 												<div class="col-lg-10">
 													<div class="input-group" style="max-width:200px;">
 														<input type="text" class="form-control readPage forceNumeric isNumeric isRequired" id="viral_load_threshold_limit" name="viral_load_threshold_limit" placeholder="<?php echo _translate('Viral Load Threshold Limit'); ?>" title="<?php echo _translate('Please enter VL threshold limit'); ?>" value="<?php echo $arr['viral_load_threshold_limit']; ?>" />
-														<span class="input-group-addon"><?php echo _translate("cp/ml"); ?></span>
+														<span class="input-group-addon"><?php echo _translate("cp/mL"); ?></span>
 													</div>
 
 												</div>
@@ -538,8 +538,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 											<?php } ?>
 										</div>
-								
-										
+
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
@@ -566,7 +566,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
@@ -595,7 +595,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 									<?php } ?>
 									</div>
-									
+
 								</div>
 							</div>
 						<?php }
@@ -674,7 +674,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 									<?php } ?>
 									</div>
-									
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
@@ -826,7 +826,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-									
+
 								</div>
 							</div>
 						<?php }
@@ -906,7 +906,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 									<?php } ?>
 									</div>
-									
+
 
 									<div class="row">
 										<div class="col-md-6">
@@ -1028,7 +1028,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 								</div>
 							</div>
 						<?php }
@@ -1203,7 +1203,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 									<?php } ?>
 									</div>
-									
+
 										<div class="row">
 										<?php
 											if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
@@ -1230,7 +1230,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 											</div>
 										</div>
-									
+
 								</div>
 							</div>
 						<?php } ?>
@@ -1286,7 +1286,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="vl_display_log_result" class="col-lg-4 control-label"><?php echo _translate("Display VL Log Result"); ?> </label>
@@ -1306,7 +1306,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 									</div>
-								
+
 									<div class="col-md-6">
 										<div class="form-group">
 											<label for="l_vl_msg" class="col-lg-4 control-label"><?php echo _translate("Low Viral Load Message"); ?> </label>
@@ -1359,7 +1359,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	$(document).ready(function() {
 
 		showBarcodeFormatMessage($("#bar_code_printing").val());
-		
+
 		$(".select2").select2();
 
 		var editSet = '<?php if (isset($_GET['e'])) {

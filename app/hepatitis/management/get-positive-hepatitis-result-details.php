@@ -19,8 +19,6 @@ $key = (string) $general->getGlobalConfig('key');
 $tableName = "form_hepatitis";
 $primaryKey = "hepatitis_id";
 
-$thresholdLimit = $general->getGlobalConfig('viral_load_threshold_limit');
-
 $sampleCode = 'sample_code';
 $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];
 $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.hcv_vl_count', 'vl.hbv_vl_count'];

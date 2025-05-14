@@ -27,9 +27,9 @@ if (isset($_SESSION['highViralResult']) && trim((string) $_SESSION['highViralRes
      $rResult = $db->rawQuery($_SESSION['highViralResult']);
 
      $output = [];
-     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+     $headings = array('Sample ID', 'Remote Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL");
      if ($general->isStandaloneInstance()) {
-          $headings = array('Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/ml");
+          $headings = array('Sample ID', "Facility Name", "Patient ART Number", "Patient's Name", "Patient Phone Number", "Sample Collection Date", "Sample Tested Date", "Lab Name", "VL Result in cp/mL");
      }
      if (isset($_POST['patientInfo']) && $_POST['patientInfo'] != 'yes') {
           $headings = MiscUtility::removeMatchingElements($headings, ["Patient's Name"]);

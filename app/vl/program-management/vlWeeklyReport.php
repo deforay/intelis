@@ -132,45 +132,45 @@ $facilityResult = $db->rawQuery($facilityQuery);
                           <tr>
                             <th scope="row">
                               <?php echo _translate("<= 15 y"); ?> &amp;
-                              <?php echo _translate("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
                               <?php echo _translate("<= 15 y"); ?> &amp;
-                              <?php echo _translate(">1000 cp/ml"); ?>
+                              <?php echo _translate(">1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
                               <?php echo _translate("> 15 y"); ?> &amp;
-                              <?php echo _translate("Male <=1000 cp/ml"); ?>
+                              <?php echo _translate("Male <=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
                               <?php echo _translate("> 15 y"); ?> &amp;
-                              <?php echo _translate("Male >1000 cp/ml"); ?>
+                              <?php echo _translate("Male >1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
                               <?php echo _translate("> 15 y"); ?> &amp;
-                              <?php echo _translate("Female <=1000 cp/ml"); ?>
+                              <?php echo _translate("Female <=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
                               <?php echo _translate("> 15 y"); ?> &amp;
-                              <?php echo _translate("Female >1000 cp/ml"); ?>
+                              <?php echo _translate("Female >1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate(">1000 cp/ml"); ?>
+                              <?php echo _translate(">1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate("Unknown Age/Sex <=1000 cp/ml"); ?>
+                              <?php echo _translate("Unknown Age/Sex <=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate("Unknown Age/Sex >1000 cp/ml"); ?>
+                              <?php echo _translate("Unknown Age/Sex >1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate("<=1000 cp/ml"); ?>
+                              <?php echo _translate("<=1000 cp/mL"); ?>
                             </th>
                             <th scope="row">
-                              <?php echo _translate(">1000 cp/ml"); ?>
+                              <?php echo _translate(">1000 cp/mL"); ?>
                             </th>
                           </tr>
                         </thead>
@@ -238,34 +238,34 @@ $facilityResult = $db->rawQuery($facilityQuery);
                               <?php echo _translate("Total Female"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Pregnant <=1000 cp/ml"); ?>
+                              <?php echo _translate("Pregnant <=1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Pregnant >1000 cp/ml"); ?>
+                              <?php echo _translate("Pregnant >1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Breastfeeding <=1000 cp/ml"); ?>
+                              <?php echo _translate("Breastfeeding <=1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Breastfeeding >1000 cp/ml"); ?>
+                              <?php echo _translate("Breastfeeding >1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age > 15 <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age > 15 <=1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age > 15 >1000 cp/ml"); ?>
+                              <?php echo _translate("Age > 15 >1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age Unknown <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age Unknown <=1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age Unknown >1000 cp/ml"); ?>
+                              <?php echo _translate("Age Unknown >1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age <=15 <=1000 cp/ml"); ?>
+                              <?php echo _translate("Age <=15 <=1000 cp/mL"); ?>
                             </th>
                             <th scope="col">
-                              <?php echo _translate("Age <=15>1000 cp/ml"); ?>
+                              <?php echo _translate("Age <=15>1000 cp/mL"); ?>
                             </th>
                           </tr>
                         </thead>

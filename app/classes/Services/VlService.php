@@ -52,6 +52,16 @@ final class VlService extends AbstractTestService
     protected int $suppressionLimit = 1000;
     public string $testType = 'vl';
 
+    public function getSuppressionLimit(): int
+    {
+        return MemoUtility::remember(function () {
+            $suppressionLimit = $this->commonService->getGlobalConfig('viral_load_threshold_limit');
+            if (!empty($suppressionLimit) && is_numeric($suppressionLimit)) {
+                return (int) $suppressionLimit;
+            }
+            return $this->suppressionLimit;
+        });
+    }
 
     /**
      * Preprocesses viral load input by removing patterns and units
@@ -190,9 +200,9 @@ final class VlService extends AbstractTestService
                     }
                 }
 
-                if ($interpretedResult < $this->suppressionLimit) {
+                if ($interpretedResult < $this->getSuppressionLimit()) {
                     $vlResultCategory = 'suppressed';
-                } elseif ($interpretedResult >= $this->suppressionLimit) {
+                } elseif ($interpretedResult >= $this->getSuppressionLimit()) {
                     $vlResultCategory = 'not suppressed';
                 }
             }

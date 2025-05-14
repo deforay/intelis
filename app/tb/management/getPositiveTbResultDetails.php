@@ -26,9 +26,6 @@ try {
     $tableName = "form_tb";
     $primaryKey = "tb_id";
     $key = (string) $general->getGlobalConfig('key');
-
-    $thresholdLimit = $general->getGlobalConfig('viral_load_threshold_limit');
-
     $sampleCode = 'sample_code';
     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_name', 'vl.patient_id', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'vl.result'];
     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'f.facility_name', 'vl.patient_id', 'vl.patient_name', 'vl.sample_collection_date', 'vl.sample_tested_datetime', 'fd.facility_name', 'vl.result'];
@@ -104,9 +101,7 @@ try {
         LEFT JOIN r_tb_results as rtbr ON rtbr.result_id = vl.result
         LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
-    if (isset($thresholdLimit) && !empty($thresholdLimit)) {
-        $sWhere[] =  " vl.result_status=7 AND vl.result > " . $thresholdLimit;
-    }
+
     $start_date = '';
     $end_date = '';
 

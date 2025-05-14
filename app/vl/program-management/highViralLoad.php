@@ -345,7 +345,7 @@ $state = $geolocationService->getProvinces("yes");
 															<?php echo _translate("Viral Load Lab"); ?>
 														</th>
 														<th>
-															<?php echo _translate("Viral Load (cp/ml)"); ?>
+															<?php echo _translate("Viral Load (cp/mL)"); ?>
 														</th>
 														<th scope="row">
 															<?php echo _translate("Status"); ?>

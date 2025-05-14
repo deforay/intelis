@@ -183,24 +183,19 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
 							<td><strong>
-									<?php echo _translate("Viral Load"); ?> &nbsp;:
+									<?php echo _translate("Viral Load Suppression"); ?> &nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="vLoad" name="vLoad" title="Please select batch code" style="width:220px;">
+								<select class="form-control" id="vLoad" name="vLoad" title="Please select VL Suppression" style="width:220px;">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>
-									<option value="suppressed">
-										<= <?php echo $globalConfig['viral_load_threshold_limit']; ?> <?php echo _translate("cp/ml"); ?> </option>
-									<option value="not suppressed">
-										>
-										<?php echo $globalConfig['viral_load_threshold_limit']; ?>
-										<?php echo _translate("cp/ml"); ?>
-									</option>
+									<option value="suppressed"><?= _translate("Suppressed"); ?></option>
+									<option value="not suppressed"><?= _translate("Not Suppressed"); ?></option>
 								</select>
 							</td>
 							<td><strong>
-									<?php echo _translate("Last Print Date"); ?>&nbsp;:
+									<?php echo _translate("Print Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
 								<input type="text" id="printDate" name="printDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Print Date'); ?>" readonly style="width:220px;background:#fff;" />

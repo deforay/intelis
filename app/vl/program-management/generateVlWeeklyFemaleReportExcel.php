@@ -20,7 +20,7 @@ if (isset($_SESSION['vlStatisticsFemaleQuery']) && trim((string) $_SESSION['vlSt
     $output = [];
     $sheet = $excel->getActiveSheet();
 
-    $headings = array("Province/State", "District/County", "Site Name", "Total Female", "Pregnant <=1000 cp/ml", "Pregnant >1000 cp/ml", "Breastfeeding <=1000 cp/ml", "Breastfeeding >1000 cp/ml", "Age > 15 <=1000 cp/ml", "Age > 15 >1000 cp/ml", "Age Unknown <=1000 cp/ml", "Age Unknown >1000 cp/ml", "Age <=15 <=1000 cp/ml", "Age <=15 >1000 cp/ml");
+    $headings = array("Province/State", "District/County", "Site Name", "Total Female", "Pregnant <=1000 cp/mL", "Pregnant >1000 cp/mL", "Breastfeeding <=1000 cp/mL", "Breastfeeding >1000 cp/mL", "Age > 15 <=1000 cp/mL", "Age > 15 >1000 cp/mL", "Age Unknown <=1000 cp/mL", "Age Unknown >1000 cp/mL", "Age <=15 <=1000 cp/mL", "Age <=15 >1000 cp/mL");
 
     $colNo = 1;
 
