@@ -164,6 +164,7 @@ if (!empty($result)) {
      $result['sample_received_at_lab_datetime'] = DateUtility::humanReadableDateFormat($result['sample_received_at_lab_datetime'] ?? '', true);
 
      $result['result_printed_datetime'] = DateUtility::humanReadableDateFormat($result['result_printed_datetime'] ?? DateUtility::getCurrentDateTime(), true);
+     $result['patient_dob'] = DateUtility::humanReadableDateFormat($result['patient_dob'] ?? '');
 
      if (isset($result['last_viral_load_date']) && trim((string) $result['last_viral_load_date']) != '' && $result['last_viral_load_date'] != '0000-00-00') {
           $result['last_viral_load_date'] = date('d/M/Y', strtotime((string) $result['last_viral_load_date']));
@@ -221,28 +222,19 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:4px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PATIENT NAME</td>';
+
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">UNIQUE ART (TRACNET) NO.</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REASON FOR VL TESTING</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">DATE OF BIRTH</td>';
      $html .= '</tr>';
      $html .= '<tr>';
 
-     $patientFname = $result['patient_first_name'] ?? '';
 
-
-     if (!empty($result['is_encrypted']) && $result['is_encrypted'] == 'yes') {
-          $key = (string) $general->getGlobalConfig('key');
-          $result['patient_art_no'] = $general->crypto('decrypt', $result['patient_art_no'], $key);
-          if ($patientFname != '') {
-               $patientFname = $general->crypto('decrypt', $patientFname, $key);
-          }
-     }
-
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($patientFname) . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['patient_art_no'] . '</td>';
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords($result['test_reason_name']) . '</td>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['patient_dob'] ?? '-') .  '</td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -252,8 +244,8 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">AGE</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
+
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
      if ($result['patient_gender'] == 'female') {
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BREAST FEEDING</td>';
           $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">PREGNANCY STATUS</td>';
@@ -261,9 +253,10 @@ if (!empty($result)) {
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
           $html .= '<td style="line-height:11px;font-size:11px;text-align:left;"></td>';
      }
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $age . '</td>';
+
      $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
      if ($result['patient_gender'] == 'female') {
           if (!empty($result['is_patient_breastfeeding'])) {
@@ -280,29 +273,21 @@ if (!empty($result)) {
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
           $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"></td>';
      }
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      $html .= '</tr>';
 
      $html .= '<tr>';
-     $html .= '<td colspan="2" style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUSTING FACILITY PHONE</td>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUSTING FACILITY EMAIL</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING CLINICIAN NAME</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING FACILITY PHONE</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">REQUESTING FACILITY EMAIL</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      $html .= '</tr>';
      $html .= '<tr>';
-     if (!empty($result['request_clinician_name'])) {
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_name'] . '</td>';
-     } else {
-          $html .= '<td colspan="2" style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
-     }
-     if (!empty($result['request_clinician_phone_number'])) {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['request_clinician_phone_number'] . '</td>';
-     } else {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
-     }
-     if (!empty($result['facility_emails'])) {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['facility_emails'] . '</td>';
-     } else {
-          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"> - </td>';
-     }
+
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_name'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['request_clinician_phone_number'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . ($result['facility_emails'] ?? '-') . '</td>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
      $html .= '</tr>';
      $html .= '</table>';
      $html .= '</td>';

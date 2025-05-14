@@ -410,13 +410,13 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
                                                   <label class="col-lg-5" for="gender"><?= _translate("Sex"); ?></label>
                                                   <div class="col-lg-5">
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderMale" name="gender" value="male" title="<?php echo _translate('Please check gender'); ?>"><?= _translate("Male"); ?>
+                                                            <input type="radio" class="" id="genderMale" name="gender" value="male" title="<?php echo _translate('Please choose sex'); ?>"><?= _translate("Male"); ?>
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?php echo _translate('Please check gender'); ?>"><?= _translate("Female"); ?>
+                                                            <input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?php echo _translate('Please choose sex'); ?>"><?= _translate("Female"); ?>
                                                        </label>
                                                        <label class="radio-inline" style="margin-left:0px;">
-                                                            <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="<?php echo _translate('Please check gender'); ?>"><?= _translate("Unreported"); ?>
+                                                            <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="<?php echo _translate('Please choose sex'); ?>"><?= _translate("Unreported"); ?>
                                                        </label>
                                                   </div>
                                              </div>

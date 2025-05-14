@@ -347,14 +347,14 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 									<div class="form-group">
 										<label for="gender"><?= _translate("Sex"); ?></label><br>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
+											<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please choose sex" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
 											Male
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
+											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please choose sex" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
+											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please choose sex" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>Unreported
 										</label>
 									</div>
 								</div>

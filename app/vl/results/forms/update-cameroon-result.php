@@ -375,11 +375,11 @@ foreach ($testReasonsResultDetails as $row) {
 									<div class="form-group">
 										<label for="gender"><?= _translate('Sex'); ?></label><br>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate('Please check gender'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
+											<input type="radio" class="" id="genderMale" name="gender" value="male" title="<?= _translate('Please choose sex'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
 											<?= _translate('Male'); ?>
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
-											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate('Please check gender'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> <?= _translate('Female'); ?>
+											<input type="radio" class="" id="genderFemale" name="gender" value="female" title="<?= _translate('Please choose sex'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> <?= _translate('Female'); ?>
 										</label>
 										<label class="radio-inline" style="margin-left:0px;">
 											<input type="radio" id="genderUnreported" name="gender" value="unreported" title="<?= _translate('Please select sex'); ?>" <?php echo $disable; ?> <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>><?= _translate('Unreported'); ?>

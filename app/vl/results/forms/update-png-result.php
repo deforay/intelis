@@ -267,13 +267,13 @@ $disable = "disabled = 'disabled'";
 									<td colspan="2" class="labels">
 										<label for="gender"><?= _translate("Sex"); ?> &nbsp;&nbsp;</label>
 										<label class="radio-inline">
-											<input type="radio" class="" id="genderMale" name="gender" value="male" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
+											<input type="radio" class="" id="genderMale" name="gender" value="male" <?php echo $disable; ?> title="Please choose sex" <?php echo ($vlQueryInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>> Male
 										</label>
 										<label class="radio-inline">
-											<input type="radio" class="" id="genderFemale" name="gender" value="female" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
+											<input type="radio" class="" id="genderFemale" name="gender" value="female" <?php echo $disable; ?> title="Please choose sex" <?php echo ($vlQueryInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>> Female
 										</label>
 										<label class="radio-inline">
-											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" <?php echo $disable; ?> title="Please check gender" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>> Unreported
+											<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" <?php echo $disable; ?> title="Please choose sex" <?php echo ($vlQueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>> Unreported
 										</label>
 									</td>
 								</tr>

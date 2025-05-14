@@ -196,7 +196,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 										<td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="patientAge" name="patientAge" placeholder="Patient Age (in years)" title="Patient Age" style="width:100%;" onchange="" /></td>
 										<th scope="row"><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
 										<td>
-											<select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
+											<select class="form-control isRequired" name="patientGender" id="patientGender" title="Please choose sex">
 												<option value=''> -- Select -- </option>
 												<option value='male'> Male </option>
 												<option value='female'> Female </option>

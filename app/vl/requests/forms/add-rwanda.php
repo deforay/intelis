@@ -229,7 +229,7 @@ $sFormat = '';
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please select sex">Female
                                                        </label>&nbsp;&nbsp;
                                                        <!--<label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please check gender">Not Recorded
+                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="not_recorded" title="Please choose sex">Not Recorded
                                                   </label>-->
                                                   </div>
                                              </div>

@@ -243,7 +243,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     <tr>
                                         <th scope="row"><label for="patientGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span> </label></th>
                                         <td>
-                                            <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?= _translate('Please select the gender'); ?>">
+                                            <select class="form-control isRequired" name="patientGender" id="patientGender" title="<?= _translate('Please choose sex'); ?>">
                                                 <option value=''> <?= _translate("-- Select --"); ?> </option>
                                                 <option value='male'> <?= _translate("Male"); ?> </option>
                                                 <option value='female'> <?= _translate("Female"); ?> </option>

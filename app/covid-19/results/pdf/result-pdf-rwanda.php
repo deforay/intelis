@@ -239,7 +239,7 @@ if (!empty($requestResult)) {
         $html .= '<table style="padding:8px 2px 2px 2px;">';
         $html .= '<tr>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">BIRTH DATE/AGE</td>';
-        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">GENDER</td>';
+        $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">SEX</td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
         $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;"></td>';
         $html .= '</tr>';

@@ -72,7 +72,7 @@ if (!empty($id)) {
         $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
 
         $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
-        $oldPrintData[] = $newPrintData; 
+        $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
         $db->update('package_details', array(
             'manifest_print_history' => json_encode($oldPrintData)
@@ -207,7 +207,7 @@ if (!empty($id)) {
                         <td  style="font-size:11px;width:15%;"><strong>PATIENT</strong></td>
                         <td  style="font-size:11px;width:5%;"><strong>AGE</strong></td>
                         <td  style="font-size:11px;width:8%;"><strong>DATE OF BIRTH</strong></td>
-                        <td  style="font-size:11px;width:8%;"><strong>GENDER</strong></td>
+                        <td  style="font-size:11px;width:8%;"><strong>SEX</strong></td>
                         <td  style="font-size:11px;width:8%;"><strong>SPECIMEN TYPE</strong></td>
                         <td  style="font-size:11px;width:8%;"><strong>COLLECTION DATE</strong></td>
                         <td  style="font-size:11px;width:20%;"><strong>SAMPLE BARCODE</strong></td>

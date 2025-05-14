@@ -236,7 +236,7 @@ if (!empty($result)) {
      $html .= '<td colspan="3">';
      $html .= '<table style="padding:8px 2px 2px 2px;">';
      $html .= '<tr>';
-     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("GENDER") . '</td>';
+     $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SEX") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("WEIGHT(kg)") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DISPLACED POPULATION") . '</td>';
      $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("COMMUNITY ACTOR") . '</td>';

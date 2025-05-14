@@ -307,7 +307,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <input type="radio" id="genderFemale" name="gender" value="female" title="Please select sex" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : ""; ?>>Female
                                                   </label>&nbsp;&nbsp;
                                                  <!-- <label class="radio-inline" style="margin-left:0px;">
-                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please check gender" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : ""; ?>>Unreported
+                                                       <input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please choose sex" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : ""; ?>>Unreported
                                                   </label>-->
                                              </div>
                                         </div>

@@ -593,15 +593,15 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 										<label class="col-lg-5" for="gender">Sex</label>
 										<div class="col-lg-7">
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
+												<input type="radio" class="" id="genderMale" name="gender" value="male" title="Please choose sex" <?php echo ($genericResultInfo['patient_gender'] == 'male') ? "checked='checked'" : "" ?>>
 												Male
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>>
+												<input type="radio" class="" id="genderFemale" name="gender" value="female" title="Please choose sex" <?php echo ($genericResultInfo['patient_gender'] == 'female') ? "checked='checked'" : "" ?>>
 												Female
 											</label>
 											<label class="radio-inline" style="margin-left:0px;">
-												<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please check gender" <?php echo ($genericResultInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>
+												<input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please choose sex" <?php echo ($genericResultInfo['patient_gender'] == 'unreported') ? "checked='checked'" : "" ?>>
 												Unreported
 											</label>
 										</div>

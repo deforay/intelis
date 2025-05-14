@@ -244,7 +244,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                     <td><input type="number" max="150" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " value="<?php echo $covid19Info['patient_age']; ?>" id="patientAge" name="patientAge" placeholder="Age (in years)" title="Please enter Age (in years)" style="width:100%;" /></td>
                                     <th scope="row"><label for="patientGender">Sex <span class="mandatory">*</span> </label></th>
                                     <td>
-                                        <select class="form-control isRequired" name="patientGender" id="patientGender" title="Please select the gender">
+                                        <select class="form-control isRequired" name="patientGender" id="patientGender" title="Please choose sex">
                                             <option value=''> -- Select -- </option>
                                             <option value='male' <?php echo ($covid19Info['patient_gender'] == 'male') ? "selected='selected'" : ""; ?>> Male </option>
                                             <option value='female' <?php echo ($covid19Info['patient_gender'] == 'female') ? "selected='selected'" : ""; ?>> Female </option>

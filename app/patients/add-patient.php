@@ -132,13 +132,13 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                                         <label for="gender" class="col-lg-4 control-label"><?= _translate('Sex'); ?><span class="mandatory">*</span></label>
                                         <div class="col-lg-7">
                                             <label class="radio-inline control-label" style="margin-left:0px;">
-                                                <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please check gender">Male
+                                                <input type="radio" class="isRequired" id="genderMale" name="gender" value="male" title="Please choose sex">Male
                                             </label>
                                             <label class="radio-inline control-label" style="margin-left:0px;">
-                                                <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please check gender">Female
+                                                <input type="radio" class="isRequired" id="genderFemale" name="gender" value="female" title="Please choose sex">Female
                                             </label>
                                             <label class="radio-inline control-label" style="margin-left:0px;">
-                                                <input type="radio" class="isRequired" id="genderUnreported" name="gender" value="unreported" title="Please check gender">Unreported
+                                                <input type="radio" class="isRequired" id="genderUnreported" name="gender" value="unreported" title="Please choose sex">Unreported
                                             </label>
                                         </div>
                                     </div>
