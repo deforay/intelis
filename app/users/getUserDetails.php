@@ -94,12 +94,12 @@ $rResult = $db->rawQuery($sQuery);
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
     "iTotalDisplayRecords" => $iFilteredTotal,
     "aaData" => []
-);
+];
 
 
 
@@ -110,11 +110,11 @@ foreach ($rResult as $aRow) {
         $aRow['user_name'] = $aRow['user_name'] . "<br><small>[" . $interfaceUsers . "]</small>";
     }
     $row = [];
-    $row[] = ($aRow['user_name']);
-    $row[] = ($aRow['login_id']);
+    $row[] = $aRow['user_name'];
+    $row[] = $aRow['login_id'];
     $row[] = $aRow['email'];
-    $row[] = ($aRow['role_name']);
-    $row[] = ($aRow['status']);
+    $row[] = $aRow['role_name'];
+    $row[] = $aRow['status'];
     if (_isAllowed("/users/editUser.php")) {
         $row[] = '<a href="editUser.php?id=' . base64_encode((string) $aRow['user_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
     }
