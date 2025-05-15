@@ -1,4 +1,9 @@
 -- Viral Load
+
+DROP TRIGGER IF EXISTS form_vl_data__ai;
+DROP TRIGGER IF EXISTS form_vl_data__au;
+DROP TRIGGER IF EXISTS form_vl_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_vl`;
 CREATE TABLE `audit_form_vl` LIKE `form_vl`;
 
@@ -13,10 +18,6 @@ ALTER TABLE `audit_form_vl`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`vl_sample_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_vl_data__ai;
-DROP TRIGGER IF EXISTS form_vl_data__au;
-DROP TRIGGER IF EXISTS form_vl_data__bd;
 
 CREATE TRIGGER form_vl_data__ai AFTER INSERT ON `form_vl`
 FOR EACH ROW
@@ -38,6 +39,12 @@ FOR EACH ROW
     WHERE `vl_sample_id` = OLD.vl_sample_id;
 
 -- EID
+
+
+DROP TRIGGER IF EXISTS form_eid_data__ai;
+DROP TRIGGER IF EXISTS form_eid_data__au;
+DROP TRIGGER IF EXISTS form_eid_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_eid`;
 CREATE TABLE `audit_form_eid` LIKE `form_eid`;
 
@@ -52,10 +59,6 @@ ALTER TABLE `audit_form_eid`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`eid_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_eid_data__ai;
-DROP TRIGGER IF EXISTS form_eid_data__au;
-DROP TRIGGER IF EXISTS form_eid_data__bd;
 
 CREATE TRIGGER form_eid_data__ai AFTER INSERT ON `form_eid`
 FOR EACH ROW
@@ -77,6 +80,12 @@ FOR EACH ROW
     WHERE `eid_id` = OLD.eid_id;
 
 -- Covid-19
+
+
+DROP TRIGGER IF EXISTS form_covid19_data__ai;
+DROP TRIGGER IF EXISTS form_covid19_data__au;
+DROP TRIGGER IF EXISTS form_covid19_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_covid19`;
 CREATE TABLE `audit_form_covid19` LIKE `form_covid19`;
 
@@ -91,10 +100,6 @@ ALTER TABLE `audit_form_covid19`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`covid19_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_covid19_data__ai;
-DROP TRIGGER IF EXISTS form_covid19_data__au;
-DROP TRIGGER IF EXISTS form_covid19_data__bd;
 
 CREATE TRIGGER form_covid19_data__ai AFTER INSERT ON `form_covid19`
 FOR EACH ROW
@@ -116,6 +121,10 @@ FOR EACH ROW
     WHERE `covid19_id` = OLD.covid19_id;
 
 -- Hepatitis
+DROP TRIGGER IF EXISTS form_hepatitis_data__ai;
+DROP TRIGGER IF EXISTS form_hepatitis_data__au;
+DROP TRIGGER IF EXISTS form_hepatitis_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_hepatitis`;
 CREATE TABLE `audit_form_hepatitis` LIKE `form_hepatitis`;
 
@@ -130,10 +139,6 @@ ALTER TABLE `audit_form_hepatitis`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`hepatitis_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_hepatitis_data__ai;
-DROP TRIGGER IF EXISTS form_hepatitis_data__au;
-DROP TRIGGER IF EXISTS form_hepatitis_data__bd;
 
 CREATE TRIGGER form_hepatitis_data__ai AFTER INSERT ON `form_hepatitis`
 FOR EACH ROW
@@ -155,6 +160,10 @@ FOR EACH ROW
     WHERE `hepatitis_id` = OLD.hepatitis_id;
 
 -- TB
+DROP TRIGGER IF EXISTS form_tb_data__ai;
+DROP TRIGGER IF EXISTS form_tb_data__au;
+DROP TRIGGER IF EXISTS form_tb_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_tb`;
 CREATE TABLE `audit_form_tb` LIKE `form_tb`;
 
@@ -170,9 +179,6 @@ ALTER TABLE `audit_form_tb`
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`tb_id`, `revision`);
 
-DROP TRIGGER IF EXISTS form_tb_data__ai;
-DROP TRIGGER IF EXISTS form_tb_data__au;
-DROP TRIGGER IF EXISTS form_tb_data__bd;
 
 CREATE TRIGGER form_tb_data__ai AFTER INSERT ON `form_tb`
 FOR EACH ROW
@@ -194,6 +200,11 @@ FOR EACH ROW
     WHERE `tb_id` = OLD.tb_id;
 
 -- Generic Tests
+
+DROP TRIGGER IF EXISTS form_generic_data__ai;
+DROP TRIGGER IF EXISTS form_generic_data__au;
+DROP TRIGGER IF EXISTS form_generic_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_generic`;
 CREATE TABLE `audit_form_generic` LIKE `form_generic`;
 
@@ -208,10 +219,6 @@ ALTER TABLE `audit_form_generic`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`sample_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_generic_data__ai;
-DROP TRIGGER IF EXISTS form_generic_data__au;
-DROP TRIGGER IF EXISTS form_generic_data__bd;
 
 CREATE TRIGGER form_generic_data__ai AFTER INSERT ON `form_generic`
 FOR EACH ROW
@@ -233,6 +240,10 @@ FOR EACH ROW
     WHERE `sample_id` = OLD.sample_id;
 
 -- CD4 Tests
+DROP TRIGGER IF EXISTS form_cd4_data__ai;
+DROP TRIGGER IF EXISTS form_cd4_data__au;
+DROP TRIGGER IF EXISTS form_cd4_data__bd;
+
 DROP TABLE IF EXISTS `audit_form_cd4`;
 CREATE TABLE `audit_form_cd4` LIKE `form_cd4`;
 
@@ -247,10 +258,6 @@ ALTER TABLE `audit_form_cd4`
     ADD `revision` INT(6) NOT NULL AFTER `action`,
     ADD `dt_datetime` DATETIME NOT NULL AFTER `revision`,
     ADD PRIMARY KEY (`cd4_id`, `revision`);
-
-DROP TRIGGER IF EXISTS form_cd4_data__ai;
-DROP TRIGGER IF EXISTS form_cd4_data__au;
-DROP TRIGGER IF EXISTS form_cd4_data__bd;
 
 CREATE TRIGGER form_cd4_data__ai AFTER INSERT ON `form_cd4`
 FOR EACH ROW

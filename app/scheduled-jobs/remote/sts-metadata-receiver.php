@@ -29,6 +29,7 @@ if ($cliMode) {
     if (isset($options['t']) || isset($options['truncate'])) {
         $truncateFlag = true;
     }
+    echo "Preparing to sync data..." . PHP_EOL;
 }
 
 ini_set('memory_limit', -1);
@@ -72,12 +73,12 @@ if (empty($remoteURL) || $remoteURL == '') {
     exit(0);
 }
 
+$labId = $general->getSystemConfig('sc_testing_lab_id');
+
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
     LoggerUtility::log('error', "No network connectivity while trying remote sync.");
     return false;
 }
-
-$labId = $general->getSystemConfig('sc_testing_lab_id');
 
 $version = VERSION;
 
@@ -428,6 +429,10 @@ try {
 
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
+        if ($cliMode) {
+            echo "Received data from STS" . PHP_EOL;
+        }
+
         $options = [
             'decoder' => new ExtJsonDecoder(true)
         ];
@@ -436,11 +441,13 @@ try {
 
         foreach ($parsedData as $dataType => $dataValues) {
 
-            if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] == '') {
+            if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] == '' || empty($dataValues)) {
                 continue;
             }
 
             try {
+
+                $db->beginTransaction();
                 // Truncate table if truncate flag is set and table can be truncated
                 if ($cliMode && $truncateFlag && $dataToSync[$dataType]['canTruncate'] !== false) {
                     $db->rawQuery("TRUNCATE TABLE {$dataToSync[$dataType]['tableName']}");
@@ -546,13 +553,18 @@ try {
                         }
                     }
                 }
+                $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::log('error', $db->getLastError());
                 LoggerUtility::log('error', $db->getLastQuery());
                 LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage(), [
                     'trace' => $e->getTraceAsString()
                 ]);
                 continue;
+            }
+            if ($cliMode) {
+                echo "Completed for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
             }
         }
     }
@@ -561,6 +573,9 @@ try {
         'trace' => $e->getTraceAsString()
     ]);
 } finally {
+    if ($cliMode) {
+        echo "Finishing Metadata Sync" . PHP_EOL;
+    }
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
     // unset global config cache so that it can be reloaded with new values
     // this is set in CommonService::getGlobalConfig()

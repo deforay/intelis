@@ -828,22 +828,32 @@ restart_service apache
 print success "Apache Restarted."
 log_action "Apache Restarted."
 
+
 # cron job
 chmod +x "${lis_path}/cron.sh"
 
 cron_job="* * * * * cd ${lis_path} && ./cron.sh"
 
-# Clean out any existing (commented or active) version of the cron job from root's crontab
-existing_root_crontab=$(sudo crontab -l 2>/dev/null | grep -v -E "^\s*#?\s*\*\s\*\s\*\s\*\s\*\s+cd\s+${lis_path//\//\\/}\s+&&\s+\./cron\.sh")
+# Load current root crontab
+current_crontab=$(sudo crontab -l 2>/dev/null)
 
-# Add the correct cron job to root's crontab
-{
-    echo "$existing_root_crontab"
-    echo "$cron_job"
-} | sudo crontab -
+# If active, do nothing
+if echo "$current_crontab" | grep -Fxq "$cron_job"; then
+    print info "Cron job for LIS already active. Skipping."
+    log_action "Cron job for LIS already active. Skipped."
+else
+    # Remove any commented version or similar-looking line
+    updated_crontab=$(echo "$current_crontab" | grep -vE "^\s*#?\s*\*\s\*\s\*\s\*\s\*\s+cd\s+${lis_path//\//\\/}\s+&&\s+\./cron\.sh")
 
-print success "Cron job for LIS added/replaced in root's crontab."
-log_action "Cron job for LIS added/replaced in root's crontab."
+    # Append the correct cron job
+    {
+        echo "$updated_crontab"
+        echo "$cron_job"
+    } | sudo crontab -
+
+    print success "Cron job for LIS added/replaced in root's crontab."
+    log_action "Cron job for LIS added/replaced in root's crontab."
+fi
 
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh

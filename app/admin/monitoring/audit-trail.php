@@ -4,7 +4,6 @@
 use GuzzleHttp\Client;
 use App\Services\TestsService;
 use App\Services\UsersService;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;

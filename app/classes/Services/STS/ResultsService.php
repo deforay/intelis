@@ -57,7 +57,9 @@ final class ResultsService
             $this->primaryKeyName,
             'sample_package_id',
             'sample_package_code',
-            'request_created_by'
+            'request_created_by',
+            'result_printed_on_sts_datetime',
+            'result_printed_datetime'
         ];
 
         // Create an array with all column names set to null
