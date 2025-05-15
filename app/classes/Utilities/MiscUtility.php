@@ -936,4 +936,14 @@ final class MiscUtility
 
         return $normalizedBasePath . DIRECTORY_SEPARATOR . $imageName;
     }
+
+    public static function isAssociativeArrayEqual(array $a, array $b, array $excludeKeys = []): bool
+    {
+        foreach ($excludeKeys as $key) {
+            unset($a[$key], $b[$key]);
+        }
+        ksort($a);
+        ksort($b);
+        return $a == $b;
+    }
 }
