@@ -32,11 +32,16 @@ try {
         $resultColumn = "cd4_result";
     }
 
+    $resultChangeColumn = " vl.reason_for_changing";
+    if ($testType == "vl" || $testType == "cd4") {
+        $resultChangeColumn = " vl.reason_for_result_changes";
+    }
+
     $table = TestsService::getTestTableName($testType);
     $testName = TestsService::getTestName($testType);
 
 
-    $rejectionTable = "r_" . $testType . "_sample_rejection_reasons";
+    $rejectionTable = "r_{$testType}_sample_rejection_reasons";
     /*
     * Array of database columns which should be read and sent back to DataTables. Use a space where
     * you want to insert a non-database field (for example a counter or static image)
@@ -111,12 +116,6 @@ try {
     LEFT JOIN instruments as ins ON ins.instrument_id=ct.instrument_id";
     } else {
         $joinCond = " LEFT JOIN instruments as ins ON ins.instrument_id=vl.instrument_id";
-    }
-
-    if ($testType == "vl" || $testType == "cd4") {
-        $resultChangeColumn = " vl.reason_for_result_changes";
-    } else {
-        $resultChangeColumn = " vl.reason_for_changing";
     }
 
     /*

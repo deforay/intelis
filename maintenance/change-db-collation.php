@@ -21,13 +21,15 @@ use App\Registries\ContainerRegistry;
 
 $dbName = SYSTEM_CONFIG['database']['db'];
 $interfaceDbConfig = null;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+
 if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacing']['enabled'] !== false) {
     $db->addConnection('interface', SYSTEM_CONFIG['interfacing']['database']);
     $interfaceDbConfig = SYSTEM_CONFIG['interfacing']['database'] ?? null;
 }
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
 
 /**
  * Converts a table and its text-based columns to utf8mb4 character set.

@@ -86,7 +86,7 @@ try {
             $resizeObj->resizeToWidth(250);
             $resizeObj->save($signatureImagePath);
 
-            $data['user_signature'] = $signatureImage;
+            $data['user_signature'] = basename($signatureImagePath);
         } else {
             $signatureImagePath = isset($userInfo['user_signature']) ? $signatureImagePath . DIRECTORY_SEPARATOR . $userInfo['user_signature'] :  null;
         }

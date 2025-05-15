@@ -222,8 +222,6 @@ PHP;
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'last_db_query' => $db->getLastQuery() ?? null,
-        'last_db_error' => $db->getLastError() ?? null,
         'trace' => $e->getTraceAsString(),
     ]);
 }

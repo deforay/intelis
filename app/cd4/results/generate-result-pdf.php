@@ -106,9 +106,7 @@ $fileArray = array(
 	COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
 );
 
-$randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
-
-$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
 
 $resultFilename = '';

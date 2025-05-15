@@ -2,6 +2,7 @@
 
 use App\Registries\ContainerRegistry;
 use App\Services\FacilitiesService;
+use App\Services\CommonService;
 
 $title = _translate("CD4 | Sample Rejection Report");
 
@@ -14,6 +15,8 @@ require_once APPLICATION_PATH . '/header.php';
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 $healthFacilites = $facilitiesService->getHealthFacilities('cd4');
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");

@@ -20,6 +20,7 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
+$arr = $general->getGlobalConfig();
 
 $pages = [];
 $page = 1;

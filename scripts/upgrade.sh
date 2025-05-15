@@ -829,22 +829,21 @@ print success "Apache Restarted."
 log_action "Apache Restarted."
 
 # cron job
-chmod +x ${lis_path}/cron.sh
+chmod +x "${lis_path}/cron.sh"
 
 cron_job="* * * * * cd ${lis_path} && ./cron.sh"
 
-# Check if the cron job already exists
-if ! crontab -l | grep -qF "${cron_job}"; then
-    print info  "Adding cron job for LIS..."
-    log_action "Adding cron job for LIS..."
-    (
-        crontab -l
-        echo "${cron_job}"
-    ) | crontab -
-else
-    print info "Cron job for LIS already exists. Skipping."
-    log_action "Cron job for LIS already exists. Skipping."
-fi
+# Clean out any existing (commented or active) version of the cron job from root's crontab
+existing_root_crontab=$(sudo crontab -l 2>/dev/null | grep -v -E "^\s*#?\s*\*\s\*\s\*\s\*\s\*\s+cd\s+${lis_path//\//\\/}\s+&&\s+\./cron\.sh")
+
+# Add the correct cron job to root's crontab
+{
+    echo "$existing_root_crontab"
+    echo "$cron_job"
+} | sudo crontab -
+
+print success "Cron job for LIS added/replaced in root's crontab."
+log_action "Cron job for LIS added/replaced in root's crontab."
 
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh

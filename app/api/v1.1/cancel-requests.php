@@ -54,7 +54,7 @@ $user = $usersService->getUserByToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
-$serviceClass = TestsService::getTestServiceClass($testType);
+$serviceClass = TestsService::getTestServiceClass($input['testType']);
 
 /** @var AbstractTestService $testTypeService */
 $testTypeService = ContainerRegistry::get($serviceClass);

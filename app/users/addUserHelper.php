@@ -70,7 +70,7 @@ try {
             $resizeObj->resizeToWidth(250);
             $resizeObj->save($signatureImagePath);
 
-            $data['user_signature'] = $signatureImage;
+            $data['user_signature'] = basename($signatureImagePath);
         }
 
         if (!empty($_POST['authToken'])) {

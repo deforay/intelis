@@ -17,6 +17,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $title = _translate("Export Data");
 
 require_once APPLICATION_PATH . '/header.php';
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

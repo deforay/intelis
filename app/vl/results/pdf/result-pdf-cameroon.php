@@ -586,7 +586,7 @@ if (!empty($result)) {
                $margin_bottom = 10; // Adjust based on the height of your footer
                $bottom_content_height = 50; // Adjust based on your content's estimated height
                $start_y = $page_height - $bottom_content_height - $margin_bottom;
-               $pdf->writeHTMLCell(0, 0, '', $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
+               $pdf->writeHTMLCell(0, 0, null, $start_y, $bottomHtml, 0, 1, 0, true, 'L', true);
           }
 
           $pdf->lastPage();

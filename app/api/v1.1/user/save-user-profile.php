@@ -143,7 +143,7 @@ try {
         $resizeObj->resizeToWidth(250);
         $resizeObj->save($signatureImagePath);
 
-        $data['user_signature'] = $imageName;
+        $data['user_signature'] = basename($signatureImagePath);
     }
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);

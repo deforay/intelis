@@ -120,9 +120,7 @@ $fileArray = [
 	COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
 ];
 
-$randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
-
-$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
 
 $resultFilename = '';

@@ -99,7 +99,7 @@ $requestResult = $db->query($searchQuery);
 
 $currentDateTime = DateUtility::getCurrentDateTime();
 
-$fileArray = array(
+$fileArray = [
     COUNTRY\SOUTH_SUDAN => 'pdf/result-pdf-ssudan.php',
     COUNTRY\SIERRA_LEONE => 'pdf/result-pdf-sierraleone.php',
     COUNTRY\DRC => 'pdf/result-pdf-drc.php',
@@ -108,11 +108,9 @@ $fileArray = array(
     COUNTRY\WHO => 'pdf/result-pdf-who.php',
     COUNTRY\RWANDA => 'pdf/result-pdf-rwanda.php',
     COUNTRY\BURKINA_FASO => 'pdf/result-pdf-burkina-faso.php'
-);
+];
 
-$randomFolderName = time() . '-' . MiscUtility::generateRandomString(6);
-
-$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  $randomFolderName;
+$pathFront = TEMP_PATH . DIRECTORY_SEPARATOR .  time() . '-' . MiscUtility::generateRandomString(6);
 MiscUtility::makeDirectory($pathFront);
 
 $pages = [];
@@ -121,11 +119,11 @@ $_SESSION['aliasPage'] = $page;
 
 foreach ($requestResult as $result) {
     if (($general->isLISInstance()) && empty($result['result_printed_on_lis_datetime'])) {
-        $pData = array('result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+        $pData = ['result_printed_on_lis_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
     } elseif (($general->isSTSInstance()) && empty($result['result_printed_on_sts_datetime'])) {
-        $pData = array('result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime);
+        $pData = ['result_printed_on_sts_datetime' => $currentDateTime, 'result_printed_datetime' => $currentDateTime];
         $db->where('eid_id', $result['eid_id']);
         $id = $db->update('form_eid', $pData);
     }
@@ -135,9 +133,9 @@ foreach ($requestResult as $result) {
         $selectedReportFormats = json_decode((string) $result['reportFormat'], true);
     }
     if (!empty($selectedReportFormats) && !empty($selectedReportFormats['eid']) && file_exists(__DIR__ . DIRECTORY_SEPARATOR . $selectedReportFormats['eid'])) {
-        require($selectedReportFormats['eid']);
+        require $selectedReportFormats['eid'];
     } else {
-        require($fileArray[$arr['vl_form']]);
+        require $fileArray[$arr['vl_form']];
     }
 }
 if (!empty($pages)) {

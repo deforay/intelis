@@ -225,7 +225,7 @@ try {
         'transactionId' => $transactionId,
         'data' => $rowData ?? []
     ];
-} catch (Throwable $exc) {
+} catch (Throwable $e) {
     $payload = [
         'status' => 'failed',
         'timestamp' => time(),
@@ -235,11 +235,11 @@ try {
     ];
 
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
-    LoggerUtility::logError($exc->getMessage(), [
-        'file' => $exc->getFile(),
-        'line' => $exc->getLine(),
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
         'requestUrl' => $requestUrl,
-        'stacktrace' => $exc->getTraceAsString()
+        'stacktrace' => $e->getTraceAsString()
     ]);
 }
 $payload = JsonUtility::encodeUtf8Json($payload);

@@ -2,6 +2,7 @@
 
 use App\Services\VlService;
 use App\Services\UsersService;
+use App\Services\DatabaseService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -13,6 +14,10 @@ use App\Registries\ContainerRegistry;
 $title = _translate("Enter VL Result");
 
 require_once APPLICATION_PATH . '/header.php';
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 /** @var FacilitiesService $facilitiesService */
