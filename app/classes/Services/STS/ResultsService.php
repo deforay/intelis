@@ -86,7 +86,7 @@ final class ResultsService
 
             $counter = 0;
             foreach ($resultData as $key => $resultRow) {
-
+                $id = false;
                 $counter++;
                 if ($testType == "covid19" || $testType == "generic-tests") {
                     $sampleData = $resultRow['form_data'] ?? [];
@@ -111,10 +111,6 @@ final class ResultsService
                 //data_sync = 1 means data sync done. data_sync = 0 means sync is not yet done.
                 $resultFromLab['data_sync'] = 1;
                 $resultFromLab['last_modified_datetime'] = DateUtility::getCurrentDateTime();
-
-                if ($resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                    $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $unwantedColumns);
-                }
 
                 if ($resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED) {
                     $keysToRemove = [
