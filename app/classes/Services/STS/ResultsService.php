@@ -88,14 +88,23 @@ final class ResultsService
             foreach ($resultData as $key => $resultRow) {
 
                 $counter++;
+                if ($testType == "covid19" || $testType == "generic-tests") {
+                    $sampleData = $resultRow['form_data'] ?? [];
+                } else {
+                    $sampleData = $resultRow ?? [];
+                }
 
-                $resultRow = MiscUtility::arrayEmptyStringsToNull($resultRow);
-                // Overwrite the values in $emptyLabArray with the values in $resultRow
-                $resultFromLab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
+                if (empty($sampleData)) {
+                    continue;
+                }
 
-                if (isset($resultRow['approved_by_name']) && !empty($resultRow['approved_by_name'])) {
+                $sampleData = MiscUtility::arrayEmptyStringsToNull($sampleData);
+                // Overwrite the values in $emptyLabArray with the values in $sampleData
+                $resultFromLab = MiscUtility::updateFromArray($emptyLabArray, $sampleData);
 
-                    $resultFromLab['result_approved_by'] = $this->usersService->getOrCreateUser($resultRow['approved_by_name']);
+                if (isset($sampleData['approved_by_name']) && !empty($sampleData['approved_by_name'])) {
+
+                    $resultFromLab['result_approved_by'] = $this->usersService->getOrCreateUser($sampleData['approved_by_name']);
                     //$resultFromLab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
                 }
 
@@ -107,31 +116,13 @@ final class ResultsService
                     $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $unwantedColumns);
                 }
 
-                if ($testType == "covid19" || $testType == "generic-tests") {
-                    $formData = $resultRow['form_data'] ?? [];
-                    if (empty($formData)) {
-                        continue;
-                    }
-
-                    // Overwrite the values in $emptyLabArray with the values in $formData
-                    $resultFromLab = MiscUtility::updateFromArray($emptyLabArray, $formData);
-
-                    if (isset($resultFromLab['approved_by_name']) && $resultFromLab['approved_by_name'] != '') {
-
-                        $resultFromLab['result_approved_by'] = $this->usersService->getOrCreateUser($resultFromLab['approved_by_name']);
-                        //$resultFromLab['result_approved_datetime'] ??= DateUtility::getCurrentDateTime();
-                        // we dont need this now
-                        //unset($lab['approved_by_name']);
-                    }
-
-                    if ($resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED) {
-                        $keysToRemove = [
-                            'result',
-                            'is_sample_rejected',
-                            'reason_for_sample_rejection'
-                        ];
-                        $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $keysToRemove);
-                    }
+                if ($resultFromLab['result_status'] != SAMPLE_STATUS\ACCEPTED && $resultFromLab['result_status'] != SAMPLE_STATUS\REJECTED) {
+                    $keysToRemove = [
+                        'result',
+                        'is_sample_rejected',
+                        'reason_for_sample_rejection'
+                    ];
+                    $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $keysToRemove);
                 }
 
                 $localDbRecord = $this->runQuery($resultFromLab);
@@ -141,7 +132,7 @@ final class ResultsService
 
                 if (!empty($localDbRecord)) {
 
-                    if (MiscUtility::isAssociativeArrayEqual($resultFromLab, $localDbRecord, ['last_modified_datetime'])) {
+                    if (MiscUtility::isAssociativeArrayEqual($resultFromLab, $localDbRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $primaryKeyValue = $localDbRecord[$this->primaryKeyName];
                         continue;
                     }
