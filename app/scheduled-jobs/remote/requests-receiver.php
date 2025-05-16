@@ -281,6 +281,7 @@ try {
                         'result_status',
                         'data_sync',
                         'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                         'vl_result_category'
                     ];
 
@@ -436,6 +437,7 @@ try {
                         'rejection_on',
                         'last_modified_by',
                         'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                         'last_modified_datetime'
                     ];
 
@@ -595,6 +597,7 @@ try {
                         'reason_for_sample_rejection',
                         'last_modified_by',
                         'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                         'result_dispatched_datetime',
                         'last_modified_datetime',
                         'data_from_comorbidities',
@@ -808,6 +811,7 @@ try {
                         'last_modified_by',
                         'last_modified_datetime',
                         'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                         'result_dispatched_datetime',
                         'reason_for_vl_test',
                         'data_from_comorbidities',
@@ -1003,7 +1007,9 @@ try {
                         'last_modified_by',
                         'last_modified_datetime',
                         'last_modified_by',
-                        'lab_technician'
+                        'lab_technician',
+                        'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                     ];
 
                     $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
@@ -1167,7 +1173,8 @@ try {
                         'manual_result_entry',
                         'result_status',
                         'data_sync',
-                        'result_printed_datetime'
+                        'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                     ];
 
                     $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
@@ -1324,6 +1331,7 @@ try {
                         'result_status',
                         'data_sync',
                         'result_printed_datetime',
+                        'result_printed_on_sts_datetime',
                         'data_from_tests'
                     ];
 
