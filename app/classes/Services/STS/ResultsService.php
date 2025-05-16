@@ -121,21 +121,21 @@ final class ResultsService
                     $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $keysToRemove);
                 }
 
-                $localDbRecord = $this->runQuery($resultFromLab);
+                $localRecord = $this->runQuery($resultFromLab);
 
                 $formAttributes = JsonUtility::jsonToSetString($resultFromLab['form_attributes'], 'form_attributes');
                 $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
-                if (!empty($localDbRecord)) {
+                if (!empty($localRecord)) {
 
-                    if (MiscUtility::isAssociativeArrayEqual($resultFromLab, $localDbRecord, ['last_modified_datetime', 'form_attributes'])) {
-                        $primaryKeyValue = $localDbRecord[$this->primaryKeyName];
+                    if (MiscUtility::isAssociativeArrayEqual($resultFromLab, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $primaryKeyValue = $localRecord[$this->primaryKeyName];
                         continue;
                     }
 
-                    $this->db->where($this->primaryKeyName, $localDbRecord[$this->primaryKeyName]);
+                    $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
                     $id = $this->db->update($this->tableName, $resultFromLab);
-                    $primaryKeyValue = $localDbRecord[$this->primaryKeyName];
+                    $primaryKeyValue = $localRecord[$this->primaryKeyName];
                 } else {
 
                     $id = $this->db->insert($this->tableName, $resultFromLab);

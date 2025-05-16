@@ -210,13 +210,13 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $existingSampleQuery = "SELECT vl_sample_id, sample_code, IFNULL(locked, 'no') as locked
+                $localDataQuery = "SELECT vl_sample_id, sample_code, IFNULL(locked, 'no') as locked
                                         FROM form_vl AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -257,7 +257,7 @@ try {
                         'vl_result_category'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -265,10 +265,13 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
-
-                    $db->where('vl_sample_id', $existingSampleResult['vl_sample_id']);
-                    $id = $db->update('form_vl', $request);
+                    $request['is_result_mail_sent'] ??= 'no';
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('vl_sample_id', $localRecord['vl_sample_id']);
+                        $id = $db->update('form_vl', $request);
+                    }
                 } else {
                     $request['source_of_request'] = 'vlsts';
                     if (!empty($request['sample_collection_date'])) {
@@ -280,7 +283,7 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
@@ -292,6 +295,7 @@ try {
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
+                $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
                     'last_db_query' => $db->getLastQuery(),
                     'last_db_error' => $db->getLastError(),
@@ -365,10 +369,10 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $existingSampleQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
+                $localDataQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -401,7 +405,7 @@ try {
                         'last_modified_datetime'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -409,10 +413,13 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
-
-                    $db->where('eid_id', $existingSampleResult['eid_id']);
-                    $id = $db->update('form_eid', $request);
+                    $request['is_result_mail_sent'] ??= 'no';
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('eid_id', $localRecord['eid_id']);
+                        $id = $db->update('form_eid', $request);
+                    }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
 
@@ -423,7 +430,7 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
@@ -510,10 +517,10 @@ try {
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
-                $existingSampleQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
+                $localDataQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -553,7 +560,7 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -561,11 +568,15 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
+                    $request['is_result_mail_sent'] ??= 'no';
 
-                    $db->where('covid19_id', $existingSampleResult['covid19_id']);
-                    $db->update('form_covid19', $request);
-                    $id = $existingSampleResult['covid19_id'];
+                    $covid19Id = $localRecord['covid19_id'];
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('covid19_id', $localRecord['covid19_id']);
+                        $id = $db->update('form_covid19', $request);
+                    }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
                         $request['source_of_request'] = "vlsts";
@@ -575,21 +586,21 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
-                        $db->insert('form_covid19', $request);
-                        $id = $db->getInsertId();
+                        $id = $db->insert('form_covid19', $request);
+                        $covid19Id = $db->getInsertId();
                     }
                 }
                 // Symptoms
                 if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])) {
-                    $db->where('covid19_id', $id);
+                    $db->where('covid19_id', $covid19Id);
                     $db->delete("covid19_patient_symptoms");
                     foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
                         $symptomData = [];
-                        $symptomData["covid19_id"] = $id;
+                        $symptomData["covid19_id"] = $covid19Id;
                         $symptomData["symptom_id"] = $value['symptom_id'];
                         $symptomData["symptom_detected"] = $value['symptom_detected'];
                         $symptomData["symptom_details"] = $value['symptom_details'];
@@ -598,11 +609,11 @@ try {
                 }
                 // comorbidities
                 if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])) {
-                    $db->where('covid19_id', $id);
+                    $db->where('covid19_id', $covid19Id);
                     $db->delete("covid19_patient_comorbidities");
                     foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
                         $comData = [];
-                        $comData["covid19_id"] = $id;
+                        $comData["covid19_id"] = $covid19Id;
                         $comData["comorbidity_id"] = $comorbidityData['comorbidity_id'];
                         $comData["comorbidity_detected"] = $comorbidityData['comorbidity_detected'];
                         $db->insert("covid19_patient_comorbidities", $comData);
@@ -610,11 +621,11 @@ try {
                 }
                 // sub tests
                 if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
-                    $db->where('covid19_id', $id);
+                    $db->where('covid19_id', $covid19Id);
                     $db->delete("covid19_tests");
                     foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
                         $covid19TestData = [
-                            "covid19_id" => $id,
+                            "covid19_id" => $covid19Id,
                             "facility_id" => $cdata['facility_id'],
                             "test_name" => $cdata['test_name'],
                             "tested_by" => $cdata['tested_by'],
@@ -712,10 +723,10 @@ try {
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
-                $existingSampleQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
+                $localDataQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
                                                                                 WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -752,7 +763,7 @@ try {
                         'data_from_risks'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -760,11 +771,15 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
+                    $request['is_result_mail_sent'] ??= 'no';
 
-                    $db->where('hepatitis_id', $existingSampleResult['hepatitis_id']);
-                    $db->update('form_hepatitis', $request);
-                    $id = $existingSampleResult['hepatitis_id'];
+                    $hepatitisId = $localRecord['hepatitis_id'];
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('hepatitis_id', $localRecord['hepatitis_id']);
+                        $id = $db->update('form_hepatitis', $request);
+                    }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
                         $request['source_of_request'] = "vlsts";
@@ -774,17 +789,17 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
 
-                        $db->insert('form_hepatitis', $request);
-                        $id = $db->getInsertId();
+                        $id = $db->insert('form_hepatitis', $request);
+                        $hepatitisId = $db->getInsertId();
                     }
                 }
 
-                foreach ($remoteData['data_from_risks'] as $hepatitisId => $risks) {
+                foreach ($remoteData['data_from_risks'] as $dataRiskId => $risks) {
                     $db->where('hepatitis_id', $hepatitisId);
                     $db->delete("hepatitis_risk_factors");
 
@@ -797,7 +812,7 @@ try {
                         $db->insert("hepatitis_risk_factors", $riskFactorsData);
                     }
                 }
-                foreach ($remoteData['data_from_comorbidities'] as $hepatitisId => $comorbidities) {
+                foreach ($remoteData['data_from_comorbidities'] as $dataComorbitityId => $comorbidities) {
                     $db->where('hepatitis_id', $hepatitisId);
                     $db->delete("hepatitis_patient_comorbidities");
 
@@ -893,10 +908,10 @@ try {
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 //check exist remote
-                $existingSampleQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
+                $localDataQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -932,7 +947,7 @@ try {
                         'lab_technician'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -940,11 +955,15 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
+                    $request['is_result_mail_sent'] ??= 'no';
 
-                    $db->where('tb_id', $existingSampleResult['tb_id']);
-                    $db->update('form_tb', $request);
-                    $id = $existingSampleResult['tb_id'];
+                    $tbId = $localRecord['tb_id'];
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('tb_id', $localRecord['tb_id']);
+                        $id = $db->update('form_tb', $request);
+                    }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
 
@@ -955,13 +974,13 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
 
-                        $db->insert('form_tb', $request);
-                        $id = $db->getInsertId();
+                        $id = $db->insert('form_tb', $request);
+                        $tbId = $db->getInsertId();
                     }
                 }
                 if ($id === true) {
@@ -1044,11 +1063,11 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $existingSampleQuery = "SELECT cd4_id, sample_code
+                $localDataQuery = "SELECT cd4_id, sample_code
                                     FROM form_cd4 AS vl
                                     WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -1084,7 +1103,7 @@ try {
                         'result_printed_datetime'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -1092,10 +1111,13 @@ try {
                         ['syncTransactionId' => $transactionId]
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
-
-                    $db->where('cd4_id', $existingSampleResult['cd4_id']);
-                    $id = $db->update('form_cd4', $request);
+                    $request['is_result_mail_sent'] ??= 'no';
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('cd4_id', $localRecord['cd4_id']);
+                        $id = $db->update('form_cd4', $request);
+                    }
                 } else {
                     $request['source_of_request'] = 'vlsts';
                     if (!empty($request['sample_collection_date'])) {
@@ -1107,7 +1129,7 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
@@ -1191,11 +1213,11 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $existingSampleQuery = "SELECT sample_id, sample_code, test_type_form
+                $localDataQuery = "SELECT sample_id, sample_code, test_type_form
                             FROM form_generic AS vl
                             WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $existingSampleResult = $db->rawQueryOne($existingSampleQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
-                if (!empty($existingSampleResult)) {
+                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                if (!empty($localRecord)) {
 
                     $removeMoreKeys = [
                         'sample_code',
@@ -1230,25 +1252,30 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = array_diff_key($request, array_flip($removeMoreKeys));
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
 
                     $testTypeForm = JsonUtility::jsonToSetString(
-                        $existingSampleResult['test_type_form'],
+                        $localRecord['test_type_form'],
                         'test_type_form',
                         $request['test_type_form'],
                     );
                     $request['test_type_form'] = !empty($testTypeForm) ? $db->func($testTypeForm) : null;
 
                     $formAttributes = JsonUtility::jsonToSetString(
-                        $existingSampleResult['form_attributes'],
+                        $localRecord['form_attributes'],
                         'form_attributes',
                         $request['form_attributes'],
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                    $request['is_result_mail_sent'] = 'no';
-                    $db->where('sample_id', $existingSampleResult['sample_id']);
-                    $id = $db->update('form_generic', $request);
-                    $genericId = $existingSampleResult['sample_id'];
+                    $request['is_result_mail_sent'] ??= 'no';
+
+                    $genericId = $localRecord['sample_id'];
+                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                        $id = true;
+                    } else {
+                        $db->where('sample_id', $localRecord['sample_id']);
+                        $id = $db->update('form_generic', $request);
+                    }
                 } else {
                     $request['source_of_request'] = 'vlsts';
                     if (!empty($request['sample_collection_date'])) {
@@ -1265,7 +1292,7 @@ try {
                             ['syncTransactionId' => $transactionId]
                         );
                         $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
-                        $request['is_result_mail_sent'] = 'no';
+                        $request['is_result_mail_sent'] ??= 'no';
 
                         $request['source_of_request'] = "vlsts";
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
