@@ -23,6 +23,27 @@ $forceSyncModule = null;
 $manifestCode = null;
 $syncSinceDate = null;
 
+function spinner(int $loopIndex, int $count, string $label = 'Processed', array $spinnerChars = ['.   ', '..  ', '... ', '....']): void
+{
+    static $lastSpinnerChar = '';
+    $shouldUpdateSpinner = ($loopIndex % 10 === 0);
+
+    if ($shouldUpdateSpinner) {
+        $lastSpinnerChar = $spinnerChars[intdiv($loopIndex, 10) % count($spinnerChars)];
+    }
+
+    echo "\r$lastSpinnerChar $label: $count";
+    ob_flush();
+    flush();
+}
+
+function clearSpinner(): void
+{
+    echo "\r" . str_repeat(' ', 40) . "\r";
+}
+
+
+
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
@@ -138,7 +159,7 @@ foreach ($systemConfig['modules'] as $module => $status) {
         )->then(function ($response) use (&$responsePayload, $module, $cliMode) {
             $responsePayload[$module] = $response->getBody()->getContents();
             if ($cliMode) {
-                echo "Received $module" . PHP_EOL;
+                echo "Received server response for $module" . PHP_EOL;
             }
         })->otherwise(function ($reason) use ($module, $cliMode) {
             if ($cliMode) {
@@ -202,7 +223,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -210,7 +232,12 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $localDataQuery = "SELECT vl_sample_id, sample_code, IFNULL(locked, 'no') as locked
+                $columns = array_diff(array_keys($request), ['vl_sample_id', 'last_modified_datetime']);
+                $columnsForSelect = implode(', ', $columns);
+                $query = "SELECT vl_sample_id, {$columnsForSelect} FROM form_vl";
+
+
+                $localDataQuery = "SELECT vl_sample_id, {$columnsForSelect}
                                         FROM form_vl AS vl
                                         WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
                 $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
@@ -291,7 +318,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -306,11 +333,17 @@ try {
                 ]);
                 continue;
             }
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter VL record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter VL record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'vl', $url, $payload, $responsePayload['vl'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'vl', $url, $payload, $responsePayload['vl'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -361,7 +394,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_eid', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
@@ -439,7 +473,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -452,11 +486,18 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter EID record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter EID record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'eid', $url, $payload, $responsePayload['eid'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'eid', $url, $payload, $responsePayload['eid'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -508,7 +549,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -641,7 +683,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -654,11 +696,19 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter Covid-19 record(s)" . PHP_EOL;
+
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter Covid-19 record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'covid19', $url, $payload, $responsePayload['covid19'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'covid19', $url, $payload, $responsePayload['covid19'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -714,7 +764,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -825,7 +876,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -840,11 +891,18 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter Hepatitis record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter Hepatitis record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'hepatitis', $url, $payload, $responsePayload['hepatitis'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'hepatitis', $url, $payload, $responsePayload['hepatitis'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -899,7 +957,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_tb', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -984,7 +1043,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -999,12 +1058,19 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter TB record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter TB record(s)" . PHP_EOL;
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'tb', $url, $payload, $responsePayload['tb'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'tb', $url, $payload, $responsePayload['tb'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -1055,7 +1121,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -1137,7 +1204,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -1152,11 +1219,18 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
         if ($cliMode) {
-            echo "Synced $counter CD4 record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter CD4 record(s)" . PHP_EOL;
         }
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'cd4', $url, $payload, $responsePayload['cd4'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'cd4', $url, $payload, $responsePayload['cd4'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
@@ -1205,7 +1279,8 @@ try {
 
         $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
 
-        $counter = 0;
+        $loopIndex = 0;
+        $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
@@ -1326,7 +1401,7 @@ try {
                     }
                 }
                 if ($id === true) {
-                    $counter++;
+                    $successCounter++;
                 }
                 $db->commitTransaction();
             } catch (Throwable $e) {
@@ -1341,13 +1416,20 @@ try {
                 ]);
                 continue;
             }
+
+            if ($cliMode) {
+                spinner($loopIndex, $successCounter);
+            }
+            $loopIndex++;
         }
 
         if ($cliMode) {
-            echo "Synced $counter Custom Tests record(s)" . PHP_EOL;
+            clearSpinner();
+            echo PHP_EOL;
+            echo "Synced $successCounter Custom Tests record(s)" . PHP_EOL;
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'receive-requests', 'generic-tests', $url, $payload, $responsePayload['generic-tests'], 'json', $labId);
+        $general->addApiTracking($transactionId, 'vlsm-system', $successCounter, 'receive-requests', 'generic-tests', $url, $payload, $responsePayload['generic-tests'], 'json', $labId);
     }
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [

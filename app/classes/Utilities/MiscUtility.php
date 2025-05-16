@@ -944,6 +944,24 @@ final class MiscUtility
         }
         ksort($a);
         ksort($b);
+        // Remove keys from $b that are not in $a
+        // This ensures that $b only contains keys that are also in $a
+        // This is useful if you want to compare $a with a subset of $b
+        // and ignore any extra keys in $b that are not in $a
+        $b = array_intersect_key($b, $a);
+
+
+
+        // // DEBUG: Echo differences before comparison
+        // foreach ($a as $key => $valA) {
+        //     $valB = $b[$key] ?? null;
+        //     if ($valA !== $valB) {
+        //         echo "Mismatch on key '$key':\n";
+        //         echo "  A: " . var_export($valA, true) . "\n";
+        //         echo "  B: " . var_export($valB, true) . "\n";
+        //     }
+        // }
+
         return $a == $b;
     }
 }
