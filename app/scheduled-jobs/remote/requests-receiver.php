@@ -11,6 +11,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 
@@ -42,7 +43,41 @@ function clearSpinner(): void
     echo "\r" . str_repeat(' ', 40) . "\r";
 }
 
+function findLocalRecord(array $requestFromRemote, $db, $tableName, $primaryKeyName): array
+{
+    $columns = array_diff(array_keys($requestFromRemote), [$primaryKeyName]);
+    $select = implode(', ', $columns);
 
+    if (!empty($requestFromRemote['unique_id'])) {
+        return $db->rawQueryOne(
+            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
+            [$requestFromRemote['unique_id']]
+        );
+    }
+
+    if (!empty($requestFromRemote['remote_sample_code'])) {
+        return $db->rawQueryOne(
+            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
+            [$requestFromRemote['remote_sample_code']]
+        );
+    }
+
+    if (!empty($requestFromRemote['sample_code']) && !empty($requestFromRemote['lab_id'])) {
+        return $db->rawQueryOne(
+            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
+            [$requestFromRemote['sample_code'], $requestFromRemote['lab_id']]
+        );
+    }
+
+    if (!empty($requestFromRemote['sample_code']) && !empty($requestFromRemote['facility_id'])) {
+        return $db->rawQueryOne(
+            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
+            [$requestFromRemote['sample_code'], $requestFromRemote['facility_id']]
+        );
+    }
+
+    return [];
+}
 
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
@@ -189,6 +224,9 @@ try {
     $request = [];
     if (!empty($responsePayload['vl']) && $responsePayload['vl'] != '[]' && JsonUtility::isJSON($responsePayload['vl'])) {
 
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('vl');
+        $tableName = TestsService::getTestTableName('vl');
+
         if ($cliMode) {
             echo PHP_EOL;
             echo "=========================" . PHP_EOL;
@@ -202,7 +240,7 @@ try {
         $parsedData = Items::fromString($responsePayload['vl'], $options);
 
         $removeKeys = [
-            'vl_sample_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result_value_log',
             'result_value_absolute',
@@ -221,7 +259,7 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_vl', $removeKeys);
+        $emptyLabArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -230,17 +268,9 @@ try {
                 $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $columns = array_diff(array_keys($request), ['vl_sample_id', 'last_modified_datetime']);
-                $columnsForSelect = implode(', ', $columns);
-                $query = "SELECT vl_sample_id, {$columnsForSelect} FROM form_vl";
-
-
-                $localDataQuery = "SELECT vl_sample_id, {$columnsForSelect}
-                                        FROM form_vl AS vl
-                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($localRecord)) {
 
                     $removeKeysForUpdate = [
@@ -366,6 +396,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['eid']) && $responsePayload['eid'] != '[]' && JsonUtility::isJSON($responsePayload['eid'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('eid');
+        $tableName = TestsService::getTestTableName('eid');
 
         if ($cliMode) {
             echo PHP_EOL;
@@ -401,15 +433,16 @@ try {
             try {
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
+                $columns = array_diff(array_keys($request), [$primaryKeyName]);
+                $columnsForSelect = implode(', ', $columns);
+                $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
 
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $localDataQuery = "SELECT eid_id,sample_code FROM form_eid AS vl
-                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -441,7 +474,7 @@ try {
                         'last_modified_datetime'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -520,6 +553,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['covid19']) && $responsePayload['covid19'] != '[]' && JsonUtility::isJSON($responsePayload['covid19'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('covid19');
+        $tableName = TestsService::getTestTableName('covid19');
 
         if ($cliMode) {
             echo PHP_EOL;
@@ -558,15 +593,16 @@ try {
                 $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
+                $columns = array_diff(array_keys($request), [$primaryKeyName]);
+                $columnsForSelect = implode(', ', $columns);
+                $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
+
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                //check exist remote
-                $localDataQuery = "SELECT covid19_id,sample_code FROM form_covid19 AS vl
-                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -605,7 +641,7 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -733,6 +769,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['hepatitis']) && $responsePayload['hepatitis'] != '[]' && JsonUtility::isJSON($responsePayload['hepatitis'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('hepatitis');
+        $tableName = TestsService::getTestTableName('hepatitis');
 
         if ($cliMode) {
             echo PHP_EOL;
@@ -776,13 +814,17 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                //check exist remote
-                $localDataQuery = "SELECT hepatitis_id,sample_code FROM form_hepatitis AS vl
-                                                                                WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                $columns = array_diff(array_keys($request), [$primaryKeyName]);
+                $columnsForSelect = implode(', ', $columns);
+                $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
+
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -818,7 +860,7 @@ try {
                         'data_from_risks'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -927,6 +969,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['tb']) && $responsePayload['tb'] != '[]' && JsonUtility::isJSON($responsePayload['tb'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('tb');
+        $tableName = TestsService::getTestTableName('tb');
 
 
         if ($cliMode) {
@@ -970,13 +1014,17 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                //check exist remote
-                $localDataQuery = "SELECT tb_id,sample_code FROM form_tb AS vl
-                                        WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                $columns = array_diff(array_keys($request), [$primaryKeyName]);
+                $columnsForSelect = implode(', ', $columns);
+                $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
+
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
+
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -1012,7 +1060,7 @@ try {
                         'result_printed_on_sts_datetime',
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -1098,6 +1146,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['cd4']) && $responsePayload['cd4'] != '[]' && JsonUtility::isJSON($responsePayload['cd4'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('cd4');
+        $tableName = TestsService::getTestTableName('cd4');
 
         if ($cliMode) {
             echo PHP_EOL;
@@ -1134,15 +1184,12 @@ try {
                 $db->beginTransaction();
                 $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $localDataQuery = "SELECT cd4_id, sample_code
-                                    FROM form_cd4 AS vl
-                                    WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -1177,7 +1224,7 @@ try {
                         'result_printed_on_sts_datetime',
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -1257,6 +1304,8 @@ try {
 try {
     $request = [];
     if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] != '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
+        $primaryKeyName = TestsService::getTestPrimaryKeyColumn('generic-tests');
+        $tableName = TestsService::getTestTableName('generic-tests');
 
         if ($cliMode) {
             echo PHP_EOL;
@@ -1295,13 +1344,12 @@ try {
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $localDataQuery = "SELECT sample_id, sample_code, test_type_form
-                            FROM form_generic AS vl
-                            WHERE unique_id =? OR remote_sample_code=? OR (sample_code=? AND lab_id=?)";
-                $localRecord = $db->rawQueryOne($localDataQuery, [$request['unique_id'], $request['remote_sample_code'], $request['sample_code'], $request['lab_id']]);
+                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
+
                 if (!empty($localRecord)) {
 
-                    $removeMoreKeys = [
+                    $removeKeysForUpdate = [
                         'sample_code',
                         'sample_code_key',
                         'sample_code_format',
@@ -1335,7 +1383,7 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeMoreKeys);
+                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
 
                     $testTypeForm = JsonUtility::jsonToSetString(
                         $localRecord['test_type_form'],

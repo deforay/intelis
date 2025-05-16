@@ -955,11 +955,15 @@ final class MiscUtility
         // // DEBUG: Echo differences before comparison
         // foreach ($a as $key => $valA) {
         //     $valB = $b[$key] ?? null;
-        //     if ($valA !== $valB) {
+        //     if ($valA != $valB) {
         //         echo "Mismatch on key '$key':\n";
         //         echo "  A: " . var_export($valA, true) . "\n";
         //         echo "  B: " . var_export($valB, true) . "\n";
         //     }
+        // }
+
+        // foreach (array_diff_key($b, $a) as $key => $valB) {
+        //     echo "Extra key in B: '$key' => " . var_export($valB, true) . "\n";
         // }
 
         return $a == $b;

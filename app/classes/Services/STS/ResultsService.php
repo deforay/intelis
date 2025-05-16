@@ -121,7 +121,7 @@ final class ResultsService
                     $resultFromLab = MiscUtility::removeFromAssociativeArray($resultFromLab, $keysToRemove);
                 }
 
-                $localRecord = $this->runQuery($resultFromLab);
+                $localRecord = $this->findLocalRecord($resultFromLab);
 
                 $formAttributes = JsonUtility::jsonToSetString($resultFromLab['form_attributes'], 'form_attributes');
                 $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
@@ -193,48 +193,39 @@ final class ResultsService
 
         return $sampleCodes;
     }
-
-    private function runQuery($resultFromLab)
+    private function findLocalRecord(array $resultFromLab): array
     {
         $columns = array_diff(array_keys($resultFromLab), [$this->primaryKeyName]);
-        $columnsForSelect = implode(', ', $columns);
-        $query = "SELECT {$this->primaryKeyName}, {$columnsForSelect} FROM {$this->tableName}";
+        $select = implode(', ', $columns);
 
-        [$conditions, $params] = $this->buildCondition($resultFromLab);
+        if (!empty($resultFromLab['unique_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$this->primaryKeyName}, {$select} FROM {$this->tableName} WHERE unique_id = ? FOR UPDATE",
+                [$resultFromLab['unique_id']]
+            );
+        }
 
-        if (!empty($conditions)) {
-            $sQuery = $query . " WHERE " . implode(' OR ', $conditions) . " FOR UPDATE";
-            return $this->db->rawQueryOne($sQuery, $params);
+        if (!empty($resultFromLab['remote_sample_code'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$this->primaryKeyName}, {$select} FROM {$this->tableName} WHERE remote_sample_code = ? FOR UPDATE",
+                [$resultFromLab['remote_sample_code']]
+            );
+        }
+
+        if (!empty($resultFromLab['sample_code']) && !empty($resultFromLab['lab_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$this->primaryKeyName}, {$select} FROM {$this->tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
+                [$resultFromLab['sample_code'], $resultFromLab['lab_id']]
+            );
+        }
+
+        if (!empty($resultFromLab['sample_code']) && !empty($resultFromLab['facility_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$this->primaryKeyName}, {$select} FROM {$this->tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
+                [$resultFromLab['sample_code'], $resultFromLab['facility_id']]
+            );
         }
 
         return [];
-    }
-
-
-    private function buildCondition($lab)
-    {
-        // Checking if Remote Sample ID is set, if not set we will check if Sample ID is set
-        $conditions = [];
-        $params = [];
-
-        if (!empty($lab['unique_id'])) {
-            $conditions[] = "unique_id = ?";
-            $params[] = $lab['unique_id'];
-        } elseif (!empty($lab['remote_sample_code'])) {
-            $conditions[] = "remote_sample_code = ?";
-            $params[] = $lab['remote_sample_code'];
-        } elseif (!empty($lab['sample_code'])) {
-            if (!empty($lab['lab_id'])) {
-                $conditions[] = "sample_code = ? AND lab_id = ?";
-                $params[] = $lab['sample_code'];
-                $params[] = $lab['lab_id'];
-            } elseif (!empty($lab['facility_id'])) {
-                $conditions[] = "sample_code = ? AND facility_id = ?";
-                $params[] = $lab['sample_code'];
-                $params[] = $lab['facility_id'];
-            }
-        }
-
-        return [$conditions, $params];
     }
 }
