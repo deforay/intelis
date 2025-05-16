@@ -263,7 +263,7 @@ try {
 
             $db->connection('default')->beginTransaction();
             if ($isCli) {
-                MiscUtility::displayProgressBar($key + 1, $totalResults); // Update progress bar
+                MiscUtility::progressBar($key + 1, $totalResults); // Update progress bar
             }
 
             if (empty($result['order_id']) && empty($result['test_id'])) {

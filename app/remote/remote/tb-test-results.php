@@ -77,7 +77,7 @@ try {
 
             $counter++;
             // Overwrite the values in $emptyLabArray with the values in $resultRow
-            $lab = MiscUtility::updateFromArray($emptyLabArray, $resultRow);
+            $lab = MiscUtility::updateMatchingKeysOnly($emptyLabArray, $resultRow);
 
 
             if (isset($resultRow['approved_by_name']) && $resultRow['approved_by_name'] != '') {
@@ -98,7 +98,7 @@ try {
                     'is_sample_rejected',
                     'reason_for_sample_rejection'
                 ];
-                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
+                $lab = MiscUtility::excludeKeys($lab, $keysToRemove);
             }
 
             $primaryKey = 'tb_id';
@@ -148,7 +148,7 @@ try {
                     $sampleCodes[] = $lab['sample_code'];
                     $facilityIds[] = $lab['facility_id'];
                 }
-               
+
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();

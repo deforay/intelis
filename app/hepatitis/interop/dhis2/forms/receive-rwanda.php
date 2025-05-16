@@ -23,7 +23,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$testRequestsService = new TestRequestsService($db, $general);
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 $globalConfig = $general->getGlobalConfig();
 $sampleCodeFormat = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';

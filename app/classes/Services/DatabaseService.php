@@ -422,7 +422,7 @@ final class DatabaseService extends MysqliDb
                 // Create an array with all column names set to null
                 $tableFieldsAsArray = array_fill_keys($columnNames, null);
                 if (!empty($unwantedColumns)) {
-                    $tableFieldsAsArray = MiscUtility::removeFromAssociativeArray($tableFieldsAsArray, $unwantedColumns);
+                    $tableFieldsAsArray = MiscUtility::excludeKeys($tableFieldsAsArray, $unwantedColumns);
                 }
             } catch (Throwable $e) {
                 throw new SystemException($e->getMessage(), 500, $e);

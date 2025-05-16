@@ -89,7 +89,7 @@ try {
             }
 
             // Overwrite the values in $emptyLabArray with the values in $formData
-            $lab = MiscUtility::updateFromArray($emptyLabArray, $formData);
+            $lab = MiscUtility::updateMatchingKeysOnly($emptyLabArray, $formData);
 
             if (isset($lab['approved_by_name']) && $lab['approved_by_name'] != '') {
 
@@ -109,7 +109,7 @@ try {
                     'is_sample_rejected',
                     'reason_for_sample_rejection'
                 ];
-                $lab = MiscUtility::removeFromAssociativeArray($lab, $keysToRemove);
+                $lab = MiscUtility::excludeKeys($lab, $keysToRemove);
             }
 
             try {

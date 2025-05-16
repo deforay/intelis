@@ -2,11 +2,11 @@
 
 namespace App\Services;
 
-use App\Utilities\MiscUtility;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -346,5 +346,49 @@ final class TestRequestsService
 
             return $status;
         }
+    }
+
+    /**
+     * Find a matching local record based on the provided request data.
+     *
+     * @param array $recordFromOtherSystem The request data from the other system.
+     * @param string $tableName The name of the table to search in.
+     * @param string $primaryKeyName The name of the primary key column.
+     * @return array The matching record, or an empty array if not found.
+     */
+    public function findMatchingLocalRecord(array $recordFromOtherSystem, $tableName, $primaryKeyName): array
+    {
+        $columns = array_diff(array_keys($recordFromOtherSystem), [$primaryKeyName]);
+        $select = implode(', ', $columns);
+
+        if (!empty($recordFromOtherSystem['unique_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
+                [$recordFromOtherSystem['unique_id']]
+            );
+        }
+
+        if (!empty($recordFromOtherSystem['remote_sample_code'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
+                [$recordFromOtherSystem['remote_sample_code']]
+            );
+        }
+
+        if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['lab_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
+                [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['lab_id']]
+            );
+        }
+
+        if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['facility_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
+                [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['facility_id']]
+            );
+        }
+
+        return [];
     }
 }

@@ -101,7 +101,7 @@ try {
 
     // Convert each table and its columns
     foreach ($allTables as $index => $tableData) {
-        MiscUtility::displayProgressBar($index + 1, $totalTables);
+        MiscUtility::progressBar($index + 1, $totalTables);
         convertTableAndColumns($db, $tableData['connection'], $tableData['table']);
     }
 

@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 
@@ -20,9 +21,22 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 
-$forceSyncModule = null;
-$manifestCode = null;
-$syncSinceDate = null;
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var ApiService $apiService */
+$apiService = ContainerRegistry::get(ApiService::class);
+
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+
+$forceSyncModule = $manifestCode = $syncSinceDate = null;
+$db->rawQuery("SET SESSION wait_timeout=28800"); // 8 hours
+
+
 
 function spinner(int $loopIndex, int $count, string $label = 'Processed', array $spinnerChars = ['.   ', '..  ', '... ', '....']): void
 {
@@ -41,42 +55,6 @@ function spinner(int $loopIndex, int $count, string $label = 'Processed', array 
 function clearSpinner(): void
 {
     echo "\r" . str_repeat(' ', 40) . "\r";
-}
-
-function findLocalRecord(array $requestFromRemote, $db, $tableName, $primaryKeyName): array
-{
-    $columns = array_diff(array_keys($requestFromRemote), [$primaryKeyName]);
-    $select = implode(', ', $columns);
-
-    if (!empty($requestFromRemote['unique_id'])) {
-        return $db->rawQueryOne(
-            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
-            [$requestFromRemote['unique_id']]
-        );
-    }
-
-    if (!empty($requestFromRemote['remote_sample_code'])) {
-        return $db->rawQueryOne(
-            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
-            [$requestFromRemote['remote_sample_code']]
-        );
-    }
-
-    if (!empty($requestFromRemote['sample_code']) && !empty($requestFromRemote['lab_id'])) {
-        return $db->rawQueryOne(
-            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
-            [$requestFromRemote['sample_code'], $requestFromRemote['lab_id']]
-        );
-    }
-
-    if (!empty($requestFromRemote['sample_code']) && !empty($requestFromRemote['facility_id'])) {
-        return $db->rawQueryOne(
-            "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
-            [$requestFromRemote['sample_code'], $requestFromRemote['facility_id']]
-        );
-    }
-
-    return [];
 }
 
 $cliMode = php_sapi_name() === 'cli';
@@ -119,17 +97,6 @@ if ($cliMode) {
 if ($syncSinceDate !== null) {
     echo "Filtering requests from: $syncSinceDate" . PHP_EOL;
 }
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var ApiService $apiService */
-$apiService = ContainerRegistry::get(ApiService::class);
-
-
 $transactionId = MiscUtility::generateULID();
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
@@ -259,16 +226,20 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
+
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request, $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 if (!empty($localRecord)) {
@@ -315,7 +286,7 @@ try {
                         'vl_result_category'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -324,7 +295,7 @@ try {
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('vl_sample_id', $localRecord['vl_sample_id']);
@@ -425,19 +396,23 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_eid', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_eid', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
 
                 $columns = array_diff(array_keys($request), [$primaryKeyName]);
                 $columnsForSelect = implode(', ', $columns);
                 $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 if (!empty($localRecord)) {
@@ -474,7 +449,7 @@ try {
                         'last_modified_datetime'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -483,7 +458,7 @@ try {
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('eid_id', $localRecord['eid_id']);
@@ -584,20 +559,24 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_covid19', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_covid19', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
 
                 $columns = array_diff(array_keys($request), [$primaryKeyName]);
                 $columnsForSelect = implode(', ', $columns);
                 $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 if (!empty($localRecord)) {
@@ -641,7 +620,7 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -652,7 +631,7 @@ try {
                     $request['is_result_mail_sent'] ??= 'no';
 
                     $covid19Id = $localRecord['covid19_id'];
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('covid19_id', $localRecord['covid19_id']);
@@ -803,14 +782,18 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_hepatitis', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_hepatitis', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -818,7 +801,7 @@ try {
                 $columnsForSelect = implode(', ', $columns);
                 $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
@@ -860,7 +843,7 @@ try {
                         'data_from_risks'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -871,7 +854,7 @@ try {
                     $request['is_result_mail_sent'] ??= 'no';
 
                     $hepatitisId = $localRecord['hepatitis_id'];
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('hepatitis_id', $localRecord['hepatitis_id']);
@@ -1003,14 +986,18 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_tb', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_tb', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
@@ -1018,7 +1005,7 @@ try {
                 $columnsForSelect = implode(', ', $columns);
                 $query = "SELECT $primaryKeyName, {$columnsForSelect} FROM $tableName";
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
 
@@ -1060,7 +1047,7 @@ try {
                         'result_printed_on_sts_datetime',
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -1071,7 +1058,7 @@ try {
                     $request['is_result_mail_sent'] ??= 'no';
 
                     $tbId = $localRecord['tb_id'];
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('tb_id', $localRecord['tb_id']);
@@ -1175,16 +1162,20 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
+
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 if (!empty($localRecord)) {
@@ -1224,7 +1215,7 @@ try {
                         'result_printed_on_sts_datetime',
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $formAttributes = JsonUtility::jsonToSetString(
                         $request['form_attributes'],
@@ -1233,7 +1224,7 @@ try {
                     );
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('cd4_id', $localRecord['cd4_id']);
@@ -1333,18 +1324,22 @@ try {
             'data_sync'
         ];
 
-        $emptyLabArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
         foreach ($parsedData as $key => $remoteData) {
             try {
                 $db->beginTransaction();
-                $request = MiscUtility::updateFromArray($emptyLabArray, $remoteData);
+
+                // Overwrite the values in $localDbFieldArray with the values in $originalLISRecord
+                // basically we are making sure that we only use columns that are present in the $localDbFieldArray
+                // which is from local db and not using the ones in the $originalLISRecord
+                $request = MiscUtility::updateMatchingKeysOnly($localDbFieldArray, $remoteData);
 
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
-                $localRecord = findLocalRecord($request, $db, $tableName, $primaryKeyName);
+                $localRecord = $testRequestsService->findMatchingLocalRecord($request,  $tableName, $primaryKeyName);
                 $request['last_modified_datetime'] = DateUtility::getCurrentDateTime();
 
                 if (!empty($localRecord)) {
@@ -1383,7 +1378,7 @@ try {
                         'data_from_tests'
                     ];
 
-                    $request = MiscUtility::removeFromAssociativeArray($request, $removeKeysForUpdate);
+                    $request = MiscUtility::excludeKeys($request, $removeKeysForUpdate);
 
                     $testTypeForm = JsonUtility::jsonToSetString(
                         $localRecord['test_type_form'],
@@ -1401,7 +1396,7 @@ try {
                     $request['is_result_mail_sent'] ??= 'no';
 
                     $genericId = $localRecord['sample_id'];
-                    if (MiscUtility::isAssociativeArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                    if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
                         $db->where('sample_id', $localRecord['sample_id']);

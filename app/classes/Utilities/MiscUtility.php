@@ -408,13 +408,13 @@ final class MiscUtility
             default => _translate('Unreported')
         };
     }
-    public static function removeFromAssociativeArray(array $fullArray, array $unwantedKeys)
+    public static function excludeKeys(array $fullArray, array $unwantedKeys)
     {
         return array_diff_key($fullArray, array_flip($unwantedKeys));
     }
 
     // Updates entries in targetArray with values from sourceArray where keys exist in targetArray
-    public static function updateFromArray(?array $targetArray, ?array $sourceArray)
+    public static function updateMatchingKeysOnly(?array $targetArray, ?array $sourceArray)
     {
 
         if (empty($targetArray) || empty($sourceArray)) {
@@ -612,7 +612,7 @@ final class MiscUtility
         return $actualMimeType === $expectedMimeType;
     }
 
-    public static function displayProgressBar($current, $total = null, $size = 30): void
+    public static function progressBar($current, $total = null, $size = 30): void
     {
         static $startTime;
 
@@ -937,7 +937,7 @@ final class MiscUtility
         return $normalizedBasePath . DIRECTORY_SEPARATOR . $imageName;
     }
 
-    public static function isAssociativeArrayEqual(array $a, array $b, array $excludeKeys = []): bool
+    public static function isArrayEqual(array $a, array $b, array $excludeKeys = []): bool
     {
         foreach ($excludeKeys as $key) {
             unset($a[$key], $b[$key]);

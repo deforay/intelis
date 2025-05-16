@@ -91,7 +91,7 @@ try {
                 $deletedId = [];
                 foreach ($dataResultSet as $key => $resultRow) {
                     $counter++;
-                    $data = MiscUtility::updateFromArray($emptyTableArray, $resultRow);
+                    $data = MiscUtility::updateMatchingKeysOnly($emptyTableArray, $resultRow);
                     $data['updated_datetime'] = DateUtility::getCurrentDateTime();
 
                     try {

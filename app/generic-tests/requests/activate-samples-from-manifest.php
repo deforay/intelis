@@ -35,7 +35,7 @@ $globalConfig = $general->getGlobalConfig();
 $sampleCodeFormat = $globalConfig['generic_sample_code'] ?? 'MMYY';
 $prefix = $globalConfig['generic_sample_code_prefix'] ?? 'T'; // will be set later in activateSamplesFromManifest()
 
-
-$testRequestsService = new TestRequestsService($db, $general);
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);

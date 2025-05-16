@@ -35,7 +35,7 @@ $globalConfig = $general->getGlobalConfig();
 $sampleCodeFormat = $globalConfig['eid_sample_code'] ?? 'MMYY';
 $prefix = $globalConfig['eid_sample_code_prefix'] ?? $testTypeService->shortCode;
 
-
-$testRequestsService = new TestRequestsService($db, $general);
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 echo $testRequestsService->activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat, $prefix);

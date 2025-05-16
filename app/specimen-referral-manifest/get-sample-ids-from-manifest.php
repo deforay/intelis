@@ -76,7 +76,18 @@ try {
         $sampleData = array_column($sampleResult, $primaryKey);
     }
 } catch (Exception $e) {
-    LoggerUtility::log('error', 'Request to archive audit data failed: ' . $e->getMessage());
+    LoggerUtility::logError(
+        "Error fetching samples from manifest : $manifestCode",
+        [
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'last_db_query' => $db->getLastQuery(),
+            'last_db_error' => $db->getLastError(),
+            'message' => $e->getMessage(),
+            'manifestCode' => $manifestCode,
+            'testType' => $testType,
+        ]
+    );
 }
 
 echo implode(',', $sampleData);
