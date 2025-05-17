@@ -383,7 +383,7 @@ try {
         $parsedData = Items::fromString($responsePayload['eid'], $options);
 
         $removeKeys = [
-            'eid_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result',
             'sample_tested_datetime',
@@ -396,7 +396,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_eid', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -461,8 +461,8 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('eid_id', $localRecord['eid_id']);
-                        $id = $db->update('form_eid', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
@@ -479,7 +479,7 @@ try {
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
 
-                        $id = $db->insert('form_eid', $request);
+                        $id = $db->insert($tableName, $request);
                     }
                 }
                 if ($id === true) {
@@ -544,7 +544,7 @@ try {
         $parsedData = Items::fromString($responsePayload['covid19'], $options);
 
         $removeKeys = [
-            'covid19_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result',
             'sample_tested_datetime',
@@ -559,7 +559,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_covid19', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -630,12 +630,12 @@ try {
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
 
-                    $covid19Id = $localRecord['covid19_id'];
+                    $covid19Id = $localRecord[$primaryKeyName];
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('covid19_id', $localRecord['covid19_id']);
-                        $id = $db->update('form_covid19', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
@@ -650,13 +650,13 @@ try {
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
-                        $id = $db->insert('form_covid19', $request);
+                        $id = $db->insert($tableName, $request);
                         $covid19Id = $db->getInsertId();
                     }
                 }
                 // Symptoms
                 if (isset($remoteData['data_from_symptoms']) && !empty($remoteData['data_from_symptoms'])) {
-                    $db->where('covid19_id', $covid19Id);
+                    $db->where($primaryKeyName, $covid19Id);
                     $db->delete("covid19_patient_symptoms");
                     foreach ($remoteData['data_from_symptoms'] as $symId => $value) {
                         $symptomData = [];
@@ -669,7 +669,7 @@ try {
                 }
                 // comorbidities
                 if (isset($remoteData['data_from_comorbidities']) && !empty($remoteData['data_from_comorbidities'])) {
-                    $db->where('covid19_id', $covid19Id);
+                    $db->where($primaryKeyName, $covid19Id);
                     $db->delete("covid19_patient_comorbidities");
                     foreach ($remoteData['data_from_comorbidities'] as $comoId => $comorbidityData) {
                         $comData = [];
@@ -681,7 +681,7 @@ try {
                 }
                 // sub tests
                 if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests'])) {
-                    $db->where('covid19_id', $covid19Id);
+                    $db->where($primaryKeyName, $covid19Id);
                     $db->delete("covid19_tests");
                     foreach ($remoteData['data_from_tests'] as $covid19Id => $cdata) {
                         $covid19TestData = [
@@ -765,7 +765,7 @@ try {
 
 
         $removeKeys = [
-            'hepatitis_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result',
             'hcv_vl_count',
@@ -782,7 +782,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_hepatitis', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -853,12 +853,12 @@ try {
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
 
-                    $hepatitisId = $localRecord['hepatitis_id'];
+                    $hepatitisId = $localRecord[$primaryKeyName];
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('hepatitis_id', $localRecord['hepatitis_id']);
-                        $id = $db->update('form_hepatitis', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
@@ -874,13 +874,13 @@ try {
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
 
-                        $id = $db->insert('form_hepatitis', $request);
+                        $id = $db->insert($tableName, $request);
                         $hepatitisId = $db->getInsertId();
                     }
                 }
 
                 foreach ($remoteData['data_from_risks'] as $dataRiskId => $risks) {
-                    $db->where('hepatitis_id', $hepatitisId);
+                    $db->where($primaryKeyName, $hepatitisId);
                     $db->delete("hepatitis_risk_factors");
 
 
@@ -893,7 +893,7 @@ try {
                     }
                 }
                 foreach ($remoteData['data_from_comorbidities'] as $dataComorbitityId => $comorbidities) {
-                    $db->where('hepatitis_id', $hepatitisId);
+                    $db->where($primaryKeyName, $hepatitisId);
                     $db->delete("hepatitis_patient_comorbidities");
 
                     foreach ($comorbidities as $comoId => $comoValue) {
@@ -970,7 +970,7 @@ try {
 
 
         $removeKeys = [
-            'tb_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result',
             'xpert_mtb_result',
@@ -986,7 +986,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_tb', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -1057,12 +1057,12 @@ try {
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
 
-                    $tbId = $localRecord['tb_id'];
+                    $tbId = $localRecord[$primaryKeyName];
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('tb_id', $localRecord['tb_id']);
-                        $id = $db->update('form_tb', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     if (!empty($request['sample_collection_date'])) {
@@ -1079,7 +1079,7 @@ try {
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
 
-                        $id = $db->insert('form_tb', $request);
+                        $id = $db->insert($tableName, $request);
                         $tbId = $db->getInsertId();
                     }
                 }
@@ -1149,7 +1149,7 @@ try {
         $parsedData = Items::fromString($responsePayload['cd4'], $options);
 
         $removeKeys = [
-            'cd4_id',
+            $primaryKeyName,
             'sample_batch_id',
             'cd4_result',
             'sample_tested_datetime',
@@ -1162,7 +1162,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_cd4', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -1227,8 +1227,8 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('cd4_id', $localRecord['cd4_id']);
-                        $id = $db->update('form_cd4', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     $request['source_of_request'] = 'vlsts';
@@ -1245,7 +1245,7 @@ try {
 
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
-                        $id = $db->insert('form_cd4', $request);
+                        $id = $db->insert($tableName, $request);
                     }
                 }
                 if ($id === true) {
@@ -1311,7 +1311,7 @@ try {
         $parsedData = Items::fromString($responsePayload['generic-tests'], $options);
 
         $removeKeys = [
-            'sample_id',
+            $primaryKeyName,
             'sample_batch_id',
             'result',
             'sample_tested_datetime',
@@ -1324,7 +1324,7 @@ try {
             'data_sync'
         ];
 
-        $localDbFieldArray = $general->getTableFieldsAsArray('form_generic', $removeKeys);
+        $localDbFieldArray = $general->getTableFieldsAsArray($tableName, $removeKeys);
 
         $loopIndex = 0;
         $successCounter = 0;
@@ -1395,12 +1395,12 @@ try {
                     $request['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
                     $request['is_result_mail_sent'] ??= 'no';
 
-                    $genericId = $localRecord['sample_id'];
+                    $genericId = $localRecord[$primaryKeyName];
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('sample_id', $localRecord['sample_id']);
-                        $id = $db->update('form_generic', $request);
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     $request['source_of_request'] = 'vlsts';
@@ -1423,7 +1423,7 @@ try {
                         $request['source_of_request'] = "vlsts";
                         //column data_sync value is 1 equal to data_sync done.value 0 is not done.
                         $request['data_sync'] = 0;
-                        $id = $db->insert('form_generic', $request);
+                        $id = $db->insert($tableName, $request);
                         $genericId = $db->getInsertId();
                     }
                 }

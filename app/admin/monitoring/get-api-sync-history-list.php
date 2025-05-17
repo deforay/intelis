@@ -19,8 +19,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-     $db->beginReadOnlyTransaction();
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
      $primaryKey = "api_track_id";
@@ -28,8 +26,6 @@ try {
      $aColumns = ['transaction_id', 'number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')"];
      $orderColumns = ['transaction_id', 'number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on'];
 
-     /* Indexed column (used for fast and accurate table cardinality) */
-     $sIndexColumn = $primaryKey;
 
 
      $sOffset = $sLimit = null;
@@ -49,11 +45,16 @@ try {
      $aWhere = '';
      $sQuery = '';
 
-     $sQuery = "SELECT a.* FROM track_api_requests as a";
-
-     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+     $sQuery = "SELECT a.transaction_id,
+                         a.number_of_records,
+                         a.request_type,
+                         a.test_type,
+                         a.api_url,
+                         a.requested_on
+                    FROM track_api_requests as a";
 
      if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
+          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
           $sWhere[] = " DATE(a.requested_on) BETWEEN '$startDate' AND '$endDate' ";
      }
 
@@ -73,6 +74,7 @@ try {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
           $sQuery = "$sQuery ORDER BY $sOrder";
      }
+
      $_SESSION['auditLogQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
@@ -102,8 +104,12 @@ try {
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);
-
-     $db->commitTransaction();
-} catch (Throwable $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery()
+     ]);
 }

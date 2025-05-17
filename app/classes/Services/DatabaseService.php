@@ -9,6 +9,8 @@ use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
+use App\Registries\ContainerRegistry;
 use PhpMyAdmin\SqlParser\Components\Limit;
 use PhpMyAdmin\SqlParser\Components\Expression;
 
@@ -17,6 +19,27 @@ final class DatabaseService extends MysqliDb
 
     private $isTransactionActive = false;
     private $useSavepoints = false;
+
+    public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
+    {
+        // Handle the case where an array of config is passed instead of individual parameters
+        if (is_array($host)) {
+            $config = $host;
+            $host = $config['host'] ?? null;
+            $username = $config['username'] ?? null;
+            $password = $config['password'] ?? null;
+            $db = $config['db'] ?? null;
+            $port = $config['port'] ?? null;
+            $charset = $config['charset'] ?? 'utf8mb4';
+        }
+
+        // Now add 'p:' prefix to the hostname for persistent connections
+        if ($host && is_string($host) && strpos($host, 'p:') !== 0) {
+            $host = "p:$host";
+        }
+
+        parent::__construct($host, $username, $password, $db, $port, $charset);
+    }
 
     public function isMySQL8OrHigher(): bool
     {
@@ -64,37 +87,61 @@ final class DatabaseService extends MysqliDb
      */
     public function rawQueryGenerator(string $query, $bindParams = null)
     {
-        $params = ['']; // Create the empty 0 index
         $this->_query = $query;
         $stmt = $this->_prepareQuery();
 
-        if (is_array($bindParams)) {
+        if (!$stmt) {
+            throw new \Exception("Failed to prepare statement: " . $this->mysqli()->error);
+        }
+
+        // Optimize parameter binding
+        if (is_array($bindParams) && !empty($bindParams)) {
+            $types = '';
+            $values = [];
+
             foreach ($bindParams as $val) {
-                $params[0] .= $this->_determineType($val);
-                $params[] = $val;
+                $types .= $this->_determineType($val);
+                $values[] = $val;
             }
-            $stmt->bind_param(...$this->refValues($params));
+
+            // Use reference binding for better performance
+            $bindReferences = array_merge([&$types], $this->createReferences($values));
+            call_user_func_array([$stmt, 'bind_param'], $bindReferences);
         }
 
         $stmt->execute();
+        $result = $stmt->get_result();
 
-        // Initialize $row as an empty array
-        $row = [];
-        $parameters = [];
-
-        $meta = $stmt->result_metadata();
-        while ($field = $meta->fetch_field()) {
-            $parameters[] = &$row[$field->name];
+        if (!$result) {
+            $stmt->close();
+            $this->reset();
+            LoggerUtility::log('error', 'DB Prepare Error: ' . $this->mysqli()->error);
+            throw new \Exception("Failed to get result: " . $this->mysqli()->error);
         }
 
-        call_user_func_array([$stmt, 'bind_result'], $parameters);
-
-        while ($stmt->fetch()) {
+        // Use get_result() instead of binding results manually (more efficient)
+        while ($row = $result->fetch_assoc()) {
             yield $row;
         }
 
+        $result->free();
         $stmt->close();
         $this->reset();
+    }
+
+    /**
+     * Create references for bind_param
+     *
+     * @param array $values
+     * @return array
+     */
+    private function createReferences(array $values): array
+    {
+        $references = [];
+        foreach ($values as $key => $value) {
+            $references[$key] = &$values[$key];
+        }
+        return $references;
     }
 
     /**
@@ -268,46 +315,81 @@ final class DatabaseService extends MysqliDb
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
-            $parser = new Parser($sql);
-            $originalStatement = clone $parser->statements[0];
+            // Get FileCacheUtility from container
+            /** @var FileCacheUtility $fileCache */
+            $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
+            // Generate cache keys
+            $baseSqlKey = 'sql_base_' . hash('sha256', $sql);
             $limitOffsetSet = isset($limit) && isset($offset);
 
-            // --- MAIN QUERY ---
-            $statementForQuery = clone $originalStatement;
+            // For the query SQL with limit/offset
+            $queryCacheKey = $limitOffsetSet
+                ? $baseSqlKey . '_limit_' . $limit . '_' . $offset
+                : $baseSqlKey;
 
-            if ((!isset($statementForQuery->limit) || empty($statementForQuery->limit)) && $limitOffsetSet) {
-                $statementForQuery->limit = new Limit($limit, $offset);
-            }
+            // For the count SQL (doesn't need limit/offset)
+            $countSqlCacheKey = $baseSqlKey . '_count';
 
-            $querySql = $statementForQuery->build();
+            // Get or compute the main query SQL (we'll avoid parsing if cached)
+            $querySql = $fileCache->get($queryCacheKey, function () use ($sql, $limit, $offset, $limitOffsetSet) {
+                // Only parse if not in cache
+                $parser = new Parser($sql);
+                $statementForQuery = clone $parser->statements[0];
 
+                // Apply limit if needed
+                if ((!isset($statementForQuery->limit) || empty($statementForQuery->limit)) && $limitOffsetSet) {
+                    $statementForQuery->limit = new Limit($limit, $offset);
+                }
+
+                return $statementForQuery->build();
+            }, ['sql_queries'], 3600);
+
+            // Execute the main query
             if ($returnGenerator === true) {
                 $queryResult = $this->rawQueryGenerator($querySql, $params);
             } else {
                 $queryResult = $this->rawQuery($querySql, $params);
             }
 
-            // --- COUNT QUERY ---
+            // Get count if needed
             $count = 0;
             if ($limitOffsetSet || $returnGenerator) {
-                $statementForCount = clone $originalStatement;
-                $statementForCount->limit = null;
-                $statementForCount->order = null;
+                // Try to get from session first (fastest)
+                $countQuerySessionKey = hash('sha256', $countSqlCacheKey . json_encode($params));
 
-                if (!empty($originalStatement->group)) {
-                    // Group By exists — need subquery
-                    $innerSql = $statementForCount->build();
-                    $countSql = "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+                if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
+                    $count = $_SESSION['queryCounters'][$countQuerySessionKey];
                 } else {
-                    // No Group By — simpler
-                    $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
-                    $countSql = $statementForCount->build();
-                }
+                    // Get or compute the count SQL
+                    $countSql = $fileCache->get($countSqlCacheKey, function () use ($sql) {
+                        // Only parse if not in cache
+                        $parser = new Parser($sql);
+                        $originalStatement = clone $parser->statements[0];
+                        $statementForCount = clone $originalStatement;
+                        $statementForCount->limit = null;
+                        $statementForCount->order = null;
 
-                $countQuerySessionKey = hash('sha256', $countSql);
-                $count = $_SESSION['queryCounters'][$countQuerySessionKey]
-                    ?? ($_SESSION['queryCounters'][$countQuerySessionKey] = (int)$this->rawQueryOne($countSql)['totalCount']);
+                        if (!empty($originalStatement->group)) {
+                            // Group By exists — need subquery
+                            $innerSql = $statementForCount->build();
+                            return "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+                        } else {
+                            // No Group By — simpler
+                            $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
+                            return $statementForCount->build();
+                        }
+                    }, ['sql_counts'], 3600);
+
+                    // Execute count query
+                    $countResult = $this->rawQueryOne($countSql, $params);
+                    $count = (int)($countResult['totalCount'] ?? 0);
+
+                    if (session_status() === PHP_SESSION_ACTIVE) {
+                        // Cache in session
+                        $_SESSION['queryCounters'][$countQuerySessionKey] = $count;
+                    }
+                }
             } else {
                 $count = count($queryResult);
             }
@@ -480,5 +562,15 @@ final class DatabaseService extends MysqliDb
             LoggerUtility::log('error', "Failed to load data infile: " . $e->getMessage());
             return false;
         }
+    }
+    public function invalidateSqlCache(?FileCacheUtility $fileCache): void
+    {
+        if ($fileCache === null) {
+            // Get FileCacheUtility from container
+            /** @var FileCacheUtility $fileCache */
+            $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+        }
+        // Invalidate SQL cache tags
+        $fileCache->invalidateTags(['sql_queries', 'sql_counts']);
     }
 }

@@ -1,7 +1,16 @@
 <?php
 
+use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
+
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var FileCacheUtility $fileCache */
+$fileCache = ContainerRegistry::get(FileCacheUtility::class);
+
 
 // Check if script is run from command line
 $isCli = php_sapi_name() === 'cli';
@@ -24,5 +33,6 @@ if ($isCli) {
     }
 }
 
+$db->invalidateSqlCache($fileCache);
 // Clear the file cache and echo the result
 echo (ContainerRegistry::get(FileCacheUtility::class))->clear();

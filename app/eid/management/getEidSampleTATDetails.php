@@ -23,7 +23,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 try {
-	$db->beginReadOnlyTransaction();
 
 	$sampleCode = ($general->isSTSInstance()) ? 'remote_sample_code' : 'sample_code';
 	$aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'vl.external_sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_dispatched_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_received_at_lab_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.sample_tested_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_sts_datetime,'%d-%b-%Y')", "DATE_FORMAT(vl.result_printed_on_lis_datetime,'%d-%b-%Y')"];
@@ -147,7 +146,7 @@ try {
 
 	echo JsonUtility::encodeUtf8Json($output);
 
-	$db->commitTransaction();
+
 } catch (Exception $e) {
 	LoggerUtility::log('error', $e->getMessage(), [
 		'code' => $e->getCode(),

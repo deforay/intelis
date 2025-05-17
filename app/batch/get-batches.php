@@ -16,8 +16,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-    $db->beginReadOnlyTransaction();
-
     // Sanitized values from $request object
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
@@ -194,8 +192,12 @@ try {
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);
-
-    $db->commitTransaction();
-} catch (Exception $exc) {
-    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery()
+    ]);
 }

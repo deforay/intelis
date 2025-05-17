@@ -15,7 +15,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 try {
-	$db->beginReadOnlyTransaction();
+
 	$sQuery = "SELECT vl.sample_collection_date,
 				vl.sample_tested_datetime,
 				vl.sample_received_at_lab_datetime,
@@ -96,7 +96,7 @@ try {
 	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 	echo urlencode(basename($filename));
 
-	$db->commitTransaction();
+
 } catch (Exception $e) {
 	LoggerUtility::log('error', $e->getMessage(), [
 		'code' => $e->getCode(),

@@ -25,7 +25,7 @@ $eidResults = $eidService->getEidResults();
 
 try {
 
-    $db->beginReadOnlyTransaction();
+
 
     $tableName = "form_eid";
     $primaryKey = "eid_id";
@@ -246,7 +246,7 @@ try {
 
     echo json_encode($output);
 
-    $db->commitTransaction();
+
 } catch (Exception $e) {
     LoggerUtility::log('error', $e->getMessage(), [
         'file' => $e->getFile(),

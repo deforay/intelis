@@ -28,8 +28,6 @@ try {
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
 
-     $db->beginReadOnlyTransaction();
-
      $formId = (int) $general->getGlobalConfig('vl_form');
 
      /** @var FacilitiesService $facilitiesService */
@@ -463,7 +461,6 @@ try {
      }
      echo JsonUtility::encodeUtf8Json($output);
 
-     $db->commitTransaction();
 } catch (Throwable $e) {
      LoggerUtility::logError($e->getMessage(), [
           'exception' => $e,

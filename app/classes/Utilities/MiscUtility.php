@@ -717,8 +717,6 @@ final class MiscUtility
     }
 
 
-
-
     public static function touchLockFile(string $file): void
     {
         touch(self::getLockFile($file));
@@ -770,8 +768,6 @@ final class MiscUtility
             exit(131);
         });
     }
-
-
 
     /**
      * Checks if the given string is base64 encoded.
