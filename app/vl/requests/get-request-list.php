@@ -166,23 +166,23 @@ try {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
      }
      if (!empty($_POST['sampleCollectionDate'])) {
-          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+          [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
      }
      if (isset($_POST['sampleReceivedDateAtLab']) && trim((string) $_POST['sampleReceivedDateAtLab']) != '') {
-          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '');
-          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate'";
+          [$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDateAtLab'] ?? '', includeTime: true);
+          $sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$labStartDate' AND '$labEndDate'";
      }
      if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate']) != '') {
-          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
-          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$testedStartDate' AND '$testedEndDate'";
+          [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '', includeTime: true);
+          $sWhere[] = " vl.sample_tested_datetime BETWEEN '$testedStartDate' AND '$testedEndDate'";
      }
      /* Viral load filter */
      if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
           if ($_POST['vLoad'] === 'suppressed') {
-               $sWhere[] = " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
+               $sWhere[] = " vl.vl_result_category = 'suppressed' AND vl.vl_result_category is NOT NULL ";
           } else {
-               $sWhere[] = "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
+               $sWhere[] = "  vl.vl_result_category = 'not suppressed' AND vl.vl_result_category is NOT NULL ";
           }
      }
 
@@ -239,47 +239,47 @@ try {
           $sWhere[] = ' (vl.result IS NULL OR vl.result = "") ';
      }
      if (isset($_POST['srcOfReq']) && trim((string) $_POST['srcOfReq']) != '') {
-          $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReq'] . '" ';
+          $sWhere[] = ' vl.source_of_request = "' . $_POST['srcOfReq'] . '" ';
      }
      /* Source of request show model conditions */
      if (isset($_POST['dateRangeModel']) && trim((string) $_POST['dateRangeModel']) != '') {
-          $sWhere[] = ' DATE(vl.sample_collection_date) like "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
+          $sWhere[] = ' DATE(vl.sample_collection_date) = "' . DateUtility::isoDateFormat($_POST['dateRangeModel']) . '"';
      }
      if (isset($_POST['srcOfReqModel']) && trim((string) $_POST['srcOfReqModel']) != '') {
-          $sWhere[] = ' vl.source_of_request like "' . $_POST['srcOfReqModel'] . '" ';
+          $sWhere[] = ' vl.source_of_request = "' . $_POST['srcOfReqModel'] . '" ';
      }
      if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) != '') {
-          $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
+          $sWhere[] = ' vl.lab_id = "' . $_POST['labIdModel'] . '" ';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\REJECTED) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected = "yes"';
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB) {
           $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == SAMPLE_STATUS\ACCEPTED) {
-          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+          $sWhere[] = ' vl.result is not null AND vl.result != "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
      }
      if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
-          $sWhere[] = " IFNULL(vl.result_sent_to_source, '') like 'sent' ";
+          $sWhere[] = " IFNULL(vl.result_sent_to_source, '') = 'sent' ";
      }
      if (isset($_POST['patientId']) && $_POST['patientId'] != "") {
-          $sWhere[] = ' vl.patient_art_no like "' . $_POST['patientId'] . '"';
+          $sWhere[] = ' vl.patient_art_no = "' . $_POST['patientId'] . '"';
      }
      if (isset($_POST['patientName']) && $_POST['patientName'] != "") {
           $sWhere[] = " CONCAT(COALESCE(vl.patient_first_name,''), COALESCE(vl.patient_middle_name,''),COALESCE(vl.patient_last_name,'')) like '%" . $_POST['patientName'] . "%'";
      }
      if (!empty($_POST['rejectedSamples']) && $_POST['rejectedSamples'] == 'no') {
-          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') not like 'yes' ";
+          $sWhere[] = " IFNULL(vl.is_sample_rejected, 'no') != 'yes' ";
      }
      if (!empty($_POST['requestCreatedDatetime'])) {
-          [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '');
-          $sWhere[] = " DATE(vl.request_created_datetime) BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
+          [$sRequestCreatedDatetime, $eRequestCreatedDatetime] = DateUtility::convertDateRange($_POST['requestCreatedDatetime'] ?? '', includeTime: true);
+          $sWhere[] = " vl.request_created_datetime BETWEEN '$sRequestCreatedDatetime' AND '$eRequestCreatedDatetime' ";
      }
 
      if (isset($_POST['printDate']) && trim((string) $_POST['printDate']) != '') {
-          [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '');
-          $sWhere[] = " DATE(vl.result_printed_datetime) BETWEEN '$sPrintDate' AND '$ePrintDate'";
+          [$sPrintDate, $ePrintDate] = DateUtility::convertDateRange($_POST['printDate'] ?? '', includeTime: true);
+          $sWhere[] = " vl.result_printed_datetime BETWEEN '$sPrintDate' AND '$ePrintDate'";
      }
 
      if ($general->isSTSInstance()) {

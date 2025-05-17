@@ -241,9 +241,9 @@ final class DateUtility
         };
     }
 
-    public static function convertDateRange(?string $dateRange, $seperator = "to"): array
+    public static function convertDateRange(?string $dateRange, $seperator = "to", bool $includeTime = false): array
     {
-        return MemoUtility::remember(function () use ($dateRange, $seperator) {
+        return MemoUtility::remember(function () use ($dateRange, $seperator, $includeTime) {
             if (empty($dateRange)) {
                 return ['', ''];
             }
@@ -251,12 +251,36 @@ final class DateUtility
             $dates = explode($seperator, $dateRange ?? '');
             $dates = array_map('trim', $dates);
 
-            $startDate = !empty($dates[0]) ? self::isoDateFormat($dates[0]) : '';
-            $endDate = !empty($dates[1]) ? self::isoDateFormat($dates[1]) : '';
+            $startDate = '';
+            $endDate = '';
+
+            if (!empty($dates[0])) {
+                $start = Carbon::parse($dates[0]);
+                if ($includeTime) {
+                    $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
+                        ? $start->format('Y-m-d H:i:s')
+                        : $start->startOfDay()->format('Y-m-d H:i:s');
+                } else {
+                    $startDate = $start->format('Y-m-d');
+                }
+            }
+
+            if (!empty($dates[1])) {
+                $end = Carbon::parse($dates[1]);
+                if ($includeTime) {
+                    $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
+                        ? $end->format('Y-m-d H:i:s')
+                        : $end->addDay()->startOfDay()->format('Y-m-d H:i:s'); // exclusive end
+                } else {
+                    $endDate = $end->format('Y-m-d');
+                }
+            }
 
             return [$startDate, $endDate];
         });
     }
+
+
 
     /**
      * Returns the date that is a certain number of months before the current date.
