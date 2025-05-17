@@ -94,7 +94,7 @@ final class DatabaseService extends MysqliDb
             throw new \Exception("Failed to prepare statement: " . $this->mysqli()->error);
         }
 
-        // Optimize parameter binding
+        // parameter binding
         if (is_array($bindParams) && !empty($bindParams)) {
             $types = '';
             $values = [];
@@ -104,7 +104,7 @@ final class DatabaseService extends MysqliDb
                 $values[] = $val;
             }
 
-            // Use reference binding for better performance
+            // Use reference binding
             $bindReferences = array_merge([&$types], $this->createReferences($values));
             call_user_func_array([$stmt, 'bind_param'], $bindReferences);
         }
@@ -112,18 +112,19 @@ final class DatabaseService extends MysqliDb
         $stmt->execute();
         $result = $stmt->get_result();
 
-        if (!$result) {
+        if ($result === false) { // Only false indicates failure
             $stmt->close();
             $this->reset();
-            LoggerUtility::log('error', 'DB Prepare Error: ' . $this->mysqli()->error);
+            LoggerUtility::log('error', 'DB Result Error: ' . $this->mysqli()->error);
             throw new \Exception("Failed to get result: " . $this->mysqli()->error);
         }
 
-        // Use get_result() instead of binding results manually (more efficient)
+        // Fetch results row by row
         while ($row = $result->fetch_assoc()) {
             yield $row;
         }
 
+        // These should always be called, even for empty result sets
         $result->free();
         $stmt->close();
         $this->reset();
