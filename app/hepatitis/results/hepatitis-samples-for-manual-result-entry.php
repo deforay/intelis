@@ -2,13 +2,13 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\HepatitisService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -19,9 +19,6 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
-
-     $db->beginReadOnlyTransaction();
-
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
@@ -192,8 +189,12 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
-
-     $db->commitTransaction();
-} catch (Exception $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery(),
+     ]);
 }

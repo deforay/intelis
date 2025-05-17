@@ -1,21 +1,18 @@
 <?php
 
 
+use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Utilities\DateUtility;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
-use App\Utilities\LoggerUtility;
 
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
-
-    $db->beginReadOnlyTransaction();
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -237,8 +234,12 @@ try {
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);
-
-    $db->commitTransaction();
-} catch (Exception $exc) {
-    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
+    ]);
 }

@@ -1,4 +1,13 @@
+#!/usr/bin/env php
 <?php
+
+// Check if script is run from command line
+$isCli = php_sapi_name() === 'cli';
+// Require bootstrap file if run from command line
+if ($isCli) {
+    require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "bootstrap.php");
+}
+
 
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
@@ -12,13 +21,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
 
-// Check if script is run from command line
-$isCli = php_sapi_name() === 'cli';
-
-// Require bootstrap file if run from command line
-if ($isCli) {
-    require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "bootstrap.php");
-}
 
 // If not run from command line and 'instance' is set in session, unset it
 if (!$isCli && isset($_SESSION['instance'])) {

@@ -33,8 +33,6 @@ try {
      $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
      $testRequestsService->processSampleCodeQueue();
 
-     $db->beginReadOnlyTransaction();
-
      $gconfig = $general->getGlobalConfig();
      $sarr = $general->getSystemConfig();
      $key = (string) $general->getGlobalConfig('key');
@@ -342,8 +340,13 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery(),
 
-     $db->commitTransaction();
-} catch (Exception $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+     ]);
 }

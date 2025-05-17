@@ -20,8 +20,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 try {
 
-     $db->beginReadOnlyTransaction();
-
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
      $configQuery = "SELECT `value` FROM global_config where name ='vl_form'";
@@ -114,7 +112,7 @@ try {
      }
 
      if (!empty($sWhere)) {
-          $sQuery = "$sQuery WHERE ". implode(' AND ', $sWhere);
+          $sQuery = "$sQuery WHERE " . implode(' AND ', $sWhere);
      }
 
      $sQuery = "$sQuery ORDER BY vl.last_modified_datetime DESC";
@@ -159,8 +157,12 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
-
-     $db->commitTransaction();
-} catch (Exception $exc) {
-     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
+          'file' => $e->getFile(),
+          'line' => $e->getLine(),
+          'last_db_error' => $db->getLastError(),
+          'last_db_query' => $db->getLastQuery(),
+     ]);
 }

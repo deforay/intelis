@@ -17,8 +17,6 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
-    $db->beginReadOnlyTransaction();
-
     $tableName = "r_recommended_corrective_actions";
     $primaryKey = "recommended_corrective_action_id";
     $testType = $_POST['testType'];
@@ -132,7 +130,13 @@ try {
 
     echo JsonUtility::encodeUtf8Json($output);
 
-    $db->commitTransaction();
-} catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+} catch (Throwable $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'trace' => $e->getTraceAsString(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
+
+    ]);
 }

@@ -24,13 +24,13 @@ $general = ContainerRegistry::get(CommonService::class);
 
 foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
 
-    if($isModuleEnabled === false) {
+    if ($isModuleEnabled === false) {
         continue;
     }
 
     if ($isCli) {
-        echo PHP_EOL. "------------------" . PHP_EOL;
-        echo "PROCESSING ". strtoupper($module) . PHP_EOL;
+        echo PHP_EOL . "------------------" . PHP_EOL;
+        echo "PROCESSING " . strtoupper($module) . PHP_EOL;
         echo "------------------" . PHP_EOL;
     }
     $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
@@ -55,14 +55,14 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
         $batchNumber = 0;
         while (true) {
             try {
-                $db->beginReadOnlyTransaction();
+
                 $db->reset();
                 $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
                 $db->where("IFNULL(locked, 'no') = 'no'");
                 $db->where("DATEDIFF(CURRENT_DATE, `last_modified_datetime`) > $lockAfterDays");
                 $db->pageLimit = $batchSize;
                 $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
-                $db->commitTransaction();
+
 
                 if (empty($rows)) {
                     echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
@@ -113,14 +113,13 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
             while (true) {
                 try {
 
-                    $db->beginReadOnlyTransaction();
                     $db->reset();
                     $db->where("result_status NOT IN  (" . implode(",", $statusCodes) . ")");
                     $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
                     $db->orderBy($primaryKey, "ASC");
                     $db->pageLimit = $batchSize;
                     $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
-                    $db->commitTransaction();
+
 
                     if (empty($rows)) {
                         echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;
@@ -179,13 +178,13 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
         $batchNumber = 0;
         while (true) {
             try {
-                $db->beginReadOnlyTransaction();
+
                 $db->reset();
                 $db->where("result_status IN  (" . implode(",", $statusCodes) . ")");
                 $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) > $expiryDays");
                 $db->pageLimit = $batchSize;
                 $rows = $db->get($tableName, [$offset, $batchSize], $primaryKey);
-                $db->commitTransaction();
+
 
                 if (empty($rows)) {
                     echo "$batchNumber batches of $batchSize samples processed." . PHP_EOL;

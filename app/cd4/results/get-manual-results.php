@@ -20,8 +20,6 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $db = ContainerRegistry::get(DatabaseService::class);
 try {
 
-     $db->beginReadOnlyTransaction();
-
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
@@ -302,15 +300,12 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
-
-     $db->commitTransaction();
-} catch (Exception $e) {
-     LoggerUtility::log('error', $e->getMessage(), [
+} catch (Throwable $e) {
+     LoggerUtility::logError($e->getMessage(), [
+          'trace' => $e->getTraceAsString(),
           'file' => $e->getFile(),
           'line' => $e->getLine(),
-          'code' => $e->getCode(),
+          'last_db_error' => $db->getLastError(),
           'last_db_query' => $db->getLastQuery(),
-          'las_db_error' => $db->getLastError(),
-          'trace' => $e->getTraceAsString()
      ]);
 }
