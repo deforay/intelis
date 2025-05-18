@@ -54,9 +54,7 @@ try {
      /* Indexed column (used for fast and accurate table cardinality) */
      $sIndexColumn = $primaryKey;
      $sTable = $tableName;
-     /*
-* Paging
-*/
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];

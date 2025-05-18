@@ -316,35 +316,22 @@ final class DatabaseService extends MysqliDb
     public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
-            // Get FileCacheUtility from container
-            /** @var FileCacheUtility $fileCache */
-            $fileCache = ContainerRegistry::get(FileCacheUtility::class);
-
-            // Generate cache keys
-            $baseSqlKey = 'sql_base_' . hash('sha256', $sql);
             $limitOffsetSet = isset($limit) && isset($offset);
 
-            // For the query SQL with limit/offset
-            $queryCacheKey = $limitOffsetSet
-                ? $baseSqlKey . '_limit_' . $limit . '_' . $offset
-                : $baseSqlKey;
-
-            // For the count SQL (doesn't need limit/offset)
-            $countSqlCacheKey = $baseSqlKey . '_count';
-
-            // Get or compute the main query SQL (we'll avoid parsing if cached)
-            $querySql = $fileCache->get($queryCacheKey, function () use ($sql, $limit, $offset, $limitOffsetSet) {
-                // Only parse if not in cache
+            // Apply limit/offset directly to the SQL query if needed
+            $querySql = $sql;
+            if ($limitOffsetSet) {
+                // Parse the query and add limit/offset
                 $parser = new Parser($sql);
                 $statementForQuery = clone $parser->statements[0];
 
                 // Apply limit if needed
-                if ((!isset($statementForQuery->limit) || empty($statementForQuery->limit)) && $limitOffsetSet) {
+                if (!isset($statementForQuery->limit) || empty($statementForQuery->limit)) {
                     $statementForQuery->limit = new Limit($limit, $offset);
                 }
 
-                return $statementForQuery->build();
-            }, ['sql_queries'], 3600);
+                $querySql = $statementForQuery->build();
+            }
 
             // Execute the main query
             if ($returnGenerator === true) {
@@ -357,30 +344,28 @@ final class DatabaseService extends MysqliDb
             $count = 0;
             if ($limitOffsetSet || $returnGenerator) {
                 // Try to get from session first (fastest)
-                $countQuerySessionKey = hash('sha256', $countSqlCacheKey . json_encode($params));
+                $countQuerySessionKey = hash('sha256', $sql . json_encode($params));
 
                 if (session_status() === PHP_SESSION_ACTIVE && isset($_SESSION['queryCounters'][$countQuerySessionKey])) {
                     $count = $_SESSION['queryCounters'][$countQuerySessionKey];
                 } else {
-                    // Get or compute the count SQL
-                    $countSql = $fileCache->get($countSqlCacheKey, function () use ($sql) {
-                        // Only parse if not in cache
-                        $parser = new Parser($sql);
-                        $originalStatement = clone $parser->statements[0];
-                        $statementForCount = clone $originalStatement;
-                        $statementForCount->limit = null;
-                        $statementForCount->order = null;
+                    // Generate the count SQL
+                    $parser = new Parser($sql);
+                    $originalStatement = clone $parser->statements[0];
+                    $statementForCount = clone $originalStatement;
+                    $statementForCount->limit = null;
+                    $statementForCount->order = null;
 
-                        if (!empty($originalStatement->group)) {
-                            // Group By exists — need subquery
-                            $innerSql = $statementForCount->build();
-                            return "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
-                        } else {
-                            // No Group By — simpler
-                            $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
-                            return $statementForCount->build();
-                        }
-                    }, ['sql_counts'], 3600);
+                    $countSql = '';
+                    if (!empty($originalStatement->group)) {
+                        // Group By exists — need subquery
+                        $innerSql = $statementForCount->build();
+                        $countSql = "SELECT COUNT(*) AS totalCount FROM ($innerSql) AS subquery";
+                    } else {
+                        // No Group By — simpler
+                        $statementForCount->expr = [new Expression('COUNT(*) AS totalCount')];
+                        $countSql = $statementForCount->build();
+                    }
 
                     // Execute count query
                     $countResult = $this->rawQueryOne($countSql, $params);
@@ -563,15 +548,5 @@ final class DatabaseService extends MysqliDb
             LoggerUtility::log('error', "Failed to load data infile: " . $e->getMessage());
             return false;
         }
-    }
-    public function invalidateSqlCache(?FileCacheUtility $fileCache): void
-    {
-        if ($fileCache === null) {
-            // Get FileCacheUtility from container
-            /** @var FileCacheUtility $fileCache */
-            $fileCache = ContainerRegistry::get(FileCacheUtility::class);
-        }
-        // Invalidate SQL cache tags
-        $fileCache->invalidateTags(['sql_queries', 'sql_counts']);
     }
 }

@@ -41,18 +41,14 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
-* Paging
-*/
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-* Ordering
-*/
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {
@@ -93,10 +89,7 @@ try {
 
 
 
-     /*
-          * SQL queries
-          * Get data to display
-          */
+
      $aWhere = '';
      $sQuery = "SELECT vl.*, rtbr.result as lamResult FROM form_tb as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

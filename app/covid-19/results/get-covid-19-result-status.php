@@ -38,18 +38,14 @@ if ($general->isSTSInstance()) {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-* Paging
-*/
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-* Ordering
-*/
+
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -91,10 +87,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 
-/*
-          * SQL queries
-          * Get data to display
-          */
+
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.batch_code,f.facility_name FROM form_covid19 as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -165,9 +158,7 @@ $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
 $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 $_SESSION['covid19RequestSearchResultQueryCount'] = $iTotal;
-/*
-          * Output
-          */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,

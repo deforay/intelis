@@ -41,18 +41,14 @@ try {
      $sIndexColumn = $primaryKey;
 
      $sTable = $tableName;
-     /*
-* Paging
-*/
+
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
           $sOffset = $_POST['iDisplayStart'];
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-* Ordering
-*/
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {
@@ -91,10 +87,7 @@ try {
           $sWhere[] = $sWhereSub;
      }
 
-     /*
-          * SQL queries
-          * Get data to display
-          */
+
      $aWhere = '';
      $sQuery = "SELECT  * FROM form_vl as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id LEFT JOIN r_vl_sample_type as s ON s.sample_id=vl.specimen_type INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN r_vl_art_regimen as art ON vl.current_regimen=art.art_id LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 

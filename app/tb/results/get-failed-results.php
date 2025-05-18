@@ -45,18 +45,14 @@ try {
     $sIndexColumn = $primaryKey;
 
     $sTable = $tableName;
-    /*
-* Paging
-*/
+
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
         $sLimit = $_POST['iDisplayLength'];
     }
 
-    /*
-* Ordering
-*/
+
 
     $sOrder = "";
     if (isset($_POST['iSortCol_0'])) {
@@ -99,10 +95,7 @@ try {
 
 
 
-    /*
-          * SQL queries
-          * Get data to display
-          */
+
 
     $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code
             FROM form_tb as vl

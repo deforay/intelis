@@ -38,18 +38,14 @@ if ($general->isSTSInstance()) {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-* Paging
-*/
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
      $sOffset = $_POST['iDisplayStart'];
      $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-* Ordering
-*/
+
 
 $sOrder = "";
 if (isset($_POST['iSortCol_0'])) {
@@ -91,10 +87,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-/*
-          * SQL queries
-          * Get data to display
-          */
+
 $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, vl.last_modified_datetime FROM form_generic as vl
           LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
           LEFT JOIN r_generic_sample_types as s ON s.sample_type_id=vl.specimen_type

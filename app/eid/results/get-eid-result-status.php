@@ -1,12 +1,10 @@
 <?php
 
-use App\Services\DatabaseService;
 use App\Services\EidService;
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 use App\Utilities\DateUtility;
-
-
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 
 
@@ -43,67 +41,29 @@ if ($general->isSTSInstance()) {
 $sIndexColumn = $primaryKey;
 
 $sTable = $tableName;
-/*
-* Paging
-*/
+
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sOffset = $_POST['iDisplayStart'];
     $sLimit = $_POST['iDisplayLength'];
 }
 
-/*
-* Ordering
-*/
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = '';
-    foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if (!empty($aColumns[$i])) {
-                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                }
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+if (!empty($columnSearch) && $columnSearch != '') {
+    $sWhere[] = $columnSearch;
 }
 
 
 
-/*
-          * SQL queries
-          * Get data to display
-          */
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*, f.facility_name,
-               b.batch_code
+
+$sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,
+                f.facility_name,
+                b.batch_code
             FROM form_eid as vl
             INNER JOIN facility_details as f ON vl.facility_id=f.facility_id
             INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
@@ -182,9 +142,7 @@ $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
 
 $_SESSION['eidRequestSearchResultQueryCount'] = $iTotal;
 
-/*
-          * Output
-          */
+
 $output = array(
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $iTotal,
@@ -196,7 +154,7 @@ $vlView = false;
 if ((_isAllowed("/eid/requests/eid-edit-request.php"))) {
     $vlRequest = true;
 }
-if ((_isAllowed("eid-requests.php"))) {
+if ((_isAllowed("/eid/requests/eid-requests.phpp"))) {
     $vlView = true;
 }
 

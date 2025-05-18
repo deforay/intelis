@@ -44,9 +44,7 @@ try {
     $sIndexColumn = $primaryKey;
 
     $sTable = $tableName;
-    /*
-* Paging
-*/
+
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
@@ -81,10 +79,7 @@ try {
 
 
 
-    /*
-          * SQL queries
-          * Get data to display
-          */
+
 
     $sQuery = "SELECT vl.*, f.*, ts.status_name, b.batch_code FROM form_cd4 as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id

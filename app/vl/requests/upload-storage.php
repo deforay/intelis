@@ -111,7 +111,7 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 										<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">
 											<?php echo _translate("Submit"); ?>
 										</a>
-										<a href="vl-requests.php" class="btn btn-default">
+										<a href="/vl/requests/vl-requests.php" class="btn btn-default">
 											<?php echo _translate("Cancel"); ?>
 										</a>
 									</div>
