@@ -541,11 +541,7 @@ if (!empty($result)) {
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("SIGNATURE") . '</td>';
                $html .= '<td style="line-height:11px;font-size:11px;font-weight:bold;text-align:left;">' . _translate("DATE") . '</td>';
                $html .= '</tr>';
-               if ($approvedBySignatureExists) {
-                    $html .= '<tr>';
-                    $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;vertical-align: bottom;"><img src="' . $approvedBySignaturePath . '" style="width:100px;margin-top:-20px;" /><br>came</td>';
-                    $html .= '</tr>';
-               }
+
                $html .= '<tr>';
                $html .= '<td style="line-height:11px;font-size:11px;text-align:left;">' . $resultApprovedBy . '</td>';
                if ($approvedBySignatureExists) {
