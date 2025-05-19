@@ -42,7 +42,7 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	.logLine {
-		color:#000;
+		color: #000;
 		font-size: 15px;
 		margin: 5px 0;
 		padding: 11px 15px 11px 25px;
@@ -254,7 +254,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<!-- Server Time Display -->
 						<div style="text-align: right; margin-top: 15px;">
 							<strong><?= _translate("Current Server Date and Time"); ?> : </strong>
-							<?= DateUtility::getCurrentDateTime('Y-m-d\TH:i:s.uP') ?>
+							<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime() , includeTime: true, withSeconds: true); ?>
 						</div>
 					</div>
 
@@ -406,16 +406,6 @@ require_once APPLICATION_PATH . '/header.php';
 		return logText;
 	}
 
-	// Function to bind click events for log lines
-	function bindLogLineClick() {
-		document.querySelectorAll('.logLine').forEach(function(logLine) {
-			logLine.addEventListener('click', function() {
-				const lineNumber = logLine.getAttribute('data-linenumber');
-				copyToClipboard(logLine.innerHTML, lineNumber);
-			});
-		});
-	}
-
 	// Function to apply filters to logs
 	function applyFilters() {
 		const logViewer = document.getElementById('logViewer');
@@ -478,7 +468,8 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	// Function to export logs as original raw TXT
-	function exportLogsTXT() {
+	// Function to export logs as HTML or raw TXT
+	function exportLogFile() {
 		// We need to request the original log content from the server
 		const date = $('#userDate').val();
 		const currentFilter = $('#logLevelFilters .active').data('level') || 'all';
@@ -507,14 +498,62 @@ require_once APPLICATION_PATH . '/header.php';
 			data: {
 				date: date,
 				log_type: logType,
-				export_format: 'raw',
+				export_format: 'raw', // Note: even though we named the parameter 'raw', the response appears to include HTML
 				search: searchTerm,
 				level: currentFilter
 			},
 			success: function(data) {
-				// Create download link with properly formatted date
-				const filename = `logs-${formattedDate}.txt`;
-				downloadFile(data, filename, 'text/plain');
+				// Create download link with properly formatted date and current timestamp
+				const currentDateTime = new Date();
+
+				// Format as dd-mm-yyyy-hh-ii-ss
+				const formattedDateTime =
+					padZero(currentDateTime.getDate()) + '-' +
+					padZero(currentDateTime.getMonth() + 1) + '-' +
+					currentDateTime.getFullYear() + '-' +
+					padZero(currentDateTime.getHours()) + '-' +
+					padZero(currentDateTime.getMinutes()) + '-' +
+					padZero(currentDateTime.getSeconds());
+
+				// Check if the data contains HTML tags
+				const containsHtml = /<[a-z][\s\S]*>/i.test(data);
+
+				// Set file extension and content type based on content
+				const fileExtension = containsHtml ? 'html' : 'txt';
+				const contentType = containsHtml ? 'text/html' : 'text/plain';
+
+				const filename = `logs-${formattedDate}-${formattedDateTime}.${fileExtension}`;
+
+				// If it's HTML content, wrap it in basic HTML structure for better viewing
+				if (containsHtml) {
+					const htmlContent = `<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Log Export - ${formattedDate}</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; }
+        .logLine { margin-bottom: 20px; border-left: 3px solid #4CAF50; padding: 10px; background-color: #f9f9f9; }
+        .log-error { border-left-color: #dc3545; }
+        .log-warning { border-left-color: #ffc107; }
+        .log-info { border-left-color: #17a2b8; }
+        .log-debug { border-left-color: #6c757d; }
+        .lineNumber { color: #999; font-weight: bold; margin-right: 10px; }
+        span[style*="e83e8c"] { background-color: rgba(232, 62, 140, 0.1); padding: 2px 5px; border-radius: 3px; }
+    </style>
+</head>
+<body>
+    <h1>Log Export - ${formattedDate}</h1>
+    <p>Exported on: ${currentDateTime.toLocaleString()}</p>
+    <div class="log-container">
+        ${data}
+    </div>
+</body>
+</html>`;
+					downloadFile(htmlContent, filename, contentType);
+				} else {
+					downloadFile(data, filename, contentType);
+				}
 			},
 			error: function() {
 				Toastify({
@@ -530,6 +569,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 	// Helper function to download file
 	function downloadFile(content, fileName, contentType) {
+		alert('Downloading file: ' + fileName);
 		const a = document.createElement('a');
 		const file = new Blob([content], {
 			type: contentType
@@ -615,7 +655,6 @@ require_once APPLICATION_PATH . '/header.php';
 							$('#logViewer').append('<div class="logLine">No more logs.</div>');
 						} else {
 							start += logLines.length; // Update the start index based on actual lines returned
-							bindLogLineClick(); // Bind click event to new log lines
 							applyFilters(); // Apply current filters to new logs
 						}
 					}
@@ -681,7 +720,7 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 
 		// Bind export buttons
-		$('#exportTxtButton').click(exportLogsTXT);
+		$('#exportTxtButton').click(exportLogFile);
 
 		// Load initial application logs on page load
 		viewApplicationLogs();

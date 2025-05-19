@@ -61,6 +61,10 @@ function detectLogLevel($line)
 }
 
 // Function to format application log entries for better readability
+/**
+ * Format application log entries for better readability
+ * Uses DateUtility::humanReadableDateFormat for ISO timestamps
+ */
 function formatApplicationLogEntry($entry)
 {
     // First, let's handle the stack trace line numbers
@@ -70,13 +74,31 @@ function formatApplicationLogEntry($entry)
     $entry = preg_replace('/\\n#(\d+)/', '<br/><span style="color:#e83e8c;font-weight:bold;">#$1</span>', $entry);
 
     // Also catch literal \n followed by # without escape
-    $entry = str_replace('\n#', '<br/><span style="color:#e83e8c;font-weight:bold;">#', $entry);
+    $entry = str_replace('\n#',  '<br/><span style="color:#e83e8c;font-weight:bold;">#', $entry);
 
-    // Replace common log patterns for better readability
+    // Format timestamps with DateUtility (using callback function)
+    $entry = preg_replace_callback(
+        '/(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2})?)/i',
+        function ($matches) {
+            // Get the ISO timestamp
+            $isoTimestamp = $matches[1];
+
+            try {
+                // Convert to human-readable format using DateUtility
+                $humanReadable = DateUtility::humanReadableDateFormat($isoTimestamp, includeTime: true, withSeconds: true);
+
+                // Return formatted timestamp
+                return '<strong title="' . htmlspecialchars($isoTimestamp) . '">' . $humanReadable . '</strong>';
+            } catch (Exception $e) {
+                // If conversion fails, return the original timestamp with formatting
+                return '<strong>' . $isoTimestamp . '</strong>';
+            }
+        },
+        $entry
+    );
+
+    // Replace other patterns for better readability
     $patterns = [
-        // Match and highlight timestamps
-        '/(\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}:\d{2}(?:\.\d+)?(?:[+-]\d{2}:\d{2})?)/i' => '<strong>$1</strong>',
-
         // Match and highlight specific error keywords
         '/(exception|error|fatal|warning|deprecated)/i' => '<span style="color:#dc3545;font-weight:bold;">$1</span>',
 
@@ -172,7 +194,8 @@ function formatPhpErrorLogEntry($entry)
 }
 
 // Function to create a log line with click handling
-function createLogLine($content, $lineNumber, $logLevel) {
+function createLogLine($content, $lineNumber, $logLevel)
+{
     // Create the log line with onclick handler
     return '<div class="logLine log-' . $logLevel . '" data-linenumber="' . $lineNumber . '" data-level="' . $logLevel . '" onclick="copyToClipboard(this.innerHTML, ' . $lineNumber . ')">
         <span class="lineNumber">' . $lineNumber . '</span>' . $content . '</div>';
