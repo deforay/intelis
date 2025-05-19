@@ -46,6 +46,7 @@ $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 $overwriteLocked = false; // Default: exclude locked samples
 $lastInterfaceSync = null;
+$silent = false;
 
 foreach ($argv as $arg) {
     if (str_contains($arg, 'force')) {
@@ -62,7 +63,12 @@ foreach ($argv as $arg) {
             $overwriteLocked = true;
         }
     }
+
+    if (str_contains($arg, 'silent')) {
+        $silent = true;
+    }
 }
+
 
 
 $lockFile = MiscUtility::getLockFile(__FILE__);
@@ -428,6 +434,10 @@ try {
                     'data_sync' => 0
                 ];
 
+                if($silent === true){
+                    unset($data['last_modified_datetime']);
+                }
+
                 if ($formId === COUNTRY\CAMEROON && !empty($result['raw_text'])) {
                     $sampleCode = $tableInfo['sample_code'];
 
@@ -493,6 +503,10 @@ try {
                     'data_sync' => 0
                 ];
 
+                if($silent === true){
+                    unset($data['last_modified_datetime']);
+                }
+
                 $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
                 $queryStatus = $db->connection('default')->update('form_eid', $data);
                 $numberOfResults++;
@@ -555,6 +569,10 @@ try {
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
                 ];
+
+                if($silent === true){
+                    unset($data['last_modified_datetime']);
+                }
 
                 $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
                 $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
