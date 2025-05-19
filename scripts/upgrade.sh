@@ -138,6 +138,103 @@ fi
 
 config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
+# Calculate total system memory in MB
+total_mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
+total_mem_mb=$((total_mem_kb / 1024))
+total_mem_gb=$((total_mem_mb / 1024))
+
+# Calculate buffer pool size (70% of total RAM)
+buffer_pool_size_gb=$((total_mem_gb * 70 / 100))
+
+# Safety check for small RAM systems
+if [ "$buffer_pool_size_gb" -lt 1 ]; then
+    buffer_pool_size="512M"
+else
+    buffer_pool_size="${buffer_pool_size_gb}G"
+fi
+
+# Calculate other memory-related settings
+# Scale these settings based on available memory
+if [ $total_mem_gb -lt 8 ]; then
+    # Low memory server
+    join_buffer="1M"
+    sort_buffer="2M"
+    read_rnd_buffer="2M"
+    read_buffer="1M"
+    tmp_table="32M"
+    max_heap="32M"
+    log_file_size="256M"
+    log_buffer="8M"
+elif [ $total_mem_gb -lt 16 ]; then
+    # Medium memory server
+    join_buffer="2M"
+    sort_buffer="2M"
+    read_rnd_buffer="4M"
+    read_buffer="1M"
+    tmp_table="64M"
+    max_heap="64M"
+    log_file_size="512M"
+    log_buffer="16M"
+elif [ $total_mem_gb -lt 32 ]; then
+    # High memory server
+    join_buffer="4M"
+    sort_buffer="4M"
+    read_rnd_buffer="8M"
+    read_buffer="2M"
+    tmp_table="128M"
+    max_heap="128M"
+    log_file_size="1G"
+    log_buffer="32M"
+else
+    # Very high memory server
+    join_buffer="8M"
+    sort_buffer="8M"
+    read_rnd_buffer="16M"
+    read_buffer="4M"
+    tmp_table="256M"
+    max_heap="256M"
+    log_file_size="2G"
+    log_buffer="64M"
+fi
+
+# Calculate max connections based on memory
+# A rough estimate: 1GB = 100 connections
+max_connections=$((total_mem_gb * 100))
+# Cap maximum connections at 1000 for safety
+if [ $max_connections -gt 1000 ]; then
+    max_connections=1000
+fi
+
+# Calculate I/O capacity based on storage type
+# Check if we're using SSD
+if [ -d "/sys/block" ]; then
+    # Detect if there's an SSD in the system
+    ssd_detected=false
+    for device in /sys/block/*/queue/rotational; do
+        if [ -e "$device" ] && [ "$(cat "$device")" = "0" ]; then
+            ssd_detected=true
+            break
+        fi
+    done
+
+    if [ "$ssd_detected" = true ]; then
+        io_capacity=2000  # Higher for SSD
+    else
+        io_capacity=500   # Lower for HDD
+    fi
+else
+    # Default value if we can't detect
+    io_capacity=1000
+fi
+
+# Create directory for slow query logs
+mkdir -p /var/log/mysql
+touch /var/log/mysql/mysql-slow.log
+chown mysql:mysql /var/log/mysql/mysql-slow.log
+
+# Detect MySQL version for version-specific settings
+mysql_version=$(mysql -V | grep -oP '\d+\.\d+' | head -1 | tr -d '\n')
+print info "MySQL version detected: ${mysql_version}"
 
 # --- define what we want ---
 declare -A mysql_settings=(
@@ -147,7 +244,53 @@ declare -A mysql_settings=(
     ["collation-server"]="utf8mb4_general_ci"
     ["default_authentication_plugin"]="mysql_native_password"
     ["max_connect_errors"]="10000"
+    ["innodb_buffer_pool_size"]="${buffer_pool_size}"
+    ["innodb_file_per_table"]="1"
+    ["innodb_flush_method"]="O_DIRECT"
+    ["innodb_log_file_size"]="${log_file_size}"
+    ["innodb_log_buffer_size"]="${log_buffer}"
+    ["innodb_flush_log_at_trx_commit"]="2"
+    ["innodb_io_capacity"]="${io_capacity}"
+    ["join_buffer_size"]="${join_buffer}"
+    ["sort_buffer_size"]="${sort_buffer}"
+    ["read_rnd_buffer_size"]="${read_rnd_buffer}"
+    ["read_buffer_size"]="${read_buffer}"
+    ["tmp_table_size"]="${tmp_table}"
+    ["max_heap_table_size"]="${max_heap}"
+    ["max_connections"]="${max_connections}"
+    ["thread_cache_size"]="16"
+    ["slow_query_log"]="1"
+    ["slow_query_log_file"]="/var/log/mysql/mysql-slow.log"
+    ["long_query_time"]="2"
 )
+
+# MySQL version-specific settings
+if [[ $(echo "$mysql_version < 8.0" | bc -l) -eq 1 ]]; then
+    # MySQL 5.x settings
+    mysql_settings["query_cache_type"]="0"
+    mysql_settings["query_cache_size"]="0"
+
+    # Additional settings for large workloads in MySQL 5.x
+    mysql_settings["innodb_buffer_pool_instances"]="8"
+    mysql_settings["innodb_read_io_threads"]="8"
+    mysql_settings["innodb_write_io_threads"]="8"
+else
+    # MySQL 8.0+ settings
+    # Query cache is removed in 8.0+
+    mysql_settings["innodb_dedicated_server"]="1"  # Auto-tunes several parameters in MySQL 8+
+
+    # Additional settings for large workloads in MySQL 8.0+
+    mysql_settings["innodb_buffer_pool_instances"]="16"
+    mysql_settings["innodb_read_io_threads"]="16"
+    mysql_settings["innodb_write_io_threads"]="16"
+    mysql_settings["innodb_adaptive_hash_index"]="1"
+
+    # Performance schema settings for monitoring
+    mysql_settings["performance_schema"]="1"
+    mysql_settings["performance_schema_max_table_instances"]="1000"
+fi
+
+print info "RAM detected: ${total_mem_gb}GB - Configuring MySQL with buffer pool: ${buffer_pool_size}"
 
 changes_needed=false
 
