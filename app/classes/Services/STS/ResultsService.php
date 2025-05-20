@@ -51,7 +51,7 @@ final class ResultsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    public function receiveResults($testType, $jsonResponse)
+    public function receiveResults($testType, $jsonResponse, $isSilent = false)
     {
 
         $this->setTestType($testType);
@@ -147,11 +147,14 @@ final class ResultsService
                             continue;
                         }
 
+                        if ($isSilent) {
+                            unset($resultFromLab['last_modified_datetime']);
+                        }
+
                         $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
                         $id = $this->db->update($this->tableName, $resultFromLab);
                         $primaryKeyValue = $localRecord[$this->primaryKeyName];
                     } else {
-
                         $id = $this->db->insert($this->tableName, $resultFromLab);
                         $primaryKeyValue = $this->db->getInsertId();
                     }

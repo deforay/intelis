@@ -41,6 +41,8 @@ try {
 
     $labId = $data['labId'] ?? null;
 
+    $isSilent = (bool) ($data['silent'] ?? false);
+
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
@@ -57,7 +59,7 @@ try {
         throw new SystemException('Test Type is missing in the request', 400);
     }
 
-    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data));
+    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data), $isSilent);
 
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 

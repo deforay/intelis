@@ -33,10 +33,7 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
-$forceSyncModule = $manifestCode = $syncSinceDate = null;
 $db->rawQuery("SET SESSION wait_timeout=28800"); // 8 hours
-
-
 
 function spinner(int $loopIndex, int $count, string $label = 'Processed', array $spinnerChars = ['.   ', '..  ', '... ', '....']): void
 {
@@ -58,6 +55,9 @@ function clearSpinner(): void
 }
 
 $cliMode = php_sapi_name() === 'cli';
+$forceSyncModule = $manifestCode = null;
+$syncSinceDate = null;
+$isSilent = false;
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
     echo PHP_EOL;
@@ -78,6 +78,11 @@ if ($cliMode) {
 
     // Scan all args to find a valid date or number-of-days
     foreach ($args as $arg) {
+        if (str_contains(strtolower($arg), 'silent')) {
+            $isSilent = true;
+            continue;
+        }
+
         // Skip if it's already parsed as -t or -m
         if (in_array($arg, [$forceSyncModule, $manifestCode], true)) {
             continue;
@@ -165,7 +170,7 @@ foreach ($systemConfig['modules'] as $module => $status) {
             }
         })->otherwise(function ($reason) use ($module, $cliMode) {
             if ($cliMode) {
-                echo _sanitizeOutput("STS Request sync for $module failed: " . $reason) . PHP_EOL;
+                echo _sanitizeOutput("STS Request sync for $module failed: $reason") . PHP_EOL;
             }
             LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
         });
@@ -298,8 +303,11 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
-                        $db->where('vl_sample_id', $localRecord['vl_sample_id']);
-                        $id = $db->update('form_vl', $request);
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
+                        $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
+                        $id = $db->update($tableName, $request);
                     }
                 } else {
                     $request['source_of_request'] = 'vlsts';
@@ -461,6 +469,10 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }
@@ -634,6 +646,9 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }
@@ -857,6 +872,9 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }
@@ -1061,6 +1079,9 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }
@@ -1227,6 +1248,9 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }
@@ -1399,6 +1423,9 @@ try {
                     if (MiscUtility::isArrayEqual($request, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
                         $id = true;
                     } else {
+                        if ($isSilent) {
+                            unset($request['last_modified_datetime']);
+                        }
                         $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
                         $id = $db->update($tableName, $request);
                     }

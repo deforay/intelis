@@ -49,28 +49,29 @@ $stsBearerToken = $general->getSTSToken();
 
 $apiService->setBearerToken($stsBearerToken);
 
+
+$isSilent = false;
 $syncSinceDate = null;
 if ($cliMode) {
-    if (count($argv) > 2) {
-        echo "Too many arguments provided. Only one optional date or number of days is allowed.\n";
-        exit(1);
+    foreach ($argv as $index => $arg) {
+        if ($index === 0) continue; // Skip the script name
+
+        $arg = trim($arg);
+
+        if (str_contains($arg, 'silent')) {
+            $isSilent = true;
+        } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
+            $syncSinceDate ??= DateUtility::getDateTime($arg, 'Y-m-d');
+        } elseif (is_numeric($arg)) {
+            $syncSinceDate ??= DateUtility::daysAgo((int)$arg);
+        } else {
+            echo "Invalid argument: $arg\n";
+            exit(1);
+        }
     }
 
-    if (isset($argv[1])) {
-        $arg = trim($argv[1]);
-
-        if (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
-            $syncSinceDate = DateUtility::getDateTime($arg, 'Y-m-d');
-        } elseif (is_numeric($arg)) {
-            $syncSinceDate = DateUtility::daysAgo((int) $arg);
-        } else {
-            echo "Invalid date or day offset: $arg" . PHP_EOL;
-            $syncSinceDate = null;
-        }
-
-        if ($syncSinceDate !== null) {
-            echo "Syncing results since: $syncSinceDate" . PHP_EOL;
-        }
+    if ($syncSinceDate !== null) {
+        echo "Syncing results since: $syncSinceDate\n";
     }
 }
 
@@ -139,7 +140,8 @@ try {
             "results" => $customTestResultData,
             "testType" => "generic-tests",
             'timestamp' => DateUtility::getCurrentTimestamp(),
-            "instanceId" => $general->getInstanceId()
+            "instanceId" => $general->getInstanceId(),
+            "silent" => $isSilent
         ];
 
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
