@@ -1,6 +1,12 @@
 <?php
 //this file gets the requests from the remote server and updates the local database
 
+
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
+    require_once __DIR__ . "/../../../bootstrap.php";
+}
+
 use JsonMachine\Items;
 use App\Services\ApiService;
 use GuzzleHttp\Promise\Utils;
@@ -54,7 +60,6 @@ function clearSpinner(): void
     echo "\r" . str_repeat(' ', 40) . "\r";
 }
 
-$cliMode = php_sapi_name() === 'cli';
 $forceSyncModule = $manifestCode = null;
 $syncSinceDate = null;
 $isSilent = false;
