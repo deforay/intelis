@@ -316,11 +316,11 @@ ask_yes_no() {
     local timeout=15
     local answer
 
-    # Normalize default to lowercase
+    # Normalize default
     default=$(echo "$default" | awk '{print tolower($0)}')
     [[ "$default" != "yes" && "$default" != "no" ]] && default="no"
 
-    # If stdin is not a terminal (e.g., non-interactive mode), use default immediately
+    # If stdin is not a terminal, fallback to default
     if [ ! -t 0 ]; then
         [[ "$default" == "yes" ]] && return 0 || return 1
     fi
@@ -333,17 +333,23 @@ ask_yes_no() {
         [[ "$default" == "yes" ]] && return 0 || return 1
     fi
 
+    # Treat empty input (Enter) as choosing default
     answer=$(echo "$answer" | awk '{print tolower($0)}')
+    if [ -z "$answer" ]; then
+        print info "Using default: $default"
+        [[ "$default" == "yes" ]] && return 0 || return 1
+    fi
 
     case "$answer" in
-    y | yes) return 0 ;;
-    n | no) return 1 ;;
-    *)
-        print warning "Invalid input. Using default: $default"
-        [[ "$default" == "yes" ]] && return 0 || return 1
-        ;;
+        y | yes) return 0 ;;
+        n | no)  return 1 ;;
+        *)
+            print warning "Invalid input. Using default: $default"
+            [[ "$default" == "yes" ]] && return 0 || return 1
+            ;;
     esac
 }
+
 
 # Extract MySQL root password from config file
 extract_mysql_password_from_config() {

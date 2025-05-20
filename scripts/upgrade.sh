@@ -966,12 +966,6 @@ if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
     sudo rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
-restart_service apache
-
-print success "Apache Restarted."
-log_action "Apache Restarted."
-
-
 # cron job
 chmod +x "${lis_path}/cron.sh"
 
