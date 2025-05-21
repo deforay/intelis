@@ -62,8 +62,8 @@ $general = ContainerRegistry::get(CommonService::class);
 							<td style="width:50%;vertical-align:middle;"><input type="text" name="sampleReceivedOn" id="sampleReceivedOn" class="form-control dateTime" placeholder="Sample Received at Testing Lab" title="Please select when the samples were received at the Testing Lab" readonly />
 							</td>
 							<td style="width:20%;" colspan="3">
-								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-square-check"></em>
-									<?= _translate("Activate Samples"); ?>
+								<a class="btn btn-success btn-sm pull-right activateSample" style="display:none;margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-check"></em>
+									&nbsp;<?= _translate("Activate Samples"); ?>
 								</a>
 							</td>
 						</tr>

@@ -52,7 +52,7 @@ require_once APPLICATION_PATH . '/header.php';
 							</td>
 
 							<td style="width:10%;">
-								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-square-check"></em><?= _translate("Activate Samples"); ?></a>
+								<a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="activateSamplesFromManifest();"><em class="fa-solid fa-check"></em>&nbsp;<?= _translate("Activate Samples"); ?></a>
 							</td>
 						</tr>
 					</table>

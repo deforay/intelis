@@ -13,7 +13,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 <div class="content-wrapper">
 	<section class="content-header">
-		<h1><em class="fa-solid fa-square-check"></em> Confirmation Test Manifest</h1>
+		<h1><em class="fa-solid fa-check"></em> Confirmation Test Manifest</h1>
 		<ol class="breadcrumb">
 			<li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
 			<li class="active">Covid-19 Confirmation Test Manifest</li>

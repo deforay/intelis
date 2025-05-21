@@ -42,13 +42,13 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
 function convertTableAndColumns(DatabaseService $db, string $connectionName, string $tableName): void
 {
     echo PHP_EOL . "Converting table: $tableName" . PHP_EOL;
-    $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+    $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
 
     // Convert individual text-based columns if necessary
     $columns = $db->connection($connectionName)->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
     foreach ($columns as $column) {
-        if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext/i', $column['Type']) && $column['Collation'] !== 'utf8mb4_general_ci') {
-            $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci");
+        if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext/i', $column['Type']) && $column['Collation'] !== 'utf8mb4_unicode_ci') {
+            $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
         }
     }
 }

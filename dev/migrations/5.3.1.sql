@@ -19,3 +19,7 @@ SELECT 1, privilege_id FROM privileges;
 UPDATE `privileges` SET `privilege_name`= '/vl/results/vl-print-results.php' WHERE `privilege_name` LIKE '/vl/results/vlPrintResult.php';
 UPDATE `s_app_menu` SET `link`= '/vl/results/vl-print-results.php' WHERE `link` LIKE '/vl/results/vlPrintResult.php';
 
+-- Amit 21-May-2025
+UPDATE `s_app_menu` set icon = "fa-solid fa-table" WHERE `link` = '/admin/monitoring/test-results-metadata.php';
+UPDATE `s_app_menu` set icon = "fa-solid fa-file-lines" WHERE `link` = '/admin/monitoring/log-files.php';
+UPDATE `s_app_menu` set icon = "fas fa-user-clock" WHERE `link` = '/admin/monitoring/activity-log.php';
