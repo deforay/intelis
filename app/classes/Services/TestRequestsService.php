@@ -365,28 +365,28 @@ final class TestRequestsService
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
                 [$recordFromOtherSystem['unique_id']]
-            );
+            ) ?? [];
         }
 
         if (!empty($recordFromOtherSystem['remote_sample_code'])) {
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
                 [$recordFromOtherSystem['remote_sample_code']]
-            );
+            ) ?? [];
         }
 
         if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['lab_id'])) {
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
                 [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['lab_id']]
-            );
+            ) ?? [];
         }
 
         if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['facility_id'])) {
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
                 [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['facility_id']]
-            );
+            ) ?? [];
         }
 
         return [];
