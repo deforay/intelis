@@ -41,15 +41,42 @@ if (!isset(SYSTEM_CONFIG['interfacing']['enabled']) || SYSTEM_CONFIG['interfacin
  */
 function convertTableAndColumns(DatabaseService $db, string $connectionName, string $tableName): void
 {
+    $collation = $db->isMySQL8OrHigher() ? 'utf8mb4_0900_ai_ci' : 'utf8mb4_unicode_ci';
     echo PHP_EOL . "Converting table: $tableName" . PHP_EOL;
-    $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+    try {
+        $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE $collation");
 
-    // Convert individual text-based columns if necessary
-    $columns = $db->connection($connectionName)->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
-    foreach ($columns as $column) {
-        if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext/i', $column['Type']) && $column['Collation'] !== 'utf8mb4_unicode_ci') {
-            $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY `{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci");
+        // Convert individual text-based columns if necessary
+        $columns = $db->connection($connectionName)->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
+        foreach ($columns as $column) {
+            try {
+            if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext/i', $column['Type']) && $column['Collation'] !== $collation) {
+                $null = $column['Null'] === 'NO' ? 'NOT NULL' : 'NULL';
+                $default = $column['Default'] !== null ? "DEFAULT '" . $db->connection($connectionName)->escape($column['Default']) . "'" : '';
+                $extra = $column['Extra'] ?? '';
+
+                $columnDefinition = "`{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE $collation $null $default $extra";
+                $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY $columnDefinition");
+            }
+            } catch (Throwable $e) {
+                echo "❌ Skipping column '{$column['Field']}' in table '$tableName' due to error: " . $e->getMessage() . PHP_EOL;
+                LoggerUtility::logError("Failed to convert column {$column['Field']} in table $tableName", [
+                    'column' => $column['Field'],
+                    'table' => $tableName,
+                    'connection' => $connectionName,
+                    'error' => $e->getMessage(),
+                ]);
+                continue; // Skip to the next column if conversion fails
+            }
         }
+    } catch (Throwable $e) {
+        echo "❌ Skipping table '$tableName' due to error: " . $e->getMessage() . PHP_EOL;
+        LoggerUtility::logError("Failed to convert table $tableName", [
+            'table' => $tableName,
+            'connection' => $connectionName,
+            'error' => $e->getMessage(),
+        ]);
+        return; // Skip column loop if table conversion failed
     }
 }
 
@@ -107,7 +134,7 @@ try {
 
     echo PHP_EOL . "Conversion process completed successfully." . PHP_EOL;
 } catch (Throwable $e) {
-    echo PHP_EOL . "An error occurred during the conversion process." . PHP_EOL;
+    echo PHP_EOL . "An error occurred during the conversion process:" . $e->getFile() . ":" . $e->getLine() . " = " . $e->getMessage()  . PHP_EOL;
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),

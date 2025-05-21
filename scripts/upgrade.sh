@@ -236,12 +236,23 @@ chown mysql:mysql /var/log/mysql/mysql-slow.log
 mysql_version=$(mysql -V | grep -oP '\d+\.\d+' | head -1 | tr -d '\n')
 print info "MySQL version detected: ${mysql_version}"
 
+# Determine appropriate collation based on MySQL version
+if [[ $(echo "$mysql_version >= 8.0" | bc -l) -eq 1 ]]; then
+    # MySQL 8.0+ supports the newer and better utf8mb4_0900_ai_ci collation
+    mysql_collation="utf8mb4_0900_ai_ci"
+    print info "Using MySQL 8.0+ optimized collation: utf8mb4_0900_ai_ci"
+else
+    # For MySQL 5.x, use the older utf8mb4_unicode_ci collation
+    mysql_collation="utf8mb4_unicode_ci"
+    print info "Using MySQL 5.x compatible collation: utf8mb4_unicode_ci"
+fi
+
 # --- define what we want ---
 declare -A mysql_settings=(
     ["sql_mode"]=""
     ["innodb_strict_mode"]="0"
     ["character-set-server"]="utf8mb4"
-    ["collation-server"]="utf8mb4_general_ci"
+    ["collation-server"]="${mysql_collation}"
     ["default_authentication_plugin"]="mysql_native_password"
     ["max_connect_errors"]="10000"
     ["innodb_buffer_pool_size"]="${buffer_pool_size}"
