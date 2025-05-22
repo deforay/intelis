@@ -201,6 +201,15 @@ download_if_changed() {
 }
 
 
+error_handling() {
+    local last_cmd=$1
+    local last_line=$2
+    local last_error=$3
+    echo "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    log_action "Error on or near line ${last_line}; command executed was '${last_cmd}' which exited with status ${last_error}"
+    exit 1
+}
+
 # Ubuntu version check
 check_ubuntu_version() {
     local min_version=$1
