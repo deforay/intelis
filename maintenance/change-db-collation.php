@@ -5,6 +5,7 @@
  * This script converts the database tables and columns to use the utf8mb4 character set.
  * It ensures compatibility with emojis and other special characters.
  * Optimized for performance on large tables by only converting what needs to be converted.
+ * Preserves all column properties including constraints, defaults, comments, etc.
  *
  * Note: This script should only be run from the command line.
  */
@@ -54,7 +55,8 @@ $colors = [
  * @param string|null $color
  * @param bool $alwaysShow
  */
-function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false) {
+function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false)
+{
     global $verbose, $colors;
 
     if (!$verbose && !$alwaysShow) return;
@@ -97,7 +99,8 @@ function customProgressBar(int $current, int $total, string $tableName, int $siz
     $displayName = (strlen($tableName) > 20) ? substr($tableName, 0, 17) . '...' : $tableName;
 
     // Output the progress bar with current table name
-    printf("\r[%s] %3d%% (%d/%d) - %s - %d sec elapsed",
+    printf(
+        "\r[%s] %3d%% (%d/%d) - %s - %d sec elapsed",
         $progressBar,
         $progress * 100,
         $current,
@@ -115,11 +118,6 @@ function customProgressBar(int $current, int $total, string $tableName, int $siz
         $startTime = null; // Reset timer for reuse
     }
 }
-
-// Show basic info - always display regardless of verbose setting
-echoMessage("Mode: " . ($dryRun ? "Dry Run (no changes will be made)" : "Live Run"), 'bold', true);
-echoMessage("Batch Size: $batchSize tables at a time", 'bold', true);
-echoMessage("Verbose Mode: " . ($verbose ? "ON" : "OFF"), 'bold', true);
 
 if ($specificTable) {
     echoMessage("Processing specific table: $specificTable", 'bold', true);
@@ -162,7 +160,7 @@ function tableNeedsConversion(DatabaseService $db, string $connectionName, strin
 }
 
 /**
- * Get columns that need conversion in a table
+ * Get complete column information for columns that need conversion
  *
  * @param DatabaseService $db
  * @param string $connectionName
@@ -172,18 +170,132 @@ function tableNeedsConversion(DatabaseService $db, string $connectionName, strin
  */
 function getColumnsNeedingConversion(DatabaseService $db, string $connectionName, string $tableName, string $targetCollation): array
 {
-    $needConversion = [];
-    $columns = $db->connection($connectionName)->rawQuery("SHOW FULL COLUMNS FROM `$tableName`");
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
+              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
 
-    foreach ($columns as $column) {
-        if (preg_match('/char|varchar|text|tinytext|mediumtext|longtext|enum|set/i', $column['Type']) &&
-            $column['Collation'] !== null &&
-            $column['Collation'] !== $targetCollation) {
-            $needConversion[] = $column;
+    $query = "SELECT
+                c.COLUMN_NAME,
+                c.COLUMN_TYPE,
+                c.IS_NULLABLE,
+                c.COLUMN_DEFAULT,
+                c.EXTRA,
+                c.COLLATION_NAME,
+                c.COLUMN_COMMENT,
+                c.ORDINAL_POSITION
+              FROM information_schema.columns c
+              WHERE c.table_schema = '$schema'
+              AND c.table_name = '$tableName'
+              AND c.DATA_TYPE IN ('char', 'varchar', 'text', 'tinytext', 'mediumtext', 'longtext', 'enum', 'set')
+              AND c.COLLATION_NAME IS NOT NULL
+              AND c.COLLATION_NAME != '$targetCollation'
+              ORDER BY c.ORDINAL_POSITION";
+
+    return $db->connection($connectionName)->rawQuery($query);
+}
+
+/**
+ * Get indexes that reference a specific column
+ *
+ * @param DatabaseService $db
+ * @param string $connectionName
+ * @param string $tableName
+ * @param string $columnName
+ * @return array
+ */
+function getColumnIndexes(DatabaseService $db, string $connectionName, string $tableName, string $columnName): array
+{
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
+              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
+
+    $query = "SELECT DISTINCT
+                INDEX_NAME,
+                NON_UNIQUE,
+                INDEX_TYPE,
+                COLUMN_NAME
+              FROM information_schema.statistics
+              WHERE table_schema = '$schema'
+              AND table_name = '$tableName'
+              AND column_name = '$columnName'
+              AND INDEX_NAME != 'PRIMARY'";
+
+    return $db->connection($connectionName)->rawQuery($query);
+}
+
+/**
+ * Build proper column definition preserving all properties
+ *
+ * @param array $column Column information from information_schema
+ * @param string $targetCollation Target collation
+ * @return string Complete column definition
+ */
+function buildColumnDefinition(array $column, string $targetCollation): string
+{
+    $definition = "`{$column['COLUMN_NAME']}` {$column['COLUMN_TYPE']} CHARACTER SET utf8mb4 COLLATE $targetCollation";
+
+    // Handle NULL/NOT NULL
+    if ($column['IS_NULLABLE'] === 'NO') {
+        $definition .= " NOT NULL";
+    } else {
+        $definition .= " NULL";
+    }
+
+    // Handle DEFAULT values with proper escaping and special cases
+    if ($column['COLUMN_DEFAULT'] !== null) {
+        $defaultValue = $column['COLUMN_DEFAULT'];
+
+        // Special function defaults that don't need quotes
+        $functionDefaults = [
+            'CURRENT_TIMESTAMP', 'current_timestamp()', 'now()', 'CURRENT_TIMESTAMP()',
+            'NULL', 'CURRENT_DATE', 'CURRENT_TIME', 'LOCALTIME', 'LOCALTIMESTAMP'
+        ];
+
+        if (in_array(strtoupper($defaultValue), array_map('strtoupper', $functionDefaults))) {
+            $definition .= " DEFAULT $defaultValue";
+        } else {
+            // Escape and quote string defaults
+            $escapedDefault = str_replace("'", "''", $defaultValue);
+            $definition .= " DEFAULT '$escapedDefault'";
         }
     }
 
-    return $needConversion;
+    // Handle EXTRA attributes (AUTO_INCREMENT, ON UPDATE, etc.)
+    if (!empty($column['EXTRA'])) {
+        $definition .= " {$column['EXTRA']}";
+    }
+
+    // Handle COMMENT
+    if (!empty($column['COLUMN_COMMENT'])) {
+        $escapedComment = str_replace("'", "''", $column['COLUMN_COMMENT']);
+        $definition .= " COMMENT '$escapedComment'";
+    }
+
+    return $definition;
+}
+
+/**
+ * Verify that column conversion was successful
+ *
+ * @param DatabaseService $db
+ * @param string $connectionName
+ * @param string $tableName
+ * @param string $columnName
+ * @param string $targetCollation
+ * @return bool
+ */
+function verifyColumnConversion(DatabaseService $db, string $connectionName, string $tableName, string $columnName, string $targetCollation): bool
+{
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
+              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
+
+    $query = "SELECT COLLATION_NAME
+              FROM information_schema.columns
+              WHERE table_schema = '$schema'
+              AND table_name = '$tableName'
+              AND column_name = '$columnName'";
+
+    $result = $db->connection($connectionName)->rawQuery($query);
+
+    return !empty($result) && $result[0]['COLLATION_NAME'] === $targetCollation;
 }
 
 /**
@@ -198,7 +310,7 @@ function getColumnsNeedingConversion(DatabaseService $db, string $connectionName
  */
 function convertTableAndColumns(DatabaseService $db, string $connectionName, string $tableName, bool $dryRun = false, bool $skipColumnConversion = false): array
 {
-    global $tableErrors, $columnErrors, $successfulTables, $skippedTables;
+    global $tableErrors, $columnErrors, $successfulTables, $skippedTables, $verbose;
 
     $result = [
         'tableName' => $tableName,
@@ -278,41 +390,74 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
 
     if (!$dryRun) {
         $totalColumns = count($columnsNeedingConversion);
+
         foreach ($columnsNeedingConversion as $index => $column) {
+            $currentColumn = $index + 1;
+            $columnName = $column['COLUMN_NAME'];
+
+            // Show column progress for tables with multiple columns
+            if ($totalColumns > 1) {
+                printf("\r  Column %d/%d: %s", $currentColumn, $totalColumns, $columnName);
+                fflush(STDOUT);
+            }
+
             try {
-                $currentColumn = $index + 1;
-                // Use for column conversion within a table
-                if ($totalColumns > 1) {
-                    $columnName = $column['Field'];
-                    printf("\r  Column %d/%d: %s", $currentColumn, $totalColumns, $columnName);
-                    fflush(STDOUT);
+                // Show indexes that might be affected in verbose mode
+                if ($verbose) {
+                    $indexes = getColumnIndexes($db, $connectionName, $tableName, $columnName);
+                    if (!empty($indexes)) {
+                        echoMessage("    ⚠ Column $columnName has " . count($indexes) . " indexes that may be affected", 'yellow');
+                        foreach ($indexes as $index) {
+                            $indexType = $index['NON_UNIQUE'] == '0' ? 'UNIQUE' : 'INDEX';
+                            echoMessage("      - {$index['INDEX_NAME']} ($indexType, {$index['INDEX_TYPE']})", 'yellow');
+                        }
+                    }
                 }
 
-                $null = $column['Null'] === 'NO' ? 'NOT NULL' : 'NULL';
-                $default = $column['Default'] !== null ? "DEFAULT '" . $db->connection($connectionName)->escape($column['Default']) . "'" : '';
-                $extra = $column['Extra'] ?? '';
+                echoMessage("  ⚙ Converting column: $columnName (current collation: {$column['COLLATION_NAME']})", 'cyan');
 
-                echoMessage("  ⚙ Converting column: {$column['Field']} (current collation: {$column['Collation']})", 'cyan');
+                // Build complete column definition preserving all properties
+                $columnDefinition = buildColumnDefinition($column, $collation);
+
+                if ($verbose) {
+                    echoMessage("    SQL: ALTER TABLE `$tableName` MODIFY COLUMN $columnDefinition", 'blue');
+                }
+
                 $startTime = microtime(true);
+                $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY COLUMN $columnDefinition");
 
-                $columnDefinition = "`{$column['Field']}` {$column['Type']} CHARACTER SET utf8mb4 COLLATE $collation $null $default $extra";
-                $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` MODIFY $columnDefinition");
+                // Verify the conversion was successful
+                if (verifyColumnConversion($db, $connectionName, $tableName, $columnName, $collation)) {
+                    $duration = round(microtime(true) - $startTime, 2);
+                    echoMessage("  ✓ Column $columnName converted and verified in $duration seconds", 'green');
+                    $result['columnsConverted']++;
+                } else {
+                    $errorMsg = "Column $tableName.$columnName conversion appeared to succeed but verification failed";
+                    echoMessage("  ❌ $errorMsg", 'red', true);
+                    $result['columnsWithErrors']++;
+                    $result['columnErrors'][] = $errorMsg;
+                    $columnErrors[] = "$tableName.$columnName: Verification failed";
+                }
 
-                $duration = round(microtime(true) - $startTime, 2);
-                echoMessage("  ✓ Column {$column['Field']} converted in $duration seconds", 'green');
-                $result['columnsConverted']++;
             } catch (Throwable $e) {
-                $errorMsg = "Failed to convert column '{$column['Field']}' in table '$tableName': " . $e->getMessage();
+                $errorMsg = "Failed to convert column '$columnName' in table '$tableName': " . $e->getMessage();
                 echoMessage("  ❌ $errorMsg", 'red', true); // Always show errors
-                LoggerUtility::logError("Failed to convert column {$column['Field']} in table $tableName", [
-                    'column' => $column['Field'],
+
+                // Log the complete column definition that failed
+                $failedDefinition = buildColumnDefinition($column, $collation);
+                echoMessage("    Failed SQL: ALTER TABLE `$tableName` MODIFY COLUMN $failedDefinition", 'red', true);
+
+                LoggerUtility::logError("Failed to convert column $columnName in table $tableName", [
+                    'column' => $columnName,
                     'table' => $tableName,
                     'connection' => $connectionName,
                     'error' => $e->getMessage(),
+                    'sql' => "ALTER TABLE `$tableName` MODIFY COLUMN $failedDefinition"
                 ]);
+
                 $result['columnsWithErrors']++;
                 $result['columnErrors'][] = $errorMsg;
-                $columnErrors[] = "$tableName.{$column['Field']}: " . $e->getMessage();
+                $columnErrors[] = "$tableName.$columnName: " . $e->getMessage();
             }
         }
 
@@ -322,7 +467,8 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
         }
     } else {
         foreach ($columnsNeedingConversion as $column) {
-            echoMessage("  🔍 DRY RUN: Would convert column '{$column['Field']}' from {$column['Collation']} to $collation", 'yellow');
+            $columnDefinition = buildColumnDefinition($column, $collation);
+            echoMessage("  🔍 DRY RUN: Would execute: ALTER TABLE `$tableName` MODIFY COLUMN $columnDefinition", 'yellow');
             $result['columnsSkipped']++;
         }
     }
@@ -380,10 +526,6 @@ function processBatches(array $tables, int $batchSize, callable $processFunction
 
     for ($i = 0; $i < $totalTables; $i += $batchSize) {
         $batchTables = array_slice($tables, $i, $batchSize);
-        $batchNumber = floor($i / $batchSize) + 1;
-
-        echoMessage("Starting batch $batchNumber of $batches...", 'bold', true);
-        $startTime = microtime(true);
 
         foreach ($batchTables as $index => $tableData) {
             $currentPosition = $i + $index + 1;
@@ -397,10 +539,6 @@ function processBatches(array $tables, int $batchSize, callable $processFunction
 
             $results[] = $processFunction($tableData, $currentPosition, $totalTables);
         }
-
-        $duration = round(microtime(true) - $startTime, 2);
-        echo PHP_EOL; // Ensure a line break after the progress bar
-        echoMessage("Completed batch $batchNumber in $duration seconds", 'bold', true);
 
         // Force garbage collection between batches
         if ($batches > 1) {
@@ -416,51 +554,18 @@ function processBatches(array $tables, int $batchSize, callable $processFunction
  * Display summary of conversion results
  *
  * @param array $results
- * @param float $totalDuration
  */
-function displaySummary(array $results, float $totalDuration): void
+function displaySummary(array $results): void
 {
-    global $tableErrors, $columnErrors, $successfulTables, $skippedTables, $colors;
-
-    // Count various outcomes
-    $tablesConverted = count($successfulTables);
-    $tablesSkipped = count($skippedTables);
-    $tablesWithErrors = count($tableErrors);
+    global $tableErrors, $columnErrors, $colors;
 
     $totalColumnsConverted = 0;
-    $totalColumnsWithErrors = count($columnErrors);
 
     foreach ($results as $result) {
         if (isset($result['columnsConverted'])) {
             $totalColumnsConverted += $result['columnsConverted'];
         }
     }
-
-    // Display summary header
-    echo PHP_EOL . $colors['bold'] . "=======================================" . $colors['reset'] . PHP_EOL;
-    echo $colors['bold'] . "         CONVERSION SUMMARY         " . $colors['reset'] . PHP_EOL;
-    echo $colors['bold'] . "=======================================" . $colors['reset'] . PHP_EOL;
-
-    // Overall statistics
-    echo $colors['bold'] . "Total Duration: " . $colors['reset'] . round($totalDuration, 2) . " seconds" . PHP_EOL;
-    echo $colors['bold'] . "Tables Processed: " . $colors['reset'] . count($results) . PHP_EOL;
-
-    // Table statistics with color coding
-    echo $colors['bold'] . "Tables Converted: " . $colors['reset'] .
-         $colors['green'] . $tablesConverted . $colors['reset'] . PHP_EOL;
-
-    echo $colors['bold'] . "Tables Skipped: " . $colors['reset'] .
-         $colors['yellow'] . $tablesSkipped . $colors['reset'] . PHP_EOL;
-
-    echo $colors['bold'] . "Tables With Errors: " . $colors['reset'] .
-         ($tablesWithErrors > 0 ? $colors['red'] . $tablesWithErrors . $colors['reset'] : "0") . PHP_EOL;
-
-    // Column statistics
-    echo $colors['bold'] . "Columns Converted: " . $colors['reset'] .
-         $colors['green'] . $totalColumnsConverted . $colors['reset'] . PHP_EOL;
-
-    echo $colors['bold'] . "Columns With Errors: " . $colors['reset'] .
-         ($totalColumnsWithErrors > 0 ? $colors['red'] . $totalColumnsWithErrors . $colors['reset'] : "0") . PHP_EOL;
 
     // Display errors if any
     if (!empty($tableErrors)) {
@@ -534,15 +639,14 @@ try {
     $scriptStartTime = microtime(true);
 
     // Process tables in batches and collect results
-    $results = processBatches($allTables, $batchSize, function($tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion) {
+    $results = processBatches($allTables, $batchSize, function ($tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion) {
         return convertTableAndColumns($db, $tableData['connection'], $tableData['table'], $dryRun, $skipColumnConversion);
     });
 
     $totalDuration = microtime(true) - $scriptStartTime;
 
     // Display summary
-    displaySummary($results, $totalDuration);
-
+    displaySummary($results);
 } catch (Throwable $e) {
     echoMessage("An error occurred during the conversion process:" . $e->getFile() . ":" . $e->getLine() . " = " . $e->getMessage(), 'red', true);
     LoggerUtility::logError($e->getMessage(), [
