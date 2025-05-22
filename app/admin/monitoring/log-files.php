@@ -196,12 +196,10 @@ require_once APPLICATION_PATH . '/header.php';
 </style>
 
 
-
-<!-- Updated Log Viewer HTML Section -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1> <em class="fa-solid fa-gears"></em> <?php echo _translate("Log File Viewer"); ?></h1>
+		<h1> <em class="fa-solid fa-file-lines"></em> <?php echo _translate("Log File Viewer"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/system-admin/edit-config/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
 			<li class="active"><?php echo _translate("Manage Log File Viewer"); ?></li>
@@ -617,7 +615,6 @@ require_once APPLICATION_PATH . '/header.php';
 					} else {
 						// Append the data to the log viewer before processing
 						$('#logViewer').append(data);
-
 
 						// Now parse and process the HTML
 						const parser = new DOMParser();

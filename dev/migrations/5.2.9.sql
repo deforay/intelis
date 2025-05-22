@@ -229,13 +229,13 @@ CREATE TABLE IF NOT EXISTS `r_cd4_test_reasons` (
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_on`, `updated_by`, `status`) VALUES ('Display VL Log Result', 'vl_display_log_result', 'yes', 'vl', 'no', NULL, NULL, 'active');
 
 -- Jeyabanu 12-Feb-2024
-ALTER TABLE `form_cd4` CHANGE `result` `cd4_result` VARCHAR(64) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_cd4` CHANGE `result_percentage` `cd4_result_percentage` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_cd4` CHANGE `result` `cd4_result` VARCHAR(64) CHARACTER SET utf8mb4 NULL DEFAULT NULL;
+ALTER TABLE `form_cd4` CHANGE `result_percentage` `cd4_result_percentage` VARCHAR(255) CHARACTER SET utf8mb4 NULL DEFAULT NULL;
 
 
 -- Jeyabanu 13-Feb-2024
-ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
-ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 NOT NULL;
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` ENUM('vl','eid','covid19','hepatitis','tb','cd4','generic-tests') CHARACTER SET utf8mb4 NOT NULL;
 
 -- Jeyabanu 16-Feb-2024
 ALTER TABLE `form_cd4` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `samples_referred_datetime`;
@@ -299,10 +299,10 @@ UPDATE `s_app_menu` SET `link` = '/covid-19/reference/covid19-sample-type.php' W
 
 -- Jeyabanu 14-Mar-2024
 CREATE TABLE `lab_storage` (
-  `storage_id` char(36) COLLATE utf8mb4_general_ci NOT NULL,
-  `storage_code` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `storage_id` char(36) NOT NULL,
+  `storage_code` varchar(255) NOT NULL,
   `lab_id` int NOT NULL,
-  `lab_storage_status` varchar(10) COLLATE utf8mb4_general_ci NOT NULL DEFAULT 'active',
+  `lab_storage_status` varchar(10) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`storage_id`),
   KEY `lab_id` (`lab_id`),
@@ -333,7 +333,7 @@ ALTER TABLE `audit_form_covid19` ADD `health_insurance_code` VARCHAR(32) NULL DE
 -- Jeyabanu 26-Mar-2024
 ALTER TABLE `lab_storage` ADD `data_sync` INT NOT NULL DEFAULT '0' AFTER `updated_datetime`;
 ALTER TABLE `lab_storage` RENAME COLUMN `lab_storage_status` TO `storage_status`;
-ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `lab_storage` CHANGE `storage_id` `storage_id` CHAR(50) CHARACTER SET utf8mb4 NOT NULL;
 
 -- Thana 26-Mar-2024
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `category`, `remote_sync_needed`,`updated_on`, `updated_by`, `status`) VALUES ('Other Tests Table in Results Pdf', 'generic_tests_table_in_results_pdf', 'no', 'generic-tests', 'yes', '2024-03-26 20:15:07', NULL, 'active');
@@ -377,16 +377,16 @@ ALTER TABLE `r_generic_test_reasons` ADD `parent_reason` INT NULL DEFAULT NULL A
   -- Jeyabanu 09-Apr-2024
   CREATE TABLE IF NOT EXISTS `lab_storage_history` (
     `history_id` int NOT NULL AUTO_INCREMENT,
-    `test_type` varchar(20) COLLATE utf8mb4_general_ci NOT NULL,
-    `sample_unique_id` varchar(256) COLLATE utf8mb4_general_ci NOT NULL,
+    `test_type` varchar(20) NOT NULL,
+    `sample_unique_id` varchar(256) NOT NULL,
     `volume` decimal(10,2) NOT NULL,
-    `freezer_id` char(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `freezer_id` char(50) NOT NULL,
     `rack` int NOT NULL,
     `box` int NOT NULL,
     `position` int NOT NULL,
-    `sample_status` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+    `sample_status` varchar(50) NOT NULL,
     `updated_datetime` timestamp NOT NULL,
-    `updated_by` varchar(100) COLLATE utf8mb4_general_ci NOT NULL,
+    `updated_by` varchar(100) NOT NULL,
     PRIMARY KEY (`history_id`)
   ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -452,8 +452,8 @@ UPDATE privileges SET shared_privileges = '["/batch/delete-batch.php?type=tb","/
 -- Jeyabanu 17-Apr-2024
 CREATE TABLE `r_reasons_for_sample_removal` (
   `removal_reason_id` int NOT NULL AUTO_INCREMENT,
-  `removal_reason_name` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
-  `removal_reason_status` varchar(10) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `removal_reason_name` varchar(255) DEFAULT NULL,
+  `removal_reason_status` varchar(10) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   `data_sync` int NOT NULL DEFAULT '0',
   PRIMARY KEY (`removal_reason_id`)
@@ -487,21 +487,21 @@ ALTER TABLE `s_app_menu` ADD UNIQUE(`parent_id`, `link`);
 -- Amit 28-Apr-2024
 ALTER TABLE `global_config` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
 ALTER TABLE `log_result_updates` CHANGE `updated_on` `updated_datetime` DATETIME NULL DEFAULT NULL;
-ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
-ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NOT NULL;
+ALTER TABLE `testing_labs` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 NOT NULL;
+ALTER TABLE `health_facilities` CHANGE `test_type` `test_type` VARCHAR(24) CHARACTER SET utf8mb4 NOT NULL;
 
 -- Jeyabanu 29-Apr-2024
 UPDATE `s_app_menu` SET `show_mode` = 'always' WHERE `s_app_menu`.`link` = '/vl/program-management/sample-storage-reports.php';
 
 -- Thana 29-Apr-2024
-ALTER TABLE `form_eid` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_covid19` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_tb` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
-ALTER TABLE `form_generic` CHANGE `reason_for_test_result_changes` `reason_for_test_result_changes` TEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `form_eid` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
+ALTER TABLE `form_covid19` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
+ALTER TABLE `form_tb` CHANGE `reason_for_changing` `reason_for_changing` TEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
+ALTER TABLE `form_generic` CHANGE `reason_for_test_result_changes` `reason_for_test_result_changes` TEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
 
 -- Thana 30-Apr-2024
 ALTER TABLE `user_details` ADD `user_attributes` JSON NULL DEFAULT NULL AFTER `user_signature`;
-ALTER TABLE `instruments` CHANGE `additional_text` `additional_text` LONGTEXT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL;
+ALTER TABLE `instruments` CHANGE `additional_text` `additional_text` LONGTEXT CHARACTER SET utf8mb4 NULL DEFAULT NULL;
 -- Thana 06-May-2024
 ALTER TABLE `r_hepatitis_results` CHANGE `result_id` `result_id` INT NOT NULL AUTO_INCREMENT;
 -- Thana 07-May-2024
@@ -587,7 +587,7 @@ ALTER TABLE `batch_details` ADD `lab_assigned_batch_code` VARCHAR(64) NULL DEFAU
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('VL Lab', 'vl_lab_id', '', '', 'vl', 'no', NULL, NULL, 'active');
 
 -- Brindha 24-Jul-2024
-ALTER TABLE `batch_details` CHANGE `last_modified_by` `last_modified_by` VARCHAR(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL;
+ALTER TABLE `batch_details` CHANGE `last_modified_by` `last_modified_by` VARCHAR(256) CHARACTER SET utf8mb4 NULL;
 
 
 -- Jeyabanu 31-Jul-2024
@@ -601,21 +601,21 @@ CREATE TABLE IF NOT EXISTS queue_sample_code_generation (
     test_type VARCHAR(32) NOT NULL,
     access_type VARCHAR(32) NOT NULL,
     sample_collection_date DATE NOT NULL,
-    province_code VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    sample_code_format VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
-    prefix VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL,
+    province_code VARCHAR(32) CHARACTER SET utf8mb4 DEFAULT NULL,
+    sample_code_format VARCHAR(32) CHARACTER SET utf8mb4 DEFAULT NULL,
+    prefix VARCHAR(32) CHARACTER SET utf8mb4 DEFAULT NULL,
     created_datetime DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_datetime DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     processed TINYINT(1) DEFAULT 0
-) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+) CHARACTER SET utf8mb4;
 
 -- Brindha 09-Aug-2024
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Expiry After Days', 'sample_expiry_after_days', '365', NULL, NULL, 'no', NULL, NULL, 'active');
 INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Sample Lock After Days', 'sample_lock_after_days', '14', NULL, NULL, 'no', NULL, NULL, 'active');
 
 --Jeyabanu 11-Aug-2024
-ALTER TABLE `form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `is_patient_pregnant`;
-ALTER TABLE `audit_form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+ALTER TABLE `form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `is_patient_pregnant`;
+ALTER TABLE `audit_form_tb` ADD `is_patient_pregnant` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `patient_gender`, ADD `is_patient_breastfeeding` VARCHAR(3) CHARACTER SET utf8mb4 NULL DEFAULT NULL AFTER `is_patient_pregnant`;
 
 -- Brindha 12-Aug-2024
 ALTER TABLE batch_details ADD COLUMN printed_datetime DATETIME NULL DEFAULT NULL AFTER control_names;
@@ -691,35 +691,35 @@ ALTER TABLE `form_cd4` DROP INDEX `sample_code`;
 -- Amit 03-Oct-2024
 UPDATE form_vl SET result = null WHERE result like '';
 UPDATE form_vl SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_vl CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_vl CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_vl SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 UPDATE form_eid SET result = null WHERE result like '';
 UPDATE form_eid SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_eid CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_eid CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_eid SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 UPDATE form_hepatitis SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_hepatitis CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_hepatitis CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 
 UPDATE form_covid19 SET result = null WHERE result like '';
 UPDATE form_covid19 SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_covid19 CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_covid19 CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_covid19 SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 UPDATE form_tb SET result = null WHERE result like '';
 UPDATE form_tb SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_tb CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_tb CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_tb SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 UPDATE form_cd4 SET cd4_result = null WHERE cd4_result like '';
 UPDATE form_cd4 SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_cd4 CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_cd4 CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_cd4 SET result_status = 6 WHERE result_status = 7 and cd4_result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 UPDATE form_generic SET result = null WHERE result like '';
 UPDATE form_generic SET is_sample_rejected = null WHERE is_sample_rejected like '';
-ALTER TABLE form_generic CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE form_generic CHANGE is_sample_rejected is_sample_rejected ENUM('yes','no') CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 UPDATE form_generic SET result_status = 6 WHERE result_status = 7 and result is null and sample_tested_datetime is null and IFNULL(is_sample_rejected, 'no') = 'no';
 
 -- Jeyabanu 07-Oct-2024

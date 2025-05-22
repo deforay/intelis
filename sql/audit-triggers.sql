@@ -11,7 +11,7 @@ ALTER TABLE `audit_form_vl`
     DROP PRIMARY KEY, -- Drop the existing primary key
     MODIFY COLUMN `vl_sample_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_vl`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -52,7 +52,7 @@ ALTER TABLE `audit_form_eid`
     DROP PRIMARY KEY,
     MODIFY COLUMN `eid_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_eid`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -93,7 +93,7 @@ ALTER TABLE `audit_form_covid19`
     DROP PRIMARY KEY,
     MODIFY COLUMN `covid19_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_covid19`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -132,7 +132,7 @@ ALTER TABLE `audit_form_hepatitis`
     DROP PRIMARY KEY,
     MODIFY COLUMN `hepatitis_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_hepatitis`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -171,7 +171,7 @@ ALTER TABLE `audit_form_tb`
     DROP PRIMARY KEY,
     MODIFY COLUMN `tb_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_tb`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -212,7 +212,7 @@ ALTER TABLE `audit_form_generic`
     DROP PRIMARY KEY,
     MODIFY COLUMN `sample_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_generic`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,
@@ -251,7 +251,7 @@ ALTER TABLE `audit_form_cd4`
     DROP PRIMARY KEY,
     MODIFY COLUMN `cd4_id` INT(11) NOT NULL,
     ENGINE = InnoDB,
-    CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+    CHARACTER SET utf8mb4;
 
 ALTER TABLE `audit_form_cd4`
     ADD `action` VARCHAR(8) DEFAULT 'insert' FIRST,

@@ -8,8 +8,8 @@ UPDATE `system_config` SET `value` = '5.3.1' WHERE `system_config`.`name` = 'sc_
 UPDATE `s_app_menu` SET `show_mode` = 'sts' WHERE link like '/admin/monitoring/sync-status.php';
 
 -- Amit 24-Apr-2025
-ALTER TABLE `form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
-ALTER TABLE `audit_form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT 'no';
+ALTER TABLE `form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACTER SET utf8mb4 NULL DEFAULT 'no';
+ALTER TABLE `audit_form_vl` CHANGE `recency_vl` `recency_vl` VARCHAR(10) CHARACTER SET utf8mb4 NULL DEFAULT 'no';
 
 -- Amit 28-Apr-2025
 INSERT IGNORE INTO roles_privileges_map (role_id, privilege_id)
