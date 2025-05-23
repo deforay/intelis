@@ -138,8 +138,8 @@ if ($module == 'generic-tests') {
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
 				<!-- form start -->
-			<form class="form-horizontal" method="post" name="addSpecimenReferralManifestForm" id="addSpecimenReferralManifestForm" autocomplete="off" action="add-manifest-helper.php">
-							
+			<form class="form-horizontal" method="post" name="addManifestForm" id="addManifestForm" autocomplete="off" action="add-manifest-helper.php">
+
 				<!-- /.box-header -->
 				<div class="box-body">
 					<?php
@@ -230,7 +230,7 @@ if ($module == 'generic-tests') {
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
-									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;"><?= _translate("Search"); ?> </a>
+									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSamplesForManifest();return false;"><?= _translate("Search"); ?> </a>
 									<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> <?= _translate("Clear"); ?></a>
 								</div>
 							</div>
@@ -277,11 +277,11 @@ if ($module == 'generic-tests') {
 			return false;
 		}
 		flag = deforayValidator.init({
-			formId: 'addSpecimenReferralManifestForm'
+			formId: 'addManifestForm'
 		});
 		if (flag) {
 			$.blockUI();
-			document.getElementById('addSpecimenReferralManifestForm').submit();
+			document.getElementById('addManifestForm').submit();
 		}
 	}
 
@@ -421,7 +421,7 @@ if ($module == 'generic-tests') {
 			});
 	}
 
-	function getSampleCodeDetails() {
+	function getSamplesForManifest() {
 		if($("#module").val() == 'generic-tests' && $("#testType").val() == ""){
 			alert('Please select the Test type');
 			return false;
@@ -453,7 +453,7 @@ if ($module == 'generic-tests') {
 
 	function clearSelection() {
 		$('#testingLab').val('').trigger('change');
-		getSampleCodeDetails();
+		getSamplesForManifest();
 	}
 
 	function getManifestCodeForm(value) {
@@ -461,7 +461,7 @@ if ($module == 'generic-tests') {
 			shortCode = $("#testType").find(":selected").attr("data-short");
 			var code = shortCode.toUpperCase() + '<?php echo strtoupper(date('ymd') .  MiscUtility::generateRandomString(6)); ?>';
 			$('#packageCode').val(code);
-			$("#addSpecimenReferralManifestForm").removeClass("hide");
+			$("#addManifestForm").removeClass("hide");
 		}
 	}
 </script>

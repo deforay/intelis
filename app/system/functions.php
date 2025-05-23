@@ -9,6 +9,7 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use Laminas\Diactoros\UploadedFile;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use function iter\count as iterCount;
 use function iter\toArray as iterToArray;
@@ -475,4 +476,13 @@ function _getIteratorCount($iterator): int
 function _sanitizeOutput($string)
 {
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
+}
+
+
+function _invalidateFileCacheByTags($tags)
+{
+    /** @var FileCacheUtility $fileCache */
+    $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+    $tags = is_array($tags) ? $tags : [$tags];
+    $fileCache->invalidateTags($tags);
 }

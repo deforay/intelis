@@ -111,7 +111,7 @@ if ($module == 'generic-tests') {
 			</div>
 
 				<!-- form start -->
-				<form class="form-horizontal" method="post" name="editSpecimenReferralManifestForm" id="editSpecimenReferralManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
+				<form class="form-horizontal" method="post" name="editManifestForm" id="editManifestForm" autocomplete="off" action="/specimen-referral-manifest/edit-manifest-helper.php">
 					<div class="box-body">
 						<?php
 						if ($module == 'generic-tests') { ?>
@@ -221,7 +221,7 @@ if ($module == 'generic-tests') {
 						<div class="row">
 							<div class="col-md-12 text-center">
 								<div class="form-group">
-									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSampleCodeDetails();return false;">Search </a>
+									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSamplesForManifest();return false;">Search </a>
 									<a href="javascript:void(0);" class="btn btn-default" onclick="clearSelection();">
 										Clear</a>
 								</div>
@@ -254,7 +254,7 @@ if ($module == 'generic-tests') {
 				<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['package_id']; ?>" />
 				<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
 				<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
-				<a href="javascript:history.go(-1);" class="btn btn-default"> Cancel</a>
+				<a href="/specimen-referral-manifest/view-manifests.php" class="btn btn-default"> Cancel</a>
 			</div>
 			<!-- /.box-footer -->
 			</form>
@@ -284,12 +284,12 @@ if ($module == 'generic-tests') {
 			return false;
 		}
 		flag = deforayValidator.init({
-			formId: 'editSpecimenReferralManifestForm'
+			formId: 'editManifestForm'
 		});
 
 		if (flag) {
 			$.blockUI();
-			document.getElementById('editSpecimenReferralManifestForm').submit();
+			document.getElementById('editManifestForm').submit();
 		}
 	}
 
@@ -330,7 +330,7 @@ if ($module == 'generic-tests') {
 			});
 
 		$("#daterange").val("");
-		getSampleCodeDetails();
+		getSamplesForManifest();
 
 		$(".select2").select2();
 		$(".select2").select2({
@@ -433,7 +433,7 @@ if ($module == 'generic-tests') {
 			});
 	}
 
-	function getSampleCodeDetails() {
+	function getSamplesForManifest() {
 		if ($('#testingLab').val() != '') {
 			$.blockUI();
 
@@ -462,7 +462,7 @@ if ($module == 'generic-tests') {
 
 	function clearSelection() {
 		//$('#testingLab').val('').trigger('change');
-		getSampleCodeDetails();
+		getSamplesForManifest();
 	}
 </script>
 <?php

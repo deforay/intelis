@@ -4,6 +4,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -148,9 +149,12 @@ try {
             fclose($fp);
         }
     }
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
 }
-
-
+_invalidateFileCacheByTags(['instruments']);
 header("Location:/instruments/instruments.php");

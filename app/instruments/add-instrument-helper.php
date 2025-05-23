@@ -84,7 +84,7 @@ try {
         if ($id !== false && !empty($_POST['testType'])) {
             foreach ($_POST['testType'] as $key => $val) {
                 if (trim((string) $val) != '') {
-                    $configControlData = array('test_type' => $val, 'instrument_id' => $data['instrument_id'], 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]);
+                    $configControlData = ['test_type' => $val, 'instrument_id' => $data['instrument_id'], 'number_of_in_house_controls' => $_POST['noHouseCtrl'][$key], 'number_of_manufacturer_controls' => $_POST['noManufacturerCtrl'][$key], 'number_of_calibrators' => $_POST['noCalibrators'][$key]];
                     $db->insert($importControlTable, $configControlData);
                 }
             }
@@ -92,8 +92,14 @@ try {
 
         $_SESSION['alertMsg'] = _translate("Instrument import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
     }
-    error_log(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-    header("Location:/instruments/instruments.php");
-} catch (Exception $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+
+
+} catch (Exception $e) {
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
 }
+_invalidateFileCacheByTags(['instruments']);
+header("Location:/instruments/instruments.php");

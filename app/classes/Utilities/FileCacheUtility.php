@@ -2,6 +2,7 @@
 
 namespace App\Utilities;
 
+use App\Utilities\LoggerUtility;
 use Symfony\Contracts\Cache\ItemInterface;
 use Symfony\Component\Cache\Adapter\TagAwareAdapter;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
@@ -71,5 +72,23 @@ class FileCacheUtility
     public function invalidateTags(array $tags): bool
     {
         return $this->tagAwareAdapter->invalidateTags($tags);
+    }
+
+    /**
+     * Prune expired items (if supported by adapter)
+     * @return bool
+     */
+    public function prune(): bool
+    {
+        try {
+            if (method_exists($this->filesystemAdapter, 'prune')) {
+                return $this->filesystemAdapter->prune();
+            }
+
+            return true;
+        } catch (\Exception $e) {
+            LoggerUtility::logError('Cache prune failed', ['exception' => $e]);
+            return false;
+        }
     }
 }

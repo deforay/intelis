@@ -23,3 +23,9 @@ UPDATE `s_app_menu` SET `link`= '/vl/results/vl-print-results.php' WHERE `link` 
 UPDATE `s_app_menu` set icon = "fa-solid fa-table" WHERE `link` = '/admin/monitoring/test-results-metadata.php';
 UPDATE `s_app_menu` set icon = "fa-solid fa-file-lines" WHERE `link` = '/admin/monitoring/log-files.php';
 UPDATE `s_app_menu` set icon = "fas fa-user-clock" WHERE `link` = '/admin/monitoring/activity-log.php';
+
+UPDATE `user_details` set login_id = null where status = 'inactive';
+UPDATE `user_details` set `status`='inactive', `login_id` = null where hash_algorithm = 'sha1';
+ALTER TABLE `user_details` ADD UNIQUE(`login_id`);
+UPDATE user_details SET user_id = UUID() WHERE user_id IS NULL OR TRIM(user_id) = '';
+

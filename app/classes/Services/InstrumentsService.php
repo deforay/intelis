@@ -3,15 +3,28 @@
 namespace App\Services;
 
 use App\Services\DatabaseService;
+use App\Utilities\FileCacheUtility;
 
 final class InstrumentsService
 {
     protected DatabaseService $db;
     protected string $table = 'instruments';
+    protected $fileCache;
 
-    public function __construct(DatabaseService $db)
+    public function __construct(DatabaseService $db, FileCacheUtility $fileCache)
     {
+        $this->fileCache = $fileCache;
+        $this->fileCache->setPrefix('instruments_');
         $this->db = $db;
+    }
+
+    public function getInstrumentsCount()
+    {
+        $key = 'instruments_count';
+        return $this->fileCache->get($key, function ()  {
+            $this->db->where("status", "active");
+            return $this->db->getValue("instruments", "count(*)");
+        }, ['instruments']);
     }
 
     public function getInstruments($testType = null, $dropDown = false, $withFacility = false)

@@ -4,6 +4,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\AppMenuService;
 use App\Services\DatabaseService;
+use App\Services\InstrumentsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -12,6 +13,9 @@ unset($_SESSION['queryCounters']);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var InstrumentsService $instrumentsService */
+$instrumentsService = ContainerRegistry::get(InstrumentsService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -60,15 +64,15 @@ $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 1
 $maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
 
 $_SESSION['menuItems'] ??= $appMenuService->getMenu();
-$instrumentCount = $userCount = 0;
 
-$db->where("status", "active");
-$instrumentCount = $db->getValue("instruments", "count(*)");
+$instrumentsCount = $instrumentsService->getInstrumentsCount();
 
-$db->where("role_id != 1 and status = 'active'");
-$userCount = $db->getValue("user_details", "count(*)");
+if (!isset($_SESSION['userCount'])) {
+	$db->where("role_id != 1 and status = 'active'");
+	$_SESSION['userCount'] ??= $db->getValue("user_details", "count(*)");
+}
 
-if ($instrumentCount == 0 || $userCount == 0) {
+if ($instrumentsCount == 0 || $_SESSION['userCount'] == 0) {
 	$margin = 'style="margin-top:50px !important;"';
 	$topSide = 'style="top:50px !important;"';
 } else {
@@ -157,15 +161,15 @@ if ($instrumentCount == 0 || $userCount == 0) {
 <body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?>>
 
 	<?php if (
-		($general->isLisInstance() && $instrumentCount == 0) ||
-		$userCount == 0
+		($general->isLisInstance() && $instrumentsCount == 0) ||
+		$_SESSION['userCount'] == 0
 	) { ?>
 		<div class="topBar">
 			<p class="white text-center">
-				<?php if ($userCount == 0) { ?>
+				<?php if ($_SESSION['userCount'] == 0) { ?>
 					<a href="/users/addUser.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more non-admin users before you can start using the system"); ?> </a>
 				<?php } ?>
-				<?php if ($general->isLisInstance() && $instrumentCount == 0) { ?>
+				<?php if ($general->isLisInstance() && $instrumentsCount == 0) { ?>
 					&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; <a href="/instruments/add-instrument.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more instruments before you can start using the LIS"); ?> </a>
 				<?php }
 				?>
