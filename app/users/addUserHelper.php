@@ -158,8 +158,6 @@ try {
     $resource = 'user';
 
     $general->activityLog($eventType, $action, $resource);
-
-    header("Location:users.php");
 } catch (Throwable $exc) {
     LoggerUtility::log('error', $exc->getMessage(), [
         'exception' => $exc->getMessage(),
@@ -167,3 +165,5 @@ try {
         'line' => $exc->getLine()
     ]);
 }
+_invalidateFileCacheByTags(['users']);
+header("Location:users.php");

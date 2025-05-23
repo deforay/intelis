@@ -4,7 +4,6 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\AppMenuService;
 use App\Services\DatabaseService;
-use App\Services\InstrumentsService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
@@ -14,14 +13,8 @@ unset($_SESSION['queryCounters']);
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-/** @var InstrumentsService $instrumentsService */
-$instrumentsService = ContainerRegistry::get(InstrumentsService::class);
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-
-/** @var AppMenuService $appMenuService */
-$appMenuService = ContainerRegistry::get(AppMenuService::class);
 
 if ($db->isConnected() === false) {
 	throw new SystemException("Database connection failed. Please check your database settings", 500);
@@ -54,31 +47,20 @@ $systemDisplayName = SYSTEM_CONFIG['instance-name'] ?? $systemDisplayName;
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 
-// if (!_isAllowed($request)) {
-// 	http_response_code(401);
-// 	throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page.'), 401);
-// }
-
 $countryCode = $arr['default_phone_prefix'] ?? '';
 $minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;
 $maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
 
-$_SESSION['menuItems'] ??= $appMenuService->getMenu();
+$_SESSION['menuItems'] ??= (ContainerRegistry::get(AppMenuService::class))->getMenu();
 
-$instrumentsCount = $instrumentsService->getInstrumentsCount();
+$instrumentsCount = $general->getInstrumentsCount();
+$nonAdminUserCount = $general->getNonAdminUsersCount();
 
-if (!isset($_SESSION['userCount'])) {
-	$db->where("role_id != 1 and status = 'active'");
-	$_SESSION['userCount'] ??= $db->getValue("user_details", "count(*)");
-}
+$displayTopBar = ($instrumentsCount == 0 || $nonAdminUserCount == 0);
 
-if ($instrumentsCount == 0 || $_SESSION['userCount'] == 0) {
-	$margin = 'style="margin-top:50px !important;"';
-	$topSide = 'style="top:50px !important;"';
-} else {
-	$margin = '';
-	$topSide = 'style="top:0 !important;"';
-}
+$margin = $displayTopBar ? 'style="margin-top:50px !important;"' : '';
+$topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !important;"';
+
 ?>
 <!DOCTYPE html>
 <html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
@@ -162,11 +144,11 @@ if ($instrumentsCount == 0 || $_SESSION['userCount'] == 0) {
 
 	<?php if (
 		($general->isLisInstance() && $instrumentsCount == 0) ||
-		$_SESSION['userCount'] == 0
+		$nonAdminUserCount == 0
 	) { ?>
 		<div class="topBar">
 			<p class="white text-center">
-				<?php if ($_SESSION['userCount'] == 0) { ?>
+				<?php if ($nonAdminUserCount == 0) { ?>
 					<a href="/users/addUser.php" style="font-weight:bold; color: black;"><?= _translate("Please click here to add one or more non-admin users before you can start using the system"); ?> </a>
 				<?php } ?>
 				<?php if ($general->isLisInstance() && $instrumentsCount == 0) { ?>
@@ -306,7 +288,7 @@ if ($instrumentsCount == 0 || $_SESSION['userCount'] == 0) {
 									if (!empty($subMenu['inner_pages'])) {
 										$dataInnerPages = explode(',', (string) $subMenu['inner_pages']);
 										$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
-										$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
+										$innerPages = "data-inner-pages='$dataInnerPages'";
 									}
 									?>
 
@@ -330,7 +312,7 @@ if ($instrumentsCount == 0 || $_SESSION['userCount'] == 0) {
 														if (!empty($childMenu['inner_pages'])) {
 															$dataInnerPages = explode(',', (string) $childMenu['inner_pages']);
 															$dataInnerPages = implode(';', array_map('base64_encode', $dataInnerPages));
-															$innerPages = 'data-inner-pages="' . $dataInnerPages . '"';
+															$innerPages = "data-inner-pages='$dataInnerPages'";
 														}
 													?>
 														<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">

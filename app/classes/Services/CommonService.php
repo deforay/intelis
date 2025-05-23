@@ -118,6 +118,24 @@ final class CommonService
         return $request->getServerParams()['REMOTE_ADDR'] ?? null;
     }
 
+    public function getInstrumentsCount()
+    {
+        $key = 'instruments_count';
+        return $this->fileCache->get($key, function () {
+            $this->db->where("status", "active");
+            return $this->db->getValue("instruments", "count(*)");
+        }, ['instruments']);
+    }
+
+    public function getNonAdminUsersCount()
+    {
+        $key = 'users_count';
+        return $this->fileCache->get($key, function () {
+            $this->db->where("role_id != 1 and status = 'active'");
+            return $this->db->getValue("user_details", "count(*)");
+        }, ['users']);
+    }
+
 
     // get data from the system_config table from database
     public function getSystemConfig(?string $name = null)
@@ -297,7 +315,7 @@ final class CommonService
 
     public function getUserMappedProvinces($facilityMap = null)
     {
-        return MemoUtility::remember( function () use ($facilityMap) {
+        return MemoUtility::remember(function () use ($facilityMap) {
             $facilityMap ??= $_SESSION['facilityMap'] ?? null;
 
             $query = "SELECT gd.geo_name, gd.geo_id, gd.geo_code
@@ -326,7 +344,7 @@ final class CommonService
 
     public function generateSelectOptions($optionList, $selectedOptions = [], $emptySelectText = false)
     {
-        return MemoUtility::remember( function () use ($optionList, $selectedOptions, $emptySelectText) {
+        return MemoUtility::remember(function () use ($optionList, $selectedOptions, $emptySelectText) {
 
             $response = '';
 

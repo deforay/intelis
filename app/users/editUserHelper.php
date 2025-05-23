@@ -195,7 +195,7 @@ try {
 
     $general->activityLog($eventType, $action, $resource);
 
-    header("Location:users.php");
+
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
         'file' => $e->getFile(),
@@ -203,3 +203,7 @@ try {
         'trace' => $e->getTraceAsString(),
     ]);
 }
+
+
+_invalidateFileCacheByTags(['users']);
+header("Location:users.php");

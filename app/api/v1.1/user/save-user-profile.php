@@ -206,3 +206,6 @@ $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($dat
 
 //echo $payload
 echo ApiService::sendJsonResponse($payload, $request);
+
+_invalidateFileCacheByTags(['users']);
+
