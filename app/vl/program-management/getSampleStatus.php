@@ -20,7 +20,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 $whereConditionArray = [];
 $whereConditionArray[] = " vl.result_status != " . SAMPLE_STATUS\CANCELLED;
 if (!empty($_SESSION['facilityMap'])) {
-    $whereConditionArray = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
+    $whereConditionArray[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")";
 }
 
 $whereCondition = implode(" AND ", $whereConditionArray);

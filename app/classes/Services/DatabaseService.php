@@ -85,8 +85,11 @@ final class DatabaseService extends MysqliDb
      * @param array|null $bindParams Parameters to bind to the query
      * @return Generator
      */
-    public function rawQueryGenerator(string $query, $bindParams = null)
+    public function rawQueryGenerator(?string $query, $bindParams = null)
     {
+        if(empty($query) || $query === '') {
+            return yield from [];
+        }
         $this->_query = $query;
         $stmt = $this->_prepareQuery();
 
