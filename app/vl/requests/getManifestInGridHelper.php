@@ -20,8 +20,10 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 if (empty($_POST['manifestCode'])) {
-     throw new SystemException('Manifest code is required');
+     throw new SystemException(_translate('Manifest code is required'));
 }
+
+$_POST['manifestCode'] = trim($_POST['manifestCode']);
 
 $tableName = "form_vl";
 $primaryKey = "vl_sample_id";
@@ -82,7 +84,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['manifestCode'])) {
-     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']} '";
+     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']}'";
 }
 
 if (!empty($sWhere)) {
@@ -95,7 +97,7 @@ if (!empty($sOrder) && $sOrder !== '') {
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
 [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);

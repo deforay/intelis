@@ -154,7 +154,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from Custom Tests..." . PHP_EOL;
+            echo "Synced $totalResults test results from Custom Tests..." . PHP_EOL;
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
@@ -203,7 +203,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from HIV Viral Load...\n";
+            echo "Synced $totalResults test results from HIV Viral Load...\n";
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
@@ -250,7 +250,7 @@ try {
         }
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from EID...\n";
+            echo "Synced $totalResults test results from EID...\n";
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
@@ -312,7 +312,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from Covid-19...\n";
+            echo "Synced $totalResults test results from Covid-19...\n";
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
@@ -362,7 +362,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from Hepatitis...\n";
+            echo "Synced $totalResults test results from Hepatitis...\n";
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
@@ -412,7 +412,7 @@ try {
 
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from TB...\n";
+            echo "Synced $totalResults test results from TB...\n";
         }
 
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
@@ -459,7 +459,7 @@ try {
         }
         $totalResults  = count($result ?? []);
         if ($cliMode) {
-            echo "Sent $totalResults test results from CD4...\n";
+            echo "Synced $totalResults test results from CD4...\n";
         }
         $general->addApiTracking($transactionId, 'vlsm-system', $totalResults, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
     }
