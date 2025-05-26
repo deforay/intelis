@@ -23,13 +23,45 @@ final class DateUtility
         return $carbonDate && (!$strict || $carbonDate->format($format) === $date);
     }
 
-    public static function getDateTime(?string $date, string $format = 'Y-m-d H:i:s'): ?string
+    public static function getDateTime(?string $date, string $format = 'Y-m-d H:i:s', ?string $inputFormat = null): ?string
     {
-        if (!self::isDateValid($date)) {
+        if (null === $date) {
             return null;
         }
 
-        return Carbon::parse($date)->format($format);
+        $trimmedDate = trim($date);
+
+        // Perform preliminary checks for obviously invalid date strings
+        if (empty($trimmedDate) || 'undefined' === $trimmedDate || 'null' === $trimmedDate || preg_match('/[_*]|--/', $trimmedDate)) {
+            return null;
+        }
+
+        try {
+            $carbonDate = null;
+            if (null !== $inputFormat) {
+                // If a specific input format is provided, use createFromFormat
+                $carbonDate = Carbon::createFromFormat($inputFormat, $trimmedDate);
+                // createFromFormat returns false on failure
+                if ($carbonDate === false) {
+                    // Optionally log this failure, e.g., using LoggerUtility
+                    // LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
+                    return null;
+                }
+            } else {
+                // Original behavior: use Carbon::parse for general date strings
+                // The previous isDateValid() check's core parsing is covered by Carbon::parse() throwing an exception on failure.
+                $carbonDate = Carbon::parse($trimmedDate);
+            }
+
+            // If parsing was successful, format and return the date string
+            return $carbonDate->format($format);
+        } catch (Throwable $e) {
+            // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
+            // or any other errors during the process.
+            // Optionally log the error, e.g., using LoggerUtility
+            // LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage());
+            return null;
+        }
     }
 
     /**

@@ -60,14 +60,11 @@ try {
             continue;
         }
 
-        // Initialize result variables
-        $sampleCode = "";
-        $sampleType = "";
-        $absDecimalVal = "";
-        $absVal = "";
-        $logVal = "";
+        // Initialize/Reset result variables
+        $absDecimalVal = null;
+        $absVal = null;
+        $logVal = null;
         $txtVal = null;
-        $resultFlag = "";
 
         // Extract basic data
         $sampleCode = $sheetData[$sampleIdCol];
@@ -83,7 +80,7 @@ try {
         } elseif ($sheetData[$resultCol] == "< INF") {
             $absVal = $absDecimalVal = 839;
             $result = $txtVal = "< 839";
-            $logVal = 2.92;
+            $logVal = null;
         } else {
 
             $interpretedResults = $vlService->interpretViralLoadResult($sheetData[$resultCol] ?? null);
@@ -154,8 +151,8 @@ try {
 
     // Handle success using the service
     $importService->handleSuccess();
-    $importService->redirect();
 } catch (Exception $e) {
     $importService->handleError($e);
-    $importService->redirect();
 }
+
+$importService->redirect();

@@ -52,7 +52,7 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData = $objPHPExcel->getActiveSheet();
 
-        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, false, false, false);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, true, true, true);
 
         $m = 0;
         $skipTillRow = 2;
