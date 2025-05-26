@@ -46,4 +46,4 @@ if (!is_file($machineImportScript)) {
     throw new SystemException(_translate("Import Script not found"));
 }
 
-require_once($machineImportScript);
+require_once $machineImportScript;

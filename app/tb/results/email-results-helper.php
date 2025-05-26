@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var TestResultsService $general */
+/** @var TestResultsService $testResult */
 $testResult = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
@@ -57,7 +57,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
         "report_email" => $_POST['reportEmail'],
         "test_type" => 'tb',
         "attachment" => $_POST['pdfFile1'],
-        "samples" => $_POST['sample'], 
+        "samples" => $_POST['sample'],
         "status" => "pending",
      );
 

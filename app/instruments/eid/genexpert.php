@@ -1,6 +1,6 @@
 <?php
 
-// File included in import-file-helper.php
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use League\Csv\Reader;
 use App\Services\UsersService;
@@ -34,7 +34,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = [
         'csv',

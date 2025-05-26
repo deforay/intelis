@@ -1,14 +1,10 @@
 <?php
 
 use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
-use App\Utilities\DateUtility;
-use PHPMailer\PHPMailer\PHPMailer;
-use PHPMailer\PHPMailer\SMTP;
-use PHPMailer\PHPMailer\Exception;
+use App\Registries\ContainerRegistry;
 
 
 /** @var DatabaseService $db */
@@ -17,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var TestResultsService $general */
+/** @var TestResultsService $testResult */
 $testResult = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
@@ -57,7 +53,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          "report_email" => $_POST['reportEmail'],
          "test_type" => 'cd4',
          "attachment" => $_POST['pdfFile1'],
-         "samples" => $_POST['sample'], 
+         "samples" => $_POST['sample'],
          "status" => "pending",
       );
 
@@ -65,7 +61,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
 
       if($storeMail)
       {
-         $updateInfo = $testResult->updateEmailTestResultsInfo('cd4',$tempMailData);
+         $testResult->updateEmailTestResultsInfo('cd4',$tempMailData);
 
          $_SESSION['alertMsg'] = 'Email will be sent shortly';
          header('location:email-results.php');
@@ -74,7 +70,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
          header('location:email-results.php');
       }
- 
+
 } else {
    $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
    header('location:email-results.php');

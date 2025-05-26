@@ -20,7 +20,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'hepatitis');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'xls',
@@ -51,7 +51,8 @@ try {
         $objPHPExcel = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData = $objPHPExcel->getActiveSheet();
 
-        $sheetData = $sheetData->toArray(null, true, true, true);
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, false, false, false);
+
         $m = 0;
         $skipTillRow = 2;
 

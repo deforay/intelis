@@ -36,7 +36,7 @@ foreach ($saResult as $sample) {
 }
 $sCode = implode(', ', $sampleCode);
 
-unset($_SESSION['controllertrack']);
+// unset($_SESSION['controllertrack']);
 
 ?>
 

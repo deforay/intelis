@@ -1,6 +1,9 @@
 <?php
 
-use League\Csv\Reader;
+
+// For Roche COBAS 5800 test results import
+// File gets called in import-file-helper.php based on the selected instrument type
+
 use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -10,7 +13,7 @@ use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
+
 
 try {
 
@@ -31,7 +34,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
 
 

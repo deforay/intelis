@@ -22,7 +22,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = array(
         'xls',

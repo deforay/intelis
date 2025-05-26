@@ -1,6 +1,7 @@
 <?php
 
-// File included in import-file-helper.php
+// For GENEXPERT test results import
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use League\Csv\Reader;
 use App\Services\VlService;
@@ -38,7 +39,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $allowedExtensions = ['csv'];
 
@@ -198,9 +199,13 @@ try {
 
 
     header("Location:/import-result/imported-results.php?t=vl");
-} catch (Exception $exc) {
+} catch (Throwable $e) {
 
-    LoggerUtility::log('error', $exc->getMessage(), ['file' => __FILE__, 'line' => __LINE__, 'trace' => $exc->getTraceAsString()]);
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
 
     $_SESSION['alertMsg'] = _translate("Result file could not be imported. Please check if the file is of correct format.");
     header("Location:/import-result/import-file.php?t=vl");

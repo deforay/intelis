@@ -17,7 +17,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var TestResultsService $general */
+/** @var TestResultsService $testResult */
 $testResult = ContainerRegistry::get(TestResultsService::class);
 
 
@@ -58,7 +58,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          "report_email" => $_POST['reportEmail'],
          "test_type" => 'vl',
          "attachment" => $_POST['pdfFile1'],
-         "samples" => $_POST['sample'], 
+         "samples" => $_POST['sample'],
          "status" => "pending",
       );
 
@@ -76,7 +76,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
          $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
          header('location:email-results.php');
       }
- 
+
 } else {
    $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
    header('location:email-results.php');

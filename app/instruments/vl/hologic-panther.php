@@ -1,13 +1,13 @@
 <?php
 
-// File included in import-file-helper.php
+// For Hologic Panther test results import
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
-
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -20,7 +20,7 @@ $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
-$_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+// $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
 // Process the uploaded file
 if (isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK || $_FILES['resultFile']['size'] <= 0) {
@@ -162,7 +162,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
             }
 
             // Prepare data for database insertion
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -181,7 +181,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $resultValue,
-            );
+            ];
 
             // Check if sample already exists in the database
             $query = "SELECT facility_id, vl_sample_id, result FROM form_vl WHERE sample_code='" . $db->escape($sampleCode) . "'";

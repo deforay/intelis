@@ -1,15 +1,15 @@
 <?php
 
-// File included in import-file-helper.php
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 try {
     // Sanitized values from $request object
@@ -24,11 +24,10 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'txt',
-    );
+    $allowedExtensions = ['txt'];
+
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -110,7 +109,7 @@ try {
 
                     $lotNumberVal = $sheetData[$lotNumberCol];
                     if (trim((string) $sheetData[$lotExpirationDateCol]) != '') {
-                        $timestamp = DateTime::createFromFormat('!' . $dateFormat, $sheetData[$lotExpirationDateCol]);
+                        $timestamp = DateTime::createFromFormat("!$dateFormat", $sheetData[$lotExpirationDateCol]);
                         if (!empty($timestamp)) {
                             $timestamp = $timestamp->getTimestamp();
                             $lotExpirationDateVal = date('Y-m-d H:i', $timestamp);
@@ -126,13 +125,13 @@ try {
 
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } else if ($sampleCode == 'HIV_NEG') {
                             $sampleType = 'NC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         }
                     }
 
@@ -143,7 +142,7 @@ try {
                     }
 
                     if (!isset($infoFromFile[$sampleCode])) {
-                        $infoFromFile[$sampleCode] = array(
+                        $infoFromFile[$sampleCode] = [
                             "sampleCode" => $sampleCode,
                             "resultFlag" => $resultFlag,
                             "testingDate" => $testingDate,
@@ -151,7 +150,7 @@ try {
                             "lotNumber" => $lotNumberVal,
                             "result" => $result,
                             "lotExpirationDate" => $lotExpirationDateVal,
-                        );
+                        ];
                     }
 
                     $m++;
@@ -164,7 +163,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
+            $data = [
                 'module' => 'eid',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -179,7 +178,7 @@ try {
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $d['result'],
-            );
+            ];
 
             //get username
             if (!empty($d['reviewBy'])) {

@@ -1,11 +1,13 @@
 <?php
 
-// File included in import-file-helper.php
+// For Roche Cobas test results import for EID
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
@@ -24,11 +26,9 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'eid');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
-        'txt',
-    );
+    $allowedExtensions = ['txt'];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0
@@ -67,11 +67,7 @@ try {
 
         $spreadsheet = IOFactory::load(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $fileName);
         $sheetData = $spreadsheet->getActiveSheet();
-        $sheetData = $sheetData->toArray(null, true, true, true);
-
-        // echo "<pre>";
-        // var_dump($sheetData);
-        // die;
+        $sheetData = $spreadsheet->getActiveSheet()->toArray(null, false, false, false);
 
         $infoFromFile = [];
         $testDateRow = "";
@@ -108,9 +104,6 @@ try {
             $resultFlag = $rowData[$flagCol];
             //$reviewBy = $rowData[$reviewByCol];
 
-            // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
-            // $rowData[$testDateCol] = str_replace("/", "-", $rowData[$testDateCol]);
-            // $testingDate = date('Y-m-d H:i', strtotime($rowData[$testDateCol]));
             $result = $absVal = $logVal = $absDecimalVal = $txtVal = '';
             $resultInLowerCase = strtolower((string)$rowData[$resultCol]);
             if (str_contains($resultInLowerCase, 'not detected')) {
@@ -140,13 +133,13 @@ try {
 
                 if ($sampleCode == 'HIV_HIPOS') {
                     $sampleType = 'HPC';
-                    $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                    $sampleCode = "$sampleCode-$lotNumberVal";
                 } else if ($sampleCode == 'HIV_LOPOS') {
                     $sampleType = 'LPC';
-                    $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                    $sampleCode = "$sampleCode-$lotNumberVal";
                 } else if ($sampleCode == 'HIV_NEG') {
                     $sampleType = 'NC';
-                    $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                    $sampleCode = "$sampleCode-$lotNumberVal";
                 }
             }
 
@@ -157,19 +150,15 @@ try {
             }
 
             if (!isset($infoFromFile[$sampleCode])) {
-                $infoFromFile[$sampleCode] = array(
+                $infoFromFile[$sampleCode] = [
                     "sampleCode" => $sampleCode,
-                    "logVal" => ($logVal),
-                    "absVal" => $absVal,
-                    "absDecimalVal" => $absDecimalVal,
-                    "txtVal" => $txtVal,
                     "resultFlag" => $resultFlag,
                     "testingDate" => $testingDate,
                     "sampleType" => $sampleType,
                     "lotNumber" => $lotNumberVal,
                     "result" => $result,
                     "lotExpirationDate" => $lotExpirationDateVal,
-                );
+                ];
             } else {
                 if (isset($logVal) && trim($logVal) != "") {
                     $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
@@ -186,26 +175,26 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
+            $data = [
                 'module' => 'eid',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
                 'import_machine_name' => $_POST['configMachineName'],
                 'result_reviewed_by' => $_SESSION['userId'],
                 'sample_code' => $d['sampleCode'],
-                'result_value_log' => $d['logVal'],
+                'result_value_log' => null,
                 'sample_type' => $d['sampleType'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal'],
+                'result_value_absolute' => null,
+                'result_value_text' => null,
+                'result_value_absolute_decimal' => null,
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => '6',
+                'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $d['result'],
-            );
+            ];
             //get username
             if (!empty($d['reviewBy'])) {
 
@@ -214,20 +203,20 @@ try {
                 $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
             }
 
-            $query = "select facility_id,vl_sample_id,result,result_value_log,result_value_absolute,result_value_text,result_value_absolute_decimal from form_vl where sample_code='" . $sampleCode . "'";
-            $vlResult = $db->rawQueryOne($query);
+            $query = "SELECT facility_id,eid_id,result FROM form_eid WHERE sample_code='$sampleCode'";
+            $eidResult = $db->rawQueryOne($query);
             //insert sample controls
-            $scQuery = "select r_sample_control_name from r_sample_controls where r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
+            $scQuery = "SELECT r_sample_control_name FROM r_sample_controls WHERE r_sample_control_name='" . trim((string) $d['sampleType']) . "'";
             $scResult = $db->rawQuery($scQuery);
             if (!$scResult) {
-                $scData = array('r_sample_control_name' => trim((string) $d['sampleType']));
+                $scData = ['r_sample_control_name' => trim((string) $d['sampleType'])];
                 $scId = $db->insert("r_sample_controls", $scData);
             }
-            if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult['result'])) {
+            if (!empty($eidResult) && !empty($sampleCode)) {
+                if (!empty($eidResult['result'])) {
                     $data['sample_details'] = 'Result already exists';
                 }
-                $data['facility_id'] = $vlResult['facility_id'];
+                $data['facility_id'] = $eidResult['facility_id'];
             } else {
                 $data['sample_details'] = 'New Sample';
             }
@@ -249,6 +238,10 @@ try {
     $general->activityLog($eventType, $action, $resource);
 
     header("Location:/import-result/imported-results.php?t=$type");
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Throwable $e) {
+    LoggerUtility::log('error', $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
 }

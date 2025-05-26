@@ -1,5 +1,8 @@
 <?php
 
+// For Roche Cobas Test results import
+// File gets called in import-file-helper.php based on the selected instrument type
+
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -28,13 +31,13 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
-    $allowedExtensions = array(
+    $allowedExtensions = [
         'xls',
         'xlsx',
         'csv'
-    );
+    ];
     if (
         isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
         || $_FILES['resultFile']['size'] <= 0

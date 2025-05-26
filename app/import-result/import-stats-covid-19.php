@@ -54,15 +54,16 @@ $samplePrintQuery = "SELECT vl.*, b.*, ts.*, f.facility_name, l_f.facility_name 
                         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
                         LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
                         LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by
-                        LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection";
-$samplePrintQuery .= ' where vl.sample_code IN ( ' . $sCode . ')'; // Append to condition
+                        LEFT JOIN r_covid19_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
+                        WHERE vl.sample_code IN ('$sCode')";
+
 $_SESSION['covid19PrintSearchResultQuery'] = $samplePrintQuery;
 
 
 // We can clear the temp sample import table
 //$db->where('imported_by', $_SESSION['userId']);
 //$db->delete('temp_sample_import');
-unset($_SESSION['controllertrack']);
+// unset($_SESSION['controllertrack']);
 
 ?>
 <!-- Content Wrapper. Contains page content -->

@@ -58,7 +58,7 @@ $_SESSION['eidPrintSearchResultQuery'] = $samplePrintQuery;
 // We can clear the temp sample import table
 // $db->where('imported_by', $_SESSION['userId']);
 // $db->delete('temp_sample_import');
-unset($_SESSION['controllertrack']);
+// unset($_SESSION['controllertrack']);
 
 ?>
 <!-- Content Wrapper. Contains page content -->

@@ -17,7 +17,7 @@ $db = ContainerRegistry::get('db');
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var TestResultsService $general */
+/** @var TestResultsService $testResult */
 $testResult = ContainerRegistry::get(TestResultsService::class);
 
 // Sanitized values from $request object
@@ -49,35 +49,32 @@ foreach ($geResult as $row) {
 
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
    //  $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
-    // $mail->AddAttachment($result_file_to_attach);
-     $tempMailData = array(
-        "to_mail" => $_POST['toEmail'],
-        "subject" => $_POST['subject'],
-        "text_message" => $_POST['message'],
-        "report_email" => $_POST['reportEmail'],
-        "test_type" => 'covid19',
-        "attachment" => $_POST['pdfFile1'],
-        "samples" => $_POST['sample'], 
-        "status" => "pending",
-     );
+   // $mail->AddAttachment($result_file_to_attach);
+   $tempMailData = array(
+      "to_mail" => $_POST['toEmail'],
+      "subject" => $_POST['subject'],
+      "text_message" => $_POST['message'],
+      "report_email" => $_POST['reportEmail'],
+      "test_type" => 'covid19',
+      "attachment" => $_POST['pdfFile1'],
+      "samples" => $_POST['sample'],
+      "status" => "pending",
+   );
 
-     $storeMail = $db->insert('temp_mail',$tempMailData);
+   $storeMail = $db->insert('temp_mail', $tempMailData);
 
-     if($storeMail)
-     {
-         $updateInfo = $testResult->updateEmailTestResultsInfo('covid19',$tempMailData);
+   if ($storeMail) {
+      $testResult->updateEmailTestResultsInfo('covid19', $tempMailData);
 
-        $_SESSION['alertMsg'] = 'Email will be sent shortly';
-        header('location:email-results.php');
-     }
-     else{
-        $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
-        header('location:email-results.php');
-     }
-
+      $_SESSION['alertMsg'] = 'Email will be sent shortly';
+      header('location:email-results.php');
+   } else {
+      $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
+      header('location:email-results.php');
+   }
 } else {
-  $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
-  header('location:email-results.php');
+   $_SESSION['alertMsg'] = 'Unable to send mail. Please try later.';
+   header('location:email-results.php');
 }
 ?>
 <div class=".b."></div>

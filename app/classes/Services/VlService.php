@@ -42,6 +42,9 @@ final class VlService extends AbstractTestService
         'c/ml',
         'cp/ml',
         'copies/ml',
+        'copies / ml',
+        'copies /ml',
+        'copies/ ml',
         '{copies}/ml',
         'cop/ml',
         'copies',
@@ -61,6 +64,22 @@ final class VlService extends AbstractTestService
             }
             return $this->suppressionLimit;
         });
+    }
+
+    /**
+     * Safely converts a string with commas to float
+     */
+    private function parseNumericValue(string $value): float
+    {
+        // Remove thousand separators (commas) and spaces
+        $cleaned = str_replace([',', ' '], '', trim($value));
+
+        // Use is_numeric() to validate, then cast to float
+        if (is_numeric($cleaned)) {
+            return (float) $cleaned;
+        }
+
+        return 0.0;
     }
 
     /**
@@ -182,10 +201,10 @@ final class VlService extends AbstractTestService
             } else {
 
                 if (is_numeric($finalResult)) {
-                    $interpretedResult =  floatval($finalResult);
+                    $interpretedResult =  $this->parseNumericValue($finalResult);
                 } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $finalResult, $matches)) {
                     if (isset($matches[2]) && is_numeric($matches[2])) {
-                        $interpretedResult =  floatval($matches[2]);
+                        $interpretedResult =  $this->parseNumericValue($matches[2]);
                     }
                 } else {
                     if (in_array(strtolower((string) $orignalResultValue), $this->suppressedArray)) {
@@ -193,7 +212,7 @@ final class VlService extends AbstractTestService
                     } else {
                         // Extract scientific notation if present
                         if (preg_match('/\d+(\.\d+)?[eE][+-]?\d+/', $finalResult, $matches)) {
-                            $interpretedResult = floatval($matches[0]);
+                            $interpretedResult = $this->parseNumericValue($matches[0]);
                         } else {
                             $interpretedResult = (float) filter_var($finalResult, FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_SCIENTIFIC);
                         }
@@ -253,7 +272,7 @@ final class VlService extends AbstractTestService
         }
 
         $hivDetection = $hivDetection ?? '';
-        $finalResult = trim($hivDetection . ' ' . $finalResult);
+        $finalResult = trim("$hivDetection $finalResult");
 
         if (
             !empty($params['api']) &&
@@ -282,6 +301,7 @@ final class VlService extends AbstractTestService
     public function interpretViralLoadResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
         return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
+
             $vlResultType = $this->checkViralLoadValueType($result);
 
             if ($vlResultType == 'empty') {
@@ -400,16 +420,22 @@ final class VlService extends AbstractTestService
             return $this->interpretViralLoadTextResult($result, $unit);
         }
 
+        error_log("before str_ireplace $result");
+        // Remove copy number units like cp/mL, copies/mL, etc.
+        $result = str_ireplace($this->copiesPatterns, '', strtolower($result));
+        error_log("after str_ireplace $result");
+
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = trim("$result $unit");
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
         $extracted = $this->extractViralLoadValue($result, true);
+        error_log("extracted value $extracted");
         $numericValue = null;
         $operator = '';
         if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(\.\d+)?)/', $extracted, $matches)) {
             $operator = $matches[1] ?? '';
-            $numericValue = floatval($matches[2]);
+            $numericValue = $this->parseNumericValue($matches[2]);
 
             if ($numericValue !== null) {
                 if (!empty($unit) && str_contains($unit, 'Log')) {
@@ -425,7 +451,7 @@ final class VlService extends AbstractTestService
                 $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
             } else {
                 // fallback
-                $absDecimalVal = floatval($result);
+                $absDecimalVal = $this->parseNumericValue($result);
                 $absVal = $absDecimalVal;
                 $vlResult = $absDecimalVal;
             }
@@ -434,7 +460,7 @@ final class VlService extends AbstractTestService
             $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
         } else {
             // Fallback parsing (rare)
-            $absDecimalVal = floatval($result);
+            $absDecimalVal = $this->parseNumericValue($result);
             $absVal = $absDecimalVal;
             $vlResult = $absDecimalVal;
         }
@@ -460,7 +486,7 @@ final class VlService extends AbstractTestService
     private function processResultAndUnit(string $result, ?string $unit): array
     {
         // Ensure result is converted to a float
-        $processedResult = is_numeric($result) ? floatval($result) : 0;
+        $processedResult = is_numeric($result) ? $this->parseNumericValue($result) : 0;
         $unit = str_ireplace(['×10^', 'x10^'], '10*', $unit);
         $processedUnit = $unit;
 
@@ -576,16 +602,13 @@ final class VlService extends AbstractTestService
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
-            //if ($this->db->getLastErrno() > 0) {
-            LoggerUtility::log('error', $this->db->getLastErrno() . ":" . $this->db->getLastError());
-            LoggerUtility::log('error', $this->db->getLastQuery());
-            //}
-
-            LoggerUtility::log('error', 'Insert VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+            LoggerUtility::log('error', 'Error Inserting VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred
                 'line' => $e->getLine(), // Line number of the error
-                'stacktrace' => $e->getTraceAsString()
+                'stacktrace' => $e->getTraceAsString(),
+                'last_db_error' => "DB ERROR : " . $this->db->getLastErrno() . ":" . $this->db->getLastError(),
+                'last_db_query' => $this->db->getLastQuery()
             ]);
             $id = 0;
         }
@@ -677,6 +700,8 @@ final class VlService extends AbstractTestService
             if (is_null($input) || trim((string) $input) == '') {
                 return 'empty';
             }
+            // Remove copy number units like cp/mL, copies/mL, etc.
+            $input = str_ireplace($this->copiesPatterns, '', strtolower($input));
 
             // Check for any custom text patterns (exact match)
             if (!empty($customTextPatterns) && in_array($input, $customTextPatterns, true)) {
@@ -710,14 +735,13 @@ final class VlService extends AbstractTestService
             $processed = $this->preprocessViralLoadInput($input);
 
             if (is_numeric($processed)) {
-                return floatval($processed);
+                return $this->parseNumericValue($processed);
             }
 
             // More lenient: allows trailing units or (Ct ...)
             if (preg_match('/([<>])\s*(\d+(?:,\d{3})*(?:\.\d+)?(?:[eE][-+]?\d+)?)/i', $processed, $matches)) {
                 $operator = $returnWithOperator ? $matches[1] : '';
-                $number = str_replace(',', '', $matches[2]);
-                return trim("$operator " . floatval($number));
+                return trim("$operator " . $this->parseNumericValue($matches[2]));
             }
 
             return null;

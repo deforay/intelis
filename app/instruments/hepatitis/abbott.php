@@ -1,6 +1,6 @@
 <?php
 
-// File included in import-file-helper.php
+// File gets called in import-file-helper.php based on the selected instrument type
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -25,7 +25,7 @@ try {
 
     $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'hepatitis');
 
-    $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
 
     $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'd/m/Y H:i';
 
