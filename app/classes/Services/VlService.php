@@ -302,6 +302,9 @@ final class VlService extends AbstractTestService
     {
         return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
 
+            // Remove copy number units like cp/mL, copies/mL, etc.
+            $result = str_ireplace($this->copiesPatterns, '', strtolower($result));
+
             $vlResultType = $this->checkViralLoadValueType($result);
 
             if ($vlResultType == 'empty') {
@@ -420,17 +423,12 @@ final class VlService extends AbstractTestService
             return $this->interpretViralLoadTextResult($result, $unit);
         }
 
-        error_log("before str_ireplace $result");
-        // Remove copy number units like cp/mL, copies/mL, etc.
-        $result = str_ireplace($this->copiesPatterns, '', strtolower($result));
-        error_log("after str_ireplace $result");
-
         $resultStatus = $vlResult = $logVal = $txtVal = $absDecimalVal = $absVal = null;
         $originalResultValue = trim("$result $unit");
         $interpretAndConvertResult = $this->commonService->getGlobalConfig('vl_interpret_and_convert_results') === 'yes';
 
         $extracted = $this->extractViralLoadValue($result, true);
-        error_log("extracted value $extracted");
+
         $numericValue = null;
         $operator = '';
         if ($extracted !== null && preg_match('/^([<>])?\s*(\d+(\.\d+)?)/', $extracted, $matches)) {
