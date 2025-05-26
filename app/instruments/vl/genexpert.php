@@ -5,208 +5,142 @@
 
 use League\Csv\Reader;
 use App\Services\VlService;
-use App\Services\UsersService;
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
-use App\Registries\AppRegistry;
-use App\Services\CommonService;
-use App\Utilities\LoggerUtility;
-use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
-use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
-
-/** @var DatabaseService $db */
-$db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
-
-/** @var TestResultsService $testResultsService */
-$testResultsService = ContainerRegistry::get(TestResultsService::class);
-
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$_POST = _sanitizeInput($request->getParsedBody());
-
-/** @var VlService $vlService */
-$vlService = ContainerRegistry::get(VlService::class);
+use App\Services\TestResultImportService;
 
 try {
+    // Initialize the import service
+    /** @var TestResultImportService $importService */
+    $importService = new TestResultImportService('vl');
+    $importService->initializeImport();
 
-    $dateFormat = (!empty($_POST['dateFormat'])) ? $_POST['dateFormat'] : 'm/d/Y H:i';
+    // Handle file upload and get CSV content
+    $filePath = $importService->handleFileUpload(['csv'], operation: 'import');
 
-    $testResultsService->clearPreviousImportsByUser($_SESSION['userId'], 'vl');
+    /** @var VlService $vlService */
+    $vlService = ContainerRegistry::get(VlService::class);
 
-    // $_SESSION['controllertrack'] = $testResultsService->getMaxIDForHoldingSamples();
+    // Read and convert the file to handle UTF-16 encoding if needed
+    $rawContent = file_get_contents($filePath);
+    $encoding = mb_detect_encoding($rawContent, ['UTF-16LE', 'UTF-16BE', 'UTF-8', 'ASCII'], true);
 
-    $allowedExtensions = ['csv'];
-
-    if (
-        isset($_FILES['resultFile']) && $_FILES['resultFile']['error'] !== UPLOAD_ERR_OK
-        || $_FILES['resultFile']['size'] <= 0
-    ) {
-        throw new SystemException('Please select a file to upload', 400);
+    // Only convert if it's actually UTF-16, otherwise use original file
+    if ($encoding === 'UTF-16LE' || $encoding === 'UTF-16BE') {
+        $rawContent = mb_convert_encoding($rawContent, 'UTF-8', $encoding);
+        // Write the converted content back to a temp file
+        $tempFile = tempnam(sys_get_temp_dir(), 'genexpert_');
+        file_put_contents($tempFile, $rawContent);
+        $filePath = $tempFile;
     }
 
-    $fileName = preg_replace('/[^A-Za-z0-9.]/', '-', htmlspecialchars(basename((string) $_FILES['resultFile']['name'])));
-    $extension = MiscUtility::getFileExtension($fileName);
-    if (!in_array($extension, $allowedExtensions)) {
-        throw new SystemException("Invalid file format.");
-    }
-    $fileName = $_POST['fileName'] . "-" . MiscUtility::generateRandomString(12) . "." . $extension;
+    // Create CSV reader from file contents
+    $reader = Reader::createFromPath($filePath);
 
-    $resultFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results";
-    if (!file_exists($resultFilePath) && !is_dir($resultFilePath)) {
-        MiscUtility::makeDirectory($resultFilePath);
-    }
-    $resultFile = realpath($resultFilePath) . DIRECTORY_SEPARATOR . $fileName;
-    if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
-
-        $file_info = new finfo(FILEINFO_MIME); // object oriented approach!
-        $mime_type = $file_info->buffer(file_get_contents($resultFile)); // e.g. gives "image/jpeg"
-
-        $m = 1;
-        $skipTillRow = 47;
-
-        $sampleIdCol = "D";
-        $resultCol = "I";
-
-        $resultfilePath = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results") . DIRECTORY_SEPARATOR . $fileName;
-        $reader = Reader::createFromPath($resultfilePath);
-        $infoFromFile = [];
-        foreach ($reader as $offset => $record) {
-            foreach ($record as $o => $v) {
+    $infoFromFile = [];
+    $sampleCode = null;
+    $testedOn = null;
+    $testedBy = null;
 
 
-                $v = $testResultsService->removeCntrlCharsAndEncode($v);
 
-                if ($v == "Status") {
-                    $status = $testResultsService->removeCntrlCharsAndEncode($record[1]);
-                    if (!empty($status) && $status == "Incomplete") {
-                        continue 2;
-                    }
-                } elseif ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = $testResultsService->removeCntrlCharsAndEncode($record[1]);
-                    $timestamp = DateTimeImmutable::createFromFormat("!$dateFormat", $testedOn);
-                    if (!empty($timestamp)) {
-                        $timestamp = $timestamp->getTimestamp();
-                        $testedOn = date('Y-m-d H:i', $timestamp);
-                    } else {
-                        $testedOn = null;
-                    }
-                } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = $testResultsService->removeCntrlCharsAndEncode($record[1]);
-                } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
-                    $sampleCode = null;
-                } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = $testResultsService->removeCntrlCharsAndEncode($record[1]);
-                    if (empty($sampleCode)) {
-                        continue 2;
-                    }
-                    $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
-                    $infoFromFile[$sampleCode]['testedOn'] = $testedOn;
-                    $infoFromFile[$sampleCode]['testedBy'] = $testedBy;
-                } elseif ($v == "Assay" || $v == "Test") {
-                    if (empty($sampleCode)) {
-                        continue;
-                    }
-                    $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeCntrlCharsAndEncode($record[1]);
-                } elseif ($v == "Test Result" || $v == "Résultat du test") {
-                    if (empty($sampleCode)) {
-                        continue;
-                    }
+    foreach ($reader as $offset => $record) {
+        foreach ($record as $o => $v) {
+            // Clean the value using the existing method
+            $v = $importService->removeCntrlCharsAndEncode($v);
 
-                    $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeCntrlCharsAndEncode($record[1]))));
-                    $parts = explode(" (LOG ", $parsedResult);
-                    $vlResult = $parts[0];
-                    $logVal = isset($parts[1]) ? rtrim($parts[1], ")") : null;
-
-
-                    $interpretedResults = $vlService->interpretViralLoadResult($vlResult);
-
-
-                    $infoFromFile[$sampleCode]['logVal'] = $logVal ?? $interpretedResults['logVal'];
-                    $infoFromFile[$sampleCode]['absDecimalVal'] = $interpretedResults['absDecimalVal'];
-                    $infoFromFile[$sampleCode]['absVal'] = $interpretedResults['absVal'];
-                    $infoFromFile[$sampleCode]['txtVal'] = $interpretedResults['txtVal'];
-                    $infoFromFile[$sampleCode]['result'] = $vlResult;
+            if ($v == "Status") {
+                $status = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                if (!empty($status) && $status == "Incomplete") {
+                    continue 2;
                 }
-            }
-        }
+            } elseif ($v == "End Time" || $v == "Heure de fin") {
+                $rawEndTime = $record[1] ?? '';
+                $cleanEndTime = $importService->removeCntrlCharsAndEncode($rawEndTime);
 
-        $inc = 0;
-        foreach ($infoFromFile as $sampleCode => $d) {
-
-            $data = [
-                'module' => 'vl',
-                'lab_id' => base64_decode((string) $_POST['labId']),
-                'vl_test_platform' => $_POST['vltestPlatform'],
-                'import_machine_name' => $_POST['configMachineName'],
-                'result_reviewed_by' => $_SESSION['userId'],
-                'sample_code' => $d['sampleCode'],
-                'sample_tested_datetime' => $d['testedOn'],
-                'sample_type' => 'S',
-                'result_status' => '6',
-                'import_machine_file_name' => $fileName,
-                'result' => trim($d['result']),
-                'result_value_log' => $d['logVal'],
-                'result_value_absolute' => $d['absVal'],
-                'result_value_text' => $d['txtVal'],
-                'result_value_absolute_decimal' => $d['absDecimalVal']
-            ];
-
-            if (empty($data['result'])) {
-                $data['result_status'] = SAMPLE_STATUS\ON_HOLD; // 1= Hold
-            }
-            //get username
-            if (!empty($d['reviewBy'])) {
-
-                /** @var UsersService $usersService */
-                $usersService = ContainerRegistry::get(UsersService::class);
-                $data['sample_review_by'] = $usersService->getOrCreateUser($d['reviewBy']);
-            }
-
-            $query = "SELECT facility_id, vl_sample_id, result
-                        FROM form_vl
-                        WHERE sample_code= ?";
-            $vlResult = $db->rawQueryOne($query, array($sampleCode));
-
-            if (!empty($vlResult) && !empty($sampleCode)) {
-                if (!empty($vlResult['result'])) {
-                    $data['sample_details'] = 'Result already exists';
+                if (!empty($cleanEndTime)) {
+                    $testedOn = $importService->parseDate($cleanEndTime);
+                } else {
+                    error_log("End Time is empty after cleaning");
                 }
-                $data['facility_id'] = $vlResult['facility_id'];
-            } else {
-                $data['sample_details'] = 'New Sample';
+            } elseif ($v == "Start Time" || $v == "Heure de début") {
+                // Use as fallback if End Time is not available
+                if (empty($testedOn)) {
+                    $rawStartTime = $record[1] ?? '';
+                    $cleanStartTime = $importService->removeCntrlCharsAndEncode($rawStartTime);
+
+                    if (!empty($cleanStartTime)) {
+                        $testedOn = $importService->parseDate($cleanStartTime);
+                        error_log("Using Start Time as fallback: '$testedOn'");
+                    }
+                }
+            } elseif ($v == "User" || $v == 'Utilisateur') {
+                $testedBy = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+            } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
+                $sampleCode = null;
+            } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
+                $sampleCode = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+
+                if (empty($sampleCode)) {
+                    continue 2;
+                }
+
+                $infoFromFile[$sampleCode]['sampleCode'] = $sampleCode;
+                $infoFromFile[$sampleCode]['testingDate'] = $testedOn;
+                $infoFromFile[$sampleCode]['reviewBy'] = $testedBy;
+                $infoFromFile[$sampleCode]['sampleType'] = 'S'; // Default sample type
+
+            } elseif ($v == "Assay" || $v == "Test") {
+                if (empty($sampleCode)) {
+                    continue;
+                }
+                $assayValue = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $infoFromFile[$sampleCode]['assay'] = $assayValue;
+            } elseif ($v == "Test Result" || $v == "Résultat du test") {
+                if (empty($sampleCode)) {
+                    continue;
+                }
+
+                $resultValue = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $parsedResult = str_replace("|", "", strtoupper($resultValue));
+                $parts = explode(" (LOG ", $parsedResult);
+                $vlResult = $parts[0];
+                $logVal = isset($parts[1]) ? rtrim($parts[1], ")") : null;
+
+                $interpretedResults = $vlService->interpretViralLoadResult($vlResult);
+
+                $infoFromFile[$sampleCode]['logVal'] = $logVal ?? $interpretedResults['logVal'];
+                $infoFromFile[$sampleCode]['absDecimalVal'] = $interpretedResults['absDecimalVal'];
+                $infoFromFile[$sampleCode]['absVal'] = $interpretedResults['absVal'];
+                $infoFromFile[$sampleCode]['txtVal'] = $interpretedResults['txtVal'];
+                $infoFromFile[$sampleCode]['result'] = $vlResult;
+                $infoFromFile[$sampleCode]['resultFlag'] = null;
+
+
             }
-            if (!empty($sampleCode)) {
-                $data['result_imported_datetime'] = DateUtility::getCurrentDateTime();
-                $data['imported_by'] = $_SESSION['userId'];
-                $id = $db->insert("temp_sample_import", $data);
-            }
-            $inc++;
         }
     }
 
-    $_SESSION['alertMsg'] = "Result file imported successfully";
-    //Add event log
-    $eventType = 'import';
-    $action = $_SESSION['userName'] . ' imported a new test result with the sample id ' . $sampleCode;
-    $resource = 'import-results-manually';
-    $general->activityLog($eventType, $action, $resource);
+    // Clean up temp file if we created one
+    if (isset($tempFile) && file_exists($tempFile)) {
+        unlink($tempFile);
+    }
 
 
-    header("Location:/import-result/imported-results.php?t=vl");
-} catch (Throwable $e) {
+    // Send parsed data to service for insertion
+    if (!empty($infoFromFile)) {
+        $importService->insertParsedData($infoFromFile);
+        $importService->handleSuccess();
+    } else {
+        throw new Exception("No sample data found");
+    }
 
-    LoggerUtility::log('error', $e->getMessage(), [
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString()
-    ]);
+} catch (Exception $e) {
+    if (isset($importService)) {
+        $importService->handleError($e);
+    }
+    error_log("Import error: " . $e->getMessage());
+}
 
-    $_SESSION['alertMsg'] = _translate("Result file could not be imported. Please check if the file is of correct format.");
-    header("Location:/import-result/import-file.php?t=vl");
+if (isset($importService)) {
+    $importService->redirect();
 }

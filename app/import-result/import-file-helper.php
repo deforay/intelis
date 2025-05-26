@@ -42,8 +42,8 @@ if (!isset($directoryMap[$type])) {
 $directoryName = $directoryMap[$type];
 $machineImportScript = realpath(APPLICATION_PATH . "/instruments") . "/$directoryName/$machineImportScript";
 
-if (!is_file($machineImportScript)) {
-    throw new SystemException(_translate("Import Script not found"));
+if (!is_file($machineImportScript) || !is_readable($machineImportScript)) {
+    throw new SystemException(_translate("Import Script not found"), 404);
 }
 
 require_once $machineImportScript;

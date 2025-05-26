@@ -52,7 +52,7 @@ try {
         $interpretedResults = $vlService->interpretViralLoadResult($vlResult);
 
         // Sample type mapping
-        if ($sampleType == 'Patient' || $sampleType == 'Sample') {
+        if ($sampleType == 'Patient' || $sampleType == 'Sample' || $sampleType == 'Specimen') {
             $sampleType = 'S';
         } elseif ($sampleType == 'Control' || $sampleType == 'C' || $sampleType == 'QC') {
             if ($sampleCode == 'HIV_HIPOS') {

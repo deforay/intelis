@@ -38,12 +38,20 @@ $configDir = realpath(__DIR__);
 $directory = $configDir . DIRECTORY_SEPARATOR . 'vl';
 $dir = new DirectoryIterator($directory);
 $fileList = [];
+
 foreach ($dir as $fileinfo) {
-	if (!$fileinfo->isFile()) {
-		continue;
-	}
-	$fileList[] = $fileinfo->getFilename();
+    if (!$fileinfo->isFile()) {
+        continue;
+    }
+
+    // Only add .php files
+    if (strtolower($fileinfo->getExtension()) !== 'php') {
+        continue;
+    }
+
+    $fileList[] = $fileinfo->getFilename();
 }
+
 sort($fileList);
 
 if (!empty($sInfo['supported_tests'])) {

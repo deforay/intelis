@@ -102,7 +102,7 @@ try {
 
         // Sample type mapping and code modification
         $sampleType = $sheetData[$sampleTypeCol];
-        if ($sampleType == 'Patient' || $sampleType == 'Sample') {
+        if ($sampleType == 'Patient' || $sampleType == 'Sample' || $sampleType == 'Specimen') {
             $sampleType = 'S';
         } elseif ($sampleType == 'Control') {
             if ($sampleCode == 'HIV_HIPOS') {

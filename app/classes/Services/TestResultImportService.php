@@ -8,6 +8,7 @@ use DateTimeImmutable;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -54,7 +55,7 @@ class TestResultImportService
      * @param array $allowedExtensions
      * @return string|array Returns string for text files, array for Excel files
      */
-    public function handleFileUpload(array $allowedExtensions = ['txt', 'csv', 'xls', 'xlsx'])
+    public function handleFileUpload(array $allowedExtensions = ['txt', 'csv', 'xls', 'xlsx'], string $operation = 'parse')
     {
         if (
             !isset($_FILES['resultFile']) ||
@@ -85,37 +86,43 @@ class TestResultImportService
             throw new SystemException('Failed to move uploaded file', 500);
         }
 
-        // Parse and return file contents based on extension
-        if ($extension === 'txt') {
-            // Text files - return raw content as string
-            $contents = file_get_contents($resultFile);
-            if ($contents === false) {
-                throw new SystemException('Failed to read text file contents');
-            }
-            return $contents;
-        } elseif ($extension === 'csv') {
-            // CSV files - return raw content as string (let scripts handle CSV parsing)
-            $contents = file_get_contents($resultFile);
-            if ($contents === false) {
-                throw new SystemException('Failed to read CSV file contents');
-            }
-            return $contents;
-        } elseif ($extension === 'xls' || $extension === 'xlsx') {
-            // Excel files - return parsed array
-            try {
-                $spreadsheet = IOFactory::load($resultFile);
-                $worksheet = $spreadsheet->getActiveSheet();
-                return $worksheet->toArray(null, true, true, true);
-            } catch (Exception $e) {
-                throw new SystemException('Failed to parse Excel file: ' . $e->getMessage());
+        if ($operation == 'parse') {
+
+            // Parse and return file contents based on extension
+            if ($extension === 'txt') {
+                // Text files - return raw content as string
+                $contents = file_get_contents($resultFile);
+                if ($contents === false) {
+                    throw new SystemException('Failed to read text file contents');
+                }
+                return $contents;
+            } elseif ($extension === 'csv') {
+                // CSV files - return raw content as string (let scripts handle CSV parsing)
+                $contents = file_get_contents($resultFile);
+                if ($contents === false) {
+                    throw new SystemException('Failed to read CSV file contents');
+                }
+                return $contents;
+            } elseif ($extension === 'xls' || $extension === 'xlsx') {
+                // Excel files - return parsed array
+                try {
+                    $spreadsheet = IOFactory::load($resultFile);
+                    $worksheet = $spreadsheet->getActiveSheet();
+                    return $worksheet->toArray(null, true, true, true);
+                } catch (Exception $e) {
+                    throw new SystemException('Failed to parse Excel file: ' . $e->getMessage());
+                }
+            } else {
+                // Other file types - return raw content as fallback
+                $contents = file_get_contents($resultFile);
+                if ($contents === false) {
+                    throw new SystemException('Failed to read file contents');
+                }
+                return $contents;
             }
         } else {
-            // Other file types - return raw content as fallback
-            $contents = file_get_contents($resultFile);
-            if ($contents === false) {
-                throw new SystemException('Failed to read file contents');
-            }
-            return $contents;
+            // just return the file path
+            return $resultFile;
         }
     }
 
@@ -245,19 +252,20 @@ class TestResultImportService
     public function parseDate(string $dateString, ?string $format = null): ?string
     {
         if (empty($dateString)) return null;
-
         $format = $format ?: ($this->postData['dateFormat'] ?? 'd/m/Y H:i');
 
-        try {
-            $dateObject = DateTimeImmutable::createFromFormat("!$format", $dateString);
-            if ($dateObject) {
-                return $dateObject->format('Y-m-d H:i:s');
-            }
-        } catch (Exception $e) {
-            // Silent fail for date parsing
-        }
+        return MemoUtility::remember(function () use ($dateString, $format) {
 
-        return null;
+            try {
+                $dateObject = DateTimeImmutable::createFromFormat("!$format", $dateString);
+                if ($dateObject) {
+                    return $dateObject->format('Y-m-d H:i:s');
+                }
+            } catch (Exception $e) {
+                // Silent fail for date parsing
+            }
+            return null;
+        });
     }
 
     public function abbottTestingDateFormatter($testDate, $testDateFormat, $interpretFormat = true): ?array
@@ -301,6 +309,20 @@ class TestResultImportService
         return $usersService->getOrCreateUser($username);
     }
 
+    // This function removes control characters from the strings in the CSV file.
+    // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
+    // Also checks UTF-8 encoding and converts if needed
+    public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
+    {
+        return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
+            $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
+            if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
+                $inputString = mb_convert_encoding($inputString, 'UTF-8');
+            }
+            return $inputString;
+        });
+    }
+
     /**
      * Get current date format from POST
      */
@@ -320,5 +342,4 @@ class TestResultImportService
             $this->db->insert("r_sample_controls", ['r_sample_control_name' => trim($sampleType)]);
         }
     }
-
 }
