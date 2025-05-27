@@ -42,12 +42,12 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	.logLine {
-		color: #000;
-		font-size: 15px;
+		color: #000 !important;
+		font-size: 14px;
 		margin: 5px 0;
 		padding: 11px 15px 11px 25px;
 		/* Top Right Bottom Left */
-		background-color: #f9f9f9;
+		background-color:rgb(255, 255, 255);
 		border: 2px solid #f1f1f1;
 		border-left: 3px solid #4CAF50;
 		font-family: 'Courier New', Courier, monospace;
@@ -176,9 +176,9 @@ require_once APPLICATION_PATH . '/header.php';
 
 	/* Stack trace formatting */
 	.stack-line {
-		color: #6c757d;
+		color: #000;
 		padding-left: 20px;
-		font-size: 0.9em;
+		font-size: 14px;
 	}
 
 	/* Responsive adjustments */

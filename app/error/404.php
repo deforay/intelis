@@ -1,5 +1,5 @@
 <?php
-require_once(APPLICATION_PATH . '/header.php');
+require_once APPLICATION_PATH . '/header.php';
 ?>
 <div class="content-wrapper">
     <section class="content">
