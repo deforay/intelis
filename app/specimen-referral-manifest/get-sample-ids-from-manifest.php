@@ -37,18 +37,18 @@ function fetchSamples(DatabaseService $db, $formTable, $primaryKey, string $mani
     return $db->rawQuery($query, [$manifestCode]);
 }
 
-// Fetch initial sample data
-$sampleResult = fetchSamples($db, $formTable, $primaryKey, $manifestCode);
+// // Fetch initial sample data
+// $sampleResult = fetchSamples($db, $formTable, $primaryKey, $manifestCode);
 
-$sampleData = [];
-$sampleData = array_column($sampleResult, $primaryKey);
-$noOfSamples = (int)($sampleResult[0]['number_of_samples'] ?? 0);
-$count = count($sampleData);
+// $sampleData = [];
+// $sampleData = array_column($sampleResult, $primaryKey);
+// $noOfSamples = (int)($sampleResult[0]['number_of_samples'] ?? 0);
+// $count = count($sampleData);
 
-if ($noOfSamples > 0 && $count === $noOfSamples) {
-    echo implode(',', $sampleData);
-    return;
-}
+// if ($noOfSamples > 0 && $count === $noOfSamples) {
+//     echo implode(',', $sampleData);
+//     return;
+// }
 
 $sampleData = [];
 $baseUrl = sprintf(
