@@ -51,7 +51,7 @@ $rejectionReasonId = $general->getDataByTableAndFields("generic_sample_rejection
 $testSymptomsId = $general->getDataByTableAndFields("generic_test_symptoms_map", array("symptom_id", "symptom_id"), true, "test_type_id=$id");
 $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units_map", array("unit_id", "unit_id"), true, "test_type_id=$id");
 
- 
+
 $i = 0;
 foreach ($testResultAttribute['result_type'] as $key => $r) {
 	$i++;
@@ -278,7 +278,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 															<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control isRequired" value="<?php echo $testAttributeId; ?>" />
 														</td>
 														<td align="center" style="vertical-align:middle;">
-															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>" data-attributenumber="<?= $i ?>" class="form-control fieldCode isRequired dataClass" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=formatStringToSnakeCase(this.value)" />
+															<input type="text" name="fieldCode[]" id="fieldCode<?php echo $i; ?>" data-attributenumber="<?= $i ?>" class="form-control fieldCode isRequired dataClass" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=Utilities.toSnakeCase(this.value)" />
 														</td>
 														<td align="center" style="vertical-align:middle;padding-top: 20px;">
 															<select class="form-control isRequired" name="fieldType[]" id="fieldType<?php echo $i ?>" data-attributenumber="<?= $i ?>" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
@@ -342,7 +342,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 																<input type="hidden" name="fieldId[]" id="fieldId<?php echo $i ?>" class="form-control" value="<?php echo $otherAttributeId; ?>" />
 															</td>
 															<td align="center" style="vertical-align:middle;">
-																<input type="text" name="fieldCode[]" data-attributenumber="<?= $i ?>" id="fieldCode<?php echo $i; ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=formatStringToSnakeCase(this.value)" />
+																<input type="text" name="fieldCode[]" data-attributenumber="<?= $i ?>" id="fieldCode<?php echo $i; ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" value="<?php echo $testAttribute['field_code']; ?>" onchange="this.value=Utilities.toSnakeCase(this.value)" />
 															</td>
 															<td align="center" style="vertical-align:middle;padding-top: 20px;">
 																<select class="form-control isRequired" data-attributenumber="<?= $i ?>" name="fieldType[]" id="fieldType<?php echo $i ?>" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, <?php echo $i ?>)">
@@ -405,7 +405,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 												<input type="hidden" name="fieldId[]" id="fieldId1" class="form-control" />
 											</td>
 											<td align="center">
-												<input type="text" name="fieldCode[]" id="fieldCode1" data-attributenumber="<?= $i ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" onchange="this.value=formatStringToSnakeCase(this.value)" />
+												<input type="text" name="fieldCode[]" id="fieldCode1" data-attributenumber="<?= $i ?>" class="form-control fieldCode isRequired" placeholder="<?php echo _translate("Field Code"); ?>" title="<?php echo _translate("Please enter field code"); ?>" onblur="checkDuplication(this, \'fieldCode\');" onchange="this.value=Utilities.toSnakeCase(this.value)" />
 											</td>
 											<td>
 												<select class="form-control isRequired" data-attributenumber="<?= $i ?>" name="fieldType[]" id="fieldType1" title="<?php echo _translate('Please select the field type'); ?>" onchange="changeField(this, 1)">

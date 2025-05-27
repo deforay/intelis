@@ -14,6 +14,7 @@ use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -102,6 +103,19 @@ if ($cliMode) {
             break;
         }
     }
+}
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$queryParams = $request->getQueryParams();
+if (!empty($queryParams)) {
+    $_GET = _sanitizeInput($queryParams);
+
+    $manifestCode = $_GET['manifestCode'] ?? null;
+    $forceSyncModule = $_GET['forceSyncModule'] ?? null;
+    $syncSinceDate = $_GET['syncSinceDate'] ?? null;
+    $isSilent = $_GET['silent'] ?? false;
 }
 
 if ($syncSinceDate !== null) {

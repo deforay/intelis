@@ -28,7 +28,7 @@ $text = (!empty($_GET['q'])) ? $_GET['q'] : null;
 $selectField = $field;
 $fieldId = (!empty($fieldId)) ? $fieldId : $field;
 if (!empty($fieldId)) {
-    $selectField = $field . ', ' . $fieldId;
+    $selectField = "$field, $fieldId";
 }
 
 if (!empty($text) && $text != "") {
@@ -57,7 +57,7 @@ if (!empty($_GET['group'])) {
     $cQuery .= " GROUP BY '" . $_GET['group'] . "'";
 }
 if (!empty($limit) && $limit > 0) {
-    $cQuery .= " limit " . $limit;
+    $cQuery .= " limit $limit";
 }
 $cResult = $db->rawQuery($cQuery);
 if (isset($returnField) && $returnField != "") {
@@ -66,12 +66,11 @@ if (isset($returnField) && $returnField != "") {
     $echoResult = [];
     if (!empty($cResult)) {
         foreach ($cResult as $row) {
-            $echoResult[] = array("id" => $row[$fieldId], "text" => ucwords((string) $row[$field]));
+            $echoResult[] = ["id" => $row[$fieldId], "text" => ucwords((string) $row[$field])];
         }
     } else {
-        $echoResult[] = array("id" => $text, 'text' => ucwords((string) $text));
+        $echoResult[] = ["id" => $text, 'text' => ucwords((string) $text)];
     }
 
-    $result = array("result" => $echoResult);
-    echo json_encode($result);
+    echo json_encode(["result" => $echoResult]);
 }

@@ -25,6 +25,8 @@
 <script type="text/javascript" src="/assets/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/assets/js/jszip.min.js"></script>
 <script type="text/javascript" src="/assets/js/buttons.html5.min.js"></script>
+<script type="text/javascript" src="/assets/js/utils.js"></script>
+<script type="text/javascript" src="/assets/js/storage.js"></script>
 
 <?php
 
@@ -55,8 +57,6 @@ $remoteURL = $general->getRemoteURL();
             }).appendTo(form);
         }
     }
-
-
 
     Highcharts.setOptions({
         chart: {
@@ -313,124 +313,6 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
-    class Utilities {
-
-        static validatePhoneNumber(phoneNumber, countryCode, minDigits, maxDigits) {
-            // Remove all non-numeric characters from the phone number
-            const numericPhoneNumber = phoneNumber.replace(/\D/g, '');
-
-            // Check if the phone number starts with the country code, if countryCode is not null or empty
-            if (countryCode && !phoneNumber.startsWith(countryCode)) {
-                return false;
-            }
-
-            // Calculate the length of the phone number without the country code
-            const countryCodeLength = countryCode ? countryCode.replace(/\D/g, '').length : 0;
-            const lengthWithoutCountryCode = numericPhoneNumber.length - countryCodeLength;
-
-            // Check the length of the phone number
-            if (minDigits && lengthWithoutCountryCode < minDigits) {
-                return false;
-            }
-            if (maxDigits && lengthWithoutCountryCode > maxDigits) {
-                return false;
-            }
-            return true;
-        }
-
-        static async copyToClipboard(text) {
-            let succeed;
-            try {
-                await navigator.clipboard.writeText(text);
-                succeed = true;
-            } catch (e) {
-                succeed = false;
-            }
-            return succeed;
-        }
-
-        static toSnakeCase(str) {
-            return str
-                // Handle sequences of uppercase letters as single words
-                .replace(/([A-Z]+)([A-Z][a-z])/g, '$1_$2')
-                // Add an underscore before any uppercase letter followed by lowercase letters,
-                // ensuring it's not the start of the string
-                .replace(/([a-z\d])([A-Z])/g, '$1_$2')
-                // Lowercase the whole string
-                .toLowerCase()
-                // Replace spaces and any non-alphanumeric characters (excluding underscores) with underscores
-                .replace(/[\s]+/g, '_');
-        }
-
-        /**
-         * Calculates age in years and months from a given date of birth (dob) and an optional format.
-         * @param {string} dob - Date of birth.
-         * @param {string} [format='DD-MMM-YYYY'] - Optional format of the dob.
-         * @returns {Object} An object containing the age in years and months.
-         */
-        static getAgeFromDob(dob, format = 'DD-MMM-YYYY') {
-
-            // Ensure dayjs and its plugin are available
-            if (typeof dayjs === 'undefined' || !dayjs.extend) {
-                console.error("Day.js or its customParseFormat plugin is not loaded");
-                return {
-                    years: 0,
-                    months: 0
-                };
-            }
-
-            // Extend dayjs with the customParseFormat plugin
-            dayjs.extend(dayjs_plugin_customParseFormat);
-
-            if (!dob || !dayjs(dob, format).isValid()) {
-                console.error("Invalid or missing date of birth");
-                return {
-                    years: 0,
-                    months: 0
-                };
-            }
-
-            const dobDate = dayjs(dob, format);
-            const currentDate = dayjs();
-
-            if (dobDate.isAfter(currentDate)) {
-                console.error("Date of birth is in the future");
-                return {
-                    years: 0,
-                    months: 0
-                };
-            }
-
-            const ageInYears = currentDate.diff(dobDate, 'year');
-            const ageInMonths = currentDate.diff(dobDate, 'month') % 12;
-
-            return {
-                years: ageInYears,
-                months: ageInMonths
-            };
-        }
-
-        static splitPath(path) {
-            let parts = path.split('?');
-            let paths = [parts[0]];
-            if (parts.length > 1) {
-                let queryParams = parts[1].split('&');
-                for (let i = 0; i < queryParams.length; i++) {
-                    paths.push(parts[0] + '?' + queryParams.slice(0, i + 1).join('&'));
-                }
-            }
-            return paths;
-        }
-
-        static autoSelectSingleOption(selectId) {
-            let nonEmptyOptions = $('#' + selectId).find("option[value!='']");
-            //  alert(nonEmptyOptions.length);
-            if (nonEmptyOptions.length === 1) {
-                $('#' + selectId).val(nonEmptyOptions.val()).trigger('change');
-            }
-        }
-
-    }
 
     function calculateAgeInYears(calcFrom, calcTo) {
         var dateOfBirth = moment($("#" + calcFrom).val(), '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>');
@@ -462,138 +344,6 @@ $remoteURL = $general->getRemoteURL();
     function closeModal() {
         document.getElementById('dFrame').src = "";
         hidedefModal('dDiv');
-    }
-
-    class StorageHelper {
-        static isSupported() {
-            try {
-                const storage = window['localStorage'];
-                const x = '__storage_test__';
-                storage.setItem(x, x);
-                storage.removeItem(x);
-                return true;
-            } catch (e) {
-                return e instanceof DOMException && (
-                        // everything except Firefox
-                        e.name === 'QuotaExceededError' ||
-                        // Firefox
-                        e.name === 'NS_ERROR_DOM_QUOTA_REACHED') &&
-                    // acknowledge QuotaExceededError only if there's something already stored
-                    storage.length !== 0;
-            }
-        }
-
-        static storeInLocalStorage(key, value) {
-            if (!StorageHelper.isSupported()) {
-                console.error('localStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                if (typeof value !== 'string') {
-                    value = JSON.stringify(value);
-                }
-                localStorage.setItem(key, value);
-            } catch (error) {
-                console.error(`Error storing item in localStorage: ${error}`);
-            }
-        }
-
-        static getFromLocalStorage(key) {
-            if (!StorageHelper.isSupported()) {
-                console.error('localStorage is not supported in this browser');
-                return;
-            }
-
-            const value = localStorage.getItem(key);
-            try {
-                return JSON.parse(value);
-            } catch (error) {
-                return value;
-            }
-        }
-
-        static removeItemFromLocalStorage(key) {
-            if (!StorageHelper.isSupported()) {
-                console.error('localStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                localStorage.removeItem(key);
-            } catch (error) {
-                console.error(`Error removing item from localStorage: ${error}`);
-            }
-        }
-
-        static clearLocalStorage() {
-            if (!StorageHelper.isSupported()) {
-                console.error('localStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                localStorage.clear();
-            } catch (error) {
-                console.error(`Error clearing localStorage: ${error}`);
-            }
-        }
-
-        static storeInSessionStorage(key, value) {
-            if (!StorageHelper.isSupported()) {
-                console.error('sessionStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                if (typeof value !== 'string') {
-                    value = JSON.stringify(value);
-                }
-                sessionStorage.setItem(key, value);
-            } catch (error) {
-                console.error(`Error storing item in sessionStorage: ${error}`);
-            }
-        }
-
-        static getFromSessionStorage(key) {
-            if (!StorageHelper.isSupported()) {
-                console.error('sessionStorage is not supported in this browser');
-                return;
-            }
-
-            const value = sessionStorage.getItem(key);
-            try {
-                return JSON.parse(value);
-            } catch (error) {
-                return value;
-            }
-        }
-
-        static removeItemFromSessionStorage(key) {
-            if (!StorageHelper.isSupported()) {
-                console.error('sessionStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                sessionStorage.removeItem(key);
-            } catch (error) {
-                console.error(`Error removing item from sessionStorage: ${error}`);
-            }
-        }
-
-        static clearSessionStorage() {
-            if (!StorageHelper.isSupported()) {
-                console.error('sessionStorage is not supported in this browser');
-                return;
-            }
-
-            try {
-                sessionStorage.clear();
-            } catch (error) {
-                console.error(`Error clearing sessionStorage: ${error}`);
-            }
-        }
     }
 
     function editableSelect(id, _fieldName, table, _placeholder) {
@@ -634,18 +384,6 @@ $remoteURL = $general->getRemoteURL();
             }
         });
     }
-
-
-
-    function formatStringToSnakeCase(inputStr) {
-        // Remove special characters except underscore
-        var result = inputStr.replace(/[^a-zA-Z0-9_ ]/g, '');
-        // Convert to lowercase
-        result = result.toLowerCase();
-        // Replace spaces with underscore
-        return result.replace(/ /g, '_');
-    }
-
 
 
     function clearCache() {
@@ -914,49 +652,42 @@ $remoteURL = $general->getRemoteURL();
             }
         }
 
-
-        let phoneNumberDebounceTimeout;
+        // Phone number validation
         const countryCode = "<?= $countryCode ?? ''; ?>";
-
-        $('.phone-number').on('input', function() {
-            clearTimeout(phoneNumberDebounceTimeout);
+        $('.phone-number').on('input', Utilities.debounce(function() {
             let inputElement = $(this);
             let phoneNumber = inputElement.val().trim();
 
-            phoneNumberDebounceTimeout = setTimeout(function() {
-                phoneNumber = inputElement.val().trim();
+            if (phoneNumber === countryCode || phoneNumber === "") {
+                inputElement.val("");
+                return;
+            }
 
-                if (phoneNumber === countryCode || phoneNumber === "") {
-                    inputElement.val("");
-                    return;
-                }
+            phoneNumber = phoneNumber.replace(/[^0-9+]/g, ''); // Remove non-numeric and non-plus characters
+            inputElement.val(phoneNumber);
 
-                phoneNumber = phoneNumber.replace(/[^0-9+]/g, ''); // Remove non-numeric and non-plus characters
-                inputElement.val(phoneNumber);
-
-                $.ajax({
-                    type: 'POST',
-                    url: '/includes/validatePhoneNumber.php',
-                    data: {
-                        phoneNumber: phoneNumber
-                    },
-                    success: function(response) {
-                        if (!response.isValid) {
-                            Toastify({
-                                text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeTextOrContext: true) ?>",
-                                duration: 3000,
-                                style: {
-                                    background: 'red'
-                                }
-                            }).showToast();
-                        }
-                    },
-                    error: function() {
-                        console.error("An error occurred while validating the phone number.");
+            $.ajax({
+                type: 'POST',
+                url: '/includes/validatePhoneNumber.php',
+                data: {
+                    phoneNumber: phoneNumber
+                },
+                success: function(response) {
+                    if (!response.isValid) {
+                        Toastify({
+                            text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeTextOrContext: true) ?>",
+                            duration: 3000,
+                            style: {
+                                background: 'red'
+                            }
+                        }).showToast();
                     }
-                });
-            }, 700);
-        });
+                },
+                error: function() {
+                    console.error("An error occurred while validating the phone number.");
+                }
+            });
+        }, 700));
 
         $('.phone-number').on('focus', function() {
             let phoneNumber = $(this).val().trim();

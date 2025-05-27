@@ -65,6 +65,8 @@ try {
 
     $syncSinceDate = $data['syncSinceDate'] ?? null;
 
+    $manifestCode = $data['manifestCode'] ?? null;
+
     $testType = $data['testType'] ?? null;
 
 
@@ -78,7 +80,7 @@ try {
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
-    $requestsData = $stsRequestsService->getRequests($testType, $labId, $facilityMapResult ?? [],  $data['manifestCode'] ?? null, $syncSinceDate);
+    $requestsData = $stsRequestsService->getRequests($testType, $labId, $facilityMapResult ?? [],  $manifestCode, $syncSinceDate);
 
     $sampleIds = $requestsData['sampleIds'] ?? [];
     $facilityIds = $requestsData['facilityIds'] ?? [];
