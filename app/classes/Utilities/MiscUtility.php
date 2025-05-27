@@ -884,7 +884,6 @@ final class MiscUtility
     }
 
 
-
     /**
      * Recursively convert input to valid UTF-8 and remove invisible characters.
      *
@@ -963,5 +962,10 @@ final class MiscUtility
         // }
 
         return $a == $b;
+    }
+
+    public static function generateErrorId($prefix = 'ERR'): string
+    {
+        return $prefix . '-' . date('Ymd-His') . '-' . substr(uniqid(), -6);
     }
 }

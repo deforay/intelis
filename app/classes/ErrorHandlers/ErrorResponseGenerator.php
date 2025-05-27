@@ -6,6 +6,7 @@ use Throwable;
 use Whoops\Run;
 use Laminas\Diactoros\Response;
 use App\Utilities\LoggerUtility;
+use App\Utilities\MiscUtility;
 use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -92,7 +93,7 @@ class ErrorResponseGenerator
         $errorReason = $this->errorReasons[$httpCode] ?? _translate('Internal Server Error');
 
         // Generate a unique error ID for tracking
-        $errorId = 'ERR-' . date('Ymd-His') . '-' . substr(uniqid(), -6);
+        $errorId = MiscUtility::generateErrorId();
 
         LoggerUtility::log('error', $errorReason . ' : ' . $exception->getCode() . ' : ' . ($request->getUri() ?? 'UNABLE TO GET URI') . ': ' . $exception->getMessage(), [
             'error_id' => $errorId,
@@ -124,7 +125,7 @@ class ErrorResponseGenerator
             'error' => [
                 'code' => $httpCode,
                 'timestamp' => time(),
-                'message' => $errorReason . " | " . $errorMessage,
+                'message' => "$errorReason | $errorMessage",
                 'error_id' => $errorId,
                 'support_info' => [
                     'contact' => _translate('Please contact support with the error ID above.'),
