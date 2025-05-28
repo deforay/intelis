@@ -103,7 +103,7 @@ $payload = [
     'fundingSourcesLastModified'    => $forceFlag ? null : $general->getLastModifiedDateTime('r_funding_sources'),
     'partnersLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('r_implementation_partners'),
     'geoDivisionsLastModified'      => $forceFlag ? null : $general->getLastModifiedDateTime('geographical_divisions'),
-    'patientsLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('patients'),
+    //'patientsLastModified'          => $forceFlag ? null : $general->getLastModifiedDateTime('patients'),
     'time' => time(),
     "instanceId" => $general->getInstanceId()
 ];
@@ -150,11 +150,11 @@ $commonDataToSync = [
         'tableName' => 'geographical_divisions',
         'canTruncate' => true
     ],
-    'patients'  => [
-        'primaryKey' => 'system_patient_code',
-        'tableName'  =>  'patients',
-        'canTruncate' => false
-    ]
+    // 'patients'  => [
+    //     'primaryKey' => 'system_patient_code',
+    //     'tableName'  =>  'patients',
+    //     'canTruncate' => false
+    // ]
 ];
 
 // Receive data from STS

@@ -68,8 +68,8 @@ try {
                 $tableInfo['primaryKey'][$i] = 'instrument_id';
                 $tableInfo['table'][$i] = 'instrument_controls';
             } elseif ($name === 'patients') {
-                $tableInfo['primaryKey'][$i] = 'system_patient_code';
-                $tableInfo['table'][$i] = 'patients';
+                //$tableInfo['primaryKey'][$i] = 'system_patient_code';
+                //$tableInfo['table'][$i] = 'patients';
             } elseif ($name === 'users') {
                 $tableInfo['primaryKey'][$i] = 'user_id';
                 $tableInfo['table'][$i] = 'user_details';

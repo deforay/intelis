@@ -317,9 +317,9 @@ try {
 
 
     //For PNG form
-    $pngSpecificFields = [];
-    if ($formId == '5') {
+    if ($formId == COUNTRY\PNG) {
 
+        $pngSpecificFields = [];
         if (isset($_POST['failedTestingTech']) && $_POST['failedTestingTech'] != '') {
             $platForm = explode("##", (string) $_POST['failedTestingTech']);
             $_POST['failedTestingTech'] = $platForm[0];
@@ -352,9 +352,8 @@ try {
         $pngSpecificFields['qc_tech_sign'] = $_POST['qcTechSign'] ?? null;
         $pngSpecificFields['qc_date'] = DateUtility::isoDateFormat($_POST['qcDate']);
         $pngSpecificFields['report_date'] = DateUtility::isoDateFormat($_POST['reportDate']);
-    }
 
-    if (!empty($pngSpecificFields)) {
+
         $vlData = array_merge($vlData, $pngSpecificFields);
     }
 

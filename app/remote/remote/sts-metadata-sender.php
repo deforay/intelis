@@ -385,11 +385,11 @@ if (!empty($data['geoDivisionsLastModified'])) {
 $response['geoDivisions'] = $general->fetchDataFromTable('geographical_divisions', $condition);
 
 // Patients
-$condition = [];
-if (!empty($data['patientsLastModified'])) {
-    $condition = "updated_datetime > '" . $data['patientsLastModified'] . "'";
-}
-$response['patients'] = $general->fetchDataFromTable('patients', $condition);
+// $condition = [];
+// if (!empty($data['patientsLastModified'])) {
+//     $condition = "updated_datetime > '" . $data['patientsLastModified'] . "'";
+// }
+// $response['patients'] = $general->fetchDataFromTable('patients', $condition);
 
 
 if (!empty($response)) {

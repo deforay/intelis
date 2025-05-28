@@ -87,14 +87,14 @@ try {
         $payload["labStorageHistory"] = $labStorageHistory;
     }
 
-    // PATIENTS
-    if ($forceFlag === false && !empty($lastUpdatedOn)) {
-        $db->where($lastUpdatedOnCondition);
-    }
-    $patients = $db->get('patients');
-    if (!empty($patients)) {
-        $payload["patients"] = $patients;
-    }
+    // // PATIENTS
+    // if ($forceFlag === false && !empty($lastUpdatedOn)) {
+    //     $db->where($lastUpdatedOnCondition);
+    // }
+    // $patients = $db->get('patients');
+    // if (!empty($patients)) {
+    //     $payload["patients"] = $patients;
+    // }
 
     // INSTRUMENTS
     if ($forceFlag === false && !empty($lastUpdatedOn)) {
