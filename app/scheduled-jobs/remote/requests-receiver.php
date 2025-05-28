@@ -108,14 +108,15 @@ if ($cliMode) {
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
-$queryParams = $request->getQueryParams();
-if (!empty($queryParams)) {
-    $_GET = _sanitizeInput($queryParams);
+$postParams = $request->getParsedBody();
 
-    $manifestCode = $_GET['manifestCode'] ?? null;
-    $forceSyncModule = $_GET['forceSyncModule'] ?? null;
-    $syncSinceDate = $_GET['syncSinceDate'] ?? null;
-    $isSilent = $_GET['silent'] ?? false;
+if (!empty($postParams)) {
+    $_POST = _sanitizeInput($postParams);
+
+    $manifestCode = $_POST['manifestCode'] ?? null;
+    $forceSyncModule = $_POST['testType'] ?? $_POST['forceSyncModule'] ?? null;
+    $syncSinceDate = $_POST['syncSinceDate'] ?? null;
+    $isSilent = $_POST['silent'] ?? false;
 }
 
 if ($syncSinceDate !== null) {
@@ -136,13 +137,27 @@ if (empty($remoteURL)) {
 }
 
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-    LoggerUtility::logError("No internet connectivity while trying remote sync.");
-    return false;
+    LoggerUtility::logError("No internet connectivity while trying remote sync.", [
+        'line' => __LINE__,
+        'file' => __FILE__,
+        'remoteURL' => $remoteURL
+    ]);
+    if ($cliMode) {
+        echo "No internet connectivity while trying remote sync." . PHP_EOL;
+    }
+    exit(0);
 }
 
 //get remote data
 if (empty($labId)) {
-    echo "No Lab ID set in System Config";
+    if ($cliMode) {
+        echo "No Lab ID set in System Config";
+    }
+    LoggerUtility::logError("No Lab ID set in System Config", [
+        'line' => __LINE__,
+        'file' => __FILE__,
+        'remoteURL' => $remoteURL
+    ]);
     exit(0);
 }
 
@@ -201,10 +216,10 @@ Utils::settle($promises)->wait();
 
 // Record the end time of the entire process
 $endTime = microtime(true);
-
-// Print the total execution time
-echo "Total download time for STS Requests: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
-
+if ($cliMode) {
+    // Print the total execution time
+    echo "Total download time for STS Requests: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
+}
 
 /*
 ****************************************************************
@@ -1543,7 +1558,12 @@ $instanceId = $general->getInstanceId();
 $db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 
-if (isset($forceSyncModule) && trim((string) $forceSyncModule) != "" && isset($manifestCode) && trim((string) $manifestCode) != "") {
+if (
+    isset($forceSyncModule) && trim((string) $forceSyncModule) != ""
+    && isset($manifestCode) && trim((string) $manifestCode) != ""
+) {
+    $formTable = TestsService::getTestTableName($forceSyncModule);
+    $primaryKey = TestsService::getTestPrimaryKeyColumn($forceSyncModule);
     $db->where("sample_package_code", $manifestCode);
     $sampleData = $db->getValue($formTable, $primaryKey, null);
     echo JsonUtility::encodeUtf8Json($sampleData);
