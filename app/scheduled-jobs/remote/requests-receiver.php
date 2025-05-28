@@ -1554,9 +1554,9 @@ try {
     ]);
 }
 
-$instanceId = $general->getInstanceId();
-$db->where('vlsm_instance_id', $instanceId);
-$id = $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
+
+$db->where('vlsm_instance_id', $general->getInstanceId());
+$db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 
 if (
     isset($forceSyncModule) && trim((string) $forceSyncModule) != ""

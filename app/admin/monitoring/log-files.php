@@ -29,7 +29,6 @@ require_once APPLICATION_PATH . '/header.php';
 		margin-right: 5px;
 	}
 
-	/* Enhanced Log Viewer Styles */
 	.logViewer {
 		display: none;
 		border: 1px solid #ddd;
@@ -46,8 +45,7 @@ require_once APPLICATION_PATH . '/header.php';
 		font-size: 14px;
 		margin: 5px 0;
 		padding: 11px 15px 11px 25px;
-		/* Top Right Bottom Left */
-		background-color:rgb(255, 255, 255);
+		background-color: rgb(255, 255, 255);
 		border: 2px solid #f1f1f1;
 		border-left: 3px solid #4CAF50;
 		font-family: 'Courier New', Courier, monospace;
@@ -56,11 +54,8 @@ require_once APPLICATION_PATH . '/header.php';
 		transition: background-color 0.3s;
 		position: relative;
 		white-space: pre-wrap;
-		/* Preserve whitespace but wrap */
 		word-break: break-word;
-		/* Break long words if needed */
 		text-indent: 0;
-		/* Ensure no text indentation */
 	}
 
 	.logLine:hover {
@@ -73,11 +68,9 @@ require_once APPLICATION_PATH . '/header.php';
 		top: -0.5em;
 		left: -0.25em;
 		z-index: 1;
-		/* Put above content */
 		font-size: 7em;
 		color: rgba(0, 0, 0, 0.25);
 		pointer-events: none;
-		/* Make sure it doesn't interfere with text selection */
 	}
 
 	.logLine:hover .lineNumber {
@@ -193,6 +186,22 @@ require_once APPLICATION_PATH . '/header.php';
 			width: 100%;
 		}
 	}
+
+	.search-terms-indicator {
+		font-size: 12px;
+		color: #666;
+		font-style: italic;
+		margin-top: 2px;
+	}
+
+	.search-terms-count {
+		background-color: #007bff;
+		color: white;
+		padding: 1px 6px;
+		border-radius: 10px;
+		font-size: 11px;
+		margin-left: 5px;
+	}
 </style>
 
 
@@ -252,7 +261,7 @@ require_once APPLICATION_PATH . '/header.php';
 						<!-- Server Time Display -->
 						<div style="text-align: right; margin-top: 15px;">
 							<strong><?= _translate("Current Server Date and Time"); ?> : </strong>
-							<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime() , includeTime: true, withSeconds: true); ?>
+							<?= DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), includeTime: true, withSeconds: true); ?>
 						</div>
 					</div>
 
@@ -316,7 +325,6 @@ require_once APPLICATION_PATH . '/header.php';
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript" src="/assets/js/toastify.js"></script>
 <script>
-	// Enhanced Log Viewer JavaScript
 	let start = 0; // Starting index for logs
 	let loading = false; // Flag to prevent multiple simultaneous AJAX calls
 	let hasMoreLogs = true; // Flag to check if there are more logs to load
@@ -385,16 +393,6 @@ require_once APPLICATION_PATH . '/header.php';
 		return 'info'; // Default to info
 	}
 
-	// Function to highlight search term in log text
-	function highlightSearchTerm(text, term) {
-		if (!term || term === '') {
-			return text;
-		}
-
-		const regex = new RegExp(term, 'gi');
-		return text.replace(regex, match => `<span class="highlighted-text">${match}</span>`);
-	}
-
 	// Function to format log line with stack trace styling
 	function formatLogLine(logText) {
 		// Check if the line is part of a stack trace
@@ -404,8 +402,76 @@ require_once APPLICATION_PATH . '/header.php';
 		return logText;
 	}
 
-	// Function to apply filters to logs
+	// Search function that handles multiple terms
+	function searchAllTerms(text, searchTerms) {
+		if (!searchTerms || searchTerms.trim() === '') {
+			return true;
+		}
+
+		// Split search terms by spaces, filter out empty strings
+		const terms = searchTerms.toLowerCase().split(/\s+/).filter(term => term.length > 0);
+
+		if (terms.length === 0) {
+			return true;
+		}
+
+		const textLower = text.toLowerCase();
+
+		// Check if ALL terms are found in the text
+		return terms.every(term => textLower.includes(term));
+	}
+
+	// Highlight function that highlights all search terms
+	function highlightAllSearchTerms(text, searchTerms) {
+		if (!searchTerms || searchTerms.trim() === '') {
+			return text;
+		}
+
+		// Split search terms by spaces, filter out empty strings
+		const terms = searchTerms.split(/\s+/).filter(term => term.length > 0);
+
+		if (terms.length === 0) {
+			return text;
+		}
+
+		let highlightedText = text;
+
+		// Highlight each term
+		terms.forEach(term => {
+			const regex = new RegExp(escapeRegExp(term), 'gi');
+			highlightedText = highlightedText.replace(regex, match => `<span class="highlighted-text">${match}</span>`);
+		});
+
+		return highlightedText;
+	}
+
+	// Helper function to escape special regex characters
+	function escapeRegExp(string) {
+		return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+	}
+
+	function updateSearchTermsIndicator(searchTerms) {
+		// Remove existing indicator
+		$('.search-terms-indicator').remove();
+
+		if (!searchTerms || searchTerms.trim() === '') {
+			return;
+		}
+
+		const terms = searchTerms.split(/\s+/).filter(term => term.length > 0);
+
+		if (terms.length > 1) {
+			const indicator = `<div class="search-terms-indicator">
+            Searching for ALL terms: ${terms.map(term => `<strong>${term}</strong>`).join(', ')}
+            <span class="search-terms-count">${terms.length} terms</span>
+        </div>`;
+
+			$('#logSearchInput').closest('.input-group').after(indicator);
+		}
+	}
+
 	function applyFilters() {
+		updateSearchTermsIndicator(searchTerm);
 		const logViewer = document.getElementById('logViewer');
 		let visibleCount = 0;
 
@@ -419,8 +485,8 @@ require_once APPLICATION_PATH . '/header.php';
 				shouldShow = false;
 			}
 
-			// Apply search filter
-			if (searchTerm && !logText.toLowerCase().includes(searchTerm.toLowerCase())) {
+			// Apply search filter - check if ALL terms match
+			if (searchTerm && !searchAllTerms(logText, searchTerm)) {
 				shouldShow = false;
 			}
 
@@ -431,9 +497,16 @@ require_once APPLICATION_PATH . '/header.php';
 
 				// Update highlighted text if search term exists
 				if (searchTerm) {
-					const originalHtml = logLine.getAttribute('data-original-html') || logLine.innerHTML;
-					logLine.setAttribute('data-original-html', originalHtml);
-					logLine.innerHTML = highlightSearchTerm(originalHtml, searchTerm);
+					// Get or set original HTML
+					let originalHtml = logLine.getAttribute('data-original-html');
+					if (!originalHtml) {
+						// If no original HTML stored, store current HTML as original
+						originalHtml = logLine.innerHTML;
+						logLine.setAttribute('data-original-html', originalHtml);
+					}
+
+					// Apply highlighting to the original HTML
+					logLine.innerHTML = highlightAllSearchTerms(originalHtml, searchTerm);
 				} else if (logLine.hasAttribute('data-original-html')) {
 					// Restore original HTML if no search term
 					logLine.innerHTML = logLine.getAttribute('data-original-html');
@@ -444,16 +517,17 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 
 		// Show message if no logs match filters
+		const existingNoMatchMsg = document.getElementById('no-matches');
+		if (existingNoMatchMsg) {
+			existingNoMatchMsg.remove();
+		}
+
 		if (visibleCount === 0 && allLoadedLogs.length > 0) {
 			logViewer.insertAdjacentHTML('beforeend',
-				`<div class="error" id="no-matches">${_translate('No logs match your filters.')}</div>`);
-		} else {
-			const noMatchesMsg = document.getElementById('no-matches');
-			if (noMatchesMsg) {
-				noMatchesMsg.remove();
-			}
+				`<div class="error" id="no-matches">No logs match your filters.</div>`);
 		}
 	}
+
 
 	// Function to reset logs and load them (starting from the first line)
 	function resetAndLoadLogs() {
@@ -608,9 +682,9 @@ require_once APPLICATION_PATH . '/header.php';
 					if (data.trim() === '') {
 						hasMoreLogs = false;
 						if (start === 0) {
-							$('#logViewer').html('<div class="logLine">No logs found.</div>'); // Show no logs if first fetch returns none
+							$('#logViewer').html('<div class="logLine">No logs found.</div>');
 						} else {
-							$('#logViewer').append('<div class="logLine">No more logs.</div>'); // Indicate no more logs
+							$('#logViewer').append('<div class="logLine">No more logs.</div>');
 						}
 					} else {
 						// Append the data to the log viewer before processing
@@ -645,14 +719,19 @@ require_once APPLICATION_PATH . '/header.php';
 							// Apply formatting to the content
 							const formattedContent = formatLogLine(lineInDOM.html());
 							lineInDOM.html(formattedContent);
+
+							// IMPORTANT: Store original HTML AFTER formatting but BEFORE highlighting
+							lineInDOM.attr('data-original-html', lineInDOM.html());
 						});
 
+						// AFTER processing all lines, apply filters (which includes highlighting)
 						if (logLines.length === 0) {
-							hasMoreLogs = false; // No more logs to load
+							hasMoreLogs = false;
 							$('#logViewer').append('<div class="logLine">No more logs.</div>');
 						} else {
-							start += logLines.length; // Update the start index based on actual lines returned
-							applyFilters(); // Apply current filters to new logs
+							start += logLines.length;
+							// Apply filters to the newly loaded lines (this will handle highlighting)
+							applyFilters();
 						}
 					}
 					loading = false;
@@ -660,9 +739,9 @@ require_once APPLICATION_PATH . '/header.php';
 				error: function() {
 					$('.loading').remove();
 					if (start === 0) {
-						$('#logViewer').html('<div class="error">Error loading logs.</div>'); // Show error on first fetch failure
+						$('#logViewer').html('<div class="error">Error loading logs.</div>');
 					} else {
-						$('#logViewer').append('<div class="error">Error loading more logs.</div>'); // Show error on subsequent fetch failure
+						$('#logViewer').append('<div class="error">Error loading more logs.</div>');
 					}
 					loading = false;
 				}
@@ -683,6 +762,18 @@ require_once APPLICATION_PATH . '/header.php';
 	}
 
 	$(document).ready(function() {
+
+		// Search with debouncing
+		let searchTimeout;
+
+		$('#logSearchInput').on('input', function() {
+			clearTimeout(searchTimeout);
+			searchTimeout = setTimeout(function() {
+				searchTerm = $('#logSearchInput').val();
+				applyFilters();
+			}, 300); // Debounce for 300ms
+		});
+
 		// Initialize datepicker
 		$('.date').datepicker({
 			changeMonth: true,
@@ -700,13 +791,23 @@ require_once APPLICATION_PATH . '/header.php';
 			viewApplicationLogs();
 		});
 
-		// Bind search functionality
-		$('#searchLogsButton, #logSearchInput').on('click keyup', function(e) {
-			if (e.type === 'click' || e.keyCode === 13) { // Enter key
+		// Bind search functionality - immediate search on button click or Enter
+		$('#searchLogsButton').on('click', function() {
+			clearTimeout(searchTimeout);
+			searchTerm = $('#logSearchInput').val();
+			applyFilters();
+		});
+
+		$('#logSearchInput').on('keydown', function(e) {
+			if (e.keyCode === 13) { // Enter key
+				clearTimeout(searchTimeout);
 				searchTerm = $('#logSearchInput').val();
 				applyFilters();
 			}
 		});
+
+		$('#logSearchInput').attr('placeholder', 'Search logs... (use spaces to search multiple terms)');
+
 
 		// Bind log level filter buttons
 		$('#logLevelFilters button').click(function() {

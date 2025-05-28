@@ -36,12 +36,29 @@ function getMostRecentLogFile($logDirectory)
 }
 
 // Function to check if a line contains the search term
-function lineContainsSearch($line, $search)
+function lineContainsAllSearchTerms($line, $search)
 {
     if (empty($search)) {
-        return true; // No search term, all lines match
+        return true;
     }
-    return (stripos($line, $search) !== false);
+
+    $terms = array_filter(preg_split('/\s+/', trim($search)), function ($term) {
+        return strlen($term) > 0;
+    });
+
+    if (empty($terms)) {
+        return true;
+    }
+
+    $lineLower = strtolower($line);
+
+    foreach ($terms as $term) {
+        if (stripos($lineLower, strtolower($term)) === false) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 // Function to detect log level from log text
@@ -219,7 +236,7 @@ if (file_exists($file)) {
         // Filter by search term if provided
         if (!empty($searchTerm)) {
             $logEntries = array_filter($logEntries, function ($entry) use ($searchTerm) {
-                return lineContainsSearch($entry, $searchTerm);
+                return lineContainsAllSearchTerms($entry, $searchTerm);
             });
             $logEntries = array_values($logEntries); // Reset array keys
         }
@@ -312,7 +329,7 @@ if (file_exists($file)) {
                 // Filter lines by search term if provided
                 if (!empty($searchTerm)) {
                     $lines = array_filter($lines, function ($line) use ($searchTerm) {
-                        return lineContainsSearch($line, $searchTerm);
+                        return lineContainsAllSearchTerms($line, $searchTerm);
                     });
                     $lines = array_values($lines); // Reset array keys
                 }
@@ -329,7 +346,7 @@ if (file_exists($file)) {
                 // Filter by search term if provided
                 if (!empty($searchTerm)) {
                     $fileContent = array_filter($fileContent, function ($line) use ($searchTerm) {
-                        return lineContainsSearch($line, $searchTerm);
+                        return lineContainsAllSearchTerms($line, $searchTerm);
                     });
                     $fileContent = array_values($fileContent); // Reset array keys
                 }
@@ -409,7 +426,7 @@ if (file_exists($file)) {
             // Filter by search term if provided
             if (!empty($searchTerm)) {
                 $fileContent = array_filter($fileContent, function ($line) use ($searchTerm) {
-                    return lineContainsSearch($line, $searchTerm);
+                    return lineContainsAllSearchTerms($line, $searchTerm);
                 });
                 $fileContent = array_values($fileContent); // Reset array keys
             }
