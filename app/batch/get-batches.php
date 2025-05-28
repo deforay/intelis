@@ -34,9 +34,8 @@ try {
     $formId = (int) $general->getGlobalConfig('vl_form');
 
     // Check if test type is not set for any batch
-    $db->where('test_type', null);
-    $db->orWhere('test_type', '');
-    $incompleteBatches = $db->getValue("batch_details", "batch_id");
+    $db->where("IFNULL(test_type, '') = ''");
+    $incompleteBatches = $db->getValue("batch_details", "batch_id", null);
 
     // Update test type for all batches in the current test type
     if (!empty($incompleteBatches)) {

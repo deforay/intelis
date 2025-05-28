@@ -228,13 +228,13 @@ require_once APPLICATION_PATH . '/header.php';
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/specimen-referral-manifest/get-sample-ids-from-manifest.php", {
+			$.post("/scheduled-jobs/remote/requests-receiver.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'vl'
 				},
 				function(data) {
 					$.unblockUI();
-					if (data != "") {
+					if (data && JSON.stringify(data) !== '{}' && JSON.stringify(data) !== '""' && JSON.stringify(data) !== 'false') {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
 						loadRequestData();

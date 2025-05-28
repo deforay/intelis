@@ -239,13 +239,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/specimen-referral-manifest/get-sample-ids-from-manifest.php", {
+			$.post("/scheduled-jobs/remote/requests-receiver.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'covid19'
 				},
 				function(data) {
 					$.unblockUI();
-					if (data != "") {
+					if (data && JSON.stringify(data) !== '{}' && JSON.stringify(data) !== '""' && JSON.stringify(data) !== 'false') {
 						$('.activateSample').show();
 						$('#sampleId').val(data);
 						loadRequestData();

@@ -1544,5 +1544,7 @@ $db->where('vlsm_instance_id', $instanceId);
 $id = $db->update('s_vlsm_instance', ['last_remote_requests_sync' => DateUtility::getCurrentDateTime()]);
 
 if (isset($forceSyncModule) && trim((string) $forceSyncModule) != "" && isset($manifestCode) && trim((string) $manifestCode) != "") {
-    return 1;
+    $db->where("sample_package_code", $manifestCode);
+    $sampleData = $db->getValue($formTable, $primaryKey, null);
+    echo JsonUtility::encodeUtf8Json($sampleData);
 }
