@@ -9,7 +9,6 @@ use App\Services\CommonService;
 use App\Services\StorageService;
 use App\Services\DatabaseService;
 use App\Services\PatientsService;
-use App\Services\SecurityService;
 use App\Exceptions\SystemException;
 use App\Utilities\ValidationUtility;
 use App\Registries\ContainerRegistry;
@@ -83,11 +82,11 @@ try {
                          WHERE art_code like ?";
           $artResult = $db->rawQueryOne($artQuery);
           if (empty($artResult)) {
-               $data = array(
+               $data = [
                     'art_code' => $_POST['newArtRegimen'],
-                    'parent_art' => $formId,
+                    'parent_art' => 0,
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
-               );
+               ];
                $result = $db->insert('r_vl_art_regimen', $data);
                $_POST['artRegimen'] = $_POST['newArtRegimen'];
           } else {

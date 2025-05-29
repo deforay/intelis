@@ -18,23 +18,31 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-$sql = sprintf(
-    "SELECT vl_sample_id,
+$params = [
+    SAMPLE_STATUS\REJECTED,
+    SAMPLE_STATUS\ACCEPTED,
+];
+
+$sql = "(SELECT vl_sample_id,
             result_value_absolute_decimal,
             result_value_text,
             result,
             result_status
-    FROM form_vl
-    WHERE (
-            (result_status = %d OR result_status = %d)
-            OR result is not null
-        )
-    AND vl_result_category is null",
-    SAMPLE_STATUS\REJECTED,
-    SAMPLE_STATUS\ACCEPTED
-);
+        FROM form_vl
+        WHERE (result_status = ? OR result_status = ?)
+            AND vl_result_category IS NULL)
+        UNION DISTINCT
+        (SELECT vl_sample_id,
+            result_value_absolute_decimal,
+            result_value_text,
+            result,
+            result_status
+        FROM form_vl
+        WHERE result IS NOT NULL
+        AND vl_result_category IS NULL)";
 
-$result = $db->rawQuery($sql);
+$result = $db->rawQuery($sql, $params);
+
 
 foreach ($result as $aRow) {
 

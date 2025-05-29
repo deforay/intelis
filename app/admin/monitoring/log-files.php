@@ -1,6 +1,5 @@
 <?php
 
-
 use App\Utilities\DateUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -596,9 +595,9 @@ require_once APPLICATION_PATH . '/header.php';
 			});
 
 			const indicator = `<div class="search-terms-indicator">
-           Searching for ALL terms: ${termDescriptions.join(', ')}
-           <span class="search-terms-count">${terms.length} term${terms.length > 1 ? 's' : ''}</span>
-       </div>`;
+								Searching for ALL terms: ${termDescriptions.join(', ')}
+								<span class="search-terms-count">${terms.length} term${terms.length > 1 ? 's' : ''}</span>
+								</div>`;
 
 			$('#logSearchInput').closest('.input-group').after(indicator);
 		}

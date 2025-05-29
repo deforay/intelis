@@ -106,10 +106,10 @@ try {
 
     if (!empty($_POST['sampleCollectionDate'])) {
         $selectedRange = $_POST['sampleCollectionDate'];
-        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
+        [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
     } else {
-        $startDate = date('Y-m-d', strtotime('-7 days'));
-        $endDate = date('Y-m-d');
+        $startDate = date('Y-m-d H:i:s', strtotime('-7 days'));
+        $endDate = date('Y-m-d H:i:s');
     }
 
     $sWhere = '';
@@ -208,7 +208,7 @@ try {
     SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
     FROM $table as vl
     INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
-    WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+    WHERE vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
 
     if ($table == "form_cd4") {
         $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
@@ -225,7 +225,7 @@ try {
         SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
         FROM $table as vl
         INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
-        WHERE DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'";
+        WHERE vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
     }
     $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
@@ -238,7 +238,7 @@ try {
                         COUNT(unique_id) as `count`
                         FROM $table as vl
                         LEFT JOIN facility_details as f ON f.facility_id=vl.facility_id
-                        WHERE $whereCondition AND DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate'
+                        WHERE $whereCondition AND vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY vl.sample_collection_date";
     //      echo $accessionQuery; die;
@@ -261,7 +261,7 @@ try {
                             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
                             WHERE (result_status = 7) AND
                             $whereCondition AND
-                            DATE(vl.sample_tested_datetime) BETWEEN '$startDate' AND '$endDate'
+                            vl.sample_tested_datetime BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `test_date`
                             ORDER BY vl.sample_tested_datetime";
     //echo $sampleTestedQuery; die;
@@ -282,8 +282,8 @@ try {
                             COUNT(unique_id) as `count`
                             FROM $table as vl INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
                             INNER JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-                            WHERE (result_status = 4) AND $whereCondition AND DATE(vl.sample_collection_date)
-                            BETWEEN '$startDate' AND '$endDate'
+                            WHERE (result_status = 4) AND $whereCondition AND
+                            vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'
                             GROUP BY `collection_date`
                             ORDER BY vl.sample_collection_date";
     $tRes = $db->rawQuery($sampleRejectedQuery); //overall result
@@ -300,7 +300,7 @@ try {
                         COUNT(covid19_id) as `count`
                         FROM r_sample_status AS s
                         INNER JOIN $table as covid19 ON covid19.result_status=s.status_id
-                        WHERE DATE(covid19.sample_collection_date) BETWEEN '$startDate'  AND '$endDate'
+                        WHERE covid19.sample_collection_date BETWEEN '$startDate'  AND '$endDate'
                         GROUP BY `collection_date`
                         ORDER BY covid19.sample_collection_date";
         $statusQueryResult = $db->rawQuery($statusQuery); //overall result

@@ -23,12 +23,6 @@ $cd4Service = ContainerRegistry::get(CD4Service::class);
 /** @var PatientsService $patientsService */
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
-$tableName = "form_cd4";
-$tableName1 = "activity_log";
-$vlTestReasonTable = "r_cd4_test_reasons";
-$fDetails = "facility_details";
-
-$finalResult = null;
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 
@@ -80,11 +74,11 @@ try {
                         WHERE art_code like ?";
         $artResult = $db->rawQueryOne($artQuery);
         if (empty($artResult)) {
-            $data = array(
+            $data = [
                 'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => $formId,
+                'parent_art' => 0,
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
+            ];
             $result = $db->insert('r_vl_art_regimen', $data);
             $_POST['artRegimen'] = $_POST['newArtRegimen'];
         } else {
@@ -97,7 +91,7 @@ try {
         if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
             $fData = array('facility_code' => $_POST['facilityCode']);
             $db->where('facility_id', $_POST['facilityId']);
-            $id = $db->update($fDetails, $fData);
+            $id = $db->update('facility_details', $fData);
         }
     } catch (Exception $e) {
         LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
@@ -194,7 +188,7 @@ try {
     if (trim($_POST['emailHf']) != '') {
         $fData = array('facility_emails' => $_POST['emailHf']);
         $db->where('facility_id', $_POST['facilityId']);
-        $id = $db->update($fDetails, $fData);
+        $id = $db->update('facility_details', $fData);
     }
 
 

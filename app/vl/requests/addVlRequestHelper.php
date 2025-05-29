@@ -26,10 +26,6 @@ $vlService = ContainerRegistry::get(VlService::class);
 $patientsService = ContainerRegistry::get(PatientsService::class);
 
 $tableName = "form_vl";
-$tableName1 = "activity_log";
-$vlTestReasonTable = "r_vl_test_reasons";
-$fDetails = "facility_details";
-$vl_result_category = null;
 $finalResult = null;
 
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -80,11 +76,11 @@ try {
                         WHERE art_code like ?";
         $artResult = $db->rawQueryOne($artQuery);
         if (empty($artResult)) {
-            $data = array(
+            $data = [
                 'art_code' => $_POST['newArtRegimen'],
-                'parent_art' => $formId,
+                'parent_art' => 0,
                 'updated_datetime' => DateUtility::getCurrentDateTime(),
-            );
+            ];
             $result = $db->insert('r_vl_art_regimen', $data);
             $_POST['artRegimen'] = $_POST['newArtRegimen'];
         } else {
@@ -97,7 +93,7 @@ try {
         if (isset($_POST['facilityCode']) && trim((string) $_POST['facilityCode']) != '') {
             $fData = ['facility_code' => $_POST['facilityCode']];
             $db->where('facility_id', $_POST['facilityId']);
-            $id = $db->update($fDetails, $fData);
+            $id = $db->update('facility_details', $fData);
         }
     } catch (Throwable $e) {
         LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [

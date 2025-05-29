@@ -71,7 +71,7 @@ try {
           if (empty($artResult)) {
                $data = array(
                     'art_code' => $_POST['newArtRegimen'],
-                    'parent_art' => $formId,
+                    'parent_art' => 0,
                     'updated_datetime' => DateUtility::getCurrentDateTime(),
                );
                $result = $db->insert('r_vl_art_regimen', $data);
