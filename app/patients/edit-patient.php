@@ -288,7 +288,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                 $('#pregYes').addClass('isRequired');
             }
         });
-        initDatePicker();
+
     });
 
     function validateNow() {

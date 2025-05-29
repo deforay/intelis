@@ -1155,7 +1155,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
         </tr>`;
         $("#testKitNameTable").append(rowString);
 
-        initDatePicker();
+
 
         $('.expDate').datepicker({
             changeMonth: true,

@@ -1,11 +1,11 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -21,7 +21,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
      $excel = new Spreadsheet();
      $output = [];
      $sheet = $excel->getActiveSheet();
-     $headings = array("Lab Name", "Facility Name", "Rejection Reason", "Reason Category", "Recommended Corrective Action","No. of Samples");
+     $headings = [_translate("Lab Name"), _translate("Facility Name"), _translate("Rejection Reason"), _translate("Reason Category"), _translate("No. of Rejected Samples")];
 
 
      $colNo = 1;
@@ -43,24 +43,19 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
 
      foreach ($rResult as $aRow) {
           $row = [];
-          $row[] = ($aRow['labname']);
-          $row[] = ($aRow['facility_name']);
-          $row[] = ($aRow['rejection_reason_name']);
-          $row[] = strtoupper((string) $aRow['rejection_type']);
-          $row[] = ($aRow['recommended_corrective_action_name']);
+          $row[] = $aRow['labname'];
+          $row[] = $aRow['facility_name'];
+          $row[] = $aRow['rejection_reason_name'] ?? _translate("Unspecified reason for rejection");
+          $row[] = $aRow['rejection_type'] ?? _translate("Unspecified");
           $row[] = $aRow['total'];
           $output[] = $row;
      }
 
-     $start = (count($output)) + 2;
-     foreach ($output as $rowNo => $rowData) {
-          $colNo = 1;
-          foreach ($rowData as $field => $value) {
-               $rRowCount = $rowNo + 4;
-               $sheet->setCellValue(Coordinate::stringFromColumnIndex($colNo) . $rRowCount, html_entity_decode((string) $value));
-               $colNo++;
-          }
-     }
+     $sheet->fromArray($headings, null, 'A1'); // Write headings
+     $sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
+     $sheet = $general->centerAndBoldRowInSheet($sheet, 'A1');
+	$sheet = $general->applyBordersToSheet($sheet);
+
      $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
      $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

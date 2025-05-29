@@ -257,8 +257,8 @@ require_once APPLICATION_PATH . "/eid/eid.js.php";
 			updateSampleResult();
 		});
 
-		initDatePicker();
-		initDateTimePicker();
+
+
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');
 

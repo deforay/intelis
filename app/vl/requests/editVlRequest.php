@@ -1,14 +1,14 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
 use App\Services\VlService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
-use App\Services\FacilitiesService;
-use App\Services\CommonService;
-use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -53,7 +53,7 @@ $importResult = $db->query($importQuery);
 $userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 $userInfo = [];
 foreach ($userResult as $user) {
-     $userInfo[$user['user_id']] = ($user['user_name']);
+     $userInfo[$user['user_id']] = $user['user_name'];
 }
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_vl_sample_rejection_reasons
@@ -83,11 +83,6 @@ $sResult = $db->query($sQuery);
 $vlTestReasonQuery = "SELECT * FROM r_vl_test_reasons
                          WHERE test_reason_status = 'active'";
 $vlTestReasonResult = $db->query($vlTestReasonQuery);
-
-//get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at
-                                        FROM form_vl where vlsm_country_id= ?";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery, [$formId]);
 
 $vlQuery = "SELECT * FROM form_vl WHERE vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);

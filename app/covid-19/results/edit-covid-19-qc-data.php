@@ -264,7 +264,7 @@ foreach ($pdResult as $provinceName) {
         getTestingPoints();
 
 
-        initDatePicker();
+
 
         $('.date-time').datetimepicker({
             changeMonth: true,

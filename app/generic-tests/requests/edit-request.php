@@ -980,8 +980,8 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 		var testType = $("#testType").val();
 		//getTestTypeConfigList(testType);
 
-		initDatePicker();
-		initDateTimePicker();
+
+
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
@@ -1587,7 +1587,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					if (typeof(data.otherSection) != "undefined" && data.otherSection !== null && data.otherSection.length > 0) {
 						$("#otherSection").html(data.otherSection);
 					}
-					initDateTimePicker();
+
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1675,7 +1675,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					} else {
 						$('#resultSection').hide();
 					}
-					initDateTimePicker();
+
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1786,7 +1786,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 			$('.ui-datepicker-calendar').show();
 		});
 
-		initDateTimePicker();
+
 
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();

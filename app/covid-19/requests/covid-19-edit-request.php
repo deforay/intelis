@@ -171,7 +171,7 @@ require_once($fileArray[$arr['vl_form']]);
     }
 
     $(document).ready(function() {
-        initDatePicker();
+
 
 
 

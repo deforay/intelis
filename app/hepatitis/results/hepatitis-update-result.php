@@ -185,8 +185,8 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 	changeReject($('#isSampleRejected').val());
 
 	$(document).ready(function() {
-		initDatePicker();
-		initDateTimePicker();
+
+
 
 
 		$('#isSampleRejected').change(function(e) {

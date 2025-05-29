@@ -144,13 +144,13 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" value="<?php echo (!empty($_GET['daterange'])) ? $_GET['daterange'] : ""; ?>" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleReceivedDateAtLab" name="sampleReceivedDateAtLab" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Received Date At Lab'); ?>" readonly style="background:#fff;" />
 							</td>
 
 							<td><strong>
@@ -178,7 +178,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
+								<input type="text" id="sampleTestedDate" name="sampleTestedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Tested Date'); ?>" readonly style="background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Viral Load Suppression"); ?> &nbsp;:

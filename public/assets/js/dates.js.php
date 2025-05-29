@@ -6,6 +6,7 @@
         initDateTimePicker();
 
 
+
         $('.expDate').datepicker({
             changeMonth: true,
             changeYear: true,
@@ -74,7 +75,7 @@
 
 
 
-        if ($('#sampleCollectionDate').length) {
+        if ($('#sampleCollectionDate').length && !$('#sampleCollectionDate').hasClass('daterangefield')) {
             $('#sampleCollectionDate').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -118,7 +119,7 @@
         }
 
 
-        if ($('#sampleDispatchedDate').length) {
+        if ($('#sampleDispatchedDate').length && !$('#sampleDispatchedDate').hasClass('daterangefield')) {
             $('#sampleDispatchedDate').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -140,7 +141,7 @@
         }
 
 
-        if ($('#sampleReceivedDate').length) {
+        if ($('#sampleReceivedDate').length && !$('#sampleReceivedDate').hasClass('daterangefield')) {
             $('#sampleReceivedDate').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -169,7 +170,7 @@
                 $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker('option', 'minDate', selectedDate);
             });
         }
-        if ($('#sampleTestedDateTime, #sampleTestingDateAtLab').length) {
+        if ($('#sampleTestedDateTime, #sampleTestingDateAtLab').length && !$('#sampleTestedDateTime, #sampleTestingDateAtLab').hasClass('daterangefield')) {
             $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker({
                 changeMonth: true,
                 changeYear: true,
@@ -200,7 +201,7 @@
             });
         }
 
-        if ($('#approvedOnDateTime').length) {
+        if ($('#approvedOnDateTime').length && !$('#approvedOnDateTime').hasClass('daterangefield')) {
             $('#approvedOnDateTime').datetimepicker({
                 changeMonth: true,
                 changeYear: true,

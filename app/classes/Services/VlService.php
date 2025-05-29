@@ -640,20 +640,20 @@ final class VlService extends AbstractTestService
 
     public function getVlResults($instrumentId = null)
     {
-        // Build the query condition for instrument availability
-        if (!empty($instrumentId)) {
-            // Safely binding the parameter to avoid SQL injection
-            $instrumentCondition = $this->db->escape($instrumentId);
+        _getFromFileCache('vl_results_for_instrument', function () use ($instrumentId) {
 
-            // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient
-            $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', '$instrumentCondition') IS NOT NULL)
+            if (!empty($instrumentId)) {
+                $instrumentCondition = $this->db->escape($instrumentId);
+
+                // Using 'one' instead of 'all' if checking for at least one occurrence is sufficient
+                $this->db->where("(JSON_SEARCH(available_for_instruments, 'all', '$instrumentCondition') IS NOT NULL)
                         OR available_for_instruments IS NULL
                         OR available_for_instruments REGEXP '^\\[\\s*\\]$'");
-        }
+            }
 
-        // Add additional conditions
-        $this->db->where('status', 'active');
-        return $this->db->get('r_vl_results');
+            $this->db->where('status', 'active');
+            return $this->db->get('r_vl_results');
+        }, ['instruments']);
     }
 
 

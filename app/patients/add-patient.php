@@ -270,7 +270,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                 $('#pregYes').addClass('isRequired');
             }
         });
-        initDatePicker();
+
     });
 
     function validateNow() {

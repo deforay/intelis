@@ -9,6 +9,7 @@ use TCPDFBarcode;
 use TCPDF2DBarcode;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\ConfigService;
@@ -19,7 +20,6 @@ use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MemoUtility;
 use PhpOffice\PhpSpreadsheet\IOFactory;
 use PhpOffice\PhpSpreadsheet\Style\Border;
 use Psr\Http\Message\ServerRequestInterface;
@@ -836,16 +836,22 @@ final class CommonService
 
     public function getImplementationPartners()
     {
-        $this->db->where("i_partner_status", "active");
-        $this->db->orderBy('i_partner_name', "ASC");
-        return $this->db->get('r_implementation_partners');
+        $key = 'implementation_partners_list';
+        return $this->fileCache->get($key, function () {
+            $this->db->where("i_partner_status", "active");
+            $this->db->orderBy('i_partner_name', "ASC");
+            return $this->db->get('r_implementation_partners');
+        }, ['implementation-partners']);
     }
 
     public function getFundingSources()
     {
-        $this->db->where("funding_source_status", "active");
-        $this->db->orderBy('funding_source_name', "ASC");
-        return $this->db->get('r_funding_sources');
+        $key = 'funding_sources_list';
+        return $this->fileCache->get($key, function () {
+            $this->db->where("funding_source_status", "active");
+            $this->db->orderBy('funding_source_name', "ASC");
+            return $this->db->get('r_funding_sources');
+        }, ['funding-sources']);
     }
 
     public function getSourceOfRequest($table)

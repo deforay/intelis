@@ -125,7 +125,7 @@ require_once WEB_ROOT . "/assets/js/test-specific/hepatitis.js.php";
 ?>
 <script>
     $(document).ready(function() {
-        initDatePicker();
+
 
         $(document).on('focus', ".dateTime", function() {
             $(this).datetimepicker({

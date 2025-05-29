@@ -84,10 +84,6 @@ $vlTestReasonResult = $db->query($vlTestReasonQuery);
 $condition = "status ='active' AND test_type='vl'";
 $correctiveActions = $general->fetchDataFromTable('r_recommended_corrective_actions', $condition);
 
-//get suspected treatment failure at
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_vl where vlsm_country_id='" . $formId . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);
-
 $vlQuery = "SELECT * from form_vl where vl_sample_id=?";
 $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
@@ -312,8 +308,8 @@ require_once WEB_ROOT . "/assets/js/test-specific/vl.js.php";
 ?>
 <script>
 	$(document).ready(function() {
-		initDatePicker();
-		initDateTimePicker();
+
+
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');

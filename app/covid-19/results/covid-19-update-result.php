@@ -173,8 +173,8 @@ require_once($fileArray[$formId]);
 		});
 		changeReject($('#isSampleRejected').val());
 		changeReject($('#isSampleRejected').val());
-		initDatePicker();
-		initDateTimePicker();
+
+
 
 
 
@@ -198,7 +198,7 @@ require_once($fileArray[$formId]);
 			$('.ui-datepicker-calendar').show();
 		});
 
-		initDateTimePicker();
+
 
 		//$('.date').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?>');
 		//$('.dateTime').mask('<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999' ?> 99:99');

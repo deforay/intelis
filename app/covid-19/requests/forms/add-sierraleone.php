@@ -1155,7 +1155,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
         </tr>`;
         $("#testKitNameTable").append(rowString);
 
-        initDatePicker();
+
 
         $('.expDate').datepicker({
             changeMonth: true,

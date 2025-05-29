@@ -987,9 +987,9 @@ if (empty($covid19Info['patient_dob']) && empty($covid19Info['patient_age'])) {
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
 
-        initDatePicker();
+
+
 
         $('.expDate').datepicker({
             changeMonth: true,

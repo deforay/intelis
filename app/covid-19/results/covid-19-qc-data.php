@@ -163,8 +163,8 @@ require_once APPLICATION_PATH . '/header.php';
         });
         $.unblockUI();
 
-        initDatePicker();
-        initDateTimePicker();
+
+
     });
 </script>
 

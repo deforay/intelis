@@ -1396,7 +1396,7 @@ $sampleResult = $general->fetchDataFromTable('r_covid19_sample_type', "status = 
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
+
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).change('.test-result, #result', function(e) {

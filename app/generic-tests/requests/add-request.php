@@ -76,10 +76,7 @@ $sResult = $general->fetchDataFromTable('r_generic_sample_types', $condition1);
 //get vltest reason details
 $testReason = $general->fetchDataFromTable('r_generic_test_reasons');
 $pdResult = $general->fetchDataFromTable('geographical_divisions');
-//get suspected treatment failure at
-/*
-$suspectedTreatmentFailureAtQuery = "SELECT DISTINCT vl_sample_suspected_treatment_failure_at FROM form_generic where vlsm_country_id='" . $arr['vl_form'] . "'";
-$suspectedTreatmentFailureAtResult = $db->rawQuery($suspectedTreatmentFailureAtQuery);*/
+
 $testResultUnits = $general->getDataByTableAndFields("r_generic_test_result_units", array("unit_id", "unit_name"), true, "unit_status='active'");
 
 $lResult = $facilitiesService->getTestingLabs('generic-tests', true, true);
@@ -1488,7 +1485,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                                    $("#otherSection").html(data.otherSection);
                               }
 
-                              initDateTimePicker();
+
 
                               $(".dynamicFacilitySelect2").select2({
                                    width: '100%',
@@ -1545,7 +1542,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                          } else {
                               $('.subTestResultSection').hide();
                          }
-                         initDateTimePicker();
+
                     });
           } else {
                $(".subTestResultSection").hide();
@@ -1655,7 +1652,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
                $('.ui-datepicker-calendar').show();
           });
 
-          initDateTimePicker();
+
 
           if ($('.kitlabels').is(':visible') == true) {
                $('.kitlabels').show();

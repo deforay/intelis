@@ -19,11 +19,11 @@ $primaryKey = "funding_source_id";
 try {
 	if (isset($_POST['fundingSrcName']) && trim((string) $_POST['fundingSrcName']) != "") {
 
-		$data = array(
-			'funding_source_name' 	=> $_POST['fundingSrcName'],
+		$data = [
+			'funding_source_name' => $_POST['fundingSrcName'],
 			'funding_source_status' => $_POST['fundingStatus'],
-			'updated_datetime'		=> DateUtility::getCurrentDateTime()
-		);
+			'updated_datetime' => DateUtility::getCurrentDateTime()
+		];
 		if (isset($_POST['fundingId']) && $_POST['fundingId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['fundingId']));
 			$lastId = $db->update($tableName, $data);
@@ -37,7 +37,8 @@ try {
 			$general->activityLog('Funding Source', $_SESSION['userName'] . ' added new Funding Source for ' . $_POST['fundingSrcName'], 'common-reference');
 		}
 	}
-	header("Location:funding-sources.php");
-} catch (Throwable $exc) {
-	throw new SystemException($exc->getMessage(), 500);
+} catch (Throwable $e) {
+	throw new SystemException($e->getMessage(), 500, $e);
 }
+_invalidateFileCacheByTags(['funding-sources']);
+header("Location:funding-sources.php");

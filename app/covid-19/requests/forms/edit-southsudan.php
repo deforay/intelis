@@ -927,9 +927,9 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
 
-        initDatePicker();
+
+
 
         $('.expDate').datepicker({
             changeMonth: true,

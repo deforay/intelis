@@ -245,8 +245,8 @@ require_once($fileArray[$arr['vl_form']]);
     }
 
     $(document).ready(function() {
-        initDatePicker();
-        initDateTimePicker();
+
+
 
         $('#isSampleRejected').change(function(e) {
             changeReject(this.value);

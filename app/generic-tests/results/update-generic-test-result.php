@@ -938,8 +938,8 @@ $reasonForChange = $reasonForChangeArr[1];
 		var testType = $("#testType").val();
 		//getTestTypeConfigList(testType);
 
-		initDatePicker();
-		initDateTimePicker();
+
+
 		let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
 		$('.date').mask(dateFormatMask);
 		$('.dateTime').mask(dateFormatMask + ' 99:99');
@@ -1554,7 +1554,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					}
 
 
-					initDateTimePicker();
+
 
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
@@ -1637,7 +1637,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					} else {
 						$('#resultSection').hide();
 					}
-					initDateTimePicker();
+
 					$(".dynamicFacilitySelect2").select2({
 						width: '100%',
 						placeholder: "<?php echo _translate("Select any one of the option"); ?>"
@@ -1741,7 +1741,7 @@ $reasonForChange = $reasonForChangeArr[1];
 			$('.ui-datepicker-calendar').show();
 		});
 
-		initDateTimePicker();
+
 
 		if ($('.kitlabels').is(':visible') == true) {
 			$('.kitlabels').show();

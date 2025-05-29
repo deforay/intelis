@@ -1621,7 +1621,7 @@ if (!empty($generateAutomatedPatientCode) && $generateAutomatedPatientCode == 'y
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
+
         tableRowId++;
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>

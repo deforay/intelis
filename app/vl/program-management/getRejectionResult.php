@@ -31,16 +31,22 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $end_date = '';
     $sWhere = [];
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate']);
+    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'], includeTime: true);
 
     //get value by rejection reason id
-    $vlQuery = "SELECT count(*) as `total`, vl.reason_for_sample_rejection,sr.rejection_reason_name,sr.rejection_type,sr.rejection_reason_code,fd.facility_name, lab.facility_name as `labname`,r_c_a.recommended_corrective_action_name
+    $vlQuery = "SELECT count(*) as `total`,
+                vl.reason_for_sample_rejection,
+                sr.rejection_reason_name,
+                sr.rejection_type,
+                sr.rejection_reason_code,
+                fd.facility_name,
+                lab.facility_name as `labname`
                 FROM form_vl as vl
-                INNER JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
-                LEFT JOIN r_recommended_corrective_actions as r_c_a ON r_c_a.recommended_corrective_action_id=vl.recommended_corrective_action
-                INNER JOIN facility_details as fd ON fd.facility_id=vl.facility_id
-                INNER JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
-    $sWhere[] = ' vl.is_sample_rejected = "yes" AND DATE(vl.sample_collection_date) <= "' . $end_date . '" AND DATE(vl.sample_collection_date) >= "' . $start_date . '" AND reason_for_sample_rejection!="" AND reason_for_sample_rejection IS NOT NULL';
+                LEFT JOIN r_vl_sample_rejection_reasons as sr ON sr.rejection_reason_id=vl.reason_for_sample_rejection
+                LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
+                LEFT JOIN facility_details as lab ON lab.facility_id=vl.lab_id";
+
+    $sWhere[] = " vl.is_sample_rejected = 'yes' AND vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
 
     if (isset($_POST['sampleType']) && trim((string) $_POST['sampleType']) != '') {
         $sWhere[] = ' vl.specimen_type = "' . $_POST['sampleType'] . '"';
@@ -58,18 +64,23 @@ if (!empty($_POST['sampleCollectionDate'])) {
     if (!empty($sWhere)) {
         $sWhere = implode(' AND ', $sWhere);
     }
-    $vlQuery = $vlQuery . ' where ' . $sWhere . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
+    $vlQuery .= " WHERE $sWhere GROUP BY vl.reason_for_sample_rejection, vl.lab_id, vl.facility_id";
     //echo $vlQuery; die;
     $_SESSION['rejectedSamples'] = $vlQuery;
     $tableResult = $db->rawQuery($vlQuery);
 
     foreach ($tableResult as $tableRow) {
-        $tResult[$tableRow['rejection_reason_name']]['total'] += $tableRow['total'];
-        $tResult[$tableRow['rejection_reason_name']]['category'] = $tableRow['rejection_type'];
+        $reasonName = trim((string) $tableRow['rejection_reason_name']) ?: _translate('Unspecified reason for rejection');
+        $reasonType = trim((string) $tableRow['rejection_type']) ?: _translate('Unspecified');
 
-        //$rjResult[$tableRow['rejection_type']]  += $tableRow['total'];
+
+        $tResult[$reasonName]['total'] = ($tResult[$reasonName]['total'] ?? 0) + $tableRow['total'];
+        $tResult[$reasonName]['category'] = $reasonType;
     }
 }
+
+$totalRejected = array_sum(array_column($tResult, 'total'));
+
 
 if (!empty($tResult)) {
 ?>
@@ -99,10 +110,7 @@ if (!empty($tableResult)) { ?>
                 <?php echo _translate("Reason Category"); ?>
             </th>
             <th>
-                <?php echo _translate("Recommended Corrective Action"); ?>
-            </th>
-            <th>
-                <?php echo _translate("No. of Samples"); ?>
+                <?php echo _translate("No. of Rejected Samples"); ?>
             </th>
         </tr>
     </thead>
@@ -113,19 +121,16 @@ if (!empty($tableResult)) { ?>
         ?>
                 <tr data-lab="<?php echo base64_encode((string) $_POST['labName']); ?>" data-facility="<?php echo base64_encode(implode(',', $_POST['clinicName'] ?? [])); ?>" data-daterange="<?= htmlspecialchars((string) $_POST['sampleCollectionDate']); ?>" data-type="rejection">
                     <td>
-                        <?php echo ($tableRow['labname']); ?>
+                        <?php echo $tableRow['labname']; ?>
                     </td>
                     <td>
-                        <?php echo ($tableRow['facility_name']); ?>
+                        <?php echo $tableRow['facility_name']; ?>
                     </td>
                     <td>
-                        <?php echo ($tableRow['rejection_reason_name']); ?>
+                        <?php echo $tableRow['rejection_reason_name'] ?? _translate('Unspecified reason for rejection'); ?>
                     </td>
                     <td>
-                        <?php echo strtoupper((string) $tableRow['rejection_type']); ?>
-                    </td>
-                    <td>
-                        <?php echo ($tableRow['recommended_corrective_action_name']); ?>
+                        <?php echo $tableRow['rejection_type'] ?? _translate("Unspecified"); ?>
                     </td>
                     <td>
                         <?php echo $tableRow['total']; ?>
@@ -162,7 +167,7 @@ if (!empty($tableResult)) { ?>
                 type: 'pie'
             },
             title: {
-                text: "<?php echo _translate("Sample Rejection Reasons"); ?>"
+                text: "<?php echo _translate('Sample Rejection Reasons') . ' (N = ' . $totalRejected . ')'; ?>"
             },
             credits: {
                 enabled: false
@@ -199,60 +204,6 @@ if (!empty($tableResult)) { ?>
                             name: '<?php echo $reasonName; ?>',
                             y: <?php echo ($values['total']); ?>,
                             number: '<?php echo ($values['category']); ?>'
-                        },
-                    <?php
-                    }
-                    ?>
-                ]
-            }]
-        });
-    <?php }
-
-    if (!empty($rjResult)) { ?>
-        $('#rejectedType').highcharts({
-            chart: {
-                plotBackgroundColor: null,
-                plotBorderWidth: null,
-                plotShadow: false,
-                type: 'pie'
-            },
-            title: {
-                text: "<?php echo _translate("Sample Rejection by Categories"); ?>"
-            },
-            credits: {
-                enabled: false
-            },
-            tooltip: {
-                pointFormat: '{point.name}: <strong>{point.y}</strong>'
-            },
-            plotOptions: {
-                pie: {
-                    allowPointSelect: true,
-                    cursor: 'pointer',
-                    dataLabels: {
-                        enabled: true,
-                        format: '<strong>{point.name}</strong>: {point.y}',
-                        style: {
-                            color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
-                        }
-                    }
-                }
-            },
-            series: [{
-                colorByPoint: true,
-                point: {
-                    events: {
-                        click: function(e) {
-                            e.preventDefault();
-                        }
-                    }
-                },
-                data: [
-                    <?php
-                    foreach ($rjResult as $key => $total) {
-                    ?> {
-                            name: '<?php echo ($key); ?>',
-                            y: <?php echo ($total); ?>
                         },
                     <?php
                     }

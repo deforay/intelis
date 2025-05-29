@@ -142,8 +142,8 @@ if (isset($forms[$arr['vl_form']])) {
 		$('#hasRecentTravelHistory').change(function(e) {
 			changeHistory(this.value);
 		});
-		initDatePicker();
-		initDateTimePicker();
+
+
 
 
 

@@ -1025,7 +1025,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
+
 
         <?php if (isset($arr['covid19_positive_confirmatory_tests_required_by_central_lab']) && $arr['covid19_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
             $(document).on('change', '.test-result, #result', function(e) {

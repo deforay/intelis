@@ -478,6 +478,12 @@ function _sanitizeOutput($string)
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
+function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600){
+    /** @var FileCacheUtility $fileCache */
+    $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+    return $fileCache->get($key, $computeValueCallback, $tags, $expiration);
+}
+
 
 function _invalidateFileCacheByTags($tags)
 {

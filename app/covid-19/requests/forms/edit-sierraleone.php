@@ -1000,9 +1000,9 @@ $patientProvince = $patientProvinceInfo[0];
 
         $("#testKitNameTable").append(rowString);
 
-        initDateTimePicker();
 
-        initDatePicker();
+
+
 
         $('.expDate').datepicker({
             changeMonth: true,
