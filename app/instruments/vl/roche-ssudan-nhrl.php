@@ -131,7 +131,7 @@ try {
 
             $infoFromFile[$sampleCode] = array(
                 "sampleCode" => $sampleCode,
-                "logVal" => trim($logVal),
+                "logVal" => $logVal,
                 "absVal" => $absVal,
                 "absDecimalVal" => $absDecimalVal,
                 "txtVal" => $txtVal,

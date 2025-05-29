@@ -4,33 +4,42 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-
 try {
-
+    /** @var DatabaseService $db */
     $db = ContainerRegistry::get(DatabaseService::class);
 
-    $status = [
-        'result_status' => SAMPLE_STATUS\ON_HOLD
-    ];
+    $importedBy = $_SESSION['userId'] ?? null;
+    if (empty($importedBy)) {
+        throw new RuntimeException('User ID is not set in session.');
+    }
 
-    $db->where("imported_by = '" . $_SESSION['userId'] . "'");
+    // Update failed/error results to ON_HOLD
+    $db->where('imported_by', $importedBy);
     $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
-    $result = $db->update('temp_sample_import', $status);
+    $db->update('temp_sample_import', [
+        'result_status' => SAMPLE_STATUS\ON_HOLD
+    ]);
 
-
-
-    $status = [
-        'result_status' => SAMPLE_STATUS\ACCEPTED
+    // Update eligible rows to ACCEPTED
+    $statusCodes = [
+        SAMPLE_STATUS\PENDING_APPROVAL,
+        SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
+        SAMPLE_STATUS\REORDERED_FOR_TESTING
     ];
+    $statusCodes = implode(",", $statusCodes);
+    $db->where('imported_by', $importedBy);
+    $db->where("(result_status IS NULL OR result_status = '' OR result_status IN  ($statusCodes))");
+    $id = $db->update('temp_sample_import', [
+        'result_status' => SAMPLE_STATUS\ACCEPTED
+    ]);
 
-    $db->where("imported_by = '" . $_SESSION['userId'] . "'");
-    $db->where("result_status is null OR result_status = '' OR result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB);
-    $result = $db->update('temp_sample_import', $status);
-} catch (Exception $exc) {
-    LoggerUtility::log("error", $db->getLastQuery());
-    LoggerUtility::log("error", $exc->getMessage(), [
-        'file' => __FILE__,
-        'line' => __LINE__,
-        'trace' => $exc->getTraceAsString(),
+} catch (Throwable $e) {
+    LoggerUtility::log("error", $e->getMessage(), [
+        'code' => $e->getCode(),
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString(),
+        'last_db_query' => $db?->getLastQuery(),
+        'last_db_error' => $db?->getLastError(),
     ]);
 }

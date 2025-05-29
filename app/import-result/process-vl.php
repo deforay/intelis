@@ -7,13 +7,11 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Exceptions\SystemException;
-use App\Services\TestResultsService;
-use App\Registries\ContainerRegistry;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
+use App\Services\TestResultsService;
 
-use const SAMPLE_STATUS\ON_HOLD;
+use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */

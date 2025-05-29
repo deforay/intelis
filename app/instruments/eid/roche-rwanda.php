@@ -160,8 +160,8 @@ try {
                     "lotExpirationDate" => $lotExpirationDateVal,
                 ];
             } else {
-                if (isset($logVal) && trim($logVal) != "") {
-                    $infoFromFile[$sampleCode]['logVal'] = trim($logVal);
+                if (isset($logVal) && $logVal != "") {
+                    $infoFromFile[$sampleCode]['logVal'] = $logVal;
                 }
             }
 

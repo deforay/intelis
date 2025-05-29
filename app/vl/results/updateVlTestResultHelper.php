@@ -289,6 +289,6 @@ try {
     }
 
     MiscUtility::redirect("/vl/results/vlTestResult.php");
-} catch (Throwable $exc) {
-    throw new SystemException($exc->getMessage(), 500, $exc);
+} catch (Throwable $exception) {
+    throw new SystemException($exception->getMessage(), 500, $exception);
 }

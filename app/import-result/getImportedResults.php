@@ -49,7 +49,7 @@ if (!empty($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSampl
     $db->rawQuery($sql, [$importedBy]);
 }
 
-$dtsQuery = "SELECT SQL_CALC_FOUND_ROWS tsr.temp_sample_id,
+$sQuery = "SELECT tsr.temp_sample_id,
                 tsr.module,tsr.sample_code,
                 tsr.sample_details,
                     tsr.result_value_absolute,
@@ -80,7 +80,7 @@ if (isset($allowImportingNonMatchingSamples) && $allowImportingNonMatchingSample
         $db->where('sample_type', 'S');
         $delId = $db->delete('temp_sample_import');
 
-        $dtsQuery = "SELECT
+        $sQuery = "SELECT
                     tsr.temp_sample_id,tsr.sample_code,
                     tsr.sample_details,
                     tsr.result_value_absolute,
@@ -125,13 +125,8 @@ if (isset($tsrResult[0]['count']) && $tsrResult[0]['count'] > 0) {
 
 
 
-$aColumns = array('tsr.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y H:i')", "DATE_FORMAT(tsr.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name');
-$orderColumns = array('tsr.sample_code', 'vl.sample_collection_date', 'tsr.sample_tested_datetime', 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name');
-
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = "temp_sample_id";
-
-$sTable = 'temp_sample_import';
+$aColumns = ['tsr.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y H:i')", "DATE_FORMAT(tsr.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name'];
+$orderColumns = ['tsr.sample_code', 'vl.sample_collection_date', 'tsr.sample_tested_datetime', 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name'];
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -179,10 +174,8 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-$aWhere = '';
-$sQuery = "$dtsQuery";
+$aWhere = '';;
 $sOrder = 'temp_sample_id ASC';
-//echo $sQuery;die;
 
 if (!empty($sWhere)) {
     $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' AND $sWhere";
@@ -206,12 +199,13 @@ if (isset($sLimit) && isset($sOffset)) {
 /* Data set length after filtering */
 
 
-$output = array(
+$output = [
     "sEcho" => (int) $_POST['sEcho'],
     "iTotalRecords" => $resultCount,
     "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
-);
+];
+
 $refno = abs($sampleTypeTotal - $totalControls);
 foreach ($rResult as $aRow) {
     $row = [];
