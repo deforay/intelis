@@ -93,7 +93,7 @@ final class TbService extends AbstractTestService
     {
         $query = "SELECT result_id,result FROM r_tb_results where status='active' ";
         if (!empty($type)) {
-            $query .= " AND result_type = '" . $type . "' ";
+            $query .= " AND result_type = '$type' ";
         }
         if ($updatedDateTime) {
             $query .= " AND updated_datetime >= '$updatedDateTime' ";

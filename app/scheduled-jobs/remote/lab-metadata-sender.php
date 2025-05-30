@@ -148,9 +148,10 @@ try {
                 $user['signature_image_filename'] = null;
             }
 
-            // Unset the login_id and password fields
-            unset($user['login_id']);
-            unset($user['password']);
+            // Unset unnecessary fields
+            foreach (['login_id', 'password', 'role_id', 'status'] as $key) {
+                unset($user[$key]);
+            }
         }
         $payload["users"] = $users;
     }

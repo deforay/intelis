@@ -465,7 +465,7 @@ try {
                     }
 
                     $unwantedColumnList = [];
-                    if ($dataType === 'users') {
+                    if ($dataToSync[$dataType]['tableName'] === 'user_details') {
                         $unwantedColumnList = ['login_id', 'role_id', 'password', 'status'];
                     }
 

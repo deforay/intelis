@@ -81,7 +81,11 @@ try {
         $transactionId ??= MiscUtility::generateUUID();
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
-                $emptyTableArray = $general->getTableFieldsAsArray($table);
+                $unwantedColumnList = [];
+                if ($table === 'user_details') {
+                    $unwantedColumnList = ['login_id', 'role_id', 'password', 'status'];
+                }
+                $emptyTableArray = $general->getTableFieldsAsArray($table, $unwantedColumnList);
                 if (empty($emptyTableArray)) {
                     continue;
                 }
