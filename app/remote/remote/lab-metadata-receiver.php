@@ -146,6 +146,9 @@ try {
                         continue;
                     }
                 }
+                if ($table === 'user_details') {
+                    _invalidateFileCacheByTags(['users_count']);
+                }
             }
         }
     }
