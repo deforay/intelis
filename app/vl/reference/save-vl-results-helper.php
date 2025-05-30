@@ -5,7 +5,6 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -24,13 +23,13 @@ try {
 		} else {
 			$jsonInstruments = null;
 		}
-		$data = array(
-			'result' 		=> ($_POST['resultName']),
+		$data = [
+			'result' => ($_POST['resultName']),
 			'available_for_instruments' => $jsonInstruments,
 			'interpretation' => $_POST['interpretation'],
-			'status' 	    => $_POST['resultStatus'],
-			'updated_datetime' 	=> DateUtility::getCurrentDateTime(),
-		);
+			'status' => $_POST['resultStatus'],
+			'updated_datetime' => DateUtility::getCurrentDateTime(),
+		];
 		if (isset($_POST['resultId']) && $_POST['resultId'] != "") {
 			$db->where($primaryKey, base64_decode((string) $_POST['resultId']));
 			$lastId = $db->update($tableName, $data);
@@ -44,7 +43,7 @@ try {
 			$general->activityLog('VL Results details', $_SESSION['userName'] . ' added new results for ' . $_POST['resultName'], 'vl-reference');
 		}
 	}
-	MiscUtility::redirect("/vl/reference/vl-results.php");
+
 } catch (Throwable $e) {
 	LoggerUtility::log("error", $e->getMessage(), [
 		'file' => $e->getFile(),
@@ -52,3 +51,5 @@ try {
 		'trace' => $e->getTraceAsString(),
 	]);
 }
+_invalidateFileCacheByTags(['r_vl_results']);
+MiscUtility::redirect("/vl/reference/vl-results.php");

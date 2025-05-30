@@ -205,5 +205,5 @@ try {
 }
 
 
-_invalidateFileCacheByTags(['users']);
+_invalidateFileCacheByTags(['users_count']);
 header("Location:users.php");

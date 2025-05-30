@@ -553,6 +553,16 @@ try {
                         }
                     }
                 }
+
+                // invalidate file cache by tags
+                if ($dataToSync[$dataType]['tableName'] === 'r_vl_results') {
+                    _invalidateFileCacheByTags(['r_vl_results']);
+                } elseif ($dataToSync[$dataType]['tableName'] === 'r_implementation_partners') {
+                    _invalidateFileCacheByTags(['r_implementation_partners']);
+                } elseif ($dataToSync[$dataType]['tableName'] === 'r_funding_sources') {
+                    _invalidateFileCacheByTags(['r_funding_sources']);
+                }
+
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();

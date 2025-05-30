@@ -40,5 +40,5 @@ try {
 } catch (Throwable $e) {
 	throw new SystemException($e->getMessage(), 500, $e);
 }
-_invalidateFileCacheByTags(['funding-sources']);
+_invalidateFileCacheByTags(['r_funding_sources']);
 header("Location:funding-sources.php");

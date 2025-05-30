@@ -653,7 +653,7 @@ final class VlService extends AbstractTestService
 
             $this->db->where('status', 'active');
             return $this->db->get('r_vl_results');
-        }, ['instruments']);
+        }, ['r_vl_results']);
     }
 
 

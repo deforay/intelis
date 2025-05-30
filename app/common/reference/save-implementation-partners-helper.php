@@ -40,5 +40,5 @@ try {
 } catch (Throwable $e) {
 	throw new SystemException($e->getMessage(), 500, $e);
 }
-_invalidateFileCacheByTags(['implementation-partners']);
+_invalidateFileCacheByTags(['r_implementation_partners']);
 header("Location:implementation-partners.php");

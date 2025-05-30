@@ -133,7 +133,7 @@ final class CommonService
         return $this->fileCache->get($key, function () {
             $this->db->where("role_id != 1 and status = 'active'");
             return $this->db->getValue("user_details", "count(*)");
-        }, ['users']);
+        }, ['users_count']);
     }
 
 
@@ -841,7 +841,7 @@ final class CommonService
             $this->db->where("i_partner_status", "active");
             $this->db->orderBy('i_partner_name', "ASC");
             return $this->db->get('r_implementation_partners');
-        }, ['implementation-partners']);
+        }, ['r_implementation_partners']);
     }
 
     public function getFundingSources()
@@ -851,7 +851,7 @@ final class CommonService
             $this->db->where("funding_source_status", "active");
             $this->db->orderBy('funding_source_name', "ASC");
             return $this->db->get('r_funding_sources');
-        }, ['funding-sources']);
+        }, ['r_funding_sources']);
     }
 
     public function getSourceOfRequest($table)
