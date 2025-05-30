@@ -65,7 +65,6 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
 {
     $antiXss = new AntiXSS();
 
-    // Recursive sanitization
     if (is_array($input)) {
         foreach ($input as $key => $value) {
             $input[$key] = _sanitizeInput($value, $nullifyEmptyStrings);
@@ -79,12 +78,13 @@ function _sanitizeInput(mixed $input, bool $nullifyEmptyStrings = false): mixed
             $property->setValue($input, _sanitizeInput($value, $nullifyEmptyStrings));
         }
     } elseif (is_string($input)) {
-        // Normalize encoding to UTF-8 and remove invisible characters
+        // Normalize encoding to UTF-8
         $input = MiscUtility::toUtf8($input);
-        $input = (new UnicodeString($input))
-            ->trim()
-            ->replaceMatches('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '')
-            ->toString();
+
+        // FULL Unicode and invisible junk cleaning
+        $input = MiscUtility::cleanString($input);
+
+        // XSS cleaning
         $input = $antiXss->xss_clean($input);
 
         // Convert empty strings to null if $nullifyEmptyStrings is true
@@ -478,7 +478,8 @@ function _sanitizeOutput($string)
     return htmlspecialchars($string, ENT_QUOTES, 'UTF-8');
 }
 
-function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600){
+function _getFromFileCache(string $key, callable $computeValueCallback, ?array $tags = [], int $expiration = 3600)
+{
     /** @var FileCacheUtility $fileCache */
     $fileCache = ContainerRegistry::get(FileCacheUtility::class);
     return $fileCache->get($key, $computeValueCallback, $tags, $expiration);

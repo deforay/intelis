@@ -3,13 +3,13 @@
 namespace App\Utilities;
 
 use Throwable;
+use Normalizer;
 use ZipArchive;
 use Sqids\Sqids;
 use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use App\Exceptions\SystemException;
 use Symfony\Component\Filesystem\Filesystem;
-use Symfony\Component\Filesystem\Exception\IOExceptionInterface;
 
 final class MiscUtility
 {
@@ -93,7 +93,7 @@ final class MiscUtility
         try {
             $filesystem->mkdir($path, $mode); // Handles recursive creation automatically
             return true;
-        } catch (IOExceptionInterface $exception) {
+        } catch (Throwable $exception) {
             return false; // Directory creation failed
         }
     }
@@ -111,8 +111,7 @@ final class MiscUtility
             // This handles both files and directories recursively
             $filesystem->remove($dirname);
             return true; // Removal was successful
-        } catch (IOExceptionInterface $exception) {
-            // You can log the exception or handle it here if necessary
+        } catch (Throwable $exception) {
             return false; // Removal failed
         }
     }
@@ -904,7 +903,12 @@ final class MiscUtility
                 $input = mb_convert_encoding($input, 'UTF-8', $encoding);
             }
 
-            // Remove BOM, zero-width spaces, non-breaking space, etc.
+            // Normalize Unicode (NFC form)
+            if (class_exists('Normalizer')) {
+                $input = Normalizer::normalize($input, Normalizer::FORM_C);
+            }
+
+            // Remove basic BOM, ZWSP, NBSP
             $input = preg_replace(
                 '/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u',
                 '',
@@ -913,6 +917,29 @@ final class MiscUtility
         }
 
         return $input;
+    }
+
+
+    public static function cleanString($string)
+    {
+        if ($string === null || $string === '') {
+            return null;
+        }
+
+        if (class_exists('Normalizer')) {
+            $string = Normalizer::normalize($string, Normalizer::FORM_C);
+        }
+
+        // Remove common invisible Unicode characters
+        $string = preg_replace('/[\x{00A0}\x{200B}\x{FEFF}\x{202F}\x{2060}\x{00AD}]/u', '', $string);
+
+        // Remove ASCII control characters (0–31 and 127)
+        $string = preg_replace('/[\x00-\x1F\x7F]/u', '', $string);
+
+        // Trim Unicode whitespace and control characters from both ends
+        $string = preg_replace('/^[\p{Z}\p{C}]+|[\p{Z}\p{C}]+$/u', '', $string);
+
+        return $string;
     }
 
     public static function getFullImagePath(string $imageName, string $basePath): ?string

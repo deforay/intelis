@@ -663,7 +663,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 	$(document).ready(function() {
 		addOtherSection();
 		<?php if ($eCount > 0) { ?>
-			generateRandomString('1');
+			generateRandomFieldId('1');
 		<?php } ?>
 		$(".auto-complete-tbx").autocomplete({
 			source: otherSectionNames
@@ -861,7 +861,7 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 			source: otherSectionNames
 		});
 
-		generateRandomString(tableRowId);
+		generateRandomFieldId(tableRowId);
 		tableRowId++;
 	}
 
@@ -924,13 +924,8 @@ foreach ($testResultAttribute['result_type'] as $key => $r) {
 		}
 	}
 
-	function generateRandomString(rowId) {
-		$.post("/includes/generateRandomString.php", {
-				format: "html"
-			},
-			function(data) {
-				$("#fieldId" + rowId).val("_" + data);
-			});
+	function generateRandomFieldId(rowId) {
+		$("#fieldId" + rowId).val("_" + Utilities.generateRandomString(16));
 	}
 
 	function changeField(obj, i) {

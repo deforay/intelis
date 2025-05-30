@@ -827,7 +827,7 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 			source: otherSectionNames
 		});
 
-		generateRandomString(tableRowId);
+		generateRandomFieldId(tableRowId);
 		tableRowId++;
 	}
 
@@ -890,13 +890,8 @@ $testResultUnitId = $general->getDataByTableAndFields("generic_test_result_units
 		}
 	}
 
-	function generateRandomString(rowId) {
-		$.post("/includes/generateRandomString.php", {
-				format: "html"
-			},
-			function(data) {
-				$("#fieldId" + rowId).val("_" + data);
-			});
+	function generateRandomFieldId(rowId) {
+		$("#fieldId" + rowId).val("_" + Utilities.generateRandomString(16));
 	}
 
 	function addResultRow(table) {

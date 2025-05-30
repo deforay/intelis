@@ -82,7 +82,7 @@ try {
                     $row++;
                     if ($row < $skip) {
                         if ($row == 8) {
-                            $testingDateArray = $testResultsService->abbottTestingDateFormatter($sheetData[1], $sheetData[2]);
+                            $testingDateArray = $testResultsService->abbottDateFormatter($sheetData[1], $sheetData[2]);
                             $dateFormat = $testingDateArray['dateFormat'];
                             $testingDate = $testingDateArray['testingDate'];
                         } elseif (in_array($sheetData[0], ['PLATE NUMBER', 'PLATE NAME'])) {

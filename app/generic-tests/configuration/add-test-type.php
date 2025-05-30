@@ -403,7 +403,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		});
 
 		$('input').tooltip();
-		generateRandomString('1');
+		generateRandomFieldId('1');
 		$("#testingReason").select2({
 			placeholder: "<?php echo _translate("Select Testing Reason"); ?>"
 		});
@@ -601,7 +601,7 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 			source: otherSectionNames
 		});
 
-		generateRandomString(tableRowId);
+		generateRandomFieldId(tableRowId);
 		tableRowId++;
 	}
 
@@ -663,13 +663,8 @@ $testResultUnitInfo = $general->getDataByTableAndFields("r_generic_test_result_u
 		}
 	}
 
-	function generateRandomString(rowId) {
-		$.post("/includes/generateRandomString.php", {
-				format: "html"
-			},
-			function(data) {
-				$("#fieldId" + rowId).val("_" + data);
-			});
+	function generateRandomFieldId(rowId) {
+		$("#fieldId" + rowId).val("_" + Utilities.generateRandomString(16));
 	}
 
 	function addResultRow(table) {

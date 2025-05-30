@@ -59,7 +59,11 @@ final class DateUtility
             // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
             // or any other errors during the process.
             // Optionally log the error, e.g., using LoggerUtility
-            // LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage());
+            LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString()
+            ]);
             return null;
         }
     }

@@ -46,16 +46,16 @@ try {
     foreach ($reader as $offset => $record) {
         foreach ($record as $o => $v) {
             // Clean the value using the existing method
-            $v = $importService->removeCntrlCharsAndEncode($v);
+            $v = $importService->removeControlCharsAndEncode($v);
 
             if ($v == "Status") {
-                $status = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $status = $importService->removeControlCharsAndEncode($record[1] ?? '');
                 if (!empty($status) && $status == "Incomplete") {
                     continue 2;
                 }
             } elseif ($v == "End Time" || $v == "Heure de fin") {
                 $rawEndTime = $record[1] ?? '';
-                $cleanEndTime = $importService->removeCntrlCharsAndEncode($rawEndTime);
+                $cleanEndTime = $importService->removeControlCharsAndEncode($rawEndTime);
 
                 if (!empty($cleanEndTime)) {
                     $testedOn = $importService->parseDate($cleanEndTime);
@@ -66,7 +66,7 @@ try {
                 // Use as fallback if End Time is not available
                 if (empty($testedOn)) {
                     $rawStartTime = $record[1] ?? '';
-                    $cleanStartTime = $importService->removeCntrlCharsAndEncode($rawStartTime);
+                    $cleanStartTime = $importService->removeControlCharsAndEncode($rawStartTime);
 
                     if (!empty($cleanStartTime)) {
                         $testedOn = $importService->parseDate($cleanStartTime);
@@ -74,11 +74,11 @@ try {
                     }
                 }
             } elseif ($v == "User" || $v == 'Utilisateur') {
-                $testedBy = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $testedBy = $importService->removeControlCharsAndEncode($record[1] ?? '');
             } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                 $sampleCode = null;
             } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                $sampleCode = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $sampleCode = $importService->removeControlCharsAndEncode($record[1] ?? '');
 
                 if (empty($sampleCode)) {
                     continue 2;
@@ -93,14 +93,14 @@ try {
                 if (empty($sampleCode)) {
                     continue;
                 }
-                $assayValue = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $assayValue = $importService->removeControlCharsAndEncode($record[1] ?? '');
                 $infoFromFile[$sampleCode]['assay'] = $assayValue;
             } elseif ($v == "Test Result" || $v == "Résultat du test") {
                 if (empty($sampleCode)) {
                     continue;
                 }
 
-                $resultValue = $importService->removeCntrlCharsAndEncode($record[1] ?? '');
+                $resultValue = $importService->removeControlCharsAndEncode($record[1] ?? '');
                 $parsedResult = str_replace("|", "", strtoupper($resultValue));
                 $parts = explode(" (LOG ", $parsedResult);
                 $vlResult = $parts[0];

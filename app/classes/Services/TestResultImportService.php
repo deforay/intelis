@@ -4,7 +4,6 @@ namespace App\Services;
 
 use Exception;
 use SAMPLE_STATUS;
-use DateTimeImmutable;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -249,53 +248,44 @@ class TestResultImportService
     /**
      * Parse date helper
      */
-    public function parseDate(string $dateString, ?string $format = null): ?string
+    public function parseDate(string $dateString, ?string $inputFormat = null): ?string
     {
         if (empty($dateString)) return null;
-        $format = $format ?: ($this->postData['dateFormat'] ?? 'd/m/Y H:i');
+        $inputFormat = $inputFormat ?: ($this->postData['dateFormat'] ?? 'd/m/Y H:i');
 
-        return MemoUtility::remember(function () use ($dateString, $format) {
-
-            try {
-                $dateObject = DateTimeImmutable::createFromFormat("!$format", $dateString);
-                if ($dateObject) {
-                    return $dateObject->format('Y-m-d H:i:s');
-                }
-            } catch (Exception $e) {
-                // Silent fail for date parsing
-            }
-            return null;
-        });
+        return MemoUtility::remember(fn() => DateUtility::getDateTime($dateString, 'Y-m-d H:i:s', $inputFormat));
     }
 
-    public function abbottTestingDateFormatter($testDate, $testDateFormat, $interpretFormat = true): ?array
+    public function abbottDateFormatter($testDateFromInstrument, $inputFormat, $interpretFormat = true): ?array
     {
 
-        if (empty($testDate) || empty($testDateFormat)) {
+        if (empty($testDateFromInstrument) || empty($inputFormat)) {
             return null;
         }
 
-        $testDateFormat = trim((string) $testDateFormat);
+        return MemoUtility::remember(function () use ($testDateFromInstrument, $inputFormat, $interpretFormat) {
 
-        if ($interpretFormat === true) {
-            $find = ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
-            $replace = ['', '', 'd', 'm', 'Y', 'y'];
-            $testDateFormat = trim(str_ireplace($find, $replace, strtolower($testDateFormat)));
-        }
+            $inputFormat = trim((string) $inputFormat);
 
-        $testingDateFormat = substr_count((string) $testDate, ':') === 1 ? "$testDateFormat h:i" : "$testDateFormat H:i:s";
+            if ($interpretFormat === true) {
+                $find = ['am', 'pm', 'dd', 'mm', 'yyyy', 'yy'];
+                $replace = ['', '', 'd', 'm', 'Y', 'y'];
+                $inputFormat = trim(str_ireplace($find, $replace, strtolower($inputFormat)));
+            }
 
-        if (stripos((string) $testDate, 'am') !== false || stripos((string) $testDate, 'pm') !== false) {
-            $testingDateFormat .= ' A';
-        }
+            $inputFormat = substr_count((string) $testDateFromInstrument, ':') === 1 ? "$inputFormat h:i" : "$inputFormat H:i:s";
 
-        $timestamp = DateTimeImmutable::createFromFormat("!$testingDateFormat", $testDate);
-        $testingDate = $timestamp ? $timestamp->format('Y-m-d H:i') : null;
+            if (stripos((string) $testDateFromInstrument, 'am') !== false || stripos((string) $testDateFromInstrument, 'pm') !== false) {
+                $inputFormat .= ' A';
+            }
 
-        return [
-            'testingDate' => $testingDate,
-            'dateFormat' => $testDateFormat,
-        ];
+            $testingDate = DateUtility::getDateTime($testDateFromInstrument, 'Y-m-d H:i', "!$inputFormat");
+
+            return [
+                'testingDate' => $testingDate,
+                'dateFormat' => $inputFormat,
+            ];
+        });
     }
 
     /**
@@ -312,12 +302,12 @@ class TestResultImportService
     // This function removes control characters from the strings in the CSV file.
     // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
     // Also checks UTF-8 encoding and converts if needed
-    public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
+    public function removeControlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
         return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
             $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
             if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
-                $inputString = mb_convert_encoding($inputString, 'UTF-8');
+                $inputString = MiscUtility::toUtf8($inputString);
             }
             return $inputString;
         });

@@ -5,6 +5,7 @@ namespace App\Services;
 use DateTimeImmutable;
 use App\Utilities\DateUtility;
 use App\Utilities\MemoUtility;
+use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 
 final class TestResultsService
@@ -36,18 +37,18 @@ final class TestResultsService
     // This function removes control characters from the strings in the CSV file.
     // https://en.wikipedia.org/wiki/Control_character#ASCII_control_characters
     // Also checks UTF-8 encoding and converts if needed
-    public function removeCntrlCharsAndEncode($inputString, $encodeToUTF8 = true): string
+    public function removeControlCharsAndEncode($inputString, $encodeToUTF8 = true): string
     {
         return MemoUtility::remember(function () use ($inputString, $encodeToUTF8) {
             $inputString = preg_replace('/[[:cntrl:]]/', '', (string) $inputString);
             if ($encodeToUTF8 === true && mb_detect_encoding($inputString, 'UTF-8', true) === false) {
-                $inputString = mb_convert_encoding($inputString, 'UTF-8');
+                $inputString = MiscUtility::toUtf8($inputString);
             }
             return $inputString;
         });
     }
 
-    public function abbottTestingDateFormatter($testDate, $testDateFormat, $interpretFormat = true): ?array
+    public function abbottDateFormatter($testDate, $testDateFormat, $interpretFormat = true): ?array
     {
 
         if (empty($testDate) || empty($testDateFormat)) {

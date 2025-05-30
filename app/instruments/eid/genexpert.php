@@ -78,9 +78,9 @@ try {
             //$sampleCode = null;
             foreach ($record as $o => $v) {
 
-                $v = $testResultsService->removeCntrlCharsAndEncode($v);
+                $v = $testResultsService->removeControlCharsAndEncode($v);
                 if ($v == "End Time" || $v == "Heure de fin") {
-                    $testedOn = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    $testedOn = $testResultsService->removeControlCharsAndEncode($record[1]);
                     $timestamp = DateTimeImmutable::createFromFormat("!$dateFormat", $testedOn);
                     if (!empty($timestamp)) {
                         $timestamp = $timestamp->getTimestamp();
@@ -89,11 +89,11 @@ try {
                         $testedOn = null;
                     }
                 } elseif ($v == "User" || $v == 'Utilisateur') {
-                    $testedBy = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    $testedBy = $testResultsService->removeControlCharsAndEncode($record[1]);
                 } elseif ($v == "RESULT TABLE" || $v == "TABLEAU DE RÉSULTATS") {
                     $sampleCode = null;
                 } elseif ($v == "Sample ID" || $v == "N° Id de l'échantillon") {
-                    $sampleCode = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    $sampleCode = $testResultsService->removeControlCharsAndEncode($record[1]);
                     if (empty($sampleCode)) {
                         continue;
                     }
@@ -104,13 +104,13 @@ try {
                     if (empty($sampleCode)) {
                         continue;
                     }
-                    $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeCntrlCharsAndEncode($record[1]);
+                    $infoFromFile[$sampleCode]['assay'] = $testResultsService->removeControlCharsAndEncode($record[1]);
                 } elseif ($v == "Test Result" || $v == "Résultat du test") {
                     if (empty($sampleCode)) {
                         continue;
                     }
 
-                    $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeCntrlCharsAndEncode($record[1]))));
+                    $parsedResult = (str_replace("|", "", strtoupper($testResultsService->removeControlCharsAndEncode($record[1]))));
 
                     if ($general->checkIfStringExists($parsedResult, array('not detected', 'notdetected')) !== false) {
                         $parsedResult = 'negative';
