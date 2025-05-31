@@ -37,7 +37,7 @@ $state = $geolocationService->getProvinces("yes");
 
 
 // Src of alert req
-$sources = $general->getSourceOfRequest('form_vl');
+$sources = $general->getSourcesOfTestRequests('form_vl');
 $srcOfReqList = [];
 foreach ($sources as $list) {
     $srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);

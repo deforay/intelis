@@ -854,13 +854,35 @@ final class CommonService
         }, ['r_funding_sources']);
     }
 
-    public function getSourceOfRequest($table)
+    public function getSourcesOfTestRequests($table, $asNameValuePair = false)
     {
-        $srcQuery = "SELECT DISTINCT source_of_request
+        $key = "sources_of_test_requests_list_{$table}_" . ($asNameValuePair ? 'name_value' : 'full_data');
+        return $this->fileCache->get($key, function () use ($table, $asNameValuePair) {
+
+            $commonSources = [
+                'vlsm' => 'LIS',
+                'lis' => 'LIS',
+                'vlsts' => 'STS',
+                'sts' => 'STS',
+                'app' => 'Tablet',
+                'api' => 'API',
+                'dhis2' => 'DHIS2'
+            ];
+
+            $srcQuery = "SELECT DISTINCT source_of_request
                         FROM $table
-                        WHERE source_of_request IS NOT NULL AND
-                        source_of_request not like ''";
-        return $this->db->rawQuery($srcQuery);
+                        WHERE IFNULL(source_of_request, '') != ''";
+            $data = $this->db->rawQuery($srcQuery);
+            if ($asNameValuePair) {
+                $processedData = [];
+                foreach ($data as $list) {
+                    $processedData[$list['source_of_request']] = !empty($commonSources[$list['source_of_request']]) ? $commonSources[$list['source_of_request']] : $list['source_of_request'];
+                }
+                return $processedData;
+            }
+
+            return $data;
+        }, ['sources_of_test_requests_list', $table]);
     }
 
     public function getSampleStatus($api = false)

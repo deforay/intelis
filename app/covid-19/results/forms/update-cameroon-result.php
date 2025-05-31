@@ -24,9 +24,6 @@ foreach ($testPlatformResult as $row) {
     $testPlatformList[$row['machine_name']] = $row['machine_name'];
 }
 
-//Implementing partner list
-// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-// $implementingPartnerList = $db->query($implementingPartnerQry);
 
 
 

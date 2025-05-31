@@ -31,3 +31,6 @@ UPDATE user_details SET user_id = UUID() WHERE user_id IS NULL OR TRIM(user_id) 
 
 -- Amit 29-May-2025
 ALTER TABLE `r_vl_art_regimen` DROP `nation_identifier`;
+
+-- Amit 31-May-2025
+CREATE INDEX idx_vl_result_category_status ON form_vl (vl_result_category, result_status);

@@ -220,28 +220,5 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
                 continue;
             }
         }
-
-        // if ($general->isLISInstance()) {
-        //     try {
-        //         $db->beginTransaction();
-        //         $db->reset();
-        //         $db->where("result_status = " . SAMPLE_STATUS\EXPIRED);
-        //         $db->where("(result IS NULL OR result = '')");
-        //         $db->where("sample_code IS NOT NULL");
-        //         $db->where("(is_sample_rejected = 'no' OR is_sample_rejected IS NULL OR is_sample_rejected = '')");
-        //         $db->where("DATEDIFF(CURRENT_DATE, `sample_collection_date`) <= $expiryDays");
-        //         $db->update(
-        //             $tableName,
-        //             [
-        //                 "result_status" => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-        //                 "locked" => "no"
-        //             ]
-        //         );
-        //         $db->commitTransaction();
-        //     } catch (Throwable $e) {
-        //         $db->rollbackTransaction();
-        //         LoggerUtility::logError($e->getMessage());
-        //     }
-        // }
     }
 }

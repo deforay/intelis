@@ -68,21 +68,18 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 $sampleStatusData = $general->getSampleStatus();
 
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
+$fundingSourceList = $general->getFundingSources();
+
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+$implementingPartnerList = $general->getImplementationPartners();
 
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-// Src of alert req
-$srcQuery = "SELECT DISTINCT source_of_request FROM form_vl WHERE source_of_request is not null AND source_of_request != ''";
-$srcResults = $db->rawQuery($srcQuery);
+$sourceOfRequests = $general->getSourcesOfTestRequests('form_vl', asNameValuePair: true);
 $srcOfReqList = [];
-foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
+foreach ($sourceOfRequests as $value => $displayText) {
+	$srcOfReqList[$value] = $displayText;
 }
 
 $lastModifiedColumnPosition = ($general->isSTSInstance() || $general->isLISInstance()) ? 12 : 11;

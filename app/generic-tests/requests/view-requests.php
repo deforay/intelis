@@ -67,12 +67,10 @@ $sQuery = "SELECT * FROM r_generic_sample_types WHERE `sample_type_status`='acti
 $sResult = $db->rawQuery($sQuery);
 
 
-// Src of alert req
-$srcQuery = "SELECT DISTINCT source_of_request from form_generic where source_of_request is not null AND source_of_request not like ''";
-$srcResults = $db->rawQuery($srcQuery);
+$sourceOfRequests = $general->getSourcesOfTestRequests('form_generic', asNameValuePair: true);
 $srcOfReqList = [];
-foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
+foreach ($sourceOfRequests as $value => $displayText) {
+	$srcOfReqList[$value] = $displayText;
 }
 
 $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";

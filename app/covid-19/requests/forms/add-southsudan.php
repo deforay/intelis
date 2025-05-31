@@ -23,9 +23,6 @@ foreach ($nationalityResult as $nrow) {
 }
 
 
-//Implementing partner list
-// $implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-// $implementingPartnerList = $db->query($implementingPartnerQry);
 
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
 // Getting the list of Provinces, Districts and Facilities

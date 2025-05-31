@@ -64,24 +64,23 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 $sampleStatusData = $general->getSampleStatus();
 
 //Funding source list
-$fundingSourceQry = "SELECT * FROM r_funding_sources WHERE funding_source_status='active' ORDER BY funding_source_name ASC";
-$fundingSourceList = $db->query($fundingSourceQry);
+$fundingSourceList = $general->getFundingSources();
+
 //Implementing partner list
-$implementingPartnerQry = "SELECT * FROM r_implementation_partners WHERE i_partner_status='active' ORDER BY i_partner_name ASC";
-$implementingPartnerList = $db->query($implementingPartnerQry);
+$implementingPartnerList = $general->getImplementationPartners();
 
 $sQuery = "SELECT * FROM r_cd4_sample_types WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type = 'cd4'";
 $batResult = $db->rawQuery($batQuery);
-// Src of alert req
-$srcQuery = "SELECT DISTINCT source_of_request FROM form_cd4 WHERE source_of_request is not null AND source_of_request not like ''";
-$srcResults = $db->rawQuery($srcQuery);
+
+$sourceOfRequests = $general->getSourcesOfTestRequests('form_cd4', asNameValuePair: true);
 $srcOfReqList = [];
-foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
+foreach ($sourceOfRequests as $value => $displayText) {
+	$srcOfReqList[$value] = $displayText;
 }
+
 ?>
 <style>
 	.select2-selection__choice {

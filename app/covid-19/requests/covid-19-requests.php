@@ -73,13 +73,12 @@ $sResult = $db->rawQuery($sQuery);
 $batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='covid19' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
 
-// Src of alert req
-$srcQuery = "SELECT DISTINCT source_of_request from form_covid19 where source_of_request is not null AND source_of_request not like ''";
-$srcResults = $db->rawQuery($srcQuery);
+$sourceOfRequests = $general->getSourcesOfTestRequests('form_covid19', asNameValuePair: true);
 $srcOfReqList = [];
-foreach ($srcResults as $list) {
-	$srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
+foreach ($sourceOfRequests as $value => $displayText) {
+	$srcOfReqList[$value] = $displayText;
 }
+
 ?>
 <style>
 	.select2-selection__choice {
