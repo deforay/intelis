@@ -31,5 +31,5 @@ try {
     echo $hepatitisService->getSampleCode($sampleCodeParams);
   }
 } catch (Throwable $exception) {
-  error_log("Error while generating Sample Code : " . $exception->getMessage());
+  error_log("Error while generating Sample ID : " . $exception->getMessage());
 }

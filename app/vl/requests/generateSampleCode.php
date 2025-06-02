@@ -27,5 +27,5 @@ try {
     echo $vlService->getSampleCode($sampleCodeParams);
   }
 } catch (Throwable $exception) {
-  LoggerUtility::log('error', "Error while generating Sample Code : " . $exception->getMessage());
+  LoggerUtility::log('error', "Error while generating Sample ID : " . $exception->getMessage());
 }

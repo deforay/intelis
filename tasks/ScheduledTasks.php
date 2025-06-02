@@ -31,7 +31,7 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-au
     ->preventOverlapping()
     ->description('Archiving Audit Tables');
 
-// Generate Sample Codes
+// Generate Sample IDs
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php")
     ->everyMinute()
     ->timezone($timeZone)

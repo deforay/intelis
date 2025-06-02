@@ -28,8 +28,8 @@ $sQuery = $_SESSION['testResultReportsQuery'];
 
 
 $headings = [
-    _translate('Sample Code'),
-    _translate('Remote Sample Code'),
+    _translate('Sample ID'),
+    _translate('Remote Sample ID'),
     _translate('Sample Collection Date'),
     _translate('Sample Recieved On'),
     _translate('Sample Tested On'),

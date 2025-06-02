@@ -19,7 +19,7 @@ final class TbService extends AbstractTestService
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            throw new SystemException("Sample Collection Date is required to generate Sample Code", 400);
+            throw new SystemException("Sample Collection Date is required to generate Sample ID", 400);
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['tb_sample_code'] ?? 'MMYY';
@@ -28,7 +28,7 @@ final class TbService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Generate Sample Code : ' . $e->getMessage(), [
+                LoggerUtility::log('error', 'Generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error

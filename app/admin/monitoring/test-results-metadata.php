@@ -102,7 +102,7 @@ $activeModules = SystemService::getActiveModules();
                             <td>
                                 <input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="background:#fff;" />
                             </td>
-                            <td><strong><?php echo _translate("Sample Code/Batch Code"); ?>&nbsp;:</strong></td>
+                            <td><strong><?php echo _translate("Sample ID/Batch Code"); ?>&nbsp;:</strong></td>
                             <td>
                                 <input type="text" id="sampleBatchCode" name="sampleBatchCode" class="form-control autocomplete" placeholder="<?php echo _translate('Enter Batch Code'); ?>" style="background:#fff;" />
                             </td>
@@ -127,10 +127,10 @@ $activeModules = SystemService::getActiveModules();
                             <thead>
                                 <tr>
                                     <th>
-                                        <?php echo _translate("Sample Code"); ?>
+                                        <?php echo _translate("Sample ID"); ?>
                                     </th>
                                     <th>
-                                        <?php echo _translate("Remote Sample Code"); ?>
+                                        <?php echo _translate("Remote Sample ID"); ?>
                                     </th>
                                     <th>
                                         <?php echo _translate("Sample Collection Date"); ?>
@@ -180,7 +180,7 @@ $activeModules = SystemService::getActiveModules();
                             <tbody>
                                 <tr>
                                     <td colspan="16" class="dataTables_empty">
-                                        <?php echo _translate("Please select Sample Test Date or Sample code/Batch Code to get result meta data"); ?>
+                                        <?php echo _translate("Please select Sample Test Date or Sample ID/Batch Code to get result meta data"); ?>
                                     </td>
                                 </tr>
                             </tbody>

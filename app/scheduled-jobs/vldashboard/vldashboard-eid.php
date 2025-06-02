@@ -95,7 +95,7 @@ try {
 
         $db->update('s_vlsm_instance', $data);
     }
-    MiscUtility::removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 } catch (Exception $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [
         'file' => __FILE__,

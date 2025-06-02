@@ -134,7 +134,7 @@ $filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
 					<table aria-describedby="table" id="failedSamples" class="table table-bordered table-striped" aria-hidden="true">
 						<thead>
 							<tr>
-								<th><?php echo _translate("Sample Code"); ?></th>
+								<th><?php echo _translate("Sample ID"); ?></th>
 								<th><?php echo _translate("Freezer Code"); ?></th>
 								<th><?php echo _translate("Rack"); ?></th>
 								<th><?php echo _translate("Box"); ?></th>

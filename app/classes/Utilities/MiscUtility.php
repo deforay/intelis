@@ -75,9 +75,7 @@ final class MiscUtility
 
     public static function randomHexColor(): string
     {
-        $hexColorPart = function () {
-            return str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
-        };
+        $hexColorPart = fn() => str_pad(dechex(random_int(0, 255)), 2, '0', STR_PAD_LEFT);
 
         return strtoupper($hexColorPart() . $hexColorPart() . $hexColorPart());
     }
@@ -115,6 +113,24 @@ final class MiscUtility
             return false; // Removal failed
         }
     }
+
+    public static function deleteFile(string $filePath): bool
+    {
+        $filesystem = new Filesystem();
+
+        if (!$filesystem->exists($filePath) || !is_file($filePath)) {
+            return false; // File doesn't exist or is not a file
+        }
+
+        try {
+            $filesystem->remove($filePath);
+            return true;
+        } catch (Throwable $exception) {
+            // Optionally, you can log the error here
+            return false; // Deletion failed
+        }
+    }
+
 
     //dump the contents of a variable to the error log in a readable format
     public static function dumpToErrorLog($object = null, $useVarDump = true): void

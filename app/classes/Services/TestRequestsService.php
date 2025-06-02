@@ -101,7 +101,7 @@ final class TestRequestsService
 
                         if (!empty($rowData) && !empty($rowData[$sampleCodeColumn])) {
                             if ($isCli) {
-                                echo "Sample Code {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
+                                echo "Sample ID {$rowData[$sampleCodeColumn]} exists for {$item['unique_id']}" . PHP_EOL;
                             }
                             $this->updateQueueItem($item['id'], 1);
                             continue;
@@ -177,7 +177,7 @@ final class TestRequestsService
 
                             if (!empty($checkData) && !empty($checkData[$sampleCodeColumn])) {
                                 // Another process set the sample code, that's fine
-                                LoggerUtility::logInfo("Sample code for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
+                                LoggerUtility::logInfo("Sample ID for {$item['unique_id']} was set by another process: {$checkData[$sampleCodeColumn]}");
                                 $this->updateQueueItem($item['id'], 1);
                             } else {
                                 // Something else went wrong

@@ -66,10 +66,10 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Enter Hepatitis Result Manually"); ?></h1>
+		<h1><em class="fa-solid fa-list-check"></em> <?php echo _translate("Manual Hepatitis Results"); ?></h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?> </a></li>
-			<li class="active"><?php echo _translate("Enter Hepatitis Result Manually"); ?></li>
+			<li class="active"><?php echo _translate("Manual Hepatitis Results"); ?></li>
 		</ol>
 	</section>
 	<!-- Main content -->

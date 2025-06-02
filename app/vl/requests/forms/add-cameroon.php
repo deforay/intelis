@@ -535,12 +535,6 @@ foreach ($testReasonsResultDetails as $row) {
                                                                            </select>
                                                                       </div>
                                                                  </div>
-                                                                 <!-- <div class="col-md-6">
-                                                                      <label for="serialNo" class="col-lg-5 control-label"><?= _translate('Lab Sample Code'); ?> </label>
-                                                                      <div class="col-lg-7">
-                                                                           <input name="serialNo" id="serialNo" class="form-control" placeholder="<?= _translate('Enter Lab Sample Code'); ?>" title="<?= _translate('Please enter Lab Sample Code'); ?>">
-                                                                      </div>
-                                                                 </div> -->
                                                             </div>
 
                                                             <div class="row">

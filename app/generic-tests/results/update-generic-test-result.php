@@ -1198,13 +1198,6 @@ $reasonForChange = $reasonForChangeArr[1];
 				},
 				function(data) {
 					if (data != 0) {
-						// Toastify({
-						// 	text: "<?= _translate('This Sample Code already exists', true) ?>",
-						// 	duration: 3000,
-						// 	style: {
-						// 		background: 'red',
-						// 	}
-						// }).showToast();
 					}
 				});
 			$.unblockUI();

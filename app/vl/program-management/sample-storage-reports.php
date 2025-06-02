@@ -131,7 +131,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 												<thead>
 													<tr>
 														<th>
-															<?php echo _translate("Sample Code"); ?>
+															<?php echo _translate("Sample ID"); ?>
 														</th>
 														<th>
 															<?php echo _translate("Storage Date"); ?>
@@ -179,7 +179,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 													<?php } ?>
 													<td>
 														<strong>
-															<?php echo _translate("Sample Code"); ?>&nbsp;:
+															<?php echo _translate("Sample ID"); ?>&nbsp;:
 														</strong>
 													</td>
 													<td>

@@ -86,13 +86,13 @@ try {
     $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
-        $data = array(
+        $data = [
             'vl_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
-        );
+        ];
 
         $db->update('s_vlsm_instance', $data);
     }
-    MiscUtility::removeDirectory(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
+    MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
     exit(0);
 } catch (Exception $exc) {
     LoggerUtility::log("error", $exc->getMessage(), [

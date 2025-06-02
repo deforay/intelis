@@ -258,7 +258,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 								<thead>
 									<tr>
 										<th>
-											<?php echo _translate("Sample Code"); ?>
+											<?php echo _translate("Sample ID"); ?>
 										</th>
 										<th scope="row">
 											<?php echo _translate("Facility Name"); ?>

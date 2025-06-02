@@ -35,7 +35,7 @@ $shortName = _translate("Sample Management");
 $shortCode = 'LIS';
 if ($general->isSTSInstance()) {
 	$skin = "skin-red";
-	$systemDisplayName = _translate("Remote Sample Tracking Module");
+	$systemDisplayName = _translate("Sample Tracking System");
 	$logoName = "<span class='fa fa-medkit'></span> STS";
 	$smallLogoName = "<span class='fa fa-medkit'></span>";
 	$shortName = _translate("Sample Tracking");

@@ -55,14 +55,14 @@ $lastUrl2 = '';
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-list-check"></em>
-			<?php echo _translate("Enter EID Result Manually"); ?>
+			<?php echo _translate("Manual EID Results"); ?>
 		</h1>
 		<ol class="breadcrumb">
 			<li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em>
 					<?php echo _translate("Home"); ?>
 				</a></li>
 			<li class="active">
-				<?php echo _translate("Enter EID Result Manually"); ?>
+				<?php echo _translate("Manual EID Results"); ?>
 			</li>
 		</ol>
 	</section>
@@ -169,7 +169,6 @@ $lastUrl2 = '';
 							</div>
 						</div>
 					</span>
-					<!-- /.box-header -->
 					<div class="box-body">
 						<div class="">
 							<select name="status" id="status" class="form-control" title="<?php echo _translate('Please choose result status'); ?>" style="width:220px;margin-top:30px;" onchange="searchVlRequestData();">

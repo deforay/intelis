@@ -23,7 +23,7 @@ $formId = (int) $arr['vl_form'];
 
 $output = [];
 
-$headings = [_translate("S.No."), _translate("Sample Code"), _translate("Facility Name"), _translate("Sample Collection Date"), _translate("Patient ID"), _translate("Patient Name"), _translate("Freezer Code"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume(ml)"), _translate("Date Out"), _translate("Comments"), _translate('Status')];
+$headings = [_translate("S.No."), _translate("Sample ID"), _translate("Facility Name"), _translate("Sample Collection Date"), _translate("Patient ID"), _translate("Patient Name"), _translate("Freezer Code"), _translate("Rack"), _translate("Box"), _translate("Position"), _translate("Volume(ml)"), _translate("Date Out"), _translate("Comments"), _translate('Status')];
 
 
 $no = 1;

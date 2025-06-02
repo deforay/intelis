@@ -56,7 +56,7 @@ $shortName = _translate('Sample Management System');
 
 if (isset($_SESSION['instance']['type']) && $general->isSTSInstance()) {
 	$shortName = 'Sample Tracking';
-	$systemDisplayName = "Remote Sample Tracking Module";
+	$systemDisplayName = "Sample Tracking System";
 	$path = '/assets/img/remote-bg.jpg';
 } else {
 	$path = '/assets/img/bg.jpg';

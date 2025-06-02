@@ -280,7 +280,7 @@ $previousMachine = $batchService->getLastInstumentForBatch($_GET['type']);
                     <td><select class="form-control" id="sortBy" name="sortBy">
                             <option "selected='selected'" value="requestCreated"><?= _translate("Request Created"); ?></option>
                             <option value="lastModified"><?= _translate("Last Modified"); ?></option>
-                            <option value="sampleCode"><?= _translate("Sample Code"); ?></option>
+                            <option value="sampleCode"><?= _translate("Sample ID"); ?></option>
                             <option value="labAssignedCode"><?= _translate("Lab Assigned Code"); ?></option>
                         </select></td>
                     <td><label for="sortType"><?= _translate("Sort Type"); ?></label></td>

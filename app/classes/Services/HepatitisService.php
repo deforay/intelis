@@ -40,7 +40,7 @@ final class HepatitisService extends AbstractTestService
     public function getSampleCode($params)
     {
         if (empty($params['sampleCollectionDate'])) {
-            throw new SystemException("Sample Collection Date is required to generate Sample Code", 400);
+            throw new SystemException("Sample Collection Date is required to generate Sample ID", 400);
         } else {
             $globalConfig = $this->commonService->getGlobalConfig();
             $params['sampleCodeFormat'] = $globalConfig['hepatitis_sample_code'] ?? 'MMYY';
