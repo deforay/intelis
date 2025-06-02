@@ -1,20 +1,12 @@
 
-
--- phpMyAdmin SQL Dump
--- version 5.2.0
--- https://www.phpmyadmin.net/
---
--- Host: localhost:8889
--- Generation Time: Dec 20, 2022 at 04:55 PM
--- Server version: 5.7.34
--- PHP Version: 7.4.27
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
 
-CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+USE interfacing;
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -35,7 +27,7 @@ CREATE TABLE IF NOT EXISTS `app_log` (
   `id` int(11) NOT NULL,
   `log` text NOT NULL,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -68,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `orders` (
   `printed_at` int(11) DEFAULT NULL,
   `raw_text` mediumtext,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -81,7 +73,7 @@ CREATE TABLE IF NOT EXISTS `raw_data` (
   `data` mediumtext NOT NULL,
   `machine` varchar(500) NOT NULL,
   `added_on` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_general_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE utf8mb4_unicode_ci;
 
 --
 -- Indexes for dumped tables
@@ -132,3 +124,18 @@ COMMIT;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+
+
+
+ALTER TABLE `orders` ADD `instrument_id` VARCHAR(128) NULL DEFAULT NULL AFTER `id`;
+
+CREATE TABLE IF NOT EXISTS versions (id INT AUTO_INCREMENT PRIMARY KEY, version INT NOT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8mb4  COLLATE utf8mb4_unicode_ci;
+
+-- Add instrument_id column to raw_data table
+ALTER TABLE `raw_data` ADD COLUMN `instrument_id` VARCHAR(128) NULL AFTER `machine`;
+
+-- Update existing records to set instrument_id equal to machine
+UPDATE `raw_data` SET `instrument_id` = `machine` WHERE `instrument_id` IS NULL;
+
+-- Add an index for better query performance
+CREATE INDEX `idx_raw_data_instrument_id` ON `raw_data` (`instrument_id`);

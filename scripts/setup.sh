@@ -70,8 +70,8 @@ handle_database_setup_and_import() {
         log_action "All tables and triggers moved to ${new_db_name}."
     fi
 
-    mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
-    mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
+    mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
     local sql_file="${1:-${lis_path}/sql/init.sql}"
     if [[ "$sql_file" == *".gz" ]]; then

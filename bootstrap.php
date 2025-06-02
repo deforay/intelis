@@ -1,20 +1,23 @@
 <?php
 
-if (session_status() === PHP_SESSION_NONE && php_sapi_name() !== 'cli') {
-
+if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
     session_name('appSession');
 
-    // Set cookie parameters before starting the session
+    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+
     session_set_cookie_params([
-        'path' => '/',    // Available in entire domain
-        'domain' => $_SERVER['HTTP_HOST'], // Default to current domain
-        'secure' => isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on', // Only set secure flag if HTTPS is enabled
-        'httponly' => true, // Only accessible via HTTP protocol, not JavaScript
-        'samesite' => 'Lax' // Strict or Lax
+        'path' => '/',
+        'secure' => $isSecure,
+        'httponly' => true,
+        'samesite' => 'Lax'
     ]);
 
-    session_start();
+    if (!session_start()) {
+        throw new Exception('Failed to start session');
+    }
 }
+
 
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;

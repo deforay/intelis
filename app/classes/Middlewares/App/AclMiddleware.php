@@ -5,6 +5,7 @@ namespace App\Middlewares\App;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Exceptions\SystemException;
+use App\Utilities\LoggerUtility;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -48,6 +49,14 @@ class AclMiddleware implements MiddlewareInterface
             $this->isSameDomain($request, $referer) === false ||
             _isAllowed($refererPath) === false
         ) {
+            LoggerUtility::logError(
+                "Access denied for user {$_SESSION['userName']} on URI: {$currentURI} with referer: {$refererPath}",
+                [
+                    'user' => $_SESSION['userName'] ?? null,
+                    'uri' => $currentURI,
+                    'referrer' => $refererPath,
+                ]
+            );
             throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page or resource.'), 401);
         }
 

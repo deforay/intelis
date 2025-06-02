@@ -1,12 +1,12 @@
 <?php
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
 
-$title = _translate("Enter EID Result");
+$title = _translate("Manual EID Results");
 
 require_once APPLICATION_PATH . '/header.php';
 

@@ -1,12 +1,12 @@
 <?php
 
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 
 
 /** @var DatabaseService $db */
@@ -124,8 +124,6 @@ try {
   $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
   $eidData['form_attributes'] = $db->func($formAttributes);
 
-  //var_dump($eidData);die;
-
   $db->where('eid_id', $_POST['eidSampleId']);
   $id = $db->update($tableName, $eidData);
 
@@ -137,15 +135,15 @@ try {
 
   $general->activityLog($eventType, $action, $resource);
 
-  $data = array(
+  $data = [
     'user_id' => $_SESSION['userId'],
     'vl_sample_id' => $_POST['eidSampleId'],
     'test_type' => 'eid',
     'updated_datetime' => DateUtility::getCurrentDateTime()
-  );
+  ];
   $db->insert($tableName2, $data);
 
-  header("Location:eid-manual-results.php");
+
 } catch (Exception $e) {
   LoggerUtility::logError($e->getFile() . ' : ' . $e->getLine() . ' : ' . $db->getLastError());
   LoggerUtility::logError($e->getMessage(), [
@@ -154,3 +152,5 @@ try {
     'trace' => $e->getTraceAsString()
   ]);
 }
+
+header("Location:eid-manual-results.php");

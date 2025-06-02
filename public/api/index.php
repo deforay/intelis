@@ -30,7 +30,6 @@ $middlewarePipe = new MiddlewarePipe();
 
 // CORS Middleware
 $middlewarePipe->pipe(middleware(function ($request, $handler) {
-    session_destroy();
     if (isset($_SERVER['HTTP_ORIGIN'])) {
         header("Access-Control-Allow-Origin: {$_SERVER['HTTP_ORIGIN']}");
         header('Access-Control-Allow-Credentials: true');
