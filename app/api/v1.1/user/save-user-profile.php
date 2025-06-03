@@ -33,7 +33,6 @@ try {
     /** @var ApiService $apiService */
     $apiService = ContainerRegistry::get(ApiService::class);
 
-
     /** @var Slim\Psr7\Request $request */
     $request = AppRegistry::get('request');
 
@@ -74,10 +73,9 @@ try {
     if (JsonUtility::isJSON($post)) {
         $post = json_decode($post, true);
     }
-    $post['loginId'] = $post['loginId'] ?? null;
-    $post['role'] = $post['role'] ?? null;
-    $post['hashAlgorithm'] = $post['hashAlgorithm'] ?? 'phb';
-
+    $post['loginId'] ??= null;
+    $post['role'] ??= null;
+    $post['hashAlgorithm'] ??= 'phb';
 
     if (!isset($user)) {
         if (!$apiKey) {
@@ -101,7 +99,6 @@ try {
         }
         $aRow = $db->getOne("user_details");
     }
-
 
     $data = [
         'user_id' => (!empty($userId) && $userId != "") ? $userId : MiscUtility::generateUUID(),
@@ -147,7 +144,15 @@ try {
     }
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);
-    unset($data['login_id'], $data['role_id'], $data['password'], $data['status']);
+
+    $toUnset = ['login_id', 'role_id', 'password', 'status'];
+
+    foreach ($toUnset as $key) {
+        if (isset($data[$key])) {
+            unset($data[$key]);
+        }
+    }
+
     if (isset($aRow['user_id']) && !empty($aRow['user_id']) && $aRow['user_id'] != "") {
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
@@ -208,4 +213,3 @@ $trackId = $general->addApiTracking($transactionId, $data['user_id'], count($dat
 echo ApiService::sendJsonResponse($payload, $request);
 
 _invalidateFileCacheByTags(['users_count']);
-

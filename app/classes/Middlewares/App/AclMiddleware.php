@@ -179,8 +179,12 @@ class AclMiddleware implements MiddlewareInterface
     private function handleAccessDenied(string $uri, ?string $user, ServerRequestInterface $request): never
     {
         LoggerUtility::logWarning('Access denied', [
+            'code' => 403,
             'user' => $user,
             'uri' => $uri,
+            'method' => $request->getMethod(),
+            'referer' => $request->getHeaderLine('Referer'),
+            'userAgent' => $request->getHeaderLine('User-Agent'),
             'ip' => CommonService::getClientIpAddress($request),
             'timestamp' => date('Y-m-d H:i:s')
         ]);
