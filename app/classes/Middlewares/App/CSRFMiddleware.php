@@ -31,16 +31,26 @@ class CSRFMiddleware implements MiddlewareInterface
         $modifyingMethods = ['POST', 'PUT', 'PATCH', 'DELETE'];
 
         if (
-            CommonService::isAjaxRequest($request) ||
-            CommonService::isCliRequest() ||
-            CommonService::isExcludedUri($currentURI, $this->excludedUris) ||
+            CommonService::isAjaxRequest($request) === true ||
+            CommonService::isCliRequest() === true ||
+            $this->isExcludedUri($currentURI) ||
             !in_array($method, $modifyingMethods) ||
-            empty($_SESSION['csrf_token'])
+            !isset($_SESSION['csrf_token'])
         ) {
             return $handler->handle($request);
+        } else {
+            SecurityService::checkCSRF(request: $request);
+            return $handler->handle($request);
         }
-
-        SecurityService::checkCSRF(request: $request);
-        return $handler->handle($request);
+    }
+    // Helper function to check if the current URI is in the excluded list
+    protected function isExcludedUri(string $uri): bool
+    {
+        foreach ($this->excludedUris as $excludedUri) {
+            if (fnmatch($excludedUri, $uri)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
