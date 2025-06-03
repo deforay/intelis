@@ -1,7 +1,6 @@
 <?php
 
 // this file is included in /vl/interop/fhir/vl-receive.php
-header('Content-Type: application/json');
 
 use App\Interop\Fhir;
 use App\Services\VlService;
@@ -283,8 +282,17 @@ try {
                 //echo ("Service Status:" . $status) . "<br>";
             }
         } catch (SystemException $e) {
-            LoggerUtility::log('error', $e->getMessage());
-            $errors[] = $e->getMessage();
+            LoggerUtility::log('error', $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'taskId' => $taskId ?? null,
+                'basedOnServiceRequest' => $basedOnServiceRequest ?? null,
+                'resource' => $resource ?? null,
+                'bundleId' => $bundleId ?? null,
+                'instanceId' => $instanceId ?? null,
+                'transactionId' => $transactionId ?? null,
+            ]);
+            $errors[] = "Error while processing FHIR data for Task/$taskId";
             if (isset($basedOnServiceRequest)) {
                 unset($formData[$basedOnServiceRequest]);
             }
@@ -351,25 +359,29 @@ try {
         }
     }
 
-
-
-    $response = array(
+    $response = [
         'timestamp' => time(),
         'received' => $receivedCounter,
         'processed' => $processedCounter
-    );
+    ];
 
     if (!empty($errors)) {
         $response['errors'] = $errors;
     }
 
-
     $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
-
-    echo JsonUtility::prettyJson($response);
 
     $db->commitTransaction();
 } catch (Throwable $exception) {
     $db->rollbackTransaction();
+    $response = [
+        'timestamp' => time(),
+        'received' => $receivedCounter,
+        'processed' => $processedCounter,
+        'errors' => ['Error while processing FHIR data: ' . $exception->getMessage()]
+    ];
     LoggerUtility::log('error', "Error while receiving FHIR data : " . $exception->getMessage());
 }
+
+header('Content-Type: application/json');
+echo JsonUtility::prettyJson($response);

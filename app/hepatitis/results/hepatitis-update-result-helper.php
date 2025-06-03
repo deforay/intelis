@@ -52,7 +52,7 @@ try {
 		'authorized_on' => isset($_POST['authorizedOn']) ? DateUtility::isoDateFormat($_POST['authorizedOn']) : null,
 		'revised_by' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? $_SESSION['userId'] : null,
 		'revised_on' => (isset($_POST['revised']) && $_POST['revised'] == "yes") ? DateUtility::getCurrentDateTime() : null,
-		'result_status' => 8,
+		'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
 		'result_sent_to_source' => $resultSentToSource,
 		'data_sync' => 0,
 		'last_modified_by' => $_SESSION['userId'],

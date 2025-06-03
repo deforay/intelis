@@ -44,18 +44,17 @@ foreach ($geResult as $row) {
 }
 
 if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != '') {
-    //  $result_file_to_attach = $pathFront . DIRECTORY_SEPARATOR . $_POST['pdfFile2'];
-     // $mail->AddAttachment($result_file_to_attach);
-      $tempMailData = array(
-         "to_mail" => $_POST['toEmail'],
-         "subject" => $_POST['subject'],
-         "text_message" => $_POST['message'],
-         "report_email" => $_POST['reportEmail'],
-         "test_type" => 'cd4',
-         "attachment" => $_POST['pdfFile1'],
-         "samples" => $_POST['sample'],
-         "status" => "pending",
-      );
+
+      $tempMailData = [
+      "to_mail" => $_POST['toEmail'],
+      "subject" => $_POST['subject'],
+      "text_message" => $_POST['message'],
+      "report_email" => $_POST['reportEmail'],
+      "test_type" => 'cd4',
+      "attachment" => $_POST['pdfFile1'],
+      "samples" => $_POST['sample'],
+      "status" => "pending",
+   ];
 
       $storeMail = $db->insert('temp_mail',$tempMailData);
 

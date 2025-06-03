@@ -25,12 +25,12 @@ try {
 
     $id = explode(",", (string) $_POST['id']);
     for ($i = 0; $i < count($id); $i++) {
-        $status = array(
+        $status = [
             'result_status' => $_POST['status'],
             'result_approved_datetime' => DateUtility::getCurrentDateTime(),
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0
-        );
+        ];
         /* Check if already have reviewed and approved by */
         $db->where('cd4_id', $id[$i]);
         $vlRow = $db->getOne($tableName);

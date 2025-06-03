@@ -134,7 +134,7 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'sample_tested_datetime' => $d['testedOn'],
                 'sample_type' => 'S',
-                'result_status' => '6',
+                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'result' => trim($d['result']),
             ];

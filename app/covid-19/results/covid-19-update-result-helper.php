@@ -75,7 +75,7 @@ try {
 
 
 
-	$covid19Data = array(
+	$covid19Data = [
 		'sample_received_at_lab_datetime' => $_POST['sampleReceivedDate'],
 		'lab_id' => $_POST['labId'] ?? null,
 		'sample_condition' => $_POST['specimenQuality'] ?? ($_POST['specimenQuality'] ?? null),
@@ -97,7 +97,7 @@ try {
 		'result_reviewed_datetime' => (isset($_POST['reviewedOn']) && $_POST['reviewedOn'] != "") ? $_POST['reviewedOn'] : null,
 		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'result_status' => 8,
+		'result_status' => SAMPLE_STATUS\PENDING_APPROVAL,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
@@ -105,7 +105,7 @@ try {
 		'result_printed_datetime' => null,
 		'result_dispatched_datetime' => null,
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
-	);
+	];
 
 	$db->where('covid19_id', $_POST['covid19SampleId']);
 	$getPrevResult = $db->getOne('form_covid19');

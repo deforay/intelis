@@ -101,7 +101,7 @@ try {
                 'result_value_absolute' => $interpretedResults['absVal'],
                 'result_value_absolute_decimal' => $interpretedResults['absDecimalVal'],
                 'sample_tested_datetime' => $testDate,
-                'result_status' => 6,
+                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'result_imported_datetime' => DateUtility::getCurrentDateTime(),
                 'imported_by' => $_SESSION['userId'],

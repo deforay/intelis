@@ -18,7 +18,7 @@ $tableName2 = "log_result_updates";
 $testTableName = 'covid19_tests';
 
 try {
-	$covid19Data = array(
+	$covid19Data = [
 		'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($_POST['sampleReceivedDate'] ?? '', true),
 		'lab_id' => $_POST['labId'] ?? null,
 		'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
@@ -28,12 +28,12 @@ try {
 		'authorized_on' => DateUtility::isoDateFormat($_POST['authorizedOn'] ?? ''),
 		'reason_for_changing' => (!empty($_POST['reasonForChanging'])) ? $_POST['reasonForChanging'] : null,
 		'rejection_on' => (isset($_POST['rejectionDate']) && $_POST['isSampleRejected'] == 'yes') ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
-		'result_status' => 6,
+		'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
 		'data_sync' => 0,
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()
-	);
+	];
 
 
 	if (isset($_POST['isSampleRejected']) && $_POST['isSampleRejected'] == 'yes') {

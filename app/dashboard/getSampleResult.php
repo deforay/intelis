@@ -9,7 +9,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -21,10 +20,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-
 /** @var SystemService $systemService */
 $systemService = ContainerRegistry::get(SystemService::class);
-
 
 $mysqlDateFormat = $systemService->getDateFormat('mysql');
 
@@ -192,41 +189,29 @@ try {
     }
 
 
-
+    $resultField = 'result';
+    if ($table === 'form_cd4') {
+        $resultField = 'cd4_result';
+    }
 
     $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
-    SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
-                        AND vl.result is NOT NULL AND vl.result not like ''
-                        AND vl.result_status = 7) THEN 1 ELSE 0 END)
-                                                            as 'tested',
-    SUM(CASE WHEN (vl.result_status = 1) THEN 1 ELSE 0 END) as 'hold',
-    SUM(CASE WHEN (vl.result_status = 4) THEN 1 ELSE 0 END) as 'rejected',
-    SUM(CASE WHEN (vl.result_status = 5) THEN 1 ELSE 0 END) as 'invalid',
-    SUM(CASE WHEN (vl.result_status = 6) THEN 1 ELSE 0 END) as 'registeredAtTestingLab',
-    SUM(CASE WHEN (vl.result_status = 8) THEN 1 ELSE 0 END) as 'awaitingApproval',
-    SUM(CASE WHEN (vl.result_status = 9) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
-    SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
+    SUM(CASE WHEN (
+        vl.lab_id IS NOT NULL
+        AND vl.sample_tested_datetime IS NOT NULL
+        AND IFNULL(vl.$resultField, '') != ''
+        AND vl.result_status = " . SAMPLE_STATUS\ACCEPTED . "
+    ) THEN 1 ELSE 0 END) as 'tested',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\ON_HOLD . ") THEN 1 ELSE 0 END) as 'hold',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\REJECTED . ") THEN 1 ELSE 0 END) as 'rejected',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\TEST_FAILED . ") THEN 1 ELSE 0 END) as 'invalid',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB . ") THEN 1 ELSE 0 END) as 'registeredAtTestingLab',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\PENDING_APPROVAL . ") THEN 1 ELSE 0 END) as 'awaitingApproval',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ") THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
+    SUM(CASE WHEN (vl.result_status = " . SAMPLE_STATUS\EXPIRED . ") THEN 1 ELSE 0 END) as 'expired'
     FROM $table as vl
-    INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
+    INNER JOIN facility_details as f ON f.facility_id = vl.facility_id
     WHERE vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
 
-    if ($table == "form_cd4") {
-        $aggregateQuery = "SELECT COUNT(unique_id) as totalCollected,
-        SUM(CASE WHEN (vl.lab_id is NOT NULL AND vl.sample_tested_datetime is NOT NULL
-                            AND vl.cd4_result is NOT NULL AND vl.cd4_result not like ''
-                            AND vl.result_status = 7) THEN 1 ELSE 0 END)
-                                                                as 'tested',
-        SUM(CASE WHEN (vl.result_status = 1) THEN 1 ELSE 0 END) as 'hold',
-        SUM(CASE WHEN (vl.result_status = 4) THEN 1 ELSE 0 END) as 'rejected',
-        SUM(CASE WHEN (vl.result_status = 5) THEN 1 ELSE 0 END) as 'invalid',
-        SUM(CASE WHEN (vl.result_status = 6) THEN 1 ELSE 0 END) as 'registeredAtTestingLab',
-        SUM(CASE WHEN (vl.result_status = 8) THEN 1 ELSE 0 END) as 'awaitingApproval',
-        SUM(CASE WHEN (vl.result_status = 9) THEN 1 ELSE 0 END) as 'registeredAtCollectionPoint',
-        SUM(CASE WHEN (vl.result_status = 10) THEN 1 ELSE 0 END) as 'expired'
-        FROM $table as vl
-        INNER JOIN facility_details as f ON f.facility_id=vl.facility_id
-        WHERE vl.sample_collection_date BETWEEN '$startDate' AND '$endDate'";
-    }
     $aggregateResult = $db->rawQueryOne($aggregateQuery);
 
     // Samples Accession
@@ -246,7 +231,7 @@ try {
     $tResult = [];
     foreach ($tRes as $tRow) {
         $receivedTotal += $tRow['count'];
-        $tResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
+        $tResult[] = ['total' => $tRow['count'], 'date' => $tRow['collection_date']];
     }
     //echo $receivedTotal; die;
     //Samples Tested
@@ -270,7 +255,7 @@ try {
     $acceptedTotal = 0;
     foreach ($tRes as $tRow) {
         $acceptedTotal += $tRow['count'];
-        $acceptedResult[] = array('total' => $tRow['count'], 'date' => $tRow['test_date']);
+        $acceptedResult[] = ['total' => $tRow['count'], 'date' => $tRow['test_date']];
     }
 
     //Rejected Samples
@@ -290,7 +275,7 @@ try {
     $rejectedResult = [];
     foreach ($tRes as $tRow) {
         $rejectedTotal += $tRow['count'];
-        $rejectedResult[] = array('total' => $tRow['count'], 'date' => $tRow['collection_date']);
+        $rejectedResult[] = ['total' => $tRow['count'], 'date' => $tRow['collection_date']];
     }
 
     //Status counts

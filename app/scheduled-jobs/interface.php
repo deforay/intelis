@@ -670,7 +670,7 @@ try {
         $db->connection('interface')->commitTransaction();
     } catch (Throwable $e) {
         if ($isCli) {
-            echo $e->getFile() . ":" . $e->getLine() . ": " . $e->getMessage() . PHP_EOL;
+            echo "Error while syncing interface results. Please check error log for more details." . PHP_EOL;
         }
         $db->connection('interface')->rollbackTransaction();
         LoggerUtility::logError($e->getMessage(),  [

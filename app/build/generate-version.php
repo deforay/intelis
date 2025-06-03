@@ -77,7 +77,7 @@ function updateComposerJson($composerJsonPath, $newVersion)
     $updatedContent = json_encode($composerJson, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
     file_put_contents($composerJsonPath, $updatedContent);
 
-    echo "Updated composer.json version to {$composerVersion}" . PHP_EOL;
+    echo "Updated composer.json version to " . htmlspecialchars($composerVersion, ENT_QUOTES, 'UTF-8') . PHP_EOL;
     return true;
 }
 
@@ -213,8 +213,16 @@ PHP;
         $migrationContent = "-- Migration file for version {$migrationVersion}\n-- Created on " . date('Y-m-d H:i:s') . "\n\n\n";
         $migrationContent .= "UPDATE `system_config` SET `value` = '{$migrationVersion}' WHERE `system_config`.`name` = 'sc_version';\n\n";
 
-        file_put_contents($migrationFileName, $migrationContent);
-        echo "Created migration file: " . htmlspecialchars($migrationFileName) . PHP_EOL;
+        // Sanitize migration file path to prevent path traversal
+        $realMigrationsPath = realpath($migrationsPath);
+        $realMigrationFileName = $realMigrationsPath . DIRECTORY_SEPARATOR . basename($migrationFileName);
+
+        if (strpos(realpath(dirname($realMigrationFileName)), $realMigrationsPath) !== 0) {
+            throw new RuntimeException("Invalid migration file path detected.");
+        }
+
+        file_put_contents($realMigrationFileName, $migrationContent);
+        echo "Created migration file: " . htmlspecialchars($realMigrationFileName) . PHP_EOL;
     }
 
     echo "version.php has been updated to version " . htmlspecialchars($newVersion) . PHP_EOL;

@@ -96,26 +96,34 @@ final class CommonService
         });
     }
 
-    public function getClientIpAddress(?ServerRequest $request = null): ?string
+    public static function getClientIpAddress(?ServerRequest $request = null): ?string
     {
         if ($request === null) {
             $request = AppRegistry::get('request');
         }
 
-        $headers = [
-            'X-Forwarded-For',
-            'X-Real-IP',
-            'Client-IP',
-        ];
+        return MemoUtility::remember(function () use ($request) {
 
-        foreach ($headers as $header) {
-            if ($request->hasHeader($header)) {
-                $forwardedIps = explode(',', $request->getHeaderLine($header));
-                return trim($forwardedIps[0]);
+            $headers = [
+                'HTTP_CF_CONNECTING_IP',     // For when DNS is via Cloudflare
+                'HTTP_X_FORWARDED_FOR',      // For any reverse proxy/load balancer
+                'HTTP_X_REAL_IP',            // Common fallback
+            ];
+
+            foreach ($headers as $header) {
+                if ($request->hasHeader($header)) {
+                    $ip = trim(explode(',', $request->getHeaderLine($header))[0]);
+
+                    // Basic validation
+                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
+                        return $ip;
+                    }
+                }
             }
-        }
 
-        return $request->getServerParams()['REMOTE_ADDR'] ?? null;
+            // Fallback to remote address
+            return $request->getServerParams()['REMOTE_ADDR'] ?? null;
+        });
     }
 
     public function getInstrumentsCount()
@@ -617,15 +625,16 @@ final class CommonService
     }
 
     // Helper function to check if the current URI is in the excluded list
-    public static function isExcludedUri(string $uri, $excludedUris): bool
+    public static function isExcludedUri(string $uri, array $excludedUris): bool
     {
         foreach ($excludedUris as $excludedUri) {
-            if (fnmatch($excludedUri, $uri)) {
+            if (is_string($excludedUri) && fnmatch($excludedUri, $uri)) {
                 return true;
             }
         }
         return false;
     }
+
 
     // Returns the current Instance ID
     public function getInstanceId(): ?string

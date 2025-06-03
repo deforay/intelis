@@ -167,7 +167,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
+            $data = [
                 'module' => 'eid',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -176,13 +176,13 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'sample_type' => $d['sampleType'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => '6',
+                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
                 'result' => $d['result'],
-            );
+            ];
             //get username
             if (!empty($d['reviewBy'])) {
 

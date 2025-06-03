@@ -4,8 +4,8 @@ namespace App\Middlewares\App;
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Exceptions\SystemException;
 use App\Utilities\LoggerUtility;
+use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -13,7 +13,6 @@ use Psr\Http\Server\RequestHandlerInterface;
 
 class AclMiddleware implements MiddlewareInterface
 {
-    // Exclude specific routes from ACL check
     private array $excludedUris = [
         '/',
         '/index.php',
@@ -24,72 +23,173 @@ class AclMiddleware implements MiddlewareInterface
         '/system-admin/*',
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
-        // Add other routes to exclude from the ACL check here
+        '/health-check',
+        '/status',
     ];
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
     {
-        $currentURI = AppRegistry::get('currentRequestURI');
-
-        // SKIP ACL check for excluded URIs
-        // SKIP ACL check for AJAX requests (X-Requested-With: XMLHttpRequest)
-        // ALLOW if the current URI is allowed by ACL
-        if (
-            $this->shouldExcludeFromAclCheck($request) ||
-            _isAllowed($currentURI)
-        ) {
-            return $handler->handle($request);
-        }
-
-        $referer = $request->getHeaderLine('Referer');
-        $refererPath = $this->getRefererPath($referer);
-        // If current URI is not allowed, check the referer (if it exists and is from the same domain)
-        if (
-            empty($refererPath) ||
-            $this->isSameDomain($request, $referer) === false ||
-            _isAllowed($refererPath) === false
-        ) {
-            LoggerUtility::logError(
-                "Access denied for user {$_SESSION['userName']} on URI: {$currentURI} with referer: {$refererPath}",
-                [
-                    'user' => $_SESSION['userName'] ?? null,
+        $ip = CommonService::getClientIpAddress($request);
+        try {
+            $currentURI = $this->getCurrentRequestUri();
+            $user = $_SESSION['userName'] ?? null;
+            if (isset(SYSTEM_CONFIG['system']['debug_mode']) && SYSTEM_CONFIG['system']['debug_mode']) {
+                LoggerUtility::logDebug('ACL check initiated', [
                     'uri' => $currentURI,
-                    'referrer' => $refererPath,
-                ]
-            );
-            throw new SystemException(_translate("Sorry") . " {$_SESSION['userName']}. " . _translate('You do not have permission to access this page or resource.'), 401);
-        }
+                    'user' => $user,
+                    'method' => $request->getMethod(),
+                    'ip' => $ip,
+                ]);
+            }
 
-        return $handler->handle($request);
+            if ($this->isAccessAllowed($request, $currentURI, $user)) {
+                return $handler->handle($request);
+            }
+
+            if ($this->isRefererAccessAllowed($request, $currentURI)) {
+                return $handler->handle($request);
+            }
+
+            // Access denied
+            $this->handleAccessDenied($currentURI, $user, $request);
+        } catch (SystemException $e) {
+            throw $e;
+        } catch (\Throwable $e) {
+            LoggerUtility::logError('ACL Middleware error: ' . $e->getMessage(), [
+                'exception' => $e,
+                'uri' => $currentURI ?? 'unknown',
+                'user' => $user ?? 'unknown',
+                'ip' => $ip,
+            ]);
+            throw new SystemException(_translate('Access control error occurred'), 500);
+        }
     }
 
-    protected function getRefererPath($referer): string
+    private function isAccessAllowed(ServerRequestInterface $request, string $currentURI, ?string $user): bool
+    {
+        if ($this->shouldExcludeFromAclCheck($request)) {
+            return true;
+        }
+
+        // Direct ACL check without caching
+        return _isAllowed($currentURI);
+    }
+
+    private function isRefererAccessAllowed(ServerRequestInterface $request, string $currentURI): bool
+    {
+        $referer = $request->getHeaderLine('Referer');
+
+        if (!$this->isValidReferer($referer)) {
+            return false;
+        }
+
+        $refererPath = $this->getRefererPath($referer);
+
+        if (!$this->isSameDomain($request, $referer) || empty($refererPath)) {
+            return false;
+        }
+
+        // Direct ACL check for referer without caching
+        return _isAllowed($refererPath);
+    }
+
+    private function isValidReferer(string $referer): bool
+    {
+        if (empty($referer) || strlen($referer) > 2048) {
+            return false;
+        }
+
+        if (!filter_var($referer, FILTER_VALIDATE_URL)) {
+            return false;
+        }
+
+        $suspiciousPatterns = [
+            '/javascript:/i',
+            '/data:/i',
+            '/vbscript:/i',
+            '/file:/i'
+        ];
+
+        foreach ($suspiciousPatterns as $pattern) {
+            if (preg_match($pattern, $referer)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    private function getRefererPath(string $referer): string
     {
         $parsedUrl = parse_url($referer);
+
+        if ($parsedUrl === false) {
+            return '';
+        }
+
         $path = $parsedUrl['path'] ?? '/';
         $query = isset($parsedUrl['query']) ? '?' . $parsedUrl['query'] : '';
-        return $path . $query;
+
+        return $this->sanitizePath($path) . $query;
     }
 
-    // Helper function to check if referer is from the same domain
+    private function sanitizePath(string $path): string
+    {
+        $path = preg_replace('/\/+/', '/', $path);
+        $path = str_replace(['../', '..\\'], '', $path);
+
+        if (!str_starts_with($path, '/')) {
+            $path = "/$path";
+        }
+
+        return $path;
+    }
+
     private function isSameDomain(ServerRequestInterface $request, string $referer): bool
     {
-        $currentHost = $request->getUri()->getHost();
-        $refererHost = parse_url($referer, PHP_URL_HOST);
+        $currentHost = strtolower($request->getUri()->getHost());
+        $refererHost = strtolower(parse_url($referer, PHP_URL_HOST) ?? '');
 
-        return $currentHost === $refererHost;
+        return !empty($currentHost) && !empty($refererHost) && $currentHost === $refererHost;
     }
 
     private function shouldExcludeFromAclCheck(ServerRequestInterface $request): bool
     {
-        $uri = $request->getUri()->getPath();
-        if (
-            CommonService::isCliRequest() ||
-            CommonService::isAjaxRequest($request) !== false ||
-            CommonService::isExcludedUri($uri, $this->excludedUris) === true
-        ) {
+        if (CommonService::isCliRequest()) {
             return true;
         }
-        return false;
+
+        if (CommonService::isAjaxRequest($request)) {
+            return true;
+        }
+
+        $uri = $request->getUri()->getPath();
+        return CommonService::isExcludedUri($uri, $this->excludedUris ?? []);
+    }
+
+    private function getCurrentRequestUri(): string
+    {
+        $uri = AppRegistry::get('currentRequestURI');
+        if (empty($uri)) {
+            throw new \RuntimeException('Current request URI not found in AppRegistry');
+        }
+        return $uri;
+    }
+
+    private function handleAccessDenied(string $uri, ?string $user, ServerRequestInterface $request): never
+    {
+        LoggerUtility::logWarning('Access denied', [
+            'user' => $user,
+            'uri' => $uri,
+            'ip' => CommonService::getClientIpAddress($request),
+            'timestamp' => date('Y-m-d H:i:s')
+        ]);
+
+        $userName = $user ?? _translate('Guest');
+        throw new SystemException(
+            _translate("Sorry") . " {$userName}. " .
+                _translate('You do not have permission to access this page or resource.'),
+            403
+        );
     }
 }

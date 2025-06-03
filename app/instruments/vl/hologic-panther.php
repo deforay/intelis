@@ -175,7 +175,7 @@ if (move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
                 'result_value_text' => $d['txtVal'],
                 'result_value_absolute_decimal' => $d['absDecimalVal'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => '6',
+                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],

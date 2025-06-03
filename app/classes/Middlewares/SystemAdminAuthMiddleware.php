@@ -60,7 +60,7 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
         if (
             CommonService::isCliRequest() ||
             CommonService::isAjaxRequest($request) !== false ||
-            CommonService::isExcludedUri($uri, $this->excludedUris) === true
+            CommonService::isExcludedUri($uri, $this->excludedUris ?? []) === true
         ) {
             return true;
         }

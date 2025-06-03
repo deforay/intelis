@@ -204,7 +204,7 @@ try {
                 'sample_code' => $d['sampleCode'],
                 'sample_type' => $d['sampleType'],
                 'sample_tested_datetime' => $d['testingDate'],
-                'result_status' => '6',
+                'result_status' => SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
                 'import_machine_file_name' => $fileName,
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],

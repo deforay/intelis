@@ -61,6 +61,10 @@ final class LoggerUtility
         $logger->log($level, MiscUtility::toUtf8($message), $context);
     }
 
+    public static function logDebug($message, array $context = []): void
+    {
+        self::log('debug', $message, $context);
+    }
     public static function logError($message, array $context = []): void
     {
         self::log('error', $message, $context);

@@ -15,6 +15,7 @@ try {
 
     // Update failed/error results to ON_HOLD
     $db->where('imported_by', $importedBy);
+    $db->where("IFNULL(result,'') !=''");
     $db->where("(result LIKE 'fail%' OR result = 'failed' OR result LIKE 'err%' OR result LIKE 'error')");
     $db->update('temp_sample_import', [
         'result_status' => SAMPLE_STATUS\ON_HOLD
@@ -24,15 +25,15 @@ try {
     $statusCodes = [
         SAMPLE_STATUS\PENDING_APPROVAL,
         SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB,
-        SAMPLE_STATUS\REORDERED_FOR_TESTING
+        SAMPLE_STATUS\REORDERED_FOR_TESTING,
+        SAMPLE_STATUS\RECEIVED_AT_CLINIC
     ];
     $statusCodes = implode(",", $statusCodes);
     $db->where('imported_by', $importedBy);
-    $db->where("(result_status IS NULL OR result_status = '' OR result_status IN  ($statusCodes))");
+    $db->where("(IFNULL(result_status,'') = '' OR result_status IN ($statusCodes))");
     $id = $db->update('temp_sample_import', [
         'result_status' => SAMPLE_STATUS\ACCEPTED
     ]);
-
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
         'code' => $e->getCode(),
