@@ -195,7 +195,7 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery, returnGenerator: false);
+[$rResult, $resultCount] = $db->getRequestAndCount($sQuery, returnGenerator: false);
 /* Data set length after filtering */
 
 

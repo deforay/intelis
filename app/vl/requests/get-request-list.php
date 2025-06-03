@@ -62,10 +62,6 @@ try {
           $orderColumns = array_values(array_diff($orderColumns, ['vl.remote_sample_code']));
      }
 
-     /* Indexed column (used for fast and accurate table cardinality) */
-     $sIndexColumn = $primaryKey;
-
-     $sTable = $tableName;
 
      $sOffset = $sLimit = null;
      if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -309,7 +305,7 @@ try {
           $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
-     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+     [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
      $_SESSION['vlRequestQueryCount'] = $resultCount;
 

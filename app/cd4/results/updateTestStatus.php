@@ -1,6 +1,5 @@
 <?php
 
-use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -61,6 +60,6 @@ try {
         $general->activityLog($eventType, $action, $resource);
         echo $result;
     }
-} catch (Exception $exc) {
-    throw new SystemException($exc->getMessage(), 500);
+} catch (Exception $e) {
+    throw new SystemException($e->getMessage(), 500, $e);
 }

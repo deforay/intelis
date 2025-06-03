@@ -171,7 +171,7 @@ try {
     }
     $_SESSION['testResultReportsQuery'] = $sQuery;
 
-    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+    [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
 
     /*

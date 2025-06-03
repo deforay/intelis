@@ -1,18 +1,23 @@
 <?php
 
+use App\Utilities\JsonUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
-$tableName = "user_details";
-$primaryKey = "user_id";
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_POST = _sanitizeInput($request->getParsedBody());
 
-
-$aColumns = array('ud.user_name', 'ud.login_id', 'ud.email', 'r.role_name', 'ud.status');
-
-/* Indexed column (used for fast and accurate table cardinality) */
-$sIndexColumn = $primaryKey;
-
-$sTable = $tableName;
+$aColumns = $orderColumns = ['ud.user_name', 'ud.login_id', 'ud.email', 'r.role_name', 'ud.status'];
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -20,88 +25,48 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 
+$sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
-}
-
-
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
 $sWhere = [];
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    $sWhereSub = "";
-    foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere[] = $sWhereSub;
+if (!empty($columnSearch) && $columnSearch != '') {
+    $sWhere[] = $columnSearch;
 }
 
-
-
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS ud.user_id,
-                            ud.user_name,
-                            ud.login_id,
-                            ud.interface_user_name,
-                            ud.email,
-                            ud.status,
-                            r.role_name
-                            FROM user_details as ud
-                            LEFT JOIN roles as r ON ud.role_id=r.role_id ";
+$sQuery = "SELECT ud.user_id,
+            ud.user_name,
+            ud.login_id,
+            ud.interface_user_name,
+            ud.email,
+            ud.status,
+            r.role_name
+            FROM user_details as ud
+            LEFT JOIN roles as r ON ud.role_id=r.role_id ";
 
 if (!empty($sWhere)) {
-    $sWhere = ' where ' . implode(' AND ', $sWhere);
+    $sWhere = ' WHERE ' . implode(' AND ', $sWhere);
 } else {
     $sWhere = "";
 }
-$sQuery = $sQuery . ' ' . $sWhere;
+$sQuery = "$sQuery $sWhere";
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+    $sQuery = "$sQuery ORDER BY $sOrder";
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
-//die($sQuery);
-// echo $sQuery;
-$rResult = $db->rawQuery($sQuery);
-// print_r($rResult);
-/* Data set length after filtering */
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
 $output = [
     "sEcho" => (int) $_POST['sEcho'],
-    "iTotalRecords" => $iTotal,
-    "iTotalDisplayRecords" => $iFilteredTotal,
+    "iTotalRecords" => $resultCount,
+    "iTotalDisplayRecords" => $resultCount,
     "aaData" => []
 ];
-
-
 
 foreach ($rResult as $aRow) {
 
@@ -120,5 +85,5 @@ foreach ($rResult as $aRow) {
     }
     $output['aaData'][] = $row;
 }
-
-echo json_encode($output);
+header('Content-Type: application/json');
+echo JsonUtility::encodeUtf8Json($output);

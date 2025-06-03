@@ -188,7 +188,7 @@ try {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
-    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+    [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
 
     $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesRequested',

@@ -97,7 +97,7 @@ try {
         $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
 
-    [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+    [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
     $output = [
         "sEcho" => (int) $_POST['sEcho'],

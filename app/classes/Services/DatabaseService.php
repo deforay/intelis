@@ -314,7 +314,7 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    public function getQueryResultAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
+    public function getRequestAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
             $limitOffsetSet = isset($limit) && isset($offset);

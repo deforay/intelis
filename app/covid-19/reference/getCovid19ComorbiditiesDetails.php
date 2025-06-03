@@ -76,7 +76,7 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-[$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
 
 $output = [

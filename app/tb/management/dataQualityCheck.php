@@ -149,7 +149,7 @@ try {
           $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
      }
 
-     [$rResult, $resultCount] = $db->getQueryResultAndCount($sQuery);
+     [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
 
      $_SESSION['vlIncompleteFormCount'] = $resultCount;
 
