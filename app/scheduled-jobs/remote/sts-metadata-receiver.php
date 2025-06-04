@@ -464,12 +464,7 @@ try {
                         $id = $db->delete('testing_labs');
                     }
 
-                    $unwantedColumnList = [];
-                    if ($dataToSync[$dataType]['tableName'] === 'user_details') {
-                        $unwantedColumnList = ['login_id', 'role_id', 'password', 'status'];
-                    }
-
-                    $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName'], $unwantedColumnList);
+                    $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName']);
 
                     if ($cliMode) {
                         echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
@@ -485,6 +480,12 @@ try {
                         $tableData = MiscUtility::updateMatchingKeysOnly($emptyTableArray, $tableDataValues);
                         $updateColumns = array_keys($tableData);
                         $primaryKey = $dataToSync[$dataType]['primaryKey'];
+
+                        if ($dataToSync[$dataType]['tableName'] == 'user_details') {
+                            foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
+                                unset($tableData[$unsetKey]);
+                            }
+                        }
 
                         $db->upsert($dataToSync[$dataType]['tableName'], $tableData, $updateColumns, [$primaryKey]);
 

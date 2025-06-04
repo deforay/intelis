@@ -145,12 +145,8 @@ try {
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);
 
-    $toUnset = ['login_id', 'role_id', 'password', 'status'];
-
-    foreach ($toUnset as $key) {
-        if (isset($data[$key])) {
-            unset($data[$key]);
-        }
+    foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
+        unset($data[$unsetKey]);
     }
 
     if (isset($aRow['user_id']) && !empty($aRow['user_id']) && $aRow['user_id'] != "") {

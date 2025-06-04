@@ -27,6 +27,21 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
+function saveUserSignature(array &$data): void
+{
+    if (empty($data['signature_image_content']) || empty($data['signature_image_filename'])) {
+        return;
+    }
+
+    $signatureDir = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature");
+    MiscUtility::makeDirectory($signatureDir);
+
+    $filePath = $signatureDir . DIRECTORY_SEPARATOR . $data['signature_image_filename'];
+    file_put_contents($filePath, base64_decode($data['signature_image_content']));
+
+    unset($data['signature_image_content'], $data['signature_image_filename']);
+}
+
 try {
     $db->beginTransaction();
 
@@ -40,11 +55,39 @@ try {
     $counter = 0;
 
     $labId = null;
+
+    $tableMap = [
+        'labStorage' => [
+            'primaryKey' => 'storage_id',
+            'table' => 'lab_storage'
+        ],
+        'labStorageHistory' => [
+            'primaryKey' => 'history_id',
+            'table' => 'lab_storage_history'
+        ],
+        'instruments' => [
+            'primaryKey' => 'instrument_id',
+            'table' => 'instruments'
+        ],
+        'instrumentMachines' => [
+            'primaryKey' => 'config_machine_id',
+            'table' => 'instrument_machines'
+        ],
+        'instrumentControls' => [
+            'primaryKey' => 'instrument_id',
+            'table' => 'instrument_controls'
+        ],
+        'users' => [
+            'primaryKey' => 'user_id',
+            'table' => 'user_details'
+        ],
+    ];
+
     if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
 
         $data = [];
         $options = [
-            'decoder' => new ExtJsonDecoder(true)
+            'decoder' => new ExtJsonDecoder(true, 512, JSON_THROW_ON_ERROR)
         ];
         $parsedData = Items::fromString($jsonResponse, $options);
         $tableInfo = [];
@@ -52,45 +95,26 @@ try {
         foreach ($parsedData as $name => $data) {
             if ($name === 'labId') {
                 $labId = $data;
-            } elseif ($name === 'labStorage') {
-                $tableInfo['primaryKey'][$i] = 'storage_id';
-                $tableInfo['table'][$i] = 'lab_storage';
-            } elseif ($name === 'labStorageHistory') {
-                $tableInfo['primaryKey'][$i] = 'history_id';
-                $tableInfo['table'][$i] = 'lab_storage_history';
-            } elseif ($name === 'instruments') {
-                $tableInfo['primaryKey'][$i] = 'instrument_id';
-                $tableInfo['table'][$i] = 'instruments';
-            } elseif ($name === 'instrumentMachines') {
-                $tableInfo['primaryKey'][$i] = 'config_machine_id';
-                $tableInfo['table'][$i] = 'instrument_machines';
-            } elseif ($name === 'instrumentControls') {
-                $tableInfo['primaryKey'][$i] = 'instrument_id';
-                $tableInfo['table'][$i] = 'instrument_controls';
-            } elseif ($name === 'patients') {
-                //$tableInfo['primaryKey'][$i] = 'system_patient_code';
-                //$tableInfo['table'][$i] = 'patients';
-            } elseif ($name === 'users') {
-                $tableInfo['primaryKey'][$i] = 'user_id';
-                $tableInfo['table'][$i] = 'user_details';
+                continue;
             }
-            $tableInfo['data'][$i] = $data;
-            $i++;
+            if (isset($tableMap[$name])) {
+                $tableInfo['primaryKey'][$i] = $tableMap[$name]['primaryKey'];
+                $tableInfo['table'][$i] = $tableMap[$name]['table'];
+                $tableInfo['data'][$i] = $data;
+                $i++;
+            }
         }
 
-        $transactionId ??= MiscUtility::generateUUID();
+
         if (!empty($tableInfo)) {
             foreach ($tableInfo['table'] as $j => $table) {
-                $unwantedColumnList = [];
-                if ($table === 'user_details') {
-                    $unwantedColumnList = ['login_id', 'role_id', 'password', 'status'];
-                }
-                $emptyTableArray = $general->getTableFieldsAsArray($table, $unwantedColumnList);
+                $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
+                $tableName = $tableInfo['table'][$j];
+
+                $emptyTableArray = $general->getTableFieldsAsArray($tableName);
                 if (empty($emptyTableArray)) {
                     continue;
                 }
-                $primaryKey = $checkColumn = $tableInfo['primaryKey'][$j];
-                $tableName = $tableInfo['table'][$j];
                 $dataResultSet = $tableInfo['data'][$j];
                 $deletedId = [];
                 foreach ($dataResultSet as $key => $resultRow) {
@@ -109,16 +133,17 @@ try {
                             }
                             $id = $db->setQueryOption(['IGNORE'])->insert($tableName, $data);
                         } else {
-                            if ($tableName == 'user_details' && !empty($data['signature_image_content']) && !empty($data['signature_image_filename'])) {
-                                $signatureImagePathBase = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
-                                MiscUtility::makeDirectory($signatureImagePathBase);
-                                $signatureImagePathBase = realpath($signatureImagePathBase);
+                            if ($tableName == 'user_details') {
+                                // Unset unwanted columns
+                                foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
+                                    unset($data[$unsetKey]);
+                                }
 
-                                $signatureImage = base64_decode($data['signature_image_content']);
-                                $signatureImagePath = $signatureImagePathBase . DIRECTORY_SEPARATOR . $data['signature_image_filename'];
-                                file_put_contents($signatureImagePath, $signatureImage);
-                                unset($data['signature_image_content']);
-                                unset($data['signature_image_filename']);
+                                // update signature image if received
+                                saveUserSignature($data);
+
+                                // Invalidate file cache for users count
+                                _invalidateFileCacheByTags(['users_count']);
                             }
 
                             $sResult = null;
@@ -146,9 +171,6 @@ try {
                         continue;
                     }
                 }
-                if ($table === 'user_details') {
-                    _invalidateFileCacheByTags(['users_count']);
-                }
             }
         }
     }
@@ -174,5 +196,5 @@ try {
         'trace' => $e->getTraceAsString(),
     ]);
 }
-
+header('Content-Type: application/json');
 echo ApiService::sendJsonResponse($payload, $request);
