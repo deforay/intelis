@@ -14,6 +14,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
+use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -208,7 +209,9 @@ final class ResultsService
                     $this->db->commitTransaction();
                 } catch (\Throwable $e) {
                     $this->db->rollbackTransaction();
+                    $errorId = MiscUtility::generateErrorId();
                     LoggerUtility::logError($e->getMessage(), [
+                        'error_id' => $errorId,
                         'line' => $e->getLine(),
                         'file' => $e->getFile(),
                         'local_unique_id' => $localRecord['unique_id'] ?? null,
@@ -224,6 +227,9 @@ final class ResultsService
                         'lab_id' => $labId,
                         'trace' => $e->getTraceAsString(),
                     ]);
+                    QueryLoggerUtility::log($errorId . " - " . $e->getFile() . ":" . $e->getLine() . ":" . $this->db->getLastErrno());
+                    QueryLoggerUtility::log($errorId . " - " .  $this->db->getLastError());
+                    QueryLoggerUtility::log($errorId . " - " . $this->db->getLastQuery());
                 }
             }
         }
