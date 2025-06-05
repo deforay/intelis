@@ -8,9 +8,9 @@ if ($isCli) {
     require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "bootstrap.php");
 }
 
+use App\Utilities\ApcuCacheUtility;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
-
 
 /** @var FileCacheUtility $fileCache */
 $fileCache = ContainerRegistry::get(FileCacheUtility::class);
@@ -22,8 +22,11 @@ if (!$isCli && isset($_SESSION['instance'])) {
     unset($_SESSION['instance']);
 }
 
-// If run from command line, clear the DI container cache
+// If run from command line, clear the DI container cache and APCu cache
 if ($isCli) {
+
+
+
     $compiledContainerPath = CACHE_PATH . DIRECTORY_SEPARATOR . 'CompiledContainer.php';
     if (file_exists($compiledContainerPath)) {
         unlink($compiledContainerPath);
@@ -31,4 +34,7 @@ if ($isCli) {
 }
 
 // Clear the file cache and echo the result
+(ContainerRegistry::get(ApcuCacheUtility::class))->clear();
 echo (ContainerRegistry::get(FileCacheUtility::class))->clear();
+
+

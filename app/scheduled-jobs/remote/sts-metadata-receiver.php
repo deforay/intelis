@@ -7,7 +7,7 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Utilities\FileCacheUtility;
+use App\Utilities\ApcuCacheUtility;
 use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
@@ -44,9 +44,6 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
-
-/** @var FileCacheUtility $fileCache */
-$fileCache = ContainerRegistry::get(FileCacheUtility::class);
 
 $systemConfig = SYSTEM_CONFIG;
 
@@ -590,7 +587,7 @@ try {
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
     // unset global config cache so that it can be reloaded with new values
     // this is set in CommonService::getGlobalConfig()
-    $fileCache->delete('app_global_config');
+    (ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
 
     $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
 }

@@ -57,22 +57,14 @@ if (isset($_POST['sampleCollectionDate']) && $_POST['sampleCollectionDate'] != "
 	[$labStartDate, $labEndDate] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
 }
 if (!empty($_POST['sampleCollectionDate'])) {
-	if (trim((string) $startDate) == trim((string) $endDate)) {
-		$sWhere[] = ' DATE(vl.sample_collection_date) =  "' . $startDate . '"';
-	} else {
-		$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate')";
-	}
+	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$startDate' AND '$endDate')";
 } else {
 	$from = date('Y-m-d', strtotime('today - 30 days'));
 	$to = date('Y-m-d');
 	$sWhere[] = " (DATE(vl.sample_collection_date) BETWEEN '$from' AND '$to')";
 }
 if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
-	if (trim((string) $labStartDate) == trim((string) $labEndDate)) {
-		$sWhere[] = ' DATE(vl.sample_received_at_lab_datetime) = "' . $labStartDate . '"';
-	} else {
-		$sWhere[] = " (DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate')";
-	}
+	$sWhere[] = " (DATE(vl.sample_received_at_lab_datetime) BETWEEN '$labStartDate' AND '$labEndDate')";
 }
 
 if (isset($_POST['freezerCode']) && trim((string) $_POST['freezerCode']) != '') {
@@ -109,7 +101,7 @@ $vlQuery = "SELECT vl.*,f.facility_name,s.storage_code,h.*,r.removal_reason_name
 			LEFT JOIN r_reasons_for_sample_removal as r ON r.removal_reason_id=h.sample_removal_reason
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id WHERE vl.sample_code IS NOT NULL ";
 
-$vlQuery = $vlQuery . $sWhere . ' ORDER BY h.history_id';
+$vlQuery = "$vlQuery $sWhere ORDER BY h.history_id";
 
 //echo $vlQuery;  die;
 $_SESSION['sampleStorageQuery'] = $vlQuery;
@@ -313,30 +305,6 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 												$key = (string) $general->getGlobalConfig('key');
 												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
 											}
-											/*	$patientFirstName = $vl['patient_first_name'] ?? '';
-											$patientMiddleName = $vl['patient_middle_name'] ?? '';
-											$patientLastName = $vl['patient_last_name'] ?? '';
-											if (!empty($arr['display_encrypt_pii_option']) && $arr['display_encrypt_pii_option'] == "yes" && !empty($vlQueryInfo['is_encrypted']) && $vlQueryInfo['is_encrypted'] == 'yes') {
-												$key = (string) $general->getGlobalConfig('key');
-												$vl['patient_art_no'] = $general->crypto('decrypt', $vl['patient_art_no'], $key);
-												if ($patientFirstName != '') {
-													$vl['patient_first_name'] = $patientFirstName = $general->crypto('decrypt', $patientFirstName, $key);
-												}
-
-												if ($patientMiddleName != '') {
-													$patientMiddleName = $general->crypto('decrypt', $patientMiddleName, $key);
-												}
-
-												if ($patientLastName != '') {
-													$vl['patient_last_name']  = $patientLastName = $general->crypto('decrypt', $patientLastName, $key);
-												}
-												$patientFullName = $patientFirstName . " " . $patientMiddleName . " " . $patientLastName;
-											} else {
-												$patientFullName = trim($patientFirstName ?? ' ' . $patientMiddleName ?? ' ' . $patientLastName ?? '');
-											}
-										*/
-
-
 									?>
 											<tr>
 												<td class="dataTables_empty">

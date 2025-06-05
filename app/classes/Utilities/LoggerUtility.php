@@ -7,11 +7,47 @@ use Throwable;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
+use App\Utilities\ApcuCacheUtility;
+use App\Registries\ContainerRegistry;
 use Monolog\Handler\RotatingFileHandler;
 
 final class LoggerUtility
 {
     private static ?Logger $logger = null;
+
+    public static function isLogFolderWritable(int $refreshIntervalSeconds = 300): bool
+    {
+        /** @var ApcuCacheUtility $apcuCache */
+        $apcuCache = ContainerRegistry::get(ApcuCacheUtility::class);
+
+        $logDir = ROOT_PATH . '/logs';
+        $cacheKey = 'log_folder_writable_status';
+
+        $isWritable = $apcuCache->get($cacheKey, function () use ($logDir) {
+            return is_dir($logDir) && is_writable($logDir);
+        }, $refreshIntervalSeconds);
+
+        if ($isWritable !== null) {
+            return $isWritable;
+        }
+
+        // Fallback to session
+        if (session_status() === PHP_SESSION_ACTIVE) {
+            $now = time();
+
+            if (!isset($_SESSION['log_folder_writable_check_time']) || ($now - $_SESSION['log_folder_writable_check_time']) > $refreshIntervalSeconds) {
+                $_SESSION['log_folder_writable'] = is_dir($logDir) && is_writable($logDir);
+                $_SESSION['log_folder_writable_check_time'] = $now;
+            }
+
+            return $_SESSION['log_folder_writable'];
+        }
+
+        // Fallback if no cache and no session
+        return is_dir($logDir) && is_writable($logDir);
+    }
+
+
 
     private static function getLogger(): Logger
     {
@@ -52,14 +88,21 @@ final class LoggerUtility
 
     public static function log($level, $message, array $context = []): void
     {
-        $logger = self::getLogger();
+        try {
+            $logger = self::getLogger();
 
-        $callerInfo = self::getCallerInfo(1);
+            $callerInfo = self::getCallerInfo(1);
 
-        $context['file'] ??= $callerInfo['file'] ?? '';
-        $context['line'] ??= $callerInfo['line'] ?? '';
-        $logger->log($level, MiscUtility::toUtf8($message), $context);
+            $context['file'] ??= $callerInfo['file'] ?? '';
+            $context['line'] ??= $callerInfo['line'] ?? '';
+            $logger->log($level, MiscUtility::toUtf8($message), $context);
+        } catch (Throwable $e) {
+            // If logging fails, fall back to PHP error log so that the app does not crash
+            error_log('LoggerUtility failed to log message: ' . $e->getMessage());
+            error_log('Original log message: ' . $message);
+        }
     }
+
 
     public static function logDebug($message, array $context = []): void
     {

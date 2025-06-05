@@ -38,7 +38,7 @@ if (isset($_GET['total'])) {
 	$addedRecords = $_GET['total'] - $_GET['notAdded'];
 }
 
-$filePath = '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
+$filePath = '/files/storage/storage-bulk-upload.xlsx';
 ?>
 <style>
 	.ms-choice {

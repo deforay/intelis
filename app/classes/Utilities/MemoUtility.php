@@ -2,6 +2,9 @@
 
 namespace App\Utilities;
 
+use App\Utilities\ApcuCacheUtility;
+use App\Registries\ContainerRegistry;
+
 class MemoUtility
 {
     private static array $cache = [];
@@ -28,30 +31,43 @@ class MemoUtility
         return sha1($caller . '|' . serialize($normalizedArgs));
     }
 
-    public static function memo(string $key, callable $callback, ?float $ttl = null): mixed
+    public static function memo(string $key, callable $callback, ?float $ttl = null, bool $crossRequest = true): mixed
     {
         $now = microtime(true);
+        $effectiveTtl = $ttl !== null ? (int) ceil($ttl) : 300; // default is 5 mins
+        $apcuCache = $crossRequest ? ContainerRegistry::get(ApcuCacheUtility::class) : null;
 
         if (!isset(self::$cache[$key])) {
+            $value = $crossRequest
+                ? $apcuCache->get($key, function () use ($callback) {
+                    return $callback();
+                }, $effectiveTtl)
+                : $callback();
+
             if (count(self::$cache) >= self::MAX_ENTRIES) {
                 array_shift(self::$cache); // Remove oldest
             }
 
             self::$cache[$key] = [
-                'value' => $callback(),
+                'value' => $value,
                 'timestamp' => $now
             ];
         } elseif ($ttl !== null && ($now - self::$cache[$key]['timestamp']) > $ttl) {
+            $value = $callback();
             self::$cache[$key] = [
-                'value' => is_callable($callback) ? $callback() : null,
+                'value' => $value,
                 'timestamp' => $now
             ];
+
+            if ($crossRequest) {
+                $apcuCache->set($key, $value, $effectiveTtl);
+            }
         }
 
         return self::$cache[$key]['value'];
     }
 
-    public static function remember(callable $callback, ?float $ttl = null): mixed
+    public static function remember(callable $callback, ?float $ttl = null, bool $crossRequest = true): mixed
     {
         $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 2);
         $caller = ($trace[1]['class'] ?? '') . ($trace[1]['type'] ?? '') . ($trace[1]['function'] ?? '');
@@ -59,7 +75,6 @@ class MemoUtility
         if (empty($caller) || $caller === 'Closure') {
             $caller = ($trace[0]['file'] ?? '') . ':' . ($trace[0]['line'] ?? 0);
         }
-
 
         $args = [];
         if ($callback instanceof \Closure) {
@@ -69,7 +84,7 @@ class MemoUtility
 
         $key = self::hashKey($caller, $args);
 
-        return self::memo($key, $callback, $ttl);
+        return self::memo($key, $callback, $ttl, $crossRequest);
     }
 
     public static function clear(): void

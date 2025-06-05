@@ -126,7 +126,7 @@ try {
             $notAdded = count($storageNotAdded);
             if ($notAdded > 0) {
 
-                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx');
+                $spreadsheet = IOFactory::load(WEB_ROOT . '/files/storage/storage-bulk-upload.xlsx');
                 $sheet = $spreadsheet->getActiveSheet();
 
                 foreach ($storageNotAdded as $rowNo => $dataValue) {

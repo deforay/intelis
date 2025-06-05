@@ -57,13 +57,12 @@ final class VlService extends AbstractTestService
 
     public function getSuppressionLimit(): int
     {
-        return MemoUtility::remember(function () {
-            $suppressionLimit = $this->commonService->getGlobalConfig('viral_load_threshold_limit');
-            if (!empty($suppressionLimit) && is_numeric($suppressionLimit)) {
-                return (int) $suppressionLimit;
-            }
-            return $this->suppressionLimit;
-        });
+
+        $suppressionLimit = $this->commonService->getGlobalConfig('viral_load_threshold_limit');
+        if (!empty($suppressionLimit) && is_numeric($suppressionLimit)) {
+            return (int) $suppressionLimit;
+        }
+        return $this->suppressionLimit;
     }
 
     /**

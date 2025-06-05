@@ -43,11 +43,11 @@ final class AppMenuService
         }
 
         if ($this->commonService->isSTSInstance()) {
-            $mode = "(show_mode like 'sts' or show_mode like 'always')";
+            $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'sts' OR show_mode = 'always')";
         } elseif ($this->commonService->isLISInstance()) {
-            $mode = "(show_mode like 'lis' or show_mode like 'always')";
+            $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'lis' OR show_mode = 'always')";
         } else {
-            $mode = "(show_mode like 'always')";
+            $mode = "(IFNULL(show_mode,'') = '' OR show_mode = 'always')";
         }
 
 

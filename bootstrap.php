@@ -18,7 +18,6 @@ if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
     }
 }
 
-
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;

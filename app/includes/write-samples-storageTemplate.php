@@ -1,13 +1,9 @@
 <?php
 
-use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
-use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -21,17 +17,19 @@ $_POST = _sanitizeInput($request->getParsedBody(), nullifyEmptyStrings: true);
 if (!empty($_POST['batchOrManifestCodeValue'])) {
 
     // Define paths
-    $originalFile = WEB_ROOT . '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
-    $fileName = 'Storage_Bulk_Upload_Excel_Format_' . time() . '.xlsx';
+    $originalFile = WEB_ROOT . '/files/storage/storage-bulk-upload.xlsx';
+    $fileName = 'storage-bulk-upload-' . time() . '.xlsx';
     $tempFile = TEMP_PATH . DIRECTORY_SEPARATOR . $fileName;
 
     // Copy original file to a temporary location
     if (copy($originalFile, $tempFile)) {
-        $condition = ' where pd.package_code like "' . $_POST['batchOrManifestCodeValue'] . '" OR b.batch_code like "' . $_POST['batchOrManifestCodeValue'] . '"';
+        $condition = "";
 
-        $query = "SELECT  vl.sample_code,vl.patient_art_no  FROM form_vl as vl
+        $query = "SELECT vl.sample_code,vl.patient_art_no  FROM form_vl as vl
                     LEFT JOIN package_details as pd ON vl.sample_package_code = pd.package_code
-                    LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id " . $condition;
+                    LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id
+                    WHERE pd.package_code = '{$_POST['batchOrManifestCodeValue']}'
+                            OR b.batch_code = '{$_POST['batchOrManifestCodeValue']}'";
 
         $sampleResult = $db->rawQuery($query);
 
@@ -57,5 +55,5 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
         echo false;
     }
 } else {
-    echo '/files/storage/Storage_Bulk_Upload_Excel_Format.xlsx';
+    echo '/files/storage/storage-bulk-upload.xlsx';
 }

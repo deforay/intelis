@@ -17,6 +17,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
+use App\Utilities\ApcuCacheUtility;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
@@ -42,6 +43,7 @@ final class CommonService
         $this->facilitiesService = $facilitiesService;
         $this->fileCache = $fileCache;
     }
+
 
     public function getAppVersion($composerFilePath = ROOT_PATH . '/composer.json')
     {
@@ -174,15 +176,15 @@ final class CommonService
     public function getGlobalConfig(?string $name = null): string|array|null
     {
         $cacheKey = 'app_global_config';
-
-        $allConfigs = $this->fileCache->get($cacheKey, function () {
+        $apcuCache = ContainerRegistry::get(ApcuCacheUtility::class);
+        $allConfigs = $apcuCache->get($cacheKey, function () {
             $returnConfig = [];
             $configResult = $this->db->get('global_config');
             foreach ($configResult as $config) {
                 $returnConfig[$config['name']] = $config['value'];
             }
             return $returnConfig;
-        });
+        },  0); // 0 = no atuo expiry
 
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
