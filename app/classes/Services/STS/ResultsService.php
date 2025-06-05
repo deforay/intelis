@@ -224,7 +224,7 @@ final class ResultsService
                         'local_facility_id' => $localRecord['facility_id'] ?? null,
                         'received_facility_id' => $dataFromLIS['facility_id'] ?? null,
                         'local_lab_id' => $localRecord['lab_id'] ?? null,
-                        'received_lab_id' => $dataFromLIS['lab_id'] ?? null,,
+                        'received_lab_id' => $dataFromLIS['lab_id'] ?? null,
                         'local_result' => $localRecord['result'] ?? null,
                         'received_result' => $dataFromLIS['result'] ?? null,,
                         'synced_from_lab_id' => $labId,
