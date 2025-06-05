@@ -119,12 +119,12 @@ try {
     } while ($batchCount === $batchSize);
 
     // Success logging
-    $duration = round(microtime(true) - $startTime, 2);
-    LoggerUtility::logInfo("VL Result Category update completed successfully", [
-        'records_updated' => $totalUpdated,
-        'duration_seconds' => $duration,
-        'avg_records_per_second' => $totalUpdated > 0 ? round($totalUpdated / $duration) : 0
-    ]);
+    //$duration = round(microtime(true) - $startTime, 2);
+    // LoggerUtility::logInfo("VL Result Category update completed successfully", [
+    //     'records_updated' => $totalUpdated,
+    //     'duration_seconds' => $duration,
+    //     'avg_records_per_second' => $totalUpdated > 0 ? round($totalUpdated / $duration) : 0
+    // ]);
 
 } catch (Throwable $e) {
     // Critical error logging
