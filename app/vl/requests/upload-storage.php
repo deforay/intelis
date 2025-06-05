@@ -175,7 +175,7 @@ $filePath = '/files/storage/storage-bulk-upload.xlsx';
 	function getExcelFormatTemplate() {
 		var batchOrManifestCodeValue = $("#batchOrManifestCode").val();
 		if (batchOrManifestCodeValue != "") {
-			$.post("/includes/write-samples-storageTemplate.php", {
+			$.post("/includes/write-samples-storage-template.php", {
 					batchOrManifestCodeValue: batchOrManifestCodeValue
 				},
 				function(data) {

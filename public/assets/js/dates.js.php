@@ -1,11 +1,24 @@
 <script type="text/javascript">
+    // Extend dayjs with the customParseFormat plugin if available
+    if (dayjs.extend && typeof dayjs_plugin_customParseFormat !== 'undefined') {
+        dayjs.extend(dayjs_plugin_customParseFormat);
+    }
+
+    const dayjsDateFormat = "<?= $_SESSION['dayjsDateFieldFormat'] ?>"; // e.g., "DD-MM-YYYY" or "DD-MMM-YYYY"
+
+    // Helper Functions
+    function parseDate(value) {
+        return dayjs(value, dayjsDateFormat);
+    }
+
+    function showInvalidDateAlert(fieldName) {
+        alert("<?= _translate('Invalid format for', true) ?> " + fieldName + ".");
+    }
+
+
     $(document).ready(function() {
-
-
         initDatePicker();
         initDateTimePicker();
-
-
 
         $('.expDate').datepicker({
             changeMonth: true,
@@ -15,12 +28,10 @@
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
-            // minDate: "Today",
             yearRange: <?= (date('Y') - 100); ?> + ":" + "<?= date('Y') ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
-
 
         if ($("#patientDob").length) {
             $("#patientDob").datepicker('option', {
@@ -47,7 +58,7 @@
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
-                yearRange: <?php echo (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
+                yearRange: <?= (date('Y') - 120); ?> + ":" + "<?= date('Y') ?>",
                 onSelect: function(dateText, inst) {
                     $(this).change();
                 }
@@ -55,7 +66,6 @@
                 $('.ui-datepicker-calendar').show();
             });
         }
-
 
         if ($("#nextAppointmentDate").length) {
             $('#nextAppointmentDate').datepicker({
@@ -71,9 +81,6 @@
                 $('.ui-datepicker-calendar').show();
             });
         }
-
-
-
 
         if ($('#sampleCollectionDate').length && !$('#sampleCollectionDate').hasClass('daterangefield')) {
             $('#sampleCollectionDate').datetimepicker({
@@ -93,7 +100,6 @@
             });
 
             $('#sampleCollectionDate').on('change', function() {
-
                 var selectedDate = $(this).datetimepicker('getDate');
                 var currentReceivedAtHubOn = $('#sampleReceivedAtHubOn').datetimepicker('getDate');
                 var currentReceivedDate = $('#sampleReceivedDate').datetimepicker('getDate');
@@ -118,7 +124,6 @@
             });
         }
 
-
         if ($('#sampleDispatchedDate').length && !$('#sampleDispatchedDate').hasClass('daterangefield')) {
             $('#sampleDispatchedDate').datetimepicker({
                 changeMonth: true,
@@ -140,7 +145,6 @@
             });
         }
 
-
         if ($('#sampleReceivedDate').length && !$('#sampleReceivedDate').hasClass('daterangefield')) {
             $('#sampleReceivedDate').datetimepicker({
                 changeMonth: true,
@@ -159,7 +163,6 @@
             });
 
             $('#sampleReceivedDate').on('change', function() {
-
                 var selectedDate = $(this).datetimepicker('getDate');
                 var currentTestingDateAtLab = $('#sampleTestingDateAtLab').datetimepicker('getDate');
 
@@ -170,6 +173,7 @@
                 $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker('option', 'minDate', selectedDate);
             });
         }
+
         if ($('#sampleTestedDateTime, #sampleTestingDateAtLab').length && !$('#sampleTestedDateTime, #sampleTestingDateAtLab').hasClass('daterangefield')) {
             $('#sampleTestedDateTime, #sampleTestingDateAtLab').datetimepicker({
                 changeMonth: true,
@@ -227,9 +231,7 @@
         let dateFormatMask = '<?= $_SESSION['jsDateFormatMask'] ?? '99-aaa-9999'; ?>';
         $('.date').mask(dateFormatMask);
         $('.dateTime, .date-time').mask(dateFormatMask + ' 99:99');
-
     });
-
 
     function initDatePicker() {
         $('.date:not(.hasDatePicker)').each(function() {
@@ -249,7 +251,6 @@
     }
 
     function initDateTimePicker() {
-
         $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
             $(this).addClass('hasDateTimePicker').datetimepicker({
                 changeMonth: true,
@@ -269,61 +270,58 @@
         });
     }
 
-
     function checkSampleReceivedDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedDate = $("#sampleReceivedDate").val();
+        var date1 = parseDate($("#sampleCollectionDate").val());
+        var date2 = parseDate($("#sampleReceivedDate").val());
 
-        // Proceed only if both dates are provided
-        if (sampleCollectionDate && sampleReceivedDate) {
-            var date1 = new Date(sampleCollectionDate);
-            var date2 = new Date(sampleReceivedDate);
-
-            // Ensure date2 is not earlier than date1
-            if (date2 < date1) {
-                alert("<?= _translate('Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date'); ?>");
-                $("#sampleReceivedDate").val(""); // Clear the incorrect entry
+        if (date1.isValid() && date2.isValid()) {
+            if (date2.isBefore(date1)) {
+                alert("<?= _translate('Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date', true); ?>");
+                $("#sampleReceivedDate").val("");
             }
+        } else {
+            showInvalidDateAlert("<?= _translate('Sample Received Date',true); ?>");
         }
     }
 
     function checkSampleReceivedAtHubDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleReceivedAtHubOn = $("#sampleReceivedAtHubOn").val();
+        var date1 = parseDate($("#sampleCollectionDate").val());
+        var date2 = parseDate($("#sampleReceivedAtHubOn").val());
 
-        if (sampleCollectionDate && sampleReceivedAtHubOn) {
-            var date1 = new Date(sampleCollectionDate);
-            var date2 = new Date(sampleReceivedAtHubOn);
-
-            if (date2 < date1) {
-                alert("<?= _translate('Sample Received at Hub Date cannot be earlier than Sample Collection Date'); ?>");
+        if (date1.isValid() && date2.isValid()) {
+            if (date2.isBefore(date1)) {
+                alert("<?= _translate('Sample Received at Hub Date cannot be earlier than Sample Collection Date', true); ?>");
                 $("#sampleReceivedAtHubOn").val("");
             }
+        } else {
+            showInvalidDateAlert("<?= _translate('Sample Received at Hub Date',true); ?>");
         }
     }
 
     function checkSampleTestingDate() {
-        var sampleCollectionDate = $("#sampleCollectionDate").val();
-        var sampleTestingDate = $("#sampleTestingDateAtLab").val();
+        var date1 = parseDate($("#sampleCollectionDate").val());
+        var date2 = parseDate($("#sampleTestingDateAtLab").val());
 
-        if (sampleCollectionDate && sampleTestingDate) {
-            var date1 = new Date(sampleCollectionDate);
-            var date2 = new Date(sampleTestingDate);
-
-            if (date2 < date1) {
-                alert("<?= _translate('Sample Testing Date cannot be earlier than Sample Collection Date'); ?>");
+        if (date1.isValid() && date2.isValid()) {
+            if (date2.isBefore(date1)) {
+                alert("<?= _translate('Sample Testing Date cannot be earlier than Sample Collection Date', true); ?>");
                 $("#sampleTestingDateAtLab").val("");
             }
+        } else {
+            showInvalidDateAlert("<?= _translate('Sample Testing Date',true); ?>");
         }
     }
 
     function checkSampleDispatchDate() {
-        let collectionDate = $('#sampleCollectionDate').datetimepicker('getDate');
-        let dispatchedDate = $('#sampleDispatchedDate').datetimepicker('getDate');
+        var date1 = parseDate($("#sampleCollectionDate").val());
+        var date2 = parseDate($("#sampleDispatchedDate").val());
 
-        // Ensure dispatchedDate is set to collectionDate if it's earlier than collectionDate
-        if (!dispatchedDate || collectionDate > dispatchedDate) {
-            $('#sampleDispatchedDate').datetimepicker('setDate', collectionDate);
+        if (date1.isValid() && date2.isValid()) {
+            if (date2.isBefore(date1)) {
+                $('#sampleDispatchedDate').val($("#sampleCollectionDate").val());
+            }
+        } else {
+            showInvalidDateAlert("<?= _translate('Sample Dispatch Date',true); ?>");
         }
     }
 </script>
