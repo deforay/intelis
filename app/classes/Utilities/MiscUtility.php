@@ -873,7 +873,7 @@ final class MiscUtility
     {
         self::makeDirectory(dirname($metadataPath));
         $existingData = self::loadMetadata($metadataPath);
-        $mergedData = array_merge($existingData, $newData);
+        $mergedData = array_merge($existingData ?? [], $newData ?? []);
         file_put_contents($metadataPath, json_encode($mergedData, JSON_PRETTY_PRINT));
     }
 

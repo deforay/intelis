@@ -212,14 +212,14 @@ foreach ($resultSet as $aRow) {
 		$row[] = DateUtility::humanReadableDateFormat($aRow['test_requested_on'] ?? '');
 		$row[] = $sampleRejection;
 		if ($formId == COUNTRY\DRC) {
-			$formAttributes = json_decode($aRow['form_attributes']);
-			$storageObj = json_decode($formAttributes->storage);
+			$formAttributes = !empty($aRow['form_attributes']) ? json_decode($aRow['form_attributes']) : null;
+			$storageObj = isset($formAttributes->storage) ? json_decode($formAttributes->storage) : null;
 
-			$row[] = $storageObj->storageCode;
-			$row[] = $storageObj->rack;
-			$row[] = $storageObj->box;
-			$row[] = $storageObj->position;
-			$row[] = $storageObj->volume;
+			$row[] = $storageObj->storageCode ?? '';
+			$row[] = $storageObj->rack ?? '';
+			$row[] = $storageObj->box ?? '';
+			$row[] = $storageObj->position ?? '';
+			$row[] = $storageObj->volume ?? '';
 		}
 		$row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
 		$row[] = $aRow['result'];

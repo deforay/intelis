@@ -208,13 +208,20 @@ final class ResultsService
                     $this->db->commitTransaction();
                 } catch (\Throwable $e) {
                     $this->db->rollbackTransaction();
-                    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+                    LoggerUtility::logError($e->getMessage(), [
                         'line' => $e->getLine(),
                         'file' => $e->getFile(),
-                        'sample_code' => $dataFromLIS['sample_code'] ?? $dataFromLIS['remote_sample_code'] ?? null,
+                        'local_unique_id' => $localRecord['unique_id'] ?? null,
+                        'local_sample_code' => $localRecord['sample_code'] ?? null,
+                        'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                        'local_lab_id' => $localRecord['lab_id'] ?? null,
+                        'local_facility_id' => $localRecord['facility_id'] ?? null,
+                        'received_unique_id' => $dataFromLIS['unique_id'] ?? null,
+                        'received_sample_code' => $dataFromLIS['sample_code'] ?? null,
+                        'received_remote_sample_code' => $dataFromLIS['remote_sample_code'] ?? null,
+                        'received_facility_id' => $dataFromLIS['facility_id'] ?? null,
                         'test_type' => $this->testType,
                         'lab_id' => $labId,
-                        'data' => $dataFromLIS,
                         'trace' => $e->getTraceAsString(),
                     ]);
                 }

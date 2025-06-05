@@ -139,11 +139,13 @@ try {
             unset($_SESSION['requestedURI']);
         }
     } else {
+        $_SESSION['alertMsg'] = _translate("Please check your login credentials");
         throw new SystemException(_translate("Please check your login credentials"));
     }
 } catch (Throwable $e) {
     $_SESSION['alertMsg'] = $e->getMessage();
     LoggerUtility::log('error', $e->getMessage() . " | " . $ipaddress . " | " . $_POST['username'], [
+        'errorType' => 'login',
         'exception' => $e,
         'code'  => $e->getCode(), // Error code
         'last_db_error' => $db->getLastError(), // Last database error

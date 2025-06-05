@@ -35,7 +35,7 @@ $enclosure = $arr['default_csv_enclosure'] ?? '"';
 $output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
-    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number","Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
+    $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 } else {
     $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 }
@@ -109,14 +109,14 @@ foreach ($resultSet as $aRow) {
     $row[] = $aRow['eid_number'];
     $row[] = $sampleRejection;
     if ($formId == COUNTRY\DRC) {
-        $formAttributes = json_decode($aRow['form_attributes']);
-        $storageObj = json_decode($formAttributes->storage);
+        $formAttributes = !empty($aRow['form_attributes']) ? json_decode($aRow['form_attributes']) : null;
+        $storageObj = isset($formAttributes->storage) ? json_decode($formAttributes->storage) : null;
 
-        $row[] = $storageObj->storageCode;
-        $row[] = $storageObj->rack;
-        $row[] = $storageObj->box;
-        $row[] = $storageObj->position;
-        $row[] = $storageObj->volume;
+        $row[] = $storageObj->storageCode ?? '';
+        $row[] = $storageObj->rack ?? '';
+        $row[] = $storageObj->box ?? '';
+        $row[] = $storageObj->position ?? '';
+        $row[] = $storageObj->volume ?? '';
     }
     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'] ?? '');
     $row[] = $eidResults[$aRow['result']] ?? $aRow['result'];

@@ -177,17 +177,20 @@ final class CommonService
     {
         $cacheKey = 'app_global_config';
         $apcuCache = ContainerRegistry::get(ApcuCacheUtility::class);
-        $allConfigs = $apcuCache->get($cacheKey, function () {
+        $db = $this->db;
+
+        $allConfigs = $apcuCache->get($cacheKey, function () use ($db) {
             $returnConfig = [];
-            $configResult = $this->db->get('global_config');
+            $configResult = $db->get('global_config');
             foreach ($configResult as $config) {
                 $returnConfig[$config['name']] = $config['value'];
             }
             return $returnConfig;
-        },  0); // 0 = no atuo expiry
+        }, 0);
 
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }
+
 
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)

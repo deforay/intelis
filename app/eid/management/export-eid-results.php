@@ -118,14 +118,14 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['eid_number'];
 		$row[] = $sampleRejection;
 		if ($formId == COUNTRY\DRC) {
-			$formAttributes = json_decode($aRow['form_attributes']);
-			$storageObj = json_decode($formAttributes->storage);
+			$formAttributes = !empty($aRow['form_attributes']) ? json_decode($aRow['form_attributes']) : null;
+			$storageObj = isset($formAttributes->storage) ? json_decode($formAttributes->storage) : null;
 
-			$row[] = $storageObj->storageCode;
-			$row[] = $storageObj->rack;
-			$row[] = $storageObj->box;
-			$row[] = $storageObj->position;
-			$row[] = $storageObj->volume;
+			$row[] = $storageObj->storageCode ?? '';
+			$row[] = $storageObj->rack ?? '';
+			$row[] = $storageObj->box ?? '';
+			$row[] = $storageObj->position ?? '';
+			$row[] = $storageObj->volume ?? '';
 		}
 		$row[] = $aRow['rejection_reason'];
 		$row[] = $aRow['recommended_corrective_action_name'];
