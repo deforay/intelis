@@ -362,13 +362,6 @@ final class TestRequestsService
         $columns = array_diff(array_keys($recordFromOtherSystem), [$primaryKeyName]);
         $select = implode(', ', $columns);
 
-        if (!empty($recordFromOtherSystem['unique_id'])) {
-            return $this->db->rawQueryOne(
-                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
-                [$recordFromOtherSystem['unique_id']]
-            ) ?? [];
-        }
-
         if (!empty($recordFromOtherSystem['remote_sample_code'])) {
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
@@ -380,6 +373,13 @@ final class TestRequestsService
             return $this->db->rawQueryOne(
                 "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
                 [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['lab_id']]
+            ) ?? [];
+        }
+
+        if (!empty($recordFromOtherSystem['unique_id'])) {
+            return $this->db->rawQueryOne(
+                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
+                [$recordFromOtherSystem['unique_id']]
             ) ?? [];
         }
 

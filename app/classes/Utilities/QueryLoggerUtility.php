@@ -41,11 +41,13 @@ final class QueryLoggerUtility
         if (strlen($query) > $maxLength) {
             $query = substr($query, 0, $maxLength) . '... [truncated]';
         }
-
-        $context = [
-            'bindings' => $bindings,
-            'execution_time' => $executionTime !== null ? $executionTime . ' ms' : 'N/A'
-        ];
+        $context = [];
+        if (!empty($bindings)) {
+            $context['bindings']  = $bindings;
+        }
+        if ($executionTime !== null) {
+            $context['execution_time'] = "$executionTime ms";
+        }
 
         $logger->info('SQL Query Executed', array_merge(['query' => $query], $context));
     }
