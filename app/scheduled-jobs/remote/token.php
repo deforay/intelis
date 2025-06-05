@@ -23,7 +23,7 @@ $cliMode = php_sapi_name() === 'cli';
 $isLIS = $general->isLISInstance();
 
 if (!$isLIS || !$cliMode) {
-    LoggerUtility::log('error', "Token not generated. This script is only for LIS instances.");
+    //LoggerUtility::log('error', "Token not generated. This script is only for LIS instances.");
     exit(0);
 }
 

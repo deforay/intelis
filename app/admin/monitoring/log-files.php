@@ -265,8 +265,40 @@ require_once APPLICATION_PATH . '/header.php';
 	.search-help-icon:hover {
 		color: #333;
 	}
-</style>
 
+	/* New performance-related styles */
+	.loading-indicator {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+		background: rgba(0, 0, 0, 0.8);
+		color: white;
+		padding: 20px;
+		border-radius: 5px;
+		z-index: 9999;
+		display: none;
+	}
+
+	.performance-info {
+		background-color: #e7f3ff;
+		border: 1px solid #b3d7ff;
+		border-radius: 4px;
+		padding: 10px;
+		margin-bottom: 15px;
+		font-size: 12px;
+		color: #0066cc;
+	}
+
+	.file-size-warning {
+		background-color: #fff3cd;
+		border: 1px solid #ffeaa7;
+		border-radius: 4px;
+		padding: 10px;
+		margin-bottom: 15px;
+		color: #856404;
+	}
+</style>
 
 <div class="content-wrapper">
 	<section class="content-header">
@@ -323,11 +355,24 @@ require_once APPLICATION_PATH . '/header.php';
 					</div>
 
 					<div class="box-body">
+						<div id="performanceInfo" class="performance-info" style="display: none;">
+							<strong>Performance Mode:</strong> <span id="performanceMode">Standard</span> |
+							<strong>File Size:</strong> <span id="fileSize">Unknown</span> |
+							<strong>Est. Lines:</strong> <span id="estimatedLines">Unknown</span> |
+							<strong>Load Time:</strong> <span id="loadTime">0ms</span>
+						</div>
+
+						<div id="fileSizeWarning" class="file-size-warning" style="display: none;">
+							<i class="fa fa-exclamation-triangle"></i>
+							<strong>Large File Detected:</strong> This log file is quite large.
+							Loading may take a moment. Consider using search filters to improve performance.
+						</div>
+
 						<div class="row" style="margin-bottom: 15px;">
 							<div class="col-md-8">
 								<div class="input-group">
 									<input type="text" id="logSearchInput" class="form-control"
-										placeholder="<?php echo _translate("Search in logs..."); ?>">
+										placeholder="<?php echo _translate("Search in logs... Use +word for exact, \"phrase\" for exact phrase"); ?>">
 									<span class="input-group-btn">
 										<button id="searchLogsButton" class="btn btn-default" type="button">
 											<i class="fa fa-search"></i>
@@ -374,6 +419,10 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 </div>
 
+<!-- Loading indicator -->
+<div id="loadingIndicator" class="loading-indicator">
+	<i class="fa fa-spinner fa-spin"></i> Loading logs...
+</div>
 
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
@@ -387,9 +436,63 @@ require_once APPLICATION_PATH . '/header.php';
 	let searchTerm = '';
 	let allLoadedLogs = [];
 	let searchTimeout;
+	let loadStartTime = 0;
+
+	// Performance settings - increased for better performance
+	const LINES_PER_PAGE = 50;
+	const SEARCH_DEBOUNCE_TIME = 500;
+	const LARGE_FILE_THRESHOLD = 10 * 1024 * 1024; // 10MB
 
 	function padZero(num) {
 		return num < 10 ? '0' + num : num;
+	}
+
+	// Debounce function for better performance
+	function debounce(func, wait) {
+		let timeout;
+		return function executedFunction(...args) {
+			const later = () => {
+				clearTimeout(timeout);
+				func(...args);
+			};
+			clearTimeout(timeout);
+			timeout = setTimeout(later, wait);
+		};
+	}
+
+	function showLoadingIndicator() {
+		$('#loadingIndicator').show();
+		loadStartTime = performance.now();
+	}
+
+	function hideLoadingIndicator() {
+		$('#loadingIndicator').hide();
+		if (loadStartTime > 0) {
+			const loadTime = Math.round(performance.now() - loadStartTime);
+			$('#loadTime').text(loadTime + 'ms');
+			loadStartTime = 0;
+		}
+	}
+
+	function updatePerformanceInfo(fileSize, estimatedLines, mode) {
+		$('#fileSize').text(formatFileSize(fileSize));
+		$('#estimatedLines').text(estimatedLines ? estimatedLines.toLocaleString() : 'Unknown');
+		$('#performanceMode').text(mode);
+		$('#performanceInfo').show();
+
+		if (fileSize > LARGE_FILE_THRESHOLD) {
+			$('#fileSizeWarning').show();
+		} else {
+			$('#fileSizeWarning').hide();
+		}
+	}
+
+	function formatFileSize(bytes) {
+		if (bytes === 0) return '0 Bytes';
+		const k = 1024;
+		const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+		const i = Math.floor(Math.log(bytes) / Math.log(k));
+		return parseFloat((bytes / Math.pow(k, i)).toFixed(1)) + ' ' + sizes[i];
 	}
 
 	function copyToClipboard(text, lineNumber) {
@@ -485,12 +588,12 @@ require_once APPLICATION_PATH . '/header.php';
 				terms.push({
 					type: 'starts_with',
 					value: match[6]
-				}); // word*
+				});
 			} else if (match[7]) {
 				terms.push({
 					type: 'ends_with',
 					value: match[7]
-				}); // *word
+				});
 			} else if (match[8]) {
 				terms.push({
 					type: 'partial',
@@ -521,10 +624,6 @@ require_once APPLICATION_PATH . '/header.php';
 					return new RegExp(`^${escapeRegExp(term.value)}`, 'i').test(text);
 				case 'end':
 					return new RegExp(`${escapeRegExp(term.value)}$`, 'i').test(text);
-				case 'start_boundary':
-					return new RegExp(`\\b${escapeRegExp(term.value)}`, 'i').test(text);
-				case 'end_boundary':
-					return new RegExp(`${escapeRegExp(term.value)}\\b`, 'i').test(text);
 				case 'phrase':
 					return text.toLowerCase().includes(term.value.toLowerCase());
 				default:
@@ -658,7 +757,163 @@ require_once APPLICATION_PATH . '/header.php';
 		hasMoreLogs = true;
 		allLoadedLogs = [];
 		$('#logViewer').html('');
+		$('#performanceInfo').hide();
+		$('#fileSizeWarning').hide();
 		loadLogs();
+	}
+
+	// Optimized log loading function
+	function loadLogs() {
+		if (!loading && hasMoreLogs) {
+			loading = true;
+			$('#logViewer').show();
+
+			if (start === 0) {
+				showLoadingIndicator();
+			} else {
+				$('.loading').remove();
+				$('#logViewer').append('<div class="loading">Loading more...</div>');
+			}
+
+			// Use AJAX with better error handling
+			$.ajax({
+				url: '/admin/monitoring/get-log-files.php',
+				data: {
+					date: $('#userDate').val(),
+					start: start,
+					log_type: logType,
+					search: searchTerm
+				},
+				timeout: 60000, // 60 second timeout
+				success: function(data) {
+					$('.loading').remove();
+					hideLoadingIndicator();
+
+					// Parse performance info if available - more robust approach
+					try {
+						var performanceInfoStart = data.indexOf('<!-- PERFORMANCE_INFO: ');
+						var performanceInfoEnd = data.indexOf(' -->', performanceInfoStart);
+
+						if (performanceInfoStart !== -1 && performanceInfoEnd !== -1) {
+							var performanceInfoStr = data.substring(
+								performanceInfoStart + 23, // Length of '<!-- PERFORMANCE_INFO: '
+								performanceInfoEnd
+							);
+
+							if (performanceInfoStr && performanceInfoStr.trim()) {
+								var perfInfo = JSON.parse(performanceInfoStr.trim());
+								if (perfInfo && typeof perfInfo === 'object') {
+									updatePerformanceInfo(
+										perfInfo.fileSize || 0,
+										perfInfo.estimatedLines || 0,
+										perfInfo.mode || 'standard'
+									);
+								}
+							}
+						}
+					} catch (e) {
+						console.warn('Could not parse performance info:', e);
+						// Continue without performance info - not critical
+					}
+
+					if (data.includes('No more logs')) {
+						hasMoreLogs = false;
+						const cleanData = data.replace(/<!-- PERFORMANCE_INFO:.*?-->/g, '');
+						$('#logViewer').append(cleanData);
+						loading = false;
+						return;
+					}
+
+					if (data.trim() === '' || data.replace(/<!-- PERFORMANCE_INFO:.*?-->/g, '').trim() === '') {
+						hasMoreLogs = false;
+						if (start === 0) {
+							$('#logViewer').html('<div class="logLine">No logs found.</div>');
+						} else {
+							$('#logViewer').append('<div class="logLine">No more logs.</div>');
+						}
+					} else {
+						// Use requestAnimationFrame for smooth UI updates
+						requestAnimationFrame(() => {
+							appendLogsToViewer(data);
+						});
+					}
+					loading = false;
+				},
+				error: function(xhr, status, error) {
+					$('.loading').remove();
+					hideLoadingIndicator();
+
+					if (status === 'timeout') {
+						$('#logViewer').append('<div class="error">Request timed out. The log file is very large. Try using search filters to narrow results.</div>');
+					} else {
+						if (start === 0) {
+							$('#logViewer').html('<div class="error">Error loading logs. The file might be very large or corrupted.</div>');
+						} else {
+							$('#logViewer').append('<div class="error">Error loading more logs.</div>');
+						}
+					}
+					loading = false;
+				}
+			});
+		}
+	}
+
+	function appendLogsToViewer(data) {
+		// Remove performance info from display data
+		const cleanData = data.replace(/<!-- PERFORMANCE_INFO:.*?-->/g, '');
+		$('#logViewer').append(cleanData);
+
+		const parser = new DOMParser();
+		const htmlDoc = parser.parseFromString(cleanData, 'text/html');
+		const logLines = htmlDoc.querySelectorAll('.logLine');
+
+		let processedCount = 0;
+
+		// Process logs in batches to avoid blocking UI
+		function processBatch() {
+			const batchSize = 15;
+			const endIndex = Math.min(processedCount + batchSize, logLines.length);
+
+			for (let i = processedCount; i < endIndex; i++) {
+				const line = logLines[i];
+				const lineInDOM = $('#logViewer .logLine[data-linenumber="' + line.getAttribute('data-linenumber') + '"]').last();
+
+				if (lineInDOM.length === 0) continue;
+
+				const lineText = lineInDOM.text();
+				const lineNum = lineInDOM.attr('data-linenumber');
+				const logLevel = detectLogLevel(lineText);
+
+				allLoadedLogs.push({
+					lineNumber: lineNum,
+					text: lineText,
+					level: logLevel
+				});
+
+				lineInDOM.attr('data-level', logLevel);
+				lineInDOM.addClass(`log-${logLevel}`);
+
+				const formattedContent = formatLogLine(lineInDOM.html());
+				lineInDOM.html(formattedContent);
+				lineInDOM.attr('data-original-html', lineInDOM.html());
+			}
+
+			processedCount = endIndex;
+
+			if (processedCount < logLines.length) {
+				requestAnimationFrame(processBatch);
+			} else {
+				if (logLines.length === 0) {
+					hasMoreLogs = false;
+					$('#logViewer').append('<div class="logLine">No more logs.</div>');
+				} else {
+					start += logLines.length;
+					applyFilters();
+				}
+			}
+		}
+
+		processBatch();
 	}
 
 	function exportLogFile() {
@@ -759,90 +1014,6 @@ require_once APPLICATION_PATH . '/header.php';
 		URL.revokeObjectURL(a.href);
 	}
 
-	function loadLogs() {
-		if (!loading && hasMoreLogs) {
-			loading = true;
-			$('#logViewer').show();
-			$('.loading').remove();
-			$('#logViewer').append('<div class="loading">Loading...</div>');
-
-			$.ajax({
-				url: '/admin/monitoring/get-log-files.php',
-				data: {
-					date: $('#userDate').val(),
-					start: start,
-					log_type: logType,
-					search: searchTerm
-				},
-				success: function(data) {
-					$('.loading').remove();
-
-					if (data.includes('No more logs')) {
-						hasMoreLogs = false;
-						$('#logViewer').append(data);
-						return;
-					}
-
-					if (data.trim() === '') {
-						hasMoreLogs = false;
-						if (start === 0) {
-							$('#logViewer').html('<div class="logLine">No logs found.</div>');
-						} else {
-							$('#logViewer').append('<div class="logLine">No more logs.</div>');
-						}
-					} else {
-						$('#logViewer').append(data);
-
-						const parser = new DOMParser();
-						const htmlDoc = parser.parseFromString(data, 'text/html');
-						const logLines = htmlDoc.querySelectorAll('.logLine');
-
-						logLines.forEach(function(line) {
-							const lineInDOM = $('#logViewer .logLine[data-linenumber="' + line.getAttribute('data-linenumber') + '"]').last();
-							if (lineInDOM.length === 0) return;
-
-							const lineText = lineInDOM.text();
-							const lineNum = lineInDOM.attr('data-linenumber');
-							const logLevel = detectLogLevel(lineText);
-
-							allLoadedLogs.push({
-								lineNumber: lineNum,
-								text: lineText,
-								level: logLevel
-							});
-
-							lineInDOM.attr('data-level', logLevel);
-							lineInDOM.addClass(`log-${logLevel}`);
-
-							const formattedContent = formatLogLine(lineInDOM.html());
-							lineInDOM.html(formattedContent);
-
-							lineInDOM.attr('data-original-html', lineInDOM.html());
-						});
-
-						if (logLines.length === 0) {
-							hasMoreLogs = false;
-							$('#logViewer').append('<div class="logLine">No more logs.</div>');
-						} else {
-							start += logLines.length;
-							applyFilters();
-						}
-					}
-					loading = false;
-				},
-				error: function() {
-					$('.loading').remove();
-					if (start === 0) {
-						$('#logViewer').html('<div class="error">Error loading logs.</div>');
-					} else {
-						$('#logViewer').append('<div class="error">Error loading more logs.</div>');
-					}
-					loading = false;
-				}
-			});
-		}
-	}
-
 	function viewPhpErrorLogs() {
 		logType = 'php_error';
 		resetAndLoadLogs();
@@ -871,7 +1042,7 @@ require_once APPLICATION_PATH . '/header.php';
             <li><code>vl*</code> - starts with "vl" (matches "vlsm", "vlan")</li>
 			<li><code>*vl</code> - ends with "vl" (matches "xml", "html")</li>
             <li><code>"error message"</code> - exact phrase "error message"</li>
-            <li><code>+request ^error vl%</code> - combine multiple patterns</li>
+            <li><code>+request ^error vl*</code> - combine multiple patterns</li>
         </ul>
     </div>
 `;
@@ -883,18 +1054,42 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 	}
 
-	$(document).ready(function() {
-		$('#logSearchInput').on('input', function() {
-			clearTimeout(searchTimeout);
+	// Optimized search with debouncing
+	const optimizedSearch = debounce(function() {
+		searchTerm = $('#logSearchInput').val();
 
-			const currentSearch = $(this).val();
-			updateSearchTermsIndicator(currentSearch);
+		if (searchTerm.length > 100) {
+			Toastify({
+				text: "Long search terms may impact performance",
+				duration: 3000,
+				gravity: "top",
+				position: "right",
+				backgroundColor: "#ffc107",
+			}).showToast();
+		}
 
-			searchTimeout = setTimeout(function() {
-				searchTerm = $('#logSearchInput').val();
-				applyFilters();
-			}, 300);
+		applyFilters();
+	}, SEARCH_DEBOUNCE_TIME);
+
+	// Virtual scrolling for better performance
+	function initVirtualScrolling() {
+		let ticking = false;
+
+		$(window).on('scroll', function() {
+			if (!ticking) {
+				requestAnimationFrame(function() {
+					if ($(window).scrollTop() + $(window).height() > $(document).height() - 200 && hasMoreLogs && !loading) {
+						loadLogs();
+					}
+					ticking = false;
+				});
+				ticking = true;
+			}
 		});
+	}
+
+	$(document).ready(function() {
+		$('#logSearchInput').on('input', optimizedSearch);
 
 		$('.date').datepicker({
 			changeMonth: true,
@@ -907,6 +1102,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$('[data-toggle="tooltip"]').tooltip();
 
 		$('#viewLogButton').click(function() {
+			showLoadingIndicator();
 			viewApplicationLogs();
 		});
 
@@ -924,8 +1120,6 @@ require_once APPLICATION_PATH . '/header.php';
 			}
 		});
 
-		$('#logSearchInput').attr('placeholder', '+word for exact, "phrase" for exact phrase, word for partial');
-
 		$('#logLevelFilters button').click(function() {
 			$('#logLevelFilters button').removeClass('active');
 			$(this).addClass('active');
@@ -937,17 +1131,11 @@ require_once APPLICATION_PATH . '/header.php';
 
 		addSearchHelp();
 		addSearchExamples();
+		initVirtualScrolling();
 
 		viewApplicationLogs();
-
-		$(window).scroll(function() {
-			if ($(window).scrollTop() + $(window).height() > $(document).height() - 100 && hasMoreLogs) {
-				loadLogs();
-			}
-		});
 	});
 </script>
-
 
 <?php
 require_once APPLICATION_PATH . '/footer.php';

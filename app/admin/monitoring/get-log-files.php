@@ -3,13 +3,213 @@
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 
+// Fast Log Reader Class for Performance
+class FastLogReader
+{
+    private $chunkSize = 8192; // 8KB chunks
+    private $maxMemoryUsage = 50 * 1024 * 1024; // 50MB max memory
+    private $streamingThreshold = 100 * 1024 * 1024; // 100MB for streaming mode
+
+    public function readLogFileReverse($filePath, $start = 0, $limit = 50, $searchTerm = '')
+    {
+        if (!file_exists($filePath)) {
+            return [];
+        }
+
+        $fileSize = filesize($filePath);
+        if ($fileSize === 0) {
+            return [];
+        }
+
+        $handle = fopen($filePath, 'rb');
+        if (!$handle) {
+            return [];
+        }
+
+        $result = [];
+
+        // For very large files, use streaming approach
+        if ($fileSize > $this->streamingThreshold) {
+            $result = $this->streamingReverseRead($handle, $fileSize, $start, $limit, $searchTerm);
+        } else {
+            $result = $this->chunkedReverseRead($handle, $fileSize, $start, $limit, $searchTerm);
+        }
+
+        fclose($handle);
+        return $result;
+    }
+
+    private function chunkedReverseRead($handle, $fileSize, $start, $limit, $searchTerm)
+    {
+        $lines = [];
+        $buffer = '';
+        $position = $fileSize;
+        $foundLines = 0;
+        $targetEnd = $start + $limit;
+
+        while ($position > 0 && $foundLines < $targetEnd + 50) {
+            $chunkStart = max(0, $position - $this->chunkSize);
+            $chunkSize = $position - $chunkStart;
+
+            fseek($handle, $chunkStart);
+            $chunk = fread($handle, $chunkSize);
+
+            $buffer = $chunk . $buffer;
+
+            $chunkLines = explode("\n", $buffer);
+
+            if ($position > $this->chunkSize) {
+                $buffer = array_shift($chunkLines);
+            } else {
+                $buffer = '';
+            }
+
+            for ($i = count($chunkLines) - 1; $i >= 0; $i--) {
+                $line = trim($chunkLines[$i]);
+
+                if (empty($line)) {
+                    continue;
+                }
+
+                if (!empty($searchTerm) && !$this->lineMatchesSearch($line, $searchTerm)) {
+                    continue;
+                }
+
+                if ($foundLines >= $start && count($lines) < $limit) {
+                    $lines[] = $line;
+                }
+
+                $foundLines++;
+
+                if (count($lines) >= $limit) {
+                    break 2;
+                }
+            }
+
+            $position = $chunkStart;
+        }
+
+        return $lines;
+    }
+
+    private function streamingReverseRead($handle, $fileSize, $start, $limit, $searchTerm)
+    {
+        $lines = [];
+        $buffer = '';
+        $position = $fileSize;
+        $foundLines = 0;
+        $processedBytes = 0;
+        $maxProcessBytes = min($fileSize, 200 * 1024 * 1024); // Process max 200MB
+
+        while ($position > 0 && $foundLines < ($start + $limit + 100) && $processedBytes < $maxProcessBytes) {
+            $chunkStart = max(0, $position - $this->chunkSize);
+            $chunkSize = $position - $chunkStart;
+
+            fseek($handle, $chunkStart);
+            $chunk = fread($handle, $chunkSize);
+
+            $buffer = $chunk . $buffer;
+            $processedBytes += $chunkSize;
+
+            $lastNewlinePos = strrpos($buffer, "\n");
+            if ($lastNewlinePos !== false && $position > $this->chunkSize) {
+                $completeBuffer = substr($buffer, $lastNewlinePos + 1);
+                $buffer = substr($buffer, 0, $lastNewlinePos + 1);
+            } else {
+                $completeBuffer = $buffer;
+                $buffer = '';
+            }
+
+            $chunkLines = explode("\n", $completeBuffer);
+
+            for ($i = count($chunkLines) - 1; $i >= 0; $i--) {
+                $line = trim($chunkLines[$i]);
+
+                if (empty($line)) {
+                    continue;
+                }
+
+                if (!empty($searchTerm) && !$this->lineMatchesSearch($line, $searchTerm)) {
+                    continue;
+                }
+
+                if ($foundLines >= $start && count($lines) < $limit) {
+                    $lines[] = $line;
+                }
+
+                $foundLines++;
+
+                if (count($lines) >= $limit) {
+                    break 2;
+                }
+            }
+
+            $position = $chunkStart;
+        }
+
+        return $lines;
+    }
+
+    private function lineMatchesSearch($line, $searchTerm)
+    {
+        if (empty($searchTerm)) {
+            return true;
+        }
+
+        // Use your existing search logic here
+        return lineContainsAllSearchTerms($line, $searchTerm);
+    }
+
+    public function getFileStats($filePath)
+    {
+        if (!file_exists($filePath)) {
+            return null;
+        }
+
+        $stats = [
+            'size' => filesize($filePath),
+            'modified' => filemtime($filePath),
+            'estimated_lines' => 0,
+            'mode' => 'standard'
+        ];
+
+        // Determine processing mode
+        if ($stats['size'] > $this->streamingThreshold) {
+            $stats['mode'] = 'streaming';
+        } elseif ($stats['size'] > $this->maxMemoryUsage) {
+            $stats['mode'] = 'chunked';
+        }
+
+        // Estimate line count by sampling
+        $handle = fopen($filePath, 'rb');
+        if ($handle) {
+            $sampleSize = min(16384, $stats['size']); // 16KB sample
+            $sample = fread($handle, $sampleSize);
+            $sampleLines = substr_count($sample, "\n");
+
+            if ($sampleLines > 0) {
+                $stats['estimated_lines'] = intval(($stats['size'] / $sampleSize) * $sampleLines);
+            }
+
+            fclose($handle);
+        }
+
+        return $stats;
+    }
+}
+
+// Get request parameters
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 
 $logType = $_GET['log_type'] ?? 'application';
-$linesPerPage = 20;
+$linesPerPage = 50; // Increased for better performance
 $start = isset($_GET['start']) ? intval($_GET['start']) : 0;
 $searchTerm = isset($_GET['search']) ? trim($_GET['search']) : '';
+$exportFormat = $_GET['export_format'] ?? '';
+
+// Initialize fast log reader
+$logReader = new FastLogReader();
 
 if ($logType === 'php_error') {
     $file = ini_get('error_log');
@@ -35,7 +235,7 @@ function getMostRecentLogFile($logDirectory)
 function parseSearchTerms($searchString)
 {
     $terms = [];
-    preg_match_all('/"([^"]+)"|\'([^\']+)\'|\+(\S+)|\b(\S+)\b/', $searchString, $matches, PREG_SET_ORDER);
+    preg_match_all('/"([^"]+)"|\'([^\']+)\'|\^(\S+)|\+(\S+)|(\S+)\$|(\S+)\*|\*(\S+)|\b(\S+)\b/', $searchString, $matches, PREG_SET_ORDER);
 
     foreach ($matches as $match) {
         if (!empty($match[1])) {
@@ -43,9 +243,17 @@ function parseSearchTerms($searchString)
         } elseif (!empty($match[2])) {
             $terms[] = ['type' => 'phrase', 'value' => $match[2]];
         } elseif (!empty($match[3])) {
-            $terms[] = ['type' => 'exact', 'value' => $match[3]];
+            $terms[] = ['type' => 'start', 'value' => $match[3]];
         } elseif (!empty($match[4])) {
-            $terms[] = ['type' => 'partial', 'value' => $match[4]];
+            $terms[] = ['type' => 'exact', 'value' => $match[4]];
+        } elseif (!empty($match[5])) {
+            $terms[] = ['type' => 'end', 'value' => $match[5]];
+        } elseif (!empty($match[6])) {
+            $terms[] = ['type' => 'starts_with', 'value' => $match[6]];
+        } elseif (!empty($match[7])) {
+            $terms[] = ['type' => 'ends_with', 'value' => $match[7]];
+        } elseif (!empty($match[8])) {
+            $terms[] = ['type' => 'partial', 'value' => $match[8]];
         }
     }
 
@@ -72,6 +280,26 @@ function lineContainsAllSearchTerms($line, $search)
         switch ($term['type']) {
             case 'exact':
                 $pattern = '/\b' . preg_quote($term['value'], '/') . '\b/i';
+                $found = preg_match($pattern, $line);
+                break;
+
+            case 'start':
+                $pattern = '/^' . preg_quote($term['value'], '/') . '/i';
+                $found = preg_match($pattern, $line);
+                break;
+
+            case 'end':
+                $pattern = '/' . preg_quote($term['value'], '/') . '$/i';
+                $found = preg_match($pattern, $line);
+                break;
+
+            case 'starts_with':
+                $pattern = '/\b' . preg_quote($term['value'], '/') . '/i';
+                $found = preg_match($pattern, $line);
+                break;
+
+            case 'ends_with':
+                $pattern = '/' . preg_quote($term['value'], '/') . '\b/i';
                 $found = preg_match($pattern, $line);
                 break;
 
@@ -206,9 +434,16 @@ function createLogLine($content, $lineNumber, $logLevel)
 }
 
 $actualLogDate = '';
+$performanceInfo = null;
+
+// Get performance stats
+if (file_exists($file)) {
+    $performanceInfo = $logReader->getFileStats($file);
+}
 
 if (file_exists($file)) {
     if ($logType === 'php_error') {
+        // For PHP error logs, keep existing processing since they need special handling
         $fileContent = file($file, FILE_IGNORE_NEW_LINES);
         $logEntries = processPHPErrorLog($fileContent);
         $logEntries = array_reverse($logEntries);
@@ -240,111 +475,49 @@ if (file_exists($file)) {
             echo "<div class='logLine'>No more logs.</div>";
         }
     } else {
-        $fileHandle = fopen($file, 'r');
-        if ($fileHandle) {
-            $fileSize = filesize($file);
+        // Use fast log reader for application logs
+        $logEntries = $logReader->readLogFileReverse($file, $start, $linesPerPage, $searchTerm);
 
-            if ($fileSize > 10 * 1024 * 1024) {
-                $matchingEntries = [];
-                $lineCount = 0;
-                $matchCount = 0;
+        $actualLogDate = $_GET['date'] ?? date('d-M-Y');
 
-                $lines = [];
-                $pos = -2;
-                $currentLine = '';
-                $lastChar = '';
+        echo "<div class='log-header'>" . _translate("Viewing System Log for Date") . " - " . $actualLogDate;
 
-                while (abs($pos) < $fileSize) {
-                    fseek($fileHandle, $pos, SEEK_END);
-                    $char = fgetc($fileHandle);
+        if ($performanceInfo) {
+            $sizeFormatted = number_format($performanceInfo['size'] / 1024, 1);
+            $linesFormatted = number_format($performanceInfo['estimated_lines']);
+            echo " (File: {$sizeFormatted} KB, ~{$linesFormatted} lines, Mode: {$performanceInfo['mode']})";
+        }
 
-                    if ($char === PHP_EOL && $lastChar === PHP_EOL) {
-                        if (!empty($currentLine)) {
-                            $lines[] = $currentLine;
-                            $lineCount++;
-                            $currentLine = '';
+        echo "</div>";
 
-                            if ($lineCount - 1 >= $start && count($lines) >= $linesPerPage) {
-                                break;
-                            }
-                        }
-                    } elseif ($char === PHP_EOL) {
-                        $currentLine = $char . $currentLine;
-                    } else {
-                        $currentLine = $char . $currentLine;
-                    }
+        if (empty($logEntries)) {
+            echo "<div class='logLine'>No more logs.</div>";
+            exit();
+        }
 
-                    $lastChar = $char;
-                    $pos--;
+        foreach ($logEntries as $index => $entry) {
+            $lineNumber = $start + $index + 1;
+            $logLevel = detectLogLevel($entry);
+            $entry = htmlspecialchars($entry);
 
-                    if (abs($pos) >= $fileSize) {
-                        break;
-                    }
+            $lines = preg_split('/\\\\n|\\n|\n/', $entry);
+            $formattedEntry = '';
+
+            foreach ($lines as $i => $line) {
+                if (preg_match('/^#(\d+)/', $line, $matches)) {
+                    $line = '<span style="color:#e83e8c;font-weight:bold;">#' . $matches[1] . '</span>' . substr($line, strlen($matches[0]));
+                    $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
+                } else {
+                    $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
                 }
-
-                if (!empty($currentLine)) {
-                    $lines[] = $currentLine;
-                }
-
-                if (!empty($searchTerm)) {
-                    $lines = array_filter($lines, function ($line) use ($searchTerm) {
-                        return lineContainsAllSearchTerms($line, $searchTerm);
-                    });
-                    $lines = array_values($lines);
-                }
-
-                $logEntries = array_slice($lines, 0, $linesPerPage);
-            } else {
-                $fileContent = file($file, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-                $fileContent = array_reverse($fileContent);
-
-                if (!empty($searchTerm)) {
-                    $fileContent = array_filter($fileContent, function ($line) use ($searchTerm) {
-                        return lineContainsAllSearchTerms($line, $searchTerm);
-                    });
-                    $fileContent = array_values($fileContent);
-                }
-
-                $logEntries = array_slice($fileContent, $start, $linesPerPage);
             }
 
-            fclose($fileHandle);
+            $formattedEntry = formatApplicationLogEntry($formattedEntry);
+            echo createLogLine($formattedEntry, $lineNumber, $logLevel);
+        }
 
-            echo "<div class='log-header'>" . _translate("Viewing System Log for Date") . " - " . $_GET['date'] . "</div>";
-
-            $actualLogDate = $_GET['date'] ?? date('d-M-Y');
-
-            if (empty($logEntries)) {
-                echo "<div class='logLine'>No more logs.</div>";
-                exit();
-            }
-
-            foreach ($logEntries as $index => $entry) {
-                $lineNumber = $start + $index + 1;
-                $logLevel = detectLogLevel($entry);
-                $entry = htmlspecialchars($entry);
-
-                $lines = preg_split('/\\\\n|\\n|\n/', $entry);
-                $formattedEntry = '';
-
-                foreach ($lines as $i => $line) {
-                    if (preg_match('/^#(\d+)/', $line, $matches)) {
-                        $line = '<span style="color:#e83e8c;font-weight:bold;">#' . $matches[1] . '</span>' . substr($line, strlen($matches[0]));
-                        $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
-                    } else {
-                        $formattedEntry .= ($i > 0 ? '<br/>' : '') . $line;
-                    }
-                }
-
-                $formattedEntry = formatApplicationLogEntry($formattedEntry);
-                echo createLogLine($formattedEntry, $lineNumber, $logLevel);
-            }
-
-            if (count($logEntries) < $linesPerPage) {
-                echo "<div class='logLine'>No more logs.</div>";
-            }
-        } else {
-            echo "<div class='error'>" . _translate("Error opening log file.") . "</div>";
+        if (count($logEntries) < $linesPerPage) {
+            echo "<div class='logLine'>No more logs.</div>";
         }
     }
 } else {
@@ -358,20 +531,20 @@ if (file_exists($file)) {
                 $actualLogDate = $dateObj->format('d-M-Y');
             }
 
-            $fileContent = file($recentFile, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
-            $fileContent = array_reverse($fileContent);
-
-            if (!empty($searchTerm)) {
-                $fileContent = array_filter($fileContent, function ($line) use ($searchTerm) {
-                    return lineContainsAllSearchTerms($line, $searchTerm);
-                });
-                $fileContent = array_values($fileContent);
-            }
-
-            $logEntries = array_slice($fileContent, $start, $linesPerPage);
+            // Use fast log reader for recent file too
+            $logEntries = $logReader->readLogFileReverse($recentFile, $start, $linesPerPage, $searchTerm);
+            $recentFileStats = $logReader->getFileStats($recentFile);
 
             echo "<div class='log-header'>" . _translate("No data found for the selected date") . " - " . ($_GET['date'] ?? date('d-M-Y')) . "<br>" .
-                _translate("Showing the most recent log file") . " : " . basename($recentFile) . "</div>";
+                _translate("Showing the most recent log file") . " : " . basename($recentFile);
+
+            if ($recentFileStats) {
+                $sizeFormatted = number_format($recentFileStats['size'] / 1024, 1);
+                $linesFormatted = number_format($recentFileStats['estimated_lines']);
+                echo " (File: {$sizeFormatted} KB, ~{$linesFormatted} lines, Mode: {$recentFileStats['mode']})";
+            }
+
+            echo "</div>";
 
             if (empty($logEntries)) {
                 echo "<div class='logLine'>No logs found.</div>";
@@ -410,6 +583,8 @@ if (file_exists($file)) {
     }
 }
 
-if ($start === 0) {
+// Send performance info to frontend for display
+if ($start === 0 && $performanceInfo) {
+    echo "<!-- PERFORMANCE_INFO: " . json_encode($performanceInfo) . " -->";
     echo "<input type='hidden' id='actualLogDate' value='{$actualLogDate}'>";
 }
