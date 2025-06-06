@@ -368,11 +368,24 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
+                    'error_id' => MiscUtility::generateErrorId(),
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
@@ -534,11 +547,26 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
+                    'error_id' => MiscUtility::generateErrorId(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -755,11 +783,26 @@ try {
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
                 LoggerUtility::logError($e->getMessage(), [
+                    'error_id' => MiscUtility::generateErrorId(),
+                    'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
-                    'trace' => $e->getTraceAsString(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
+                    'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
             }
@@ -963,11 +1006,24 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
+                    'error_id' => MiscUtility::generateErrorId(),
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
@@ -1145,11 +1201,24 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
+                    'error_id' => MiscUtility::generateErrorId(),
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
@@ -1313,11 +1382,24 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
+                    'error_id' => MiscUtility::generateErrorId(),
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;
@@ -1519,11 +1601,24 @@ try {
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
                 LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
-                    'last_db_query' => $db->getLastQuery(),
-                    'last_db_error' => $db->getLastError(),
+                    'error_id' => MiscUtility::generateErrorId(),
                     'exception' => $e,
                     'file' => $e->getFile(),
                     'line' => $e->getLine(),
+                    'last_db_query' => $db->getLastQuery(),
+                    'last_db_error' => $db->getLastError(),
+                    'local_unique_id' => $localRecord['unique_id'] ?? null,
+                    'received_unique_id' => $request['unique_id'] ?? null,
+                    'local_sample_code' => $localRecord['sample_code'] ?? null,
+                    'received_sample_code' => $request['sample_code'] ?? null,
+                    'local_remote_sample_code' => $localRecord['remote_sample_code'] ?? null,
+                    'received_remote_sample_code' => $request['remote_sample_code'] ?? null,
+                    'local_facility_id' => $localRecord['facility_id'] ?? null,
+                    'received_facility_id' => $request['facility_id'] ?? null,
+                    'local_lab_id' => $localRecord['lab_id'] ?? null,
+                    'received_lab_id' => $request['lab_id'] ?? null,
+                    'local_result' => $localRecord['result'] ?? null,
+                    'received_result' => $request['result'] ?? null,
                     'stacktrace' => $e->getTraceAsString()
                 ]);
                 continue;

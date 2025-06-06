@@ -2,7 +2,6 @@
 
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
-use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
@@ -91,5 +90,5 @@ try {
             'trace' => $e->getTraceAsString(),
         ]
     );
-    echo "Error in token generation: " . $e->getMessage() . ". Please check logs for details" . PHP_EOL;
+    echo "Error in token generation. Please check logs for details" . PHP_EOL;
 }

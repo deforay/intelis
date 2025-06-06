@@ -47,8 +47,6 @@ final class LoggerUtility
         return is_dir($logDir) && is_writable($logDir);
     }
 
-
-
     private static function getLogger(): Logger
     {
         if (self::$logger === null) {

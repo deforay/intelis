@@ -20,7 +20,6 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $labNameList = $facilitiesService->getTestingLabs();
 
-
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $stateNameList = $geolocationService->getProvinces("yes");
@@ -189,7 +188,7 @@ $activeModules = SystemService::getActiveModules();
 
         $('#syncStatusDataTable tbody').on('click', 'tr', function() {
             let facilityId = $(this).attr('data-facilityId');
-            let link = "lab-sync-details.php?labId=" + facilityId;
+            let link = "/admin/monitoring/lab-sync-details.php?labId=" + facilityId;
             window.open(link);
         });
     });
@@ -228,7 +227,7 @@ $activeModules = SystemService::getActiveModules();
 
     function exportSyncStatus() {
         $.blockUI();
-        $.post("generate-lab-sync-status-report.php", {},
+        $.post("/admin/monitoring/generate-lab-sync-status-report.php", {},
             function(data) {
                 $.unblockUI();
                 if (data === "" || data === null || data === undefined) {

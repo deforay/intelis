@@ -174,11 +174,7 @@ $state = $geolocationService->getProvinces("yes");
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
 		<h1><em class="fa-solid fa-book"></em>
-			<?php echo _translate("VL Quarterly Monitoring Tool"); ?>
-			<!--<ol class="breadcrumb">-->
-			<!--  <li><a href="/"><em class="fa-solid fa-chart-pie"></em> Home</a></li>-->
-			<!--  <li class="active">Export Result</li>-->
-			<!--</ol>-->
+			<?= _translate("VL Quarterly Monitoring Tool"); ?>
 		</h1>
 	</section>
 	<!-- Main content -->
@@ -190,22 +186,15 @@ $state = $geolocationService->getProvinces("yes");
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
-								</strong></td>
+								</strong>
+							</td>
 							<td>
 								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
-								<!--<div id="sla-data-range" class="mrp-container form-control">
-									<span class="mrp-icon"><em class="fa-solid fa-calendar-days"></em> &nbsp;</span>
-									<div class="mrp-monthdisplay ">
-										<span class="mrp-lowerMonth"><?php echo date('M', strtotime('-2 month')); ?> <?php echo $startYear; ?></span> <span class="mrp-to"> to </span>
-										<span class="mrp-upperMonth"><?php echo date('M'); ?> <?php echo date('Y'); ?></span>
-									</div>
-									<input type="hidden" value="<?php echo $startDate; ?>" id="mrp-lowerDate" onchange="" />
-									<input type="hidden" value="<?php echo $endDate; ?>" id="mrp-upperDate" />
-								</div>-->
 							</td>
 							<td><strong>
 									<?php echo _translate("Region/Province/State"); ?>&nbsp;:
-								</strong></td>
+								</strong>
+							</td>
 							<td>
 								<select name="state" id="state" class="form-control" title="<?php echo _translate('Please choose Province/State/Region'); ?>" onchange="getByProvince(this.value)" onkeyup="searchVlRequestData()">
 									<?= $general->generateSelectOptions($state, null, _translate("-- Select --")); ?>
@@ -217,26 +206,23 @@ $state = $geolocationService->getProvinces("yes");
 
 							<td><strong>
 									<?php echo _translate("District/County"); ?> :
-								</strong></td>
+								</strong>
+							</td>
 							<td>
 								<select name="district" id="district" class="form-control" title="<?php echo _translate('Please choose District/County'); ?>" onchange="getByDistrict(this.value)" onkeyup="searchVlRequestData()">
 								</select>
 							</td>
 							<td><strong>
 									<?php echo _translate("Lab Name"); ?> :
-								</strong></td>
+								</strong>
+							</td>
 							<td>
 								<select class="form-control" id="facilityName" name="facilityName" title="<?php echo _translate('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
 						</tr>
-						<tr>
-							<!-- <td><strong>Sample Test Date&nbsp;:</strong></td>
-			  <td>
-				<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="Select Sample Test Date" readonly style="background:#fff;" />
-			  </td> -->
-						</tr>
+
 						<tr>
 							<td colspan="4">&nbsp;<input type="button" onclick="searchVlRequestData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>

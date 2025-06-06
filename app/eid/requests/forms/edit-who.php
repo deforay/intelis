@@ -350,14 +350,14 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                         <th scope="row" style="width:15% !important" class="labels">Sample Collection
                                             Date <span class="mandatory">*</span> </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?php echo ($eidInfo['sample_collection_date']); ?>" onchange="checkCollectionDate(this.value);" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleCollectionDate" id="sampleCollectionDate" placeholder="Sample Collection Date" value="<?= $eidInfo['sample_collection_date']; ?>" onchange="checkCollectionDate(this.value);" />
                                             <span class="expiredCollectionDate" style="color:red; display:none;"></span>
                                         </td>
                                         <th scope="row" style="width:15% !important" class="labels">Sample Dispatched On
                                             <span class="mandatory">*</span>
                                         </th>
                                         <td style="width:35% !important;">
-                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?php echo date('d-M-Y H:i:s', strtotime((string) $eidInfo['sample_dispatched_datetime'])); ?>" />
+                                            <input class="form-control dateTime isRequired" type="text" name="sampleDispatchedDate" id="sampleDispatchedDate" placeholder="Sample Dispatched On" value="<?= $eidInfo['sample_dispatched_datetime']; ?>" />
                                         </td>
                                     </tr>
                                     <tr>

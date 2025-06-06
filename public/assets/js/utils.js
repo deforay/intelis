@@ -443,7 +443,10 @@ class Utilities {
             };
         }
 
-
+        // Extend dayjs with the customParseFormat plugin if available
+        if (dayjs.extend && typeof dayjs_plugin_customParseFormat !== 'undefined') {
+            dayjs.extend(dayjs_plugin_customParseFormat);
+        }
 
         if (!dob) {
             return {

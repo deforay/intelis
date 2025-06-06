@@ -29,43 +29,46 @@ final class DateUtility
             return null;
         }
 
-        $trimmedDate = trim($date);
+        return MemoUtility::remember(function () use ($date, $format, $inputFormat) {
 
-        // Perform preliminary checks for obviously invalid date strings
-        if (empty($trimmedDate) || 'undefined' === $trimmedDate || 'null' === $trimmedDate || preg_match('/[_*]|--/', $trimmedDate)) {
-            return null;
-        }
+            $trimmedDate = trim($date);
 
-        try {
-            $carbonDate = null;
-            if (null !== $inputFormat) {
-                // If a specific input format is provided, use createFromFormat
-                $carbonDate = Carbon::createFromFormat($inputFormat, $trimmedDate);
-                // createFromFormat returns false on failure
-                if ($carbonDate === false) {
-                    // Optionally log this failure, e.g., using LoggerUtility
-                    // LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
-                    return null;
-                }
-            } else {
-                // Original behavior: use Carbon::parse for general date strings
-                // The previous isDateValid() check's core parsing is covered by Carbon::parse() throwing an exception on failure.
-                $carbonDate = Carbon::parse($trimmedDate);
+            // Perform preliminary checks for obviously invalid date strings
+            if (empty($trimmedDate) || 'undefined' === $trimmedDate || 'null' === $trimmedDate || preg_match('/[_*]|--/', $trimmedDate)) {
+                return null;
             }
 
-            // If parsing was successful, format and return the date string
-            return $carbonDate->format($format);
-        } catch (Throwable $e) {
-            // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
-            // or any other errors during the process.
-            // Optionally log the error, e.g., using LoggerUtility
-            LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage(), [
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'trace' => $e->getTraceAsString()
-            ]);
-            return null;
-        }
+            try {
+                $carbonDate = null;
+                if (null !== $inputFormat) {
+                    // If a specific input format is provided, use createFromFormat
+                    $carbonDate = Carbon::createFromFormat($inputFormat, $trimmedDate);
+                    // createFromFormat returns false on failure
+                    if ($carbonDate === false) {
+                        // Optionally log this failure, e.g., using LoggerUtility
+                        // LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
+                        return null;
+                    }
+                } else {
+                    // Original behavior: use Carbon::parse for general date strings
+                    // The previous isDateValid() check's core parsing is covered by Carbon::parse() throwing an exception on failure.
+                    $carbonDate = Carbon::parse($trimmedDate);
+                }
+
+                // If parsing was successful, format and return the date string
+                return $carbonDate->format($format);
+            } catch (Throwable $e) {
+                // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
+                // or any other errors during the process.
+                // Optionally log the error, e.g., using LoggerUtility
+                LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage(), [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                return null;
+            }
+        });
     }
 
     /**
@@ -316,8 +319,6 @@ final class DateUtility
         });
     }
 
-
-
     /**
      * Returns the date that is a certain number of months before the current date.
      *
@@ -338,9 +339,7 @@ final class DateUtility
      */
     private static function filterValidDates(array $dates): array
     {
-        return array_filter($dates, function ($date) {
-            return self::isDateValid($date);
-        });
+        return array_filter($dates, fn($date) => self::isDateValid($date));
     }
 
     /**
@@ -436,5 +435,15 @@ final class DateUtility
 
         // Default case if none of the above conditions are met
         return _translate('Unknown');
+    }
+
+    public static function getCurrentYear(): int
+    {
+        return (int) Carbon::now()->format('Y');
+    }
+
+    public static function getYearMinus(int $years): int
+    {
+        return self::getCurrentYear() - $years;
     }
 }
