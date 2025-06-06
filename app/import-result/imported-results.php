@@ -545,20 +545,13 @@ foreach ($rejectionTypeResult as $type) {
 		moduleName = $("#module").val();
 		globalValue = '<?= $arr["user_review_approve"]; ?>';
 		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
-			conf = confirm("Same person is reviewing and approving result!");
+			conf = confirm("<?= _translate("Same person is reviewing and approving result! Do you want to continue?", true); ?>");
 			if (conf) {} else {
 				return false;
 			}
 		} else if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'no') {
-			alert("<?= _translate("Same person is reviewing and approving result!"); ?>");
+			alert("<?= _translate("Same person is reviewing and approving result. This is not allowed as per your system configuration.", true); ?>");
 			return false;
-		}
-
-		if (appBy == reviewedBy && (reviewedBy != '' && appBy != '') && globalValue == 'yes') {
-			conf = confirm("<?= _translate("Same person is reviewing and approving result!"); ?>");
-			if (conf) {} else {
-				return false;
-			}
 		}
 
 		if (somethingmissing == true) {

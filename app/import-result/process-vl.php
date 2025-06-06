@@ -177,6 +177,7 @@ try {
                         if (!$importNonMatching) {
                             continue;
                         }
+                        $data['unique_id'] = MiscUtility::generateULID();
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
@@ -202,7 +203,7 @@ try {
             $db->where('temp_sample_id', $id[$i]);
             $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
         }
-        if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
+        if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
         }
     }
@@ -212,8 +213,9 @@ try {
                         WHERE imported_by =? AND tsr.result_status=7";
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
-        for ($i = 0; $i < count($accResult); $i++) {
-            $data = array(
+        $resultCount = count($accResult);
+        for ($i = 0; $i < $resultCount; $i++) {
+            $data = [
                 'result_reviewed_by' => $_POST['reviewedBy'],
                 'lab_tech_comments' => $_POST['comments'],
                 'lot_number' => $accResult[$i]['lot_number'],
@@ -238,7 +240,7 @@ try {
                 'vl_test_platform' => $accResult[$i]['vl_test_platform'],
                 'import_machine_name' => $accResult[$i]['import_machine_name'],
                 'cv_number' => $accResult[$i]['cv_number'],
-            );
+            ];
 
             if ($accResult[$i]['result_status'] == SAMPLE_STATUS\REJECTED) {
                 $data['is_sample_rejected'] = 'yes';
@@ -271,7 +273,7 @@ try {
 
             MiscUtility::makeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results", 0777, true);
 
-            if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
+            if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']) && !is_dir(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'])) {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
@@ -289,7 +291,17 @@ try {
         $testResultsService->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
 
-    echo "importedStatistics.php";
-} catch (Throwable $exc) {
-    LoggerUtility::log("error", $exc->getMessage());
+
+} catch (Throwable $e) {
+    LoggerUtility::logError(
+        "Error in processing VL results import: " . $e->getMessage(),
+        [
+            'exception' => $e,
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'trace' => $e->getTraceAsString()
+        ]
+    );
 }
+
+echo "importedStatistics.php";

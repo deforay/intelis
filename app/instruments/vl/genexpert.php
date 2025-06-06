@@ -108,11 +108,11 @@ try {
 
                 $interpretedResults = $vlService->interpretViralLoadResult($vlResult);
 
-                $infoFromFile[$sampleCode]['logVal'] = $logVal ?? $interpretedResults['logVal'];
-                $infoFromFile[$sampleCode]['absDecimalVal'] = $interpretedResults['absDecimalVal'];
-                $infoFromFile[$sampleCode]['absVal'] = $interpretedResults['absVal'];
-                $infoFromFile[$sampleCode]['txtVal'] = $interpretedResults['txtVal'];
-                $infoFromFile[$sampleCode]['result'] = $vlResult;
+                $infoFromFile[$sampleCode]['logVal'] = $logVal ?? $interpretedResults['logVal'] ?? null;
+                $infoFromFile[$sampleCode]['absDecimalVal'] = $interpretedResults['absDecimalVal'] ?? null;
+                $infoFromFile[$sampleCode]['absVal'] = $interpretedResults['absVal'] ?? null;
+                $infoFromFile[$sampleCode]['txtVal'] = $interpretedResults['txtVal'] ?? null;
+                $infoFromFile[$sampleCode]['result'] = $interpretedResults['result'] ?? null;
                 $infoFromFile[$sampleCode]['resultFlag'] = null;
 
 
