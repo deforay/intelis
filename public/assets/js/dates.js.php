@@ -27,7 +27,7 @@ use App\Utilities\DateUtility;
             },
             dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
             timeFormat: "HH:mm",
-            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+            yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
         }).click(function() {
             $('.ui-datepicker-calendar').show();
         });
@@ -57,7 +57,7 @@ use App\Utilities\DateUtility;
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 maxDate: "Today",
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>",
+                yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>",
                 onSelect: function(dateText, inst) {
                     $(this).change();
                 }
@@ -75,7 +75,7 @@ use App\Utilities\DateUtility;
                 },
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+                yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
@@ -93,7 +93,7 @@ use App\Utilities\DateUtility;
                         $('.ui-datepicker-calendar').show();
                     });
                 },
-                yearRange: '<?= DateUtility::getYearMinus(100); ?>:' + '<?= date('Y'); ?>'
+                yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
@@ -135,7 +135,7 @@ use App\Utilities\DateUtility;
                         $('.ui-datepicker-calendar').show();
                     });
                 },
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+                yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
@@ -156,7 +156,7 @@ use App\Utilities\DateUtility;
                         $('.ui-datepicker-calendar').show();
                     });
                 },
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+                yearRange: "<?= DateUtility::getYearMinus(100) . ":" . DateUtility::getCurrentYear(); ?>"
             }).click(function() {
                 $('.ui-datepicker-calendar').show();
             });
