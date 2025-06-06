@@ -97,7 +97,7 @@ try {
         $_SESSION['formId'] = (int) $general->getGlobalConfig('vl_form');
         $_SESSION['userId'] = $userRow['user_id'];
         $_SESSION['loginId'] = $userRow['login_id'];
-        $_SESSION['userName'] = ($userRow['user_name']);
+        $_SESSION['userName'] = $userRow['user_name'];
         $_SESSION['roleCode'] = $userRow['role_code'];
         $_SESSION['roleId'] = $userRow['role_id'];
         $_SESSION['accessType'] = $userRow['access_type'];
@@ -119,7 +119,7 @@ try {
         }
         //Add event log
         $eventType = 'login';
-        $action = ($userRow['user_name']) . ' logged in';
+        $action = $userRow['user_name'] . ' logged in';
         $resource = 'user-login';
         $general->activityLog($eventType, $action, $resource);
 
@@ -157,3 +157,4 @@ try {
 }
 
 SecurityService::redirect($redirect);
+exit;

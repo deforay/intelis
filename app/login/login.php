@@ -11,6 +11,8 @@ if (isset($_SESSION['userId'])) {
 	SecurityService::redirect("/dashboard/index.php");
 }
 
+session_destroy();
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

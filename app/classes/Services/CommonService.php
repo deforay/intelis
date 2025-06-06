@@ -630,10 +630,10 @@ final class CommonService
     }
 
     // Helper function to check if the current URI is in the excluded list
-    public static function isExcludedUri(string $uri, array $excludedUris): bool
+    public static function isExcludedUri(string $uri, $excludedUris): bool
     {
         foreach ($excludedUris as $excludedUri) {
-            if (is_string($excludedUri) && fnmatch($excludedUri, $uri)) {
+            if (fnmatch($excludedUri, $uri)) {
                 return true;
             }
         }

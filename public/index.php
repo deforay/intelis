@@ -113,7 +113,7 @@ if (fnmatch('/system-admin*', $uri)) {
 }
 
 // CSRF Middleware
-//$middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));
+$middlewarePipe->pipe(ContainerRegistry::get(CSRFMiddleware::class));
 
 // ACL Middleware
 $middlewarePipe->pipe(ContainerRegistry::get(AclMiddleware::class));

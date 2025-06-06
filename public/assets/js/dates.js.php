@@ -15,11 +15,6 @@ use App\Utilities\DateUtility;
         return dayjs(value, dayjsDateFormat);
     }
 
-    function showInvalidDateAlert(fieldName) {
-        alert("<?= _translate('Invalid format for', true) ?> " + fieldName + ".");
-    }
-
-
     $(document).ready(function() {
         initDatePicker();
         initDateTimePicker();
@@ -283,8 +278,6 @@ use App\Utilities\DateUtility;
                 alert("<?= _translate('Sample Received at Testing Lab Date cannot be earlier than Sample Collection Date', true); ?>");
                 $("#sampleReceivedDate").val("");
             }
-        } else {
-            showInvalidDateAlert("<?= _translate('Sample Received Date',true); ?>");
         }
     }
 
@@ -297,8 +290,6 @@ use App\Utilities\DateUtility;
                 alert("<?= _translate('Sample Received at Hub Date cannot be earlier than Sample Collection Date', true); ?>");
                 $("#sampleReceivedAtHubOn").val("");
             }
-        } else {
-            showInvalidDateAlert("<?= _translate('Sample Received at Hub Date',true); ?>");
         }
     }
 
@@ -311,8 +302,6 @@ use App\Utilities\DateUtility;
                 alert("<?= _translate('Sample Testing Date cannot be earlier than Sample Collection Date', true); ?>");
                 $("#sampleTestingDateAtLab").val("");
             }
-        } else {
-            showInvalidDateAlert("<?= _translate('Sample Testing Date',true); ?>");
         }
     }
 
@@ -324,8 +313,6 @@ use App\Utilities\DateUtility;
             if (date2.isBefore(date1)) {
                 $('#sampleDispatchedDate').val($("#sampleCollectionDate").val());
             }
-        } else {
-            showInvalidDateAlert("<?= _translate('Sample Dispatch Date',true); ?>");
         }
     }
 </script>

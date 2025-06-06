@@ -1,22 +1,27 @@
 <?php
-
 if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
-    session_name('appSession');
+    session_name('appSessionv2');
 
-    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
-        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https');
+    // Smart secure detection: also works behind proxies
+    $isSecure = (
+        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+    );
 
+    // Set cookie parameters
     session_set_cookie_params([
-        'path' => '/',
-        'secure' => $isSecure,
-        'httponly' => true,
-        'samesite' => 'Lax'
+        'lifetime' => 0,          // Session cookie, expires on browser close
+        'path' => '/',            // Available throughout the domain
+        'secure' => $isSecure,    // Only send cookie over HTTPS
+        'httponly' => true,       // JS cannot access session cookie
+        'samesite' => 'Lax'       // Lax is perfect for login forms and redirects
     ]);
 
     if (!session_start()) {
         throw new Exception('Failed to start session');
     }
 }
+
 
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
