@@ -1,6 +1,6 @@
 <?php
 if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
-    session_name('intelis-session');
+    session_name('appSessionv2');
 
     // Smart secure detection: also works behind proxies
     $isSecure = (
