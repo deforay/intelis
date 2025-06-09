@@ -64,6 +64,18 @@ try {
             }
         }
 
+        $bdl = [
+            'not detected',
+            '< 839',
+        ];
+
+        if (
+            !empty($interpretedResults['result'])
+            && in_array(strtolower($interpretedResults['result']), $bdl)
+        ) {
+            $interpretedResults['result'] = 'Below Detection Level';
+        }
+
         // Store parsed data
         $infoFromFile[$sampleCode] = [
             "sampleCode" => $sampleCode,

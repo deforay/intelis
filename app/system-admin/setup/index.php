@@ -23,7 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 try {
   $myfile = fopen(CORE\SYSADMIN_SECRET_KEY_FILE, "w+");
   if ($myfile === false) {
-    throw new SystemException("No permission to write file");
+    throw new SystemException("Unable to create secret key file. Please check permissions on the directory.", 500);
   }
 } catch (Throwable $e) {
   throw new SystemException($e->getMessage(), $e->getCode(), $e);
