@@ -84,6 +84,7 @@ try {
                     'vlsm_country_id' => $arr['vl_form'],
                     'file_name' => $rResult['import_machine_file_name'],
                     'imported_date_time' => $rResult['result_imported_datetime'],
+                    'is_sample_rejected' => 'no'
                 ];
                 if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
@@ -93,9 +94,8 @@ try {
                     $data['result_value_text'] = null;
                     $data['result_value_absolute_decimal'] = null;
                     $data['result'] = null;
-                } else {
-                    $data['is_sample_rejected'] = 'no';
                 }
+
                 $data['status'] = $status[$i];
 
                 $db->insert('vl_imported_controls', $data);

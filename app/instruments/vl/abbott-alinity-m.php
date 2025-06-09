@@ -70,10 +70,15 @@ try {
         ];
 
         if (
-            !empty($interpretedResults['result'])
-            && in_array(strtolower($interpretedResults['result']), $bdl)
+            !empty($interpretedResults['result']) &&
+            (in_array(strtolower($interpretedResults['result']), $bdl) ||
+                ($interpretedResults['absDecimalVal'] < 839))
         ) {
-            $interpretedResults['result'] = 'Below Detection Level';
+            $interpretedResults['txtVal'] =
+                $interpretedResults['result'] = 'Below Detection Level';
+            $interpretedResults['absVal'] = null;
+            $interpretedResults['absDecimalVal'] = null;
+            $interpretedResults['logVal'] = null;
         }
 
         // Store parsed data
