@@ -34,3 +34,7 @@ ALTER TABLE `r_vl_art_regimen` DROP `nation_identifier`;
 
 -- Amit 31-May-2025
 CREATE INDEX idx_vl_result_category_status ON form_vl (vl_result_category, result_status);
+
+-- Amit 10-Jun-2025
+ALTER TABLE `user_details` DROP INDEX `interface_user_name`;
+ALTER TABLE `user_details` CHANGE `interface_user_name` `interface_user_name` JSON NULL DEFAULT NULL;
