@@ -306,7 +306,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                   <label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" id="genderFemale" name="gender" value="female" title="Please select sex" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'female') ? "checked='checked'" : ""; ?>>Female
                                                   </label>&nbsp;&nbsp;
-                                                 <!-- <label class="radio-inline" style="margin-left:0px;">
+                                                  <!-- <label class="radio-inline" style="margin-left:0px;">
                                                        <input type="radio" class="" id="genderNotRecorded" name="gender" value="unreported" title="Please choose sex" <?php echo (isset($cd4QueryInfo['patient_gender']) && $cd4QueryInfo['patient_gender'] == 'unreported') ? "checked='checked'" : ""; ?>>Unreported
                                                   </label>-->
                                              </div>
@@ -390,19 +390,19 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                              <h3 class="box-title">Treatment Information</h3>
                                         </div>
                                         <div class="box-body">
-                                                  <div class="row">
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="">Is patient initiated on ART?</label>
-                                                                 <select name="isPatientInitiatedOnArt" id="isPatientInitiatedOnArt" class="form-control" onchange="showArtSection(this.value);">
-                                                                      <option value=""> -- Select -- </option>
-                                                                      <option value="yes" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
-                                                                      <option value="no" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'no') ? "selected='selected'" : "" ?>>No</option>
-                                                                 </select>
-                                                            </div>
+                                             <div class="row">
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="">Is patient initiated on ART?</label>
+                                                            <select name="isPatientInitiatedOnArt" id="isPatientInitiatedOnArt" class="form-control" onchange="showArtSection(this.value);">
+                                                                 <option value=""> -- Select -- </option>
+                                                                 <option value="yes" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "selected='selected'" : "" ?>>Yes</option>
+                                                                 <option value="no" <?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'no') ? "selected='selected'" : "" ?>>No</option>
+                                                            </select>
                                                        </div>
                                                   </div>
-                                                  <div class="row ARTSection" style="display:<?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "block" : "none"; ?>;">
+                                             </div>
+                                             <div class="row ARTSection" style="display:<?php echo ($cd4QueryInfo['is_patient_initiated_on_art'] == 'yes') ? "block" : "none"; ?>;">
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="arvAdherence">ARV Adherence <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
@@ -508,18 +508,18 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">
-                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                            <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                            <div class="col-lg-7">
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
-                                                                                <option value="">--Select--</option>
-                                                                                <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
-                                                                                <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
-                                                                                <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
-                                                                                <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
-                                                                           </select>
-                                                                      </div>
+                                                                      <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                           <option value="">--Select--</option>
+                                                                           <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+                                                                           <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+                                                                           <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+                                                                           <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+                                                                      </select>
                                                                  </div>
+                                                            </div>
                                                        </div>
                                                   </div>
                                                   <div class="row">
@@ -625,17 +625,17 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        </div>
                                                        <div class="col-md-4">
                                                             <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+                                                            <div class="col-lg-7">
                                                                  <div class="col-lg-7">
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
-                                                                               <option value="">--Select--</option>
-                                                                               <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
-                                                                               <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
-                                                                               <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
-                                                                               <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
-                                                                           </select>
-                                                                      </div>
+                                                                      <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                           <option value="">--Select--</option>
+                                                                           <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+                                                                           <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+                                                                           <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+                                                                           <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+                                                                      </select>
                                                                  </div>
+                                                            </div>
                                                        </div>
                                                   </div>
 
@@ -794,18 +794,18 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             </div>
                                                        </div>
                                                        <div class="row crAgResults" style="display:none;">
-                                                                 <div class="col-md-6 cd4Result">
-                                                                      <label class="col-lg-5 control-label" for="crAgResults">CrAg test Result (If CD4 Count <= 200)</label>
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
-                                                                                <option value="">--Select--</option>
-                                                                                <option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
-                                                                                <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
-                                                                                <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
-                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
+                                                            <div class="col-md-6 cd4Result">
+                                                                 <label class="col-lg-5 control-label" for="crAgResults">CrAg test Result (If CD4 Count <= 200)</label>
+                                                                           <div class="col-lg-7">
+                                                                                <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                     <option value="">--Select--</option>
+                                                                                     <option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
+                                                                                     <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
+                                                                                     <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
+                                                                                     <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
+                                                                                </select>
+                                                                           </div>
+                                                            </div>
                                                        </div>
                                                        <div class="row">
                                                             <div class="col-md-6">
@@ -974,7 +974,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
@@ -1143,26 +1143,38 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
      }
 
-     function showArtSection(isPatientArt){
-          $("#arvAdherence").val("");
-               $("#dateOfArtInitiation").val("");
-               $("#artRegimen").val("");
-               $("#regimenInitiatedOn").val("");
+     // function showArtSection(isPatientArt){
+     //      $("#arvAdherence").val("");
+     //           $("#dateOfArtInitiation").val("");
+     //           $("#artRegimen").val("");
+     //           $("#regimenInitiatedOn").val("");
 
-          if(isPatientArt == "yes"){
+     //      if(isPatientArt == "yes"){
+     //           $(".ARTSection").show();
+     //      }
+     //      else{
+     //           $(".ARTSection").hide();
+     //      }
+     // }
+
+     function showArtSection(isPatientArt) {
+          if (isPatientArt == "yes") {
                $(".ARTSection").show();
-          }
-          else{
+               $("#arvAdherence").addClass('isRequired');
+               $("#artRegimen").addClass('isRequired');
+               $("#regimenInitiatedOn").addClass('isRequired');
+          } else {
                $(".ARTSection").hide();
+               $("#arvAdherence").removeClass('isRequired');
+               $("#artRegimen").removeClass('isRequired');
+               $("#regimenInitiatedOn").removeClass('isRequired');
           }
      }
 
-     function getCrAgResults(cd4Count)
-     {
-          if(cd4Count <= 200){
+     function getCrAgResults(cd4Count) {
+          if (cd4Count <= 200) {
                $(".crAgResults").show();
-          }
-          else{
+          } else {
                $(".crAgResults").hide();
           }
      }

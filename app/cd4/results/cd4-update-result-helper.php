@@ -128,7 +128,7 @@ try {
     }
 
     $db->where('cd4_id', $_POST['cd4SampleId']);
-    $id = $db->update($tableName, $vlData);
+    $id = $db->update('form_cd4', $vlData);
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("CD4 request updated successfully");
         //Log result updates

@@ -331,7 +331,7 @@ $sFormat = '';
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="">Is sample re-ordered as part of corrective action? <span class="mandatory">*</span></label>
-                                                            <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose adherence">
+                                                            <select name="isSampleReordered" id="isSampleReordered" class="form-control <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" title="Please choose if sample is reordered">
                                                                  <option value=""> -- Select -- </option>
                                                                  <option value="yes">Yes</option>
                                                                  <option value="no">No</option>
@@ -1035,9 +1035,15 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
      function showArtSection(isPatientArt){
           if(isPatientArt == "yes"){
                $(".ARTSection").show();
+               $("#arvAdherence").addClass('isRequired');
+               $("#artRegimen").addClass('isRequired');
+               $("#regimenInitiatedOn").addClass('isRequired');
           }
           else{
                $(".ARTSection").hide();
+               $("#arvAdherence").removeClass('isRequired');
+               $("#artRegimen").removeClass('isRequired');
+               $("#regimenInitiatedOn").removeClass('isRequired');
           }
      }
 
