@@ -105,18 +105,20 @@ if ($cliMode) {
     }
 }
 
-// Sanitized values from $request object
-/** @var Laminas\Diactoros\ServerRequest $request */
-$request = AppRegistry::get('request');
-$postParams = $request->getParsedBody();
+if (!empty($_POST)) {
+    // Sanitized values from $request object
+    /** @var Laminas\Diactoros\ServerRequest $request */
+    $request = AppRegistry::get('request');
+    $postParams = $request->getParsedBody();
 
-if (!empty($postParams)) {
-    $_POST = _sanitizeInput($postParams);
+    if (!empty($postParams)) {
+        $_POST = _sanitizeInput($postParams);
 
-    $manifestCode = $_POST['manifestCode'] ?? null;
-    $forceSyncModule = $_POST['testType'] ?? $_POST['forceSyncModule'] ?? null;
-    $syncSinceDate = $_POST['syncSinceDate'] ?? null;
-    $isSilent = $_POST['silent'] ?? false;
+        $manifestCode = $_POST['manifestCode'] ?? null;
+        $forceSyncModule = $_POST['testType'] ?? $_POST['forceSyncModule'] ?? null;
+        $syncSinceDate = $_POST['syncSinceDate'] ?? null;
+        $isSilent = $_POST['silent'] ?? false;
+    }
 }
 
 if ($syncSinceDate !== null) {
