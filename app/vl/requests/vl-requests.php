@@ -1184,6 +1184,11 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function exportTestRequests() {
+
+		const exportButton = $('[onclick="exportTestRequests();"]');
+		const originalButtonHtml = exportButton.html();
+
+		exportButton.html('<i class="fa fa-spinner fa-spin"></i> <?php echo _translate("Generating..."); ?>').prop('disabled', true);
 		if (searchExecuted === false) {
 			searchVlRequestData();
 		}
@@ -1194,6 +1199,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			},
 			function(data) {
 				$.unblockUI();
+				exportButton.html(originalButtonHtml).prop('disabled', false);
 				if (data === "" || data === null || data === undefined) {
 					alert("<?php echo _translate("Unable to generate the excel file"); ?>");
 				} else {

@@ -40,9 +40,9 @@ try {
     $printSampleCode = [];
 
     $importNonMatching = !(isset($arr['import_non_matching_sample']) && $arr['import_non_matching_sample'] == 'no');
-    $instanceQuery = "SELECT * FROM s_vlsm_instance";
-    $instanceResult = $db->query($instanceQuery);
-    $result = '';
+
+    $instanceId = $general->getInstanceId();
+
     $id = explode(",", (string) $_POST['value']);
     $totalIds = count($id);
     $status = explode(",", (string) $_POST['status']);
@@ -63,6 +63,7 @@ try {
             }
 
             if (strtolower($rResult['sample_type']) != 's') {
+
                 $data = [
                     'control_code' => $rResult['sample_code'],
                     'lab_id' => $rResult['lab_id'],
@@ -86,6 +87,7 @@ try {
                     'imported_date_time' => $rResult['result_imported_datetime'],
                     'is_sample_rejected' => 'no'
                 ];
+
                 if ($status[$i] == SAMPLE_STATUS\REJECTED) {
                     $data['is_sample_rejected'] = 'yes';
                     $data['reason_for_sample_rejection'] = $rejectedReasonId[$i];
@@ -126,7 +128,7 @@ try {
                     $data['sample_type'] = $rResult['sample_type'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
-                    $result = $db->insert('hold_sample_import', $data);
+                    $db->insert('hold_sample_import', $data);
                 } else {
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
@@ -170,7 +172,7 @@ try {
                         $data['data_sync'] = 0;
 
                         $db->where('sample_code', $rResult['sample_code']);
-                        $result = $db->update('form_vl', $data);
+                        $db->update('form_vl', $data);
 
                         $vlSampleId = $vlResult[0]['vl_sample_id'];
                     } else {
@@ -180,7 +182,7 @@ try {
                         $data['unique_id'] = MiscUtility::generateULID();
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
-                        $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
+                        $data['vlsm_instance_id'] = $instanceId;
                         $vlSampleId = $db->insert('form_vl', $data);
                     }
 
@@ -201,7 +203,7 @@ try {
                 );
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
+            $db->update('temp_sample_import', ['temp_sample_status' => 1]);
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -210,7 +212,7 @@ try {
     //get all accepted data result
     $accQuery = "SELECT * FROM temp_sample_import as tsr
                         LEFT JOIN form_vl as vl ON vl.sample_code=tsr.sample_code
-                        WHERE imported_by =? AND tsr.result_status=7";
+                        WHERE imported_by =? AND tsr.result_status= " . SAMPLE_STATUS\ACCEPTED;
     $accResult = $db->rawQuery($accQuery, [$importedBy]);
     if ($accResult) {
         $resultCount = count($accResult);
@@ -251,7 +253,7 @@ try {
                 $data['result_value_absolute_decimal'] = null;
                 $data['result'] = null;
             } else {
-                $data['result_status'] = $status[$i] ?? 7;
+                $data['result_status'] = $status[$i] ?? SAMPLE_STATUS\ACCEPTED;
                 $data['is_sample_rejected'] = 'no';
                 $data['reason_for_sample_rejection'] = null;
             }
@@ -265,7 +267,7 @@ try {
             }
             $data['data_sync'] = 0;
             $db->where('sample_code', $accResult[$i]['sample_code']);
-            $result = $db->update('form_vl', $data);
+            $db->update('form_vl', $data);
 
             $numberOfResults++;
 
@@ -277,7 +279,7 @@ try {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update('temp_sample_import', array('temp_sample_status' => 1));
+            $db->update('temp_sample_import', ['temp_sample_status' => 1]);
         }
     }
     $stQuery = "SELECT *
