@@ -58,7 +58,7 @@ if (!empty($_POST)) {
         $forceFlag = $_POST['force'] ?? false;
         $remoteURL = $_POST['remoteURL'] ?? null;
     } catch (Throwable $e) {
-        LoggerUtility::log('error', "Invalid Request. Please try again");
+        LoggerUtility::logError("Invalid Request. Please try again");
         exit(0);
     }
 } else {
@@ -66,14 +66,14 @@ if (!empty($_POST)) {
 }
 
 if (empty($remoteURL) || $remoteURL == '') {
-    LoggerUtility::log('error', "Please check if STS URL is set");
+    LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-    LoggerUtility::log('error', "No network connectivity while trying remote sync.");
+    LoggerUtility::logError("No network connectivity while trying remote sync.");
     return false;
 }
 
@@ -519,7 +519,7 @@ try {
                     }
                 }
 
-                // signatories
+                // addtional data handling for specific tables
                 if ($dataType === 'labReportSignatories') {
                     foreach ($dataValues as $key => $sign) {
 
@@ -552,23 +552,40 @@ try {
                     }
                 }
 
-                // invalidate file cache by tags
+                // invalidate cache by tags or by deleting specific cache keys
                 if ($dataToSync[$dataType]['tableName'] === 'r_vl_results') {
                     _invalidateFileCacheByTags(['r_vl_results']);
                 } elseif ($dataToSync[$dataType]['tableName'] === 'r_implementation_partners') {
                     _invalidateFileCacheByTags(['r_implementation_partners']);
                 } elseif ($dataToSync[$dataType]['tableName'] === 'r_funding_sources') {
                     _invalidateFileCacheByTags(['r_funding_sources']);
+                } elseif ($dataToSync[$dataType]['tableName'] === 'global_config') {
+                    // unset global config cache so that it can be reloaded with new values
+                    // this is set in CommonService::getGlobalConfig()
+                    (ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
                 }
 
                 $db->commitTransaction();
             } catch (Throwable $e) {
                 $db->rollbackTransaction();
-                LoggerUtility::log('error', $db->getLastError());
-                LoggerUtility::log('error', $db->getLastQuery());
-                LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage(), [
-                    'trace' => $e->getTraceAsString()
-                ]);
+
+                if ($cliMode) {
+                    echo "Error while syncing metadata from remote for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                }
+                LoggerUtility::logError(
+                    "Error while syncing metadata from remote for " . $dataToSync[$dataType]['tableName'],
+                    [
+                        'dataType' => $dataType,
+                        'tableName' => $dataToSync[$dataType]['tableName'],
+                        'line' => $e->getLine(),
+                        'file' => $e->getFile(),
+                        'code' => $e->getCode(),
+                        'message' => $e->getMessage(),
+                        'trace' => $e->getTraceAsString(),
+                        'last_db_error' => $db->getLastError(),
+                        'last_db_query' => $db->getLastQuery()
+                    ]
+                );
                 continue;
             }
             if ($cliMode) {
@@ -576,18 +593,23 @@ try {
             }
         }
     }
+    $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Throwable $e) {
-    LoggerUtility::log('error', "Error while syncing data from remote: " . $e->getLine() . " " . $e->getMessage(), [
-        'trace' => $e->getTraceAsString()
+    if ($cliMode) {
+        echo "Error in metadata sync" . PHP_EOL;
+    }
+    LoggerUtility::logError("Error while syncing metadata from remote", [
+        'line' => $e->getLine(),
+        'file' => $e->getFile(),
+        'code' => $e->getCode(),
+        'message' => $e->getMessage(),
+        'trace' => $e->getTraceAsString(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery()
     ]);
 } finally {
     if ($cliMode) {
-        echo "Finishing Metadata Sync" . PHP_EOL;
+        echo "Finishing metadata Sync" . PHP_EOL;
     }
     $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;"); // Enable foreign key checks
-    // unset global config cache so that it can be reloaded with new values
-    // this is set in CommonService::getGlobalConfig()
-    (ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
-
-    $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
 }
