@@ -47,7 +47,7 @@ if (!empty($result)) {
                $displaySignatureTable = ($vlFacilityAttributes['display_signature_table']) == 'yes';
           }
           if (!empty($vlFacilityAttributes) && isset($vlFacilityAttributes['report_top_margin'])) {
-               $reportTopMargin = (isset($vlFacilityAttributes['report_top_margin'])) ? $vlFacilityAttributes['report_top_margin'] : $reportTopMargin;
+               $reportTopMargin = $vlFacilityAttributes['report_top_margin'] ?? $reportTopMargin;
           }
      }
 

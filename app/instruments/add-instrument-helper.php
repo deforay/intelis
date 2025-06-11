@@ -52,8 +52,8 @@ try {
 
         $_POST['supportedTests'] = !empty($_POST['supportedTests']) ? json_encode($_POST['supportedTests']) : null;
 
-        $data = array(
-            'instrument_id'  => MiscUtility::generateULID(),
+        $data = [
+            'instrument_id' => MiscUtility::generateULID(),
             'machine_name' => $_POST['configurationName'],
             'lab_id' => $_POST['testingLab'],
             'supported_tests' => $_POST['supportedTests'] ?? null,
@@ -66,7 +66,7 @@ try {
             'reviewed_by' => $_POST['reviewedBy'] ?? null,
             'approved_by' => $_POST['approvedBy'] ?? null,
             'status' => 'active'
-        );
+        ];
         $id = $db->insert($tableName, $data);
         if ($id !== false && !empty($_POST['configMachineName'])) {
             for ($c = 0; $c < count($_POST['configMachineName']); $c++) {
@@ -75,7 +75,16 @@ try {
                     $pocDev = 'yes';
                 }
                 if (trim((string) $_POST['configMachineName'][$c]) != '') {
-                    $configMachineData = array('instrument_id' => $data['instrument_id'], 'config_machine_name' => $_POST['configMachineName'][$c], 'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null, 'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null, 'poc_device' => $pocDev, 'latitude' => $_POST['latitude'][$c], 'longitude' => $_POST['longitude'][$c], 'updated_datetime' => DateUtility::getCurrentDateTime());
+                    $configMachineData = [
+                        'instrument_id' => $data['instrument_id'],
+                        'config_machine_name' => $_POST['configMachineName'][$c],
+                        'date_format' => !empty($_POST['dateFormat'][$c]) ? $_POST['dateFormat'][$c] : null,
+                        'file_name' => !empty($_POST['fileName'][$c]) ? $_POST['fileName'][$c] : null,
+                        'poc_device' => $pocDev,
+                        'latitude' => $_POST['latitude'][$c],
+                        'longitude' => $_POST['longitude'][$c],
+                        'updated_datetime' => DateUtility::getCurrentDateTime()
+                    ];
                     $db->insert($importMachineTable, $configMachineData);
                 }
             }
@@ -92,8 +101,6 @@ try {
 
         $_SESSION['alertMsg'] = _translate("Instrument import configuration initited for ") . $_POST['configurationName'] . _translate("Please proceed to write the import logic in the file ") . $_POST['configurationFile'] . _translate(" present in instruments folder");
     }
-
-
 } catch (Exception $e) {
     LoggerUtility::log('error', $e->getMessage(), [
         'file' => $e->getFile(),

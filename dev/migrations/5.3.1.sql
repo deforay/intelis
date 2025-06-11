@@ -38,3 +38,6 @@ CREATE INDEX idx_vl_result_category_status ON form_vl (vl_result_category, resul
 -- Amit 10-Jun-2025
 ALTER TABLE `user_details` DROP INDEX `interface_user_name`;
 ALTER TABLE `user_details` CHANGE `interface_user_name` `interface_user_name` JSON NULL DEFAULT NULL;
+
+-- Amit 11-Jun-2025
+ALTER TABLE `temp_sample_import` CHANGE `import_machine_name` `import_machine_name` VARCHAR(128) NULL DEFAULT NULL;

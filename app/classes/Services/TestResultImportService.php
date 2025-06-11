@@ -46,7 +46,14 @@ class TestResultImportService
      */
     public function initializeImport(): void
     {
-        $this->testResultsService->clearPreviousImportsByUser($_SESSION['userId'], $this->testType);
+        $userId = $_SESSION['userId'] ?? null;
+        if (!empty($userId)) {
+            $this->db->where('imported_by', $userId);
+            if (!empty($module)) {
+                $this->db->where('module', $this->testType);
+            }
+            $this->db->delete('temp_sample_import');
+        }
     }
 
     /**
@@ -144,12 +151,13 @@ class TestResultImportService
      */
     public function prepareSampleRecord(array $sampleData, string $sampleCode): array
     {
+
         // Build base database record
         $data = [
             'module' => $this->testType,
             'lab_id' => base64_decode((string) $this->postData['labId']),
             'vl_test_platform' => $this->postData['vltestPlatform'] ?? null,
-            'import_machine_name' => $this->postData['configMachineName'] ?? null,
+            'import_machine_name' => base64_decode($this->postData['machineName']),
             'result_reviewed_by' => $_SESSION['userId'],
             'sample_code' => $sampleData['sampleCode'] ?? '',
             'sample_type' => $sampleData['sampleType'] ?? 'S',

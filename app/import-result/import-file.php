@@ -1,10 +1,11 @@
 <?php
 
+use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\TestsService;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -27,38 +28,23 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
-$query = "SELECT instrument_id,machine_name,import_machine_file_name
-            FROM instruments
-            WHERE status='active'
-            ORDER BY machine_name ASC";
-$iResult = $db->rawQuery($query);
 
-$fQuery = 'SELECT * FROM facility_details as f
-            INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
-            WHERE t.test_type = ?
-                AND f.facility_type=2
-                AND (f.facility_attributes->>"$.allow_results_file_upload" = "yes"
-                    OR f.facility_attributes->>"$.allow_results_file_upload" IS NULL)
-            ORDER BY f.facility_name ASC';
-$fResult = $db->rawQuery($fQuery, array($type));
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
-if ($type == 'vl') {
-	$lastQuery = "SELECT lab_id FROM form_vl WHERE lab_id is not NULL ORDER BY vl_sample_id DESC LIMIT 1";
-} elseif ($type == 'eid') {
-	$lastQuery = "SELECT lab_id FROM form_eid WHERE lab_id is not NULL ORDER BY eid_id DESC LIMIT 1";
-} elseif ($type == 'covid19') {
-	$lastQuery = "SELECT lab_id FROM form_covid19 WHERE lab_id is not NULL ORDER BY covid19_id DESC LIMIT 1";
-} elseif ($type == 'hepatitis') {
-	$lastQuery = "SELECT lab_id FROM form_hepatitis WHERE lab_id is not NULL ORDER BY hepatitis_id DESC LIMIT 1";
-} elseif ($type == 'tb') {
-	$lastQuery = "SELECT lab_id FROM form_tb WHERE lab_id is not NULL ORDER BY tb_id DESC LIMIT 1";
-} elseif ($type == 'cd4') {
-	$lastQuery = "SELECT lab_id FROM form_cd4 WHERE lab_id is not NULL ORDER BY cd4_id DESC LIMIT 1";
-}
+
+
 
 $testName = TestsService::getTestName($type);
+$testTableName = TestsService::getTestTableName($type);
+$primaryKey = TestsService::getTestPrimaryKeyColumn($type);
+
+$lastQuery = "SELECT lab_id FROM $testTableName WHERE lab_id is not NULL ORDER BY last_modified_datetime DESC LIMIT 1";
 
 $lastResult = $db->rawQueryOne($lastQuery);
+
+$instrumentsList = $general->getInstruments();
+$facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 
 
 ?>
@@ -109,7 +95,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 												<div class="col-lg-7">
 													<select name="machineName" id="machineName" class="form-control isRequired" title="<?php echo _translate('Please select the import machine type'); ?>" onchange="getConfigMachineName();">
 														<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-														<?php foreach ($iResult as $val) { ?>
+														<?php foreach ($instrumentsList as $val) { ?>
 															<option value="<?php echo base64_encode((string) $val['instrument_id']); ?>"><?php echo ($val['machine_name']); ?></option>
 														<?php } ?>
 													</select>
@@ -137,7 +123,7 @@ $lastResult = $db->rawQueryOne($lastQuery);
 													<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _translate('Please select the lab name'); ?>">
 														<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 														<?php
-														foreach ($fResult as $val) {
+														foreach ($facilitiesList as $val) {
 														?>
 															<option value="<?php echo base64_encode((string) $val['facility_id']); ?>" <?php echo (isset($lastResult['lab_id']) && $lastResult['lab_id'] == $val['facility_id']) ? "selected='selected'" : ""; ?>><?php echo ($val['facility_name']); ?></option>
 														<?php } ?>

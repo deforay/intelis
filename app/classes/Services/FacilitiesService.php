@@ -40,6 +40,21 @@ final class FacilitiesService
         });
     }
 
+    public function getFacilitiesForResultUpload($testType)
+    {
+        return MemoUtility::remember(function () use ($testType) {
+
+        $fQuery = 'SELECT * FROM facility_details as f
+            INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
+            WHERE t.test_type = ?
+                AND f.facility_type=2
+                AND (f.facility_attributes->>"$.allow_results_file_upload" = "yes"
+                    OR f.facility_attributes->>"$.allow_results_file_upload" IS NULL)
+            ORDER BY f.facility_name ASC';
+        return $this->db->rawQuery($fQuery, [$testType]);
+        });
+    }
+
 
     public function searchOrAdd($facilityType, $facilityName = null, $facilityOtherId = null)
     {

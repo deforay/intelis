@@ -89,9 +89,11 @@ try {
                 $db->insert('vl_imported_controls', $data);
             } else {
 
-                $data = array(
+                $data = [
                     'result_reviewed_datetime' => $rResult['result_reviewed_datetime'],
                     'result_reviewed_by' => $_POST['reviewedBy'],
+                    'instrument_id' => $rResult['import_machine_name'],
+                    'vl_test_platform' => $rResult['vl_test_platform'],
                     'import_machine_name' => $rResult['import_machine_name'],
                     'lab_tech_comments' => $comments,
                     'lot_number' => $rResult['lot_number'],
@@ -101,7 +103,7 @@ try {
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
                     'result_printed_datetime' => null
-                );
+                ];
                 if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];

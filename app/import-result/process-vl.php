@@ -106,7 +106,6 @@ try {
                 $data = [
                     'result_reviewed_datetime' => $rResult['result_reviewed_datetime'],
                     'result_reviewed_by' => $_POST['reviewedBy'],
-                    'import_machine_name' => $rResult['import_machine_name'],
                     'lab_tech_comments' => $comments,
                     'lot_number' => $rResult['lot_number'],
                     'lot_expiration_date' => $rResult['lot_expiration_date'],
@@ -119,6 +118,9 @@ try {
                     'lab_id' => $rResult['lab_id'],
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
+                    'instrument_id' => $rResult['import_machine_name'],
+                    'vl_test_platform' => $rResult['vl_test_platform'],
+                    'import_machine_name' => $rResult['import_machine_name']
                 ];
 
                 if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
@@ -292,8 +294,6 @@ try {
         $importedBy = $_SESSION['userId'] ?? 'AUTO';
         $testResultsService->resultImportStats($numberOfResults, $fileName, $importedBy);
     }
-
-
 } catch (Throwable $e) {
     LoggerUtility::logError(
         "Error in processing VL results import: " . $e->getMessage(),

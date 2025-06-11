@@ -91,9 +91,8 @@ try {
                 $db->insert('eid_imported_controls', $data);
             } else {
 
-                $data = array(
+                $data = [
                     'result_reviewed_by' => $_POST['reviewedBy'],
-                    'import_machine_name' => $rResult['import_machine_name'],
                     'lab_tech_comments' => $comments,
                     'lot_number' => $rResult['lot_number'],
                     'lot_expiration_date' => $rResult['lot_expiration_date'],
@@ -102,8 +101,11 @@ try {
                     'lab_id' => $rResult['lab_id'],
                     'import_machine_file_name' => $rResult['import_machine_file_name'],
                     'manual_result_entry' => 'no',
-                    'result_printed_datetime' => null
-                );
+                    'result_printed_datetime' => null,
+                    'instrument_id' => $rResult['import_machine_name'],
+                    'vl_test_platform' => $rResult['vl_test_platform'],
+                    'import_machine_name' => $rResult['import_machine_name']
+                ];
                 if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
                     $data['result_reviewed_by'] = $_POST['reviewedBy'];
                     $data['facility_id'] = $rResult['facility_id'];

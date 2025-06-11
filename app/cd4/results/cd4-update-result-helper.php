@@ -132,12 +132,12 @@ try {
     if ($id === true) {
         $_SESSION['alertMsg'] = _translate("CD4 request updated successfully");
         //Log result updates
-        $data = array(
+        $data = [
             'user_id' => $_SESSION['userId'],
             'vl_sample_id' => $_POST['cd4SampleId'],
             'test_type' => 'cd4',
             'updated_datetime' => DateUtility::getCurrentDateTime()
-        );
+        ];
         $db->insert($tableName2, $data);
     } else {
         $_SESSION['alertMsg'] = _translate("Please try again later");

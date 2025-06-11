@@ -329,7 +329,11 @@ if (!empty($result)) {
      }
      if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
           $html .= '<tr>';
-          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
+          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott m2000 Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
+          $html .= '</tr>';
+     }elseif (str_contains(strtolower((string)$result['instrument_machine_name']), 'alinity')) {
+          $html .= '<tr>';
+          $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Alinity M Linear Detection range: 400 copies/mL - 10,000,000 copies/mL</td>';
           $html .= '</tr>';
      }
      //$html .= '<tr><td colspan="3"></td></tr>';

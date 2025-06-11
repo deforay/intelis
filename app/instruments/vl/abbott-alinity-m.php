@@ -65,14 +65,13 @@ try {
         }
 
         $bdl = [
-            'not detected',
-            '< 839',
+            '< 400',
         ];
 
         if (
             !empty($interpretedResults['result']) &&
             (in_array(strtolower($interpretedResults['result']), $bdl) ||
-                ($interpretedResults['absDecimalVal'] < 839))
+                ($interpretedResults['absDecimalVal'] < 400))
         ) {
             $interpretedResults['txtVal'] =
                 $interpretedResults['result'] = 'Below Detection Level';
@@ -80,6 +79,24 @@ try {
             $interpretedResults['absDecimalVal'] = null;
             $interpretedResults['logVal'] = null;
         }
+
+        $tnd = [
+            'not detected',
+            'tnd',
+            'undetected',
+        ];
+
+        if (
+            !empty($interpretedResults['result']) &&
+            in_array(strtolower($interpretedResults['result']), $bdl)
+        ) {
+            $interpretedResults['txtVal'] =
+                $interpretedResults['result'] = 'Target Not Detected';
+            $interpretedResults['absVal'] = null;
+            $interpretedResults['absDecimalVal'] = null;
+            $interpretedResults['logVal'] = null;
+        }
+
 
         // Store parsed data
         $infoFromFile[$sampleCode] = [
