@@ -89,7 +89,7 @@ try {
     $sQuery .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE( '" . DateUtility::getCurrentDateTime() . "', INTERVAL $dataSyncInterval DAY)";
   }
 
-  [$rResult, $resultCount] = $db->getRequestAndCount($sQuery, returnGenerator: false);
+  [$rResult, $resultCount] = $db->getDataAndCount($sQuery, returnGenerator: false);
 
   $sampleIds = $facilityIds = [];
   if ($resultCount > 0) {

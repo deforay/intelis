@@ -91,7 +91,7 @@ try {
           $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
-     [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
      $_SESSION['genericRequestQueryCount'] = $resultCount;
 

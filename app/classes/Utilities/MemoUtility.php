@@ -2,7 +2,7 @@
 
 namespace App\Utilities;
 
-use App\Utilities\ApcuCacheUtility;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 class MemoUtility
@@ -28,20 +28,20 @@ class MemoUtility
     public static function hashKey(string $caller, array $args): string
     {
         $normalizedArgs = self::deepSort($args);
-        return sha1($caller . '|' . serialize($normalizedArgs));
+        return hash('sha256', $caller . '|' . serialize($normalizedArgs));
     }
 
     public static function memo(string $key, callable $callback, ?float $ttl = null, bool $crossRequest = true): mixed
     {
         $now = microtime(true);
         $effectiveTtl = $ttl !== null ? (int) ceil($ttl) : 300; // default is 5 mins
-        $apcuCache = $crossRequest ? ContainerRegistry::get(ApcuCacheUtility::class) : null;
+        $fileCache = $crossRequest ? ContainerRegistry::get(FileCacheUtility::class) : null;
 
         if (!isset(self::$cache[$key])) {
             $value = $crossRequest
-                ? $apcuCache->get($key, function () use ($callback) {
+                ? $fileCache->get($key, function () use ($callback) {
                     return $callback();
-                }, $effectiveTtl)
+                }, expiration: $effectiveTtl)
                 : $callback();
 
             if (count(self::$cache) >= self::MAX_ENTRIES) {
@@ -60,7 +60,7 @@ class MemoUtility
             ];
 
             if ($crossRequest) {
-                $apcuCache->set($key, $value, $effectiveTtl);
+                $fileCache->set($key, $value, $effectiveTtl);
             }
         }
 

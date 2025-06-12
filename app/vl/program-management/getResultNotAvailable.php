@@ -101,7 +101,7 @@ if (isset($sLimit) && isset($sOffset)) {
 }
 
 
-[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 $_SESSION['resultNotAvailableCount'] = $resultCount;
 
 

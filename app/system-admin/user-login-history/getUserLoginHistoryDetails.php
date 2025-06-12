@@ -117,7 +117,7 @@ if (isset($sLimit) && isset($sOffset)) {
 $rResult = $db->rawQuery($sQuery);
 
 
-[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
 $output = [

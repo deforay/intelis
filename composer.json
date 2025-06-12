@@ -61,7 +61,6 @@
         "voku/anti-xss": "^4.1"
     },
     "suggest": {
-        "ext-apcu": "Needed for optimal in-memory caching performance",
         "dcarbone/php-fhir-generated": "Needed for FHIR Parsing"
     },
     "autoload": {

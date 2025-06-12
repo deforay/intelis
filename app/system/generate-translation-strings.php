@@ -2,7 +2,7 @@
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
-use App\Utilities\ApcuCacheUtility;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 // only run from command line
@@ -22,7 +22,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 // unset global config cache so that it can be reloaded with new values
-(ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
+(ContainerRegistry::get(FileCacheUtility::class))->delete('app_global_config');
 
 $formId = (int) $general->getGlobalConfig('vl_form');
 

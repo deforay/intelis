@@ -7,8 +7,6 @@ use Throwable;
 use Monolog\Level;
 use Monolog\Logger;
 use Monolog\Handler\StreamHandler;
-use App\Utilities\ApcuCacheUtility;
-use App\Registries\ContainerRegistry;
 use Monolog\Handler\RotatingFileHandler;
 
 final class LoggerUtility
@@ -17,21 +15,9 @@ final class LoggerUtility
 
     public static function isLogFolderWritable(int $refreshIntervalSeconds = 300): bool
     {
-        /** @var ApcuCacheUtility $apcuCache */
-        $apcuCache = ContainerRegistry::get(ApcuCacheUtility::class);
 
         $logDir = ROOT_PATH . '/logs';
-        $cacheKey = 'log_folder_writable_status';
 
-        $isWritable = $apcuCache->get($cacheKey, function () use ($logDir) {
-            return is_dir($logDir) && is_writable($logDir);
-        }, $refreshIntervalSeconds);
-
-        if ($isWritable !== null) {
-            return $isWritable;
-        }
-
-        // Fallback to session
         if (session_status() === PHP_SESSION_ACTIVE) {
             $now = time();
 

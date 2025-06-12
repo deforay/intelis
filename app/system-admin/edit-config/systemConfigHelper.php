@@ -4,7 +4,7 @@ use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\ConfigService;
-use App\Utilities\ApcuCacheUtility;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 /** @var ConfigService $configService */
@@ -76,7 +76,7 @@ try {
     $configService->updateConfig($updatedConfig);
 
     // Clear file cache
-    (ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
+    (ContainerRegistry::get(FileCacheUtility::class))->delete('app_global_config');
     unset($_SESSION['instance']);
 
     $_SESSION['alertMsg'] = _translate("System Configuration updated successfully.");

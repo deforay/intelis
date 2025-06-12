@@ -7,7 +7,7 @@ use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Utilities\ApcuCacheUtility;
+use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\UploadedFile;
 use App\Registries\ContainerRegistry;
 use App\Utilities\ImageResizeUtility;
@@ -38,7 +38,7 @@ $currentDateTime = DateUtility::getCurrentDateTime();
 
 // unset global config cache so that it can be reloaded with new values
 // this is set in CommonService::getGlobalConfig()
-(ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
+(ContainerRegistry::get(FileCacheUtility::class))->delete('app_global_config');
 
 
 try {

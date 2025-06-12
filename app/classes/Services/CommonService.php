@@ -17,7 +17,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
-use App\Utilities\ApcuCacheUtility;
 use App\Utilities\FileCacheUtility;
 use Laminas\Diactoros\ServerRequest;
 use App\Registries\ContainerRegistry;
@@ -186,17 +185,15 @@ final class CommonService
     public function getGlobalConfig(?string $name = null): string|array|null
     {
         $cacheKey = 'app_global_config';
-        $apcuCache = ContainerRegistry::get(ApcuCacheUtility::class);
         $db = $this->db;
-
-        $allConfigs = $apcuCache->get($cacheKey, function () use ($db) {
+        $allConfigs =  $this->fileCache->get($cacheKey, function () use ($db) {
             $returnConfig = [];
             $configResult = $db->get('global_config');
             foreach ($configResult as $config) {
                 $returnConfig[$config['name']] = $config['value'];
             }
             return $returnConfig;
-        }, 0);
+        });
 
         return $name ? ($allConfigs[$name] ?? null) : ($allConfigs ?? []);
     }

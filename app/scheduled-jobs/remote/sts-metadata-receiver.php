@@ -7,8 +7,8 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Utilities\ApcuCacheUtility;
 use App\Registries\ContainerRegistry;
+use App\Utilities\FileCacheUtility;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 
@@ -451,6 +451,8 @@ try {
                 }
 
                 if (isset($dataToSync[$dataType]) && !empty($dataValues)) {
+
+                    // Before we update/insert data, some tables need to have some related data removed
                     if ($dataType === 'healthFacilities' && !empty($dataValues)) {
                         $updatedFacilities = array_unique(array_column($dataValues, 'facility_id'));
                         $db->where('facility_id', $updatedFacilities, 'IN');
@@ -461,6 +463,8 @@ try {
                         $id = $db->delete('testing_labs');
                     }
 
+                    // $emptyTableArray is used to get the table fields as an array
+                    // so that we update only the matching keys in the table
                     $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName']);
 
                     if ($cliMode) {
@@ -562,7 +566,7 @@ try {
                 } elseif ($dataToSync[$dataType]['tableName'] === 'global_config') {
                     // unset global config cache so that it can be reloaded with new values
                     // this is set in CommonService::getGlobalConfig()
-                    (ContainerRegistry::get(ApcuCacheUtility::class))->delete('app_global_config');
+                    (ContainerRegistry::get(FileCacheUtility::class))->delete('app_global_config');
                 }
 
                 $db->commitTransaction();

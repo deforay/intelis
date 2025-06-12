@@ -100,7 +100,7 @@ if (isset($sLimit) && isset($sOffset)) {
      $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
-[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 $output = [
      "sEcho" => (int) $_POST['sEcho'],

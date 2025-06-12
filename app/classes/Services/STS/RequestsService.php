@@ -99,7 +99,7 @@ final class RequestsService
 
         $sQuery = "SELECT $columnSelection FROM $this->tableName WHERE $condition";
 
-        [$rResult, $resultCount] = $this->db->getRequestAndCount($sQuery, returnGenerator: false);
+        [$rResult, $resultCount] = $this->db->getDataAndCount($sQuery, returnGenerator: false);
 
         return [$rResult, $resultCount];
     }

@@ -224,7 +224,7 @@ try {
 
      //error_log($sQuery);
 
-     [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
      $_SESSION['eidRequestSearchResultQueryCount'] = $resultCount;
 

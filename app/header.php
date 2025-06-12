@@ -61,9 +61,12 @@ $displayTopBar = ($instrumentsCount == 0 || $nonAdminUserCount == 0);
 $margin = $displayTopBar ? 'style="margin-top:50px !important;"' : '';
 $topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !important;"';
 
+
+$locale = $_SESSION['APP_LOCALE'] ?? 'en_US';
+$langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 ?>
 <!DOCTYPE html>
-<html lang="<?= $_SESSION['APP_LOCALE'] ?? 'en_US'; ?>">
+<html lang="<?= $langCode; ?>" translate="no">
 
 <head>
 	<meta charset="utf-8" />
@@ -71,6 +74,9 @@ $topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !impo
 	<title>
 		<?= ($title ?? $shortCode) . " | " . $shortName; ?>
 	</title>
+	<meta name="google" content="notranslate">
+	<meta name="google-translate-customization" content="0">
+	<meta http-equiv="Content-Language" content="<?= $langCode; ?>">
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
 	<meta name="viewport" content="width=1024">
 
@@ -140,7 +146,7 @@ $topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !impo
 	}
 </style>
 
-<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?>>
+<body class="hold-transition <?= $skin; ?> sidebar-mini" id="lis-body" <?= $margin; ?> translate="no" class="notranslate">
 
 	<?php if (
 		($general->isLisInstance() && $instrumentsCount == 0) ||

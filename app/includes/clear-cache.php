@@ -8,7 +8,7 @@ if ($isCli) {
     require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "bootstrap.php");
 }
 
-use App\Utilities\ApcuCacheUtility;
+
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
@@ -34,7 +34,6 @@ if ($isCli) {
 }
 
 // Clear the file cache and echo the result
-(ContainerRegistry::get(ApcuCacheUtility::class))->clear();
 echo (ContainerRegistry::get(FileCacheUtility::class))->clear();
 
 

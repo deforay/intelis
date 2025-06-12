@@ -7,7 +7,6 @@ use Generator;
 use Throwable;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
-use App\Utilities\MemoUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Exceptions\SystemException;
 use PhpMyAdmin\SqlParser\Components\Limit;
@@ -315,7 +314,7 @@ final class DatabaseService extends MysqliDb
         }
     }
 
-    public function getRequestAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
+    public function getDataAndCount(string $sql, ?array $params = null, ?int $limit = null, ?int $offset = null, bool $returnGenerator = true): array
     {
         try {
             $limitOffsetSet = isset($limit) && isset($offset);

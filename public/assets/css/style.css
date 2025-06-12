@@ -1,3 +1,20 @@
+/* Multiple browser hints to deter translation */
+.notranslate,
+[translate="no"] {
+    -webkit-transform: translateZ(0);
+    -moz-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    user-select: none;
+}
+
+/* Target known translation classes */
+.translated-ltr,
+.translated-rtl {
+    display: none !important;
+}
+
 .main-header .sidebar-toggle {
     border: none;
 }

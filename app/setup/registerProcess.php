@@ -12,7 +12,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
-use App\Utilities\ApcuCacheUtility;
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -111,7 +110,7 @@ try {
         }
         // Clear the file and apcu cache
         (ContainerRegistry::get(FileCacheUtility::class))->clear();
-        (ContainerRegistry::get(ApcuCacheUtility::class))->clear();
+
 
         $userPassword = $usersService->passwordHash($password);
         $userId = MiscUtility::generateUUID();

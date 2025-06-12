@@ -112,7 +112,7 @@ try {
 
     $_SESSION['hepatitisRequestSearchResultQuery'] = $sQuery;
 
-    [$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+    [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
     $_SESSION['hepatitisRequestSearchResultQueryCount'] = $resultCount;
 

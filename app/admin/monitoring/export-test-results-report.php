@@ -24,7 +24,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $sQuery = $_SESSION['testResultReportsQuery'];
-[$rResult, $resultCount] = $db->getRequestAndCount($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
 $headings = [
