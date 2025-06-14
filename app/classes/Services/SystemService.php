@@ -134,35 +134,16 @@ final class SystemService
     // Setup debugging
     public function debug($debugMode = false): SystemService
     {
-
         if ($debugMode) {
-
             error_reporting(E_ALL & ~E_NOTICE & ~E_WARNING & ~E_DEPRECATED);
-            $whoops = new Run;
-
-            // We want the error page to be shown by default, if this is a
-            // regular request, so that's the first thing to go into the stack:
-            $whoops->pushHandler(new PrettyPageHandler);
-
-            // Now, we want a second handler that will run before the error page,
-            // and immediately return an error message in JSON format, if something
-            // goes awry.
-            if (Misc::isAjaxRequest()) {
-                $jsonHandler = new JsonResponseHandler;
-
-                // Setup JsonResponseHandler to give a full stack trace:
-                $jsonHandler->addTraceToOutput(true);
-
-                // Return a result compliant to the json:api spec
-                // re: http://jsonapi.org/examples/#error-objects
-                // tl;dr: error[] becomes errors[[]]
-                $jsonHandler->setJsonApi(true);
-                $whoops->pushHandler($jsonHandler);
-            }
-            $whoops->register();
+            ini_set('display_errors', 1);
+        } else {
+            error_reporting(0);
+            ini_set('display_errors', 0);
         }
         return $this;
     }
+
 
     public static function getActiveModules(bool $onlyTests = false): array
     {

@@ -28,7 +28,6 @@
         "ext-zlib": "*",
         "brick/phonenumber": "^0.6.0",
         "crunzphp/crunz": "^3.8",
-        "filp/whoops": "^2.18",
         "gettext/gettext": "^5.7",
         "gregwar/captcha": "^1.2",
         "guzzlehttp/guzzle": "^7.9",

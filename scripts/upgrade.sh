@@ -361,7 +361,7 @@ fi
 
 if [ -z "$mysql_pw" ]; then
     print warning "Password in config file is empty or missing. Prompting for manual entry..."
-    read -sp "Please enter MySQL root password: " mysql_pw
+    read -r -sp "Please enter MySQL root password: " mysql_pw
     echo
 fi
 
@@ -562,7 +562,7 @@ get_databases() {
     local -i cnt=1
     for db in "${databases[@]}"; do
         echo "$cnt) $db"
-        let cnt++
+        cnt++
     done
 }
 
@@ -591,10 +591,10 @@ if [ "$skip_backup" = false ]; then
     if ask_yes_no "Do you want to backup the database" "no"; then
         # Ask for MySQL root password
         echo "Please enter your MySQL root password:"
-        read -s mysql_root_password
+        read -r -s mysql_root_password
 
         # Ask for the backup location and create it if it doesn't exist
-        read -p "Enter the backup location [press enter to select /var/intelis-backup/db/]: " backup_location
+        read -r -p "Enter the backup location [press enter to select /var/intelis-backup/db/]: " backup_location
         backup_location="${backup_location:-/var/intelis-backup/db/}"
 
         # Create the backup directory if it does not exist

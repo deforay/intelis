@@ -170,8 +170,7 @@ function tableNeedsConversion(DatabaseService $db, string $connectionName, strin
  */
 function getColumnsNeedingConversion(DatabaseService $db, string $connectionName, string $tableName, string $targetCollation): array
 {
-    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
-              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] : ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
 
     $query = "SELECT
                 c.COLUMN_NAME,
@@ -204,8 +203,7 @@ function getColumnsNeedingConversion(DatabaseService $db, string $connectionName
  */
 function getColumnIndexes(DatabaseService $db, string $connectionName, string $tableName, string $columnName): array
 {
-    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
-              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] : ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
 
     $query = "SELECT DISTINCT
                 INDEX_NAME,
@@ -245,8 +243,15 @@ function buildColumnDefinition(array $column, string $targetCollation): string
 
         // Special function defaults that don't need quotes
         $functionDefaults = [
-            'CURRENT_TIMESTAMP', 'current_timestamp()', 'now()', 'CURRENT_TIMESTAMP()',
-            'NULL', 'CURRENT_DATE', 'CURRENT_TIME', 'LOCALTIME', 'LOCALTIMESTAMP'
+            'CURRENT_TIMESTAMP',
+            'current_timestamp()',
+            'now()',
+            'CURRENT_TIMESTAMP()',
+            'NULL',
+            'CURRENT_DATE',
+            'CURRENT_TIME',
+            'LOCALTIME',
+            'LOCALTIMESTAMP'
         ];
 
         if (in_array(strtoupper($defaultValue), array_map('strtoupper', $functionDefaults))) {
@@ -284,8 +289,7 @@ function buildColumnDefinition(array $column, string $targetCollation): string
  */
 function verifyColumnConversion(DatabaseService $db, string $connectionName, string $tableName, string $columnName, string $targetCollation): bool
 {
-    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] :
-              ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
+    $schema = $connectionName === 'default' ? $GLOBALS['dbName'] : ($GLOBALS['interfaceDbConfig']['db'] ?? $GLOBALS['dbName']);
 
     $query = "SELECT COLLATION_NAME
               FROM information_schema.columns
@@ -332,9 +336,9 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
     try {
         $tableSizeInfo = $db->connection($connectionName)->rawQuery(
             "SELECT ROUND((data_length + index_length) / 1024 / 1024, 2) AS 'Size'
-             FROM information_schema.tables
-             WHERE table_schema = DATABASE()
-             AND table_name = '$tableName'"
+                FROM information_schema.tables
+                WHERE table_schema = DATABASE()
+                AND table_name = '$tableName'"
         );
         $tableSize = !empty($tableSizeInfo) ? $tableSizeInfo[0]['Size'] : 'unknown';
     } catch (Throwable $e) {
@@ -438,7 +442,6 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                     $result['columnErrors'][] = $errorMsg;
                     $columnErrors[] = "$tableName.$columnName: Verification failed";
                 }
-
             } catch (Throwable $e) {
                 $errorMsg = "Failed to convert column '$columnName' in table '$tableName': " . $e->getMessage();
                 echoMessage("  ❌ $errorMsg", 'red', true); // Always show errors
