@@ -2,7 +2,6 @@
 
 namespace App\Utilities;
 
-
 use Throwable;
 use Monolog\Level;
 use Monolog\Logger;
@@ -12,98 +11,101 @@ use Monolog\Handler\RotatingFileHandler;
 final class LoggerUtility
 {
     private static ?Logger $logger = null;
+    private const LOG_FILENAME = 'logfile.log';
+    private const LOG_ROTATIONS = 30;
 
-    public static function isLogFolderWritable(int $refreshIntervalSeconds = 300): bool
+    public static function getLogger(): Logger
     {
-
-        $logDir = ROOT_PATH . '/logs';
-
-        if (session_status() === PHP_SESSION_ACTIVE) {
-            $now = time();
-
-            if (!isset($_SESSION['log_folder_writable_check_time']) || ($now - $_SESSION['log_folder_writable_check_time']) > $refreshIntervalSeconds) {
-                $_SESSION['log_folder_writable'] = is_dir($logDir) && is_writable($logDir);
-                $_SESSION['log_folder_writable_check_time'] = $now;
-            }
-
-            return $_SESSION['log_folder_writable'];
+        if (isset(self::$logger)) {
+            return self::$logger;
         }
 
-        // Fallback if no cache and no session
-        return is_dir($logDir) && is_writable($logDir);
-    }
+        self::$logger = new Logger('app');
+        $logDir = defined('LOG_PATH') ? LOG_PATH : ROOT_PATH . '/logs';
+        $logLevel = defined('LOG_LEVEL') ? self::parseLogLevel(LOG_LEVEL) : Level::Debug;
 
-    private static function getLogger(): Logger
-    {
-        if (self::$logger === null) {
-            self::$logger = new Logger('logger');
-
-            try {
-                // Try to use the RotatingFileHandler for logging
-                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/logfile.log', 30, Level::Debug);
-                $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
-                self::$logger->pushHandler($handler);
-            } catch (Throwable $e) {
-                // If the logs directory is not writable, fallback to stderr
-                $fallbackHandler = new StreamHandler('php://stderr', Level::Warning);
-                self::$logger->pushHandler($fallbackHandler);
-                self::$logger->warning('Log file could not be written to. Fallback to stderr: ' . $e->getMessage());
+        try {
+            if (MiscUtility::makeDirectory($logDir, 0775)) {
+                if (is_writable($logDir)) {
+                    $logPath = $logDir . '/' . self::LOG_FILENAME;
+                    $handler = new RotatingFileHandler($logPath, self::LOG_ROTATIONS, $logLevel);
+                    $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
+                    self::$logger->pushHandler($handler);
+                } else {
+                    self::useFallbackHandler("Log directory not writable: $logDir");
+                }
+            } else {
+                self::useFallbackHandler("Failed to create log directory: $logDir");
             }
+        } catch (Throwable $e) {
+            self::useFallbackHandler($e->getMessage());
         }
+
         return self::$logger;
     }
 
-    public static function getCallerInfo($index = 1)
+    private static function useFallbackHandler(string $reason): void
     {
-        $backtrace = debug_backtrace();
-
-        $callerInfo = [
-            'file' => '',
-            'line' => 0
-        ];
-
-        if (isset($backtrace[$index])) {
-            $callerInfo['file'] = $backtrace[$index]['file'];
-            $callerInfo['line'] = $backtrace[$index]['line'];
-        }
-
-        return $callerInfo;
+        $fallbackHandler = new StreamHandler('php://stderr', Level::Warning);
+        self::$logger->pushHandler($fallbackHandler);
+        error_log("LoggerUtility fallback: {$reason} | PHP error_log: " . self::getPhpErrorLogPath());
     }
 
-    public static function log($level, $message, array $context = []): void
+    public static function getPhpErrorLogPath(): string
+    {
+        return ini_get('error_log') ?: 'stderr or server default';
+    }
+
+    private static function getCallerInfo(int $index = 1): array
+    {
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        return [
+            'file' => $backtrace[$index]['file'] ?? '',
+            'line' => $backtrace[$index]['line'] ?? 0,
+        ];
+    }
+
+    public static function log(Level|string $level, string $message, array $context = []): void
     {
         try {
             $logger = self::getLogger();
-
             $callerInfo = self::getCallerInfo(1);
-
-            $context['file'] ??= $callerInfo['file'] ?? '';
-            $context['line'] ??= $callerInfo['line'] ?? '';
+            $context['file'] ??= $callerInfo['file'];
+            $context['line'] ??= $callerInfo['line'];
             $logger->log($level, MiscUtility::toUtf8($message), $context);
         } catch (Throwable $e) {
-            // If logging fails, fall back to PHP error log so that the app does not crash
-            error_log('LoggerUtility failed to log message: ' . $e->getMessage());
-            error_log('Original log message: ' . $message);
+            error_log("LoggerUtility failed: {$e->getMessage()} | Original message: {$message}");
         }
     }
 
-
-    public static function logDebug($message, array $context = []): void
+    public static function logDebug(string $message, array $context = []): void
     {
-        self::log('debug', $message, $context);
-    }
-    public static function logError($message, array $context = []): void
-    {
-        self::log('error', $message, $context);
+        self::log(Level::Debug, $message, $context);
     }
 
-    public static function logInfo($message, array $context = []): void
+    public static function logInfo(string $message, array $context = []): void
     {
-        self::log('info', $message, $context);
+        self::log(Level::Info, $message, $context);
     }
 
-    public static function logWarning($message, array $context = []): void
+    public static function logWarning(string $message, array $context = []): void
     {
-        self::log('warning', $message, $context);
+        self::log(Level::Warning, $message, $context);
+    }
+
+    public static function logError(string $message, array $context = []): void
+    {
+        self::log(Level::Error, $message, $context);
+    }
+
+    private static function parseLogLevel(string $level): Level
+    {
+        return match (strtoupper($level)) {
+            'DEBUG' => Level::Debug,
+            'INFO' => Level::Info,
+            'WARNING', 'WARN' => Level::Warning,
+            'ERROR' => Level::Error,
+            default => Level::Debug
+        };
     }
 }

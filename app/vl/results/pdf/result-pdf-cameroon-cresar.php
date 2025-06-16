@@ -256,7 +256,8 @@ if (!empty($result)) {
      $html .= '<tr><td></td></tr>';
      $html .= '<tr>';
      $html .= '<td width="15%" style="line-height:15px;font-size:10px;text-align:left;">' . _translate('Result (copies/mL)') . ' : </td>';
-     $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . htmlspecialchars((string) round($result['result'])) . '</td>';
+     $html .= '<td width="25%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' .
+          htmlspecialchars((string) (is_numeric($result['result']) ? round($result['result']) : $result['result'])) . '</td>';
      $html .= '<td width="12%" style="line-height:15px;font-size:10px;text-align:right;">' . _translate('Results (log)') . ' : &nbsp;</td>';
      $html .= '<td width="10%" style="line-height:15px;font-size:10px;text-align:left; border: 1px solid black">&nbsp;' . $logValue . '</td>';
      $html .= '<td width="13%" style="line-height:15px;font-size:10px;text-align:right;">' . _translate('Tested By') . ' : &nbsp;</td>';

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use MysqliDb;
+use Exception;
 use Generator;
 use Throwable;
 use App\Utilities\MiscUtility;
@@ -92,7 +93,7 @@ final class DatabaseService extends MysqliDb
         $stmt = $this->_prepareQuery();
 
         if (!$stmt) {
-            throw new \Exception("Failed to prepare statement: " . $this->mysqli()->error);
+            throw new Exception("Failed to prepare statement: " . $this->mysqli()->error);
         }
 
         // parameter binding
@@ -117,7 +118,7 @@ final class DatabaseService extends MysqliDb
             $stmt->close();
             $this->reset();
             LoggerUtility::log('error', 'DB Result Error: ' . $this->mysqli()->error);
-            throw new \Exception("Failed to get result: " . $this->mysqli()->error);
+            throw new Exception("Failed to get result: " . $this->mysqli()->error);
         }
 
         // Fetch results row by row
@@ -499,55 +500,5 @@ final class DatabaseService extends MysqliDb
         }
 
         return $tableFieldsAsArray;
-    }
-
-    /**
-     * Load data from a CSV file into the specified table using LOAD DATA INFILE.
-     *
-     * @param string $tableName Name of the table to load data into.
-     * @param string $filePath Full path to the CSV file.
-     * @param string $delimiter Delimiter used in the CSV file (default: ',').
-     * @param string $enclosure Enclosure used in the CSV file (default: '"').
-     * @param string $lineTerminator Line terminator used in the CSV file (default: '\n').
-     * @param array $excludeColumns Columns to exclude from update in ON DUPLICATE KEY UPDATE.
-     * @return bool Returns true on success or false on failure.
-     */
-    public function loadDataInfile(
-        string $tableName,
-        string $filePath,
-        string $delimiter = ',',
-        string $enclosure = '"',
-        string $lineTerminator = '\n',
-        array $updateColumns = [],
-        array $excludeColumns = []
-    ): bool {
-        try {
-            // Fetch columns dynamically
-            $columns = $this->getTableFieldsAsArray($tableName);
-            $columnNames = array_keys($columns);
-
-            // Exclude specified columns from update clause
-            $updateColumns = !empty($updateColumns) ? $updateColumns : array_diff($columnNames, $excludeColumns);
-
-            // Build the LOAD DATA INFILE query
-            $columnList = implode(', ', $columnNames);
-            $updateList = implode(', ', array_map(fn($col) => "`$col` = VALUES(`$col`)", $updateColumns));
-
-            $query = "LOAD DATA INFILE ?
-            INTO TABLE `$tableName`
-            FIELDS TERMINATED BY '$delimiter'
-            ENCLOSED BY '$enclosure'
-            LINES TERMINATED BY '$lineTerminator'
-            IGNORE 1 LINES
-            ($columnList)
-            ON DUPLICATE KEY UPDATE $updateList;";
-
-            // Execute the query
-            $this->rawQuery($query, [$filePath]);
-            return true;
-        } catch (Throwable $e) {
-            LoggerUtility::log('error', "Failed to load data infile: " . $e->getMessage());
-            return false;
-        }
     }
 }

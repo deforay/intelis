@@ -2,8 +2,8 @@
 
 namespace App\Registries;
 
+use App\Exceptions\SystemException;
 use Psr\Container\ContainerInterface;
-use RuntimeException;
 
 class ContainerRegistry
 {
@@ -31,7 +31,7 @@ class ContainerRegistry
     public static function get(string $id)
     {
         if (self::$container === null) {
-            throw new RuntimeException('Container is not set.');
+            throw new SystemException('Container is not set.');
         }
 
         return self::$container->get($id);

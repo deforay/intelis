@@ -38,11 +38,12 @@ chdir(__DIR__);
 defined('ROOT_PATH')
     || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
-const WEB_ROOT          = ROOT_PATH . DIRECTORY_SEPARATOR . 'public';
-const CACHE_PATH        = ROOT_PATH . DIRECTORY_SEPARATOR . 'cache';
-const APPLICATION_PATH  = ROOT_PATH . DIRECTORY_SEPARATOR . 'app';
-const UPLOAD_PATH       = WEB_ROOT  . DIRECTORY_SEPARATOR . 'uploads';
-const TEMP_PATH         = WEB_ROOT  . DIRECTORY_SEPARATOR . 'temporary';
+define('WEB_ROOT', ROOT_PATH . '/public');
+define('CACHE_PATH', ROOT_PATH . '/cache');
+define('LOG_PATH', ROOT_PATH . '/logs');
+define('APPLICATION_PATH', ROOT_PATH . '/app');
+define('UPLOAD_PATH', WEB_ROOT . '/uploads');
+define('TEMP_PATH', WEB_ROOT . '/temporary');
 
 // Set up autoloading
 require_once ROOT_PATH . '/vendor/autoload.php';
@@ -59,13 +60,16 @@ require_once __DIR__ . '/app/system/di.php';
 // Global functions
 require_once __DIR__ . '/app/system/functions.php';
 
+defined('SYSTEM_CONFIG') ||
+    define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
+define('LOG_LEVEL', (APPLICATION_ENV === 'development' || SYSTEM_CONFIG['system']['debug_mode']) ? 'DEBUG' : 'INFO');
+
 // Just putting $db here in case there are
 // some old scripts that are still depending on this variable being available.
 $db = ContainerRegistry::get(DatabaseService::class);
 
 
-defined('SYSTEM_CONFIG') ||
-    define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
+
 
 
 set_error_handler(function ($severity, $message, $file, $line) {
