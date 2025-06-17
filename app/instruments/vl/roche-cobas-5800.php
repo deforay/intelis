@@ -7,6 +7,7 @@ use App\Services\VlService;
 use App\Utilities\DateUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\TestResultImportService;
+use App\Utilities\MiscUtility;
 
 try {
 
@@ -26,15 +27,22 @@ try {
 
     // Parse CSV data
     $lines = explode("\n", $fileContents);
-    $headers = str_getcsv(array_shift($lines)); // Get headers
+    $firstLine = array_shift($lines);
+    $delimiter = MiscUtility::detectCSVDelimiter($firstLine);
+    $headers = str_getcsv($firstLine, $delimiter);
+
 
     foreach ($lines as $line) {
-        if (empty(trim($line))) continue;
+        if (empty(trim($line))) {
+            continue;
+        }
 
-        $rowData = str_getcsv($line);
+        $rowData = str_getcsv($line, $delimiter);
 
         // Skip rows that don't have enough columns
-        if (count($rowData) < count($headers)) continue;
+        if (count($rowData) < count($headers)) {
+            continue;
+        }
 
         $row = array_combine($headers, $rowData);
 

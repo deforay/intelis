@@ -302,7 +302,8 @@ final class VlService extends AbstractTestService
         return MemoUtility::remember(function () use ($result, $unit, $defaultLowVlResultText) {
 
             // Remove copy number units like cp/mL, copies/mL, etc.
-            $result = str_ireplace($this->copiesPatterns, '', strtolower($result));
+            $result = str_ireplace($this->copiesPatterns, '', $result);
+
 
             $vlResultType = $this->checkViralLoadValueType($result);
 
@@ -397,17 +398,18 @@ final class VlService extends AbstractTestService
                 $vlResult = $txtVal = $result;
                 break;
         }
-        if ($interpretAndConvertResult) {
-            $originalResultValue = $vlResult;
-        }
+
+        $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
 
         return [
             'logVal' => $logVal,
-            'result' => $originalResultValue,
+            'result' => $resultToUse,
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
-            'resultStatus' => $resultStatus,
+            'processedResult' => $vlResult,
+            'originalResult' => $originalResultValue,
+            'resultStatus' => $resultStatus
         ];
     }
 
@@ -448,9 +450,7 @@ final class VlService extends AbstractTestService
                 $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
             } else {
                 // fallback
-                $absDecimalVal = $this->parseNumericValue($result);
-                $absVal = $absDecimalVal;
-                $vlResult = $absDecimalVal;
+                $vlResult = $absDecimalVal = $absVal = $this->parseNumericValue($result);
             }
 
             $absVal = $absDecimalVal;
@@ -474,6 +474,7 @@ final class VlService extends AbstractTestService
             'absDecimalVal' => $absDecimalVal,
             'absVal' => $absVal,
             'txtVal' => $txtVal,
+            'processedResult' => $vlResult,
             'originalResult' => $originalResultValue,
             'resultStatus' => $resultStatus
         ];

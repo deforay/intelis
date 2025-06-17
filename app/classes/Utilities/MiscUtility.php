@@ -96,6 +96,20 @@ final class MiscUtility
         }
     }
 
+    public static function detectCSVDelimiter(string $csvLine): string
+    {
+        $delimiters = [',', ';', "\t", '|'];
+        $counts = [];
+
+        foreach ($delimiters as $delimiter) {
+            $counts[$delimiter] = substr_count($csvLine, $delimiter);
+        }
+
+        arsort($counts);
+        return array_key_first($counts);
+    }
+
+
 
     public static function removeDirectory($dirname): bool
     {
