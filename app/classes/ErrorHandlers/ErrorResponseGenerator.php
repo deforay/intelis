@@ -3,11 +3,9 @@
 namespace App\ErrorHandlers;
 
 use Throwable;
-use Whoops\Run;
+use App\Utilities\MiscUtility;
 use Laminas\Diactoros\Response;
 use App\Utilities\LoggerUtility;
-use App\Utilities\MiscUtility;
-use Whoops\Handler\PrettyPageHandler;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
@@ -46,10 +44,6 @@ class ErrorResponseGenerator
     {
         $response = new Response();
 
-        if ($this->isDebug) {
-            return $this->handleDebugMode($exception, $response);
-        }
-
         $httpCode = $this->determineHttpCode($exception);
         $errorId = $this->logError($exception, $request);
 
@@ -73,18 +67,6 @@ class ErrorResponseGenerator
         }
 
         return $httpCode;
-    }
-
-    private function handleDebugMode(Throwable $exception, ResponseInterface $response): ResponseInterface
-    {
-        $whoops = new Run();
-        $whoops->allowQuit(false);
-        $whoops->writeToOutput(false);
-        $whoops->pushHandler(new PrettyPageHandler());
-        $responseBody = $whoops->handleException($exception);
-        $response->getBody()->write($responseBody);
-        $httpCode = $this->determineHttpCode($exception);
-        return $response->withStatus($httpCode);
     }
 
     private function logError(Throwable $exception, ServerRequestInterface $request): string
