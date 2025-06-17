@@ -29,6 +29,7 @@ class TestResultImportService
     protected CommonService $general;
     protected array $postData;
     protected string $testType;
+    protected string $currentFileName;
 
     public function __construct(string $testType = 'vl')
     {
@@ -86,9 +87,9 @@ class TestResultImportService
             MiscUtility::makeDirectory($uploadPath);
         }
 
-        $resultFile = realpath($uploadPath) . DIRECTORY_SEPARATOR . $fileName;
+        $this->currentFileName = realpath($uploadPath) . DIRECTORY_SEPARATOR . $fileName;
 
-        if (!move_uploaded_file($_FILES['resultFile']['tmp_name'], $resultFile)) {
+        if (!move_uploaded_file($_FILES['resultFile']['tmp_name'], $this->currentFileName)) {
             throw new SystemException('Failed to move uploaded file', 500);
         }
 
@@ -97,14 +98,14 @@ class TestResultImportService
             // Parse and return file contents based on extension
             if ($extension === 'txt') {
                 // Text files - return raw content as string
-                $contents = file_get_contents($resultFile);
+                $contents = file_get_contents($this->currentFileName);
                 if ($contents === false) {
                     throw new SystemException('Failed to read text file contents');
                 }
                 return $contents;
             } elseif ($extension === 'csv') {
                 // CSV files - return raw content as string (let scripts handle CSV parsing)
-                $contents = file_get_contents($resultFile);
+                $contents = file_get_contents($this->currentFileName);
                 if ($contents === false) {
                     throw new SystemException('Failed to read CSV file contents');
                 }
@@ -112,7 +113,7 @@ class TestResultImportService
             } elseif ($extension === 'xls' || $extension === 'xlsx') {
                 // Excel files - return parsed array
                 try {
-                    $spreadsheet = IOFactory::load($resultFile);
+                    $spreadsheet = IOFactory::load($this->currentFileName);
                     $worksheet = $spreadsheet->getActiveSheet();
                     return $worksheet->toArray(null, true, true, true);
                 } catch (Exception $e) {
@@ -120,7 +121,7 @@ class TestResultImportService
                 }
             } else {
                 // Other file types - return raw content as fallback
-                $contents = file_get_contents($resultFile);
+                $contents = file_get_contents($this->currentFileName);
                 if ($contents === false) {
                     throw new SystemException('Failed to read file contents');
                 }
@@ -128,7 +129,7 @@ class TestResultImportService
             }
         } else {
             // just return the file path
-            return $resultFile;
+            return $this->currentFileName;
         }
     }
 
@@ -163,7 +164,7 @@ class TestResultImportService
             'sample_type' => $sampleData['sampleType'] ?? 'S',
             'sample_tested_datetime' => $sampleData['testingDate'] ?? null,
             'result_status' => (string) SAMPLE_STATUS\PENDING_APPROVAL,
-            'import_machine_file_name' => basename($sampleData['fileName'] ?? ''),
+            'import_machine_file_name' => $this->currentFileName ?? '',
             'lab_tech_comments' => $sampleData['resultFlag'] ?? '',
             'lot_number' => $sampleData['lotNumber'] ?? null,
             'lot_expiration_date' => $sampleData['lotExpirationDate'] ?? null,
@@ -258,9 +259,10 @@ class TestResultImportService
      */
     public function parseDate(string $dateString, ?string $inputFormat = null): ?string
     {
-        if (empty($dateString)) return null;
+        if (empty($dateString)) {
+            return null;
+        }
         $inputFormat = $inputFormat ?: ($this->postData['dateFormat'] ?? 'd/m/Y H:i');
-
         return MemoUtility::remember(fn() => DateUtility::getDateTime($dateString, 'Y-m-d H:i:s', $inputFormat));
     }
 

@@ -4,12 +4,12 @@
 
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 try {
     // Sanitized values from $request object
@@ -100,8 +100,12 @@ try {
                     $resultFlag = $sheetData[$flagCol];
                     //$reviewBy = $sheetData[$reviewByCol];
 
-                    // //Changing date to European format for strtotime - https://stackoverflow.com/a/5736255
-                    if (str_contains((string)$sheetData[$resultCol], 'Log')) {
+
+                    if ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
+                        $absVal = $absDecimalVal = $logVal = null;
+                        $result = $txtVal = "Failed";
+                        $resultFlag = $sheetData[$flagCol] ?? '';
+                    } elseif (str_contains((string)$sheetData[$resultCol], 'Log')) {
                         $sheetData[$resultCol] = str_replace(",", ".", (string) $sheetData[$resultCol]); // in case they are using european decimal format
                         $logVal = ((float) filter_var($sheetData[$resultCol], FILTER_SANITIZE_NUMBER_FLOAT, FILTER_FLAG_ALLOW_FRACTION));
                         $absDecimalVal = round(pow(10, $logVal), 2);
@@ -126,10 +130,6 @@ try {
                             $resultFlag = "";
                             $absVal = "";
                             $logVal = "";
-                        } elseif ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
-                            //$txtVal =  $sheetData[$flagCol];
-                            $txtVal = "Failed";
-                            $resultFlag = $sheetData[$flagCol];
                         } else {
                             $txtVal = $sheetData[$resultCol + 1];
                             $resultFlag = "";
@@ -157,7 +157,7 @@ try {
 
                         if ($sampleCode == 'HIV_HIPOS') {
                             $sampleType = 'HPC';
-                            $sampleCode = $sampleCode . '-' . $lotNumberVal;
+                            $sampleCode = "$sampleCode-$lotNumberVal";
                         } elseif ($sampleCode == 'HIV_LOPOS') {
                             $sampleType = 'LPC';
                             $sampleCode = $sampleCode . '-' . $lotNumberVal;
@@ -175,7 +175,7 @@ try {
                     }
 
                     if (!isset($infoFromFile[$sampleCode])) {
-                        $infoFromFile[$sampleCode] = array(
+                        $infoFromFile[$sampleCode] = [
                             "sampleCode" => $sampleCode,
                             "logVal" => $logVal,
                             "absVal" => $absVal,
@@ -186,7 +186,7 @@ try {
                             "sampleType" => $sampleType,
                             "lotNumber" => $lotNumberVal,
                             "lotExpirationDate" => $lotExpirationDateVal,
-                        );
+                        ];
                     }
 
                     $m++;
@@ -199,7 +199,7 @@ try {
             if ($d['sampleCode'] == $d['sampleType'] . $inc) {
                 $d['sampleCode'] = '';
             }
-            $data = array(
+            $data = [
                 'module' => 'vl',
                 'lab_id' => base64_decode((string) $_POST['labId']),
                 'vl_test_platform' => $_POST['vltestPlatform'],
@@ -217,7 +217,7 @@ try {
                 'lab_tech_comments' => $d['resultFlag'],
                 'lot_number' => $d['lotNumber'],
                 'lot_expiration_date' => $d['lotExpirationDate'],
-            );
+            ];
 
             //echo "<pre>";var_dump($data);continue;
             if ($d['txtVal'] != "") {

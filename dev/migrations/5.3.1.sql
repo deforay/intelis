@@ -41,3 +41,6 @@ ALTER TABLE `user_details` CHANGE `interface_user_name` `interface_user_name` JS
 
 -- Amit 11-Jun-2025
 ALTER TABLE `temp_sample_import` CHANGE `import_machine_name` `import_machine_name` VARCHAR(128) NULL DEFAULT NULL;
+
+-- Amit 17-Jun-2025
+ALTER TABLE `hold_sample_import` ADD `instrument_id` VARCHAR(128) NULL DEFAULT NULL AFTER `vl_test_platform`;

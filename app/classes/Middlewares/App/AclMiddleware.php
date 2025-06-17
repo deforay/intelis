@@ -33,14 +33,6 @@ class AclMiddleware implements MiddlewareInterface
         try {
             $currentURI = $this->getCurrentRequestUri();
             $user = $_SESSION['userName'] ?? null;
-            if (isset(SYSTEM_CONFIG['system']['debug_mode']) && SYSTEM_CONFIG['system']['debug_mode']) {
-                LoggerUtility::logDebug('ACL check initiated', [
-                    'uri' => $currentURI,
-                    'user' => $user,
-                    'method' => $request->getMethod(),
-                    'ip' => $ip,
-                ]);
-            }
 
             if ($this->isAccessAllowed($request, $currentURI, $user)) {
                 return $handler->handle($request);

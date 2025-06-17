@@ -128,6 +128,7 @@ try {
                     $data['facility_id'] = $rResult['facility_id'];
                     $data['sample_code'] = $rResult['sample_code'];
                     $data['sample_type'] = $rResult['sample_type'];
+                    $data['import_machine_file_name'] = $rResult['import_machine_file_name'];
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['status'] = $status[$i];
                     $db->insert('hold_sample_import', $data);
@@ -301,6 +302,8 @@ try {
             'exception' => $e,
             'line' => $e->getLine(),
             'file' => $e->getFile(),
+            'last_db_error' => $db->getLastError(),
+            'last_db_query' => $db->getLastQuery(),
             'trace' => $e->getTraceAsString()
         ]
     );

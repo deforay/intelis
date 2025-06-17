@@ -34,7 +34,7 @@ final class DateUtility
             $trimmedDate = trim($date);
 
             // Perform preliminary checks for obviously invalid date strings
-            if (empty($trimmedDate) || 'undefined' === $trimmedDate || 'null' === $trimmedDate || preg_match('/[_*]|--/', $trimmedDate)) {
+            if (self::isDateValid($trimmedDate) === false) {
                 return null;
             }
 
@@ -92,7 +92,11 @@ final class DateUtility
 
         // Immediately return false if date is blank or contains any placeholder characters
         // like underscores, asterisks, or multiple consecutive hyphens
-        if (empty($date) || 'undefined' === $date || 'null' === $date || preg_match('/[_*]|--/', $date)) {
+        if (
+            empty($date)
+            || in_array($date, ['undefined', 'null', ''], true)
+            || preg_match('/[_*]|--/', $date)
+        ) {
             return false;
         }
 

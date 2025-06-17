@@ -75,7 +75,11 @@ try {
 
 
         // Process result values
-        if (str_contains($unprocessedResult, 'log')) {
+        if ($sheetData[$resultCol] == "" || $sheetData[$resultCol] == null) {
+            $absVal = $absDecimalVal =$logVal = null;
+            $result = $txtVal = "Failed";
+            $resultFlag = $sheetData[$flagCol] ?? '';
+        } elseif (str_contains($unprocessedResult, 'log')) {
             continue; // Skip log entries, process copies/mL entries
         } elseif ($sheetData[$resultCol] == "< INF") {
             $absVal = $absDecimalVal = 839;
