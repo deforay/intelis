@@ -2,6 +2,7 @@
 
 namespace App\ErrorHandlers;
 
+use App\Services\CommonService;
 use Throwable;
 use App\Utilities\MiscUtility;
 use Laminas\Diactoros\Response;
@@ -84,7 +85,7 @@ class ErrorResponseGenerator
             'line' => $exception->getLine(),
             'stacktrace' => $exception->getTraceAsString(),
             'user_agent' => $request->getHeaderLine('User-Agent'),
-            'ip_address' => $this->getClientIpAddress($request),
+            'ip_address' => CommonService::getClientIpAddress($request),
             'session_id' => session_id() ?: 'no-session'
         ]);
 
@@ -97,7 +98,7 @@ class ErrorResponseGenerator
         $safeMessage = $this->safeErrorMessages[$httpCode] ?? _translate('Sorry, something went wrong. Please try again later.');
 
         // For production, use safe message; for non-production, show actual exception message
-        $errorMessage = (APPLICATION_ENV === 'production')
+        $errorMessage = (APPLICATION_ENV === 'production' && $this->isDebug === false)
             ? ($_SESSION['errorDisplayMessage'] ?? $safeMessage)
             : $exception->getMessage();
 
@@ -137,7 +138,7 @@ class ErrorResponseGenerator
             'error_id' => $errorId,
             'timestamp' => date('Y-m-d H:i:s'),
             'can_retry' => $httpCode >= 500, // Server errors might be temporary
-            'suggested_actions' => $this->getSuggestedActions($httpCode, $request),
+            'suggested_actions' => $this->getSuggestedActions($httpCode),
             'is_api_request' => str_starts_with($request->getUri()->getPath(), '/api/'),
         ];
 
@@ -148,7 +149,7 @@ class ErrorResponseGenerator
         return $response->withStatus($httpCode);
     }
 
-    private function getSuggestedActions(int $httpCode, ServerRequestInterface $request): array
+    private function getSuggestedActions(int $httpCode): array
     {
         $actions = [];
 
@@ -172,34 +173,11 @@ class ErrorResponseGenerator
                 $actions[] = _translate('Wait a few minutes and try again');
                 $actions[] = _translate('Contact support if the problem persists');
                 break;
+            default:
+                $actions[] = _translate('Please check your request and try again.');
+                break;
         }
 
         return $actions;
-    }
-
-    private function getClientIpAddress(ServerRequestInterface $request): string
-    {
-        // Check various headers for client IP
-        $ipHeaders = [
-            'HTTP_CF_CONNECTING_IP',     // Cloudflare
-            'HTTP_CLIENT_IP',            // Proxy
-            'HTTP_X_FORWARDED_FOR',      // Load balancer/proxy
-            'HTTP_X_FORWARDED',          // Proxy
-            'HTTP_X_CLUSTER_CLIENT_IP',  // Cluster
-            'HTTP_FORWARDED_FOR',        // Proxy
-            'HTTP_FORWARDED',            // Proxy
-            'REMOTE_ADDR'                // Standard
-        ];
-
-        foreach ($ipHeaders as $header) {
-            if (!empty($_SERVER[$header])) {
-                $ip = trim(explode(',', $_SERVER[$header])[0]);
-                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
-                    return $ip;
-                }
-            }
-        }
-
-        return $_SERVER['REMOTE_ADDR'] ?? 'unknown';
     }
 }

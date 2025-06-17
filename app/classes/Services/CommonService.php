@@ -97,35 +97,45 @@ final class CommonService
         });
     }
 
-    public static function getClientIpAddress(?ServerRequest $request = null): ?string
+    public static function getClientIpAddress(?ServerRequestInterface $request = null): ?string
     {
         if ($request === null) {
             $request = AppRegistry::get('request');
         }
 
-        return MemoUtility::remember(function () use ($request) {
+        $headers = [
+            'CF-Connecting-IP',       // Cloudflare
+            'Client-IP',              // Proxy
+            'X-Forwarded-For',        // Load balancer/proxy
+            'X-Forwarded',            // Proxy
+            'X-Cluster-Client-IP',    // Cluster
+            'Forwarded-For',          // Proxy
+            'Forwarded',              // Proxy
+            'X-Real-IP',              // Common fallback
+        ];
 
-            $headers = [
-                'HTTP_CF_CONNECTING_IP',     // For when DNS is via Cloudflare
-                'HTTP_X_FORWARDED_FOR',      // For any reverse proxy/load balancer
-                'HTTP_X_REAL_IP',            // Common fallback
-            ];
-
-            foreach ($headers as $header) {
-                if ($request->hasHeader($header)) {
-                    $ip = trim(explode(',', $request->getHeaderLine($header))[0]);
-
-                    // Basic validation
-                    if (filter_var($ip, FILTER_VALIDATE_IP)) {
-                        return $ip;
-                    }
+        foreach ($headers as $header) {
+            $headerValue = $request->getHeaderLine($header);
+            if (!empty($headerValue)) {
+                // In case of multiple IPs, take the first
+                $ip = trim(explode(',', $headerValue)[0]);
+                if (filter_var($ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+                    return $ip;
                 }
             }
+        }
 
-            // Fallback to remote address
-            return $request->getServerParams()['REMOTE_ADDR'] ?? null;
-        });
+        // Fallback: REMOTE_ADDR from server params
+        $serverParams = $request->getServerParams();
+        $remoteAddr = $serverParams['REMOTE_ADDR'] ?? null;
+
+        if ($remoteAddr && filter_var($remoteAddr, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE)) {
+            return $remoteAddr;
+        }
+
+        return null;
     }
+
 
     public function getInstruments($staus = 'active')
     {
