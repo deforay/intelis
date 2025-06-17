@@ -2,9 +2,9 @@
 
 namespace App\ErrorHandlers;
 
-use App\Services\CommonService;
 use Throwable;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use Laminas\Diactoros\Response;
 use App\Utilities\LoggerUtility;
 use Psr\Http\Message\ResponseInterface;

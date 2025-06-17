@@ -50,7 +50,7 @@ class TestResultImportService
         $userId = $_SESSION['userId'] ?? null;
         if (!empty($userId)) {
             $this->db->where('imported_by', $userId);
-            if (!empty($module)) {
+            if (!empty($this->testType)) {
                 $this->db->where('module', $this->testType);
             }
             $this->db->delete('temp_sample_import');

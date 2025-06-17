@@ -1,5 +1,5 @@
 
-function showdefModal(actualContentDiv, maxWidth, maxHeight) {
+function showDeforayModal(actualContentDiv, maxWidth, maxHeight) {
 
     if (!document.getElementById('modalOverlay') || !document.getElementById('modalBoxDiv')) {
         initModalBox();
@@ -10,7 +10,7 @@ function showdefModal(actualContentDiv, maxWidth, maxHeight) {
     modalBoxDiv.innerHTML = document.getElementById(actualContentDiv).innerHTML;
 
     modalOverlay.style.display = 'block';
-    var modalBox = document.getElementById('modalBox');
+    let modalBox = document.getElementById('modalBox');
     modalBox.style.width = maxWidth + 'px';
     modalBox.style.height = maxHeight + 'px';
     modalBox.style.display = 'block';
@@ -19,7 +19,7 @@ function showdefModal(actualContentDiv, maxWidth, maxHeight) {
 }
 
 
-function hidedefModal() {
+function hideDeforayModal() {
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('modalBox').style.display = 'none';
 
@@ -32,9 +32,9 @@ function initModalBox() {
         return;
     }
 
-    var obody = document.getElementsByTagName('body')[0];
-    var frag = document.createDocumentFragment();
-    var modalOverlay = document.createElement('div');
+    let obody = document.getElementsByTagName('body')[0];
+    let frag = document.createDocumentFragment();
+    let modalOverlay = document.createElement('div');
     modalOverlay.id = 'modalOverlay';
     modalOverlay.style.display = 'none';
     modalOverlay.style.position = 'fixed';
@@ -47,11 +47,11 @@ function initModalBox() {
     frag.appendChild(modalOverlay);
 
 
-    var modalBox = document.createElement('div');
+    let modalBox = document.createElement('div');
     modalBox.id = 'modalBox';
     modalBox.style.display = 'none';
     modalBox.style.position = 'fixed';
-    modalBox.style.top = '50%';
+    modalBox.style.top = '25%';
     modalBox.style.left = '50%';
     modalBox.style.transform = 'translate(-50%, -50%)';
     modalBox.style.zIndex = '9999';
@@ -65,7 +65,7 @@ function initModalBox() {
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
-            hidedefModal();
+            hideDeforayModal();
         }
     });
 

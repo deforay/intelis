@@ -11,9 +11,10 @@ use App\Services\TestResultImportService;
 $vlService = ContainerRegistry::get(VlService::class);
 
 try {
+    $testType = 'vl';
     // Initialize the import service
     /** @var TestResultImportService $importService */
-    $importService = new TestResultImportService('vl');
+    $importService = new TestResultImportService($testType);
     $importService->initializeImport();
 
     // Handle file upload and get Excel data as array

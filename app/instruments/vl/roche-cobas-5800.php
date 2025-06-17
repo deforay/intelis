@@ -9,9 +9,11 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestResultImportService;
 
 try {
+
+    $testType = 'vl';
     // Initialize the import service
     /** @var TestResultImportService $importService */
-    $importService = new TestResultImportService('vl');
+    $importService = new TestResultImportService($testType);
     $importService->initializeImport();
 
     // Handle file upload and get CSV content
@@ -61,7 +63,6 @@ try {
 
     // Handle success using the service
     $importService->handleSuccess();
-
 } catch (Exception $e) {
     $importService->handleError($e);
 }

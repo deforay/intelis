@@ -1,7 +1,7 @@
 #modalBox {
     background-color: #fff;
     padding: 0;
-    border: 3px solid #6E4E1D;
+    border: 1px solid #6E4E1D;
     z-index: 9999 !important;
     border-radius: 8px;
     -webkit-border-radius: 8px;

@@ -9,9 +9,10 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestResultImportService;
 
 try {
+    $testType = 'vl';
     // Initialize the import service
     /** @var TestResultImportService $importService */
-    $importService = new TestResultImportService('vl');
+    $importService = new TestResultImportService($testType);
     $importService->initializeImport();
 
     // Handle file upload and get CSV content
@@ -114,8 +115,6 @@ try {
                 $infoFromFile[$sampleCode]['txtVal'] = $interpretedResults['txtVal'] ?? null;
                 $infoFromFile[$sampleCode]['result'] = $interpretedResults['result'] ?? null;
                 $infoFromFile[$sampleCode]['resultFlag'] = null;
-
-
             }
         }
     }
@@ -133,7 +132,6 @@ try {
     } else {
         throw new Exception("No sample data found");
     }
-
 } catch (Exception $e) {
     if (isset($importService)) {
         $importService->handleError($e);
