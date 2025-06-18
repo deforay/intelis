@@ -1,5 +1,5 @@
 
-function showDeforayModal(actualContentDiv, maxWidth, maxHeight) {
+function displayDeforayModal(actualContentDiv, maxWidth, maxHeight) {
 
     if (!document.getElementById('modalOverlay') || !document.getElementById('modalBoxDiv')) {
         initModalBox();
@@ -19,7 +19,7 @@ function showDeforayModal(actualContentDiv, maxWidth, maxHeight) {
 }
 
 
-function hideDeforayModal() {
+function removeDeforayModal() {
     document.getElementById('modalOverlay').style.display = 'none';
     document.getElementById('modalBox').style.display = 'none';
 
@@ -65,7 +65,7 @@ function initModalBox() {
 
     document.addEventListener('keydown', function (event) {
         if (event.key === 'Escape') {
-            hideDeforayModal();
+            removeDeforayModal();
         }
     });
 

@@ -335,7 +335,7 @@ $remoteURL = $general->getRemoteURL();
     }
 
     function showModal(url, w, h) {
-        showDeforayModal('dDiv', w, h);
+        displayDeforayModal('dDiv', w, h);
         document.getElementById('dFrame').style.height = h + 'px';
         document.getElementById('dFrame').style.width = w + 'px';
         document.getElementById('dFrame').src = url;
@@ -343,7 +343,7 @@ $remoteURL = $general->getRemoteURL();
 
     function closeModal() {
         document.getElementById('dFrame').src = "";
-        hideDeforayModal('dDiv');
+        removeDeforayModal('dDiv');
     }
 
     function editableSelect(id, _fieldName, table, _placeholder) {

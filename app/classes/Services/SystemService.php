@@ -69,17 +69,42 @@ final class SystemService
     {
         $dateFormat = $inputFormat ?? $this->commonService->getGlobalConfig('gui_date_format') ?? 'd-M-Y';
 
-        $dateFormatArray = [
-            'phpDateFormat' => $dateFormat,
-            'jsDateFieldFormat' => $dateFormat === 'd-m-Y' ? 'dd-mm-yy' : 'dd-M-yy',
-            'dayjsDateFieldFormat' => $dateFormat === 'd-m-Y' ? 'DD-MM-YYYY' : 'DD-MMM-YYYY',
-            'jsDateRangeFormat' => $dateFormat === 'd-m-Y' ? 'DD-MM-YYYY' : 'DD-MMM-YYYY',
-            'jsDateFormatMask' => $dateFormat === 'd-m-Y' ? '99-99-9999' : '99-aaa-9999',
-            'mysqlDateFormat' => $dateFormat === 'd-m-Y' ? '%d-%m-%Y' : '%d-%b-%Y',
-        ];
+        $dateFormatArray = ['phpDateFormat' => $dateFormat];
 
-        return $category ? ($dateFormatArray[$category] ?? null) : $dateFormatArray;
+        if ($dateFormat == 'd-m-Y') {
+            $dateFormatArray['jsDateFieldFormat'] = 'dd-mm-yy';
+            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MM-YYYY';
+            $dateFormatArray['jsDateRangeFormat'] = 'DD-MM-YYYY';
+            $dateFormatArray['jsDateFormatMask'] = '99-99-9999';
+            $dateFormatArray['mysqlDateFormat'] = '%d-%m-%Y';
+        } else {
+            $dateFormatArray['jsDateFieldFormat'] = 'dd-M-yy';
+            $dateFormatArray['dayjsDateFieldFormat'] = 'DD-MMM-YYYY';
+            $dateFormatArray['jsDateRangeFormat'] = 'DD-MMM-YYYY';
+            $dateFormatArray['jsDateFormatMask'] = '99-aaa-9999';
+            $dateFormatArray['mysqlDateFormat'] = '%d-%b-%Y';
+        }
+
+        if (empty($category)) {
+            // Return all date formats
+            return $dateFormatArray;
+        } elseif ($category == 'php') {
+            return $dateFormatArray['phpDateFormat'] ?? 'd-m-Y';
+        } elseif ($category == 'js') {
+            return $dateFormatArray['jsDateFieldFormat'] ?? 'dd-mm-yy';
+        } elseif ($category == 'dayjs') {
+            return $dateFormatArray['dayjsDateFieldFormat'] ?? 'DD-MM-YYYY';
+        } elseif ($category == 'jsDateRange') {
+            return $dateFormatArray['jsDateRangeFormat'] ?? 'DD-MM-YYYY';
+        } elseif ($category == 'jsMask') {
+            return $dateFormatArray['jsDateFormatMask'] ?? '99-99-9999';
+        } elseif ($category == 'mysql') {
+            return $dateFormatArray['mysqlDateFormat'] ?? '%d-%b-%Y';
+        } else {
+            return null;
+        }
     }
+
 
 
     public function setGlobalDateFormat($inputFormat = null)
