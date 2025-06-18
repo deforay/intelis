@@ -262,46 +262,7 @@ if (!empty($requestResult)) {
           $tndMessage = '';
           $messageTextSize = '12px';
           $vlResult = trim((string) $result['result']);
-          $vlResultCategory = strtolower(trim((string) $result['vl_result_category']));
-          if (!empty($vlResult) && !empty($vlResultCategory)) {
-               $isResultNumeric = is_numeric($vlResult);
 
-               if ($vlResultCategory == 'not suppressed') {
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-                    $showMessage = ($arr['h_vl_msg']);
-                    $messageTextSize = '15px';
-               } else if ($vlResultCategory == 'suppressed') {
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-               }
-
-               if (in_array(strtolower($vlResult), array("hiv-1 not detected", "below detection limit", "below detection level", 'bdl', 'not detected'))) {
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-               } else if (in_array(strtolower($vlResult), array("tnd", "target not detected", 'ldl'))) {
-                    if ($vlResult == 'ldl' || $vlResult == 'LDL') {
-                         $vlResult = 'LDL';
-                    } else {
-                         $vlResult = 'TND*';
-                         $tndMessage = 'TND* - Target not Detected';
-                    }
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-                    $tndMessage = 'TND* - Target not Detected';
-               } else if (in_array(strtolower($vlResult), array("failed", "fail", "no_sample", "invalid"))) {
-                    $smileyContent = '';
-                    $showMessage = '';
-                    $messageTextSize = '14px';
-               } else if (in_array($vlResult, array("<20", "< 20", "<40", "< 40", "< 839", "<839"))) {
-                    $vlResult = str_replace("<", "&lt;", $vlResult);
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
-                    $showMessage = ($arr['l_vl_msg']);
-               } else if ($vlResult == '>10000000' || $vlResult == '> 10000000') {
-                    $vlResult = str_replace(">", "&gt;", $vlResult);
-                    $smileyContent = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
-                    $showMessage = ($arr['h_vl_msg']);
-               }
-          }
           if (isset($arr['show_smiley']) && trim((string) $arr['show_smiley']) == "no") {
                $smileyContent = '';
           }

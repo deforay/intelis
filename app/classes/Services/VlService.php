@@ -30,8 +30,8 @@ final class VlService extends AbstractTestService
         '<20',
         '< 40',
         '<40',
-        '< 839',
-        '<839',
+        //'< 839',
+        //'<839',
         '-1.00',
         '< titer min',
         'negative',
@@ -371,7 +371,7 @@ final class VlService extends AbstractTestService
         $strToLowerresult = strtolower((string) $result);
         switch ($strToLowerresult) {
             case 'bdl':
-            case '< 839':
+            //case '< 839':
                 $vlResult = $txtVal = 'Below Detection Limit';
                 break;
             case 'target not detected':
@@ -706,11 +706,11 @@ final class VlService extends AbstractTestService
                 return 'text';
             }
 
-            // Hardcoded cases (can be expanded via customTextPatterns)
-            $hardcodedTextCases = ['< 839'];
-            if (in_array($input, $hardcodedTextCases, true)) {
-                return 'text';
-            }
+            // // Hardcoded cases (can be expanded via customTextPatterns)
+            // $hardcodedTextCases = ['< 839'];
+            // if (in_array($input, $hardcodedTextCases, true)) {
+            //     return 'text';
+            // }
 
             $processed = $this->preprocessViralLoadInput($input);
 
