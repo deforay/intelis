@@ -104,7 +104,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/components-rounded.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/select2.live.min.css" />
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/style.css?v=<?= filemtime(WEB_ROOT . "/assets/css/style.css") ?>" />
-	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
+	<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css?v=<?= filemtime(WEB_ROOT . "/assets/css/toastify.min.css") ?>">
 	<link rel="stylesheet" type="text/css" href="/assets/css/summernote.min.css">
 	<link rel="stylesheet" media="all" type="text/css" href="/assets/css/selectize.css" />
 

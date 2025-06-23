@@ -157,13 +157,6 @@ require_once($fileArray[$arr['vl_form']]);
                 },
                 function(data) {
                     if (data != 0) {
-                        // Toastify({
-                        //     text: "<?= _translate('This Sample ID already exists', true) ?>",
-                        //     duration: 3000,
-                        //     style: {
-                        //         background: 'red',
-                        //     }
-                        // }).showToast();
                     }
                 });
             $.unblockUI();

@@ -229,13 +229,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					}
 
 					if (toastMessage) {
-						Toastify({
-							text: toastMessage,
-							duration: 3000,
-							style: {
-								background: toastColor
-							}
-						}).showToast();
+						toast.info(toastMessage);
 					}
 					oTable.fnDraw();
 				});

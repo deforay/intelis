@@ -1,4 +1,4 @@
-<script type="text/javascript" src="/assets/js/toastify.js"></script>
+<script type="text/javascript" src="/assets/js/toastify.js?v=<?= filemtime(WEB_ROOT . "/assets/js/toastify.js") ?>"></script>
 <script type="text/javascript" src="/assets/js/jquery-ui-timepicker-addon.js"></script>
 <script type="text/javascript" src="/assets/js/js.cookie.js"></script>
 <script type="text/javascript" src="/assets/js/select2.min.js"></script>
@@ -391,13 +391,7 @@ $remoteURL = $general->getRemoteURL();
             url: '/includes/clear-cache.php',
             cache: false,
             success: function(data) {
-                Toastify({
-                    text: "<?= _translate('Cache cleared successfully', escapeTextOrContext: true) ?>",
-                    duration: 3000,
-                    style: {
-                        background: 'green'
-                    }
-                }).showToast();
+                toast.success("<?= _translate("Cache cleared successfully", true); ?>");
             },
             error: function() {
                 console.error("An error occurred while clearing the cache.");
@@ -413,13 +407,7 @@ $remoteURL = $general->getRemoteURL();
                 },
                 function(data) {
                     $.unblockUI();
-                    Toastify({
-                        text: "<?= _translate("Sync Forced Successfully", true); ?>",
-                        duration: 3000,
-                        style: {
-                            background: 'green'
-                        }
-                    }).showToast();
+                    toast.success("<?= _translate("Synced successfully", true); ?>");
                 });
         }
         $.unblockUI();
@@ -674,13 +662,7 @@ $remoteURL = $general->getRemoteURL();
                 },
                 success: function(response) {
                     if (!response.isValid) {
-                        Toastify({
-                            text: "<?= _translate('Invalid phone number. Please enter full phone number with the proper country code', escapeTextOrContext: true) ?>",
-                            duration: 3000,
-                            style: {
-                                background: 'red'
-                            }
-                        }).showToast();
+                        toast.error("<?= _translate("Invalid phone number. Please enter full phone number with the proper country code", true); ?>");
                     }
                 },
                 error: function() {

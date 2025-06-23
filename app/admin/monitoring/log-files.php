@@ -12,7 +12,7 @@ $title = _translate("Log File Viewer") . " - " . _translate("Admin");
 require_once APPLICATION_PATH . '/header.php';
 
 ?>
-<link rel="stylesheet" type="text/css" href="/assets/css/toastify.min.css">
+
 <style>
 	.logLine br {
 		line-height: 1.8;
@@ -153,11 +153,6 @@ require_once APPLICATION_PATH . '/header.php';
 		padding: 1px 3px;
 		border-radius: 2px;
 		font-weight: bold;
-	}
-
-	.toastify {
-		border-radius: 4px !important;
-		font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif !important;
 	}
 
 	.stack-line {
@@ -426,7 +421,6 @@ require_once APPLICATION_PATH . '/header.php';
 
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript" src="/assets/js/toastify.js"></script>
 <script>
 	let start = 0;
 	let loading = false;
@@ -502,14 +496,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		navigator.clipboard.writeText(cleanText)
 			.then(() => {
-				Toastify({
-					text: "Copied to clipboard - Line Number - " + lineNumber,
-					duration: 3000,
-					close: true,
-					gravity: "top",
-					position: "right",
-					backgroundColor: "#4CAF50",
-				}).showToast();
+				toast.success("<?= _translate("Copied to clipboard - Line Number - ", true); ?>" + lineNumber);
 			})
 			.catch(err => {
 				const tempInput = document.createElement('input');
@@ -521,14 +508,7 @@ require_once APPLICATION_PATH . '/header.php';
 				document.execCommand('copy');
 				document.body.removeChild(tempInput);
 
-				Toastify({
-					text: "Copied to clipboard - Line Number - " + lineNumber,
-					duration: 3000,
-					close: true,
-					gravity: "top",
-					position: "right",
-					backgroundColor: "#4CAF50",
-				}).showToast();
+				toast.success("<?= _translate("Copied to clipboard - Line Number - ", true); ?>" + lineNumber);
 			});
 	}
 
@@ -926,13 +906,7 @@ require_once APPLICATION_PATH . '/header.php';
 			formattedDate = date.replace(/[\/:*?"<>|]/g, '-');
 		}
 
-		Toastify({
-			text: "Preparing log export...",
-			duration: 3000,
-			gravity: "top",
-			position: "right",
-			backgroundColor: "#17a2b8",
-		}).showToast();
+		toast.info("<?= _translate("Preparing log export... ", true); ?>");
 
 		$.ajax({
 			url: '/admin/monitoring/get-log-files.php',
@@ -992,13 +966,7 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 			},
 			error: function() {
-				Toastify({
-					text: "Error exporting logs",
-					duration: 3000,
-					gravity: "top",
-					position: "right",
-					backgroundColor: "#dc3545",
-				}).showToast();
+				toast.error("<?= _translate("Error exporting log", true); ?>");
 			}
 		});
 	}
@@ -1059,13 +1027,7 @@ require_once APPLICATION_PATH . '/header.php';
 		searchTerm = $('#logSearchInput').val();
 
 		if (searchTerm.length > 100) {
-			Toastify({
-				text: "Long search terms may impact performance",
-				duration: 3000,
-				gravity: "top",
-				position: "right",
-				backgroundColor: "#ffc107",
-			}).showToast();
+			toast.info("<?= _translate("Long search terms may impact performance", true); ?>");
 		}
 
 		applyFilters();

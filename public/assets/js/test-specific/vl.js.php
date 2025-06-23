@@ -86,13 +86,6 @@
                 },
                 function(data) {
                     if (data != 0) {
-                        // Toastify({
-                        //     text: "<?= _translate('This Sample ID already exists', true) ?>",
-                        //     duration: 3000,
-                        //     style: {
-                        //         background: 'red',
-                        //     }
-                        // }).showToast();
                     }
                 });
             //$.unblockUI();
@@ -101,7 +94,7 @@
 
 
 
-    
+
     function getTreatmentLine(artRegimen) {
         var char = artRegimen.charAt(0);
         $("#lineOfTreatment").val(char);

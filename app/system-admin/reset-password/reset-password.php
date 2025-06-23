@@ -120,10 +120,7 @@ $sResult = $db->rawQuery($sQuery);
 		try {
 			const success = await Utilities.copyToClipboard(data);
 			if (success) {
-				Toastify({
-					text: "<?= _translate("Random password generated and copied to clipboard", true); ?>",
-					duration: 3000,
-				}).showToast();
+				toast.success("<?= _translate("Password generated and copied to clipboard", true); ?>");
 			} else {
 				console.log('Failed to copy text');
 			}
