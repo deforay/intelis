@@ -641,7 +641,7 @@ sort($fileList);
 												<?php echo _translate("Machine Name"); ?> <span class="mandatory">*</span>
 											</th>
 											<th style="text-align:center; width: 35%; min-width: 350px;">
-												<?php echo _translate("Smart Date Format Detection"); ?> <span class="mandatory">*</span>
+												<?php echo _translate("Date Format"); ?> <span class="mandatory">*</span>
 												<br><small style="font-weight: normal; color: #666; font-size: 11px;">
 													📅 Enter sample date to auto-detect format
 												</small>
