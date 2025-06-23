@@ -1,5 +1,7 @@
 <?php
 
+// edit-instrument.php
+
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
@@ -40,16 +42,16 @@ $dir = new DirectoryIterator($directory);
 $fileList = [];
 
 foreach ($dir as $fileinfo) {
-    if (!$fileinfo->isFile()) {
-        continue;
-    }
+	if (!$fileinfo->isFile()) {
+		continue;
+	}
 
-    // Only add .php files
-    if (strtolower($fileinfo->getExtension()) !== 'php') {
-        continue;
-    }
+	// Only add .php files
+	if (strtolower($fileinfo->getExtension()) !== 'php') {
+		continue;
+	}
 
-    $fileList[] = $fileinfo->getFilename();
+	$fileList[] = $fileinfo->getFilename();
 }
 
 sort($fileList);
@@ -94,6 +96,164 @@ $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
 $testTypeList = SystemService::getActiveModules(true);
 
 ?>
+<style type="text/css">
+	.tooltip-inner {
+		background-color: #fff;
+		color: #000;
+		border: 1px solid #000;
+	}
+
+	/* Smart Date Format Detection Styles */
+	.format-suggestions-container {
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	.format-suggestion {
+		background: white;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 8px;
+		margin: 3px 0;
+		cursor: pointer;
+		transition: all 0.3s ease;
+		font-size: 12px;
+	}
+
+	.format-suggestion:hover {
+		border-color: #007bff;
+		box-shadow: 0 2px 4px rgba(0, 123, 255, 0.15);
+		transform: translateY(-1px);
+	}
+
+	/* When a selection is made, make unselected items lighter */
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected) {
+		background: #f8f9fa;
+		border-color: #e9ecef;
+		opacity: 0.65;
+		transform: none;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected):hover {
+		opacity: 0.8;
+		border-color: #ced4da;
+		box-shadow: 0 1px 2px rgba(0, 123, 255, 0.1);
+	}
+
+	/* Selected item stands out prominently */
+	.format-suggestion.selected {
+		border-color: #28a745;
+		background: #f8fff9;
+		opacity: 1;
+		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+	}
+
+	.format-suggestion.selected::after {
+		content: "✓";
+		float: right;
+		color: #28a745;
+		font-weight: bold;
+		font-size: 14px;
+	}
+
+	/* Confidence indicators remain vibrant for selected, muted for unselected */
+	.confidence-high {
+		border-left: 4px solid #28a745;
+	}
+
+	.confidence-medium {
+		border-left: 4px solid #ffc107;
+	}
+
+	.confidence-low {
+		border-left: 4px solid #6c757d;
+	}
+
+	/* Muted confidence colors for unselected items */
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-high {
+		border-left-color: #a8d5a8;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-medium {
+		border-left-color: #ffeaa7;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-low {
+		border-left-color: #b6c2d0;
+	}
+
+	.format-warning {
+		background: #fff3cd;
+		border: 1px solid #ffeaa7;
+		padding: 4px 8px;
+		border-radius: 3px;
+		margin-top: 4px;
+		font-size: 11px;
+		color: #856404;
+	}
+
+	.no-format-found {
+		background: #f8d7da;
+		border: 1px solid #f5c6cb;
+		padding: 8px;
+		border-radius: 4px;
+		text-align: center;
+		font-size: 12px;
+		color: #721c24;
+	}
+
+	.format-confirmation {
+		background: #d4edda;
+		border: 1px solid #c3e6cb;
+		padding: 6px 8px;
+		border-radius: 4px;
+		margin-top: 5px;
+		font-size: 11px;
+		color: #155724;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.table-responsive {
+			font-size: 12px;
+		}
+
+		.format-suggestions-container {
+			max-height: 200px;
+		}
+
+		.format-suggestion {
+			padding: 6px;
+			font-size: 11px;
+		}
+
+		.smart-date-cell {
+			min-width: 280px !important;
+		}
+	}
+
+	/* Loading spinner animation */
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Make table horizontally scrollable */
+	.table-container {
+		overflow-x: auto;
+		min-height: 200px;
+	}
+
+	.smart-date-cell {
+		min-width: 350px;
+		padding: 10px !important;
+	}
+</style>
 
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -627,7 +787,8 @@ $testTypeList = SystemService::getActiveModules(true);
 															⚙️ Manual entry
 														</a>
 													</div>
-												</td></td>
+												</td>
+												</td>
 												<td>
 													<select name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control select2 instrumentFile">
 														<option value=""><?php echo _translate('Select File'); ?></option>
@@ -826,7 +987,6 @@ $testTypeList = SystemService::getActiveModules(true);
 				}
 			});
 	}
-
 </script>
 
 <?php
@@ -1158,10 +1318,15 @@ require_once APPLICATION_PATH . '/footer.php';
 	}
 
 	function selectDateFormat(format, rowId, suggestionIndex) {
+		const container = document.getElementById(`formatSuggestions${rowId}`);
+
 		// Remove previous selections
 		document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`).forEach(el => {
 			el.classList.remove('selected');
 		});
+
+		// Add has-selection class to container for styling
+		container.classList.add('has-selection');
 
 		// Highlight selected
 		const suggestions = document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`);
@@ -1177,6 +1342,14 @@ require_once APPLICATION_PATH . '/footer.php';
 
 		// Show confirmation with copy-to-clipboard functionality
 		showFormatConfirmation(format, rowId);
+	}
+
+	function clearFormatSuggestions(rowId) {
+		const container = document.getElementById(`formatSuggestions${rowId}`);
+		if (container) {
+			container.innerHTML = '';
+			container.classList.remove('has-selection'); // Remove the class when clearing
+		}
 	}
 
 	function showFormatConfirmation(format, rowId) {
@@ -1263,13 +1436,6 @@ require_once APPLICATION_PATH . '/footer.php';
 			rowId,
 			'Common'
 		);
-	}
-
-	function clearFormatSuggestions(rowId) {
-		const container = document.getElementById(`formatSuggestions${rowId}`);
-		if (container) {
-			container.innerHTML = '';
-		}
 	}
 
 	function getOrCreateSuggestionsContainer(rowId) {

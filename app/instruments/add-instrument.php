@@ -1,5 +1,7 @@
 <?php
 
+// add-instrument.php
+
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Services\CommonService;
@@ -52,7 +54,7 @@ foreach ($dir as $fileinfo) {
 
 sort($fileList);
 ?>
-<style>
+<style type="text/css">
 	.tooltip-inner {
 		background-color: #fff;
 		color: #000;
@@ -72,7 +74,7 @@ sort($fileList);
 		padding: 8px;
 		margin: 3px 0;
 		cursor: pointer;
-		transition: all 0.2s ease;
+		transition: all 0.3s ease;
 		font-size: 12px;
 	}
 
@@ -82,9 +84,26 @@ sort($fileList);
 		transform: translateY(-1px);
 	}
 
+	/* When a selection is made, make unselected items lighter */
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected) {
+		background: #f8f9fa;
+		border-color: #e9ecef;
+		opacity: 0.65;
+		transform: none;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected):hover {
+		opacity: 0.8;
+		border-color: #ced4da;
+		box-shadow: 0 1px 2px rgba(0, 123, 255, 0.1);
+	}
+
+	/* Selected item stands out prominently */
 	.format-suggestion.selected {
 		border-color: #28a745;
 		background: #f8fff9;
+		opacity: 1;
+		box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
 	}
 
 	.format-suggestion.selected::after {
@@ -92,8 +111,10 @@ sort($fileList);
 		float: right;
 		color: #28a745;
 		font-weight: bold;
+		font-size: 14px;
 	}
 
+	/* Confidence indicators remain vibrant for selected, muted for unselected */
 	.confidence-high {
 		border-left: 4px solid #28a745;
 	}
@@ -104,6 +125,19 @@ sort($fileList);
 
 	.confidence-low {
 		border-left: 4px solid #6c757d;
+	}
+
+	/* Muted confidence colors for unselected items */
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-high {
+		border-left-color: #a8d5a8;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-medium {
+		border-left-color: #ffeaa7;
+	}
+
+	.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-low {
+		border-left-color: #b6c2d0;
 	}
 
 	.format-warning {
@@ -1237,10 +1271,15 @@ require_once APPLICATION_PATH . '/footer.php';
 	}
 
 	function selectDateFormat(format, rowId, suggestionIndex) {
+		const container = document.getElementById(`formatSuggestions${rowId}`);
+
 		// Remove previous selections
 		document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`).forEach(el => {
 			el.classList.remove('selected');
 		});
+
+		// Add has-selection class to container for styling
+		container.classList.add('has-selection');
 
 		// Highlight selected
 		const suggestions = document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`);
@@ -1256,6 +1295,14 @@ require_once APPLICATION_PATH . '/footer.php';
 
 		// Show confirmation with copy-to-clipboard functionality
 		showFormatConfirmation(format, rowId);
+	}
+
+	function clearFormatSuggestions(rowId) {
+		const container = document.getElementById(`formatSuggestions${rowId}`);
+		if (container) {
+			container.innerHTML = '';
+			container.classList.remove('has-selection'); // Remove the class when clearing
+		}
 	}
 
 	function showFormatConfirmation(format, rowId) {
@@ -1344,12 +1391,6 @@ require_once APPLICATION_PATH . '/footer.php';
 		);
 	}
 
-	function clearFormatSuggestions(rowId) {
-		const container = document.getElementById(`formatSuggestions${rowId}`);
-		if (container) {
-			container.innerHTML = '';
-		}
-	}
 
 	function getOrCreateSuggestionsContainer(rowId) {
 		return document.getElementById(`formatSuggestions${rowId}`);
