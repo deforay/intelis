@@ -441,7 +441,7 @@ final class UsersService
             if (password_needs_rehash($hash, PASSWORD_BCRYPT, $options)) {
                 $newHash = $this->passwordHash($password);
                 $this->db->where('login_id', $loginId);
-                $this->db->update('user_details', ['password' => $newHash]);
+                $this->db->update($this->table, ['password' => $newHash]);
             }
         }
 

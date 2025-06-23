@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\ContainerRegistry;
-use App\Services\CommonService;
-use App\Services\DatabaseService;
-use App\Services\SystemService;
-use App\Services\UsersService;
-use App\Services\FacilitiesService;
 use App\Services\TestsService;
+use App\Services\UsersService;
+use App\Services\CommonService;
+use App\Services\SystemService;
+use App\Services\DatabaseService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 require_once APPLICATION_PATH . '/header.php';
@@ -38,16 +38,16 @@ $dir = new DirectoryIterator($directory);
 $fileList = [];
 
 foreach ($dir as $fileinfo) {
-    if (!$fileinfo->isFile()) {
-        continue;
-    }
+	if (!$fileinfo->isFile()) {
+		continue;
+	}
 
-    // Only add .php files
-    if (strtolower($fileinfo->getExtension()) !== 'php') {
-        continue;
-    }
+	// Only add .php files
+	if (strtolower($fileinfo->getExtension()) !== 'php') {
+		continue;
+	}
 
-    $fileList[] = $fileinfo->getFilename();
+	$fileList[] = $fileinfo->getFilename();
 }
 
 sort($fileList);
@@ -57,6 +57,125 @@ sort($fileList);
 		background-color: #fff;
 		color: #000;
 		border: 1px solid #000;
+	}
+
+	/* Smart Date Format Detection Styles */
+	.format-suggestions-container {
+		max-height: 300px;
+		overflow-y: auto;
+	}
+
+	.format-suggestion {
+		background: white;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		padding: 8px;
+		margin: 3px 0;
+		cursor: pointer;
+		transition: all 0.2s ease;
+		font-size: 12px;
+	}
+
+	.format-suggestion:hover {
+		border-color: #007bff;
+		box-shadow: 0 2px 4px rgba(0, 123, 255, 0.15);
+		transform: translateY(-1px);
+	}
+
+	.format-suggestion.selected {
+		border-color: #28a745;
+		background: #f8fff9;
+	}
+
+	.format-suggestion.selected::after {
+		content: "✓";
+		float: right;
+		color: #28a745;
+		font-weight: bold;
+	}
+
+	.confidence-high {
+		border-left: 4px solid #28a745;
+	}
+
+	.confidence-medium {
+		border-left: 4px solid #ffc107;
+	}
+
+	.confidence-low {
+		border-left: 4px solid #6c757d;
+	}
+
+	.format-warning {
+		background: #fff3cd;
+		border: 1px solid #ffeaa7;
+		padding: 4px 8px;
+		border-radius: 3px;
+		margin-top: 4px;
+		font-size: 11px;
+		color: #856404;
+	}
+
+	.no-format-found {
+		background: #f8d7da;
+		border: 1px solid #f5c6cb;
+		padding: 8px;
+		border-radius: 4px;
+		text-align: center;
+		font-size: 12px;
+		color: #721c24;
+	}
+
+	.format-confirmation {
+		background: #d4edda;
+		border: 1px solid #c3e6cb;
+		padding: 6px 8px;
+		border-radius: 4px;
+		margin-top: 5px;
+		font-size: 11px;
+		color: #155724;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.table-responsive {
+			font-size: 12px;
+		}
+
+		.format-suggestions-container {
+			max-height: 200px;
+		}
+
+		.format-suggestion {
+			padding: 6px;
+			font-size: 11px;
+		}
+
+		.smart-date-cell {
+			min-width: 280px !important;
+		}
+	}
+
+	/* Loading spinner animation */
+	@keyframes spin {
+		0% {
+			transform: rotate(0deg);
+		}
+
+		100% {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* Make table horizontally scrollable */
+	.table-container {
+		overflow-x: auto;
+		min-height: 200px;
+	}
+
+	.smart-date-cell {
+		min-width: 350px;
+		padding: 10px !important;
 	}
 </style>
 
@@ -89,7 +208,7 @@ sort($fileList);
 			<!-- /.box-header -->
 			<div class="box-body">
 				<!-- form start -->
-				<form class="form-horizontal" method='post' name='addImportConfigForm' id='addImportConfigForm' autocomplete="off" action="add-instrument-helper.php">
+				<form class="form-horizontal" method='post' name='instrumentForm' id='instrumentForm' autocomplete="off" action="add-instrument-helper.php">
 					<div class="box-body">
 						<div class="row">
 							<div class="col-md-6">
@@ -145,7 +264,6 @@ sort($fileList);
 										<?php echo _translate("Instrument File"); ?> <span class="mandatory">*</span>
 									</label>
 									<div class="col-lg-7">
-										<!--<input type="text" class="form-control isRequired" id="configurationFile" name="configurationFile" placeholder='<?php echo _translate("eg. roche.php or abbott.php"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur='checkNameValidation("instruments","import_machine_file_name",this,null,"<?php echo _translate("This file name already exists.Try another name"); ?>",null)' />-->
 										<select name="configurationFile" id="configurationFile" class="form-control select2">
 											<option value=""><?php echo _translate('Select File'); ?></option>
 											<?php
@@ -481,66 +599,196 @@ sort($fileList);
 							</h3>
 						</div>
 						<div class="box-body">
-							<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
-								<thead>
-									<tr>
-										<th style="text-align:center;">
-											<?php echo _translate("Machine Name"); ?> <span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;">
-											<?php echo _translate("Date Format"); ?> <span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;">
-											<?php echo _translate("Instrument File Name"); ?> <span class="mandatory">*</span>
-										</th>
-										<th style="text-align:center;">
-											<?php echo _translate("Is this a POC Device?"); ?>
-										</th>
-										<th style="text-align:center;">
-											<?php echo _translate("Action"); ?>
-										</th>
-									</tr>
-								</thead>
-								<tbody id="machineTable">
-									<tr>
-										<td>
-											<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _translate("Machine Name"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur="checkDuplication(this, 'configMachineName');" />
-										</td>
-										<td>
-											<input type="text" name="dateFormat[]" id="dateFormat1" class="form-control" placeholder='<?php echo _translate("Date Format"); ?>' title='<?php echo _translate("Please enter date format"); ?>' value='d/m/Y H:i' />
-										</td>
-										<td>
-											<select name="fileName[]" id="fileName1" class="form-control select2 instrumentFile">
-												<option value=""><?php echo _translate('Select File'); ?></option>
-												<?php
-												foreach ($fileList as $fileName) {
-												?>
-													<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
-												<?php
+							<div class="table-container">
+								<table aria-describedby="table" border="0" class="table table-striped table-bordered table-condensed" aria-hidden="true" style="width:100%;">
+									<thead>
+										<tr>
+											<th style="text-align:center; width: 20%;">
+												<?php echo _translate("Machine Name"); ?> <span class="mandatory">*</span>
+											</th>
+											<th style="text-align:center; width: 35%; min-width: 350px;">
+												<?php echo _translate("Smart Date Format Detection"); ?> <span class="mandatory">*</span>
+												<br><small style="font-weight: normal; color: #666; font-size: 11px;">
+													📅 Enter sample date to auto-detect format
+												</small>
+											</th>
+											<th style="text-align:center; width: 20%;">
+												<?php echo _translate("Instrument File Name"); ?> <span class="mandatory">*</span>
+											</th>
+											<th style="text-align:center; width: 15%;">
+												<?php echo _translate("Is this a POC Device?"); ?>
+											</th>
+											<th style="text-align:center; width: 10%;">
+												<?php echo _translate("Action"); ?>
+											</th>
+										</tr>
+									</thead>
+									<tbody id="machineTable">
+										<?php
+										// FOR ADD FORM - single default row
+										if (!isset($configMachineInfo) || empty($configMachineInfo)) { ?>
+											<tr>
+												<td>
+													<input type="text" name="configMachineName[]" id="configMachineName1" class="form-control configMachineName isRequired" placeholder='<?php echo _translate("Machine Name"); ?>' title='<?php echo _translate("Please enter machine name"); ?>' onblur="checkDuplication(this, 'configMachineName');" />
+												</td>
+												<td class="smart-date-cell">
+													<!-- Smart Date Format Detection Interface -->
+													<div style="margin-bottom: 8px;">
+														<input type="text"
+															name="sampleDateInput[]"
+															id="sampleDateInput1"
+															class="form-control"
+															placeholder="📅 Enter sample date (e.g., 06.19.2025 11:19 AM)"
+															title="Enter a sample date from your instrument files"
+															style="border: 2px solid #007bff; font-size: 13px;"
+															oninput="debounceDetection(this.value, 1)" />
+														<small style="color: #666; font-size: 11px;">💡 Enter any date from your instrument to auto-detect format</small>
+													</div>
+
+													<!-- Smart Suggestions Container -->
+													<div id="formatSuggestions1" class="format-suggestions-container"></div>
+
+													<!-- Hidden field to store selected format (this is what gets submitted) -->
+													<input type="hidden" name="dateFormat[]" id="dateFormat1" value="d/m/Y H:i" />
+
+													<!-- Manual Format Input (hidden by default) -->
+													<div id="manualFormatInput1" style="display: none; margin-top: 8px;">
+														<input type="text"
+															class="form-control"
+															placeholder="Manual: d/m/Y H:i"
+															title="Enter PHP date format manually"
+															style="border: 1px solid #ccc; font-size: 12px;"
+															onchange="document.getElementById('dateFormat1').value = this.value;" />
+													</div>
+
+													<!-- Toggle Link -->
+													<div style="text-align: center; margin-top: 5px;">
+														<a href="javascript:void(0);"
+															onclick="toggleManualFormat(1)"
+															style="font-size: 11px; color: #007bff; text-decoration: none;">
+															⚙️ Manual entry
+														</a>
+													</div>
+												</td>
+												<td>
+													<select name="fileName[]" id="fileName1" class="form-control select2 instrumentFile">
+														<option value=""><?php echo _translate('Select File'); ?></option>
+														<?php foreach ($fileList as $fileName) { ?>
+															<option value="<?= $fileName; ?>"><?= $fileName; ?></option>
+														<?php } ?>
+													</select>
+												</td>
+												<td>
+													<div class="col-md-3">
+														<input type="checkbox" id="pocdevice1" name="pocdevice[]" value="" onclick="getLatiLongi(1);">
+													</div>
+													<div class="latLong1" style="display:none">
+														<div class="col-md-4">
+															<input type="text" name="latitude[]" id="latitude1" class="form-control" placeholder='<?php echo _translate("Latitude"); ?>' data-placement="bottom" title='<?php echo _translate("Latitude"); ?>' />
+														</div>
+														<div class="col-md-4">
+															<input type="text" name="longitude[]" id="longitude1" class="form-control" placeholder='<?php echo _translate("Longitude"); ?>' data-placement="bottom" title='<?php echo _translate("Longitude"); ?>' />
+														</div>
+													</div>
+												</td>
+												<td align="center" style="vertical-align:middle;">
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+												</td>
+											</tr>
+											<?php } else {
+											// FOR EDIT FORM - existing machines
+											$i = 1;
+											foreach ($configMachineInfo as $machine) {
+												if (trim($machine['poc_device'] == 'yes')) {
+													$style = "display:block";
+													$check = "checked";
+												} else {
+													$style = "display:none";
+													$check = "";
 												}
-												?>
-											</select>
-										</td>
-										<td>
-											<div class="col-md-3">
-												<input type="checkbox" id="pocdevice1" name="pocdevice[]" value="" onclick="getLatiLongi(1);">
-											</div>
-											<div class="latLong1 " style="display:none">
-												<div class="col-md-4">
-													<input type="text" name="latitude[]" id="latitude1" class="form-control " placeholder='<?php echo _translate("Latitude"); ?>' data-placement="bottom" title='<?php echo _translate("Latitude"); ?>' />
-												</div>
-												<div class="col-md-4">
-													<input type="text" name="longitude[]" id="longitude1" class="form-control " placeholder='<?php echo _translate("Longitude"); ?>' data-placement="bottom" title='<?php echo _translate("Longitude"); ?>' />
-												</div>
-											</div>
-										</td>
-										<td align="center" style="vertical-align:middle;">
-											<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
-										</td>
-									</tr>
-								</tbody>
-							</table>
+											?>
+												<tr>
+													<td>
+														<input type="hidden" name="configMachineId[]" value="<?php echo $machine['config_machine_id']; ?>" />
+														<input type="text" name="configMachineName[]" id="configMachineName<?php echo $i; ?>" class="form-control configMachineName isRequired" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" value="<?php echo $machine['config_machine_name']; ?>" onblur="checkDuplication(this, 'configMachineName');" />
+													</td>
+													<td class="smart-date-cell">
+														<!-- Smart Date Format Detection Interface for Edit -->
+														<div style="margin-bottom: 8px;">
+															<input type="text"
+																name="sampleDateInput[]"
+																id="sampleDateInput<?php echo $i; ?>"
+																class="form-control"
+																placeholder="📅 Enter sample date to change format"
+																title="Enter a sample date from your instrument files"
+																style="border: 2px solid #007bff; font-size: 13px;"
+																oninput="debounceDetection(this.value, <?php echo $i; ?>)" />
+															<small style="color: #666; font-size: 11px;">💡 Current: <code><?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?></code></small>
+														</div>
+
+														<!-- Smart Suggestions Container -->
+														<div id="formatSuggestions<?php echo $i; ?>" class="format-suggestions-container"></div>
+
+														<!-- Hidden field with current format -->
+														<input type="hidden" name="dateFormat[]" id="dateFormat<?php echo $i; ?>" value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>" />
+
+														<!-- Manual Format Input (hidden by default) -->
+														<div id="manualFormatInput<?php echo $i; ?>" style="display: none; margin-top: 8px;">
+															<input type="text"
+																class="form-control"
+																placeholder="Manual: d/m/Y H:i"
+																title="Enter PHP date format manually"
+																style="border: 1px solid #ccc; font-size: 12px;"
+																value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>"
+																onchange="document.getElementById('dateFormat<?php echo $i; ?>').value = this.value;" />
+														</div>
+
+														<!-- Toggle Link -->
+														<div style="text-align: center; margin-top: 5px;">
+															<a href="javascript:void(0);"
+																onclick="toggleManualFormat(<?php echo $i; ?>)"
+																style="font-size: 11px; color: #007bff; text-decoration: none;">
+																⚙️ Manual entry
+															</a>
+														</div>
+													</td>
+													<td>
+														<select name="fileName[]" id="fileName<?php echo $i; ?>" class="form-control select2 instrumentFile">
+															<option value=""><?php echo _translate('Select File'); ?></option>
+															<?php foreach ($fileList as $fileName) { ?>
+																<option value="<?= $fileName; ?>" <?php if ($machine['file_name'] == $fileName) echo "selected='selected'"; ?>><?= $fileName; ?></option>
+															<?php } ?>
+														</select>
+													</td>
+													<td>
+														<div class="col-md-3">
+															<input type="checkbox" id="pocdevice<?php echo $i; ?>" name="pocdevice[]" value="" onclick="getLatiLongi(<?php echo $i; ?>);" <?php echo $check; ?>>
+														</div>
+														<div class="latLong<?php echo $i; ?>" style="<?php echo $style; ?>">
+															<div class="col-md-4">
+																<input type="text" name="latitude[]" id="latitude<?php echo $i; ?>" value="<?php echo $machine['latitude']; ?>" class="form-control" placeholder="<?php echo _translate('Latitude'); ?>" data-placement="bottom" title="<?php echo _translate('Latitude'); ?>" />
+															</div>
+															<div class="col-md-4">
+																<input type="text" name="longitude[]" id="longitude<?php echo $i; ?>" value="<?php echo $machine['longitude']; ?>" class="form-control" placeholder="<?php echo _translate('Longitude'); ?>" data-placement="bottom" title="<?php echo _translate('Longitude'); ?>" />
+															</div>
+														</div>
+													</td>
+													<td align="center" style="vertical-align:middle;">
+														<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>
+														<?php if ($i > 1) { ?>
+															&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+														<?php } ?>
+													</td>
+												</tr>
+										<?php
+												$i++;
+											}
+										} ?>
+									</tbody>
+								</table>
+							</div>
 						</div>
+
 
 					</div>
 					<!-- /.box-body -->
@@ -563,6 +811,12 @@ sort($fileList);
 	</section>
 	<!-- /.content -->
 </div>
+
+
+<?php
+require_once APPLICATION_PATH . '/footer.php';
+?>
+
 
 <script type="text/javascript">
 	tableRowId = 2;
@@ -596,31 +850,6 @@ sort($fileList);
 			});
 		});
 	});
-
-	function validateNow() {
-
-
-		$('input[name="fileName[]"]').each(function() {
-			if ($(this).val() === '') {
-				$(this).val($('#configurationFile').val());
-			}
-		});
-
-		$('input[name="configMachineName[]"]').each(function(index) {
-			if ($(this).val() === '') {
-				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
-			}
-		});
-
-		flag = deforayValidator.init({
-			formId: 'addImportConfigForm'
-		});
-
-		if (flag) {
-			$.blockUI();
-			document.getElementById('addImportConfigForm').submit();
-		}
-	}
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		$.post("/includes/checkDuplicate.php", {
@@ -700,32 +929,50 @@ sort($fileList);
 		var a = document.getElementById("machineTable").insertRow(rl);
 		a.setAttribute("style", "display:none");
 		var b = a.insertCell(0);
-		var c = a.insertCell(1);
+		var c = a.insertCell(1); // Smart date format cell
 		var d = a.insertCell(2);
 		var e = a.insertCell(3);
 		var f = a.insertCell(4);
 		f.setAttribute("align", "center");
 		f.setAttribute("style", "vertical-align:middle");
 
-		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');"/ >';
-		c.innerHTML = '<input type="text" value="d/m/Y H:i" name="dateFormat[]" id="dateFormat' + tableRowId + '" class="form-control" placeholder="<?php echo _translate("Date Format"); ?>" title="<?php echo _translate("Please enter date format"); ?>" />';
+		b.innerHTML = '<input type="text" name="configMachineName[]" id="configMachineName' + tableRowId + '" class="isRequired configMachineName form-control" placeholder="<?php echo _translate('Machine Name'); ?>" title="<?php echo _translate('Please enter machine name'); ?>" onblur="checkDuplication(this, \'configMachineName\');" />';
+
+		// smart date format cell
+		c.innerHTML = `
+		<div class="smart-date-cell">
+			<div style="margin-bottom: 8px;">
+				<input type="text"
+					   name="sampleDateInput[]"
+					   id="sampleDateInput${tableRowId}"
+					   class="form-control"
+					   placeholder="📅 Enter sample date"
+					   title="Enter a sample date from your instrument files"
+					   style="border: 2px solid #007bff; font-size: 13px;"
+					   oninput="debounceDetection(this.value, ${tableRowId})" />
+				<small style="color: #666; font-size: 11px;">💡 Enter any date from your instrument</small>
+			</div>
+			<div id="formatSuggestions${tableRowId}" class="format-suggestions-container"></div>
+			<input type="hidden" name="dateFormat[]" id="dateFormat${tableRowId}" value="d/m/Y H:i" />
+			<div id="manualFormatInput${tableRowId}" style="display: none; margin-top: 8px;">
+				<input type="text" class="form-control" placeholder="Manual: d/m/Y H:i" onchange="document.getElementById('dateFormat${tableRowId}').value = this.value;" />
+			</div>
+			<div style="text-align: center; margin-top: 5px;">
+				<a href="javascript:void(0);" onclick="toggleManualFormat(${tableRowId})" style="font-size: 11px; color: #007bff;">⚙️ Manual</a>
+			</div>
+		</div>
+	`;
+
 		d.innerHTML = '<select name="fileName[]" id="fileName' + tableRowId + '" class="form-control select2 instrumentFile"><option value=""><?php echo _translate('Select File'); ?></option><?= $fileOptions; ?></select>';
-		e.innerHTML = '<div class="col-md-3" >\
-						<input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');">\
-						</div>\
-						<div class="latLong' + tableRowId + ' " style="display:none">\
-							<div class="col-md-4">\
-								<input type="text" name="latitude[]" id="latitude' + tableRowId + '" class="form-control " placeholder="<?php echo _translate('Latitude'); ?>" data-placement="bottom" title="<?php echo _translate('Latitude'); ?>"/> \
-							</div>\
-							<div class="col-md-4">\
-								<input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control " placeholder="<?php echo _translate('Longitude'); ?>" data-placement="bottom" title="<?php echo _translate('Longitude'); ?>"/>\
-							</div>\
-						</div>';
+		e.innerHTML = '<div class="col-md-3"><input type="checkbox" id="pocdevice' + tableRowId + '" name="pocdevice[]" value="" onclick="getLatiLongi(' + tableRowId + ');"></div><div class="latLong' + tableRowId + '" style="display:none"><div class="col-md-4"><input type="text" name="latitude[]" id="latitude' + tableRowId + '" class="form-control" placeholder="<?php echo _translate('Latitude'); ?>" /></div><div class="col-md-4"><input type="text" name="longitude[]" id="longitude' + tableRowId + '" class="form-control" placeholder="<?php echo _translate('Longitude'); ?>" /></div></div>';
 		f.innerHTML = '<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="insRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;&nbsp;<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeAttributeRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>';
+
 		$(a).fadeIn(800);
 		$('#fileName' + tableRowId + ', .select2').select2({
 			width: '100%'
 		});
+
+		// Auto-populate with configuration file if available
 		var configName = $("#configurationName").val();
 		if ($.trim(configName) != '') {
 			configName = configName.replace(/[^a-zA-Z0-9 ]/g, "")
@@ -734,24 +981,21 @@ sort($fileList);
 				configName = configName.replace(/ /g, '-');
 				configName = configName.replace(/\-$/, '');
 				var configFileName = configName.toLowerCase() + ".php";
-				var path = '<?php echo $log_directory . '/'; ?>' + configFileName;
+				var path = '<?php echo $directory . '/'; ?>' + configFileName;
 
 				$.post("/includes/checkFileExists.php", {
 						fileName: path,
 					},
 					function(data) {
-
 						if (data === 'not exists') {
-							$(this).closest('.instrumentFile').append('<option value=' + configFileName + '>' + configFileName + '</option>');
-							$('.instrumentFile').select2({
+							$('#fileName' + tableRowId).append('<option value="' + configFileName + '">' + configFileName + '</option>');
+							$('#fileName' + tableRowId).select2({
 								width: '100%'
 							});
 						}
-
 					});
 			}
 		}
-
 
 		tableRowId++;
 	}
@@ -813,7 +1057,372 @@ sort($fileList);
 				});
 		}
 	}
-</script>
 
-<?php
-require_once APPLICATION_PATH . '/footer.php';
+	// ========================================
+	// SMART DATE FORMAT DETECTION
+	// ========================================
+
+	// Row-specific debounced detectors using your Utilities.debounce
+	const debouncedDetectors = {};
+
+	// Memoized detection to cache results for identical inputs
+	const memoizedDetection = Utilities.memoize(
+		(sampleDate) => {
+			return $.post('/includes/smart-date-format.php', {
+				sampleDate: sampleDate.trim(),
+				action: 'detect'
+			});
+		},
+		(sampleDate) => sampleDate.trim().toLowerCase() // Cache key
+	);
+
+	// Retry wrapper for network failures - RENAMED to avoid conflict
+	const retryableDetection = Utilities.retry(
+		(sampleDate) => memoizedDetection(sampleDate),
+		3, // max attempts
+		1000, // base delay (1 second)
+		1.5 // backoff multiplier
+	);
+
+	// Rate-limited detection to prevent API abuse
+	const rateLimitedDetection = Utilities.rateLimit(
+		retryableDetection,
+		10, // max 10 calls
+		60000 // per minute
+	);
+
+	function debounceDetection(sampleDate, rowId) {
+		// Create a row-specific debounced function if it doesn't exist
+		if (!debouncedDetectors[rowId]) {
+			debouncedDetectors[rowId] = Utilities.debounce((date, id) => {
+				detectDateFormat(date, id);
+			}, 600);
+		}
+
+		// Call the debounced function for this specific row
+		debouncedDetectors[rowId](sampleDate, rowId);
+	}
+
+	async function detectDateFormat(sampleDate, rowId) {
+		if (!sampleDate || sampleDate.trim() === '') {
+			clearFormatSuggestions(rowId);
+			return;
+		}
+
+		// Show loading indicator
+		showLoadingIndicator(rowId);
+
+		try {
+			// detection with retry, memoization, and rate limiting
+			const response = await rateLimitedDetection(sampleDate);
+
+			if (response.success && response.suggestions.length > 0) {
+				showFormatSuggestions(response.suggestions, rowId, response.regional_preference);
+			} else {
+				showNoFormatFound(sampleDate, rowId);
+			}
+		} catch (error) {
+			console.error('Date format detection failed:', error);
+
+			if (error.message.includes('Rate limit exceeded')) {
+				showRateLimitError(rowId);
+			} else {
+				showDetectionError(sampleDate, rowId, error);
+			}
+		}
+	}
+
+	function showLoadingIndicator(rowId) {
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.innerHTML = `
+        <div style="text-align: center; padding: 10px; color: #666; font-size: 12px;">
+            <div style="display: inline-block; width: 16px; height: 16px; border: 2px solid #f3f3f3; border-radius: 50%; border-top: 2px solid #007bff; animation: spin 1s linear infinite; margin-right: 8px;"></div>
+            🔄 Analyzing date format...
+        </div>
+    `;
+	}
+
+	function showRateLimitError(rowId) {
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.innerHTML = `
+        <div class="no-format-found">
+            <strong>⏳ Too many requests</strong><br>
+            <small>Please wait a moment before trying again</small>
+            <div style="margin-top: 5px;">
+                <a href="javascript:void(0);" onclick="toggleManualFormat(${rowId})"
+                   style="color: #007bff; text-decoration: underline; font-size: 11px;">
+                   📝 Enter format manually
+                </a>
+            </div>
+        </div>
+    `;
+	}
+
+	function showDetectionError(sampleDate, rowId, error) {
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.innerHTML = `
+        <div class="no-format-found">
+            <strong>❌ Detection failed</strong><br>
+            <small>Network error or server issue</small>
+            <div style="margin-top: 5px;">
+                <button onclick="retryDetection('${sampleDate}', ${rowId})"
+                        style="background: #007bff; color: white; border: none; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; margin-right: 5px;">
+                    🔄 Retry
+                </button>
+                <a href="javascript:void(0);" onclick="toggleManualFormat(${rowId})"
+                   style="color: #007bff; text-decoration: underline; font-size: 11px;">
+                   📝 Manual entry
+                </a>
+            </div>
+        </div>
+    `;
+	}
+
+	// This function name stays the same - it's called from the button onclick
+	function retryDetection(sampleDate, rowId) {
+		// Force a fresh detection by bypassing cache
+		delete debouncedDetectors[rowId]; // Clear debounced function
+		detectDateFormat(sampleDate, rowId);
+	}
+
+	function showFormatSuggestions(suggestions, rowId, regionalPreference) {
+		// Use your Utilities.unique to ensure no duplicate suggestions
+		const uniqueSuggestions = Utilities.unique(suggestions, 'format');
+
+		const suggestionsHtml = uniqueSuggestions.map((suggestion, index) => {
+			const confidenceClass = `confidence-${suggestion.confidence}`;
+			const warningHtml = suggestion.warning ?
+				`<div class="format-warning">⚠️ ${suggestion.warning}</div>` : '';
+
+			return `
+            <div class="format-suggestion ${confidenceClass}"
+                 onclick="selectDateFormat('${suggestion.format}', ${rowId}, ${index})"
+                 title="Click to select this format">
+                <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                    <div style="flex: 1;">
+                        <strong style="color: #333;">${suggestion.name}</strong><br>
+                        <code style="background: #f1f3f4; padding: 1px 4px; border-radius: 2px; font-size: 11px;">${suggestion.format}</code><br>
+                        <small style="color: #666;">${suggestion.description}</small>
+                        ${suggestion.example ?
+                            `<div style="color: #28a745; font-size: 10px; margin-top: 2px;">✓ Example: ${suggestion.example}</div>` : ''
+                        }
+                        ${warningHtml}
+                    </div>
+                    <span style="
+                        background: ${suggestion.confidence === 'high' ? '#28a745' : suggestion.confidence === 'medium' ? '#ffc107' : '#6c757d'};
+                        color: ${suggestion.confidence === 'medium' ? '#333' : 'white'};
+                        padding: 1px 6px; border-radius: 8px; font-size: 10px; font-weight: bold;">
+                        ${suggestion.confidence.toUpperCase()}
+                    </span>
+                </div>
+            </div>
+        `;
+		}).join('');
+
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.innerHTML = `
+        <div style="margin-bottom: 5px; font-size: 11px; color: #666;">
+            🎯 <strong>Auto-detected formats</strong>
+            <span style="background: #e3f2fd; padding: 1px 6px; border-radius: 8px; font-size: 10px;">
+                📍 ${regionalPreference} style
+            </span>
+        </div>
+        ${suggestionsHtml}
+        ${uniqueSuggestions.filter(s => s.confidence === 'high').length > 1 ?
+            '<div class="format-warning" style="margin-top: 5px; text-align: center;">' +
+            '<strong>Multiple interpretations possible!</strong> Select the correct one for your instrument.' +
+            '</div>' : ''
+        }
+    `;
+	}
+
+	function selectDateFormat(format, rowId, suggestionIndex) {
+		// Remove previous selections
+		document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`).forEach(el => {
+			el.classList.remove('selected');
+		});
+
+		// Highlight selected
+		const suggestions = document.querySelectorAll(`#formatSuggestions${rowId} .format-suggestion`);
+		if (suggestions[suggestionIndex]) {
+			suggestions[suggestionIndex].classList.add('selected');
+		}
+
+		// Set the format in the hidden field (this is what gets submitted)
+		const formatField = document.getElementById(`dateFormat${rowId}`);
+		if (formatField) {
+			formatField.value = format;
+		}
+
+		// Show confirmation with copy-to-clipboard functionality
+		showFormatConfirmation(format, rowId);
+	}
+
+	function showFormatConfirmation(format, rowId) {
+		const confirmationHtml = `
+        <div class="format-confirmation">
+            ✅ <strong>Selected:</strong>
+            <code style="cursor: pointer;" onclick="copyFormatToClipboard('${format}')" title="Click to copy format">${format}</code>
+            <small style="color: #666; margin-left: 5px;">📋 Click to copy</small>
+        </div>
+    `;
+
+		// Remove existing confirmation
+		const existing = document.querySelector(`#formatSuggestions${rowId} .format-confirmation`);
+		if (existing) {
+			existing.remove();
+		}
+
+		// Add new confirmation
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.insertAdjacentHTML('beforeend', confirmationHtml);
+	}
+
+	async function copyFormatToClipboard(format) {
+		const success = await Utilities.copyToClipboard(format);
+		if (success) {
+			// Show temporary success message
+			const temp = document.createElement('div');
+			temp.style.cssText = 'position: fixed; top: 20px; right: 20px; background: #28a745; color: white; padding: 8px 12px; border-radius: 4px; font-size: 12px; z-index: 9999;';
+			temp.textContent = '📋 Format copied to clipboard!';
+			document.body.appendChild(temp);
+			setTimeout(() => temp.remove(), 2000);
+		}
+	}
+
+	function showNoFormatFound(sampleDate, rowId) {
+		const container = getOrCreateSuggestionsContainer(rowId);
+		container.innerHTML = `
+        <div class="no-format-found">
+            <strong>🤔 Could not detect format</strong><br>
+            <small>Try: 06/19/2025, 19.06.2025 23:19, 2025-06-19</small>
+            <div style="margin-top: 5px;">
+                <button onclick="suggestCommonFormats(${rowId})"
+                        style="background: #6c757d; color: white; border: none; padding: 2px 8px; border-radius: 3px; font-size: 11px; cursor: pointer; margin-right: 5px;">
+                    💡 Show common formats
+                </button>
+                <a href="javascript:void(0);" onclick="toggleManualFormat(${rowId})"
+                   style="color: #007bff; text-decoration: underline; font-size: 11px;">
+                   📝 Enter manually
+                </a>
+            </div>
+        </div>
+    `;
+	}
+
+	function suggestCommonFormats(rowId) {
+		const commonFormats = [{
+				name: 'US Format',
+				format: 'm/d/Y H:i',
+				example: '06/19/2025 14:30'
+			},
+			{
+				name: 'European Format',
+				format: 'd/m/Y H:i',
+				example: '19/06/2025 14:30'
+			},
+			{
+				name: 'ISO Format',
+				format: 'Y-m-d H:i:s',
+				example: '2025-06-19 14:30:00'
+			},
+			{
+				name: 'German Format',
+				format: 'd.m.Y H:i',
+				example: '19.06.2025 14:30'
+			}
+		];
+
+		showFormatSuggestions(
+			commonFormats.map(f => ({
+				...f,
+				confidence: 'medium',
+				description: 'Common format'
+			})),
+			rowId,
+			'Common'
+		);
+	}
+
+	function clearFormatSuggestions(rowId) {
+		const container = document.getElementById(`formatSuggestions${rowId}`);
+		if (container) {
+			container.innerHTML = '';
+		}
+	}
+
+	function getOrCreateSuggestionsContainer(rowId) {
+		return document.getElementById(`formatSuggestions${rowId}`);
+	}
+
+	function toggleManualFormat(rowId) {
+		const manualDiv = document.getElementById(`manualFormatInput${rowId}`);
+		const suggestionsDiv = document.getElementById(`formatSuggestions${rowId}`);
+		const sampleInput = document.getElementById(`sampleDateInput${rowId}`);
+
+		if (manualDiv && manualDiv.style.display === 'none') {
+			// Show manual input
+			manualDiv.style.display = 'block';
+			if (suggestionsDiv) suggestionsDiv.style.display = 'none';
+			if (sampleInput) sampleInput.style.display = 'none';
+		} else {
+			// Show smart detection
+			if (manualDiv) manualDiv.style.display = 'none';
+			if (suggestionsDiv) suggestionsDiv.style.display = 'block';
+			if (sampleInput) sampleInput.style.display = 'block';
+		}
+	}
+
+	// form validation with performance monitoring
+	function validateNow() {
+		const timer = Utilities.timer('Form Validation');
+
+		// Check that all rows have either a detected format or default format
+		let allValid = true;
+
+		$('input[name="sampleDateInput[]"]').each(function(index) {
+			const rowId = index + 1;
+			const sampleDate = $(this).val();
+			const selectedFormat = $(`#dateFormat${rowId}`).val();
+
+			// If user entered a sample date but didn't select a format
+			if (sampleDate && selectedFormat === 'd/m/Y H:i') {
+				if (!confirm(`Row ${rowId}: You entered a sample date but haven't selected a detected format. Use default format 'd/m/Y H:i'?`)) {
+					allValid = false;
+					return false;
+				}
+			}
+		});
+
+		if (!allValid) {
+			timer.stop();
+			return false;
+		}
+
+		// Auto-fill empty fields
+		$('input[name="fileName[]"]').each(function() {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationFile').val());
+			}
+		});
+
+		$('input[name="configMachineName[]"]').each(function(index) {
+			if ($(this).val() === '') {
+				$(this).val($('#configurationName').val() + ' - ' + (index + 1));
+			}
+		});
+
+		// Run existing validation
+		flag = deforayValidator.init({
+			formId: 'instrumentForm'
+		});
+
+		if (flag) {
+			timer.stop();
+			$.blockUI();
+			document.getElementById('instrumentForm').submit();
+		} else {
+			timer.stop();
+		}
+	}
+</script>

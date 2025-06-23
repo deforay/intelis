@@ -1,12 +1,10 @@
 /* Multiple browser hints to deter translation */
+/* Let text be selectable, just avoid translation */
 .notranslate,
 [translate="no"] {
-    -webkit-transform: translateZ(0);
-    -moz-transform: translateZ(0);
-    transform: translateZ(0);
-    -webkit-user-select: none;
-    -moz-user-select: none;
-    user-select: none;
+    user-select: text !important;
+    -webkit-user-select: text !important;
+    -moz-user-select: text !important;
 }
 
 /* Target known translation classes */
