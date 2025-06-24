@@ -51,7 +51,7 @@ function initModalBox() {
     modalBox.id = 'modalBox';
     modalBox.style.display = 'none';
     modalBox.style.position = 'fixed';
-    modalBox.style.top = '25%';
+    modalBox.style.top = '45%';
     modalBox.style.left = '50%';
     modalBox.style.transform = 'translate(-50%, -50%)';
     modalBox.style.zIndex = '9999';
