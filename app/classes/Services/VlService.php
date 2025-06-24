@@ -439,7 +439,7 @@ final class VlService extends AbstractTestService
             if ($numericValue !== null) {
                 if (!empty($unit) && str_contains($unit, 'Log')) {
                     $logVal = $numericValue;
-                    $absDecimalVal = round(pow(10, $logVal), 2);
+                    $absDecimalVal = round(pow(10, $logVal));
                 } elseif (!empty($unit)) {
                     [$absDecimalVal, $unit] = $this->processResultAndUnit($numericValue, $unit);
                 } else {
