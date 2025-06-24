@@ -1,5 +1,8 @@
 <?php
 
+// get-sync-status.php
+
+use Carbon\Carbon;
 use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -77,27 +80,35 @@ if (empty($resultSet)) {
         $latestSync = (int)$aRow['latest_timestamp'];
         if ($latestSync > $twoWeeksAgo) {
             $color = 'green';
-            $statusText = 'Active';
         } elseif ($latestSync > $fourWeeksAgo) {
             $color = 'yellow';
-            $statusText = 'Warning';
         } else {
             $color = 'red';
-            $statusText = 'Critical';
         }
 
         // Calculate days since last sync for better user understanding
-        $daysSinceSync = $latestSync ? floor((time() - $latestSync) / 86400) : null;
-        ?>
+        $daysSinceSync = null;
+        if (!empty($latestSync)) {
+            $latest = Carbon::createFromTimestamp($latestSync);
+            $now = Carbon::now();
+            $daysSinceSync = $latest->diffInDays($now, false); // false = return negative if future
+            $daysSinceSync = max(0, (int) $daysSinceSync); // Clamp to 0 to avoid negative display
+        }
+
+        if ($daysSinceSync !== null) {
+            $daysSinceText = $daysSinceSync === 0 ? 'Today' : "$daysSinceSync days ago";
+        } else {
+            $daysSinceText = 'Never';
+        }
+
+
+?>
         <tr class="<?php echo $color; ?>" data-facilityId="<?= base64_encode((string) $aRow['facility_id']); ?>">
             <td>
                 <?= htmlspecialchars($aRow['facility_name']); ?>
                 <br><small class="text-muted">
                     <span class="sync-indicator <?= $color ?>-indicator"></span>
-                    <?= $statusText ?>
-                    <?php if ($daysSinceSync !== null): ?>
-                        (<?= $daysSinceSync ?> days ago)
-                    <?php endif; ?>
+                    <?= $daysSinceText ?>
                 </small>
             </td>
             <td class="text-center">
@@ -113,6 +124,6 @@ if (empty($resultSet)) {
                 <?= htmlspecialchars($aRow['version'] ?? '-'); ?>
             </td>
         </tr>
-        <?php
+<?php
     }
 }

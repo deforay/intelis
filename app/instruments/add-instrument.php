@@ -10,10 +10,11 @@ use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
-
 require_once APPLICATION_PATH . '/header.php';
 
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 

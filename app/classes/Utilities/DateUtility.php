@@ -86,22 +86,41 @@ final class DateUtility
         return Carbon::now()->subDays($days)->format($format);
     }
 
+    /**
+     * @param mixed $date
+     * @return bool
+     */
     public static function isDateValid($date): bool
     {
+        $isValid = false;
+
         $date = trim((string) $date);
 
-        // Immediately return false if date is blank or contains any placeholder characters
-        // like underscores, asterisks, or multiple consecutive hyphens
         if (
             empty($date)
             || in_array($date, ['undefined', 'null', ''], true)
             || preg_match('/[_*]|--/', $date)
         ) {
-            return false;
+            $isValid = false;
+        } elseif (ctype_digit($date) && strlen($date) < 10) {
+            LoggerUtility::logError("DateUtility::isDateValid: Numeric input too short to be a valid timestamp or date: '$date'");
+            $isValid = false;
+        } else {
+            try {
+                $isValid = self::parseDate($date) !== null;
+            } catch (Throwable $e) {
+                LoggerUtility::logError("DateUtility::isDateValid: Exception while validating date '$date': " . $e->getMessage(), [
+                    'line' => $e->getLine(),
+                    'file' => $e->getFile(),
+                    'trace' => $e->getTraceAsString()
+                ]);
+                $isValid = false;
+            }
         }
 
-        return self::parseDate($date) !== null;
+        return $isValid;
     }
+
 
     public static function humanReadableDateFormat($date, $includeTime = false, $format = null, $withSeconds = false)
     {

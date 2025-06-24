@@ -7,7 +7,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("Sources of Requests");
+$title = _translate("Lab Sync Status");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */

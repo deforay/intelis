@@ -34,14 +34,12 @@ class MemoUtility
     public static function memo(string $key, callable $callback, ?float $ttl = null, bool $crossRequest = true): mixed
     {
         $now = microtime(true);
-        $effectiveTtl = $ttl !== null ? (int) ceil($ttl) : 300; // default is 5 mins
+        $effectiveTtl = $ttl !== null ? (int) ceil($ttl) : 120; // Default to 120 seconds if no TTL is provided
         $fileCache = $crossRequest ? ContainerRegistry::get(FileCacheUtility::class) : null;
 
         if (!isset(self::$cache[$key])) {
             $value = $crossRequest
-                ? $fileCache->get($key, function () use ($callback) {
-                    return $callback();
-                }, expiration: $effectiveTtl)
+                ? $fileCache->get($key, fn() => $callback(), expiration: $effectiveTtl)
                 : $callback();
 
             if (count(self::$cache) >= self::MAX_ENTRIES) {

@@ -275,9 +275,7 @@ final class SmartDateFormatDetector
         }
 
         // Generate format combinations
-        $formatCombinations = self::generateFormatCombinations($segmentPossibilities, $separators);
-
-        return $formatCombinations;
+        return self::generateFormatCombinations($segmentPossibilities, $separators);
     }
 
     /**
@@ -1105,7 +1103,6 @@ final class SmartDateFormatDetector
      */
     public static function detectFromMultipleSamples(array $sampleDates): array
     {
-        $allSuggestions = [];
         $formatCounts = [];
 
         foreach ($sampleDates as $sampleDate) {

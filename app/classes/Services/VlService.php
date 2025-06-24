@@ -436,6 +436,7 @@ final class VlService extends AbstractTestService
             $operator = $matches[1] ?? '';
             $numericValue = $this->parseNumericValue($matches[2]);
 
+            $absDecimalVal = 0;
             if ($numericValue !== null) {
                 if (!empty($unit) && str_contains($unit, 'Log')) {
                     $logVal = $numericValue;
@@ -445,12 +446,6 @@ final class VlService extends AbstractTestService
                 } else {
                     $absDecimalVal = $numericValue;
                 }
-
-                $absVal = $absDecimalVal;
-                $vlResult = $operator ? "$operator $absDecimalVal" : $absDecimalVal;
-            } else {
-                // fallback
-                $vlResult = $absDecimalVal = $absVal = $this->parseNumericValue($result);
             }
 
             $absVal = $absDecimalVal;
