@@ -222,7 +222,7 @@ final class UsersService
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
 
-    public function getOrCreateUser($name, $status = 'inactive', $role = 4)
+    public function getOrCreateUser($name, $status = 'active', $role = 4)
     {
         $uQuery = "SELECT `user_id`
                     FROM $this->table
