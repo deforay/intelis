@@ -683,10 +683,18 @@ final class SmartDateFormatDetector
 
         // Determine likely separators
         $separators = [];
-        if ($hasSlash) $separators[] = '/';
-        if ($hasDot) $separators[] = '.';
-        if ($hasDash) $separators[] = '-';
-        if (empty($separators)) $separators[] = '/';
+        if ($hasSlash) {
+            $separators[] = '/';
+        }
+        if ($hasDot) {
+            $separators[] = '.';
+        }
+        if ($hasDash) {
+            $separators[] = '-';
+        }
+        if (empty($separators)) {
+            $separators[] = '/';
+        }
 
         // Basic date format variations
         $datePatterns = ['Y-m-d', 'd-m-Y', 'm-d-Y', 'Y-n-j', 'd-n-Y', 'n-d-Y'];
@@ -707,7 +715,7 @@ final class SmartDateFormatDetector
             $dateTimeFormats = [];
             foreach ($formats as $dateFormat) {
                 foreach ($timePatterns as $timePattern) {
-                    $dateTimeFormats[] = $dateFormat . ' ' . $timePattern;
+                    $dateTimeFormats[] = "$dateFormat $timePattern";
                 }
             }
             $formats = array_merge($formats, $dateTimeFormats);
@@ -717,9 +725,9 @@ final class SmartDateFormatDetector
         if ($hasAlpha && !$hasAmPm) {
             $monthFormats = [];
             foreach ($separators as $sep) {
-                $monthFormats[] = 'M' . $sep . 'd' . $sep . 'Y';
-                $monthFormats[] = 'd' . $sep . 'M' . $sep . 'Y';
-                $monthFormats[] = 'Y' . $sep . 'M' . $sep . 'd';
+                $monthFormats[] = "M{$sep}d{$sep}Y";
+                $monthFormats[] = "d{$sep}M{$sep}Y";
+                $monthFormats[] = "Y{$sep}M{$sep}d";
             }
             $formats = array_merge($formats, $monthFormats);
         }
@@ -771,11 +779,19 @@ final class SmartDateFormatDetector
             $score -= 20;
         }
 
-        if (strpos($format, 'Y') !== false) $score += 10;
-        if (strpos($format, 'y') !== false) $score -= 5;
+        if (strpos($format, 'Y') !== false) {
+            $score += 10;
+        }
+        if (strpos($format, 'y') !== false) {
+            $score -= 5;
+        }
 
-        if ($score >= 80) return 'high';
-        if ($score >= 60) return 'medium';
+        if ($score >= 80) {
+            return 'high';
+        }
+        if ($score >= 60) {
+            return 'medium';
+        }
         return 'low';
     }
 
@@ -786,15 +802,31 @@ final class SmartDateFormatDetector
     {
         $score = 50;
 
-        if (strpos($format, 'Y') !== false) $score += 15;
-        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'd') !== false) $score += 10;
-        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'm') !== false) $score += 10;
-        if (strpos($format, 'y') !== false) $score -= 10;
-        if (strpos($format, 'M') !== false) $score += 20;
-        if (strpos($format, 'A') !== false) $score += 10;
+        if (strpos($format, 'Y') !== false) {
+            $score += 15;
+        }
+        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'd') !== false) {
+            $score += 10;
+        }
+        if (preg_match('/\b0\d/', $dateString) && strpos($format, 'm') !== false) {
+            $score += 10;
+        }
+        if (strpos($format, 'y') !== false) {
+            $score -= 10;
+        }
+        if (strpos($format, 'M') !== false) {
+            $score += 20;
+        }
+        if (strpos($format, 'A') !== false) {
+            $score += 10;
+        }
 
-        if ($score >= 75) return 'high';
-        if ($score >= 55) return 'medium';
+        if ($score >= 75) {
+            return 'high';
+        }
+        if ($score >= 55) {
+            return 'medium';
+        }
         return 'low';
     }
 
@@ -813,13 +845,25 @@ final class SmartDateFormatDetector
             $score -= 30;
         }
 
-        if (strpos($format, 'Y') !== false) $score += 10;
-        if (strpos($format, 'y') !== false) $score -= 5;
-        if (strpos($format, 'M') !== false) $score += 15;
-        if (strpos($format, 'A') !== false) $score += 5;
+        if (strpos($format, 'Y') !== false) {
+            $score += 10;
+        }
+        if (strpos($format, 'y') !== false) {
+            $score -= 5;
+        }
+        if (strpos($format, 'M') !== false) {
+            $score += 15;
+        }
+        if (strpos($format, 'A') !== false) {
+            $score += 5;
+        }
 
-        if ($score >= 80) return 'high';
-        if ($score >= 60) return 'medium';
+        if ($score >= 80) {
+            return 'high';
+        }
+        if ($score >= 60) {
+            return 'medium';
+        }
         return 'low';
     }
 

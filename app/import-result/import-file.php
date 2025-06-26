@@ -14,7 +14,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 
 $type = $_GET['t'];
 
-if(empty($type)){
+if (empty($type)) {
 	// Redirect to dashboard if type is not provided
 	header("Location: /dashboard/index.php");
 	exit;
@@ -84,7 +84,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 					</p>
 
 
-					<form class="form-horizontal" method='post' name='importFIleForm' id='importFIleForm' enctype="multipart/form-data" autocomplete="off" action="import-file-helper.php">
+					<form class="form-horizontal" method='post' name='importResultFileForm' id='importResultFileForm' enctype="multipart/form-data" autocomplete="off" action="import-file-helper.php">
 						<div class="box-body">
 							<div class="row" style="display:block;">
 								<div class="col-md-12">
@@ -178,24 +178,25 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 
 <script type="text/javascript">
 	function validateNow() {
-		var _filename = $("#configMachineName").find(':selected').data("filename");
-		var _dateformat = $("#configMachineName").find(':selected').data("dateformat");
-		$('#dateFormat').val(_dateformat);
-		$('#fileName').val(_filename);
+		$("#vltestPlatform").val($("#machineName option:selected").text());
+		$('#dateFormat').val($("#configMachineName").find(':selected').data("dateformat"));
+		$('#fileName').val($("#configMachineName").find(':selected').data("filename"));
 		flag = deforayValidator.init({
-			formId: 'importFIleForm'
+			formId: 'importResultFileForm'
 		});
 		if (flag) {
-			document.getElementById('importFIleForm').submit();
+			document.getElementById('importResultFileForm').submit();
 		}
 	}
 
-	$("#machineName").change(function() {
+	$("#machineName").on('change', function() {
 		if ($("#machineName").val() == "") {
 			$("#vltestPlatform").val("");
 		} else {
 			$("#vltestPlatform").val($("#machineName option:selected").text());
+			$("#configMachineName").trigger("change");
 		}
+
 	});
 
 	function getConfigMachineName() {

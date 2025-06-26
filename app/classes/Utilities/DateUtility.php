@@ -18,7 +18,7 @@ final class DateUtility
             return false;
         }
 
-        $carbonDate = self::parseDate($date, [$format]);
+        $carbonDate = self::parseDate($date, [$format], ignoreTime: false);
 
         return $carbonDate && (!$strict || $carbonDate->format($format) === $date);
     }
@@ -34,7 +34,9 @@ final class DateUtility
             $trimmedDate = trim($date);
 
             // Perform preliminary checks for obviously invalid date strings
-            if (self::isDateValid($trimmedDate) === false) {
+            if ((!empty($inputFormat) && self::isDateFormatValid($trimmedDate, $inputFormat, true) === false)
+                || (empty($inputFormat) && self::isDateValid($trimmedDate) === false)
+            ) {
                 return null;
             }
 
@@ -47,7 +49,7 @@ final class DateUtility
                     if ($carbonDate === false) {
                         // Optionally log this failure, e.g., using LoggerUtility
                         // LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
-                        return null;
+                        $procssedDateTime = null;
                     }
                 } else {
                     // Original behavior: use Carbon::parse for general date strings
@@ -56,7 +58,7 @@ final class DateUtility
                 }
 
                 // If parsing was successful, format and return the date string
-                return $carbonDate->format($format);
+                $procssedDateTime = $carbonDate->format($format);
             } catch (Throwable $e) {
                 // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
                 // or any other errors during the process.
@@ -66,8 +68,10 @@ final class DateUtility
                     'file' => $e->getFile(),
                     'trace' => $e->getTraceAsString()
                 ]);
-                return null;
+                $procssedDateTime = null;
             }
+
+            return $procssedDateTime;
         });
     }
 
@@ -107,7 +111,7 @@ final class DateUtility
             $isValid = false;
         } else {
             try {
-                $isValid = self::parseDate($date) !== null;
+                $isValid = self::parseDate($date, ignoreTime: true) !== null;
             } catch (Throwable $e) {
                 LoggerUtility::logError("DateUtility::isDateValid: Exception while validating date '$date': " . $e->getMessage(), [
                     'line' => $e->getLine(),
@@ -197,7 +201,7 @@ final class DateUtility
 
         foreach ($dates as $dateStr) {
             if (!empty($dateStr)) {
-                $date = self::parseDate($dateStr, $formats);
+                $date = self::parseDate($dateStr, $formats, ignoreTime: true);
                 if ($date && $date->greaterThan($now)) {
                     return true;
                 }
@@ -206,7 +210,7 @@ final class DateUtility
 
         return false;
     }
-    private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = true): ?Carbon
+    private static function parseDate(string $dateStr, ?array $formats = null, $ignoreTime = false): ?Carbon
     {
 
         if ($ignoreTime === true) {

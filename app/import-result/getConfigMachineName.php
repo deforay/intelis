@@ -11,9 +11,9 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $configId = base64_decode($_POST['configId']);
-$cacheKey = "instrument_config_" . $configId;
+$cacheKey = "instrument_config_$configId";
 
-$output = _getFromFileCache($cacheKey, function() use ($db, $importMachineTable, $configId) {
+$output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable, $configId) {
 
     $iResult = $db->rawQueryOne(
         "SELECT instrument_id, machine_name, import_machine_file_name FROM instruments WHERE instrument_id = ?",
@@ -58,7 +58,6 @@ $output = _getFromFileCache($cacheKey, function() use ($db, $importMachineTable,
     }
 
     return $options;
-
 }, ['instruments']);
 
 echo $output;

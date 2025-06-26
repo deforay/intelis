@@ -262,7 +262,7 @@ class TestResultImportService
         if (empty($dateString)) {
             return null;
         }
-        $inputFormat = $inputFormat ?: ($this->postData['dateFormat'] ?? 'd/m/Y H:i');
+        $inputFormat ??= $this->postData['dateFormat'] ?? 'd/m/Y H:i';
         return MemoUtility::remember(fn() => DateUtility::getDateTime($dateString, 'Y-m-d H:i:s', $inputFormat));
     }
 
@@ -288,6 +288,8 @@ class TestResultImportService
             if (stripos((string) $testDateFromInstrument, 'am') !== false || stripos((string) $testDateFromInstrument, 'pm') !== false) {
                 $inputFormat .= ' A';
             }
+
+            error_log($inputFormat);
 
             $testingDate = DateUtility::getDateTime($testDateFromInstrument, 'Y-m-d H:i', "!$inputFormat");
 
