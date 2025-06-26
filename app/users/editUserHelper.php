@@ -45,6 +45,8 @@ $signatureImage = null;
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '') {
 
+
+
         $data = [
             'user_name'             => $_POST['userName'],
             'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
@@ -55,6 +57,16 @@ try {
             'status'                => $_POST['status'],
             'app_access'            => $_POST['appAccessable']
         ];
+
+        if ($_POST['status'] == 'inactive') {
+            unset($_POST['password']);
+            unset($_POST['authToken']);
+            $data['force_password_reset'] = 0;
+            $data['password'] = null;
+            $data['api_token'] = null;
+            $data['api_token_generated_datetime'] = null;
+        }
+
         if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
@@ -144,11 +156,11 @@ try {
 
         if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
             $apiData = $_POST;
-            $apiData['loginId'] = null;
-            $apiData['password'] = null;
-            $apiData['hashAlgorithm'] = 'phb';
-            $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
-            $apiData['status'] = 'inactive';
+            // We don't want to unintentionally end up creating admin users on STS or
+            // end up modifying existing user roles or statuses
+            foreach (['loginId', 'password', 'hashAlgorithm', 'role'] as $unsetKey) {
+                unset($apiData[$unsetKey]);
+            }
             $apiData['userId'] = base64_encode($userId);
             $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
 
@@ -194,8 +206,6 @@ try {
     $resource = 'user';
 
     $general->activityLog($eventType, $action, $resource);
-
-
 } catch (Throwable $e) {
     LoggerUtility::log("error", $e->getMessage(), [
         'file' => $e->getFile(),

@@ -145,15 +145,16 @@ try {
     $id = false;
     $data = MiscUtility::arrayEmptyStringsToNull($data);
 
-    foreach (['login_id', 'role_id', 'password', 'status'] as $unsetKey) {
+    foreach (['login_id', 'role_id', 'password'] as $unsetKey) {
         unset($data[$unsetKey]);
     }
 
     if (isset($aRow['user_id']) && !empty($aRow['user_id']) && $aRow['user_id'] != "") {
+        unset($data['status']);
         $db->where('user_id', $aRow['user_id']);
         $id = $db->update("user_details", $data);
     } else {
-        $data['status'] = 'inactive';
+        $data['status'] ??= 'inactive';
         $id = $db->insert("user_details", $data);
     }
 

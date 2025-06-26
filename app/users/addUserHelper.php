@@ -73,6 +73,15 @@ try {
             $data['user_signature'] = basename($signatureImagePath);
         }
 
+        if ($_POST['status'] == 'inactive') {
+            unset($_POST['password']);
+            unset($_POST['authToken']);
+            $data['force_password_reset'] = 0;
+            $data['password'] = null;
+            $data['api_token'] = null;
+            $data['api_token_generated_datetime'] = null;
+        }
+
         if (!empty($_POST['authToken'])) {
             $data['api_token'] = $_POST['authToken'];
             $data['api_token_generated_datetime'] = DateUtility::getCurrentDateTime();
@@ -108,11 +117,11 @@ try {
 
     if (!empty($general->getRemoteURL()) && $general->isLISInstance()) {
         $apiData = $_POST;
-        $apiData['loginId'] = null; // We don't want to unintentionally end up creating admin users on STS
-        $apiData['password'] = null; // We don't want to unintentionally end up creating admin users on STS
-        $apiData['hashAlgorithm'] = 'phb'; // We don't want to unintentionally end up creating admin users on STS
-        $apiData['role'] = 0; // We don't want to unintentionally end up creating admin users on STS
-        $apiData['status'] = 'inactive';
+        // We don't want to unintentionally end up creating admin users on STS or
+        // end up modifying existing user roles or statuses
+        foreach (['loginId', 'password', 'hashAlgorithm', 'role'] as $unsetKey) {
+            unset($apiData[$unsetKey]);
+        }
         $apiData['userId'] = base64_encode((string) $data['user_id']);
         $apiUrl = $general->getRemoteURL() . "/api/v1.1/user/save-user-profile.php";
 
@@ -140,9 +149,6 @@ try {
             $response = $client->post($apiUrl, [
                 'multipart' => $multipart
             ]);
-
-            // $result = $response->getBody()->getContents();
-            // $deResult = json_decode($result, true);
         } catch (Throwable $e) {
             // Handle the exception
             LoggerUtility::log("error", $e->getMessage(), [
