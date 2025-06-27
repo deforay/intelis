@@ -250,9 +250,10 @@ foreach ($rResult as $aRow) {
     //$row[]='<input type="checkbox" name="chk[]" class="checkTests" id="chk' . $aRow['temp_sample_id'] . '"  value="' . $aRow['temp_sample_id'] . '" onclick="toggleTest(this);"  />';
     $status = '<select class="form-control"  name="status[]" id="' . $aRow['temp_sample_id'] . '" title="Please select status" onchange="toggleTest(this,' . $sampleCode . ')">
 			<option value="">-- Select --</option>
-			<option value="7" ' . ($aRow['result_status'] == "7" ? "selected=selected" : "") . '>Accepted</option>
-			<option value="1" ' . ($aRow['result_status'] == "1" ? "selected=selected" : "") . '>Hold</option>
-			<option value="4" ' . ($aRow['result_status'] == "4"  ? "selected=selected" : "") . '>Rejected</option>
+			<option value="' . SAMPLE_STATUS\ACCEPTED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\ACCEPTED ? "selected=selected" : "") . '>Accepted</option>
+			<option value="' . SAMPLE_STATUS\ON_HOLD . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\ON_HOLD ? "selected=selected" : "") . '>Hold</option>
+			<option value="' . SAMPLE_STATUS\REJECTED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\REJECTED  ? "selected=selected" : "") . '>Rejected</option>
+			<option value="' . SAMPLE_STATUS\TEST_FAILED . '" ' . ($aRow['result_status'] == SAMPLE_STATUS\TEST_FAILED  ? "selected=selected" : "") . '>Failed</option>
 			</select><br><br>';
     //}
     //sample to control & control to sample

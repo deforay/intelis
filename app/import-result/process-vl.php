@@ -136,8 +136,8 @@ try {
                     $data['vl_test_platform'] = $rResult['vl_test_platform'];
                     $data['tested_by'] = $_POST['testBy'];
                     $data['sample_tested_datetime'] = $rResult['sample_tested_datetime'];
-                    $data['request_created_by'] = $rResult['result_reviewed_by'];
-                    $data['request_created_datetime'] = DateUtility::getCurrentDateTime();
+                    $data['result_reviewed_by'] = $rResult['result_reviewed_by'];
+                    $data['result_reviewed_datetime'] = DateUtility::getCurrentDateTime();
                     $data['last_modified_by'] = $rResult['result_reviewed_by'];
                     $data['last_modified_datetime'] = DateUtility::getCurrentDateTime();
                     $data['result_approved_by'] = $_POST['appBy'];

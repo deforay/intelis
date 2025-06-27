@@ -252,8 +252,6 @@ class TestResultImportService
         exit;
     }
 
-    // Utility methods that can be used in procedural scripts
-
     /**
      * Parse date helper
      */
@@ -262,8 +260,31 @@ class TestResultImportService
         if (empty($dateString)) {
             return null;
         }
-        $inputFormat ??= $this->postData['dateFormat'] ?? 'd/m/Y H:i';
-        return MemoUtility::remember(fn() => DateUtility::getDateTime($dateString, 'Y-m-d H:i:s', $inputFormat));
+
+        return MemoUtility::remember(function () use ($dateString, $inputFormat) {
+            $fullFormat = $inputFormat ?? $this->postData['dateFormat'] ?? 'n/d/Y g:i:s A';
+
+            // Check if input contains time (look for colon pattern)
+            $isDateOnly = !preg_match('/\d+:\d+/', trim($dateString));
+
+            if ($isDateOnly) {
+                // Extract just the date part from the format (everything before first time character)
+                $dateFormat = preg_replace('/\s*[gGhHiIsaA:].+$/', '', $fullFormat);
+                $actualFormat = trim($dateFormat);
+            } else {
+                // Use the full format, but adjust if AM/PM is missing from input
+                $hasAmPm = preg_match('/\b(am|pm|AM|PM)\b/', trim($dateString));
+
+                if (!$hasAmPm && strpos($fullFormat, 'A') !== false) {
+                    // Remove AM/PM from format and convert to 24-hour format
+                    $actualFormat = str_replace(['g', 'h', ' A', 'A'], ['G', 'H', '', ''], $fullFormat);
+                } else {
+                    $actualFormat = $fullFormat;
+                }
+            }
+
+            return DateUtility::getDateTime($dateString, 'Y-m-d H:i:s', $actualFormat);
+        });
     }
 
     public function abbottDateFormatter($testDateFromInstrument, $inputFormat, $interpretFormat = true): ?array

@@ -53,8 +53,7 @@ try {
 
             // Extract testing date from row 8
             if ($row == 8) {
-                $testingDateArray = $importService->abbottDateFormatter($sheetData[1], $sheetData[2]);
-                $testingDate = $testingDateArray['testingDate'];
+                $testingDate = $importService->parseDate($sheetData[1] ?? null);
             } elseif (in_array($sheetData[0], ['PLATE NUMBER', 'PLATE NAME'])) {
                 $cvNumber = $sheetData[1] ?? null;
             }

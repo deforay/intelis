@@ -24,8 +24,6 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var TestResultsService $testResultsService */
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
-$tableName = "temp_sample_import";
-$tableName1 = "form_eid";
 $fileName = null;
 $importedBy = $_SESSION['userId'];
 
@@ -143,7 +141,7 @@ try {
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['data_sync'] = 0;
                         $db->where('sample_code', $rResult['sample_code']);
-                        $result = $db->update($tableName1, $data);
+                        $result = $db->update("form_eid", $data);
                         $eidId = $vlResult[0]['eid_id'];
                     } else {
                         if (!$importNonMatching) {
@@ -152,7 +150,7 @@ try {
                         $data['sample_code'] = $rResult['sample_code'];
                         $data['vlsm_country_id'] = $arr['vl_form'];
                         $data['vlsm_instance_id'] = $instanceResult[0]['vlsm_instance_id'];
-                        $eidId = $db->insert($tableName1, $data);
+                        $eidId = $db->insert("form_eid", $data);
                     }
                     $printSampleCode[] = "'" . $rResult['sample_code'] . "'";
                 }
@@ -168,7 +166,7 @@ try {
                 ));
             }
             $db->where('temp_sample_id', $id[$i]);
-            $result = $db->update($tableName, array('temp_sample_status' => 1));
+            $result = $db->update("temp_sample_import", array('temp_sample_status' => 1));
         }
         if (MiscUtility::fileExists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'])) {
             copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $rResult['import_machine_file_name']);
@@ -214,7 +212,7 @@ try {
 
             $data['data_sync'] = 0;
             $db->where('sample_code', $accResult[$i]['sample_code']);
-            $result = $db->update($tableName1, $data);
+            $result = $db->update("form_eid", $data);
 
             $numberOfResults++;
 
@@ -223,7 +221,7 @@ try {
                 copy(UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name'], UPLOAD_PATH . DIRECTORY_SEPARATOR . "imported-results" . DIRECTORY_SEPARATOR . $accResult[$i]['import_machine_file_name']);
             }
             $db->where('temp_sample_id', $accResult[$i]['temp_sample_id']);
-            $result = $db->update($tableName, ['temp_sample_status' => 1]);
+            $result = $db->update("temp_sample_import", ['temp_sample_status' => 1]);
         }
     }
     $sCode = implode(', ', $printSampleCode);

@@ -278,7 +278,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+											<option value="<?php echo $uName['user_id']; ?>"><?= $uName['user_name'] ; ?></option>
 										<?php
 										}
 										?>

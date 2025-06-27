@@ -97,7 +97,7 @@ final class TestResultsService
         $tableName = $testName[$testType]['tableName'];
         $primaryKey = $testName[$testType]['primaryKey'];
         $this->db->where("$primaryKey IN (" . $emailInfo['samples'] . ")");
-        $result = $this->db->get($tableName, NULL, "result_dispatched_datetime,form_attributes,is_result_mail_sent");
+        $result = $this->db->get($tableName, null, "result_dispatched_datetime,form_attributes,is_result_mail_sent");
         foreach ($result as $val) {
             if (!empty($val['form_attributes'])) {
                 $formAttributes = json_decode($val['form_attributes']);
