@@ -1,7 +1,9 @@
 <?php
+
+
 $title = _translate("Reset Password") . " - " . _translate("System Admin");
 
-
+use App\Services\UsersService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
@@ -9,9 +11,12 @@ use App\Registries\ContainerRegistry;
 $db = ContainerRegistry::get(DatabaseService::class);
 
 require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
-$sQuery = "SELECT * FROM user_details ORDER BY user_name ASC";
 
-$sResult = $db->rawQuery($sQuery);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
+$sResult = $usersService->getAllUsers();
 ?>
 
 <!-- Content Wrapper. Contains page content -->

@@ -2,6 +2,7 @@
 
 use GuzzleHttp\Client;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
@@ -24,7 +25,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$tableName = "user_details";
 $upId = 0;
 
 /* Used to check if the password update is from the Recency Web App API */
@@ -93,7 +93,8 @@ try {
             $db->where('user_id', $userId);
         }
 
-        $upId = $db->update($tableName, $data);
+        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+        $upId = $db->update('user_details', $data);
 
         if ($fromRecencyAPI === true) {
             $response = [];

@@ -55,7 +55,7 @@ $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
 $user = '';
 if ($contactPerson != '') {
-     $contactUser = $usersService->getUserInfo($contactPerson);
+     $contactUser = $usersService->getUserByID($contactPerson);
      if (!empty($contactUser)) {
           $user = $contactUser['user_name'];
      }

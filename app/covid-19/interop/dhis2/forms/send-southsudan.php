@@ -108,9 +108,9 @@ foreach ($formResults as $row) {
     continue;
   }
 
-  $approver = $usersService->getUserInfo($row['result_approved_by'], 'user_name');
-  $tester = $usersService->getUserInfo($row['tested_by'], 'user_name');
-  $labTechnician = $usersService->getUserInfo($row['lab_technician'], 'user_name');
+  $approver = $usersService->getUserByID($row['result_approved_by'], 'user_name');
+  $tester = $usersService->getUserByID($row['tested_by'], 'user_name');
+  $labTechnician = $usersService->getUserByID($row['lab_technician'], 'user_name');
 
 
 

@@ -19,7 +19,7 @@ $hepatitisService = ContainerRegistry::get(HepatitisService::class);
 
 $resultFilename = '';
 
-$userRes = $usersService->getUserInfo($_SESSION['userId'], 'user_signature');
+$userRes = $usersService->getUserByID($_SESSION['userId'], 'user_signature');
 $userSignaturePath = null;
 
 if (!empty($userRes['user_signature'])) {

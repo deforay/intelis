@@ -2,7 +2,9 @@
 
 namespace App\Services\STS;
 
+use Throwable;
 use SAMPLE_STATUS;
+use RuntimeException;
 use JsonMachine\Items;
 use App\Services\TestsService;
 use App\Services\UsersService;
@@ -156,8 +158,26 @@ final class ResultsService
                         $id = $this->db->update($this->tableName, $resultFromLab);
                         $primaryKeyValue = $localRecord[$this->primaryKeyName];
                     } else {
-                        $id = $this->db->insert($this->tableName, $resultFromLab);
-                        $primaryKeyValue = $this->db->getInsertId();
+                        // $id = $this->db->insert($this->tableName, $resultFromLab);
+                        // $primaryKeyValue = $this->db->getInsertId();
+
+                        for ($attempt = 0; $attempt < 3; $attempt++) {
+                            try {
+                                $id = $this->db->insert($this->tableName, $resultFromLab);
+                                $primaryKeyValue = $this->db->getInsertId();
+                                if ($id === false) {
+                                    throw new RuntimeException('Insert failed after retries');
+                                }
+                                break;
+                            } catch (Throwable $e) {
+                                LoggerUtility::logWarning("Insert retry attempt $attempt due to: " . $e->getMessage());
+
+                                if ($attempt >= 2 || !str_contains($e->getMessage(), 'Lock wait timeout')) {
+                                    throw $e;
+                                }
+                                usleep(100000); // backoff before retry
+                            }
+                        }
                     }
                     if ($testType == "covid19") {
 
@@ -202,12 +222,12 @@ final class ResultsService
                         }
                     }
 
-                    if ($id === true && isset($resultFromLab['sample_code'])) {
+                    if ($id !== false && isset($resultFromLab['sample_code'])) {
                         array_push($sampleCodes, $resultFromLab['sample_code']);
                         array_push($facilityIds, $resultFromLab['facility_id']);
                     }
                     $this->db->commitTransaction();
-                } catch (\Throwable $e) {
+                } catch (Throwable $e) {
                     $this->db->rollbackTransaction();
                     $errorId = MiscUtility::generateErrorId();
                     LoggerUtility::logError($e->getMessage(), [

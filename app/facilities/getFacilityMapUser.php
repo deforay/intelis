@@ -1,11 +1,15 @@
 <?php
 
 
-use App\Registries\ContainerRegistry;
+use App\Services\UsersService;
 use App\Services\DatabaseService;
+use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $fType = ($_POST['fType'] == 1) ? 4 : 1;
 $facilityId = $_POST['facilityId'];
@@ -13,14 +17,12 @@ $vlfmQuery = "SELECT GROUP_CONCAT(DISTINCT vlfm.user_id SEPARATOR ',') as userId
                 FROM user_facility_map as vlfm
                 JOIN facility_details as fd ON fd.facility_id=vlfm.facility_id
                 WHERE fd.facility_id = ?";
-$vlfmResult = $db->rawQueryOne($vlfmQuery, array($facilityId));
+$vlfmResult = $db->rawQueryOne($vlfmQuery, [$facilityId]);
 
 $selectedUserIds = !empty($vlfmResult['userId']) ? explode(",", (string) $vlfmResult['userId']) : [];
 
+$uResult = $usersService->getActiveUsers();
 
-$uQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER by user_name";
-
-$uResult = $db->rawQuery($uQuery);
 ?>
 <div class="col-md-12 col-lg-12">
     <h4 style="margin-left:20px; font-weight:bold;"><?php echo _translate("User-Facility Map"); ?></h4>

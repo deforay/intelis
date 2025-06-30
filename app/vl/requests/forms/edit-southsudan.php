@@ -1,11 +1,15 @@
 <?php
 
-use App\Services\DatabaseService;
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
@@ -15,14 +19,14 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 	$maxLength = '';
 	if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength;
+		$maxLength = "maxlength=$maxLength";
 	}
 } else {
 	$sampleClass = '';
 	$maxLength = '';
 	if ($arr['max_length'] != '') {
 		$maxLength = $arr['max_length'];
-		$maxLength = "maxlength=" . $maxLength;
+		$maxLength = "maxlength=$maxLength";
 	}
 }
 //check remote user
@@ -56,7 +60,7 @@ $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
 $user = '';
 if ($contactPerson != '') {
-	$contactUser = $usersService->getUserInfo($contactPerson);
+	$contactUser = $usersService->getUserByID($contactPerson);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
 	}
@@ -75,13 +79,9 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 
-		//	foreach ($allChange as $change) {
-		$usrQuery = "SELECT user_name FROM user_details WHERE user_id=?";
-		$usrResult = $db->rawQuery($usrQuery, [$allChange['user']]);
-		$name = '';
-		if (isset($usrResult[0]['user_name'])) {
-			$name = ($usrResult[0]['user_name']);
-		}
+		$usrResult = $usersService->getUserByID($allChange['user'] ?? $allChange['usr']);
+		$name = $usrResult['user_name'] ?? '';
+
 		$changedDate = DateUtility::humanReadableDateFormat($allChange['dateOfChange'] ?? '', true);
 		$rch .= '<tr><td>' . $name . '</td><td>' . ($allChange['reasonForChange']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';
 		//	}

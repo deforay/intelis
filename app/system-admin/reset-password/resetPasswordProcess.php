@@ -1,12 +1,8 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\UsersService;
-
-
-
-
-$tableName = "user_details";
+use App\Registries\ContainerRegistry;
+use App\Utilities\DateUtility;
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -16,8 +12,9 @@ try {
     if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
         $data['password'] = $usersService->passwordHash($_POST['password']);
         $data['status'] = $_POST['status'];
+        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
         $db->where('user_id', $userId);
-        $db->update($tableName, $data);
+        $db->update('user_details', $data);
         $_SESSION['alertMsg'] = _translate("Password updated successfully");
     }
     header("Location:/system-admin/reset-password/reset-password.php");

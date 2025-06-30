@@ -194,7 +194,7 @@ if (!empty($requestResult)) {
 
         $testedBy = null;
         if (!empty($result['tested_by'])) {
-            $testedByRes = $usersService->getUserInfo($result['tested_by'], 'user_name');
+            $testedByRes = $usersService->getUserByID($result['tested_by'], 'user_name');
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
             }
@@ -219,7 +219,7 @@ if (!empty($requestResult)) {
         $userRes = [];
         if (isset($result['authorized_by']) && trim((string) $result['authorized_by']) != '') {
             $resultApprovedBy = ($result['authorized_by']);
-            $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+            $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
         } else {
             $resultApprovedBy  = null;
         }

@@ -3,6 +3,7 @@
 use Slim\Psr7\UploadedFile;
 use App\Services\ApiService;
 use App\Services\UsersService;
+use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -105,7 +106,8 @@ try {
         'user_name' => $db->escape($post['userName']),
         'email' => $db->escape($post['email']),
         'interface_user_name' => !empty($post['interfaceUserName']) ? json_encode(array_map('trim', explode(",", $post['interfaceUserName']))) : null,
-        'phone_number' => $db->escape($post['phoneNo'])
+        'phone_number' => $db->escape($post['phoneNo']),
+        'updated_datetime'=> DateUtility::getCurrentDateTime()
     ];
 
     if (!empty($post['status'])) {

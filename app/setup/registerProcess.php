@@ -18,7 +18,6 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$tableName = "user_details";
 $userName = $_POST['userName'];
 $emailId = $_POST['email'];
 $loginId = $_POST['loginId'];
@@ -125,7 +124,7 @@ try {
             'role_id' => 1,
             'status' => 'active'
         ];
-        $db->insert($tableName, $insertData);
+        $db->insert('user_details', $insertData);
 
         $configFields = [
             'vl_form',

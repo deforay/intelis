@@ -1,12 +1,20 @@
 <?php
 
+use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
 
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
 
 $lResult = $facilitiesService->getTestingLabs('vl', byPassFacilityMap: true, allColumns: true);
 
@@ -65,7 +73,7 @@ if (!isset($facilityResult[0]['facility_district'])) {
 }
 $user = '';
 if ($facilityResult[0]['contact_person'] != '') {
-	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	$contactUser = $usersService->getUserByID($facilityResult[0]['contact_person']);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
 	}
@@ -83,12 +91,8 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
 		$rch .= '<tbody>';
 		$allChange = array_reverse($allChange);
 		foreach ($allChange as $change) {
-			$usrQuery = "SELECT user_name FROM user_details where user_id='" . $change['usr'] . "'";
-			$usrResult = $db->rawQuery($usrQuery);
-			$name = '';
-			if (isset($usrResult[0]['user_name'])) {
-				$name = ($usrResult[0]['user_name']);
-			}
+			$usrResult = $usersService->getUserByID($change['usr']);
+			$name = $usrResult['user_name'] ?? '';
 			$expStr = explode(" ", (string) $change['dtime']);
 			$changedDate = DateUtility::humanReadableDateFormat($expStr[0]) . " " . $expStr[1];
 			$rch .= '<tr><td>' . $name . '</td><td>' . ($change['msg']) . '</td><td style="text-align:center;">' . $changedDate . '</td></tr>';

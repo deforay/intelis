@@ -51,7 +51,7 @@ $facilityEmails = $facilityResult[0]['facility_emails'] ?? '';
 $facilityState = $facilityResult[0]['facility_state'] ?? '';
 $facilityDistrict = $facilityResult[0]['facility_district'] ?? '';
 
-$contactUser = $usersService->getUserInfo($contactPerson);
+$contactUser = $usersService->getUserByID($contactPerson);
 $user = '';
 if (!empty($contactUser)) {
      $user = $contactUser['user_name'];

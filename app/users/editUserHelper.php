@@ -34,7 +34,7 @@ $sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png'
 
 $userId = base64_decode((string) $_POST['userId']);
 
-$userInfo = $usersService->getUserInfo($userId);
+$userInfo = $usersService->getUserByID($userId);
 
 $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 MiscUtility::makeDirectory($signatureImagePath);
@@ -45,8 +45,6 @@ $signatureImage = null;
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '') {
 
-
-
         $data = [
             'user_name'             => $_POST['userName'],
             'interface_user_name'   => (!empty($_POST['interfaceUserName']) && $_POST['interfaceUserName'] != "") ? json_encode(array_map('trim', explode(",", (string) $_POST['interfaceUserName']))) : null,
@@ -55,7 +53,8 @@ try {
             'login_id'              => $_POST['loginId'],
             'role_id'               => $_POST['role'],
             'status'                => $_POST['status'],
-            'app_access'            => $_POST['appAccessable']
+            'app_access'            => $_POST['appAccessable'],
+            'updated_datetime' => DateUtility::getCurrentDateTime()
         ];
 
         if ($_POST['status'] == 'inactive') {
@@ -82,13 +81,11 @@ try {
             $data['user_signature'] = null;
         }
 
-
-
         $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
         if ($sanitizedUserSignature instanceof UploadedFile && $sanitizedUserSignature->getError() === UPLOAD_ERR_OK) {
             MiscUtility::makeDirectory($signatureImagePath);
             $extension = MiscUtility::getFileExtension($sanitizedUserSignature->getClientFilename());
-            $signatureImage = "usign-" . $userId . "." . $extension;
+            $signatureImage = "usign-$userId.$extension";
             $signatureImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $signatureImage;
 
             // Move the uploaded file to the desired location

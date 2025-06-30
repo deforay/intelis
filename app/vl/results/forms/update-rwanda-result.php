@@ -43,7 +43,7 @@ if (!isset($facilityResult[0]['facility_district']) || $facilityResult[0]['facil
 
 $user = '';
 if ($facilityResult[0]['contact_person'] != '') {
-	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	$contactUser = $usersService->getUserByID($facilityResult[0]['contact_person']);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
 	}
@@ -721,7 +721,7 @@ $disable = "disabled = 'disabled'";
 															<?php
 															foreach ($userResult as $uName) {
 															?>
-																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?php echo ($uName['user_name']); ?></option>
+																<option value="<?php echo $uName['user_id']; ?>" <?php echo ($vlQueryInfo['result_approved_by'] == $uName['user_id']) ? "selected=selected" : ""; ?>><?= $uName['user_name']; ?></option>
 															<?php
 															}
 															?>

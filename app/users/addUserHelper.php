@@ -32,9 +32,6 @@ $uploadedFiles = $request->getUploadedFiles();
 
 $sanitizedUserSignature = _sanitizeFiles($uploadedFiles['userSignature'], ['png', 'jpg', 'jpeg', 'gif']);
 
-
-$tableName = "user_details";
-
 $signatureImage = null;
 
 try {
@@ -91,7 +88,7 @@ try {
         }
 
 
-        $id = $db->insert($tableName, $data);
+        $id = $db->insert('user_details', $data);
 
 
         if ($id === true && trim((string) $_POST['selectedFacility']) != '') {

@@ -160,7 +160,7 @@ if (!empty($requestResult)) {
 
         $testedBy = null;
         if (!empty($result['tested_by'])) {
-            $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_signature', 'user_name'));
+            $testedByRes = $usersService->getUserByID($result['tested_by'], array('user_signature', 'user_name'));
             if ($testedByRes) {
                 $testedBy = $testedByRes['user_name'];
             }
@@ -184,7 +184,7 @@ if (!empty($requestResult)) {
 
         $userRes = [];
         if (isset($result['authorized_by']) && trim((string) $result['authorized_by']) != '') {
-            $userRes = $usersService->getUserInfo($result['authorized_by'], array('user_signature', 'user_name'));
+            $userRes = $usersService->getUserByID($result['authorized_by'], array('user_signature', 'user_name'));
             $resultAuthroizedBy = ($userRes['user_name']);
         } else {
             $resultAuthroizedBy  = '';
@@ -198,7 +198,7 @@ if (!empty($requestResult)) {
         $userApprovedRes = [];
         $userApprovedSignaturePath = null;
         if (isset($result['result_approved_by']) && trim((string) $result['result_approved_by']) != '') {
-            $userApprovedRes = $usersService->getUserInfo($result['result_approved_by'], array('user_signature', 'user_name'));
+            $userApprovedRes = $usersService->getUserByID($result['result_approved_by'], array('user_signature', 'user_name'));
             $resultApprovedBy = ($userApprovedRes['user_name']);
         } else {
             $resultApprovedBy  = null;

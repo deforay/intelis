@@ -224,7 +224,7 @@ if (!isset($result['patient_gender']) || trim((string) $result['patient_gender']
 $userRes = [];
 if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
     $resultApprovedBy = ($result['approvedBy']);
-    $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+    $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
 } else {
     $resultApprovedBy  = null;
 }
@@ -370,7 +370,7 @@ if (empty($result['lab_manager'])) {
 }
 $labManager = "";
 if (!empty($result['lab_manager'])) {
-    $labManagerRes = $usersService->getUserInfo($result['lab_manager'], 'user_name');
+    $labManagerRes = $usersService->getUserByID($result['lab_manager'], 'user_name');
     if ($labManagerRes) {
         $labManager = $labManagerRes['user_name'];
     }

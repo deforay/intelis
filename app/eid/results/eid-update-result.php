@@ -1,12 +1,12 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
-use App\Services\FacilitiesService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 
 $title = "Enter EID Result";
@@ -25,6 +25,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
 $healthFacilities = $facilitiesService->getHealthFacilities('eid');
 $testingLabs = $facilitiesService->getTestingLabs('eid');
 
@@ -36,9 +37,6 @@ foreach ($userResult as $user) {
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE status = 'active'";
 $importResult = $db->query($importQuery);
-
-$userQuery = "SELECT * FROM user_details WHERE `status` like 'active' ORDER BY user_name";
-$userResult = $db->rawQuery($userQuery);
 
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_eid_sample_rejection_reasons where rejection_reason_status = 'active'";

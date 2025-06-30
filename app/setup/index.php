@@ -32,8 +32,6 @@ $formResult = $db->query($formQuery);
 
 $globalConfig = $general->getGlobalConfig();
 
-// $db->where("login_id", NULL, 'IS NOT');
-// $db->where("role_id", NULL, 'IS NOT');
 $db->where("role_id=1");
 $count = $db->getValue("user_details", "count(*)");
 if ($count != 0) {

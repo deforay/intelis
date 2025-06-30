@@ -32,7 +32,7 @@ $user = '';
 if (!isset($facilityResult[0]['contact_person'])) {
 	$facilityResult[0]['contact_person'] = '';
 } else {
-	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	$contactUser = $usersService->getUserByID($facilityResult[0]['contact_person']);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
 	}

@@ -427,7 +427,7 @@ try {
                                                                 // Look up username for user IDs
                                                                 if (in_array($colName, $usernameFields) && !empty($value)) {
                                                                     if (!isset($userCache[$value])) {
-                                                                        $user = $usersService->getUserInfo($value, ['user_name']);
+                                                                        $user = $usersService->getUserByID($value, ['user_name']);
                                                                         $userCache[$value] = $user['user_name'] ?? $value;
                                                                     }
                                                                     $value = $userCache[$value];
@@ -482,11 +482,11 @@ try {
                                                                             // Format user IDs to names
                                                                             if (in_array($colName, $usernameFields)) {
                                                                                 if (!empty($oldValue) && !isset($userCache[$oldValue])) {
-                                                                                    $user = $usersService->getUserInfo($oldValue, ['user_name']);
+                                                                                    $user = $usersService->getUserByID($oldValue, ['user_name']);
                                                                                     $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
                                                                                 }
                                                                                 if (!empty($newValue) && !isset($userCache[$newValue])) {
-                                                                                    $user = $usersService->getUserInfo($newValue, ['user_name']);
+                                                                                    $user = $usersService->getUserByID($newValue, ['user_name']);
                                                                                     $userCache[$newValue] = $user['user_name'] ?? $newValue;
                                                                                 }
                                                                                 $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
@@ -541,11 +541,11 @@ try {
                                                                     // Format user IDs to names
                                                                     if (in_array($colName, $usernameFields)) {
                                                                         if (!empty($oldValue) && !isset($userCache[$oldValue])) {
-                                                                            $user = $usersService->getUserInfo($oldValue, ['user_name']);
+                                                                            $user = $usersService->getUserByID($oldValue, ['user_name']);
                                                                             $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
                                                                         }
                                                                         if (!empty($newValue) && !isset($userCache[$newValue])) {
-                                                                            $user = $usersService->getUserInfo($newValue, ['user_name']);
+                                                                            $user = $usersService->getUserByID($newValue, ['user_name']);
                                                                             $userCache[$newValue] = $user['user_name'] ?? $newValue;
                                                                         }
                                                                         $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
@@ -686,7 +686,7 @@ try {
                                                 foreach ($currentData[0] as $colName => $value) {
                                                     if (in_array($colName, $usernameFields) && !empty($value)) {
                                                         if (!isset($userCache[$value])) {
-                                                            $user = $usersService->getUserInfo($value, ['user_name']);
+                                                            $user = $usersService->getUserByID($value, ['user_name']);
                                                             $userCache[$value] = $user['user_name'] ?? $value;
                                                         }
                                                         $value = $userCache[$value];

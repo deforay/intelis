@@ -290,7 +290,7 @@ if (!isset($facilityResult[0]['facility_district'])) {
 
 $user = '';
 if ($facilityResult[0]['contact_person'] != '') {
-	$contactUser = $usersService->getUserInfo($facilityResult[0]['contact_person']);
+	$contactUser = $usersService->getUserByID($facilityResult[0]['contact_person']);
 	if (!empty($contactUser)) {
 		$user = $contactUser['user_name'];
 	}

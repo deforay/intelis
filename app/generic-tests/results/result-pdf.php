@@ -52,14 +52,14 @@ if (!empty($requestResult)) {
           $genericTestInfo = $db->rawQuery($genericTestQuery, [$result['sample_id']]);
           // $testedBy = null;
           if (!empty($result['tested_by'])) {
-               $testedByRes = $usersService->getUserInfo($result['tested_by'], array('user_name', 'user_signature'));
+               $testedByRes = $usersService->getUserByID($result['tested_by'], array('user_name', 'user_signature'));
                if ($testedByRes) {
                     $testedBy = $testedByRes['user_name'];
                }
           }
           $reviewedBy = null;
           if (!empty($result['result_reviewed_by'])) {
-               $reviewedByRes = $usersService->getUserInfo($result['result_reviewed_by'], array('user_name', 'user_signature'));
+               $reviewedByRes = $usersService->getUserByID($result['result_reviewed_by'], array('user_name', 'user_signature'));
                if ($reviewedByRes) {
                     $reviewedBy = $reviewedByRes['user_name'];
                }
@@ -68,7 +68,7 @@ if (!empty($requestResult)) {
           $revisedBy = null;
           $revisedByRes = [];
           if (!empty($result['revised_by'])) {
-               $revisedByRes = $usersService->getUserInfo($result['revised_by'], array('user_name', 'user_signature'));
+               $revisedByRes = $usersService->getUserByID($result['revised_by'], array('user_name', 'user_signature'));
                if ($revisedByRes) {
                     $revisedBy = $revisedByRes['user_name'];
                }
@@ -88,7 +88,7 @@ if (!empty($requestResult)) {
           $resultApprovedBy = '';
           $userSignaturePath = null;
           if (!empty($result['result_approved_by'])) {
-               $resultApprovedByRes = $usersService->getUserInfo($result['result_approved_by'], array('user_name', 'user_signature'));
+               $resultApprovedByRes = $usersService->getUserByID($result['result_approved_by'], array('user_name', 'user_signature'));
                if ($resultApprovedByRes) {
                     $resultApprovedBy = $resultApprovedByRes['result_approved_by'];
                }
@@ -99,7 +99,7 @@ if (!empty($requestResult)) {
 
           if (isset($result['approvedBy']) && trim((string) $result['approvedBy']) != '') {
                $resultApprovedBy = ($result['approvedBy']);
-               $userRes = $usersService->getUserInfo($result['result_approved_by'], 'user_signature');
+               $userRes = $usersService->getUserByID($result['result_approved_by'], 'user_signature');
           } else {
                $resultApprovedBy  = null;
           }

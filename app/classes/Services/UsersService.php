@@ -148,7 +148,7 @@ final class UsersService
         ];
     }
 
-    public function getUserInfo($userId, $columns = '*')
+    public function getUserByID($userId, $columns = '*')
     {
         return MemoUtility::remember(function () use ($userId, $columns) {
             if (is_array($columns)) {
@@ -167,7 +167,7 @@ final class UsersService
             'user_signature' => null
         ];
         if (!empty($defaultUserId)) {
-            $userInfo = $this->getUserInfo($defaultUserId, ['user_name', 'user_signature']);
+            $userInfo = $this->getUserByID($defaultUserId, ['user_name', 'user_signature']);
             if ($userInfo) {
                 $result['user_name'] = $userInfo['user_name'];
 
