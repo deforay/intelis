@@ -342,20 +342,18 @@ try {
             }
 
             //Getting Approved By and Reviewed By from Instruments table
-
-
-            $sql = "SELECT * FROM instruments
-                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
-                    WHERE instrument_machines.config_machine_name LIKE ?";
             $instrumentDetails = $db->connection('default')
-                ->rawQueryOne($sql, [$result['instrument_id']]);
+                ->rawQueryOne(
+                    "SELECT * FROM instruments WHERE instruments.machine_name = ?",
+                    [$result['instrument_id'] ?? $result['machine_used']]
+                );
 
             if (empty($instrumentDetails)) {
+                $sql = "SELECT * FROM instruments
+                    INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
+                    WHERE instrument_machines.config_machine_name = ?";
                 $instrumentDetails = $db->connection('default')
-                    ->rawQueryOne(
-                        "SELECT * FROM instruments WHERE machine_name like ?",
-                        [$result['instrument_id']]
-                    );
+                    ->rawQueryOne($sql, [$result['instrument_id'] ?? $result['machine_used']]);
             }
 
             $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
