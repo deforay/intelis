@@ -72,7 +72,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<?php } else { ?>
 											<td><label for="sampleCode">Échantillon ID </label></td>
 											<td>
-												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="Échantillon ID" title="Please enter échantillon id" style="width:100%;" readonly="readonly" />
+												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate("Sample ID"); ?>" title="<?= _translate("Please enter the Sample ID", true); ?>" style="width:100%;" readonly="readonly" />
 											</td>
 										<?php } ?>
 										<td></td>
@@ -104,7 +104,6 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									<tr>
 										<td><label for="supportPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
-											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" style="width:100%;"/> -->
 											<select class="form-control select2 isRequired" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 												<?php
@@ -139,7 +138,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td><label for="labId">Nom du Laboratoire <span class="mandatory">*</span></label> </td>
 										<td>
 											<select name="labId" id="labId" class="form-control isRequired" title="Nom du Laboratoire" style="width:100%;">
-												<?= $general->generateSelectOptions($testingLabs, null, '-- Sélectionner --'); ?>
+												<?= $general->generateSelectOptions($testingLabs, null, '<?= _translate("-- Select --"); ?>'); ?>
 											</select>
 										</td>
 									</tr>
@@ -177,7 +176,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row"><label for="mothersMaritalStatus">Etat civil <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="mothersMaritalStatus" id="mothersMaritalStatus">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value='single'> Single </option>
 												<option value='married'> Married </option>
 												<option value='cohabitating'> Cohabitating </option>
@@ -210,7 +209,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="childGender" id="childGender">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value='male'> <?= _translate("Male"); ?> </option>
 												<option value='female'> <?= _translate("Female"); ?> </option>
 												<option value='unreported'> <?= _translate("Unreported"); ?> </option>
@@ -300,7 +299,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td style="vertical-align:middle;">- OR -</td>
 										<td style="vertical-align:middle;">
 											<select class="form-control" name="motherViralLoadText" id="motherViralLoadText" onchange="updateMotherViralLoad()">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value='tnd'> Target Not Detected </option>
 												<option value='bdl'> Below Detection Limit </option>
 												<option value='< 20'>
@@ -337,7 +336,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row">Bébé a arrêté allaitement maternel ? <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="yes"> Oui </option>
 												<option value="no"> Non </option>
 												<option value="unknown"> Inconnu </option>
@@ -354,7 +353,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 							  <th scope="row">Bébé encore allaité?</th>
 							  <td>
 								  <select class="form-control" name="isInfantStillBeingBreastfed" id="isInfantStillBeingBreastfed">
-									<option value=''> -- Sélectionner -- </option>
+									<option value=''> <?= _translate("-- Select --"); ?> </option>
 									<option value="yes"> Oui </option>
 									<option value="no" /> Non </option>
 									<option value="unknown" /> Inconnu </option>
@@ -365,7 +364,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row"><label for="choiceOfFeeding">Choix d’allaitement de bébé : <span class="mandatory" style="display:none;">*</span></label></th>
 										<td>
 											<select class="form-control" name="choiceOfFeeding" id="choiceOfFeeding">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="Breastfeeding only"> Allaitement seul </option>
 												<option value="Milk substitute"> Substitut de lait </option>
 												<option value="Combination"> Mixte </option>
@@ -377,7 +376,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row">Cotrimoxazole donné au bébé? <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="isCotrimoxazoleBeingAdministered" id="choiceOfFeeding">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="no"> Non </option>
 												<option value="Yes, takes CTX everyday"> Oui, prend CTX chaque jour
 												</option>
@@ -411,7 +410,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row"> Type d'échantillon <span class="mandatory">*</span></th>
 										<td>
 											<select name="specimenType" id="specimenType" class="form-control isRequired" title="Veuillez choisir le type d'échantillon" style="width:100%">
-												<option value="">-- Selecione --</option>
+												<option value=""><?= _translate("-- Select --"); ?></option>
 												<?php foreach ($sampleResult as $name) { ?>
 													<option value="<?php echo $name['sample_id']; ?>"><?= $name['sample_name']; ?></option>
 												<?php } ?>
@@ -427,7 +426,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row">Raison de la PCR (cocher une): <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="pcrTestReason" id="pcrTestReason">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="Nothing"> Rien</option>
 												<option value="First Test for exposed baby"> 1st test pour bébé exposé
 												</option>
@@ -450,7 +449,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row">Test rapide effectué?</th>
 										<td>
 											<select class="form-control" name="rapidTestPerformed" id="rapidTestPerformed">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<option value="yes"> Oui </option>
 												<option value="no"> Non </option>
 											</select>
@@ -465,7 +464,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<th scope="row">Résultat test rapide </th>
 										<td>
 											<select class="form-control" name="rapidTestResult" id="rapidTestResult">
-												<option value=''> -- Sélectionner -- </option>
+												<option value=''> <?= _translate("-- Select --"); ?> </option>
 												<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 													<option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
 												<?php } ?>
@@ -527,7 +526,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<th scope="row"><?php echo _translate('Is Sample Rejected?'); ?></th>
 											<td>
 												<select class="form-control" name="isSampleRejected" id="isSampleRejected">
-													<option value=''> -- Sélectionner -- </option>
+													<option value=''> <?= _translate("-- Select --"); ?> </option>
 													<option value="yes"> Oui </option>
 													<option value="no"> Non </option>
 												</select>
@@ -561,7 +560,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<th scope="row">Résultat</th>
 											<td>
 												<select class="form-control" name="result" id="result">
-													<option value=''> -- Sélectionner -- </option>
+													<option value=''> <?= _translate("-- Select --"); ?> </option>
 													<?php foreach ($eidResults as $eidResultKey => $eidResultValue) { ?>
 														<option value="<?php echo $eidResultKey; ?>"> <?php echo $eidResultValue; ?> </option>
 													<?php } ?>
@@ -658,7 +657,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 			$("#facilityId").html("<?php echo $facility; ?>");
 			$("#facilityId").html("<?php echo $facility; ?>");
 			$("#facilityId").select2("val", "");
-			$("#district").html("<option value=''> -- Sélectionner -- </option>");
+			$("#district").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
 		}
 		$.unblockUI();
 	}
@@ -713,7 +712,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 					}
 				});
 		} else {
-			$("#facilityId").html("<option value=''> -- Sélectionner -- </option>");
+			$("#facilityId").html("<option value=''> <?= _translate("-- Select --"); ?> </option>");
 		}
 		$.unblockUI();
 	}
