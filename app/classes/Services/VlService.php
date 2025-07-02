@@ -38,6 +38,15 @@ final class VlService extends AbstractTestService
         'negat'
     ];
 
+    protected array $failureCases = [
+        'fail',
+        'failed',
+        'failure',
+        'error',
+        'err',
+        'invalid'
+    ];
+
     public array $copiesPatterns = [
         'c/ml',
         'cp/ml',
@@ -189,7 +198,7 @@ final class VlService extends AbstractTestService
 
             if (empty($finalResult) || $finalResult == '') {
                 $vlResultCategory = null;
-            } elseif (in_array(strtolower($finalResult), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
+            } elseif (in_array(strtolower($finalResult), $this->failureCases)) {
                 $vlResultCategory = 'failed';
             } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
                 $vlResultCategory = null;
@@ -249,7 +258,7 @@ final class VlService extends AbstractTestService
             //Result is saved as entered
             $finalResult = $params['vlResult'];
 
-            if (in_array(strtolower((string) $params['vlResult']), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
+            if (in_array(strtolower((string) $params['vlResult']), $this->failureCases)) {
                 $hivDetection = null;
                 $resultStatus = SAMPLE_STATUS\TEST_FAILED; // Invalid/Failed
                 //$finalResult = $params['vlResult'];
@@ -304,7 +313,7 @@ final class VlService extends AbstractTestService
             // Remove copy number units like cp/mL, copies/mL, etc.
             $result = str_ireplace($this->copiesPatterns, '', $result);
 
-
+            $interpretedData = [];
             $vlResultType = $this->checkViralLoadValueType($result);
 
             if ($vlResultType == 'empty') {
@@ -319,9 +328,8 @@ final class VlService extends AbstractTestService
             }
 
             // Check for failure cases
-            $failureCases = ['fail', 'failed', 'failure', 'error', 'err', 'invalid'];
-            if (in_array(strtolower($originalResult), $failureCases, true)) {
-                return [
+            if (in_array(strtolower($originalResult), $this->failureCases, true)) {
+                $interpretedData =  [
                     'logVal' => null,
                     'result' => null,
                     'absDecimalVal' => null,
@@ -329,13 +337,13 @@ final class VlService extends AbstractTestService
                     'txtVal' => $originalResult,
                     'resultStatus' => SAMPLE_STATUS\TEST_FAILED
                 ];
+            } elseif ($vlResultType == 'numeric') {
+                $interpretedData =  $this->interpretViralLoadNumericResult($result, $unit);
+            } else {
+                $interpretedData =  $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
             }
 
-            if ($vlResultType == 'numeric') {
-                return $this->interpretViralLoadNumericResult($result, $unit);
-            } else {
-                return $this->interpretViralLoadTextResult($result, $unit, $defaultLowVlResultText);
-            }
+            return $interpretedData;
         });
     }
 
@@ -371,7 +379,7 @@ final class VlService extends AbstractTestService
         $strToLowerresult = strtolower((string) $result);
         switch ($strToLowerresult) {
             case 'bdl':
-            //case '< 839':
+                //case '< 839':
                 $vlResult = $txtVal = 'Below Detection Limit';
                 break;
             case 'target not detected':
