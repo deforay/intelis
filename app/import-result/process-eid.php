@@ -6,6 +6,7 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\TestResultsService;
 use App\Registries\ContainerRegistry;
@@ -101,7 +102,6 @@ try {
                     'manual_result_entry' => 'no',
                     'result_printed_datetime' => null,
                     'instrument_id' => $rResult['import_machine_name'],
-                    'vl_test_platform' => $rResult['vl_test_platform'],
                     'import_machine_name' => $rResult['import_machine_name']
                 ];
                 if ($status[$i] == SAMPLE_STATUS\ON_HOLD) {
@@ -237,6 +237,10 @@ try {
     }
 
     echo "importedStatistics.php";
-} catch (Exception $exc) {
-    error_log($exc->getMessage());
+} catch (Exception $e) {
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'trace' => $e->getTraceAsString()
+    ]);
 }

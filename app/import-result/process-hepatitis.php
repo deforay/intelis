@@ -93,7 +93,6 @@ try {
                     'result_reviewed_datetime' => $rResult['result_reviewed_datetime'],
                     'result_reviewed_by' => $_POST['reviewedBy'],
                     'instrument_id' => $rResult['import_machine_name'],
-                    'vl_test_platform' => $rResult['vl_test_platform'],
                     'import_machine_name' => $rResult['import_machine_name'],
                     'lab_tech_comments' => $comments,
                     'lot_number' => $rResult['lot_number'],

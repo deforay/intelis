@@ -347,13 +347,14 @@ try {
             $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
-            $instrumentDetails = $db->connection('default')->rawQueryOne($sql, [$result['machine_used']]);
+            $instrumentDetails = $db->connection('default')
+                ->rawQueryOne($sql, [$result['instrument_id']]);
 
             if (empty($instrumentDetails)) {
                 $instrumentDetails = $db->connection('default')
                     ->rawQueryOne(
                         "SELECT * FROM instruments WHERE machine_name like ?",
-                        [$result['machine_used']]
+                        [$result['instrument_id']]
                     );
             }
 

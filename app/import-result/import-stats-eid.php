@@ -5,6 +5,7 @@
 use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 
+/** @var EidService $eidObj */
 $eidObj = ContainerRegistry::get(EidService::class);
 $eidResults = $eidObj->getEidResults();
 
@@ -84,13 +85,13 @@ $_SESSION['eidPrintSearchResultQuery'] = $samplePrintQuery;
                                 <tr>
                                     <th style="width: 13%;">No. of Results imported</th>
                                     <th style="width: 11%;">No. of
-                                        <?php echo $eidResults['positive']; ?>
+                                        <?php echo $eidResults['positive'] ?? _translate('Positive'); ?>
                                     </th>
                                     <th style="width: 18%;">No. of
-                                        <?php echo $eidResults['negative']; ?>
+                                        <?php echo $eidResults['negative'] ?? _translate('Negative'); ?>
                                     </th>
                                     <th style="width: 18%;">No. of
-                                        <?php echo $eidResults['indeterminate']; ?>
+                                        <?php echo $eidResults['indeterminate'] ?? _translate('Indeterminate'); ?>
                                     </th>
                                 </tr>
                             </thead>
