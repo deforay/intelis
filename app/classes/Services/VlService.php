@@ -189,7 +189,7 @@ final class VlService extends AbstractTestService
 
             if (empty($finalResult) || $finalResult == '') {
                 $vlResultCategory = null;
-            } elseif (in_array(strtolower($finalResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
+            } elseif (in_array(strtolower($finalResult), ['fail', 'failed', 'failure', 'error', 'err', 'invalid'])) {
                 $vlResultCategory = 'failed';
             } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
                 $vlResultCategory = null;
@@ -319,7 +319,7 @@ final class VlService extends AbstractTestService
             }
 
             // Check for failure cases
-            $failureCases = ['fail', 'failed', 'failure', 'error', 'err'];
+            $failureCases = ['fail', 'failed', 'failure', 'error', 'err', 'invalid'];
             if (in_array(strtolower($originalResult), $failureCases, true)) {
                 return [
                     'logVal' => null,
