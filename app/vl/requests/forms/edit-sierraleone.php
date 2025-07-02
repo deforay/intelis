@@ -265,7 +265,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									<div class="col-xs-2 col-md-2 fmobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><strong>Clinic Mobile No.(s)</strong></div>
 									<div class="col-xs-2 col-md-2 fmobileNumbers facilityMobileNumbers" style="display:<?php echo (trim((string) $facilityResult[0]['facility_mobile_numbers']) != '') ? '' : 'none'; ?>;"><?php echo $facilityResult[0]['facility_mobile_numbers']; ?></div>
 									<div class="col-xs-2 col-md-2 fContactPerson" style="display:<?php echo (trim((string) $facilityResult[0]['contact_person']) != '') ? '' : 'none'; ?>;"><strong>Clinic Contact Person -</strong></div>
-									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><?php echo ($user); ?></div>
+									<div class="col-xs-2 col-md-2 fContactPerson facilityContactPerson" style="display:<?php echo (trim((string) $user) != '') ? '' : 'none'; ?>;"><?= $user; ?></div>
 								</div>
 
 
@@ -1011,12 +1011,12 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 						</div>
 						<div class="box-footer">
 							<input type="hidden" name="revised" id="revised" value="no" />
-							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= ($vlQueryInfo['vl_sample_id']); ?>" />
-							<input type="hidden" name="isRemoteSample" value="<?= ($vlQueryInfo['remote_sample']); ?>" />
+							<input type="hidden" name="vlSampleId" id="vlSampleId" value="<?= $vlQueryInfo['vl_sample_id']; ?>" />
+							<input type="hidden" name="isRemoteSample" value="<?= $vlQueryInfo['remote_sample']; ?>" />
 							<input type="hidden" name="reasonForResultChangesHistory" id="reasonForResultChangesHistory" value="<?php echo base64_encode((string) $vlQueryInfo['reason_for_result_changes']); ?>" />
-							<input type="hidden" name="oldStatus" value="<?= ($vlQueryInfo['result_status']); ?>" />
+							<input type="hidden" name="oldStatus" value="<?= $vlQueryInfo['result_status']; ?>" />
 							<input type="hidden" name="countryFormId" id="countryFormId" value="<?php echo $arr['vl_form']; ?>" />
-							<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Save</a>&nbsp;
+							<button type="button" class="btn btn-primary" onclick="validateNow();return false;">Save</button>&nbsp;
 							<a href="/vl/requests/vl-requests.php" class="btn btn-default"> Cancel</a>
 						</div>
 				</form>

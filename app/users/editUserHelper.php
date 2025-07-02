@@ -182,9 +182,6 @@ try {
             $client = new Client();
             try {
                 $response = $client->post($apiUrl, ['multipart' => $multipart]);
-
-                // $result = $response->getBody()->getContents();
-                // $deResult = json_decode($result, true);
             } catch (Throwable $e) {
                 // Handle the exception
                 LoggerUtility::log("error", $e->getMessage(), [

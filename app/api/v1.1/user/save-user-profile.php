@@ -37,7 +37,6 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = AppRegistry::get('request');
 
-    //$origJson = $request->getBody()->getContents();
     $origJson = $apiService->getJsonFromRequest($request);
 
     $transactionId = MiscUtility::generateULID();
@@ -82,7 +81,6 @@ try {
         if (!$apiKey) {
             throw new SystemException(_translate("Please check your request parameters."));
         }
-        //$userId = !empty($post['userId']) ? base64_decode($db->escape($post['userId'])) : null;
         $userId = $post['userId'] ?? null;
         if (MiscUtility::isBase64($userId)) {
             $userId = base64_decode($userId);
