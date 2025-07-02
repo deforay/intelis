@@ -3,7 +3,9 @@
 
 // only run from command line
 $isCli = php_sapi_name() === 'cli';
+
 use Carbon\Doctrine\DateTimeType;
+
 if ($isCli === false) {
     exit(0);
 }
@@ -340,17 +342,19 @@ try {
             }
 
             //Getting Approved By and Reviewed By from Instruments table
-            $instrumentDetails = $db->connection('default')
-                ->rawQueryOne(
-                    "SELECT * FROM instruments WHERE machine_name like ?",
-                    [$result['machine_used']]
-                );
 
-            if (empty($instrumentDetails)) {
-                $sql = "SELECT * FROM instruments
+
+            $sql = "SELECT * FROM instruments
                     INNER JOIN instrument_machines ON instruments.instrument_id = instrument_machines.instrument_id
                     WHERE instrument_machines.config_machine_name LIKE ?";
-                $instrumentDetails = $db->rawQueryOne($sql, [$result['machine_used']]);
+            $instrumentDetails = $db->connection('default')->rawQueryOne($sql, [$result['machine_used']]);
+
+            if (empty($instrumentDetails)) {
+                $instrumentDetails = $db->connection('default')
+                    ->rawQueryOne(
+                        "SELECT * FROM instruments WHERE machine_name like ?",
+                        [$result['machine_used']]
+                    );
             }
 
             $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
@@ -434,7 +438,7 @@ try {
                     'data_sync' => 0
                 ];
 
-                if($silent === true){
+                if ($silent === true) {
                     unset($data['last_modified_datetime']);
                 }
 
@@ -503,7 +507,7 @@ try {
                     'data_sync' => 0
                 ];
 
-                if($silent === true){
+                if ($silent === true) {
                     unset($data['last_modified_datetime']);
                 }
 
@@ -570,7 +574,7 @@ try {
                     'data_sync' => 0
                 ];
 
-                if($silent === true){
+                if ($silent === true) {
                     unset($data['last_modified_datetime']);
                 }
 
