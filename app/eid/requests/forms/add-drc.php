@@ -226,27 +226,27 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 									<tr>
 										<th scope="row"><label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label></th>
 										<td>
-											<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;">
-												<option value=''> -- Sélectionner -- </option>
+											<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="[...document.getElementsByClassName('specific-infant-treatment')].forEach(el => el.style.display = this.value === 'Oui' ? '' : 'none');">
+												<option value=""> -- Sélectionner -- </option>
 												<option value="Oui">Oui</option>
 												<option value="Non">Non</option>
 												<option value="Inconnu">Inconnu</option>
 											</select>
 										</td>
-										<th scope="row"><label for="specificInfantTreatment">Si Oui à préciser</label></th>
-										<td>
-											<select class="form-control isRequired" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? 'block' : 'none';">
-												<option value=''>-- Raison de la PCR (cocher une) --</option>
-												<option value='1st test pour bébé exposé (4 à 6 semaines)'> 1st test pour bébé exposé (4 à 6 semaines)</option>
-												<option value='1st test pour bébé exposé (plus de 6 semaines)'>1st test pour bébé exposé (plus de 6 semaines)</option>
-												<option value='Test à 9 mois'>Test à 9 mois</option>
-												<option value='Test à plus de 9 mois'>Test à plus de 9 mois</option>
-												<option value='1st test pour bébé malade'>1st test pour bébé malade</option>
-												<option value='Répéter car problème avec 1er test'>Répéter car problème avec 1er test</option>
-												<option value='Répéter pour confirmer 1er résultat'>Répéter pour confirmer 1er résultat</option>
-												<option value='Répéter test après arrêt allaitement'>Répéter test après arrêt allaitement</option>
-												<option value='maternel (6 semaines au moins après arrêt allaitement)'>maternel (6 semaines au moins après arrêt allaitement)</option>
-												<option value='Autres'>Autres (à préciser)</option>
+										<th class="specific-infant-treatment" style="display: none;" scope="row"><label for="specificInfantTreatment">Si Oui à préciser</label></th>
+										<td class="specific-infant-treatment" style="display: none;">
+											<select class="form-control isRequired" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? '' : 'none';">
+												<option value="">-- Raison de la PCR (cocher une) --</option>
+												<option value="1st test pour bébé exposé (4 à 6 semaines)">1st test pour bébé exposé (4 à 6 semaines)</option>
+												<option value="1st test pour bébé exposé (plus de 6 semaines)">1st test pour bébé exposé (plus de 6 semaines)</option>
+												<option value="Test à 9 mois">Test à 9 mois</option>
+												<option value="Test à plus de 9 mois">Test à plus de 9 mois</option>
+												<option value="1st test pour bébé malade">1st test pour bébé malade</option>
+												<option value="Répéter car problème avec 1er test">Répéter car problème avec 1er test</option>
+												<option value="Répéter pour confirmer 1er résultat">Répéter pour confirmer 1er résultat</option>
+												<option value="Répéter test après arrêt allaitement">Répéter test après arrêt allaitement</option>
+												<option value="maternel (6 semaines au moins après arrêt allaitement)">maternel (6 semaines au moins après arrêt allaitement)</option>
+												<option value="Autres">Autres (à préciser)</option>
 											</select>
 											<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" style="display: none;" />
 										</td>
