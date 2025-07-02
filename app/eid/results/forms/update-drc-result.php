@@ -239,11 +239,35 @@ $storageInfo = $storageService->getLabStorage();
 									<th scope="row">Age en semaines</th>
 									<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
 								</tr>
-
+								<tr>
+									<th scope="row"><label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label></th>
+									<td>
+										<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;">
+											<option value=''> -- Sélectionner -- </option>
+											<option value="Oui" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "selected='selected'" : ""; ?>>Oui</option>
+											<option value="Non" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Non') ? "selected='selected'" : ""; ?>>Non</option>
+											<option value="Inconnu" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Inconnu') ? "selected='selected'" : ""; ?>>Inconnu</option>
+										</select>
+									</td>
+									<th scope="row"><label for="specificInfantTreatment">Si Oui à préciser<span class="mandatory">*</span></label></th>
+									<td>
+										<select class="form-control isRequired" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? 'block' : 'none';">
+											<option value=''>-- Raison de la PCR (cocher une) --</option>
+											<option value='1st test pour bébé exposé (4 à 6 semaines)' <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (4 à 6 semaines)') ? "selected='selected'" : ""; ?>> 1st test pour bébé exposé (4 à 6 semaines)</option>
+											<option value='1st test pour bébé exposé (plus de 6 semaines)' <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (plus de 6 semaines)') ? "selected='selected'" : ""; ?>>1st test pour bébé exposé (plus de 6 semaines)</option>
+											<option value='Test à 9 mois' <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à 9 mois') ? "selected='selected'" : ""; ?>>Test à 9 mois</option>
+											<option value='Test à plus de 9 mois' <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à plus de 9 mois') ? "selected='selected'" : ""; ?>>Test à plus de 9 mois</option>
+											<option value='1st test pour bébé malade' <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé malade') ? "selected='selected'" : ""; ?>>1st test pour bébé malade</option>
+											<option value='Répéter car problème avec 1er test' <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter car problème avec 1er test') ? "selected='selected'" : ""; ?>>Répéter car problème avec 1er test</option>
+											<option value='Répéter pour confirmer 1er résultat' <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter pour confirmer 1er résultat') ? "selected='selected'" : ""; ?>>Répéter pour confirmer 1er résultat</option>
+											<option value='Répéter test après arrêt allaitement' <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter test après arrêt allaitement') ? "selected='selected'" : ""; ?>>Répéter test après arrêt allaitement</option>
+											<option value='maternel (6 semaines au moins après arrêt allaitement)' <?php echo ($eidInfo['specific_infant_treatment'] == 'maternel (6 semaines au moins après arrêt allaitement)') ? "selected='selected'" : ""; ?>>maternel (6 semaines au moins après arrêt allaitement)</option>
+											<option value='Autres'>Autres (à préciser)</option>
+										</select>
+										<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" style="display: none;" />
+									</td>
+								</tr>
 							</table>
-
-
-
 							<br><br>
 							<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 								<tr>
