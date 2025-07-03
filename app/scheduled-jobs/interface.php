@@ -356,6 +356,7 @@ try {
                     ->rawQueryOne($sql, [$result['instrument_id'] ?? $result['machine_used']]);
             }
 
+
             $approved = !empty($instrumentDetails['approved_by']) ? json_decode((string) $instrumentDetails['approved_by'], true) : [];
             $reviewed = !empty($instrumentDetails['reviewed_by']) ? json_decode((string) $instrumentDetails['reviewed_by'], true) : [];
             $instrumentId = $instrumentDetails['instrument_id'] ?? null;

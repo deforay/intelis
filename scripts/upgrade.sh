@@ -562,7 +562,7 @@ get_databases() {
     local -i cnt=1
     for db in "${databases[@]}"; do
         echo "$cnt) $db"
-        cnt++
+        ((cnt++))
     done
 }
 
