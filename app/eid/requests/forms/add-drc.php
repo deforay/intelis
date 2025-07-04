@@ -223,6 +223,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										<td><input type="number" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
 									</tr>
 									<tr>
+										<th scope="row">Age en Jour</th>
+										<td><input type="number" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
+										<th scope="row"><label for="testRequestDate">Date de la demande <span class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" class="form-control date isRequired" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="email">Adresse Email<span class="mandatory">*</span></label></th>
+										<td>
+											<input type="email" class="form-control isEmail isRequired" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
+										</td>
+										<th scope="row"><label for="phone">N° Téléphone<span class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" class="form-control isMobile isRequired" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
+										</td>
+									</tr>
+									<tr>
 										<th scope="row"><label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="[...document.getElementsByClassName('specific-infant-treatment')].forEach(el => el.style.display = this.value === 'Oui' ? '' : 'none');">

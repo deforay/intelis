@@ -44,3 +44,9 @@ ALTER TABLE `temp_sample_import` CHANGE `import_machine_name` `import_machine_na
 
 -- Amit 17-Jun-2025
 ALTER TABLE `hold_sample_import` ADD `instrument_id` VARCHAR(128) NULL DEFAULT NULL AFTER `vl_test_platform`;
+-- Thana 02-Jul-2025
+ALTER TABLE `form_eid` ADD `specific_infant_treatment` VARCHAR(128) NULL DEFAULT NULL AFTER `is_infant_receiving_treatment`;
+ALTER TABLE `audit_form_eid` ADD `specific_infant_treatment` VARCHAR(128) NULL DEFAULT NULL AFTER `is_infant_receiving_treatment`;
+ALTER TABLE `form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
+ALTER TABLE `audit_form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
+

@@ -273,6 +273,24 @@ $storageInfo = $storageService->getLabStorage();
 										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
 									</tr>
 									<tr>
+										<th scope="row">Age en Jour</th>
+										<td><input type="number" value="<?php echo $eidInfo['child_age_in_days']; ?>" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
+										<th scope="row"><label for="testRequestDate">Date de la demande <span class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_request_date']); ?>" class="form-control date isRequired" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
+										</td>
+									</tr>
+									<tr>
+										<th scope="row"><label for="email">Adresse Email<span class="mandatory">*</span></label></th>
+										<td>
+											<input type="email" value="<?php echo $eidInfo['infant_email']; ?>" class="form-control isEmail isRequired" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
+										</td>
+										<th scope="row"><label for="phone">N° Téléphone<span class="mandatory">*</span></label></th>
+										<td>
+											<input type="text" value="<?php echo $eidInfo['infant_phone']; ?>" class="form-control isMobile isRequired" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
+										</td>
+									</tr>
+									<tr>
 										<th scope="row">
 											<label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label>
 										</th>
