@@ -2,6 +2,7 @@
 
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -10,28 +11,12 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-//Add event log
-$eventType = 'log-out';
-$action = $_SESSION['userName'] . ' logged out';
-$resource = 'user';
-$general->activityLog($eventType, $action, $resource);
+// Add event log before clearing session
+$userName = $_SESSION['userName'] ?? 'Unknown';
+$general->activityLog('log-out', "$userName logged out", 'user');
 
-// Unset all the session variables.
-$_SESSION = [];
+SecurityService::resetSession();
 
-if (ini_get("session.use_cookies")) {
-    $params = session_get_cookie_params();
-    setcookie(
-        session_name(),
-        '',
-        time() - 42000,
-        $params["path"],
-        $params["domain"],
-        $params["secure"],
-        $params["httponly"]
-    );
-}
-
-// Finally, destroy the session.
-session_destroy();
-header("Location:/login/login.php");
+// Redirect to login page
+header("Location: /login/login.php");
+exit();

@@ -1,4 +1,8 @@
 <?php
+
+ini_set('expose_php', 0);
+ini_set('session.use_strict_mode', 1);
+
 if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
     session_name('appSessionv2');
 
@@ -63,6 +67,11 @@ require_once __DIR__ . '/app/system/functions.php';
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
 define('LOG_LEVEL', (APPLICATION_ENV === 'development' || SYSTEM_CONFIG['system']['debug_mode']) ? 'DEBUG' : 'INFO');
+
+if (APPLICATION_ENV === 'production' && SYSTEM_CONFIG['system']['debug_mode'] !== true) {
+    ini_set('display_errors', 0); // Never display errors in production
+    ini_set('log_errors', 1);     // Always log them instead
+}
 
 // Just putting $db here in case there are
 // some old scripts that are still depending on this variable being available.

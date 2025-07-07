@@ -11,6 +11,55 @@ final class SecurityService
     //public static $expiryTime = 3600; // 60 minutes
     public function __construct() {}
 
+    public static function resetSession(): void
+    {
+        // Clear all session variables
+        $_SESSION = [];
+
+        // Remove session cookie if present
+        if (ini_get("session.use_cookies")) {
+            $params = session_get_cookie_params();
+            setcookie(
+                session_name(),
+                '',
+                time() - 42000,
+                $params["path"],
+                $params["domain"],
+                $params["secure"],
+                $params["httponly"]
+            );
+        }
+
+        // Destroy session
+        session_destroy();
+    }
+
+    public static function restartSession(): void
+    {
+        if (PHP_SAPI === 'cli') {
+            return;
+        }
+
+        if (session_status() !== PHP_SESSION_ACTIVE) {
+            session_name('appSessionv2');
+
+            $isSecure = (
+                (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
+                || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
+            );
+
+            session_set_cookie_params([
+                'lifetime' => 0,
+                'path' => '/',
+                'secure' => $isSecure,
+                'httponly' => true,
+                'samesite' => 'Lax'
+            ]);
+
+            session_start();
+        }
+    }
+
     public static function checkContentLength(ServerRequest $request)
     {
         // Only check Content-Length for POST, PUT, and PATCH requests
@@ -43,17 +92,15 @@ final class SecurityService
         $csrfToken = $request->getHeaderLine('X-CSRF-Token')
             ?: $request->getParsedBody()['csrf_token'] ?? null;
 
-        // // Check if CSRF token has expired (1 hour default expiration)
-        // if (CommonService::isAjaxRequest($request) === false && !empty($_SESSION['csrf_token_time']) && time() - $_SESSION['csrf_token_time'] > self::$expiryTime) {
-        //     self::rotateCSRF();
-        //     throw new SystemException(_translate('Request token expired. Please refresh the page and try again.'));
-        // }
-
         // Validate the CSRF token
-        if (!is_null($csrfToken) && !hash_equals($_SESSION['csrf_token'], $csrfToken)) {
-            $_SESSION['errorDisplayMessage'] = $message = _translate('Invalid Request token. Please refresh the page and try again.');
-            throw new SystemException($message, 403);
+        if ($csrfToken !== null && (!isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrfToken))) {
+            if (CommonService::isAjaxRequest($request) === false) {
+                $_SESSION['alertMsg'] = _translate('Your session has expired or is invalid. Please try again.');
+                header("Location: /login/login.php");
+            }
+            exit;
         }
+
 
         // Optionally rotate the CSRF token after successful use
         if (CommonService::isAjaxRequest($request) === false && $rotateCSRF) {
@@ -79,9 +126,11 @@ final class SecurityService
         }
     }
 
-    public static function redirect(string $url): void
+    public static function redirect(string $url, $rotateCSRF = true): void
     {
-        self::rotateCSRF();
+        if ($rotateCSRF) {
+            self::rotateCSRF();
+        }
         if (str_contains(strtolower($url), 'location:')) {
             header($url);
         } else {

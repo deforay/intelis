@@ -8,7 +8,18 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 if (isset($_SESSION['userId'])) {
-	SecurityService::redirect("/dashboard/index.php");
+	SecurityService::redirect("/dashboard/index.php", rotateCSRF: false);
+} else {
+	$alertMessage = null;
+	if (!empty($_SESSION['alertMsg'])) {
+		$alertMessage = $_SESSION['alertMsg'];
+	}
+
+	SecurityService::resetSession();
+	SecurityService::restartSession();
+	if (isset($alertMessage) && trim((string) $_SESSION['alertMsg']) != "") {
+		$_SESSION['alertMsg'] = $alertMessage;
+	}
 }
 
 /** @var DatabaseService $db */
@@ -105,7 +116,7 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 
 	<!-- Theme style -->
 	<link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
-	<link rel="stylesheet" href="/assets/css/deforayModal.css"/>
+	<link rel="stylesheet" href="/assets/css/deforayModal.css" />
 	<!-- iCheck -->
 	<style>
 		body {
