@@ -99,7 +99,7 @@ $storageInfo = $storageService->getLabStorage();
 									<tr>
 
 										<?php if ($general->isSTSInstance()) { ?>
-											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span>
+											<td style=" width: 20%; "><label for="sampleCode">Échantillon ID <span class="mandatory">*</span>
 												</label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;">
@@ -108,15 +108,13 @@ $storageInfo = $storageService->getLabStorage();
 												<input type="hidden" class="<?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" value="<?php echo $eidInfo[$sampleCode]; ?>" />
 											</td>
 										<?php } else { ?>
-											<td><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
+											<td style=" width: 20%; "><label for="sampleCode">Échantillon ID <span class="mandatory">*</span></label></td>
 											<td>
 												<input type="text" class="form-control isRequired <?php echo $sampleClass; ?>" id="sampleCode" name="sampleCode" <?php echo $maxLength; ?> placeholder="Enter Sample ID" title="<?= _translate("Please make sure you have selected Sample Collection Date and Requesting Facility"); ?>" value="<?php echo $eidInfo[$sampleCode]; ?>" style="width:100%;" readonly="readonly" />
 												<input type="hidden" name="sampleCodeCol" value="<?= htmlspecialchars((string) $eidInfo['sample_code']); ?>" />
 											</td>
 										<?php } ?>
 
-										<td></td>
-										<td></td>
 										<td></td>
 										<td></td>
 									</tr>
@@ -134,14 +132,24 @@ $storageInfo = $storageService->getLabStorage();
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
+									</tr>
+									<tr>
 										<td><label for="facilityId">POINT DE COLLECT <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control isRequired" name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
 											</select>
 										</td>
+										<th scope="row"><label for="email">Adresse Email</label></th>
+										<td>
+											<input type="email" value="<?php echo $eidInfo['infant_email']; ?>" class="form-control isEmail" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
+										</td>
 									</tr>
 									<tr>
+										<th scope="row"><label for="testRequestDate">Date de la demande</label></th>
+										<td>
+											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_request_date']); ?>" class="form-control date" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
+										</td>
 										<td><label for="supportPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<!-- <input type="text" class="form-control" id="supportPartner" name="supportPartner" placeholder="Partenaire d'appui" title="Please enter Partenaire d'appui" style="width:100%;"/> -->
@@ -154,6 +162,8 @@ $storageInfo = $storageService->getLabStorage();
 												<?php } ?>
 											</select>
 										</td>
+									</tr>
+									<tr>
 										<td><label for="fundingSource">Source de Financement<span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control select2 isRequired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
@@ -252,10 +262,16 @@ $storageInfo = $storageService->getLabStorage();
 										</td>
 									</tr>
 									<tr>
+										<th scope="row"><label for="phone">N° Téléphone</label></th>
+										<td>
+											<input type="text" value="<?php echo $eidInfo['infant_phone']; ?>" class="form-control isMobile" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
+										</td>
 										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['child_dob']) ?>" onchange="calculateAgeInMonths();" />
 										</td>
+									</tr>
+									<tr>
 										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="childGender" id="childGender">
@@ -265,62 +281,14 @@ $storageInfo = $storageService->getLabStorage();
 												<option value='unreported' <?php echo ($eidInfo['child_gender'] == 'unreported') ? "selected='selected'" : ""; ?>> <?= _translate("Unreported"); ?> </option>
 											</select>
 										</td>
+										<th scope="row">Age en Jour</th>
+										<td><input type="number" value="<?php echo $eidInfo['child_age_in_days']; ?>" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
 									</tr>
 									<tr>
 										<th scope="row">Age en mois <span class="mandatory">*</span></th>
 										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age']); ?>" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control isRequired" id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row">Age en semaines</th>
 										<td><input type="number" value="<?= htmlspecialchars((string) $eidInfo['child_age_in_weeks']); ?>" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
-									</tr>
-									<tr>
-										<th scope="row">Age en Jour</th>
-										<td><input type="number" value="<?php echo $eidInfo['child_age_in_days']; ?>" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
-										<th scope="row"><label for="testRequestDate">Date de la demande <span class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['test_request_date']); ?>" class="form-control date isRequired" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="email">Adresse Email<span class="mandatory">*</span></label></th>
-										<td>
-											<input type="email" value="<?php echo $eidInfo['infant_email']; ?>" class="form-control isEmail isRequired" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
-										</td>
-										<th scope="row"><label for="phone">N° Téléphone<span class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" value="<?php echo $eidInfo['infant_phone']; ?>" class="form-control isMobile isRequired" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row">
-											<label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label>
-										</th>
-										<td>
-											<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="var display = this.value === 'Oui' ? '' : 'none'; var elements = document.getElementsByClassName('specific-infant-treatment'); for(var i=0; i<elements.length; i++) elements[i].style.display = display;">
-												<option value=""> -- Sélectionner -- </option>
-												<option value="Oui" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "selected='selected'" : ""; ?>>Oui</option>
-												<option value="Non" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Non') ? "selected='selected'" : ""; ?>>Non</option>
-												<option value="Inconnu" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Inconnu') ? "selected='selected'" : ""; ?>>Inconnu</option>
-											</select>
-										</td>
-										<th class="specific-infant-treatment" style="display: <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "" : "none"; ?>;" scope="row">
-											<label for="specificInfantTreatment">Si Oui à préciser<span class="mandatory">*</span></label>
-										</th>
-										<td class="specific-infant-treatment" style="display: <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "" : "none"; ?>;">
-											<select class="form-control isRequired" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? '' : 'none';">
-												<option value="">-- Raison de la PCR (cocher une) --</option>
-												<option value="1st test pour bébé exposé (4 à 6 semaines)" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (4 à 6 semaines)') ? "selected='selected'" : ""; ?>>1st test pour bébé exposé (4 à 6 semaines)</option>
-												<option value="1st test pour bébé exposé (plus de 6 semaines)" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (plus de 6 semaines)') ? "selected='selected'" : ""; ?>>1st test pour bébé exposé (plus de 6 semaines)</option>
-												<option value="Test à 9 mois" <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à 9 mois') ? "selected='selected'" : ""; ?>>Test à 9 mois</option>
-												<option value="Test à plus de 9 mois" <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à plus de 9 mois') ? "selected='selected'" : ""; ?>>Test à plus de 9 mois</option>
-												<option value="1st test pour bébé malade" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé malade') ? "selected='selected'" : ""; ?>>1st test pour bébé malade</option>
-												<option value="Répéter car problème avec 1er test" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter car problème avec 1er test') ? "selected='selected'" : ""; ?>>Répéter car problème avec 1er test</option>
-												<option value="Répéter pour confirmer 1er résultat" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter pour confirmer 1er résultat') ? "selected='selected'" : ""; ?>>Répéter pour confirmer 1er résultat</option>
-												<option value="Répéter test après arrêt allaitement" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter test après arrêt allaitement') ? "selected='selected'" : ""; ?>>Répéter test après arrêt allaitement</option>
-												<option value="maternel (6 semaines au moins après arrêt allaitement)" <?php echo ($eidInfo['specific_infant_treatment'] == 'maternel (6 semaines au moins après arrêt allaitement)') ? "selected='selected'" : ""; ?>>maternel (6 semaines au moins après arrêt allaitement)</option>
-												<option value="Autres" <?php echo ($eidInfo['specific_infant_treatment'] == 'Autres') ? "selected='selected'" : ""; ?>>Autres (à préciser)</option>
-											</select>
-											<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" value="<?php echo isset($eidInfo['specific_infant_treatment_other']) ? htmlspecialchars($eidInfo['specific_infant_treatment_other']) : ''; ?>" style="display: <?php echo ($eidInfo['specific_infant_treatment'] == 'Autres') ? 'block' : 'none'; ?>;" />
-										</td>
 									</tr>
 								</table>
 								<br><br>
@@ -399,6 +367,38 @@ $storageInfo = $storageService->getLabStorage();
 											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Unknown" <?php echo in_array('Unknown', $eidInfo['child_treatment']) ? "checked='checked'" : ""; ?> />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
 
+										<th scope="row">
+											<label for="isInfantReceivingTratment">Bébé reçoit-il le traitement?</label>
+										</th>
+										<td>
+											<select class="form-control" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="var display = this.value === 'Oui' ? '' : 'none'; var elements = document.getElementsByClassName('specific-infant-treatment'); for(var i=0; i<elements.length; i++) elements[i].style.display = display;">
+												<option value=""> -- Sélectionner -- </option>
+												<option value="Oui" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "selected='selected'" : ""; ?>>Oui</option>
+												<option value="Non" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Non') ? "selected='selected'" : ""; ?>>Non</option>
+												<option value="Inconnu" <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Inconnu') ? "selected='selected'" : ""; ?>>Inconnu</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th class="specific-infant-treatment" style="display: <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "" : "none"; ?>;" scope="row">
+											<label for="specificInfantTreatment">Si Oui à préciser<span class="mandatory">*</span></label>
+										</th>
+										<td class="specific-infant-treatment" style="display: <?php echo ($eidInfo['is_infant_receiving_treatment'] == 'Oui') ? "" : "none"; ?>;">
+											<select class="form-control" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? '' : 'none';">
+												<option value="">-- Raison de la PCR (cocher une) --</option>
+												<option value="1st test pour bébé exposé (4 à 6 semaines)" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (4 à 6 semaines)') ? "selected='selected'" : ""; ?>>1st test pour bébé exposé (4 à 6 semaines)</option>
+												<option value="1st test pour bébé exposé (plus de 6 semaines)" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé exposé (plus de 6 semaines)') ? "selected='selected'" : ""; ?>>1st test pour bébé exposé (plus de 6 semaines)</option>
+												<option value="Test à 9 mois" <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à 9 mois') ? "selected='selected'" : ""; ?>>Test à 9 mois</option>
+												<option value="Test à plus de 9 mois" <?php echo ($eidInfo['specific_infant_treatment'] == 'Test à plus de 9 mois') ? "selected='selected'" : ""; ?>>Test à plus de 9 mois</option>
+												<option value="1st test pour bébé malade" <?php echo ($eidInfo['specific_infant_treatment'] == '1st test pour bébé malade') ? "selected='selected'" : ""; ?>>1st test pour bébé malade</option>
+												<option value="Répéter car problème avec 1er test" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter car problème avec 1er test') ? "selected='selected'" : ""; ?>>Répéter car problème avec 1er test</option>
+												<option value="Répéter pour confirmer 1er résultat" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter pour confirmer 1er résultat') ? "selected='selected'" : ""; ?>>Répéter pour confirmer 1er résultat</option>
+												<option value="Répéter test après arrêt allaitement" <?php echo ($eidInfo['specific_infant_treatment'] == 'Répéter test après arrêt allaitement') ? "selected='selected'" : ""; ?>>Répéter test après arrêt allaitement</option>
+												<option value="maternel (6 semaines au moins après arrêt allaitement)" <?php echo ($eidInfo['specific_infant_treatment'] == 'maternel (6 semaines au moins après arrêt allaitement)') ? "selected='selected'" : ""; ?>>maternel (6 semaines au moins après arrêt allaitement)</option>
+												<option value="Autres" <?php echo ($eidInfo['specific_infant_treatment'] == 'Autres') ? "selected='selected'" : ""; ?>>Autres (à préciser)</option>
+											</select>
+											<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" value="<?php echo isset($eidInfo['specific_infant_treatment_other']) ? htmlspecialchars($eidInfo['specific_infant_treatment_other']) : ''; ?>" style="display: <?php echo ($eidInfo['specific_infant_treatment'] == 'Autres') ? 'block' : 'none'; ?>;" />
+										</td>
 										<th scope="row">Bébé a arrêté allaitement maternel ?<span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">

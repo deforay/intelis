@@ -64,19 +64,17 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 								<table aria-describedby="table" class="table" aria-hidden="true" style="width:100%">
 									<tr>
 										<?php if ($general->isSTSInstance()) { ?>
-											<td><label for="sampleCode">Échantillon ID </label></td>
+											<td style=" width: 20%; "><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<span id="sampleCodeInText" style="width:100%;border-bottom:1px solid #333;"></span>
 												<input type="hidden" id="sampleCode" name="sampleCode" />
 											</td>
 										<?php } else { ?>
-											<td><label for="sampleCode">Échantillon ID </label></td>
+											<td style=" width: 20%; "><label for="sampleCode">Échantillon ID </label></td>
 											<td>
 												<input type="text" class="form-control isRequired" id="sampleCode" name="sampleCode" placeholder="<?= _translate("Sample ID"); ?>" title="<?= _translate("Please enter the Sample ID", true); ?>" style="width:100%;" readonly="readonly" />
 											</td>
 										<?php } ?>
-										<td></td>
-										<td></td>
 										<td></td>
 										<td></td>
 									</tr>
@@ -94,14 +92,24 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<option value=""><?= _translate("-- Select --"); ?> </option>
 											</select>
 										</td>
+									</tr>
+									<tr>
 										<td><label for="facilityId">POINT DE COLLECT<span class="mandatory">*</span> </label></td>
 										<td>
 											<select class="form-control isRequired " name="facilityId" id="facilityId" title="<?= _translate("Please choose facility"); ?>" style="width:100%;" onchange="getfacilityProvinceDetails(this);">
 												<?php echo $facility; ?>
 											</select>
 										</td>
+										<th scope="row"><label for="email">Adresse Email</label></th>
+										<td>
+											<input type="email" class="form-control isEmail" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
+										</td>
 									</tr>
 									<tr>
+										<th scope="row"><label for="testRequestDate">Date de la demande</label></th>
+										<td>
+											<input type="text" class="form-control date" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
+										</td>
 										<td><label for="supportPartner">Partnaire d'appui <span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control select2 isRequired" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
@@ -114,6 +122,8 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<?php } ?>
 											</select>
 										</td>
+									</tr>
+									<tr>
 										<td><label for="fundingSource">Source de Financement<span class="mandatory">*</span></label></td>
 										<td>
 											<select class="form-control select2 isREquired" name="fundingSource" id="fundingSource" title="Please choose source de financement" style="width:100%;">
@@ -202,10 +212,16 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 										</td>
 									</tr>
 									<tr>
+										<th scope="row"><label for="phone">N° Téléphone</label></th>
+										<td>
+											<input type="text" class="form-control isMobile" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
+										</td>
 										<th scope="row"><label for="childDob">Date de naissance <span class="mandatory">*</span></label></th>
 										<td>
 											<input type="text" class="form-control date isRequired" id="childDob" name="childDob" placeholder="Date de naissance" title="Please enter Date de naissance" style="width:100%;" onchange="calculateAgeInMonths();" />
 										</td>
+									</tr>
+									<tr>
 										<th scope="row"><label for="childGender"><?= _translate("Sex"); ?> <span class="mandatory">*</span></label></th>
 										<td>
 											<select class="form-control isRequired" name="childGender" id="childGender">
@@ -215,58 +231,14 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 												<option value='unreported'> <?= _translate("Unreported"); ?> </option>
 											</select>
 										</td>
+										<th scope="row">Age en Jour</th>
+										<td><input type="number" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
 									</tr>
 									<tr>
 										<th scope="row">Age en mois<span class="mandatory">*</span></th>
 										<td><input type="number" maxlength="3" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control isRequired" id="childAge" name="childAge" placeholder="<?php echo _translate("Age in years"); ?>" title="<?php echo _translate("Age in years"); ?>" style="width:100%;" onchange="$('#childDob').val('')" /></td>
 										<th scope="row">Age en semaines</th>
 										<td><input type="number" maxlength="5" oninput="this.value=this.value.slice(0,$(this).attr('maxlength'))" class="form-control " id="childAgeInWeeks" name="childAgeInWeeks" placeholder="<?php echo _translate("Age in weeks"); ?>" title="<?php echo _translate("Age in weeks"); ?>" style="width:100%;" /></td>
-									</tr>
-									<tr>
-										<th scope="row">Age en Jour</th>
-										<td><input type="number" class="form-control " id="childAgeInDays" name="childAgeInDays" placeholder="Age en Jour" title="Age en Jour" style="width:100%;" /></td>
-										<th scope="row"><label for="testRequestDate">Date de la demande <span class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" class="form-control date isRequired" id="testRequestDate" name="testRequestDate" placeholder="Date de la demande" title="Please enter Date de la demande" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="email">Adresse Email<span class="mandatory">*</span></label></th>
-										<td>
-											<input type="email" class="form-control isEmail isRequired" id="email" name="email" placeholder="Adresse Email" title="Please enter Adresse Email" style="width:100%;" />
-										</td>
-										<th scope="row"><label for="phone">N° Téléphone<span class="mandatory">*</span></label></th>
-										<td>
-											<input type="text" class="form-control isMobile isRequired" id="phone" name="phone" placeholder="N° Téléphone" title="Please enter N° Téléphone" style="width:100%;" />
-										</td>
-									</tr>
-									<tr>
-										<th scope="row"><label for="isInfantReceivingTratment">Bébé reçoit-il le traitement? <span class="mandatory">*</span></label></th>
-										<td>
-											<select class="form-control isRequired" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="[...document.getElementsByClassName('specific-infant-treatment')].forEach(el => el.style.display = this.value === 'Oui' ? '' : 'none');">
-												<option value=""> -- Sélectionner -- </option>
-												<option value="Oui">Oui</option>
-												<option value="Non">Non</option>
-												<option value="Inconnu">Inconnu</option>
-											</select>
-										</td>
-										<th class="specific-infant-treatment" style="display: none;" scope="row"><label for="specificInfantTreatment">Si Oui à préciser</label></th>
-										<td class="specific-infant-treatment" style="display: none;">
-											<select class="form-control isRequired" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? '' : 'none';">
-												<option value="">-- Raison de la PCR (cocher une) --</option>
-												<option value="1st test pour bébé exposé (4 à 6 semaines)">1st test pour bébé exposé (4 à 6 semaines)</option>
-												<option value="1st test pour bébé exposé (plus de 6 semaines)">1st test pour bébé exposé (plus de 6 semaines)</option>
-												<option value="Test à 9 mois">Test à 9 mois</option>
-												<option value="Test à plus de 9 mois">Test à plus de 9 mois</option>
-												<option value="1st test pour bébé malade">1st test pour bébé malade</option>
-												<option value="Répéter car problème avec 1er test">Répéter car problème avec 1er test</option>
-												<option value="Répéter pour confirmer 1er résultat">Répéter pour confirmer 1er résultat</option>
-												<option value="Répéter test après arrêt allaitement">Répéter test après arrêt allaitement</option>
-												<option value="maternel (6 semaines au moins après arrêt allaitement)">maternel (6 semaines au moins après arrêt allaitement)</option>
-												<option value="Autres">Autres (à préciser)</option>
-											</select>
-											<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" style="display: none;" />
-										</td>
 									</tr>
 								</table>
 
@@ -351,6 +323,34 @@ $facility = $general->generateSelectOptions($healthFacilities, null, _translate(
 											<input type="checkbox" class="isRequired" name="childTreatment[]" value="Unknown" />&nbsp;Inconnu &nbsp; &nbsp;&nbsp;&nbsp;
 										</td>
 
+										<th scope="row"><label for="isInfantReceivingTratment">Bébé reçoit-il le traitement?</label></th>
+										<td>
+											<select class="form-control" id="isInfantReceivingTratment" name="isInfantReceivingTratment" title="Please select bébé reçoit-il le traitement" style="width:100%;" onchange="[...document.getElementsByClassName('specific-infant-treatment')].forEach(el => el.style.display = this.value === 'Oui' ? '' : 'none');">
+												<option value=""> -- Sélectionner -- </option>
+												<option value="Oui">Oui</option>
+												<option value="Non">Non</option>
+												<option value="Inconnu">Inconnu</option>
+											</select>
+										</td>
+									</tr>
+									<tr>
+										<th class="specific-infant-treatment" style="display: none;" scope="row"><label for="specificInfantTreatment">Si Oui à préciser</label></th>
+										<td class="specific-infant-treatment" style="display: none;">
+											<select class="form-control" name="specificInfantTreatment" id="specificInfantTreatment" title="Please select the si oui à préciser" onchange="document.getElementById('specificInfantTreatmentOther').style.display = this.value === 'Autres' ? '' : 'none';">
+												<option value="">-- Raison de la PCR (cocher une) --</option>
+												<option value="1st test pour bébé exposé (4 à 6 semaines)">1st test pour bébé exposé (4 à 6 semaines)</option>
+												<option value="1st test pour bébé exposé (plus de 6 semaines)">1st test pour bébé exposé (plus de 6 semaines)</option>
+												<option value="Test à 9 mois">Test à 9 mois</option>
+												<option value="Test à plus de 9 mois">Test à plus de 9 mois</option>
+												<option value="1st test pour bébé malade">1st test pour bébé malade</option>
+												<option value="Répéter car problème avec 1er test">Répéter car problème avec 1er test</option>
+												<option value="Répéter pour confirmer 1er résultat">Répéter pour confirmer 1er résultat</option>
+												<option value="Répéter test après arrêt allaitement">Répéter test après arrêt allaitement</option>
+												<option value="maternel (6 semaines au moins après arrêt allaitement)">maternel (6 semaines au moins après arrêt allaitement)</option>
+												<option value="Autres">Autres (à préciser)</option>
+											</select>
+											<input type="text" placeholder="Veuillez préciser si autre" title="Veuillez préciser si autre" id="specificInfantTreatmentOther" name="specificInfantTreatmentOther" class="form-control" style="display: none;" />
+										</td>
 										<th scope="row">Bébé a arrêté allaitement maternel ? <span class="mandatory">*</span></th>
 										<td>
 											<select class="form-control isRequired" name="hasInfantStoppedBreastfeeding" id="hasInfantStoppedBreastfeeding">
