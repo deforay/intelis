@@ -3,8 +3,18 @@
 ini_set('expose_php', 0);
 ini_set('session.use_strict_mode', 1);
 
+
+// Application environment
+defined('APPLICATION_ENV')
+    || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
+
+
+defined('INTELIS_SESSION_NAME')
+    || define('INTELIS_SESSION_NAME', 'appSessionv2');
+
+
 if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
-    session_name('appSessionv2');
+    session_name(INTELIS_SESSION_NAME);
 
     // Smart secure detection: also works behind proxies
     $isSecure = (
@@ -31,10 +41,6 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
-// Application environment
-defined('APPLICATION_ENV')
-    || define('APPLICATION_ENV', getenv('APPLICATION_ENV') ?: 'production');
 
 // Application paths
 chdir(__DIR__);

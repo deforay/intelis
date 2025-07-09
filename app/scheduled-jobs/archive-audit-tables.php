@@ -230,8 +230,7 @@ try {
 } catch (Exception $e) {
     if ($cliMode) {
         echo "Some or all data could not be archived" . PHP_EOL;
-        echo $e->getMessage() . PHP_EOL;
-        echo $db->getLastQuery();
+        echo "An internal error occurred. Please check the logs." . PHP_EOL;
     }
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),

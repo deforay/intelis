@@ -311,7 +311,7 @@ function onPrinterSelected() {
 function showErrorMessage(text) {
 	$('#main').hide();
 	$('#error_div').show();
-	$('#error_message').html(text);
+	$('#error_message').text(text);
 	console.error('Error:', text);
 }
 

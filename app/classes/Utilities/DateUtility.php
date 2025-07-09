@@ -106,9 +106,28 @@ final class DateUtility
             || preg_match('/[_*]|--/', $date)
         ) {
             $isValid = false;
-        } elseif (ctype_digit($date) && strlen($date) < 10) {
-            LoggerUtility::logError("DateUtility::isDateValid: Numeric input too short to be a valid timestamp or date: '$date'");
-            $isValid = false;
+        } elseif (ctype_digit($date)) {
+            // Handle Unix timestamps
+            if (strlen($date) >= 10) {
+                // Valid Unix timestamp length (10+ digits)
+                try {
+                    $timestamp = (int)$date;
+                    // Check if timestamp is within reasonable range
+                    // (after 1970-01-01 and before year 2100)
+                    if ($timestamp >= 0 && $timestamp <= 4102444800) {
+                        $isValid = true;
+                    } else {
+                        LoggerUtility::logError("DateUtility::isDateValid: Timestamp out of reasonable range: '$date'");
+                        $isValid = false;
+                    }
+                } catch (Throwable $e) {
+                    LoggerUtility::logError("DateUtility::isDateValid: Error processing timestamp '$date': " . $e->getMessage());
+                    $isValid = false;
+                }
+            } else {
+                LoggerUtility::logError("DateUtility::isDateValid: Numeric input too short to be a valid timestamp: '$date'");
+                $isValid = false;
+            }
         } else {
             try {
                 $isValid = self::parseDate($date, ignoreTime: true) !== null;

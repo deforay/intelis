@@ -112,7 +112,7 @@ foreach ($versions as $version) {
                     if ($canLog) {
                         LoggerUtility::log('error', $message);
                     }
-                    echo $message;
+                    echo "An error occurred during migration. Please check the logs for details." . PHP_EOL;
                 }
             }
             if ($db->getLastErrno() > 0 || $errorOccurred) {

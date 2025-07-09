@@ -41,7 +41,8 @@ final class SecurityService
         }
 
         if (session_status() !== PHP_SESSION_ACTIVE) {
-            session_name('appSessionv2');
+
+            session_name(INTELIS_SESSION_NAME);
 
             $isSecure = (
                 (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
@@ -126,7 +127,7 @@ final class SecurityService
         }
     }
 
-    public static function redirect(string $url, $rotateCSRF = true): void
+    public static function redirect(string $url, $rotateCSRF = false): void
     {
         if ($rotateCSRF) {
             self::rotateCSRF();

@@ -3,6 +3,7 @@
 // includes/smart-date-format.php
 
 use App\Registries\AppRegistry;
+use App\Utilities\LoggerUtility;
 use App\Exceptions\SystemException;
 use App\Utilities\SmartDateFormatDetector;
 
@@ -87,9 +88,17 @@ try {
             break;
     }
 } catch (SystemException $e) {
+    // Log the exception details internally if needed, but do not expose to the client
+    LoggerUtility::logError($e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+        'last_db_error' => $db->getLastError(),
+        'last_db_query' => $db->getLastQuery(),
+        'trace' => $e->getTraceAsString(),
+    ]);
     echo json_encode([
         'success' => false,
-        'error' => $e->getMessage(),
+        'error' => 'An error occurred while processing your request.',
         'action' => $_POST['action'] ?? 'detect'
     ]);
 }
