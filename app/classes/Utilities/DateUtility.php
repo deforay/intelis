@@ -42,13 +42,18 @@ final class DateUtility
 
             try {
                 $carbonDate = null;
-                if (null !== $inputFormat) {
+
+                // Handle Unix timestamps first (when no specific input format is provided)
+                if (null === $inputFormat && ctype_digit($trimmedDate) && strlen($trimmedDate) >= 10) {
+                    // This is likely a Unix timestamp
+                    $timestamp = (int)$trimmedDate;
+                    $carbonDate = Carbon::createFromTimestamp($timestamp);
+                } elseif (null !== $inputFormat) {
                     // If a specific input format is provided, use createFromFormat
                     $carbonDate = Carbon::createFromFormat($inputFormat, $trimmedDate);
                     // createFromFormat returns false on failure
                     if ($carbonDate === false) {
-                        // Optionally log this failure, e.g., using LoggerUtility
-                        // LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
+                        LoggerUtility::logWarning("DateUtility::getDateTime: Failed to parse date '$trimmedDate' with format '$inputFormat'.");
                         $procssedDateTime = null;
                     }
                 } else {
@@ -58,11 +63,10 @@ final class DateUtility
                 }
 
                 // If parsing was successful, format and return the date string
-                $procssedDateTime = $carbonDate->format($format);
+                $procssedDateTime = $carbonDate ? $carbonDate->format($format) : null;
             } catch (Throwable $e) {
                 // Catches exceptions from Carbon::parse (e.g., InvalidFormatException)
                 // or any other errors during the process.
-                // Optionally log the error, e.g., using LoggerUtility
                 LoggerUtility::logError("DateUtility::getDateTime: Error processing date '$trimmedDate': " . $e->getMessage(), [
                     'line' => $e->getLine(),
                     'file' => $e->getFile(),
