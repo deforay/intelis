@@ -929,7 +929,19 @@ final class MiscUtility
             // Normalize encoding
             $input = trim($input);
             if (!mb_check_encoding($input, 'UTF-8')) {
-                $encoding = mb_detect_encoding($input, mb_detect_order(), true) ?? 'UTF-8';
+                $encoding = mb_detect_encoding($input, mb_detect_order(), true);
+                if ($encoding === false) {
+                    foreach (['UTF-16', 'Windows-1252', 'ISO-8859-1', 'UTF-8'] as $fallback) {
+                        if (mb_check_encoding($input, $fallback)) {
+                            $encoding = $fallback;
+                            break;
+                        }
+                    }
+
+                    if ($encoding === false) {
+                        $encoding = 'UTF-8';
+                    }
+                }
                 $input = mb_convert_encoding($input, 'UTF-8', $encoding);
             }
 
