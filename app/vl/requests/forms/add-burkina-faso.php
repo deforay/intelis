@@ -191,7 +191,14 @@ foreach ($testReasonsResultDetails as $row) {
                                                        <?php } ?>
                                                   </select>
                                              </div>
-
+                                        </div>
+                                        <div class="row">
+                                             <div class="col-xs-4 col-md-4">
+                                                  <div class="form-group" style=" width: 100%; ">
+                                                       <label for="implementingPartner"><?= _translate("Request Date"); ?></label>
+                                                       <input type="text" class="form-control date" readonly name="testRequestDate" id="testRequestDate" title="<?= _translate("Please enter the request date"); ?>" placeholder="<?= _translate("Enter the request date"); ?>" style="width:100%;" />
+                                                  </div>
+                                             </div>
                                         </div>
                                    </div>
                               </div>
@@ -805,7 +812,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";

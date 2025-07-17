@@ -243,6 +243,7 @@ try {
           'request_clinician_name' => $_POST['reqClinician'] ?? null,
           'request_clinician_phone_number' => $_POST['reqClinicianPhoneNumber'] ?? null,
           'test_requested_on' => DateUtility::isoDateFormat($_POST['requestDate'] ?? null),
+          'test_request_date' => DateUtility::isoDateFormat($_POST['testRequestDate'] ?? '', true),
           'cv_number' => $_POST['cvNumber'] ?? null,
           'lab_assigned_code' => $_POST['labAssignedCode'] ?? null,
           'vl_focal_person' => $_POST['vlFocalPerson'] ?? null,

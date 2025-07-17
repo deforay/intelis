@@ -89,6 +89,7 @@ $vlQueryInfo = $db->rawQueryOne($vlQuery, [$id]);
 
 
 $vlQueryInfo['patient_dob'] = DateUtility::humanReadableDateFormat($vlQueryInfo['patient_dob'] ?? '');
+$vlQueryInfo['test_request_date'] = DateUtility::humanReadableDateFormat($vlQueryInfo['test_request_date'] ?? '');
 
 $sampleCollectionDate = $vlQueryInfo['sample_collection_date'] ?? '';
 $vlQueryInfo['sample_collection_date'] = DateUtility::humanReadableDateFormat($sampleCollectionDate, true) ?: DateUtility::getCurrentDateTime();

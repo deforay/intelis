@@ -50,3 +50,6 @@ ALTER TABLE `audit_form_eid` ADD `specific_infant_treatment` VARCHAR(128) NULL D
 ALTER TABLE `form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
 ALTER TABLE `audit_form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER `child_treatment_initiation_date`, ADD `test_request_date` DATE NULL DEFAULT NULL AFTER `child_age_in_days`, ADD `infant_email` VARCHAR(256) NULL DEFAULT NULL AFTER `test_request_date`, ADD `infant_phone` INT NULL DEFAULT NULL AFTER `infant_email`;
 
+-- Thana 17-Jul-2025
+ALTER TABLE `form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NULL AFTER `test_requested_on`;
+ALTER TABLE `audit_form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NULL AFTER `test_requested_on`;
