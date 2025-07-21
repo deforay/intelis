@@ -91,8 +91,8 @@ try {
     $txtVal = null;
     $finalResult = null;
 
-    $authToken = ApiService::getAuthorizationBearerToken($request);
-    $user = $usersService->getUserByToken($authToken);
+    $authToken = ApiService::extractBearerToken($request);
+    $user = $usersService->findUserByApiToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
     $uniqueIdsForSampleCodeGeneration = [];
@@ -518,4 +518,4 @@ $general->updateResultSyncDateTime('vl', null, $updatedLabs);
 
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

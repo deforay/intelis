@@ -67,7 +67,7 @@ try {
         // Not needed anymore in the following code
         unset($userResult['password']);
 
-        $tokenData = $usersService->getAuthToken($userResult['api_token'], $userResult['user_id']);
+        $tokenData = $usersService->handleTokenAuthentication($userResult['api_token'], $userResult['user_id']);
 
         if (empty($tokenData)) {
             throw new SystemException('Authentication failed. Please contact system administrator.');
@@ -113,4 +113,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $data['user']['user_id'], 1, 'login', 'common', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

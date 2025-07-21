@@ -79,7 +79,7 @@ readonly class ApiAuthMiddleware implements MiddlewareInterface
 
     private function checkAndResetTokenIfNeeded(string $token): ?string
     {
-        $user = $this->usersService->getAuthToken($token);
+        $user = $this->usersService->handleTokenAuthentication($token);
         if (!empty($user) && isset($user['token_updated']) && $user['token_updated'] === true) {
             return $user['new_token'];
         } else {

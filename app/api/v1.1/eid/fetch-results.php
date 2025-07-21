@@ -48,8 +48,8 @@ $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = ApiService::getAuthorizationBearerToken($request);
-$user = $usersService->getUserByToken($authToken);
+$authToken = ApiService::extractBearerToken($request);
+$user = $usersService->findUserByApiToken($authToken);
 try {
     $transactionId = MiscUtility::generateULID();
     $sQuery = "SELECT
@@ -246,4 +246,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'eid', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

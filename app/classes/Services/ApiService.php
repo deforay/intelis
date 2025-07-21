@@ -412,7 +412,7 @@ final class ApiService
         }
     }
 
-    public static function sendJsonResponse(mixed $payload, ServerRequestInterface $request)
+    public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request)
     {
         // Ensure payload is a JSON string
         $jsonPayload = is_array($payload) || is_object($payload) ? JsonUtility::encodeUtf8Json($payload) : $payload;
@@ -457,7 +457,7 @@ final class ApiService
      * @param ServerRequestInterface $request The request object.
      * @return string|null Returns the bearer token if present, otherwise null.
      */
-    public static function getAuthorizationBearerToken(ServerRequestInterface $request): ?string
+    public static function extractBearerToken(ServerRequestInterface $request): ?string
     {
         $authorization = $request->getHeaderLine('Authorization');
         if (preg_match('/bearer\s+(\S+)/i', $authorization, $matches)) {

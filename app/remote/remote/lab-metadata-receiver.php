@@ -197,4 +197,4 @@ try {
     ]);
 }
 header('Content-Type: application/json');
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

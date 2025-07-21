@@ -267,7 +267,7 @@ if (!empty($id)) {
             $tbl .= '<th>Changed On</th>';
             $tbl .= '</tr>';
             foreach($reasonHistory as $change){
-                $userResult = $usersService->getUserByUserId($change->changedBy);
+                $userResult = $usersService->findUserByUserId($change->changedBy);
                 $userName = $userResult['user_name'];
                 $tbl .= '<tr nobr="true">';
                 $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $change->reason . '</td>';

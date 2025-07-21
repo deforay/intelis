@@ -567,6 +567,16 @@ final class MiscUtility
         return $ulid;
     }
 
+    public static function generatePrefixedULID(string $prefix = '', int $length = 16): string
+    {
+        $ulid = self::generateULID(attachExtraString: false); // Full 26-char ULID
+
+        // Truncate the ULID only if total length allows
+        $prefix = strtoupper(preg_replace('/[^A-Z0-9]/', '', $prefix));
+        $remaining = max(0, $length - strlen($prefix));
+        return $prefix . substr($ulid, 0, $remaining);
+    }
+
     /**
      * String to a file inside a zip archive.
      *

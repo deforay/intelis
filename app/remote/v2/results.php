@@ -37,7 +37,7 @@ try {
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
     $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 
-    $authToken = ApiService::getAuthorizationBearerToken($request);
+    $authToken = ApiService::extractBearerToken($request);
 
     $labId = $data['labId'] ?? null;
 
@@ -79,4 +79,4 @@ try {
     ]);
 }
 
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

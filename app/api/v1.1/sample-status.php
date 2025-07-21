@@ -48,8 +48,8 @@ $transactionId = MiscUtility::generateULID();
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = ApiService::getAuthorizationBearerToken($request);
-$user = $usersService->getUserByToken($authToken);
+$authToken = ApiService::extractBearerToken($request);
+$user = $usersService->findUserByApiToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
 $primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
@@ -104,4 +104,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'sample-status', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

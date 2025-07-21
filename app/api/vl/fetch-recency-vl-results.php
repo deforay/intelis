@@ -49,8 +49,8 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 
 $transactionId = MiscUtility::generateULID();
 
-$authToken = ApiService::getAuthorizationBearerToken($request);
-$user = $usersService->getUserByToken($authToken);
+$authToken = ApiService::extractBearerToken($request);
+$user = $usersService->findUserByApiToken($authToken);
 
 $sampleCode = !empty($_REQUEST['s']) ? explode(",", $db->escape($_REQUEST['s'])) : null;
 $recencyId = !empty($_REQUEST['r']) ? explode(",", $db->escape($_REQUEST['r'])) : null;
@@ -139,4 +139,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-recency-vl-result', 'vl', $requestUrl, $_REQUEST, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

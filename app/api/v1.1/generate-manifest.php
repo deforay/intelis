@@ -51,16 +51,16 @@ $transactionId = MiscUtility::generateULID();
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = ApiService::getAuthorizationBearerToken($request);
-$user = $usersService->getUserByToken($authToken);
+$authToken = ApiService::extractBearerToken($request);
+$user = $usersService->findUserByApiToken($authToken);
 
-$tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
+$testTable = TestsService::getTestTableName($input['testType']);
+$testPrimaryKey = TestsService::getTestPrimaryKeyColumn($input['testType']);
 
 $sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymdH') .  MiscUtility::generateRandomString(4));
 
 try {
-    $sQuery = "SELECT unique_id, sample_code, remote_sample_code, $primaryKeyName FROM $tableName as vl";
+    $sQuery = "SELECT unique_id, sample_code, remote_sample_code, $testPrimaryKey FROM $testTable as vl";
 
     $where = [];
     /* To check the sample id filter */
@@ -83,7 +83,7 @@ try {
                 'message' => 'Requested Facilities not mapped. Failed to add samples to manifest'
             ];
         }
-        $where[] = " vl.facility_id IN (" . $facilityMap . ")";
+        $where[] = " vl.facility_id IN ($facilityMap)";
     }
 
     $sQuery .= ' WHERE ' . implode(' AND ', $where);
@@ -112,8 +112,8 @@ try {
                 'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                 'data_sync' => 0
             ];
-            $db->where($primaryKeyName, $row[$primaryKeyName]);
-            $status = $db->update($tableName, $tData);
+            $db->where($testPrimaryKey, $row[$testPrimaryKey]);
+            $status = $db->update($testTable, $tData);
             if ($status) {
                 $response[$key] = [
                     'sampleCode' => $row['sample_code'],
@@ -162,5 +162,5 @@ try {
     $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
 
     //echo $payload
-    echo ApiService::sendJsonResponse($payload, $request);
+    echo ApiService::generateJsonResponse($payload, $request);
 }

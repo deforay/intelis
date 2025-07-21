@@ -90,4 +90,4 @@ $general->addApiTracking(
     $labId
 );
 
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

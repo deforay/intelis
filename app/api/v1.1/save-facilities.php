@@ -81,8 +81,8 @@ try {
     $transactionId = MiscUtility::generateULID();
 
 
-    $authToken = ApiService::getAuthorizationBearerToken($request);
-    $user = $usersService->getUserByToken($authToken);
+    $authToken = ApiService::extractBearerToken($request);
+    $user = $usersService->findUserByApiToken($authToken);
 
     $instanceId = $general->getInstanceId();
 
@@ -261,4 +261,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-request', 'facility', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

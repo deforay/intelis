@@ -40,7 +40,7 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
 
-    $authToken = ApiService::getAuthorizationBearerToken($request);
+    $authToken = ApiService::extractBearerToken($request);
 
     $data = $apiService->getJsonFromRequest($request, true);
 
@@ -136,4 +136,4 @@ try {
 }
 
 
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

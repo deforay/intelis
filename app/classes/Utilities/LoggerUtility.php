@@ -72,6 +72,32 @@ final class LoggerUtility
             $callerInfo = self::getCallerInfo(1);
             $context['file'] ??= $callerInfo['file'];
             $context['line'] ??= $callerInfo['line'];
+
+            // Only sanitize in non-debug mode
+            if (
+                defined('LOG_LEVEL') && strtoupper(LOG_LEVEL) !== 'DEBUG' &&
+                (defined('APPLICATION_ENV') && APPLICATION_ENV !== 'development')
+            ) {
+                $maxContextLength = 1000;
+                foreach ($context as $key => $value) {
+                    if (is_string($value) && strlen($value) > $maxContextLength) {
+                        $context[$key] = substr($value, 0, $maxContextLength) . '... [truncated]';
+                    }
+
+                    if ($key === 'trace') {
+                        if (is_string($value) && strlen($value) > $maxContextLength) {
+                            $context[$key] = substr($value, 0, $maxContextLength) . '... [truncated]';
+                        } elseif (is_array($value)) {
+                            $context[$key] = array_slice($value, 0, 10);
+                        }
+                    }
+
+                    if (is_object($value) || is_resource($value)) {
+                        $context[$key] = '[omitted: ' . gettype($value) . ']';
+                    }
+                }
+            }
+
             $logger->log($level, MiscUtility::toUtf8($message), $context);
         } catch (Throwable $e) {
             error_log("LoggerUtility failed: {$e->getMessage()} | Original message: {$message}");

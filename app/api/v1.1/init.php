@@ -44,8 +44,8 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 try {
     $transactionId = MiscUtility::generateULID();
     $formId = (int) $general->getGlobalConfig('vl_form');
-    $authToken = ApiService::getAuthorizationBearerToken($request);
-    $user = $usersService->getUserByToken($authToken);
+    $authToken = ApiService::extractBearerToken($request);
+    $user = $usersService->findUserByApiToken($authToken);
     /* To save the user attributes from API */
     $userAttributes = [];
     foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
@@ -476,4 +476,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $trackId = $general->addApiTracking($transactionId, $user['user_id'], 1, 'init', 'common', $_SERVER['REQUEST_URI'], $input, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

@@ -70,11 +70,20 @@ require_once __DIR__ . '/app/system/di.php';
 // Global functions
 require_once __DIR__ . '/app/system/functions.php';
 
+
+
 defined('SYSTEM_CONFIG') ||
     define('SYSTEM_CONFIG', ContainerRegistry::get('applicationConfig'));
-define('LOG_LEVEL', (APPLICATION_ENV === 'development' || SYSTEM_CONFIG['system']['debug_mode']) ? 'DEBUG' : 'INFO');
 
-if (APPLICATION_ENV === 'production' && SYSTEM_CONFIG['system']['debug_mode'] !== true) {
+
+$debugMode = !empty(SYSTEM_CONFIG['system']['debug_mode'] ?? false);
+
+define('LOG_LEVEL',
+        (APPLICATION_ENV === 'development' || $debugMode === true) ? 'DEBUG' : 'INFO');
+
+
+
+if (APPLICATION_ENV === 'production' && $debugMode !== true) {
     ini_set('display_errors', 0); // Never display errors in production
     ini_set('log_errors', 1);     // Always log them instead
 }
@@ -83,16 +92,12 @@ if (APPLICATION_ENV === 'production' && SYSTEM_CONFIG['system']['debug_mode'] !=
 // some old scripts that are still depending on this variable being available.
 $db = ContainerRegistry::get(DatabaseService::class);
 
-
-
-
-
-set_error_handler(function ($severity, $message, $file, $line) {
+set_error_handler(function ($severity, $message, $file, $line) use ($debugMode) {
     $exception = new ErrorException($message, 0, $severity, $file, $line);
     $trace = debug_backtrace();
 
     // Check if debug mode is enabled
-    if (SYSTEM_CONFIG['system']['debug_mode'] || APPLICATION_ENV === 'development') {
+    if ($debugMode === true || APPLICATION_ENV === 'development') {
         // In debug mode, log all error levels but only throw exceptions for severe errors
         LoggerUtility::log('error', $exception->getMessage(), [
             'exception' => $exception,
@@ -139,4 +144,4 @@ $system = ContainerRegistry::get(SystemService::class);
 
 $system
     ->bootstrap()
-    ->debug(SYSTEM_CONFIG['system']['debug_mode'] ?: false);
+    ->debug($debugMode);

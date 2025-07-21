@@ -92,8 +92,8 @@ try {
     /* For API Tracking params */
     $requestUrl = $_SERVER['HTTP_HOST'];
     $requestUrl .= $_SERVER['REQUEST_URI'];
-    $authToken = ApiService::getAuthorizationBearerToken($request);
-    $user = $usersService->getUserByToken($authToken);
+    $authToken = ApiService::extractBearerToken($request);
+    $user = $usersService->findUserByApiToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
 
     $instanceId = $general->getInstanceId();
@@ -561,4 +561,4 @@ $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-r
 $general->updateResultSyncDateTime('eid', null, $updatedLabs);
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

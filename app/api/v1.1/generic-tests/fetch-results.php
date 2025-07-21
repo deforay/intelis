@@ -52,11 +52,11 @@ $user = null;
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
-$authToken = ApiService::getAuthorizationBearerToken($request);
-$user = $usersService->getUserByToken($authToken);
+$authToken = ApiService::extractBearerToken($request);
+$user = $usersService->findUserByApiToken($authToken);
 try {
     $transactionId = MiscUtility::generateULID();
-    $sQuery = "SELECT 
+    $sQuery = "SELECT
         vl.sample_id as genericId,
         vl.unique_id as uniqueId,
         vl.app_sample_code as appSampleCode,
@@ -166,7 +166,7 @@ try {
         ts.status_name as resultStatusName,
         vl.result_approved_datetime as approvedOn,
         lt_u_d.user_name as labTechnicianName
-        
+
         FROM form_generic as vl
         LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
         LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
@@ -283,4 +283,4 @@ $payload = JsonUtility::encodeUtf8Json($payload);
 $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'fetch-results', 'tb', $_SERVER['REQUEST_URI'], $origJson, $payload, 'json');
 
 //echo $payload
-echo ApiService::sendJsonResponse($payload, $request);
+echo ApiService::generateJsonResponse($payload, $request);

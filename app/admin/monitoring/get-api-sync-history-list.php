@@ -2,6 +2,7 @@
 
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -21,7 +22,6 @@ try {
 
      /** @var CommonService $general */
      $general = ContainerRegistry::get(CommonService::class);
-     $primaryKey = "api_track_id";
 
      $aColumns = ['transaction_id', 'number_of_records', 'request_type', 'test_type', "api_url", "DATE_FORMAT(requested_on,'%d-%b-%Y')"];
      $orderColumns = ['transaction_id', 'number_of_records', 'request_type', 'test_type', 'api_url', 'requested_on'];
@@ -45,7 +45,7 @@ try {
      $aWhere = '';
      $sQuery = '';
 
-     $sQuery = "SELECT a.transaction_id,
+     $sQuery = "SELECT a.api_track_id, a.transaction_id,
                          a.number_of_records,
                          a.request_type,
                          a.test_type,
@@ -100,7 +100,7 @@ try {
           $row[] = strtoupper((string) $aRow['test_type']);
           $row[] = $aRow['api_url'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['requested_on'], true);
-          $row[] = '<a href="javascript:void(0);" class="btn btn-success btn-xs" style="margin-right: 2px;" title="Result" onclick="showModal(\'show-params.php?id=' . base64_encode((string) $aRow[$primaryKey]) . '\',1200,720);"> Show Params</a>';
+          $row[] = "<a href='javascript:void(0);' class='btn btn-success btn-xs' style='margin-right: 2px;' title='Result' onclick=\"showModal('show-params.php?id=" . MiscUtility::sqid( $aRow['api_track_id']) . "',1200,720);\"> Show Params</a>";
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);

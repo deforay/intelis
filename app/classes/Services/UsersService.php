@@ -251,7 +251,7 @@ final class UsersService
     }
 
 
-    public function getUserByToken(?string $token = null): ?array
+    public function findUserByApiToken(?string $token = null): ?array
     {
         if (empty($token)) {
             return null;
@@ -271,7 +271,7 @@ final class UsersService
         return $user;
     }
 
-    public function getUserByUserId(?string $userId = null): ?array
+    public function findUserByUserId(?string $userId = null): ?array
     {
         if (!empty($userId)) {
             $this->db->where('u.user_id', $userId);
@@ -295,9 +295,9 @@ final class UsersService
         return !empty($result);
     }
 
-    public function getAuthToken(?string $token, ?string $userId = null): ?array
+    public function handleTokenAuthentication(?string $token, ?string $userId = null): ?array
     {
-        $result = $this->getUserByToken($token) ?? null;
+        $result = $this->findUserByApiToken($token) ?? null;
 
         if (!empty($result)) {
             $tokenExpiration = $result['api_token_exipiration_days'] ?? 0;

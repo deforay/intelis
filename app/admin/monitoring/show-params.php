@@ -19,7 +19,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
-$id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
+$id = (isset($_GET['id'])) ? MiscUtility::desqid((string) $_GET['id']) : null;
 
 
 $db->where('api_track_id', $id);
