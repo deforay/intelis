@@ -159,6 +159,11 @@ $skin = "skin-blue";
 								<a href="/system-admin/reset-password/reset-password.php"><em class="fa-regular fa-circle"></em> <?php echo _translate("Reset Password"); ?></a>
 							</li>
 						</ul>
+						<ul class="treeview-menu">
+							<li class="allMenu logoutMenu">
+								<a href="/system-admin/login/logout.php" class=""><em class="fa-regular fa-circle"></em> <?php echo _translate("Sign out"); ?></a>
+							</li>
+						</ul>
 					</li>
 					<!---->
 				</ul>

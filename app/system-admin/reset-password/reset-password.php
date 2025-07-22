@@ -10,7 +10,7 @@ use App\Registries\ContainerRegistry;
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-require_once(APPLICATION_PATH . '/system-admin/admin-header.php');
+require_once APPLICATION_PATH . '/system-admin/admin-header.php';
 
 
 /** @var UsersService $usersService */
@@ -42,7 +42,7 @@ $sResult = $usersService->getAllUsers();
 								<select style="width:100%" class="form-control select2" name="userId" id="userId" placeholder="<?php echo _translate('User'); ?>" onchange="viewUser()">
 									<option value="">--Select--</option>
 									<?php foreach ($sResult as $data) { ?>
-										<option value="<?php echo $data['user_id'] ?>"><?php echo $data['user_name'] ?></option>
+										<option value="<?php echo $data['user_id'] ?>"><?= $data['login_id']; ?> (<?= $data['status']; ?>)</option>
 									<?php } ?>
 								</select>
 							</td>
