@@ -32,9 +32,6 @@ $labsDropdown = $general->generateSelectOptions($testingLabs, null, "-- Select -
 $sQuery = "SELECT * FROM r_vl_sample_type WHERE `status`='active'";
 $sResult = $db->rawQuery($sQuery);
 
-$batQuery = "SELECT batch_code FROM batch_details WHERE test_type ='vl' AND batch_status='completed'";
-$batResult = $db->rawQuery($batQuery);
-
 $state = $geolocationService->getProvinces("yes");
 
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -93,20 +90,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 													<td>
 														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
 													</td>
-													<!--<td><strong><?php echo _translate("Batch Code"); ?>&nbsp;:</strong></td>
-													<td>
-														<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" style="width:220px;">
-															<option value=""> <?php echo _translate("-- Select --"); ?> </option>
-															<?php
-															foreach ($batResult as $code) {
-															?>
-																<option value="<?php echo $code['batch_code']; ?>"><?php echo $code['batch_code']; ?></option>
-															<?php
-															}
-															?>
-														</select>
-													</td>-->
-
 													<td><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
 														</strong></td>

@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Services\DatabaseService;
 
 final class GeoLocationsService
@@ -27,47 +28,50 @@ final class GeoLocationsService
 
     public function fetchActiveGeolocations($geoId = 0, $parent = 0, $api = "yes", $onlyActive = true, $facilityMap = null, $updatedDateTime = null)
     {
-        $returnArr = [];
-        if ($onlyActive) {
-            $this->db->where('geo_status', 'active');
-        }
-        if (!empty($geoId) && $geoId > 0) {
-            $this->db->where('geo_id', $geoId);
-        }
-        if (!empty($parent)) {
-            if ($parent == 'all') {
-                $this->db->where('geo_parent != 0');
+        return MemoUtility::remember(function () use ($geoId, $parent, $api, $onlyActive, $facilityMap, $updatedDateTime) {
+
+            $returnArr = [];
+            if ($onlyActive) {
+                $this->db->where('geo_status', 'active');
+            }
+            if (!empty($geoId) && $geoId > 0) {
+                $this->db->where('geo_id', $geoId);
+            }
+            if (!empty($parent)) {
+                if ($parent == 'all') {
+                    $this->db->where('geo_parent != 0');
+                } else {
+                    $this->db->where('geo_parent', $parent);
+                }
             } else {
-                $this->db->where('geo_parent', $parent);
+                $this->db->where('geo_parent', 0);
             }
-        } else {
-            $this->db->where('geo_parent', 0);
-        }
-        if (!empty($_SESSION['mappedProvinces'])) {
-            $this->db->where('geo_id', $_SESSION['mappedProvinces']);
-        }
-
-        if ($updatedDateTime) {
-            $this->db->where("updated_datetime >= '$updatedDateTime'");
-        }
-
-        if (!empty($facilityMap)) {
-            $this->db->join("facility_details", "facility_state_id=geo_id", "INNER");
-            $this->db->where("facility_id IN ($facilityMap)");
-        }
-
-        $this->db->orderBy("geo_name", "asc");
-
-        $response = $this->db->get("geographical_divisions");
-
-        if ($api == 'yes') {
-            foreach ($response as $row) {
-                $returnArr[$row['geo_id']] = ($row['geo_name']);
+            if (!empty($_SESSION['mappedProvinces'])) {
+                $this->db->where('geo_id', $_SESSION['mappedProvinces']);
             }
-        } else {
-            $returnArr = $response;
-        }
-        return $returnArr;
+
+            if ($updatedDateTime) {
+                $this->db->where("updated_datetime >= '$updatedDateTime'");
+            }
+
+            if (!empty($facilityMap)) {
+                $this->db->join("facility_details", "facility_state_id=geo_id", "INNER");
+                $this->db->where("facility_id IN ($facilityMap)");
+            }
+
+            $this->db->orderBy("geo_name", "asc");
+
+            $response = $this->db->get("geographical_divisions");
+
+            if ($api == 'yes') {
+                foreach ($response as $row) {
+                    $returnArr[$row['geo_id']] = ($row['geo_name']);
+                }
+            } else {
+                $returnArr = $response;
+            }
+            return $returnArr;
+        });
     }
 
     // get province id from the province table

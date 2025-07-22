@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -19,8 +20,12 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $_COOKIE = _sanitizeInput($request->getCookieParams());
 
-$id = (isset($_GET['id'])) ? MiscUtility::desqid((string) $_GET['id']) : null;
+$id = isset($_GET['id']) && !empty($_GET['id']) ? MiscUtility::desqid((string) $_GET['id']) : null;
 
+if($id === null) {
+    http_response_code(400);
+    throw new SystemException('Invalid request', 400);
+}
 
 $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
