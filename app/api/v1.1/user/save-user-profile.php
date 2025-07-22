@@ -17,6 +17,11 @@ use App\Utilities\ImageResizeUtility;
 
 try {
 
+
+    ini_set('memory_limit', -1);
+    set_time_limit(0);
+    ini_set('max_execution_time', 20000);
+
     $data = [];
 
     /** @var DatabaseService $db */
@@ -45,9 +50,6 @@ try {
 
     $sanitizedSignFile = _sanitizeFiles($uploadedFiles['sign'], ['png', 'jpg', 'jpeg', 'gif']);
 
-    ini_set('memory_limit', -1);
-    set_time_limit(0);
-    ini_set('max_execution_time', 20000);
     $authToken = ApiService::extractBearerToken($request);
     $user = $usersService->findUserByApiToken($authToken);
     if (!empty($_REQUEST) && !empty($_REQUEST['post']) && JsonUtility::isJSON($_REQUEST['post'])) {
