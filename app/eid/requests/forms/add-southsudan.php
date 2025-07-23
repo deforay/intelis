@@ -374,16 +374,27 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, null, '-- Select --'); ?>
                                             </select>
                                         </td>
+                                        <th scope="row" style="width:15% !important" class="labels">Location Of Sample Collection</th>
+                                        <td style="width:35% !important;">
+                                            <select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection" style="width:100%">
+                                                <option value=""> -- Select -- </option>
+                                                <option value="facility">Facility</option>
+                                                <option value="community">Community</option>
+                                                <option value="unreported">Unreported</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row" class="labels">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" />
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row" class="labels">Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" />
                                         </td>
+                                    </tr>
+                                    <tr>
                                         <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row" class="labels">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>

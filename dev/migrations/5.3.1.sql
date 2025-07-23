@@ -57,3 +57,5 @@ ALTER TABLE `audit_form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NU
 -- Thana 23-Jul-2025
 ALTER TABLE `form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
 ALTER TABLE `audit_form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
+ALTER TABLE `form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
+ALTER TABLE `audit_form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;

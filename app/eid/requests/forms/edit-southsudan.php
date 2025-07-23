@@ -383,16 +383,27 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                                 <?php echo $general->generateSelectOptions($specimenTypeResult, $eidInfo['specimen_type'], '-- Select --'); ?>
                                             </select>
                                         </td>
+                                        <th scope="row" style="width:15% !important" class="labels">Location Of Sample Collection</th>
+                                        <td style="width:35% !important;">
+                                            <select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection" style="width:100%">
+                                                <option value=""> -- Select -- </option>
+                                                <option value="facility" <?php echo ($eidInfo['location_of_sample_collection'] == 'facility') ? "selected='selected'" : "" ?>>Facility</option>
+                                                <option value="community" <?php echo ($eidInfo['location_of_sample_collection'] == 'community') ? "selected='selected'" : "" ?>>Community</option>
+                                                <option value="unreported" <?php echo ($eidInfo['location_of_sample_collection'] == 'unreported') ? "selected='selected'" : "" ?>>Unreported</option>
+                                            </select>
+                                        </td>
+                                    </tr>
+                                    <tr>
                                         <th scope="row" class="labels">Requesting Officer</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorName" id="sampleRequestorName" placeholder="Requesting Officer" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_name']); ?>" />
                                         </td>
-                                    </tr>
-                                    <tr>
                                         <th scope="row" class="labels">Sample Requestor Phone</th>
                                         <td>
                                             <input class="form-control" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" placeholder="Requesting Officer Phone" value="<?= htmlspecialchars((string) $eidInfo['sample_requestor_phone']); ?>" />
                                         </td>
+                                    </tr>
+                                    <tr>
                                         <?php if (_isAllowed('/eid/results/eid-manual-results.php') && $_SESSION['accessType'] != 'collection-site') { ?>
                                             <th scope="row">Sample Received Date (at Testing Lab) <span class="mandatory">*</span></th>
                                             <td>

@@ -244,6 +244,7 @@ try {
 		'choice_of_feeding' => $_POST['choiceOfFeeding'] ?? null,
 		'is_cotrimoxazole_being_administered_to_the_infant' => $_POST['isCotrimoxazoleBeingAdministered'] ?? null,
 		'specimen_type' => $_POST['specimenType'] ?? null,
+		'location_of_sample_collection' => $_POST['locationOfSampleCollection'] ?? null,
 		'sample_collection_date' => $_POST['sampleCollectionDate'] ?? null,
 		'is_sample_recollected' => $_POST['isSampleRecollected'] ?? null,
 		'sample_dispatched_datetime' => $_POST['sampleDispatchedDate'] ?? null,
