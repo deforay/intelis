@@ -235,6 +235,7 @@ try {
         'patient_mobile_number' => $_POST['patientPhoneNumber'] ?? null,
         'consent_to_receive_sms' => $_POST['receiveSms'] ?? 'no',
         'specimen_type' => $_POST['specimenType'] ?? null,
+        'location_of_sample_collection' => $_POST['locationOfSampleCollection'] ?? null,
         'plasma_conservation_temperature' => $_POST['conservationTemperature'] ?? null,
         'plasma_conservation_duration' => $_POST['durationOfConservation'] ?? null,
         'arv_adherance_percentage' => $_POST['arvAdherence'] ?? null,

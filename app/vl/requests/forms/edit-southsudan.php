@@ -430,6 +430,17 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 												</select>
 											</div>
 										</div>
+										<div class="col-xs-3 col-md-3">
+											<div class="form-group">
+												<label for="locationOfSampleCollection">Location Of Sample Collection</label>
+												<select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection">
+													<option value=""> -- Select -- </option>
+													<option value="facility" <?php echo ($vlQueryInfo['location_of_sample_collection'] == 'facility') ? "selected='selected'" : "" ?>>Facility</option>
+													<option value="community" <?php echo ($vlQueryInfo['location_of_sample_collection'] == 'community') ? "selected='selected'" : "" ?>>Community</option>
+													<option value="unreported" <?php echo ($vlQueryInfo['location_of_sample_collection'] == 'unreported') ? "selected='selected'" : "" ?>>Unreported</option>
+												</select>
+											</div>
+										</div>
 										<?php if ($general->isLISInstance()) { ?>
 											<div class="col-xs-3 col-md-3">
 												<div class="form-group">

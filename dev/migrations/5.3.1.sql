@@ -53,3 +53,7 @@ ALTER TABLE `audit_form_eid` ADD `child_age_in_days` INT NULL DEFAULT NULL AFTER
 -- Thana 17-Jul-2025
 ALTER TABLE `form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NULL AFTER `test_requested_on`;
 ALTER TABLE `audit_form_vl` ADD `test_request_date` VARCHAR(128) NULL DEFAULT NULL AFTER `test_requested_on`;
+
+-- Thana 23-Jul-2025
+ALTER TABLE `form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
+ALTER TABLE `audit_form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;

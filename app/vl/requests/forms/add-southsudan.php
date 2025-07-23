@@ -352,6 +352,17 @@ $sFormat = '';
                                                             </select>
                                                        </div>
                                                   </div>
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="locationOfSampleCollection">Location Of Sample Collection</label>
+                                                            <select name="locationOfSampleCollection" id="locationOfSampleCollection" class="form-control" title="Please choose location of sample collection">
+                                                                 <option value=""> -- Select -- </option>
+                                                                 <option value="facility">Facility</option>
+                                                                 <option value="community">Community</option>
+                                                                 <option value="unreported">Unreported</option>
+                                                            </select>
+                                                       </div>
+                                                  </div>
                                                   <?php if ($general->isLISInstance()) { ?>
                                                        <div class="col-xs-3 col-md-3">
                                                             <div class="form-group">
@@ -910,7 +921,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
