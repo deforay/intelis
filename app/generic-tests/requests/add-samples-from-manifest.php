@@ -241,10 +241,23 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				},
 				function(data) {
 					$.unblockUI();
-					if (data && JSON.stringify(data) !== '{}' && JSON.stringify(data) !== '""' && JSON.stringify(data) !== 'false') {
-						$('.activateSample').show();
-						$('#sampleId').val(data);
-						loadRequestData();
+					let parsed;
+					try {
+						parsed = JSON.parse(data);
+						if (
+							parsed &&
+							typeof parsed === 'object' &&
+							!Array.isArray(parsed) &&
+							Object.keys(parsed).length === 0
+						) {
+							toast.error("<?= _translate("No samples found in the manifest", true); ?>");
+						} else {
+							$('.activateSample').show();
+							$('#sampleId').val(data);
+							loadRequestData();
+						}
+					} catch (e) {
+						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
 					}
 				});
 		} else {
