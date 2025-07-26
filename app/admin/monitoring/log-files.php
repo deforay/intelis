@@ -496,7 +496,7 @@ require_once APPLICATION_PATH . '/header.php';
 
 		navigator.clipboard.writeText(cleanText)
 			.then(() => {
-				toast.success("<?= _translate("Copied to clipboard - Line Number - ", true); ?>" + lineNumber);
+				toast.success("<?= _translate("Copied to clipboard - Line Number", true); ?> - " + lineNumber);
 			})
 			.catch(err => {
 				const tempInput = document.createElement('input');
@@ -508,7 +508,7 @@ require_once APPLICATION_PATH . '/header.php';
 				document.execCommand('copy');
 				document.body.removeChild(tempInput);
 
-				toast.success("<?= _translate("Copied to clipboard - Line Number - ", true); ?>" + lineNumber);
+				toast.success("<?= _translate("Copied to clipboard - Line Number", true); ?> - " + lineNumber);
 			});
 	}
 

@@ -79,7 +79,7 @@ try {
             FROM form_eid as vl
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
             LEFT JOIN facility_details as l_f ON vl.lab_id=l_f.facility_id
-            INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
             LEFT JOIN user_details as u_d ON u_d.user_id=vl.result_reviewed_by
             LEFT JOIN user_details as a_u_d ON a_u_d.user_id=vl.result_approved_by

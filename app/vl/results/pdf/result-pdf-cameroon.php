@@ -422,7 +422,7 @@ if (!empty($result)) {
      if (!empty($result['reason_for_sample_rejection']) && $result['reason_for_sample_rejection'] != '') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;' . _translate("Rejection Reason") . '&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
+     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'm2000')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="font-size:10px;padding-top:10px;">' . _translate("Technique: Quantification of circulating HIV RNA by Abbott Real-Time RT-PCR (Sensitivity threshold 40 copies/mL for Plasma and 839 copies/mL for DBS)") . '</td>';
           $html .= '</tr>';

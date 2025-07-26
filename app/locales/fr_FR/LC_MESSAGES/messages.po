@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-23 20:17+0530\n"
-"PO-Revision-Date: 2025-07-23 20:17+0530\n"
+"POT-Creation-Date: 2025-07-26 12:22+0530\n"
+"PO-Revision-Date: 2025-07-26 12:22+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -3661,8 +3661,8 @@ msgstr "Débogage"
 
 #: app/admin/monitoring/log-files.php:499
 #: app/admin/monitoring/log-files.php:511
-msgid "Copied to clipboard - Line Number - "
-msgstr "Copié dans le presse-papiers - Numéro de ligne -"
+msgid "Copied to clipboard - Line Number"
+msgstr "Copié dans le presse-papiers - Numéro de ligne"
 
 #: app/admin/monitoring/log-files.php:909
 msgid "Preparing log export... "
@@ -8856,8 +8856,6 @@ msgstr "Demande de numéro de téléphone portable du clinicien"
 #: app/cd4/requests/export-cd4-requests.php:28
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/forms/add-burkina-faso.php:198
-#: app/vl/requests/forms/edit-burkina-faso.php:295
 msgid "Request Date"
 msgstr "Date de la demande"
 
@@ -10068,16 +10066,16 @@ msgstr "Demande de CD4 ajoutée avec succès"
 #: app/cd4/results/cd4-update-result-helper.php:143
 #: app/covid-19/requests/covid-19-edit-request-helper.php:419
 #: app/covid-19/results/covid-19-update-result-helper.php:174
-#: app/eid/requests/eid-add-request-helper.php:367
-#: app/eid/requests/eid-edit-request-helper.php:397
+#: app/eid/requests/eid-add-request-helper.php:368
+#: app/eid/requests/eid-edit-request-helper.php:398
 #: app/generic-tests/requests/add-request-helper.php:419
 #: app/generic-tests/requests/edit-request-helper.php:389
 #: app/generic-tests/results/update-generic-test-result-helper.php:260
 #: app/hepatitis/requests/hepatitis-edit-request-helper.php:257
 #: app/hepatitis/results/hepatitis-update-result-helper.php:79
 #: app/patients/save-patient-helper.php:88
-#: app/vl/requests/addVlRequestHelper.php:456
-#: app/vl/requests/editVlRequestHelper.php:424
+#: app/vl/requests/addVlRequestHelper.php:457
+#: app/vl/requests/editVlRequestHelper.php:425
 #: app/vl/results/updateVlTestResultHelper.php:288
 msgid "Please try again later"
 msgstr "Veuillez réessayer plus tard"
@@ -10641,7 +10639,7 @@ msgstr "--Sélectionner--"
 #: app/vl/requests/forms/add-drc.php:980 app/vl/requests/forms/add-png.php:660
 #: app/vl/requests/forms/add-rwanda.php:767
 #: app/vl/requests/forms/add-sierraleone.php:954
-#: app/vl/requests/forms/add-southsudan.php:833
+#: app/vl/requests/forms/add-southsudan.php:844
 #: app/vl/requests/forms/add-who.php:784
 #: app/vl/requests/forms/edit-burkina-faso.php:816
 #: app/vl/results/forms/update-burkina-faso-result.php:806
@@ -10655,7 +10653,7 @@ msgstr "Nombre de fois où le test a été demandé pour ce patient"
 #: app/vl/requests/forms/add-drc.php:983 app/vl/requests/forms/add-png.php:663
 #: app/vl/requests/forms/add-rwanda.php:770
 #: app/vl/requests/forms/add-sierraleone.php:957
-#: app/vl/requests/forms/add-southsudan.php:836
+#: app/vl/requests/forms/add-southsudan.php:847
 #: app/vl/requests/forms/add-who.php:787
 #: app/vl/requests/forms/edit-burkina-faso.php:819
 #: app/vl/results/forms/update-burkina-faso-result.php:809
@@ -10669,7 +10667,7 @@ msgstr "Dernière demande envoyée par LIS/STS"
 #: app/vl/requests/forms/add-drc.php:986 app/vl/requests/forms/add-png.php:666
 #: app/vl/requests/forms/add-rwanda.php:773
 #: app/vl/requests/forms/add-sierraleone.php:960
-#: app/vl/requests/forms/add-southsudan.php:839
+#: app/vl/requests/forms/add-southsudan.php:850
 #: app/vl/requests/forms/add-who.php:790
 #: app/vl/requests/forms/edit-burkina-faso.php:822
 #: app/vl/results/forms/update-burkina-faso-result.php:812
@@ -10683,7 +10681,7 @@ msgstr "Date de prélèvement de l'échantillon pour la dernière demande"
 #: app/vl/requests/forms/add-drc.php:989 app/vl/requests/forms/add-png.php:669
 #: app/vl/requests/forms/add-rwanda.php:776
 #: app/vl/requests/forms/add-sierraleone.php:963
-#: app/vl/requests/forms/add-southsudan.php:842
+#: app/vl/requests/forms/add-southsudan.php:853
 #: app/vl/requests/forms/add-who.php:793
 #: app/vl/requests/forms/edit-burkina-faso.php:825
 #: app/vl/results/forms/update-burkina-faso-result.php:815
@@ -14195,9 +14193,9 @@ msgstr "Date de réception de l'échantillon"
 #: app/eid/requests/forms/add-sierraleone.php:421
 #: app/eid/requests/forms/add-sierraleone.php:496
 #: app/eid/requests/forms/add-sierraleone.php:535
-#: app/eid/requests/forms/add-southsudan.php:390
-#: app/eid/requests/forms/add-southsudan.php:443
-#: app/eid/requests/forms/add-southsudan.php:485
+#: app/eid/requests/forms/add-southsudan.php:401
+#: app/eid/requests/forms/add-southsudan.php:454
+#: app/eid/requests/forms/add-southsudan.php:496
 #: app/eid/requests/forms/add-who.php:352
 #: app/eid/requests/forms/add-who.php:405
 #: app/eid/requests/forms/add-who.php:448
@@ -14215,9 +14213,9 @@ msgstr "Date de réception de l'échantillon"
 #: app/eid/requests/forms/edit-sierraleone.php:412
 #: app/eid/requests/forms/edit-sierraleone.php:501
 #: app/eid/requests/forms/edit-sierraleone.php:545
-#: app/eid/requests/forms/edit-southsudan.php:399
-#: app/eid/requests/forms/edit-southsudan.php:466
-#: app/eid/requests/forms/edit-southsudan.php:508
+#: app/eid/requests/forms/edit-southsudan.php:410
+#: app/eid/requests/forms/edit-southsudan.php:477
+#: app/eid/requests/forms/edit-southsudan.php:519
 #: app/eid/requests/forms/edit-who.php:383
 #: app/eid/requests/forms/edit-who.php:450
 #: app/eid/requests/forms/edit-who.php:494
@@ -14297,7 +14295,7 @@ msgstr "Date de réception de l'échantillon"
 #: app/vl/requests/forms/add-drc.php:378 app/vl/requests/forms/add-drc.php:415
 #: app/vl/requests/forms/add-drc.php:438 app/vl/requests/forms/add-drc.php:470
 #: app/vl/requests/forms/add-sierraleone.php:833
-#: app/vl/requests/forms/add-southsudan.php:728
+#: app/vl/requests/forms/add-southsudan.php:739
 #: app/vl/requests/forms/add-who.php:688
 #: app/vl/requests/forms/edit-burkina-faso.php:721
 #: app/vl/requests/forms/edit-drc.php:144
@@ -14311,7 +14309,7 @@ msgstr "Date de réception de l'échantillon"
 #: app/vl/requests/forms/edit-drc.php:483
 #: app/vl/requests/forms/edit-drc.php:515
 #: app/vl/requests/forms/edit-sierraleone.php:979
-#: app/vl/requests/forms/edit-southsudan.php:846
+#: app/vl/requests/forms/edit-southsudan.php:857
 #: app/vl/requests/forms/edit-who.php:845
 #: app/vl/results/forms/update-burkina-faso-result.php:712
 #: app/vl/results/forms/update-drc-result.php:172
@@ -15756,11 +15754,11 @@ msgstr "Nom de la mère"
 msgid "Please enter the manifest code then submit"
 msgstr "Veuillez saisir le code manifeste puis soumettre"
 
-#: app/eid/requests/eid-add-request-helper.php:359
+#: app/eid/requests/eid-add-request-helper.php:360
 msgid "EID request added successfully"
 msgstr "Demande d'EID ajoutée avec succès"
 
-#: app/eid/requests/eid-edit-request-helper.php:389
+#: app/eid/requests/eid-edit-request-helper.php:390
 msgid "EID request updated successfully"
 msgstr "La demande d'EID a été mise à jour avec succès"
 
@@ -25502,11 +25500,11 @@ msgstr "Ajouter le motif du test VL"
 msgid "Failure Reason"
 msgstr "Raison de l'échec"
 
-#: app/vl/requests/addVlRequestHelper.php:422
+#: app/vl/requests/addVlRequestHelper.php:423
 msgid "VL request added successfully"
 msgstr "Mis à jour avec succés"
 
-#: app/vl/requests/editVlRequestHelper.php:416
+#: app/vl/requests/editVlRequestHelper.php:417
 msgid "VL request updated successfully"
 msgstr "Mise à jour réussie de la demande de VL"
 
@@ -25539,6 +25537,11 @@ msgstr "FORMULAIRE DE DEMANDE DE LABORATOIRE DE CHARGE VIRALE"
 #: app/vl/results/forms/update-burkina-faso-result.php:184
 msgid "Add Vl Request"
 msgstr "Ajouter une demande de Vl"
+
+#: app/vl/requests/forms/add-burkina-faso.php:198
+#: app/vl/requests/forms/edit-burkina-faso.php:295
+msgid "Test Request Date"
+msgstr "Date de la demande"
 
 #: app/vl/requests/forms/add-burkina-faso.php:199
 #: app/vl/requests/forms/edit-burkina-faso.php:296

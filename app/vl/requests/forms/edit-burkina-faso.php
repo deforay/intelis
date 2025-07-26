@@ -292,7 +292,7 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
                                         <div class="row">
                                              <div class="col-xs-4 col-md-4">
                                                   <div class="form-group" style=" width: 100%; ">
-                                                       <label for="implementingPartner"><?= _translate("Request Date"); ?></label>
+                                                       <label for="implementingPartner"><?= _translate("Test Request Date"); ?></label>
                                                        <input type="text" value="<?php echo $vlQueryInfo['test_request_date']; ?>" class="form-control date" readonly name="testRequestDate" id="testRequestDate" title="<?= _translate("Please enter the request date"); ?>" placeholder="<?= _translate("Enter the request date"); ?>" style="width:100%;" />
                                                   </div>
                                              </div>
