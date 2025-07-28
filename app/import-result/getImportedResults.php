@@ -108,7 +108,7 @@ $rejectionResult = $db->rawQuery($rejectionQuery);
 
 $tsQuery = "SELECT * FROM r_sample_status";
 $tsResult = $db->rawQuery($tsQuery);
-$scQuery = "select r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC";
+$scQuery = "SELECT r_sample_control_name from r_sample_controls ORDER BY r_sample_control_name DESC";
 $scResult = $db->rawQuery($scQuery);
 //in-house control limit
 $inQuery = "SELECT ic.number_of_in_house_controls,ic.number_of_manufacturer_controls,i.machine_name from temp_sample_import as ts INNER JOIN instruments as i ON i.machine_name=ts.vl_test_platform INNER JOIN instrument_controls as ic ON ic.instrument_id=i.instrument_id WHERE ic.test_type = '" . $module . "' limit 0,1";
@@ -123,10 +123,8 @@ if (isset($tsrResult[0]['count']) && $tsrResult[0]['count'] > 0) {
     $totalControls = $inResult[0]['number_of_manufacturer_controls'] + $inResult[0]['number_of_in_house_controls'];
 }
 
-
-
 $aColumns = ['tsr.sample_code', "DATE_FORMAT(vl.sample_collection_date,'%d-%b-%Y H:i')", "DATE_FORMAT(tsr.sample_tested_datetime,'%d-%b-%Y')", 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name'];
-$orderColumns = ['tsr.sample_code', 'vl.sample_collection_date', 'tsr.sample_tested_datetime', 'fd.facility_name', 'rsrr.rejection_reason_name', 'tsr.sample_type', 'tsr.result', 'ts.status_name'];
+
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -134,69 +132,27 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
     $sLimit = $_POST['iDisplayLength'];
 }
 
+$columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
 
-$sOrder = "";
-if (isset($_POST['iSortCol_0'])) {
-    $sOrder = "";
-    for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-        if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-            $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-        }
-    }
-    $sOrder = substr_replace($sOrder, "", -2);
+$sWhere = [];
+if (!empty($columnSearch) && $columnSearch != '') {
+    $sWhere[] = $columnSearch;
 }
 
 
-
-$sWhere = "";
-$sWhereSub = "";
-if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-    $searchArray = explode(" ", (string) $_POST['sSearch']);
-    foreach ($searchArray as $search) {
-        if ($sWhereSub == "") {
-            $sWhereSub .= "(";
-        } else {
-            $sWhereSub .= " AND (";
-        }
-        $colSize = count($aColumns);
-
-        for ($i = 0; $i < $colSize; $i++) {
-            if ($i < $colSize - 1) {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-            } else {
-                $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-            }
-        }
-        $sWhereSub .= ")";
-    }
-    $sWhere .= $sWhereSub;
-}
-
-
-$aWhere = '';;
 $sOrder = 'temp_sample_id ASC';
-
+$sWhere[] = "temp_sample_status=0 AND imported_by ='$importedBy' ";
+$whereCondition = "";
 if (!empty($sWhere)) {
-    $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' AND $sWhere";
-} else {
-    $sWhere = "WHERE temp_sample_status=0 AND imported_by ='" . $importedBy . "' ";
+    $whereCondition = "WHERE " . implode(" AND ", $sWhere);
 }
-$sQuery = $sQuery . ' ' . $sWhere;
-if (!empty($sOrder) && $sOrder !== '') {
-    $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
-} else {
-
-    $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
-}
+$sQuery = "$sQuery $whereCondition ORDER BY temp_sample_id ASC";
 //echo $sQuery;die;
 if (isset($sLimit) && isset($sOffset)) {
-    $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+    $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery, returnGenerator: false);
-/* Data set length after filtering */
 
 
 $output = [
@@ -229,11 +185,12 @@ foreach ($rResult as $aRow) {
         $aRow['sample_collection_date'] = '';
     }
     if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true) .
+            '<input type="hidden" class="missing-test-date-flag" value="0">';
     } else {
-        $aRow['sample_tested_datetime'] = '';
+        $aRow['sample_tested_datetime'] = '<span style="color:#e8000b;font-weight:bold;font-size:1.2em;">' . _translate('COULD NOT FIND TEST DATE') . '</span>' .
+            '<input type="hidden" class="missing-test-date-flag" value="1">';
     }
-    //if($aRow['sample_type']=='s' || $aRow['sample_type']=='S'){
     if ($aRow['sample_details'] == _translate('Result already exists')) {
         $rsDetails = _translate('Existing Result');
         $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';
@@ -286,7 +243,7 @@ foreach ($rResult as $aRow) {
     $row[] = $controlName;
     if ($aRow['module'] == 'eid') {
         $row[] = $eidResults[$aRow['result']];
-    } else if ($aRow['module'] == 'covid19') {
+    } elseif ($aRow['module'] == 'covid19') {
         $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     } else {
         $row[] = $aRow['result'];

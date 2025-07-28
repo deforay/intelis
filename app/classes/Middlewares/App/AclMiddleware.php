@@ -25,6 +25,7 @@ class AclMiddleware implements MiddlewareInterface
         '/users/edit-profile-helper.php',
         '/health-check',
         '/status',
+        '/assets/js/*.js.php'
     ];
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface

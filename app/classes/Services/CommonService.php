@@ -647,10 +647,12 @@ final class CommonService
     }
 
     // Helper function to check if the current URI is in the excluded list
-    public static function isExcludedUri(string $uri, $excludedUris): bool
+    public static function isExcludedUri(string $uri, array $excludedPatterns): bool
     {
-        foreach ($excludedUris as $excludedUri) {
-            if (fnmatch($excludedUri, $uri)) {
+        foreach ($excludedPatterns as $pattern) {
+            // Convert "/assets/js/*.js.php" to regex
+            $regex = '#^' . str_replace(['*', '?'], ['.*', '.'], preg_quote($pattern, '#')) . '$#i';
+            if (preg_match($regex, $uri)) {
                 return true;
             }
         }

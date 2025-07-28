@@ -906,7 +906,7 @@ require_once APPLICATION_PATH . '/header.php';
 			formattedDate = date.replace(/[\/:*?"<>|]/g, '-');
 		}
 
-		toast.info("<?= _translate("Preparing log export... ", true); ?>");
+		toast.info("<?= _translate("Preparing log export...", true); ?>");
 
 		$.ajax({
 			url: '/admin/monitoring/get-log-files.php',

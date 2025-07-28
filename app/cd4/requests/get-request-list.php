@@ -263,19 +263,19 @@ try {
 
      if (!empty($sWhere)) {
           $_SESSION['vlRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
-          $sQuery = $sQuery . ' WHERE ' . $sWhere;
+          $sQuery = "$sQuery WHERE $sWhere";
      }
 
      if (!empty($sOrder) && $sOrder !== '') {
           $_SESSION['vlRequestData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . " ORDER BY " . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
 
      $_SESSION['cd4RequestQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);

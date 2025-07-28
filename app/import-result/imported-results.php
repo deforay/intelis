@@ -287,7 +287,7 @@ foreach ($rejectionTypeResult as $type) {
 										<?php
 										foreach ($userResult as $uName) {
 										?>
-											<option value="<?php echo $uName['user_id']; ?>"><?= $uName['user_name'] ; ?></option>
+											<option value="<?php echo $uName['user_id']; ?>"><?= $uName['user_name']; ?></option>
 										<?php
 										}
 										?>
@@ -529,6 +529,10 @@ foreach ($rejectionTypeResult as $type) {
 
 	function submitTestStatus() {
 
+		if (!checkMissingSampleTestDate()) {
+			return false;
+		}
+
 		var idArray = [];
 		var statusArray = [];
 		var rejectReasonArray = [];
@@ -729,7 +733,30 @@ foreach ($rejectionTypeResult as $type) {
 		}
 	}
 
+	function checkMissingSampleTestDate() {
+		var missingTestDateFound = false;
+
+		$('.missing-test-date-flag').each(function() {
+			if ($(this).val() === '1') {
+				missingTestDateFound = true;
+				return false; // break loop
+			}
+		});
+
+		if (missingTestDateFound) {
+			alert("<?= _translate("Action Required: One or more samples do not have a test date. Please update all missing fields before submitting.", true); ?>");
+			return false;
+		}
+
+		return true;
+	}
+
+
 	function acceptAllSamples() {
+
+		if (!checkMissingSampleTestDate()) {
+			return false;
+		}
 		conf = confirm("<?= _translate("Are you sure you want to mark all samples as Accepted?", true); ?>");
 		if (conf) {
 			$.blockUI();

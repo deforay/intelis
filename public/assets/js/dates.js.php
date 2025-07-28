@@ -129,7 +129,7 @@ use App\Utilities\DateUtility;
                 changeYear: true,
                 dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
                 timeFormat: "HH:mm",
-                maxDate: "Today",
+                maxDate: "+7d",
                 onChangeMonthYear: function(year, month, widget) {
                     setTimeout(function() {
                         $('.ui-datepicker-calendar').show();

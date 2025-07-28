@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-28 17:45+0530\n"
-"PO-Revision-Date: 2025-07-28 17:46+0530\n"
+"POT-Creation-Date: 2025-07-28 20:02+0530\n"
+"PO-Revision-Date: 2025-07-28 20:02+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -3665,7 +3665,7 @@ msgid "Copied to clipboard - Line Number"
 msgstr "Copié dans le presse-papiers - Numéro de ligne"
 
 #: app/admin/monitoring/log-files.php:909
-msgid "Preparing log export... "
+msgid "Preparing log export..."
 msgstr "Préparation de l'exportation du journal..."
 
 #: app/admin/monitoring/log-files.php:969
@@ -11380,7 +11380,7 @@ msgstr "Souhaitez-vous écraser ce résultat ?"
 
 #: app/cd4/results/cd4-result-status.php:532
 #: app/cd4/results/cd4-result-status.php:558
-#: app/import-result/imported-results.php:619
+#: app/import-result/imported-results.php:623
 #: app/vl/results/vlResultApproval.php:535
 #: app/vl/results/vlResultApproval.php:561
 msgid "Do you wish to change the status?"
@@ -12039,7 +12039,7 @@ msgid "The page or resource you requested could not be found."
 msgstr "La page ou la ressource demandée n'a pu être trouvée."
 
 #: app/classes/ErrorHandlers/ErrorResponseGenerator.php:36
-#: app/classes/Middlewares/App/AclMiddleware.php:187
+#: app/classes/Middlewares/App/AclMiddleware.php:188
 msgid "You do not have permission to access this page or resource."
 msgstr ""
 "Vous n'avez pas l'autorisation d'accéder à cette page ou à cette ressource."
@@ -12191,15 +12191,15 @@ msgstr ""
 "Désolé, nous n'avons pas pu résoudre cette demande Nous n'avons pas pu "
 "résoudre cette demande"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:56
+#: app/classes/Middlewares/App/AclMiddleware.php:57
 msgid "Access control error occurred"
 msgstr "Une erreur de contrôle d'accès s'est produite"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:184
+#: app/classes/Middlewares/App/AclMiddleware.php:185
 msgid "Guest"
 msgstr "Invité"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:186
+#: app/classes/Middlewares/App/AclMiddleware.php:187
 msgid "Sorry"
 msgstr "Désolé"
 
@@ -20966,27 +20966,31 @@ msgstr "Veuillez cocher au moins une case"
 msgid "Hepatitis result updated successfully"
 msgstr "Le résultat de l'hépatite a été mis à jour avec succès"
 
-#: app/import-result/getImportedResults.php:237
+#: app/import-result/getImportedResults.php:191
+msgid "COULD NOT FIND TEST DATE"
+msgstr "N'A PAS PU TROUVER LA DATE DU TEST"
+
+#: app/import-result/getImportedResults.php:194
 #: app/import-result/updateImportedSample.php:26
 #: app/instruments/vl/hologic-panther.php:201
 msgid "Result already exists"
 msgstr "Le résultat existe déjà"
 
-#: app/import-result/getImportedResults.php:238
+#: app/import-result/getImportedResults.php:195
 msgid "Existing Result"
 msgstr "Résultat actuel"
 
-#: app/import-result/getImportedResults.php:240
+#: app/import-result/getImportedResults.php:197
 #: app/import-result/updateImportedSample.php:28
 #: app/instruments/vl/hologic-panther.php:205
 msgid "New Sample"
 msgstr "Nouveau modèle"
 
-#: app/import-result/getImportedResults.php:241
+#: app/import-result/getImportedResults.php:198
 msgid "Unknown Sample"
 msgstr "Échantillon inconnu"
 
-#: app/import-result/getImportedResults.php:246
+#: app/import-result/getImportedResults.php:203
 msgid "Result for Sample"
 msgstr "Résultat pour l'échantillon"
 
@@ -21180,12 +21184,12 @@ msgstr "Veuillez contacter le support technique si vous avez besoin d'aide."
 msgid "Back"
 msgstr "Retour"
 
-#: app/import-result/imported-results.php:557
+#: app/import-result/imported-results.php:561
 msgid "Same person is reviewing and approving result! Do you want to continue?"
 msgstr ""
 "La même personne examine et approuve le résultat ! Voulez-vous continuer ?"
 
-#: app/import-result/imported-results.php:562
+#: app/import-result/imported-results.php:566
 msgid ""
 "Same person is reviewing and approving result. This is not allowed as per "
 "your system configuration."
@@ -21193,7 +21197,7 @@ msgstr ""
 "La même personne révise et approuve le résultat. Ceci n'est pas autorisé par "
 "la configuration de votre système."
 
-#: app/import-result/imported-results.php:567
+#: app/import-result/imported-results.php:571
 msgid ""
 "Please ensure that you have updated the status of all the Controls and "
 "Samples"
@@ -21201,11 +21205,11 @@ msgstr ""
 "Veuillez vous assurer que vous avez mis à jour le statut de tous les "
 "contrôles et échantillons"
 
-#: app/import-result/imported-results.php:573
+#: app/import-result/imported-results.php:577
 msgid "Are you sure you want to continue?"
 msgstr "Etes-vous certains de vouloir continuer ?"
 
-#: app/import-result/imported-results.php:607
+#: app/import-result/imported-results.php:611
 msgid ""
 "Please ensure you have updated the status and the approved by and reviewed "
 "by and tested by field"
@@ -21213,30 +21217,38 @@ msgstr ""
 "Veuillez vous assurer que vous avez mis à jour le statut et les champs "
 "approuvé par, examiné par et testé par"
 
-#: app/import-result/imported-results.php:640
+#: app/import-result/imported-results.php:644
 msgid "Please select result status"
 msgstr "Veuillez sélectionner le statut du résultat"
 
-#: app/import-result/imported-results.php:647
+#: app/import-result/imported-results.php:651
 msgid "Are you sure you want to rename this Sample?"
 msgstr "Êtes-vous sûr de vouloir renommer cet échantillon ?"
 
-#: app/import-result/imported-results.php:657
-#: app/import-result/imported-results.php:682
-#: app/import-result/imported-results.php:707
+#: app/import-result/imported-results.php:661
+#: app/import-result/imported-results.php:686
+#: app/import-result/imported-results.php:711
 msgid "Something went wrong! Please try again"
 msgstr "Quelque chose n'a pas fonctionné ! Veuillez réessayer"
 
-#: app/import-result/imported-results.php:697
+#: app/import-result/imported-results.php:701
 msgid "Are you sure you want to change this sample?"
 msgstr "Êtes-vous sûr de vouloir modifier cet échantillon ?"
 
-#: app/import-result/imported-results.php:720
+#: app/import-result/imported-results.php:724
 msgid "Maximum number of controls allowed as per the instrument configuration"
 msgstr ""
 "Nombre maximum de contrôles autorisés selon la configuration de l'instrument"
 
-#: app/import-result/imported-results.php:733
+#: app/import-result/imported-results.php:747
+msgid ""
+"Action Required: One or more samples do not have a test date. Please update "
+"all missing fields before submitting."
+msgstr ""
+"Action requise : Un ou plusieurs échantillons n'ont pas de date de test. "
+"Veuillez mettre à jour tous les champs manquants avant de les soumettre."
+
+#: app/import-result/imported-results.php:760
 msgid "Are you sure you want to mark all samples as Accepted?"
 msgstr ""
 "Êtes-vous sûr de vouloir marquer tous les échantillons comme acceptés ?"
@@ -24518,7 +24530,7 @@ msgstr ""
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
-#: app/users/edit-profile-helper.php:67
+#: app/users/edit-profile-helper.php:69
 msgid ""
 "Your new password cannot be same as the current password. Please try another "
 "password."
@@ -24526,7 +24538,7 @@ msgstr ""
 "Votre nouveau mot de passe ne peut pas être identique au mot de passe "
 "actuel. Veuillez essayer un autre mot de passe."
 
-#: app/users/edit-profile-helper.php:109
+#: app/users/edit-profile-helper.php:111
 msgid ""
 "Your profile changes have been saved. You can continue using the application."
 msgstr ""
