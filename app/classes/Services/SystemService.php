@@ -4,7 +4,7 @@ namespace App\Services;
 
 use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
-
+use App\Utilities\MiscUtility;
 
 final class SystemService
 {
@@ -30,6 +30,8 @@ final class SystemService
     {
         // Determine the locale to use
         $_SESSION['APP_LOCALE'] = $locale ?? $_SESSION['userLocale'] ?? $_SESSION['APP_LOCALE'] ?? $this->commonService->getGlobalConfig('app_locale') ?? $this->defaultLocale;
+
+
 
         // Construct the path to the .mo file
         $moFilePath = sprintf(

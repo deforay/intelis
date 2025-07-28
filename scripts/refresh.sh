@@ -111,7 +111,7 @@ sudo chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
 print success "✅ LIS refresh complete."
 log_action "LIS refresh complete"
 
-cron_line="0 3 * * * /usr/local/bin/intelis-refresh -p ${lis_path} -m quick > /dev/null 2>&1"
+cron_line="5 * * * * /usr/local/bin/intelis-refresh -p ${lis_path} -m quick > /dev/null 2>&1"
 cron_marker="# added_by_intelis_refresh"
 full_cron_entry="${cron_line} ${cron_marker}"
 

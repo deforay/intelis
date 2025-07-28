@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-26 12:22+0530\n"
-"PO-Revision-Date: 2025-07-26 12:22+0530\n"
+"POT-Creation-Date: 2025-07-28 17:45+0530\n"
+"PO-Revision-Date: 2025-07-28 17:46+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -1889,7 +1889,7 @@ msgstr "Action"
 #: app/vl/program-management/vl-export-data.php:460
 #: app/vl/program-management/vl-sample-status.php:152
 #: app/vl/program-management/vlMonitoringReport.php:244
-#: app/vl/requests/addSamplesFromManifest.php:85
+#: app/vl/requests/addSamplesFromManifest.php:83
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/export-vl-requests.php:36
 #: app/vl/requests/export-vl-requests.php:38
@@ -2251,7 +2251,7 @@ msgstr ""
 #: app/vl/program-management/vl-export-data.php:399
 #: app/vl/program-management/vl-export-data.php:464
 #: app/vl/program-management/vl-sample-status.php:155
-#: app/vl/requests/addSamplesFromManifest.php:89
+#: app/vl/requests/addSamplesFromManifest.php:87
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/export-vl-requests.php:41
 #: app/vl/requests/vl-requests.php:562 app/vl/requests/vl-requests.php:624
@@ -2442,7 +2442,7 @@ msgstr "ID de l'échantillon à distance"
 #: app/vl/program-management/vl-sample-status.php:71
 #: app/vl/program-management/vl-sample-status.php:161
 #: app/vl/program-management/vlMonitoringReport.php:188
-#: app/vl/requests/addSamplesFromManifest.php:93
+#: app/vl/requests/addSamplesFromManifest.php:91
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/forms/add-cameroon.php:364
 #: app/vl/requests/forms/edit-cameroon.php:416
@@ -2591,7 +2591,7 @@ msgstr "Echantillon testé le"
 #: app/vl/program-management/vl-export-data.php:433
 #: app/vl/program-management/vl-export-data.php:502
 #: app/vl/program-management/vlMonitoringReport.php:268
-#: app/vl/requests/addSamplesFromManifest.php:117
+#: app/vl/requests/addSamplesFromManifest.php:115
 #: app/vl/requests/vl-requests.php:602 app/vl/requests/vl-requests.php:663
 #: app/vl/results/get-manual-results.php:274
 #: app/vl/results/get-results-for-print.php:235
@@ -2971,7 +2971,7 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: app/vl/program-management/vl-export-data.php:119
 #: app/vl/program-management/vlWeeklyReport.php:112
 #: app/vl/program-management/vlWeeklyReport.php:240
-#: app/vl/requests/addSamplesFromManifest.php:108
+#: app/vl/requests/addSamplesFromManifest.php:106
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/sample-storage.php:197 app/vl/requests/vl-requests.php:380
 #: app/vl/requests/vl-requests.php:585 app/vl/requests/vl-requests.php:646
@@ -3128,7 +3128,7 @@ msgstr "Veuillez choisir la Région/Etat"
 #: app/vl/program-management/vlMonitoringReport.php:262
 #: app/vl/program-management/vlWeeklyReport.php:115
 #: app/vl/program-management/vlWeeklyReport.php:243
-#: app/vl/requests/addSamplesFromManifest.php:111
+#: app/vl/requests/addSamplesFromManifest.php:109
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/forms/add-burkina-faso.php:130
 #: app/vl/requests/forms/edit-burkina-faso.php:229
@@ -3435,7 +3435,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: app/vl/program-management/vl-export-data.php:412
 #: app/vl/program-management/vl-export-data.php:482
 #: app/vl/program-management/vlMonitoringReport.php:256
-#: app/vl/requests/addSamplesFromManifest.php:105
+#: app/vl/requests/addSamplesFromManifest.php:103
 #: app/vl/requests/export-sample-storage.php:26
 #: app/vl/requests/patientModal.php:113 app/vl/requests/sample-storage.php:214
 #: app/vl/requests/sample-storage.php:256 app/vl/requests/vl-requests.php:398
@@ -4543,7 +4543,7 @@ msgstr "Lot"
 #: app/vl/program-management/vl-export-data.php:468
 #: app/vl/program-management/vl-sample-status.php:77
 #: app/vl/program-management/vlMonitoringReport.php:247
-#: app/vl/requests/addSamplesFromManifest.php:96
+#: app/vl/requests/addSamplesFromManifest.php:94
 #: app/vl/requests/export-vl-requests.php:36
 #: app/vl/requests/get-request-list.php:354 app/vl/requests/vl-requests.php:275
 #: app/vl/requests/vl-requests.php:570 app/vl/requests/vl-requests.php:631
@@ -5225,7 +5225,7 @@ msgstr "Alphanumérique"
 #: app/vl/program-management/vl-export-data.php:496
 #: app/vl/program-management/vl-sample-status.php:92
 #: app/vl/program-management/vlMonitoringReport.php:265
-#: app/vl/requests/addSamplesFromManifest.php:114
+#: app/vl/requests/addSamplesFromManifest.php:112
 #: app/vl/requests/export-vl-requests.php:36
 #: app/vl/requests/export-vl-requests.php:38
 #: app/vl/requests/forms/add-burkina-faso.php:301
@@ -6639,7 +6639,7 @@ msgstr "Identifiant du patient"
 #: app/vl/program-management/vl-export-data.php:409
 #: app/vl/program-management/vl-export-data.php:474
 #: app/vl/program-management/vlMonitoringReport.php:253
-#: app/vl/requests/addSamplesFromManifest.php:102
+#: app/vl/requests/addSamplesFromManifest.php:100
 #: app/vl/requests/vl-requests.php:576 app/vl/requests/vl-requests.php:637
 #: app/vl/results/vl-failed-results.php:163
 #: app/vl/results/vl-failed-results.php:203
@@ -9967,7 +9967,7 @@ msgstr "Echantillons activés"
 #: app/vl/program-management/highViralLoad.php:995
 #: app/vl/program-management/vl-export-data.php:471
 #: app/vl/program-management/vlMonitoringReport.php:250
-#: app/vl/requests/addSamplesFromManifest.php:99
+#: app/vl/requests/addSamplesFromManifest.php:97
 #: app/vl/requests/vl-requests.php:634 app/vl/results/vl-failed-results.php:202
 #: app/vl/results/vl-print-results.php:547
 #: app/vl/results/vlResultApproval.php:242 app/vl/results/vlTestResult.php:244
@@ -9980,7 +9980,7 @@ msgstr "No. ART Unique"
 #: app/generic-tests/requests/view-requests.php:194
 #: app/generic-tests/results/generic-failed-results.php:174
 #: app/generic-tests/results/generic-failed-results.php:202
-#: app/vl/requests/addSamplesFromManifest.php:120
+#: app/vl/requests/addSamplesFromManifest.php:118
 #: app/vl/requests/vl-requests.php:605 app/vl/requests/vl-requests.php:666
 #: app/vl/results/vl-failed-results.php:181
 #: app/vl/results/vl-failed-results.php:209
@@ -9990,7 +9990,7 @@ msgstr "Date de dernière modification"
 #: app/cd4/requests/add-samples-from-manifest.php:127
 #: app/covid-19/requests/addSamplesFromManifest.php:128
 #: app/generic-tests/requests/add-samples-from-manifest.php:116
-#: app/vl/requests/addSamplesFromManifest.php:127
+#: app/vl/requests/addSamplesFromManifest.php:125
 msgid "Please enter the manifest code then submit!"
 msgstr "Veuillez saisir le code du manifeste, puis soumettre !"
 
@@ -10000,7 +10000,7 @@ msgstr "Veuillez saisir le code du manifeste, puis soumettre !"
 #: app/generic-tests/requests/add-samples-from-manifest.php:253
 #: app/hepatitis/requests/add-samples-from-manifest.php:255
 #: app/tb/requests/addSamplesFromManifest.php:208
-#: app/vl/requests/addSamplesFromManifest.php:246
+#: app/vl/requests/addSamplesFromManifest.php:244
 msgid "No samples found in the manifest"
 msgstr "Aucun échantillon n'a été trouvé dans le manifeste"
 
@@ -10010,7 +10010,7 @@ msgstr "Aucun échantillon n'a été trouvé dans le manifeste"
 #: app/generic-tests/requests/add-samples-from-manifest.php:260
 #: app/hepatitis/requests/add-samples-from-manifest.php:262
 #: app/tb/requests/addSamplesFromManifest.php:215
-#: app/vl/requests/addSamplesFromManifest.php:253
+#: app/vl/requests/addSamplesFromManifest.php:251
 msgid "Some error occurred while processing the manifest"
 msgstr "Une erreur s'est produite lors du traitement du manifeste"
 
@@ -10020,7 +10020,7 @@ msgstr "Une erreur s'est produite lors du traitement du manifeste"
 #: app/generic-tests/requests/add-samples-from-manifest.php:264
 #: app/hepatitis/requests/add-samples-from-manifest.php:266
 #: app/tb/requests/addSamplesFromManifest.php:219
-#: app/vl/requests/addSamplesFromManifest.php:257
+#: app/vl/requests/addSamplesFromManifest.php:255
 msgid "Please enter the Sample Manifest Code"
 msgstr "Veuillez saisir l'exemple de code de manifeste"
 
@@ -10030,7 +10030,7 @@ msgstr "Veuillez saisir l'exemple de code de manifeste"
 #: app/generic-tests/requests/add-samples-from-manifest.php:270
 #: app/hepatitis/requests/add-samples-from-manifest.php:273
 #: app/tb/requests/addSamplesFromManifest.php:225
-#: app/vl/requests/addSamplesFromManifest.php:264
+#: app/vl/requests/addSamplesFromManifest.php:262
 msgid "Please select when the samples were received at the Testing Lab"
 msgstr ""
 "Veuillez indiquer la date à laquelle les échantillons ont été reçus par le "
@@ -10042,7 +10042,7 @@ msgstr ""
 #: app/generic-tests/requests/add-samples-from-manifest.php:282
 #: app/hepatitis/requests/add-samples-from-manifest.php:285
 #: app/tb/requests/addSamplesFromManifest.php:237
-#: app/vl/requests/addSamplesFromManifest.php:276
+#: app/vl/requests/addSamplesFromManifest.php:274
 msgid "Samples from this Manifest have been activated"
 msgstr "Des échantillons de ce manifeste ont été activés"
 
@@ -25525,13 +25525,13 @@ msgstr "Date de la demande"
 
 #: app/vl/requests/forms/add-burkina-faso.php:199
 #: app/vl/requests/forms/edit-burkina-faso.php:296
-msgid "Please enter the request date"
-msgstr "Veuillez saisir la date de la demande"
+msgid "Please enter the test request date"
+msgstr "Veuillez saisir la date de la demande de test"
 
 #: app/vl/requests/forms/add-burkina-faso.php:199
 #: app/vl/requests/forms/edit-burkina-faso.php:296
-msgid "Enter the request date"
-msgstr "Saisir la date de la demande"
+msgid "Test request date"
+msgstr "Date de la demande"
 
 #: app/vl/requests/forms/add-burkina-faso.php:322
 #: app/vl/requests/forms/add-cameroon.php:417
@@ -26587,6 +26587,9 @@ msgstr ""
 #: public/assets/js/main.js.php:706
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
+
+#~ msgid "Enter the request date"
+#~ msgstr "Saisir la date de la demande"
 
 #~ msgid "Invalid Request token. Please refresh the page and try again."
 #~ msgstr ""

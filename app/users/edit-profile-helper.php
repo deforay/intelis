@@ -52,8 +52,10 @@ try {
             $data['password'] = $decryptedPassword;
             $db->where('user_name', $data['user_name']);
         } else {
+
             $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
             $systemService->setLocale($_SESSION['userLocale']);
+
             $data = [
                 'user_name' => $_POST['userName'],
                 'email' => $_POST['email'],

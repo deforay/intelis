@@ -23,7 +23,9 @@ function _translate(?string $text, bool|string $escapeTextOrContext = false): st
         return $text ?? '';
     }
 
-    return MemoUtility::remember(function () use ($text, $escapeTextOrContext) {
+    $locale = $_SESSION['APP_LOCALE'] ?? 'en_US';
+
+    return MemoUtility::remember(function () use ($text, $escapeTextOrContext, $locale) {
 
         $translated = SystemService::translate($text);
 
