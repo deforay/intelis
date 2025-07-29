@@ -5,7 +5,6 @@ namespace App\Services;
 use COUNTRY;
 use Throwable;
 use SAMPLE_STATUS;
-use GuzzleHttp\Client;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
@@ -14,7 +13,6 @@ use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Abstracts\AbstractTestService;
 
 final class TestRequestsService
 {
@@ -61,7 +59,7 @@ final class TestRequestsService
                     }
 
                     MiscUtility::touchLockFile($lockFile);
-                } catch (Execption $e) {
+                } catch (Throwable $e) {
                     LoggerUtility::logError("Error initializing lock file: " . $e->getMessage(), ['exception' => $e]);
                     return $response;
                 }

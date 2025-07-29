@@ -24,8 +24,7 @@ class AclMiddleware implements MiddlewareInterface
         '/includes/captcha.php',
         '/users/edit-profile-helper.php',
         '/health-check',
-        '/status',
-        '/assets/js/*.js.php'
+        '/status'
     ];
 
     public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
