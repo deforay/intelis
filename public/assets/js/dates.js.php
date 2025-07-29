@@ -1,5 +1,6 @@
 <?php
 
+//require_once(__DIR__."/../../../bootstrap.php");
 use App\Utilities\DateUtility;
 ?>
 <script type="text/javascript">
@@ -117,6 +118,7 @@ use App\Utilities\DateUtility;
                 $('#sampleReceivedAtHubOn').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleDispatchedDate').datetimepicker('option', 'minDate', selectedDate);
+                $('#sampleDispatchedDate').datetimepicker('option', 'maxDate', "+7d");
                 if ('<?= $_SESSION['formId']; ?>' != 2) {
                     checkSampleDispatchDate();
                 }
