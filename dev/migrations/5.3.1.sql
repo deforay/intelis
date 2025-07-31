@@ -59,3 +59,25 @@ ALTER TABLE `form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAU
 ALTER TABLE `audit_form_vl` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
 ALTER TABLE `form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
 ALTER TABLE `audit_form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
+
+
+-- Amit 31-Jul-2025
+-- Check if the index exists
+SET @idx_exists := (
+  SELECT COUNT(*)
+  FROM information_schema.statistics
+  WHERE table_schema = DATABASE()
+    AND table_name = 'form_vl'
+    AND index_name = 'idx_sample_code_facility'
+);
+
+-- Prepare the appropriate statement: add only if missing
+SET @sql = IF(
+  @idx_exists = 0,
+  'ALTER TABLE `form_vl` ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`)',
+  'SELECT 1'
+);
+
+PREPARE stmt FROM @sql;
+EXECUTE stmt;
+DEALLOCATE PREPARE stmt;

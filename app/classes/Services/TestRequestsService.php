@@ -430,46 +430,112 @@ final class TestRequestsService
     }
 
     /**
-     * Find a matching local record based on the provided request data.
-     *
+     * Find a matching local record based on the provided remotely received data
+     * From CLOUD Sample Tracking System (STS) to Local LIS or vice versa.
      * @param array $recordFromOtherSystem The request data from the other system.
      * @param string $tableName The name of the table to search in.
      * @param string $primaryKeyName The name of the primary key column.
      * @return array The matching record, or an empty array if not found.
      */
-    public function findMatchingLocalRecord(array $recordFromOtherSystem, $tableName, $primaryKeyName): array
+    public function findMatchingLocalRecord(array $recordFromOtherSystem, string $tableName, string $primaryKeyName): array
     {
+        // validate identifiers to avoid injection
+        $idPattern = '/^[A-Za-z0-9_]+$/';
+        if (!preg_match($idPattern, $tableName) || !preg_match($idPattern, $primaryKeyName)) {
+            throw new \InvalidArgumentException('Invalid table or primary key name');
+        }
+        $quote = fn($ident) => "`$ident`";
+        $quotedTable = $quote($tableName);
+
+        // Build select fields (exclude primary key)
         $columns = array_diff(array_keys($recordFromOtherSystem), [$primaryKeyName]);
-        $select = implode(', ', $columns);
-
-        if (!empty($recordFromOtherSystem['remote_sample_code'])) {
-            return $this->db->rawQueryOne(
-                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE remote_sample_code = ? FOR UPDATE",
-                [$recordFromOtherSystem['remote_sample_code']]
-            ) ?? [];
+        $safeCols = array_filter($columns, fn($c) => preg_match($idPattern, $c));
+        if ($safeCols) {
+            $select = implode(', ', array_map($quote, $safeCols));
+            $fields = $quote($primaryKeyName) . ', ' . $select;
+        } else {
+            $fields = '*';
         }
 
-        if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['lab_id'])) {
-            return $this->db->rawQueryOne(
-                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND lab_id = ? FOR UPDATE",
-                [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['lab_id']]
-            ) ?? [];
+        // Normalize incoming values
+        $remoteSampleCode = trim((string)($recordFromOtherSystem['remote_sample_code'] ?? ''));
+        $sampleCode = trim((string)($recordFromOtherSystem['sample_code'] ?? ''));
+        $labId = $recordFromOtherSystem['lab_id'] ?? null;
+        $facilityId = $recordFromOtherSystem['facility_id'] ?? null;
+        $uniqueId = trim((string)($recordFromOtherSystem['unique_id'] ?? ''));
+
+        // Candidate matching conditions in priority order
+        $candidates = [];
+
+        if ($remoteSampleCode !== '') {
+            $candidates[] = [
+                'where' => 'remote_sample_code = ?',
+                'params' => [$remoteSampleCode],
+                'match_criteria' => 'remote_sample_code',
+            ];
         }
 
-        if (!empty($recordFromOtherSystem['unique_id'])) {
-            return $this->db->rawQueryOne(
-                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE unique_id = ? FOR UPDATE",
-                [$recordFromOtherSystem['unique_id']]
-            ) ?? [];
+        if ($sampleCode !== '' && $labId !== null && $labId !== '') {
+            $candidates[] = [
+                'where' => 'sample_code = ? AND lab_id = ?',
+                'params' => [$sampleCode, $labId],
+                'match_criteria' => 'sample_code_and_lab_id',
+            ];
         }
 
-        if (!empty($recordFromOtherSystem['sample_code']) && !empty($recordFromOtherSystem['facility_id'])) {
-            return $this->db->rawQueryOne(
-                "SELECT {$primaryKeyName}, {$select} FROM {$tableName} WHERE sample_code = ? AND facility_id = ? FOR UPDATE",
-                [$recordFromOtherSystem['sample_code'], $recordFromOtherSystem['facility_id']]
-            ) ?? [];
+        if ($uniqueId !== '') {
+            $candidates[] = [
+                'where' => 'unique_id = ?',
+                'params' => [$uniqueId],
+                'match_criteria' => 'unique_id',
+            ];
         }
 
-        return [];
+        if ($sampleCode !== '' && $facilityId !== null && $facilityId !== '') {
+            $candidates[] = [
+                'where' => 'sample_code = ? AND facility_id = ?',
+                'params' => [$sampleCode, $facilityId],
+                'match_criteria' => 'sample_code_and_facility_id',
+            ];
+        }
+
+        if (empty($candidates)) {
+            return [];
+        }
+
+        $found = [];
+        $matchedByCriteria = null;
+
+        foreach ($candidates as $cand) {
+            $selectPart = $fields === '*' ? '*' : $fields;
+            $sql = "SELECT {$selectPart} FROM {$quotedTable} WHERE {$cand['where']} FOR UPDATE";
+            $res = $this->db->rawQueryOne($sql, $cand['params']);
+            if (!empty($res)) {
+                $found = $res;
+                $matchedByCriteria = $cand['match_criteria'];
+                break;
+            }
+        }
+
+        if (empty($found)) {
+            return [];
+        }
+
+        // Backfill remote_sample_code if we matched on a fallback and incoming has it
+        if (
+            $remoteSampleCode !== '' &&
+            $matchedByCriteria !== 'remote_sample_code' &&
+            empty($found['remote_sample_code'] ?? null)
+        ) {
+            $updateSql = sprintf(
+                "UPDATE %s SET remote_sample_code = ? WHERE %s = ?",
+                $quote($tableName),
+                $quote($primaryKeyName)
+            );
+            $this->db->rawQuery($updateSql, [$remoteSampleCode, $found[$primaryKeyName]]);
+            $found['remote_sample_code'] = $remoteSampleCode;
+        }
+
+        return $found;
     }
 }
