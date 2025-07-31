@@ -196,7 +196,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                                        <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
                                                        <span class="input-group-btn">
                                                             <button class="btn btn-default" type="button" id="generatePassword" onclick="passwordType();" title="Generate Password">
-                                                                 <i class="fa fa-magic"></i> <?= _translate("Generate Password"); ?>
+                                                                 <i class="fa fa-random"></i> <?= _translate("Generate"); ?>
                                                             </button>
 
                                                        </span>

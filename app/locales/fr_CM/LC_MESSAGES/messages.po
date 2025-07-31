@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-31 15:55+0530\n"
-"PO-Revision-Date: 2025-07-31 15:55+0530\n"
+"POT-Creation-Date: 2025-07-31 16:05+0530\n"
+"PO-Revision-Date: 2025-07-31 16:05+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -583,7 +583,7 @@ msgstr "Journal d'audit"
 
 #: app/admin/monitoring/activity-log.php:108
 #: app/system-admin/user-login-history/userLoginIndex.php:64
-#: app/users/edit-profile.php:144
+#: app/users/edit-profile.php:153
 msgid "IP Address"
 msgstr "Adresse IP"
 
@@ -1986,7 +1986,7 @@ msgstr "ID de l'échantillon"
 #: app/tb/reference/add-tb-sample-type.php:56
 #: app/tb/reference/add-tb-test-reasons.php:75
 #: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:328
-#: app/users/edit-profile.php:129 app/users/editUser.php:370
+#: app/users/edit-profile.php:138 app/users/editUser.php:370
 #: app/vl/program-management/upload-vl-control.php:124
 #: app/vl/reference/add-vl-art-code-details.php:92
 #: app/vl/reference/add-vl-results.php:148
@@ -5474,7 +5474,7 @@ msgstr "Sauvegarder et Suivant"
 #: app/tb/requests/forms/add-burkina-faso.php:498
 #: app/tb/results/email-results.php:333
 #: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:329
-#: app/users/edit-profile.php:130 app/users/editUser.php:371
+#: app/users/edit-profile.php:139 app/users/editUser.php:371
 #: app/vl/program-management/upload-vl-control.php:127
 #: app/vl/reference/add-vl-art-code-details.php:93
 #: app/vl/reference/add-vl-results.php:151
@@ -21878,7 +21878,7 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:193
 #: app/users/addUser.php:196 app/users/edit-profile.php:108
-#: app/users/edit-profile.php:110 app/users/editUser.php:251
+#: app/users/edit-profile.php:111 app/users/editUser.php:251
 #: app/users/editUser.php:254
 #: app/vl/result-mail/editTestResultEmailConfig.php:65
 #: app/vl/result-mail/editTestResultEmailConfig.php:67
@@ -22320,7 +22320,7 @@ msgstr "Email ID"
 
 #: app/setup/index.php:426 app/system-admin/setup/index.php:94
 #: app/system-admin/user-login-history/userLoginIndex.php:34
-#: app/users/addUser.php:179 app/users/edit-profile.php:143
+#: app/users/addUser.php:179 app/users/edit-profile.php:152
 #: app/users/users.php:58
 msgid "Login ID"
 msgstr "Identifiant de connexion"
@@ -22330,8 +22330,8 @@ msgstr "Identifiant de connexion"
 #: app/system-admin/reset-password/get-user.php:39
 #: app/system-admin/reset-password/get-user.php:41
 #: app/system-admin/setup/index.php:102 app/users/addUser.php:212
-#: app/users/addUser.php:214 app/users/edit-profile.php:118
-#: app/users/edit-profile.php:120 app/users/editUser.php:270
+#: app/users/addUser.php:214 app/users/edit-profile.php:127
+#: app/users/edit-profile.php:129 app/users/editUser.php:270
 #: app/users/editUser.php:272
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
@@ -22345,8 +22345,8 @@ msgstr "Terminer"
 #: app/system-admin/reset-password/get-user.php:33
 #: app/system-admin/reset-password/reset-password.php:111
 #: app/system-admin/setup/index.php:140 app/users/addUser.php:205
-#: app/users/addUser.php:534 app/users/edit-profile.php:112
-#: app/users/edit-profile.php:240 app/users/editUser.php:263
+#: app/users/addUser.php:534 app/users/edit-profile.php:120
+#: app/users/edit-profile.php:249 app/users/editUser.php:263
 #: app/users/editUser.php:588
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
@@ -22597,7 +22597,7 @@ msgstr "Gérer le mot de passe"
 #: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:196
-#: app/users/edit-profile.php:110 app/users/editUser.php:254
+#: app/users/edit-profile.php:111 app/users/editUser.php:254
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -22655,7 +22655,7 @@ msgid "Remote Reference Last Sync"
 msgstr "Référence à distance Dernière synchronisation"
 
 #: app/system-admin/instance-overview/instanceIndex.php:126
-#: app/users/edit-profile.php:173
+#: app/users/edit-profile.php:182
 msgid "No record found"
 msgstr "Aucun enregistrement trouvé"
 
@@ -22675,8 +22675,7 @@ msgstr "Administrateur de système"
 msgid "Please enter the user name"
 msgstr "Veuillez saisir le nom d'utilisateur"
 
-#: app/system-admin/reset-password/get-user.php:32 app/users/addUser.php:199
-#: app/users/edit-profile.php:111 app/users/editUser.php:257
+#: app/system-admin/reset-password/get-user.php:32
 msgid "Generate Password"
 msgstr "Générer un mot de passe"
 
@@ -22690,7 +22689,7 @@ msgid "User"
 msgstr "Utilisateur"
 
 #: app/system-admin/reset-password/reset-password.php:128
-#: app/users/addUser.php:624 app/users/edit-profile.php:257
+#: app/users/addUser.php:624 app/users/edit-profile.php:266
 #: app/users/editUser.php:676
 msgid "Password generated and copied to clipboard"
 msgstr "Mot de passe généré et copié dans le presse-papiers"
@@ -22746,12 +22745,12 @@ msgid "Attempted Datetime"
 msgstr "Date de la tentative"
 
 #: app/system-admin/user-login-history/userLoginIndex.php:65
-#: app/users/edit-profile.php:145
+#: app/users/edit-profile.php:154
 msgid "Browser"
 msgstr "Navigateur"
 
 #: app/system-admin/user-login-history/userLoginIndex.php:66
-#: app/users/edit-profile.php:146
+#: app/users/edit-profile.php:155
 msgid "Operating System"
 msgstr "Système d'exploitation"
 
@@ -24510,6 +24509,11 @@ msgstr ""
 "Seuls les lettres minuscules, les chiffres, les traits d'union (-) et les "
 "caractères de soulignement (_) sont autorisés. Il n'y a pas d'espace."
 
+#: app/users/addUser.php:199 app/users/edit-profile.php:114
+#: app/users/editUser.php:257
+msgid "Generate"
+msgstr "Générer"
+
 #: app/users/addUser.php:225
 msgid "Filter Facilities by Province & Districts"
 msgstr "Filtrer les installations par région et districts"
@@ -24569,15 +24573,15 @@ msgstr "Veuillez sélectionner votre localité"
 msgid "Official Email"
 msgstr "Email officiel"
 
-#: app/users/edit-profile.php:137
+#: app/users/edit-profile.php:146
 msgid "Recent Login Attempts"
 msgstr "Tentatives de connexion récentes"
 
-#: app/users/edit-profile.php:142
+#: app/users/edit-profile.php:151
 msgid "Login Attempt Date and Time"
 msgstr "Date et heure de la tentative de connexion"
 
-#: app/users/edit-profile.php:147
+#: app/users/edit-profile.php:156
 msgid "Login Status"
 msgstr "Statut de connexion"
 
