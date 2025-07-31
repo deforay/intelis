@@ -445,7 +445,7 @@ final class TestRequestsService
             throw new \InvalidArgumentException('Invalid table or primary key name');
         }
         $quote = fn($ident) => "`$ident`";
-        $quotedTable = $quote($tableName);
+        $quotedTable = $quote(ident: $tableName);
 
         // Build select fields (exclude primary key)
         $columns = array_diff(array_keys($recordFromOtherSystem), [$primaryKeyName]);
@@ -521,20 +521,20 @@ final class TestRequestsService
             return [];
         }
 
-        // Backfill remote_sample_code if we matched on a fallback and incoming has it
-        if (
-            $remoteSampleCode !== '' &&
-            $matchedByCriteria !== 'remote_sample_code' &&
-            empty($found['remote_sample_code'] ?? null)
-        ) {
-            $updateSql = sprintf(
-                "UPDATE %s SET remote_sample_code = ? WHERE %s = ?",
-                $quote($tableName),
-                $quote($primaryKeyName)
-            );
-            $this->db->rawQuery($updateSql, [$remoteSampleCode, $found[$primaryKeyName]]);
-            $found['remote_sample_code'] = $remoteSampleCode;
-        }
+        // // Backfill remote_sample_code if we matched on a fallback and incoming has it
+        // if (
+        //     $remoteSampleCode !== '' &&
+        //     $matchedByCriteria !== 'remote_sample_code' &&
+        //     empty($found['remote_sample_code'] ?? null)
+        // ) {
+        //     $updateSql = sprintf(
+        //         "UPDATE %s SET remote_sample_code = ? WHERE %s = ?",
+        //         $quote($tableName),
+        //         $quote($primaryKeyName)
+        //     );
+        //     $this->db->rawQuery($updateSql, [$remoteSampleCode, $found[$primaryKeyName]]);
+        //     $found['remote_sample_code'] = $remoteSampleCode;
+        // }
 
         return $found;
     }
