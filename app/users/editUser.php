@@ -243,14 +243,25 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
                               </div>
 
-                              <div class="row">
+
+
+                              <div class=" row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> </label>
+                                             <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
-                                                  <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" /><br>
-                                                  <button type="button" id="generatePassword" onclick="passwordType();" class="btn btn-default"><strong><?= _translate("Generate Random Password"); ?></strong></button><br>
-                                                  <code><?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?></code>
+                                                  <div class="input-group">
+                                                       <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                                                       <span class="input-group-btn">
+                                                            <button class="btn btn-default" type="button" id="generatePassword" onclick="passwordType();" title="Generate Password">
+                                                                 <i class="fa fa-magic"></i> <?= _translate("Generate Password"); ?>
+                                                            </button>
+
+                                                       </span>
+                                                  </div>
+                                                  <small class="form-text text-muted">
+                                                       <?= _translate("Password must be at least 8 characters long and must include AT LEAST one number, one alphabet and may have special characters.") ?>
+                                                  </small>
                                              </div>
                                         </div>
                                    </div>
@@ -263,6 +274,9 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </div>
                                    </div>
 
+
+
+                                   <div class="row"></div>
                                    <div class="col-md-6">
                                         <div class="form-group">
                                              <label for="status" class="col-lg-4 control-label"><?php echo _translate("User Status"); ?> <span class="mandatory">*</span></label>
