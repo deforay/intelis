@@ -471,7 +471,7 @@ final class TestRequestsService
             $candidates[] = [
                 'where' => 'remote_sample_code = ?',
                 'params' => [$remoteSampleCode],
-                'match_criteria' => 'remote_sample_code',
+                //'match_criteria' => 'remote_sample_code',
             ];
         }
 
@@ -479,7 +479,7 @@ final class TestRequestsService
             $candidates[] = [
                 'where' => 'sample_code = ? AND lab_id = ?',
                 'params' => [$sampleCode, $labId],
-                'match_criteria' => 'sample_code_and_lab_id',
+                //'match_criteria' => 'sample_code_and_lab_id',
             ];
         }
 
@@ -487,7 +487,7 @@ final class TestRequestsService
             $candidates[] = [
                 'where' => 'unique_id = ?',
                 'params' => [$uniqueId],
-                'match_criteria' => 'unique_id',
+                //'match_criteria' => 'unique_id',
             ];
         }
 
@@ -495,7 +495,7 @@ final class TestRequestsService
             $candidates[] = [
                 'where' => 'sample_code = ? AND facility_id = ?',
                 'params' => [$sampleCode, $facilityId],
-                'match_criteria' => 'sample_code_and_facility_id',
+                //'match_criteria' => 'sample_code_and_facility_id',
             ];
         }
 
@@ -504,7 +504,7 @@ final class TestRequestsService
         }
 
         $found = [];
-        $matchedByCriteria = null;
+        //$matchedByCriteria = null;
 
         foreach ($candidates as $cand) {
             $selectPart = $fields === '*' ? '*' : $fields;
@@ -512,7 +512,7 @@ final class TestRequestsService
             $res = $this->db->rawQueryOne($sql, $cand['params']);
             if (!empty($res)) {
                 $found = $res;
-                $matchedByCriteria = $cand['match_criteria'];
+                //$matchedByCriteria = $cand['match_criteria'];
                 break;
             }
         }
@@ -520,21 +520,6 @@ final class TestRequestsService
         if (empty($found)) {
             return [];
         }
-
-        // // Backfill remote_sample_code if we matched on a fallback and incoming has it
-        // if (
-        //     $remoteSampleCode !== '' &&
-        //     $matchedByCriteria !== 'remote_sample_code' &&
-        //     empty($found['remote_sample_code'] ?? null)
-        // ) {
-        //     $updateSql = sprintf(
-        //         "UPDATE %s SET remote_sample_code = ? WHERE %s = ?",
-        //         $quote($tableName),
-        //         $quote($primaryKeyName)
-        //     );
-        //     $this->db->rawQuery($updateSql, [$remoteSampleCode, $found[$primaryKeyName]]);
-        //     $found['remote_sample_code'] = $remoteSampleCode;
-        // }
 
         return $found;
     }
