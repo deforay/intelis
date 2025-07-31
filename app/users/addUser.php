@@ -179,7 +179,11 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                              <label for="loginId" class="col-lg-4 control-label"><?php echo _translate("Login ID"); ?> <span class="mandatory">*</span></label>
                                              <div class="col-lg-7">
                                                   <input type="text" class="form-control isRequired" id="loginId" name="loginId" placeholder="<?php echo _translate('Login Id'); ?>" title="<?php echo _translate('Please enter login id'); ?>" onblur='checkNameValidation("user_details","login_id",this,null,"<?php echo _translate("This login id that you entered already exists.Try another login id"); ?>",null)' />
+                                                  <small class="form-text text-muted">
+                                                       <?php echo _translate("Only lowercase letters, numbers, hyphens (-), and underscores (_) are allowed. No spaces."); ?>
+                                                  </small>
                                              </div>
+
                                         </div>
                                    </div>
                               </div>

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-07-28 20:02+0530\n"
-"PO-Revision-Date: 2025-07-28 20:02+0530\n"
+"POT-Creation-Date: 2025-07-31 15:35+0530\n"
+"PO-Revision-Date: 2025-07-31 15:36+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -442,9 +442,9 @@ msgstr "Action"
 #: app/tb/results/tb-manual-results.php:119
 #: app/tb/results/tb-print-results.php:144
 #: app/tb/results/tb-print-results.php:314
-#: app/tb/results/tb-result-status.php:131 app/users/addUser.php:342
-#: app/users/addUser.php:343 app/users/editUser.php:390
-#: app/users/editUser.php:391 app/vl/program-management/highViralLoad.php:304
+#: app/tb/results/tb-result-status.php:131 app/users/addUser.php:355
+#: app/users/addUser.php:356 app/users/editUser.php:404
+#: app/users/editUser.php:405 app/vl/program-management/highViralLoad.php:304
 #: app/vl/program-management/highViralLoad.php:647
 #: app/vl/program-management/highViralLoad.php:849
 #: app/vl/program-management/highViralLoad.php:967
@@ -1372,11 +1372,11 @@ msgstr "Veuillez sélectionner le projet"
 #: app/tb/results/tb-print-results.php:256
 #: app/tb/results/tb-result-status.php:77
 #: app/tb/results/tb-result-status.php:96
-#: app/tb/results/tb-result-status.php:112 app/users/addUser.php:228
-#: app/users/addUser.php:238 app/users/addUser.php:263
-#: app/users/addUser.php:273 app/users/edit-profile.php:73
-#: app/users/editUser.php:268 app/users/editUser.php:293
-#: app/users/editUser.php:303
+#: app/tb/results/tb-result-status.php:112 app/users/addUser.php:232
+#: app/users/addUser.php:242 app/users/addUser.php:267
+#: app/users/addUser.php:277 app/users/edit-profile.php:73
+#: app/users/editUser.php:272 app/users/editUser.php:297
+#: app/users/editUser.php:307
 #: app/vl/program-management/getHighVlResultDetails.php:236
 #: app/vl/program-management/highViralLoad.php:163
 #: app/vl/program-management/highViralLoad.php:176
@@ -1985,8 +1985,8 @@ msgstr "ID de l'échantillon"
 #: app/tb/reference/add-tb-sample-rejection-reason.php:74
 #: app/tb/reference/add-tb-sample-type.php:56
 #: app/tb/reference/add-tb-test-reasons.php:75
-#: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:315
-#: app/users/edit-profile.php:129 app/users/editUser.php:353
+#: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:319
+#: app/users/edit-profile.php:129 app/users/editUser.php:357
 #: app/vl/program-management/upload-vl-control.php:124
 #: app/vl/reference/add-vl-art-code-details.php:92
 #: app/vl/reference/add-vl-results.php:148
@@ -2096,8 +2096,8 @@ msgstr "Envoyer"
 #: app/tb/results/tb-manual-results.php:120
 #: app/tb/results/tb-print-results.php:145
 #: app/tb/results/tb-print-results.php:315
-#: app/tb/results/tb-result-status.php:132 app/users/addUser.php:280
-#: app/users/editUser.php:310 app/vl/program-management/highViralLoad.php:306
+#: app/tb/results/tb-result-status.php:132 app/users/addUser.php:284
+#: app/users/editUser.php:314 app/vl/program-management/highViralLoad.php:306
 #: app/vl/program-management/highViralLoad.php:470
 #: app/vl/program-management/highViralLoad.php:649
 #: app/vl/program-management/highViralLoad.php:851
@@ -2959,8 +2959,8 @@ msgstr "Détails de la synchronisation des laboratoires"
 #: app/tb/results/tb-print-results.php:216
 #: app/tb/results/tb-print-results.php:253
 #: app/tb/results/tb-print-results.php:350
-#: app/tb/results/tb-print-results.php:386 app/users/addUser.php:258
-#: app/users/editUser.php:288
+#: app/tb/results/tb-print-results.php:386 app/users/addUser.php:262
+#: app/users/editUser.php:292
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/program-management/highViralLoad.php:186
 #: app/vl/program-management/highViralLoad.php:368
@@ -3114,8 +3114,8 @@ msgstr "Veuillez choisir Province/État/Région"
 #: app/tb/results/tb-print-results.php:217
 #: app/tb/results/tb-print-results.php:260
 #: app/tb/results/tb-print-results.php:353
-#: app/tb/results/tb-print-results.php:387 app/users/addUser.php:268
-#: app/users/editUser.php:298
+#: app/tb/results/tb-print-results.php:387 app/users/addUser.php:272
+#: app/users/editUser.php:302
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/program-management/highViralLoad.php:195
 #: app/vl/program-management/highViralLoad.php:377
@@ -3486,7 +3486,7 @@ msgstr "Exporter vers Excel"
 #: app/generic-tests/requests/edit-request.php:1062
 #: app/generic-tests/results/update-generic-test-result.php:1016
 #: app/patients/add-patient.php:57 app/patients/edit-patient.php:74
-#: app/users/addUser.php:215 app/vl/program-management/highViralLoad.php:935
+#: app/users/addUser.php:219 app/vl/program-management/highViralLoad.php:935
 #: app/vl/requests/forms/add-drc.php:99
 msgid "Province"
 msgstr "Province"
@@ -3501,7 +3501,7 @@ msgstr "Province"
 #: app/generic-tests/requests/edit-request.php:1058
 #: app/generic-tests/results/update-generic-test-result.php:1012
 #: app/patients/add-patient.php:67 app/patients/edit-patient.php:84
-#: app/users/addUser.php:225 app/vl/requests/forms/add-cameroon.php:144
+#: app/users/addUser.php:229 app/vl/requests/forms/add-cameroon.php:144
 #: app/vl/requests/forms/edit-cameroon.php:195
 msgid "District"
 msgstr "District"
@@ -3997,8 +3997,8 @@ msgstr "Enregistré au laboratoire de test"
 #: app/tb/management/tb-clinic-report.php:599
 #: app/tb/management/tb-export-data.php:327
 #: app/tb/results/tb-failed-results.php:301
-#: app/tb/results/tb-print-results.php:462 app/users/addUser.php:395
-#: app/users/editUser.php:439 app/vl/program-management/highViralLoad.php:1182
+#: app/tb/results/tb-print-results.php:462 app/users/addUser.php:408
+#: app/users/editUser.php:453 app/vl/program-management/highViralLoad.php:1182
 #: app/vl/program-management/vl-export-data.php:569
 #: app/vl/program-management/vlMonitoringReport.php:303
 #: app/vl/requests/forms/add-cameroon.php:789
@@ -4038,8 +4038,8 @@ msgstr "Sélectionner la province"
 #: app/tb/management/tb-clinic-report.php:603
 #: app/tb/management/tb-export-data.php:330
 #: app/tb/results/tb-failed-results.php:304
-#: app/tb/results/tb-print-results.php:466 app/users/addUser.php:401
-#: app/users/editUser.php:445 app/vl/program-management/highViralLoad.php:1186
+#: app/tb/results/tb-print-results.php:466 app/users/addUser.php:414
+#: app/users/editUser.php:459 app/vl/program-management/highViralLoad.php:1186
 #: app/vl/program-management/vl-export-data.php:572
 #: app/vl/program-management/vlMonitoringReport.php:306
 #: app/vl/requests/forms/add-cameroon.php:792
@@ -4841,7 +4841,7 @@ msgstr "Veuillez choisir la machine"
 #: app/eid/requests/eid-requests.php:419 app/facilities/facilities.php:160
 #: app/hepatitis/requests/hepatitis-dhis2.php:274
 #: app/hepatitis/requests/hepatitis-requests.php:387
-#: app/tb/requests/tb-requests.php:292 app/users/addUser.php:208
+#: app/tb/requests/tb-requests.php:292 app/users/addUser.php:212
 #: app/vl/requests/vl-requests.php:545
 msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
@@ -5362,7 +5362,7 @@ msgstr "Réinitialiser les filtres"
 #: app/eid/requests/eid-requests.php:370
 #: app/hepatitis/requests/hepatitis-dhis2.php:243
 #: app/hepatitis/requests/hepatitis-requests.php:356
-#: app/tb/requests/tb-requests.php:269 app/users/addUser.php:209
+#: app/tb/requests/tb-requests.php:269 app/users/addUser.php:213
 #: app/vl/requests/vl-requests.php:480
 msgid "Hide Advanced Search Options"
 msgstr "Cacher la recherche avancée"
@@ -5473,8 +5473,8 @@ msgstr "Sauvegarder et Suivant"
 #: app/tb/reference/add-tb-test-reasons.php:76
 #: app/tb/requests/forms/add-burkina-faso.php:498
 #: app/tb/results/email-results.php:333
-#: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:316
-#: app/users/edit-profile.php:130 app/users/editUser.php:354
+#: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:320
+#: app/users/edit-profile.php:130 app/users/editUser.php:358
 #: app/vl/program-management/upload-vl-control.php:127
 #: app/vl/reference/add-vl-art-code-details.php:93
 #: app/vl/reference/add-vl-results.php:151
@@ -9429,7 +9429,7 @@ msgstr "Veuillez saisir le statut du motif de rejet"
 #: app/tb/reference/get-tb-results-helper.php:97
 #: app/tb/reference/getTbSampleRejectionDetails.php:103
 #: app/tb/reference/getTbSampleTypeDetails.php:103
-#: app/tb/reference/getTbTestReasonsDetails.php:97 app/users/editUser.php:269
+#: app/tb/reference/getTbTestReasonsDetails.php:97 app/users/editUser.php:273
 #: app/vl/reference/add-vl-art-code-details.php:81
 #: app/vl/reference/add-vl-results.php:76
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:62
@@ -9529,7 +9529,7 @@ msgstr "Actif"
 #: app/tb/reference/get-tb-results-helper.php:98
 #: app/tb/reference/getTbSampleRejectionDetails.php:104
 #: app/tb/reference/getTbSampleTypeDetails.php:104
-#: app/tb/reference/getTbTestReasonsDetails.php:98 app/users/editUser.php:270
+#: app/tb/reference/getTbTestReasonsDetails.php:98 app/users/editUser.php:274
 #: app/vl/reference/add-vl-art-code-details.php:82
 #: app/vl/reference/add-vl-results.php:79
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:63
@@ -10387,8 +10387,8 @@ msgstr "Essai de synchronisation"
 #: app/generic-tests/requests/view-requests.php:555
 #: app/hepatitis/requests/hepatitis-dhis2.php:684
 #: app/hepatitis/requests/hepatitis-requests.php:847
-#: app/tb/requests/tb-requests.php:733 app/users/addUser.php:444
-#: app/users/editUser.php:489 app/vl/requests/vl-requests.php:1222
+#: app/tb/requests/tb-requests.php:733 app/users/addUser.php:457
+#: app/users/editUser.php:503 app/vl/requests/vl-requests.php:1222
 #: app/vl/requests/vl-requests.php:1246 app/vl/requests/vl-requests.php:1277
 msgid "Please wait"
 msgstr "Veuillez patienter"
@@ -11552,8 +11552,8 @@ msgstr "Urgent"
 #: app/facilities/editFacility.php:272
 #: app/generic-tests/results/email-results.php:211
 #: app/hepatitis/results/email-results.php:211 app/mail/vlResultMail.php:211
-#: app/tb/results/email-results.php:211 app/users/addUser.php:262
-#: app/users/editUser.php:292 app/vl/results/email-results.php:211
+#: app/tb/results/email-results.php:211 app/users/addUser.php:266
+#: app/users/editUser.php:296 app/vl/results/email-results.php:211
 #: app/vl/results/vlResultMail.php:211
 msgid "Please choose province/state"
 msgstr "Veuillez choisir la province ou l'État"
@@ -12041,7 +12041,7 @@ msgid "The page or resource you requested could not be found."
 msgstr "La page ou la ressource demandée n'a pu être trouvée."
 
 #: app/classes/ErrorHandlers/ErrorResponseGenerator.php:36
-#: app/classes/Middlewares/App/AclMiddleware.php:188
+#: app/classes/Middlewares/App/AclMiddleware.php:187
 msgid "You do not have permission to access this page or resource."
 msgstr ""
 "Vous n'avez pas l'autorisation d'accéder à cette page ou à cette ressource."
@@ -12195,15 +12195,15 @@ msgstr ""
 "Désolé, nous n'avons pas pu résoudre cette demande Nous n'avons pas pu "
 "résoudre cette demande"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:57
+#: app/classes/Middlewares/App/AclMiddleware.php:56
 msgid "Access control error occurred"
 msgstr "Une erreur de contrôle d'accès s'est produite"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:185
+#: app/classes/Middlewares/App/AclMiddleware.php:184
 msgid "Guest"
 msgstr "Invité"
 
-#: app/classes/Middlewares/App/AclMiddleware.php:187
+#: app/classes/Middlewares/App/AclMiddleware.php:186
 msgid "Sorry"
 msgstr "Désolé"
 
@@ -13303,7 +13303,7 @@ msgstr "Nom et code de la structure"
 #: app/covid-19/reference/covid19-sample-type.php:38
 #: app/facilities/addFacility.php:137 app/facilities/editFacility.php:190
 #: app/facilities/facilities.php:145 app/facilities/facilities.php:171
-#: app/tb/reference/tb-sample-type.php:38 app/users/addUser.php:235
+#: app/tb/reference/tb-sample-type.php:38 app/users/addUser.php:239
 msgid "Facility Type"
 msgstr "Type d'installation"
 
@@ -14508,7 +14508,7 @@ msgstr "Autre ID"
 
 #: app/covid-19/requests/forms/add-cameroon.php:614
 #: app/facilities/addFacility.php:140 app/facilities/editFacility.php:192
-#: app/facilities/facilities.php:73 app/users/addUser.php:237
+#: app/facilities/facilities.php:73 app/users/addUser.php:241
 msgid "Please select facility type"
 msgstr "Veuillez sélectionner le type d'établissement"
 
@@ -14576,8 +14576,8 @@ msgstr "Personne à contacter"
 #: app/tb/requests/forms/edit-burkina-faso.php:341
 #: app/tb/results/forms/update-burkina-faso.php:220
 #: app/tb/results/forms/update-burkina-faso.php:266
-#: app/tb/results/forms/update-burkina-faso.php:340 app/users/addUser.php:423
-#: app/users/editUser.php:467
+#: app/tb/results/forms/update-burkina-faso.php:340 app/users/addUser.php:436
+#: app/users/editUser.php:481
 #: app/vl/results/forms/update-cameroon-result.php:525
 msgid "Other"
 msgstr "Autre"
@@ -17375,7 +17375,7 @@ msgstr ""
 "numéro de GSM."
 
 #: app/facilities/addFacility.php:266 app/facilities/editFacility.php:293
-#: app/users/addUser.php:271 app/users/editUser.php:301
+#: app/users/addUser.php:275 app/users/editUser.php:305
 #: app/vl/program-management/vlMonitoringReport.php:212
 msgid "Please choose District/County"
 msgstr "Veuillez choisir le district/comté"
@@ -17443,7 +17443,7 @@ msgstr "Rapport hebdomadaire du labo VL"
 #: app/generic-tests/configuration/clone-test-type.php:235
 #: app/generic-tests/configuration/edit-test-type.php:240
 #: app/roles/addRole.php:218 app/roles/editRole.php:211
-#: app/system-admin/reset-password/get-user.php:51 app/users/editUser.php:267
+#: app/system-admin/reset-password/get-user.php:51 app/users/editUser.php:271
 msgid "Please select the status"
 msgstr "Veuillez sélectionner le statut"
 
@@ -17724,23 +17724,23 @@ msgstr "Sélectionnez l'option"
 msgid "for test type"
 msgstr "pour le type de test"
 
-#: app/facilities/mapTestType.php:105 app/users/addUser.php:294
-#: app/users/editUser.php:325
+#: app/facilities/mapTestType.php:105 app/users/addUser.php:298
+#: app/users/editUser.php:329
 msgid "Number of unselected facilities"
 msgstr "Nombre d'établissements non sélectionnés"
 
-#: app/facilities/mapTestType.php:117 app/users/addUser.php:306
-#: app/users/editUser.php:343
+#: app/facilities/mapTestType.php:117 app/users/addUser.php:310
+#: app/users/editUser.php:347
 msgid "Number of selected facilities"
 msgstr "Nombre d'établissements sélectionnés"
 
-#: app/facilities/mapTestType.php:208 app/users/addUser.php:444
-#: app/users/editUser.php:489
+#: app/facilities/mapTestType.php:208 app/users/addUser.php:457
+#: app/users/editUser.php:503
 msgid "Trying to get mapped facilities"
 msgstr "Essayer d'obtenir des installations cartographiées"
 
-#: app/facilities/mapTestType.php:222 app/users/addUser.php:461
-#: app/users/editUser.php:507
+#: app/facilities/mapTestType.php:222 app/users/addUser.php:474
+#: app/users/editUser.php:521
 msgid ""
 "No facilities found for the selected facility type. Please add a new "
 "facility or edit an existing facility."
@@ -21896,10 +21896,10 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:29
 #: app/system-admin/reset-password/get-user.php:31
-#: app/system-admin/setup/index.php:98 app/users/addUser.php:189
-#: app/users/addUser.php:191 app/users/edit-profile.php:108
-#: app/users/edit-profile.php:110 app/users/editUser.php:246
-#: app/users/editUser.php:248
+#: app/system-admin/setup/index.php:98 app/users/addUser.php:193
+#: app/users/addUser.php:195 app/users/edit-profile.php:108
+#: app/users/edit-profile.php:110 app/users/editUser.php:250
+#: app/users/editUser.php:252
 #: app/vl/result-mail/editTestResultEmailConfig.php:65
 #: app/vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -22349,10 +22349,10 @@ msgstr "Identifiant de connexion"
 #: app/system-admin/edit-config/resetPassword.php:47
 #: app/system-admin/reset-password/get-user.php:39
 #: app/system-admin/reset-password/get-user.php:41
-#: app/system-admin/setup/index.php:102 app/users/addUser.php:199
-#: app/users/addUser.php:201 app/users/edit-profile.php:118
-#: app/users/edit-profile.php:120 app/users/editUser.php:256
-#: app/users/editUser.php:258
+#: app/system-admin/setup/index.php:102 app/users/addUser.php:203
+#: app/users/addUser.php:205 app/users/edit-profile.php:118
+#: app/users/edit-profile.php:120 app/users/editUser.php:260
+#: app/users/editUser.php:262
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
@@ -22364,10 +22364,10 @@ msgstr "Terminer"
 #: app/system-admin/edit-config/resetPassword.php:95
 #: app/system-admin/reset-password/get-user.php:33
 #: app/system-admin/reset-password/reset-password.php:111
-#: app/system-admin/setup/index.php:140 app/users/addUser.php:193
-#: app/users/addUser.php:512 app/users/edit-profile.php:112
-#: app/users/edit-profile.php:240 app/users/editUser.php:250
-#: app/users/editUser.php:561
+#: app/system-admin/setup/index.php:140 app/users/addUser.php:197
+#: app/users/addUser.php:525 app/users/edit-profile.php:112
+#: app/users/edit-profile.php:240 app/users/editUser.php:254
+#: app/users/editUser.php:575
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
 "number, one alphabet and may have special characters."
@@ -22616,8 +22616,8 @@ msgstr "Gérer le mot de passe"
 #: app/system-admin/edit-config/resetPassword.php:38
 #: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:31
-#: app/system-admin/setup/index.php:98 app/users/addUser.php:191
-#: app/users/edit-profile.php:110 app/users/editUser.php:248
+#: app/system-admin/setup/index.php:98 app/users/addUser.php:195
+#: app/users/edit-profile.php:110 app/users/editUser.php:252
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -22695,8 +22695,8 @@ msgstr "Administrateur de système"
 msgid "Please enter the user name"
 msgstr "Veuillez saisir le nom d'utilisateur"
 
-#: app/system-admin/reset-password/get-user.php:32 app/users/addUser.php:192
-#: app/users/edit-profile.php:111 app/users/editUser.php:249
+#: app/system-admin/reset-password/get-user.php:32 app/users/addUser.php:196
+#: app/users/edit-profile.php:111 app/users/editUser.php:253
 msgid "Generate Random Password"
 msgstr "Générer un mot de passe aléatoire"
 
@@ -22710,8 +22710,8 @@ msgid "User"
 msgstr "Utilisateur"
 
 #: app/system-admin/reset-password/reset-password.php:128
-#: app/users/addUser.php:602 app/users/edit-profile.php:257
-#: app/users/editUser.php:649
+#: app/users/addUser.php:615 app/users/edit-profile.php:257
+#: app/users/editUser.php:663
 msgid "Password generated and copied to clipboard"
 msgstr "Mot de passe généré et copié dans le presse-papiers"
 
@@ -24522,31 +24522,39 @@ msgid "This login id that you entered already exists.Try another login id"
 msgstr ""
 "L'identifiant que vous avez saisi existe déjà. Essayez un autre identifiant"
 
-#: app/users/addUser.php:212
+#: app/users/addUser.php:183 app/users/editUser.php:239
+msgid ""
+"Only lowercase letters, numbers, hyphens (-), and underscores (_) are "
+"allowed. No spaces."
+msgstr ""
+"Seuls les lettres minuscules, les chiffres, les traits d'union (-) et les "
+"caractères de soulignement (_) sont autorisés. Il n'y a pas d'espace."
+
+#: app/users/addUser.php:216
 msgid "Filter Facilities by Province & Districts"
 msgstr "Filtrer les installations par province et districts"
 
-#: app/users/addUser.php:217
+#: app/users/addUser.php:221
 msgid "Please choose province"
 msgstr "Veuillez choisir la province"
 
-#: app/users/addUser.php:227
+#: app/users/addUser.php:231
 msgid "Please choose district"
 msgstr "Veuillez choisir un district"
 
-#: app/users/addUser.php:289 app/users/editUser.php:320
+#: app/users/addUser.php:293 app/users/editUser.php:324
 msgid "Map User to Selected Facilities (optional)"
 msgstr ""
 "Carte de l'utilisateur vers les installations sélectionnées (facultatif)"
 
-#: app/users/addUser.php:389 app/users/editUser.php:433
+#: app/users/addUser.php:402 app/users/editUser.php:447
 msgid ""
 "Invalid file type. Please upload correct image format like JPG or JPEG or PNG"
 msgstr ""
 "Type de fichier non valide. Veuillez télécharger le format d'image correct "
 "comme JPG ou JPEG ou PNG"
 
-#: app/users/addUserHelper.php:112
+#: app/users/addUserHelper.php:117
 msgid "User saved successfully!"
 msgstr "L'utilisateur a été enregistré avec succès !"
 
@@ -24597,7 +24605,7 @@ msgstr "Statut de connexion"
 msgid "Edit User"
 msgstr "Modifier l'utilisateur"
 
-#: app/users/editUser.php:265
+#: app/users/editUser.php:269
 msgid "User Status"
 msgstr "Statut de l'utilisateur"
 
@@ -26517,7 +26525,7 @@ msgstr "Impossible de générer un PDF de résultat"
 msgid "Manage Sample Status"
 msgstr "Gérer le statut de l'échantillon"
 
-#: public/assets/js/dates.js.php:278
+#: public/assets/js/dates.js.php:280
 msgid ""
 "Sample Received at Testing Lab Date cannot be earlier than Sample Collection "
 "Date"
@@ -26525,14 +26533,14 @@ msgstr ""
 "Échantillon reçu au laboratoire d'essai La date ne peut être antérieure à la "
 "date de prélèvement de l'échantillon"
 
-#: public/assets/js/dates.js.php:290
+#: public/assets/js/dates.js.php:292
 msgid ""
 "Sample Received at Hub Date cannot be earlier than Sample Collection Date"
 msgstr ""
 "La date de réception de l'échantillon au carrefour ne peut être antérieure à "
 "la date de prélèvement de l'échantillon"
 
-#: public/assets/js/dates.js.php:302
+#: public/assets/js/dates.js.php:304
 msgid "Sample Testing Date cannot be earlier than Sample Collection Date"
 msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
