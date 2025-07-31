@@ -136,7 +136,8 @@ try {
                     vl.request_created_datetime,
                     vl.sample_received_at_lab_datetime,
                     b.request_created_datetime as batch_request_created,
-                    vl.$resultColumn,vl.result_reviewed_datetime,
+                    vl.$resultColumn,
+                    vl.result_reviewed_datetime,
                     vl.result_approved_datetime,
                     vl.result_sent_to_source_datetime,
                     vl.last_modified_datetime
@@ -248,7 +249,7 @@ try {
         $row[] = $aRow['status_name'];
         $row[] = $aRow['result'];
         $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
-        $row[] = (!empty($aRow['sample_tested_datetime']) && !empty($aRow['result_approved_datetime'])) ? DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true) : "";
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
 

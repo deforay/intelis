@@ -65,11 +65,8 @@ try {
         $testName = 'TB';
     }
 
-    $aColumns = array('l.facility_name', 'vl.source_of_request', 'vl.request_created_datetime');
+    $aColumns = ["vl.sample_code", "vl.remote_sample_code", "vl.external_sample_code", ];
     $orderColumns = array('l.facility_name', '', '', '', '', 'vl.source_of_request', 'vl.request_created_datetime');
-
-    /* Indexed column (used for fast and accurate table cardinality) */
-    $sIndexColumn = $primaryKey;
 
 
     $sOffset = $sLimit = null;
@@ -78,56 +75,24 @@ try {
         $sLimit = $_POST['iDisplayLength'];
     }
 
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-               " . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
-
-
-
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
     $sWhere = [];
-    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-        $searchArray = explode(" ", (string) $_POST['sSearch']);
-        $sWhereSub = "";
-        foreach ($searchArray as $search) {
-            $sWhereSub .= " (";
-            $colSize = count($aColumns);
-
-            for ($i = 0; $i < $colSize; $i++) {
-                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                }
-            }
-            $sWhereSub .= ")";
-        }
-        $sWhere[] = $sWhereSub;
+    if (!empty($columnSearch) && $columnSearch != '') {
+        $sWhere[] = $columnSearch;
     }
 
 
-
-
-    $aWhere = '';
-    $sQuery = '';
-
-    $sQuery = "SELECT SQL_CALC_FOUND_ROWS l.facility_name as 'labname',
+    $sQuery = "SELECT l.facility_name as 'labname',
         vl.source_of_request,
         vl.sample_collection_date,
+        vl.last_modified_datetime,
         count(*) as 'samples',
         vl.lab_id,
         SUM(CASE WHEN (vl.result is not null AND vl.result not like '' AND result_status = 7) THEN 1 ELSE 0 END) AS 'samplesWithResults',
         SUM(CASE WHEN (vl.is_sample_rejected is not null AND vl.is_sample_rejected like 'yes') THEN 1 ELSE 0 END) AS 'rejected',
-        SUM(CASE WHEN (vl." . $sampleReceivedfield . " is not null AND vl." . $sampleReceivedfield . " not like '') THEN 1 ELSE 0 END) AS 'noOfSampleReceivedAtLab',
+        SUM(CASE WHEN (vl.$sampleReceivedfield is not null AND vl.$sampleReceivedfield not like '') THEN 1 ELSE 0 END) AS 'noOfSampleReceivedAtLab',
         SUM(CASE WHEN (vl.result_sent_to_source is not null and vl.result_sent_to_source = 'sent') THEN 1 ELSE 0 END) AS 'noOfResultsReturned',
         MAX(request_created_datetime) AS 'lastRequest'
         FROM $table as vl
@@ -163,22 +128,18 @@ try {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
-    $rResult = $db->rawQuery($sQuery);
-
-    /* Data set length after filtering */
-    $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-    $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
+    [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
 
-    $output = array(
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
 
     foreach ($rResult as $key => $aRow) {
-        $params = array($aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']);
+        $params = [$aRow['sample_collection_date'], $aRow['lab_id'], $aRow['source_of_request']];
         if (isset($aRow['samples']) && $aRow['samples'] > 0) {
             $samples = $params;
             $samples[] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;

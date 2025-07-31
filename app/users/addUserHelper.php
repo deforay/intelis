@@ -37,6 +37,11 @@ $signatureImage = null;
 try {
     if (trim((string) $_POST['userName']) != '' && trim((string) $_POST['loginId']) != '' && ($_POST['role']) != '' && ($_POST['password']) != '') {
         $userId = MiscUtility::generateUUID();
+
+        $_POST['loginId'] = strtolower(trim((string) $_POST['loginId']));
+        $_POST['loginId'] = str_replace(' ', '', $_POST['loginId']);
+        $_POST['loginId'] = preg_replace('/[^a-z0-9_-]/', '', $_POST['loginId']);
+
         $data = [
             'user_id' => $userId,
             'user_name' => $_POST['userName'],

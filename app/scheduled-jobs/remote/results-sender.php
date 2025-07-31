@@ -52,18 +52,23 @@ $apiService->setBearerToken($stsBearerToken);
 
 $isSilent = false;
 $syncSinceDate = null;
+$forceSyncModule = null;
+$sampleCode = null;
+
 if ($cliMode) {
     foreach ($argv as $index => $arg) {
-        if ($index === 0) continue; // Skip the script name
+        if ($index === 0) continue;
 
         $arg = trim($arg);
 
-        if (str_contains($arg, 'silent')) {
+        if ($arg === 'silent') {
             $isSilent = true;
         } elseif (preg_match('/^\d{4}-\d{2}-\d{2}$/', $arg) && DateUtility::isDateFormatValid($arg, 'Y-m-d')) {
             $syncSinceDate ??= DateUtility::getDateTime($arg, 'Y-m-d');
         } elseif (is_numeric($arg)) {
             $syncSinceDate ??= DateUtility::daysAgo((int)$arg);
+        } elseif (in_array($arg, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'])) {
+            $forceSyncModule = $arg;
         } else {
             echo "Invalid argument: $arg\n";
             exit(1);
@@ -73,7 +78,22 @@ if ($cliMode) {
     if ($syncSinceDate !== null) {
         echo "Syncing results since: $syncSinceDate\n";
     }
+
+    if ($forceSyncModule !== null) {
+        echo "Forcing module sync for: $forceSyncModule\n";
+    }
 }
+
+// Web fallback
+$forceSyncModule = $forceSyncModule ? strtolower(trim($forceSyncModule)) : null;
+$sampleCode = $sampleCode ?? ($_GET['sampleCode'] ?? null);
+
+// If module is forced, override modules config
+if (!empty($forceSyncModule)) {
+    unset($systemConfig['modules']);
+    $systemConfig['modules'][$forceSyncModule] = true;
+}
+
 
 //Sending results to /v2/results.php for all test types
 $url = "$remoteURL/remote/v2/results.php";
@@ -86,17 +106,6 @@ try {
     }
 
     $transactionId = MiscUtility::generateULID();
-
-    $forceSyncModule = !empty($_GET['forceSyncModule']) ? $_GET['forceSyncModule'] : null;
-    $sampleCode = !empty($_GET['sampleCode']) ? $_GET['sampleCode'] : null;
-
-    // if only one module is getting synced, lets only sync that one module
-    if (!empty($forceSyncModule)) {
-        unset($systemConfig['modules']);
-        $systemConfig['modules'][$forceSyncModule] = true;
-    }
-
-
     // CUSTOM TEST RESULTS
     if (isset($systemConfig['modules']['generic-tests']) && $systemConfig['modules']['generic-tests'] === true) {
         if ($cliMode) {

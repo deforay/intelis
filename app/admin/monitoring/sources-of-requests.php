@@ -385,7 +385,7 @@ foreach ($sources as $list) {
                     "sClass": "center"
                 }
             ],
-            "aaSorting": [12, "desc"],
+            "aaSorting": [13, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",

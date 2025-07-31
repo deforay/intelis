@@ -334,6 +334,15 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      facilityName = true;
 
      jQuery(document).ready(function($) {
+
+          $('#loginId').on('input', function() {
+               let val = $(this).val();
+               val = val.toLowerCase(); // convert to lowercase
+               val = val.replace(/\s+/g, ''); // remove all spaces
+               val = val.replace(/[^a-z0-9_-]/g, ''); // allow only a-z, 0-9, _ and -
+               $(this).val(val); // set sanitized value back
+          });
+
           <?php if ($general->isSTSInstance()) { ?>
                getFacilitiesToMap();
           <?php } ?>
