@@ -287,12 +287,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 									</div>
 
 									<div class="barcodeFormat">
-									<div class="col-md-6">
-										<div class="form-group contentDiv">
+										<div class="col-md-6">
+											<div class="form-group contentDiv">
 
+											</div>
 										</div>
 									</div>
-								</div>
 								</div>
 								<div class="row">
 									<div class="col-md-6">
@@ -491,8 +491,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 											</div>
 										</div>
 										<?php
-									if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
-										<div class="col-md-6">
+										if ($arr['vl_form'] == COUNTRY\CAMEROON && isset($arr['vl_copy_request_save_and_next']) && $arr['vl_copy_request_save_and_next'] != '') { ?>
+											<div class="col-md-6">
 												<div class="form-group">
 													<label for="vl_copy_request_save_and_next" class="col-lg-4 control-label"><?php echo _translate("Copy Request On Save and Next Form"); ?><span class="mandatory ">*</span></label>
 													<div class="col-lg-4">
@@ -503,41 +503,41 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 														</select>
 													</div>
 												</div>
-										</div>
+											</div>
 									</div>
 
 
-										<div class="row">
-											<?php }
-											if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="vl_suppression_target" class="col-lg-4 control-label"><?php echo _translate("VL Suppression Target"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select id="vl_suppression_target" name="vl_suppression_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
-															<option value="no" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
-														</select>
-													</div>
+									<div class="row">
+									<?php }
+										if (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] != '') { ?>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="vl_suppression_target" class="col-lg-4 control-label"><?php echo _translate("VL Suppression Target"); ?><span class="mandatory ">*</span></label>
+												<div class="col-lg-4">
+													<select id="vl_suppression_target" name="vl_suppression_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
+														<option value=""><?php echo _translate("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+														<option value="no" <?php echo (isset($arr['vl_suppression_target']) && $arr['vl_suppression_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+													</select>
 												</div>
 											</div>
-											<?php }
-												if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
-											<div class="col-md-6">
-												<div class="form-group">
-													<label for="vl_monthly_target" class="col-lg-4 control-label"><?php echo _translate("VL Monthly Target"); ?><span class="mandatory ">*</span></label>
-													<div class="col-lg-4">
-														<select id="vl_monthly_target" name="vl_monthly_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
-															<option value=""><?php echo _translate("--Select--"); ?></option>
-															<option value="yes" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
-															<option value="no" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
-														</select>
-													</div>
-												</div>
-											</div>
-											<?php } ?>
 										</div>
+									<?php }
+										if (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] != '') { ?>
+										<div class="col-md-6">
+											<div class="form-group">
+												<label for="vl_monthly_target" class="col-lg-4 control-label"><?php echo _translate("VL Monthly Target"); ?><span class="mandatory ">*</span></label>
+												<div class="col-lg-4">
+													<select id="vl_monthly_target" name="vl_monthly_target" type="text" class="form-control readPage" title="<?php echo _translate('Please select lock approved sample'); ?>">
+														<option value=""><?php echo _translate("--Select--"); ?></option>
+														<option value="yes" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') ? "selected='selected'" : ''; ?>><?php echo _translate("Enable"); ?></option>
+														<option value="no" <?php echo (isset($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'no') ? "selected='selected'" : ''; ?>><?php echo _translate("Disable"); ?></option>
+													</select>
+												</div>
+											</div>
+										</div>
+									<?php } ?>
+									</div>
 
 
 									<div class="row">
@@ -593,7 +593,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-									<?php } ?>
+										<?php } ?>
 									</div>
 
 								</div>
@@ -672,7 +672,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-									<?php } ?>
+										<?php } ?>
 									</div>
 
 									<div class="row">
@@ -904,7 +904,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-									<?php } ?>
+										<?php } ?>
 									</div>
 
 
@@ -1201,12 +1201,12 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-									<?php } ?>
+										<?php } ?>
 									</div>
 
-										<div class="row">
+									<div class="row">
 										<?php
-											if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
+										if (isset($arr['generic_sample_expiry_after_days']) && $arr['generic_sample_expiry_after_days'] != '') { ?>
 											<div class="col-md-6">
 												<div class="form-group">
 													<label for="generic_sample_expiry_after_days" class="col-lg-4 control-label"><?php echo _translate("Sample Expiry Days"); ?></label>
@@ -1215,10 +1215,10 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</div>
 												</div>
 											</div>
-											<?php } ?>
+										<?php } ?>
 
-											<div class="col-md-6">
-												<div class="form-group">
+										<div class="col-md-6">
+											<div class="form-group">
 												<label for="generic_show_participant_name_in_manifest" class="col-lg-4 control-label"><?php echo _translate("Other Lab Tests Show Participant Name in Manifest"); ?></label>
 												<div class="col-lg-4">
 													<select id="generic_show_participant_name_in_manifest" name="generic_show_participant_name_in_manifest" type="text" class="form-control readPage" title="<?php echo _translate('Please select Other Lab Tests Participant Name in Manifest'); ?>">
@@ -1228,8 +1228,8 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 													</select>
 												</div>
 											</div>
-											</div>
 										</div>
+									</div>
 
 								</div>
 							</div>
@@ -1438,29 +1438,27 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 		$("#removedLogoImage").val(img);
 	}
 
-	function showBarcodeFormatMessage(barcodeVal){
+	function showBarcodeFormatMessage(barcodeVal) {
 		$contentMsg = "";
-		if(barcodeVal == "zebra-printer"){
+		if (barcodeVal == "zebra-printer") {
 			$('.barcodeFormat').show();
 
 			$.post("/global-config/getJsFileContent.php", {
-				formatType : barcodeVal
-			},
-			function(data) {
-				$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> Zebra Label Format <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Zebra format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">'+data+'</textarea></div>');
-			});
-		}
-		else if(barcodeVal == "dymo-labelwriter-450"){
+					formatType: barcodeVal
+				},
+				function(data) {
+					$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> <?= _translate("Zebra Label Format", true); ?> <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Zebra format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">' + data + '</textarea></div>');
+				});
+		} else if (barcodeVal == "dymo-labelwriter-450") {
 			$('.barcodeFormat').show();
 
 			$.post("/global-config/getJsFileContent.php", {
-				formatType : barcodeVal
-			},
-			function(data) {
-				$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> Dymo Label Format <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Dymo format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">'+data+'</textarea></div>');
-			});
-		}
-		else{
+					formatType: barcodeVal
+				},
+				function(data) {
+					$('.contentDiv').html('<label for="contentFormat" class="col-lg-4 control-label"> <?= _translate("DYMO Label Format", true); ?> <span class="mandatory">*</span> </label><div class="col-lg-8"><textarea class="form-control isRequired" placeholder="Enter the Content for Dymo format" id="contentFormat" name="contentFormat" style="width:100%;min-height:80px;max-height:100px;">' + data + '</textarea></div>');
+				});
+		} else {
 			$('.barcodeFormat').hide();
 		}
 
