@@ -1,8 +1,16 @@
+
+// Zebra Printer Web Print Integration
+// This script handles the interaction with Zebra printers using BrowserPrint API.
+// It allows printing barcode labels with a specific format and handles printer status.
 let currentZebraPrinter = null;
 let available_printers = null;
 let default_printer = null;
 let selected_printer = null;
 let default_mode = true;
+
+// internal state to debounce transient offline
+let _lastGoodStatus = null;
+let _transientOfflineTimer = null;
 
 function replaceAllSafe(str, search, replacement) {
 	return String(str).split(String(search)).join(replacement == null ? '' : replacement);
@@ -18,6 +26,186 @@ function urldecode(str) {
 	}
 }
 
+function createSafeZebraPrinter(device) {
+	const zebra = new Zebra.Printer(device);
+	if (typeof zebra.onResponse === 'function') {
+		const origOnResponse = zebra.onResponse.bind(zebra);
+		zebra.onResponse = function (a, f) {
+			if (!this.device_request_queue || this.device_request_queue.length === 0) {
+				console.warn("Zebra.Printer.onResponse called with empty queue; skipping response", { a, f });
+				return;
+			}
+			origOnResponse(a, f);
+		};
+	}
+	return zebra;
+}
+
+function renderPrinterStatus(status) {
+	const el = document.getElementById('printer_status');
+	if (!el) return;
+
+	// transient offline suppression: if status.offline && raw is empty, delay showing ❌ for 300ms
+	const isActuallyOffline = status && status.offline;
+	const rawEmpty = !status.raw || String(status.raw).trim() === "";
+
+	if (isActuallyOffline && rawEmpty) {
+		// treat as transient; show “checking...” if no last good status
+		if (_transientOfflineTimer) {
+			clearTimeout(_transientOfflineTimer);
+		}
+		el.textContent = '⏳ checking...';
+		el.classList.remove('online', 'offline');
+		// after delay, if still offline+empty, then show cross
+		_transientOfflineTimer = setTimeout(() => {
+			// if newer good status arrived meanwhile, skip
+			if (_lastGoodStatus && _lastGoodStatus.isPrinterReady && _lastGoodStatus.isPrinterReady()) {
+				return;
+			}
+			el.textContent = '❌ Offline';
+			el.classList.add('offline');
+			el.classList.remove('online');
+		}, 300);
+		return;
+	}
+
+	// clear any pending transient timer
+	if (_transientOfflineTimer) {
+		clearTimeout(_transientOfflineTimer);
+		_transientOfflineTimer = null;
+	}
+
+	const isReady = status && typeof status.isPrinterReady === 'function' && status.isPrinterReady();
+	const symbol = isReady ? '✅' : '❌';
+	const message = status && typeof status.getMessage === 'function' ? status.getMessage() : (isReady ? 'Ready' : 'Not Ready');
+
+	el.textContent = `${symbol} ${message}`;
+	el.classList.toggle('online', isReady);
+	el.classList.toggle('offline', !isReady);
+
+	if (isReady) {
+		_lastGoodStatus = status;
+	}
+}
+
+async function primePrinter() {
+	if (!currentZebraPrinter) return;
+	return new Promise(res => {
+		currentZebraPrinter.getStatus(
+			status => {
+				console.log("🔌 Primed status:", status.getMessage(), status);
+				renderPrinterStatus(status);
+				res();
+			},
+			err => {
+				console.warn("🔌 Prime status error (ignored):", err);
+				res();
+			}
+		);
+	});
+}
+
+async function waitUntilPrinterReady(maxTotal = 8000, interval = 500) {
+	if (!currentZebraPrinter) {
+		console.warn("No Zebra wrapper present; skipping ready check.");
+		return;
+	}
+
+	const start = Date.now();
+	while (true) {
+		try {
+			const status = await new Promise((resolve, reject) => {
+				currentZebraPrinter.getStatus(resolve, reject);
+			});
+			console.log("✅ waitUntilPrinterReady status:", status.getMessage(), status);
+			if (status.raw !== undefined) {
+				console.log("Raw status (escaped):", String(status.raw).replace(/\r/g, "\\r").replace(/\n/g, "\\n"));
+			}
+			renderPrinterStatus(status);
+
+			if (status.isPrinterReady && status.isPrinterReady()) {
+				return status;
+			}
+
+			// Transient offline with empty raw: retry
+			if (status.offline && (!status.raw || String(status.raw).trim() === "")) {
+				console.warn("⚠️ Transient empty/offline status; retrying...", status);
+			} else {
+				// persistent not ready
+				throw new Error("Printer not ready: " + status.getMessage());
+			}
+		} catch (e) {
+			console.warn("waitUntilPrinterReady transient error:", e);
+			// continue to retry until timeout
+		}
+
+		if (Date.now() - start >= maxTotal) {
+			throw new Error("Timeout waiting for stable ready status (transient offline persisted).");
+		}
+		await new Promise(r => setTimeout(r, interval));
+	}
+}
+
+function logPrinterDiagnostics() {
+	return new Promise(async (resolve) => {
+		if (!currentZebraPrinter) {
+			console.warn("No currentZebraPrinter available for diagnostics.");
+			return resolve();
+		}
+
+		// Status
+		await new Promise(res => {
+			currentZebraPrinter.getStatus(
+				status => {
+					console.log("✅ Printer status:", status.getMessage(), status);
+					if (status.raw !== undefined) {
+						console.log("Raw status (escaped):", String(status.raw).replace(/\r/g, "\\r").replace(/\n/g, "\\n"));
+					}
+					renderPrinterStatus(status);
+					res();
+				},
+				err => {
+					console.warn("⚠️ Status retrieval failed:", err);
+					res();
+				}
+			);
+		});
+
+		// Configuration
+		await new Promise(res => {
+			currentZebraPrinter.getConfiguration(
+				cfg => {
+					console.log("✅ Parsed configuration:", cfg);
+					res();
+				},
+				err => {
+					console.warn("⚠️ Configuration error (expected in some cases):", err);
+					if (selected_printer && typeof selected_printer.sendThenReadUntilStringReceived === 'function') {
+						selected_printer.sendThenReadUntilStringReceived(
+							"^XA^HH^XZ",
+							resp => {
+								console.log("🔍 Raw config fallback response:", resp);
+								console.log("Char codes of raw response:", resp.split("").map(c => c.charCodeAt(0)));
+								res();
+							},
+							err2 => {
+								console.error("❌ Failed to get raw config fallback:", err2);
+								res();
+							},
+							String.fromCharCode(3),
+							1
+						);
+					} else {
+						res();
+					}
+				}
+			);
+		});
+
+		resolve();
+	});
+}
+
 function setupWebPrint() {
 	$('#printer_select').on('change', onPrinterSelected);
 	default_mode = true;
@@ -25,7 +213,6 @@ function setupWebPrint() {
 	available_printers = null;
 	default_printer = null;
 
-	// Fail fast if core libraries missing
 	if (typeof BrowserPrint === 'undefined') {
 		showErrorMessage("BrowserPrint core not available. Ensure the native client is installed and running.");
 		return;
@@ -43,7 +230,6 @@ function setupWebPrint() {
 			setSelectedPrinter(printer);
 			let printer_details = $('#printer_details');
 			let selected_printer_div = $('#selected_printer');
-
 			selected_printer_div.text("Using Default Printer: " + printer.name);
 			hideLoading();
 			printer_details.show();
@@ -86,10 +272,10 @@ function setupWebPrint() {
 			hideLoading();
 		}, 'printer');
 	},
-		function (error_response) {
-			console.error('Error getting default printer:', error_response);
-			showBrowserPrintNotFound();
-		});
+	function (error_response) {
+		console.error('Error getting default printer:', error_response);
+		showBrowserPrintNotFound();
+	});
 }
 
 function showBrowserPrintNotFound() {
@@ -102,8 +288,8 @@ function showBrowserPrintNotFound() {
 	showErrorMessage(message);
 }
 
-function printBarcodeLabel(barcode, facility, patientART) {
-	if (!selected_printer || !currentZebraPrinter) {
+async function printBarcodeLabel(barcode, facility, patientART) {
+	if (!selected_printer) {
 		showErrorMessage("No printer selected. Please select a printer first.");
 		return;
 	}
@@ -124,61 +310,65 @@ function printBarcodeLabel(barcode, facility, patientART) {
 
 	showLoading("Printing...");
 
-	// readiness with timeout (fallback to direct if Utilities missing)
-	let readyPromise;
-	if (typeof Utilities !== 'undefined' && Utilities.withTimeout) {
-		readyPromise = Utilities.withTimeout(() => currentZebraPrinter.isPrinterReady(), 5000)();
-	} else {
-		readyPromise = currentZebraPrinter.isPrinterReady();
+	await logPrinterDiagnostics();
+	await primePrinter();
+
+	try {
+		await waitUntilPrinterReady();
+	} catch (err) {
+		printerError("Printer not ready or timed out: " + (err && err.toString ? err.toString() : err));
+		return;
 	}
 
-	readyPromise
-		.then(() => {
-			try {
-				// Build the ZPL with replacements (no mutation/wrapping)
-				let strToPrint = replaceAllSafe(zebraFormat, "1234567", barcode);
-				strToPrint = replaceAllSafe(strToPrint, "BARCODE", barcode);
-				if (facility) {
-					strToPrint = replaceAllSafe(strToPrint, "FACILITY", facility);
-				}
-				if (patientART) {
-					strToPrint = replaceAllSafe(strToPrint, "PATIENTART", patientART);
-				}
+	// small settle pause so internal state stabilizes
+	await new Promise(r => setTimeout(r, 100));
 
-				// Diagnostics
-				console.log("zebraFormat raw:", zebraFormat);
-				console.log("Barcode:", barcode);
-				console.log("Facility:", facility);
-				console.log("PatientART:", patientART);
-				console.log("Final ZPL being sent:", strToPrint);
-				if (strToPrint.includes("BARCODE") || strToPrint.includes("1234567")) {
-					console.warn("Placeholder not replaced fully", { strToPrint, zebraFormat, barcode });
-				}
+	try {
+		let strToPrint = replaceAllSafe(zebraFormat, "1234567", barcode);
+		strToPrint = replaceAllSafe(strToPrint, "BARCODE", barcode);
+		if (facility) {
+			strToPrint = replaceAllSafe(strToPrint, "FACILITY", facility);
+		}
+		if (patientART) {
+			strToPrint = replaceAllSafe(strToPrint, "PATIENTART", patientART);
+		}
 
-				// Capture for debugging
-				window.lastLabel = strToPrint;
-				window.labelDebugHistory = window.labelDebugHistory || [];
-				window.labelDebugHistory.push({
-					zpl: strToPrint,
-					barcode,
-					facility,
-					patientART,
-					timestamp: new Date().toISOString()
-				});
+		console.log("zebraFormat raw:", zebraFormat);
+		console.log("Barcode:", barcode);
+		console.log("Facility:", facility);
+		console.log("PatientART:", patientART);
+		console.log("Final ZPL being sent:", strToPrint);
+		if (strToPrint.includes("BARCODE") || strToPrint.includes("1234567")) {
+			console.warn("Placeholder not replaced fully", { strToPrint, zebraFormat, barcode });
+		}
 
-				selected_printer.send(strToPrint, printComplete, printerError);
-			} catch (error) {
-				console.error('Print formatting error:', error);
-				printerError("Error formatting print data: " + error.message);
-			}
-		})
-		.catch(err => {
-			const msg = (err && err.toString) ? err.toString() : "Printer not ready or timed out";
-			printerError(msg);
+		window.lastLabel = strToPrint;
+		window.labelDebugHistory = window.labelDebugHistory || [];
+		window.labelDebugHistory.push({
+			zpl: strToPrint,
+			barcode,
+			facility,
+			patientART,
+			timestamp: new Date().toISOString()
 		});
+		if (window.labelDebugHistory.length > 50) {
+			window.labelDebugHistory = window.labelDebugHistory.slice(-50);
+		}
+
+		selected_printer.send(
+			strToPrint,
+			() => {
+				console.log("✅ Label sent.");
+				printComplete();
+			},
+			printerError
+		);
+	} catch (error) {
+		console.error('Print formatting error:', error);
+		printerError("Error formatting print data: " + error.message);
+	}
 }
 
-// UI control functions
 function hidePrintForm() {
 	$('#print_form').hide();
 }
@@ -197,8 +387,8 @@ function showLoading(text) {
 
 function printComplete() {
 	hideLoading();
-	if (typeof toastr !== 'undefined') {
-		toastr.success('Label printed successfully!');
+	if (typeof toast !== 'undefined') {
+		toast.success('Label printed successfully!');
 	} else {
 		alert("Printing complete");
 	}
@@ -206,7 +396,7 @@ function printComplete() {
 
 function hideLoading() {
 	$('#printer_data_loading').hide();
-	if (default_mode == true) {
+	if (default_mode === true) {
 		showPrintForm();
 		$('#printer_details').show();
 	} else {
@@ -233,17 +423,14 @@ function changePrinter() {
 
 function onPrinterSelected() {
 	const printersElement = document.getElementById('printers');
-
 	if (!printersElement) {
 		console.error('Printers select element not found');
 		return;
 	}
-
 	if (!available_printers || available_printers.length === 0) {
 		console.error('No available printers');
 		return;
 	}
-
 	const selectedIndex = printersElement.selectedIndex;
 	if (selectedIndex >= 0 && selectedIndex < available_printers.length) {
 		const selectedValue = printersElement.value;
@@ -260,8 +447,13 @@ function onPrinterSelected() {
 function setSelectedPrinter(printer) {
 	selected_printer = printer;
 	if (selected_printer) {
-		currentZebraPrinter = new Zebra.Printer(selected_printer);
-		console.log("Wrapped selected printer in Zebra.Printer:", currentZebraPrinter);
+		try {
+			currentZebraPrinter = createSafeZebraPrinter(selected_printer);
+			console.log("Wrapped selected printer in Zebra.Printer:", currentZebraPrinter);
+		} catch (e) {
+			console.error("Failed to wrap printer; will proceed without Zebra wrapper:", e);
+			currentZebraPrinter = null;
+		}
 	} else {
 		currentZebraPrinter = null;
 	}
@@ -287,7 +479,6 @@ function trySetupAgain() {
 	setupWebPrint();
 }
 
-// Auto-initialize
 $(document).ready(function () {
 	setupWebPrint();
 });
@@ -298,12 +489,4 @@ function getAvailablePrinters() {
 
 function isReady() {
 	return currentZebraPrinter !== null && typeof zebraFormat !== 'undefined' && !!zebraFormat;
-}
-
-// left here in case needed later
-function getPrinterStatus() {
-    if (!currentZebraPrinter) return Promise.reject(new Error("No printer selected"));
-    return currentZebraPrinter.isPrinterReady()
-        .then(() => "Ready to Print")
-        .catch(err => (err && err.toString) ? err.toString() : "Printer not ready");
 }

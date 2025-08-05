@@ -4,8 +4,6 @@
 // only run from command line
 $isCli = php_sapi_name() === 'cli';
 
-use Carbon\Doctrine\DateTimeType;
-
 if ($isCli === false) {
     exit(0);
 }
@@ -462,12 +460,29 @@ try {
                 } elseif ($data['vl_result_category'] == 'rejected') {
                     $data['result_status'] = SAMPLE_STATUS\REJECTED;
                 }
-                $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
-                $queryStatus = $db->connection('default')->update('form_vl', $data);
-                $numberOfResults++;
+                // $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
+                // $queryStatus = $db->connection('default')->update('form_vl', $data);
+                // $numberOfResults++;
+                // if ($queryStatus === true) {
+                //     $syncedIds[]  = $result['id'];
+                // }
 
-                if ($queryStatus === true) {
-                    $syncedIds[]  = $result['id'];
+                $ignoredKeys = ['last_modified_datetime']; // you can expand this as needed
+
+                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
+
+                if ($needsUpdate) {
+                    //echo "Updating VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    $db->connection('default')->where('vl_sample_id', $tableInfo['vl_sample_id']);
+                    $queryStatus = $db->connection('default')->update('form_vl', $data);
+                    if ($queryStatus === true) {
+                        $syncedIds[] = $result['id'];
+                        $numberOfResults++;
+                    }
+                } else {
+                    //echo "Skipping update for VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    // Skip update, consider as synced anyway
+                    $syncedIds[] = $result['id'];
                 }
             } elseif ($matchedTable === 'form_eid') {
 
@@ -511,12 +526,28 @@ try {
                     unset($data['last_modified_datetime']);
                 }
 
-                $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
-                $queryStatus = $db->connection('default')->update('form_eid', $data);
-                $numberOfResults++;
+                // $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
+                // $queryStatus = $db->connection('default')->update('form_eid', $data);
+                // $numberOfResults++;
+                // if ($queryStatus === true) {
+                //     $syncedIds[]  = $result['id'];
+                // }
 
-                if ($queryStatus === true) {
-                    $syncedIds[]  = $result['id'];
+                $ignoredKeys = ['last_modified_datetime'];
+
+                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
+
+                if ($needsUpdate) {
+                    //echo "Updating EID Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    $db->connection('default')->where('eid_id', $tableInfo['eid_id']);
+                    $queryStatus = $db->connection('default')->update('form_eid', $data);
+                    if ($queryStatus === true) {
+                        $syncedIds[] = $result['id'];
+                        $numberOfResults++;
+                    }
+                } else {
+                    //echo "Skipping update for EID Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    $syncedIds[] = $result['id'];
                 }
             } elseif ($matchedTable === 'form_covid19') {
 
@@ -578,20 +609,37 @@ try {
                     unset($data['last_modified_datetime']);
                 }
 
-                $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
-                $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
-                $numberOfResults++;
-                // $processedResults[] = $result['order_id'];
-                //  $processedResults[] = $result['test_id'];
-                if ($queryStatus === true) {
-                    $syncedIds[]  = $result['id'];
+                // $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
+                // $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
+                // $numberOfResults++;
+                // // $processedResults[] = $result['order_id'];
+                // //  $processedResults[] = $result['test_id'];
+                // if ($queryStatus === true) {
+                //     $syncedIds[]  = $result['id'];
+                // }
+
+                $ignoredKeys = ['last_modified_datetime'];
+
+                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
+
+                if ($needsUpdate) {
+                    //echo "Updating Hepatitis Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    $db->connection('default')->where('hepatitis_id', $tableInfo['hepatitis_id']);
+                    $queryStatus = $db->connection('default')->update('form_hepatitis', $data);
+                    if ($queryStatus === true) {
+                        $syncedIds[] = $result['id'];
+                        $numberOfResults++;
+                    }
+                } else {
+                    //echo "Skipping update for Hepatitis Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
+                    $syncedIds[] = $result['id'];
                 }
             } else {
                 $unsyncedIds[] = $result['id'];
             }
 
             if (!empty($result['added_on'])) {
-                $addedOnValues[] = strtotime(datetime: $result['added_on']);
+                $addedOnValues[] = strtotime($result['added_on']);
             }
 
             $db->connection('default')->commitTransaction();

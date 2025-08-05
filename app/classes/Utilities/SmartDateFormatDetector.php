@@ -697,7 +697,41 @@ final class SmartDateFormatDetector
         }
 
         // Basic date format variations
-        $datePatterns = ['Y-m-d', 'd-m-Y', 'm-d-Y', 'Y-n-j', 'd-n-Y', 'n-d-Y'];
+        $datePatterns = [
+            // Slash-based (dd/mm/yyyy and variations)
+            'd/m/y',
+            'd/m/Y',
+            'm/d/y',
+            'm/d/Y',
+            'y/m/d',
+            'Y/m/d',
+
+            // Dash-based (ISO and US formats)
+            'd-m-y',
+            'd-m-Y',
+            'm-d-y',
+            'm-d-Y',
+            'y-m-d',
+            'Y-m-d',
+
+            // Dot-based (common in some locales)
+            'd.m.y',
+            'd.m.Y',
+            'm.d.y',
+            'm.d.Y',
+
+            // Compact / numeric-only
+            'Ymd',
+            'dmY',
+            'dmy',
+            'mYd',
+            'Y/m',
+            'Y-m',
+            'Ym',
+            'my'
+        ];
+
+
 
         foreach ($separators as $sep) {
             foreach ($datePatterns as $pattern) {

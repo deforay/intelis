@@ -1016,32 +1016,22 @@ final class MiscUtility
         foreach ($excludeKeys as $key) {
             unset($a[$key], $b[$key]);
         }
-        ksort($a);
-        ksort($b);
-        // Remove keys from $b that are not in $a
-        // This ensures that $b only contains keys that are also in $a
-        // This is useful if you want to compare $a with a subset of $b
-        // and ignore any extra keys in $b that are not in $a
-        $b = array_intersect_key($b, $a);
 
+        // Determine which array has fewer keys — treat it as reference
+        if (count($a) <= count($b)) {
+            $reference = $a;
+            $other = $b;
+        } else {
+            $reference = $b;
+            $other = $a;
+        }
 
+        // Trim the other array to only contain keys from the reference
+        $otherSubset = array_intersect_key($other, $reference);
 
-        // // DEBUG: Echo differences before comparison
-        // foreach ($a as $key => $valA) {
-        //     $valB = $b[$key] ?? null;
-        //     if ($valA != $valB) {
-        //         echo "Mismatch on key '$key':\n";
-        //         echo "  A: " . var_export($valA, true) . "\n";
-        //         echo "  B: " . var_export($valB, true) . "\n";
-        //     }
-        // }
-
-        // foreach (array_diff_key($b, $a) as $key => $valB) {
-        //     echo "Extra key in B: '$key' => " . var_export($valB, true) . "\n";
-        // }
-
-        return $a == $b;
+        return $reference == $otherSubset;
     }
+
 
     public static function generateErrorId($prefix = 'ERR'): string
     {
