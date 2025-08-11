@@ -11,7 +11,7 @@ $general = ContainerRegistry::get(CommonService::class);
 if (isset($_POST['testType'])) {
     $testType = $_POST['testType'] ?? 'vl';
     $table = TestsService::getTestTableName($testType);
-    $sourceList = $general->getSourcesOfTestRequests($table, asNameValuePair: true);
+    $sourceList = $general->getSourcesOfTestRequests($table,  true);
     $option = "";
     foreach ($sourceList as $optionValue => $displayText) {
         $option .= "<option value='$optionValue'>$displayText</option>";

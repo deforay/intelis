@@ -29,7 +29,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = TestsService::getTestTableName($_POST['module']);
-$primaryKey = TestsService::getTestPrimaryKeyColumn($_POST['module']);
+$primaryKey = TestsService::getPrimaryColumn($_POST['module']);
 
 $packageTable = "package_details";
 try {

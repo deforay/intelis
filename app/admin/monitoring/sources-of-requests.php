@@ -22,15 +22,16 @@ $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+$facility = $facilitiesService->getHealthFacilities();
 $labNameList = $facilitiesService->getTestingLabs();
 
-$sources = array(
+$sources = [
     'vlsm' => 'VLSM',
     'vlsts' => 'STS',
     'app' => 'Tablet',
     'api' => 'API',
     'dhis2' => 'DHIS2'
-);
+];
 
 $activeModules = SystemService::getActiveModules();
 $state = $geolocationService->getProvinces("yes");
@@ -97,67 +98,69 @@ foreach ($sources as $list) {
                                 </select>
                             </td>
                             <td><strong>
-                                    <?php echo _translate("District/County"); ?>&nbsp;:
+                                    <?= _translate("District/County"); ?>&nbsp;:
                                 </strong>
                             </td>
                             <td>
-                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select Province/State'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
+                                <select class="form-control select2-element" id="district" name="district" title="<?php echo _translate('Please select District/County'); ?>" onchange="getByDistrict(this.value)" multiple="multiple">
                                 </select>
                             </td>
                         </tr>
                         <tr>
-                            <td><strong>
-                                    <?php echo _translate("Name of the Clinic"); ?>&nbsp;:
+                            <td>
+                                <strong>
+                                    <?= _translate("Name of the Clinic"); ?>&nbsp;:
                                 </strong>
                             </td>
                             <td>
-                                <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" onchange="getfacilityProvinceDetails(this);" multiple="multiple">
-                                    <?php echo $facility; ?>
+                                <select class="form-control isRequired " name="facilityId" id="facilityId" title="Please choose health facility" style="width:100%;" multiple="multiple">
+                                    <?= $general->generateSelectOptions($facility, null, '--Select--'); ?>
                                 </select>
                             </td>
-                            <td><strong>
-                                    <?php echo _translate("Name of the Testing Lab"); ?>&nbsp;:
+                            <td>
+                                <strong>
+                                    <?= _translate("Name of the Testing Lab"); ?>&nbsp;:
                                 </strong></td>
                             <td>
                                 <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>" multiple="multiple">
-                                    <?php echo $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
+                                    <?= $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
                                 </select>
                             </td>
-                            <td><strong>
-                                    <?php echo _translate("Test Type"); ?>&nbsp;:
+                            <td>
+                                <strong>
+                                    <?= _translate("Test Type"); ?>&nbsp;:
                                 </strong>
                             </td>
-
                             <td>
                                 <select id="testType" name="testType" class="form-control" placeholder="<?php echo _translate('Please select the Test types'); ?>" onchange="getSourceRequest(this.value);">
                                     <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
                                         <option value="vl">
-                                            <?php echo _translate("Viral Load"); ?>
+                                            <?= _translate("Viral Load"); ?>
                                         </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
                                         <option value="eid">
-                                            <?php echo _translate("Early Infant Diagnosis"); ?>
+                                            <?= _translate("Early Infant Diagnosis"); ?>
                                         </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
                                         <option value="covid19">
-                                            <?php echo _translate("Covid-19"); ?>
+                                            <?= _translate("Covid-19"); ?>
                                         </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
                                         <option value='hepatitis'>
-                                            <?php echo _translate("Hepatitis"); ?>
+                                            <?= _translate("Hepatitis"); ?>
                                         </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
                                         <option value='tb'>
-                                            <?php echo _translate("TB"); ?>
+                                            <?= _translate("TB"); ?>
                                         </option>
                                     <?php }
                                     if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
                                         <option value='cd4'>
-                                            <?php echo _translate("CD4"); ?>
+                                            <?= _translate("CD4"); ?>
                                         </option>
                                     <?php } ?>
                                 </select>
@@ -183,7 +186,6 @@ foreach ($sources as $list) {
                             </td>
                         </tr>
                     </table>
-                    <!-- /.box-header -->
                     <div class="box-body">
 
                         <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
@@ -206,7 +208,7 @@ foreach ($sources as $list) {
                         <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
                             <?php echo _translate("Export To Excel"); ?>
                         </a>
-                        <table aria-describedby="table" id="samplewiseReport" class="table table-bordered table-striped" aria-hidden="true">
+                        <table aria-describedby="table" id="sampleWiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
                                 <tr>
                                     <th>
@@ -222,9 +224,11 @@ foreach ($sources as $list) {
                                         <?php echo _translate("Name of the Clinic"); ?>
                                     </th>
                                     <th>
+                                        <?php echo _translate("Name of the Testing Lab"); ?>
+                                    </th>
+                                    <th>
                                         <?php echo _translate("Electronic Test request Date and Time"); ?>
                                     </th>
-
                                     <th>
                                         <?php echo _translate("Request Acknowledged Date Time"); ?>
                                     </th>
@@ -264,13 +268,9 @@ foreach ($sources as $list) {
                         </table>
                     </div>
                 </div>
-                <!-- /.box -->
             </div>
-            <!-- /.col -->
         </div>
-        <!-- /.row -->
     </section>
-    <!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
@@ -298,7 +298,6 @@ foreach ($sources as $list) {
             width: '200px',
             placeholder: "Select Name of the Clinic"
         });
-
 
         $('#dateRange').daterangepicker({
                 locale: {
@@ -329,15 +328,14 @@ foreach ($sources as $list) {
                 endDate = end.format('YYYY-MM-DD');
             });
 
-        searchRequestData();
+        //searchRequestData();
     });
-
 
 
     function getSourcesOfRequestReport() {
 
         $.blockUI();
-        oTable = $('#samplewiseReport').dataTable({
+        oTable = $('#sampleWiseReport').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
             },
@@ -373,19 +371,27 @@ foreach ($sources as $list) {
                 },
                 {
                     "sClass": "center"
-                }, {
+                },
+                {
                     "sClass": "center"
                 },
                 {
                     "sClass": "center"
-                }, {
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center"
                 },
                 {
                     "sClass": "center"
                 }
             ],
-            "aaSorting": [13, "desc"],
+            "aaSorting": [14, "desc"],
             "bProcessing": true,
             "bServerSide": true,
             "sAjaxSource": "/admin/monitoring/get-samplewise-report.php",

@@ -37,7 +37,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $testName = TestsService::getTestName($type);
 $testTableName = TestsService::getTestTableName($type);
-$primaryKey = TestsService::getTestPrimaryKeyColumn($type);
+$primaryKey = TestsService::getPrimaryColumn($type);
 
 $lastQuery = "SELECT lab_id FROM $testTableName WHERE lab_id is not NULL ORDER BY last_modified_datetime DESC LIMIT 1";
 

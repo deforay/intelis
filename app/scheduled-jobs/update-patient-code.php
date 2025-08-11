@@ -30,7 +30,7 @@ try {
     foreach ($activeModules as $module) {
         $db->beginTransaction();
         $tableName = TestsService::getTestTableName($module);
-        $primaryKey = TestsService::getTestPrimaryKeyColumn($input['testType']);
+        $primaryKey = TestsService::getPrimaryColumn($input['testType']);
 
         $sampleResult = $db->rawQuery("SELECT * FROM $tableName WHERE system_patient_code IS NULL LIMIT 100");
 

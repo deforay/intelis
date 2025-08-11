@@ -52,7 +52,7 @@ $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
+$primaryKeyName = TestsService::getPrimaryColumn($input['testType']);
 
 try {
     $sQuery = "SELECT ts.status_name as resultStatus, sample_code as sampleCode, remote_sample_code as remoteSampleCode, app_sample_code as appSampleCode, unique_id as uniqueId, '" . $transactionId . "' as transactionId  FROM $tableName as vl

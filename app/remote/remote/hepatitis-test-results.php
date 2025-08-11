@@ -26,7 +26,7 @@ try {
 
     $testType = 'hepatitis';
 
-    $primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
+    $primaryKey = TestsService::getPrimaryColumn($testType);
     $tableName = TestsService::getTestTableName($testType);
 
     //this file receives the lab results and updates in the remote db

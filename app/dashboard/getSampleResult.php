@@ -27,7 +27,7 @@ $mysqlDateFormat = $systemService->getDateFormat('mysql');
 
 $testType = (string) $_POST['type'];
 $table = TestsService::getTestTableName($testType);
-$primaryKey = TestsService::getTestPrimaryKeyColumn($testType);
+$primaryKey = TestsService::getPrimaryColumn($testType);
 
 $waitingTotal = 0;
 $rejectedTotal = 0;

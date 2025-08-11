@@ -53,7 +53,7 @@ $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
 $tableName = TestsService::getTestTableName($input['testType']);
-$primaryKeyName = TestsService::getTestPrimaryKeyColumn($input['testType']);
+$primaryKeyName = TestsService::getPrimaryColumn($input['testType']);
 $serviceClass = TestsService::getTestServiceClass($input['testType']);
 
 /** @var AbstractTestService $testTypeService */

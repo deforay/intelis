@@ -31,7 +31,7 @@ $testTablePrimaryKey = "vl_sample_id";
 
 if (isset($_POST['type'])) {
     $testTable = TestsService::getTestTableName($_POST['type']);
-    $testTablePrimaryKey = TestsService::getTestPrimaryKeyColumn($_POST['type']);
+    $testTablePrimaryKey = TestsService::getPrimaryColumn($_POST['type']);
 }
 
 $instrumentId = $_POST['platform'] ?? ($_POST['machine'] ?? null);

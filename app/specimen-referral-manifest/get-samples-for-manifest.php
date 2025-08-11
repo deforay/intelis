@@ -35,7 +35,7 @@ $testType = (!empty($_POST['testType'])) ? $_POST['testType'] : "";
 
 
 $testTable = TestsService::getTestTableName($module);
-$testPrimaryKey = TestsService::getTestPrimaryKeyColumn($module);
+$testPrimaryKey = TestsService::getPrimaryColumn($module);
 $patientId = TestsService::getPatientIdColumn($module);
 
 $query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.package_id

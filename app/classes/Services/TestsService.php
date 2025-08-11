@@ -150,7 +150,7 @@ final class TestsService
         return self::getTestTypes()[$testType]['tableName'] ?? throw new InvalidArgumentException("Invalid test type key");
     }
 
-    public static function getTestPrimaryKeyColumn(string $testType): string
+    public static function getPrimaryColumn(string $testType): string
     {
         return self::getTestTypes()[$testType]['primaryKey'] ?? throw new InvalidArgumentException("Invalid test type key");
     }

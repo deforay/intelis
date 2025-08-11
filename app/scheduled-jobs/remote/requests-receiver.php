@@ -321,7 +321,7 @@ if ($cliMode) {
 $moduleConfigs = [
     'vl' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('vl'),
+            TestsService::getPrimaryColumn('vl'),
             'sample_batch_id',
             'result_value_log',
             'result_value_absolute',
@@ -383,7 +383,7 @@ $moduleConfigs = [
     ],
     'eid' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('eid'),
+            TestsService::getPrimaryColumn('eid'),
             'sample_batch_id',
             'result',
             'sample_tested_datetime',
@@ -429,7 +429,7 @@ $moduleConfigs = [
     ],
     'covid19' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('covid19'),
+            TestsService::getPrimaryColumn('covid19'),
             'sample_batch_id',
             'result',
             'sample_tested_datetime',
@@ -482,7 +482,7 @@ $moduleConfigs = [
     ],
     'hepatitis' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('hepatitis'),
+            TestsService::getPrimaryColumn('hepatitis'),
             'sample_batch_id',
             'result',
             'hcv_vl_count',
@@ -535,7 +535,7 @@ $moduleConfigs = [
     ],
     'tb' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('tb'),
+            TestsService::getPrimaryColumn('tb'),
             'sample_batch_id',
             'result',
             'xpert_mtb_result',
@@ -587,7 +587,7 @@ $moduleConfigs = [
     ],
     'cd4' => [
         'removeKeys' => [
-            TestsService::getTestPrimaryKeyColumn('cd4'),
+            TestsService::getPrimaryColumn('cd4'),
             'sample_batch_id',
             'cd4_result',
             'sample_tested_datetime',
@@ -643,7 +643,7 @@ try {
             continue;
         }
 
-        $primaryKeyName = TestsService::getTestPrimaryKeyColumn($module);
+        $primaryKeyName = TestsService::getPrimaryColumn($module);
         $tableName = TestsService::getTestTableName($module);
 
         if ($cliMode) {
@@ -817,7 +817,7 @@ try {
     // Special-case generic-tests (preserve its merging logic)
     if (!empty($responsePayload['generic-tests']) && $responsePayload['generic-tests'] !== '[]' && JsonUtility::isJSON($responsePayload['generic-tests'])) {
         $module = 'generic-tests';
-        $primaryKeyName = TestsService::getTestPrimaryKeyColumn($module);
+        $primaryKeyName = TestsService::getPrimaryColumn($module);
         $tableName = TestsService::getTestTableName($module);
 
         if ($cliMode) {
@@ -1080,7 +1080,7 @@ if (
     && isset($manifestCode) && trim((string)$manifestCode) != ""
 ) {
     $formTable = TestsService::getTestTableName($forceSyncModule);
-    $primaryKey = TestsService::getTestPrimaryKeyColumn($forceSyncModule);
+    $primaryKey = TestsService::getPrimaryColumn($forceSyncModule);
     $db->where("sample_package_code", $manifestCode);
     $sampleData = $db->getValue($formTable, $primaryKey, null);
     echo JsonUtility::encodeUtf8Json($sampleData);

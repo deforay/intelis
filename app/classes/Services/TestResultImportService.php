@@ -179,7 +179,7 @@ class TestResultImportService
 
         // Check for existing sample
         $tableName = TestsService::getTestTableName($this->testType);
-        $primaryKey = TestsService::getTestPrimaryKeyColumn($this->testType);
+        $primaryKey = TestsService::getPrimaryColumn($this->testType);
         $query = "SELECT facility_id, $primaryKey, result FROM $tableName
                         WHERE sample_code = ?";
         $existingResult = $this->db->rawQueryOne($query, [$sampleCode]);

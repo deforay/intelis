@@ -117,7 +117,7 @@ final class TestRequestsService
                     // Get test configuration
                     try {
                         $formTable = TestsService::getTestTableName($item['test_type']);
-                        $primaryKey = TestsService::getTestPrimaryKeyColumn($item['test_type']);
+                        $primaryKey = TestsService::getPrimaryColumn($item['test_type']);
                         $serviceClass = TestsService::getTestServiceClass($item['test_type']);
                         $testTypeService = ContainerRegistry::get($serviceClass);
                     } catch (Throwable $e) {

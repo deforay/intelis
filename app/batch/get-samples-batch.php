@@ -45,7 +45,7 @@ $orderBy = match ($sortBy) {
 $orderBy = "$orderBy $sortType";
 
 $table = TestsService::getTestTableName($_POST['type']);
-$primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($_POST['type']);
+$primaryKeyColumn = TestsService::getPrimaryColumn($_POST['type']);
 $sampleTypeColumn = TestsService::getSpecimenTypeColumn($_POST['type']);
 $patientIdColumn = TestsService::getPatientIdColumn($_POST['type']);
 $resultColumn = 'result';

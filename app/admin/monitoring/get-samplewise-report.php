@@ -32,36 +32,19 @@ try {
 
     $table = TestsService::getTestTableName($testType);
     $testName = TestsService::getTestName($testType);
+    $primaryColumn = TestsService::getPrimaryColumn($testType);
 
-    // if (isset($testType) && $testType == 'vl') {
-    //     $url = "/vl/requests/vl-requests.php";
-    // }
-    // if (isset($testType) && $testType == 'eid') {
-    //     $url = "/eid/requests/eid-requests.php";
-    // }
-    // if (isset($testType) && $testType == 'covid19') {
-    //     $url = "/covid-19/requests/covid-19-requests.php";
-    // }
-    // if (isset($testType) && $testType == 'hepatitis') {
-    //     $url = "/hepatitis/requests/hepatitis-requests.php";
-    // }
-    // if (isset($testType) && $testType == 'tb') {
-    //     $url = "/tb/requests/tb-requests.php";
-    // }
-
-    /*
-    * Array of database columns which should be read and sent back to DataTables. Use a space where
-    * you want to insert a non-database field (for example a counter or static image)
-    */
     $orderColumns = $aColumns = [
+        'vl.sample_code',
+        'vl.remote_sample_code',
+        'vl.external_sample_code',
         'f.facility_name',
         'l.facility_name',
-        'vl.external_sample_code',
         'vl.request_created_datetime',
-        'vl.remote_sample_code',
         'vl.request_created_datetime',
         'vl.sample_received_at_lab_datetime',
         'b.request_created_datetime',
+        'ts.status_name',
         "vl.$resultColumn",
         'vl.sample_tested_datetime',
         'vl.result_approved_datetime',
@@ -69,9 +52,6 @@ try {
         'vl.last_modified_datetime'
     ];
 
-    /*
-    * Paging
-    */
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
         $sOffset = $_POST['iDisplayStart'];
@@ -80,50 +60,17 @@ try {
 
 
 
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $orderColumns[(int) $_POST['iSortCol_' . $i]] . "
-                " . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
-    }
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 
-
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
     $sWhere = [];
-    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-        $searchArray = explode(" ", (string) $_POST['sSearch']);
-        $sWhereSub = "";
-        foreach ($searchArray as $search) {
-            $sWhereSub .= " (";
-            $colSize = count($aColumns);
-
-            for ($i = 0; $i < $colSize; $i++) {
-                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                }
-            }
-            $sWhereSub .= ")";
-        }
-        $sWhere[] = $sWhereSub;
+    if (!empty($columnSearch) && $columnSearch != '') {
+        $sWhere[] = $columnSearch;
     }
-
-
-
-    /*
-    * SQL queries
-    * Get data to display
-    */
-    $aWhere = '';
-    $sQuery = '';
 
     $sQuery = "SELECT
+                    vl.$primaryColumn,
                     f.facility_name,
                     l.facility_name as 'labname',
                     vl.sample_code,
@@ -147,25 +94,26 @@ try {
                 LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
 
-    [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+
 
     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
-        $sWhere[] = ' DATE(vl.request_created_datetime) BETWEEN "' . $start_date . '" AND "' . $end_date . '"';
+        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
+        $sWhere[] = " (DATE(vl.request_created_datetime) BETWEEN '$start_date' AND '$end_date') ";
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
-        $sWhere[] = ' vl.lab_id IN (' . $_POST['labName'] . ')';
+        $sWhere[] = " vl.lab_id IN (" . $_POST['labName'] . ")";
     }
     if (isset($_POST['state']) && trim((string) $_POST['state']) != '') {
         $provinceId = implode(',', $_POST['state']);
-        $sWhere[] = ' f.facility_state_id  IN (' . $provinceId . ')';
+        $sWhere[] = " f.facility_state_id  IN ($provinceId)";
     }
     if (isset($_POST['district']) && trim((string) $_POST['district']) != '') {
         $districtId = implode(',', $_POST['district']);
-        $sWhere[] = ' f.facility_district_id  IN (' . $districtId . ')';
+        $sWhere[] = " f.facility_district_id  IN ($districtId)";
     }
     if (isset($_POST['facilityId']) && trim((string) $_POST['facilityId']) != '') {
         $facilityId = implode(',', $_POST['facilityId']);
-        $sWhere[] = ' vl.facility_id  IN (' . $facilityId . ')';
+        $sWhere[] = " vl.facility_id  IN ($facilityId)";
     }
 
     if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
@@ -180,17 +128,81 @@ try {
     //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-        $sQuery = $sQuery . " ORDER BY " . $sOrder;
+        $sQuery = "$sQuery ORDER BY $sOrder";
     }
-    //echo $sQuery; die;
+
     $_SESSION['samplewiseReportsQuery'] = $sQuery;
 
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
+
+    //echo $sQuery;die;
 
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
+
+    $output = [
+        "sEcho" => (int) $_POST['sEcho'],
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
+        "calculation" => [],
+        "aaData" => []
+    ];
+
+    foreach ($rResult as $key => $aRow) {
+
+        $row = [];
+        //$row[] = $aRow['f.facility_name'];
+        $row[] = $aRow['sample_code'];
+        $row[] = $aRow['remote_sample_code'];
+        $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
+        $row[] = $aRow['facility_name'];
+        $row[] = $aRow['labname'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
+        $row[] = $aRow['status_name'];
+        $row[] = $aRow['result'];
+        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
+        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
+
+        $output['aaData'][] = $row;
+    }
+
+
+
+    // Calculate the total number of samples requested, acknowledged, received, tested, and dispatched
+    // for the samplewise report
+    // This is used to display the summary at the top of the report
+    $orderColumns = $aColumns = [
+        'f.facility_name',
+        'l.facility_name',
+        'vl.external_sample_code',
+        'vl.request_created_datetime',
+        'vl.remote_sample_code',
+        'vl.request_created_datetime',
+        'vl.sample_received_at_lab_datetime',
+        'b.request_created_datetime',
+        "vl.$resultColumn",
+        'vl.sample_tested_datetime',
+        'vl.result_approved_datetime',
+        'vl.result_sent_to_source_datetime',
+        'vl.last_modified_datetime'
+    ];
+
+
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
+
+
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
+    $sWhere = [];
+    if (!empty($columnSearch) && $columnSearch != '') {
+        $sWhere[] = $columnSearch;
+    }
 
     $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
                 SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
@@ -205,26 +217,10 @@ try {
     if (!empty($sWhere)) {
         $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
     }
-
-    if (!empty($sOrder) && $sOrder !== '') {
-        $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-        $calcValueQuery = $calcValueQuery . " ORDER BY " . $sOrder;
-    }
     $_SESSION['samplewiseReportsCalc'] = $calcValueQuery;
 
     $calculateFields = $db->rawQuery($calcValueQuery);
 
-
-    /*
-    * Output
-    */
-    $output = array(
-        "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $resultCount,
-        "iTotalDisplayRecords" => $resultCount,
-        "calculation" => [],
-        "aaData" => []
-    );
     foreach ($calculateFields as $row) {
         $r = [];
         $r[] = $row['totalSamplesRequested'];
@@ -234,30 +230,8 @@ try {
         $r[] = $row['totalSamplesDispatched'];
         $output['calculation'][] = $r;
     }
-    foreach ($rResult as $key => $aRow) {
-
-        $row = [];
-        //$row[] = $aRow['f.facility_name'];
-        $row[] = $aRow['sample_code'];
-        $row[] = $aRow['remote_sample_code'];
-        $row[] = $aRow['external_sample_code'] ?? $aRow['app_sample_code'];
-        $row[] = $aRow['labname'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_received_at_lab_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['batch_request_created'], true);
-        $row[] = $aRow['status_name'];
-        $row[] = $aRow['result'];
-        $row[] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_approved_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['result_sent_to_source_datetime'], true);
-        $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'], true);
-
-        $output['aaData'][] = $row;
-    }
 
     echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),

@@ -48,7 +48,7 @@ final class ResultsService
     {
         $this->testType = $testType;
         $this->tableName = TestsService::getTestTableName($testType);
-        $this->primaryKeyName = TestsService::getTestPrimaryKeyColumn($testType);
+        $this->primaryKeyName = TestsService::getPrimaryColumn($testType);
         $serviceClass = TestsService::getTestServiceClass($testType);
 
         $this->testTypeService = ContainerRegistry::get($serviceClass);

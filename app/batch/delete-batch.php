@@ -22,7 +22,7 @@ if (!isset($_POST['type']) || empty(trim($_POST['type']))) {
 } else {
 
     $testTable = TestsService::getTestTableName($_POST['type']);
-    $testTablePrimaryKey = TestsService::getTestPrimaryKeyColumn($_POST['type']);
+    $testTablePrimaryKey = TestsService::getPrimaryColumn($_POST['type']);
 
     $batchId = base64_decode((string) $_POST['id']);
 

@@ -40,7 +40,7 @@ if (empty($_POST['module'])) {
 
 $module = $_POST['module'];
 $tableName = TestsService::getTestTableName($module);
-$primaryKey = TestsService::getTestPrimaryKeyColumn($module);
+$primaryKey = TestsService::getPrimaryColumn($module);
 
 $sql = "UPDATE package_details
                 SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = package_details.package_id and lab_id > 0 limit 1)

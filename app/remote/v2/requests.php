@@ -75,7 +75,7 @@ try {
     }
 
     $tableName = TestsService::getTestTableName($testType);
-    $primaryKeyName = TestsService::getTestPrimaryKeyColumn($testType);
+    $primaryKeyName = TestsService::getPrimaryColumn($testType);
 
     $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);

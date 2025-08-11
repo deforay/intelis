@@ -81,7 +81,7 @@ $dateFormat = "d-M-Y H:i:s";
 
 try {
     $tableName = TestsService::getTestTableName('vl');
-    $primaryKey = TestsService::getTestPrimaryKeyColumn('vl');
+    $primaryKey = TestsService::getPrimaryColumn('vl');
     $resultStatus = [
         SAMPLE_STATUS\REJECTED,
         SAMPLE_STATUS\ACCEPTED

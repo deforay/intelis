@@ -31,7 +31,7 @@ abstract class AbstractTestService
         $this->db = $db;
         $this->commonService = $commonService;
         $this->table ??= TestsService::getTestTableName($this->testType);
-        $this->primaryKey ??= TestsService::getTestPrimaryKeyColumn($this->testType);
+        $this->primaryKey ??= TestsService::getPrimaryColumn($this->testType);
         $this->shortCode ??= TestsService::getTestShortCode($this->testType);
         $this->testRequestsService = new TestRequestsService($db, $commonService);
     }

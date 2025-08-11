@@ -31,7 +31,7 @@ if ($testType == 'generic-tests') {
 
 $testShortCode = TestsService::getTestShortCode($testType);
 $refTable = TestsService::getTestTableName($testType);
-$refPrimaryColumn = TestsService::getTestPrimaryKeyColumn($testType);
+$refPrimaryColumn = TestsService::getPrimaryColumn($testType);
 $sampleTypeTable = TestsService::getSpecimenTypeTable($testType);
 $patientIdColumn = TestsService::getPatientIdColumn($testType);
 $resultColumn = TestsService::getResultColumn($testType);

@@ -55,7 +55,7 @@ try {
             echo "Processing duplicates for table: $tableName ($testType)" . PHP_EOL;
         }
 
-        $primaryKeyColumn = TestsService::getTestPrimaryKeyColumn($testType);
+        $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 
         // Define ignored columns
         $ignoredColumns = ['dt_datetime', 'action', 'revision', 'last_modified_datetime'];

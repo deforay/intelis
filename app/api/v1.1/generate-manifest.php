@@ -55,7 +55,7 @@ $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
 $testTable = TestsService::getTestTableName($input['testType']);
-$testPrimaryKey = TestsService::getTestPrimaryKeyColumn($input['testType']);
+$testPrimaryKey = TestsService::getPrimaryColumn($input['testType']);
 
 $sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymdH') .  MiscUtility::generateRandomString(4));
 

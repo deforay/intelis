@@ -36,7 +36,7 @@ foreach (SYSTEM_CONFIG['modules'] as $module => $isModuleEnabled) {
     $tableName = $isModuleEnabled ? TestsService::getTestTableName($module) : null;
     if (!empty($tableName)) {
 
-        $primaryKey = TestsService::getTestPrimaryKeyColumn($module);
+        $primaryKey = TestsService::getPrimaryColumn($module);
 
         // BLOCK 1: LOCKING SAMPLES
 
