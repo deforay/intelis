@@ -44,13 +44,13 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $testResultsService = ContainerRegistry::get(TestResultsService::class);
 
 
-$overwriteLocked = false; // Default: exclude locked samples
+$forceExecution = false; // Default: exclude locked samples
 $lastInterfaceSync = null;
 $silent = false;
 
 foreach ($argv as $arg) {
     if (str_contains($arg, 'force')) {
-        $overwriteLocked = true;
+        $forceExecution = true;
     }
 
     if (!isset($lastInterfaceSync)) {
@@ -60,7 +60,7 @@ foreach ($argv as $arg) {
             $lastInterfaceSync = DateUtility::daysAgo((int) $arg);
         } elseif (preg_match('/^(\d+)force/', $arg, $matches)) {
             $lastInterfaceSync = DateUtility::daysAgo((int) $matches[1]);
-            $overwriteLocked = true;
+            $forceExecution = true;
         }
     }
 
@@ -69,19 +69,15 @@ foreach ($argv as $arg) {
     }
 }
 
-
-
 $lockFile = MiscUtility::getLockFile(__FILE__);
 
-// If the force flag is set, delete the lock file if it exists
-if ($overwriteLocked && MiscUtility::fileExists($lockFile)) {
-    MiscUtility::deleteLockFile($lockFile);
-}
-
-// Check if the lock file already exists
-if (!MiscUtility::isLockFileExpired($lockFile)) {
-    echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
-    exit;
+// Only handle lock file if force is NOT used
+if (!$forceExecution) {
+    // Check if the lock file already exists
+    if (!MiscUtility::isLockFileExpired($lockFile)) {
+        echo "Another instance of the script : " . basename(__FILE__) . " is already running." . PHP_EOL;
+        exit;
+    }
 }
 
 MiscUtility::touchLockFile($lockFile); // Create or update the lock file
@@ -293,7 +289,7 @@ try {
                 }
 
                 $conditions = [];
-                if ($overwriteLocked === false) {
+                if ($forceExecution === false) {
                     // Default: Exclude locked samples
                     $conditions[] = "IFNULL(locked, 'no') = 'no'";
                 }
