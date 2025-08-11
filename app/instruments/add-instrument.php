@@ -517,8 +517,8 @@ sort($fileList);
 															name="sampleDateInput[]"
 															id="sampleDateInput1"
 															class="form-control"
-															placeholder="📅 Enter sample date (e.g., 06.19.2025 11:19 AM)"
-															title="Enter a sample date from your instrument files"
+															placeholder="📅 <?= _translate("Enter sample date (e.g., 06.19.2025 11:19 AM)"); ?>"
+															title="<?= _translate("Enter a sample date from your instrument files"); ?>"
 															style="border: 2px solid #007bff; font-size: 13px;"
 															data-smart-date-format
 															data-suggestions-container="formatSuggestions1"
@@ -526,7 +526,7 @@ sort($fileList);
 															data-manual-input="manualFormatInput1"
 															data-row-id="1"
 															data-default-format="d/m/Y H:i" />
-														<small style="color: #666; font-size: 11px;">💡 Enter any date from your instrument to auto-detect format</small>
+														<small style="color: #666; font-size: 11px;">💡 <?= _translate("Enter any date from your instrument to auto-detect format"); ?></small>
 													</div>
 
 													<!-- Smart Suggestions Container -->
@@ -539,8 +539,8 @@ sort($fileList);
 													<div id="manualFormatInput1" style="display: none; margin-top: 8px;">
 														<input type="text"
 															class="form-control"
-															placeholder="Manual: d/m/Y H:i"
-															title="Enter PHP date format manually"
+															placeholder="<?= _translate("Manual: d/m/Y H:i", true); ?>"
+															title="<?= _translate("Enter PHP date format manually", true); ?>"
 															style="border: 1px solid #ccc; font-size: 12px;"
 															onchange="document.getElementById('dateFormat1').value = this.value;" />
 													</div>
@@ -611,8 +611,8 @@ sort($fileList);
 														<div id="manualFormatInput<?php echo $i; ?>" style="display: none; margin-top: 8px;">
 															<input type="text"
 																class="form-control"
-																placeholder="Manual: d/m/Y H:i"
-																title="Enter PHP date format manually"
+																placeholder="<?= _translate("Manual: d/m/Y H:i", true); ?>"
+																title="<?= _translate("Enter PHP date format manually", true); ?>"
 																style="border: 1px solid #ccc; font-size: 12px;"
 																value="<?php echo $machine['date_format'] ?: 'd/m/Y H:i'; ?>"
 																onchange="document.getElementById('dateFormat<?php echo $i; ?>').value = this.value;" />
@@ -831,8 +831,8 @@ require_once APPLICATION_PATH . '/footer.php';
                        name="sampleDateInput[]"
                        id="sampleDateInput${tableRowId}"
                        class="form-control"
-                       placeholder="📅 Enter sample date"
-                       title="Enter a sample date from your instrument files"
+                       placeholder="📅 <?= _translate("Enter sample date", true); ?>"
+                       title="<?= _translate("Enter a sample date from your instrument files", true); ?>"
                        style="border: 2px solid #007bff; font-size: 13px;"
                        data-smart-date-format
                        data-suggestions-container="formatSuggestions${tableRowId}"
@@ -840,12 +840,12 @@ require_once APPLICATION_PATH . '/footer.php';
                        data-manual-input="manualFormatInput${tableRowId}"
                        data-row-id="${tableRowId}"
                        data-default-format="d/m/Y H:i" />
-                <small style="color: #666; font-size: 11px;">💡 Enter any date from your instrument</small>
+                <small style="color: #666; font-size: 11px;">💡 <?= _translate("Enter any date from your instrument", true); ?></small>
             </div>
             <div id="formatSuggestions${tableRowId}" class="format-suggestions-container"></div>
             <input type="hidden" name="dateFormat[]" id="dateFormat${tableRowId}" value="d/m/Y H:i" />
             <div id="manualFormatInput${tableRowId}" style="display: none; margin-top: 8px;">
-                <input type="text" class="form-control" placeholder="Manual: d/m/Y H:i" onchange="document.getElementById('dateFormat${tableRowId}').value = this.value;" />
+                <input type="text" class="form-control" placeholder="<?= _translate("Manual: d/m/Y H:i", true); ?>" onchange="document.getElementById('dateFormat${tableRowId}').value = this.value;" />
             </div>
         </div>
     `;

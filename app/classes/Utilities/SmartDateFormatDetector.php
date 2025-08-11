@@ -558,7 +558,7 @@ final class SmartDateFormatDetector
                 $corrections[] = [
                     'format' => $correctedFormat,
                     'changes' => $changesMade,
-                    'description' => 'Corrected common format mistakes: ' . implode(', ', $changesMade)
+                    'description' => _translate('Corrected common format mistakes: ' . implode(', ', $changesMade), true)
                 ];
             } catch (Throwable $e) {
                 // Correction still invalid, continue to suggest common patterns
@@ -569,20 +569,20 @@ final class SmartDateFormatDetector
         if (strlen($format) > 5 && (count($corrections) === 0 || count($changesMade) === 0)) {
             $corrections[] = [
                 'format' => 'd/m/Y H:i',
-                'changes' => ['Suggested common European format'],
-                'description' => 'European date with time (Day/Month/Year Hour:Minute)'
+                'changes' => [_translate('Suggested common European format', true)],
+                'description' => _translate('European date with time (Day/Month/Year Hour:Minute)', true)
             ];
 
             $corrections[] = [
                 'format' => 'm/d/Y H:i',
-                'changes' => ['Suggested common US format'],
-                'description' => 'US date with time (Month/Day/Year Hour:Minute)'
+                'changes' => [_translate('Suggested common US format', true)],
+                'description' => _translate('US date with time (Month/Day/Year Hour:Minute)', true)
             ];
 
             $corrections[] = [
                 'format' => 'Y-m-d H:i:s',
-                'changes' => ['Suggested ISO format'],
-                'description' => 'ISO 8601 format (Year-Month-Day Hour:Minute:Second)'
+                'changes' => [_translate('Suggested ISO format', true)],
+                'description' => _translate('ISO 8601 format (Year-Month-Day Hour:Minute:Second)', true)
             ];
         }
 
@@ -1620,22 +1620,22 @@ final class SmartDateFormatDetector
 
                 // Check for US patterns (M/D/Y, M.D.Y, M-D-Y)
                 if (preg_match('/^[mn][\/\.-][dj][\/\.-][Yy]/', $format)) {
-                    return 'US';
+                    return _translate('US', true);
                 }
 
                 // Check for European patterns (D/M/Y, D.M.Y, D-M-Y)
                 if (preg_match('/^[dj][\/\.-][mn][\/\.-][Yy]/', $format)) {
-                    return 'European';
+                    return _translate('European', true);
                 }
 
                 // Check for ISO patterns (Y-M-D)
                 if (preg_match('/^[Yy][\/\.-][mn][\/\.-][dj]/', $format)) {
-                    return 'ISO';
+                    return _translate('ISO', true);
                 }
             }
         }
 
-        return 'Unknown';
+        return _translate('Unknown', true);
     }
 
     /**

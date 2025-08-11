@@ -228,7 +228,7 @@
                 container.html(`
                 <div style="margin-bottom: 5px; font-size: 11px; color: #666;">
                     🎯 <strong><?= _translate("Auto-detected formats", true); ?></strong>
-                    <span class="format-badge auto-detected">📍 ${regionalPreference} style</span>
+                    <span class="format-badge auto-detected">📍 ${regionalPreference} </span>
                 </div>
                 ${suggestionsHtml}
                 ${this.buildMultipleWarning(uniqueSuggestions)}
@@ -267,7 +267,7 @@
                 const confidenceClass = `confidence-${suggestion.confidence}`;
                 const isUserFormat = suggestion.is_user_format || false;
                 const userFormatBadge = isUserFormat ?
-                    '<span class="format-badge user-format">YOUR FORMAT</span>' : '';
+                    '<span class="format-badge user-format"><?= _translate("YOUR FORMAT", true); ?></span>' : '';
 
                 const style = isUserFormat ? 'border: 2px solid #007bff; background: #f0f8ff;' : '';
 
@@ -282,10 +282,10 @@
                             <code style="background: #f1f3f4; padding: 1px 4px; border-radius: 2px; font-size: 11px;">${suggestion.format}</code><br>
                             <small style="color: #666;">${suggestion.description}</small>
                             ${suggestion.example ?
-                    `<div style="color: #28a745; font-size: 10px; margin-top: 2px;">✓ Example: ${suggestion.example}</div>` : ''
+                    `<div style="color: #28a745; font-size: 10px; margin-top: 2px;">✓ <?= _translate("Example:", true); ?> ${suggestion.example}</div>` : ''
                 }
                             ${isUserFormat ?
-                    '<div style="color: #007bff; font-size: 10px; margin-top: 2px;">📝 Format you entered</div>' : ''
+                    '<div style="color: #007bff; font-size: 10px; margin-top: 2px;">📝 <?= _translate("Format you entered", true); ?></div>' : ''
                 }
                         </div>
                         <span class="format-badge ${suggestion.confidence}">

@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-08-12 01:04+0530\n"
-"PO-Revision-Date: 2025-08-12 01:05+0530\n"
+"POT-Creation-Date: 2025-08-12 01:20+0530\n"
+"PO-Revision-Date: 2025-08-12 01:20+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -12237,6 +12237,7 @@ msgstr "Autres tests"
 
 #: app/classes/Utilities/DateUtility.php:462
 #: app/classes/Utilities/DateUtility.php:487
+#: app/classes/Utilities/SmartDateFormatDetector.php:1638
 #: app/eid/requests/forms/add-burkina-faso.php:231
 #: app/eid/requests/forms/add-burkina-faso.php:243
 #: app/eid/requests/forms/add-burkina-faso.php:282
@@ -12272,6 +12273,34 @@ msgstr "mois"
 #: app/classes/Utilities/DateUtility.php:483
 msgid "month"
 msgstr "mois"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:561
+msgid "Corrected common format mistakes: "
+msgstr "Correction des erreurs de format les plus courantes :"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:572
+msgid "Suggested common European format"
+msgstr "Proposition de format européen commun"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:573
+msgid "European date with time (Day/Month/Year Hour:Minute)"
+msgstr "Date européenne avec heure (Jour/Mois/Année Heure:Minute)"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:578
+msgid "Suggested common US format"
+msgstr "Format commun suggéré pour les États-Unis"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:579
+msgid "US date with time (Month/Day/Year Hour:Minute)"
+msgstr "Date américaine avec heure (Mois/Jour/Année Heure:Minute)"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:584
+msgid "Suggested ISO format"
+msgstr "Format ISO suggéré"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:585
+msgid "ISO 8601 format (Year-Month-Day Hour:Minute:Second)"
+msgstr "Format ISO 8601 (Année-Mois-Jour Heure:Minute:Seconde)"
 
 #: app/classes/Utilities/SmartDateFormatDetector.php:1465
 msgid "4-digit year"
@@ -12320,6 +12349,18 @@ msgstr "avec des secondes"
 #: app/classes/Utilities/SmartDateFormatDetector.php:1510
 msgid "Example not available"
 msgstr "Exemple non disponible"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:1623
+msgid "US"
+msgstr "ÉTATS-UNIS"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:1628
+msgid "European"
+msgstr "Européenne"
+
+#: app/classes/Utilities/SmartDateFormatDetector.php:1633
+msgid "ISO"
+msgstr "ISO"
 
 #: app/classes/Utilities/SmartDateFormatDetector.php:1667
 msgid "2-digit years can be ambiguous (e.g., 25 = 2025 or 1925?)"
@@ -21753,6 +21794,57 @@ msgstr "S'agit-il d'un dispositif POC ?"
 msgid "Please enter machine name"
 msgstr "Veuillez saisir le nom de la machine"
 
+#: app/instruments/add-instrument.php:520
+#: app/instruments/edit-instrument.php:639
+#: app/instruments/edit-instrument.php:717
+msgid "Enter sample date (e.g., 06.19.2025 11:19 AM)"
+msgstr "Saisir la date de l'échantillon (par exemple, 06.19.2025 11:19 AM)"
+
+#: app/instruments/add-instrument.php:521
+#: app/instruments/add-instrument.php:835
+#: app/instruments/edit-instrument.php:640
+#: app/instruments/edit-instrument.php:718
+#: app/instruments/edit-instrument.php:1033
+msgid "Enter a sample date from your instrument files"
+msgstr ""
+"Saisissez une date d'échantillonnage à partir des fichiers de votre "
+"instrument"
+
+#: app/instruments/add-instrument.php:529
+#: app/instruments/edit-instrument.php:649
+#: public/assets/js/smart-date-format.js.php:112
+msgid "Enter any date from your instrument to auto-detect format"
+msgstr ""
+"Entrez n'importe quelle date de votre instrument pour une détection "
+"automatique du format"
+
+#: app/instruments/add-instrument.php:542
+#: app/instruments/add-instrument.php:614
+#: app/instruments/add-instrument.php:848
+#: app/instruments/edit-instrument.php:665
+#: app/instruments/edit-instrument.php:742
+#: app/instruments/edit-instrument.php:1046
+msgid "Manual: d/m/Y H:i"
+msgstr "Manuel : d/m/Y H:i"
+
+#: app/instruments/add-instrument.php:543
+#: app/instruments/add-instrument.php:615
+#: app/instruments/edit-instrument.php:666
+#: app/instruments/edit-instrument.php:743
+msgid "Enter PHP date format manually"
+msgstr "Saisir manuellement le format de date PHP"
+
+#: app/instruments/add-instrument.php:834
+#: app/instruments/edit-instrument.php:1032
+#: public/assets/js/smart-date-format.js.php:506
+msgid "Enter sample date"
+msgstr "Saisir la date de l'échantillon"
+
+#: app/instruments/add-instrument.php:843
+#: app/instruments/edit-instrument.php:1041
+msgid "Enter any date from your instrument"
+msgstr "Saisissez n'importe quelle date de votre instrument"
+
 #: app/instruments/edit-instrument-helper.php:114
 msgid "Instrument updated successfully"
 msgstr "L'instrument a été mis à jour avec succès"
@@ -26626,12 +26718,6 @@ msgstr "Format détecté ! Nous allons valider ce format de date PHP"
 msgid "Sample date - we'll detect the format automatically"
 msgstr "Exemple de date - nous détectons le format automatiquement"
 
-#: public/assets/js/smart-date-format.js.php:112
-msgid "Enter any date from your instrument to auto-detect format"
-msgstr ""
-"Entrez n'importe quelle date de votre instrument pour une détection "
-"automatique du format"
-
 #: public/assets/js/smart-date-format.js.php:215
 msgid "Analyzing date format..."
 msgstr "Analyse du format de la date..."
@@ -26645,9 +26731,21 @@ msgstr "Formats auto-détectés"
 msgid "Format String Detected"
 msgstr "Format String Detected"
 
+#: public/assets/js/smart-date-format.js.php:270
+msgid "YOUR FORMAT"
+msgstr "VOTRE FORMAT"
+
 #: public/assets/js/smart-date-format.js.php:277
 msgid "Click to select this format"
 msgstr "Cliquez pour sélectionner ce format"
+
+#: public/assets/js/smart-date-format.js.php:285
+msgid "Example:"
+msgstr "Exemple :"
+
+#: public/assets/js/smart-date-format.js.php:288
+msgid "Format you entered"
+msgstr "Format saisi"
 
 #: public/assets/js/smart-date-format.js.php:332
 msgid "Multiple interpretations possible!"
@@ -26684,10 +26782,6 @@ msgstr "Format du test"
 #: public/assets/js/smart-date-format.js.php:468
 msgid "Format ready for submission"
 msgstr "Format prêt à être soumis"
-
-#: public/assets/js/smart-date-format.js.php:506
-msgid "Enter sample date"
-msgstr "Saisir la date de l'échantillon"
 
 #: public/assets/js/smart-date-format.js.php:541
 msgid "Please enter a sample date first to test the format."
