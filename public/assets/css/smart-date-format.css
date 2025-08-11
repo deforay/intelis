@@ -1,0 +1,395 @@
+/*
+ * Smart Date Format Detection Styles
+ * File: assets/css/smart-date-format.css
+ * Description: Styles for intelligent date format detection and selection
+ */
+
+/* Format Suggestions Container */
+.format-suggestions-container {
+	max-height: 300px;
+	overflow-y: auto;
+	border-radius: 4px;
+}
+
+/* Individual Format Suggestion */
+.format-suggestion {
+	background: white;
+	border: 1px solid #ddd;
+	border-radius: 4px;
+	padding: 8px;
+	margin: 3px 0;
+	cursor: pointer;
+	transition: all 0.3s ease;
+	font-size: 12px;
+	position: relative;
+}
+
+.format-suggestion:hover {
+	border-color: #007bff;
+	box-shadow: 0 2px 4px rgba(0, 123, 255, 0.15);
+	transform: translateY(-1px);
+}
+
+/* When a selection is made, fade unselected items */
+.format-suggestions-container.has-selection .format-suggestion:not(.selected) {
+	background: #f8f9fa;
+	border-color: #e9ecef;
+	opacity: 0.65;
+	transform: none;
+}
+
+.format-suggestions-container.has-selection .format-suggestion:not(.selected):hover {
+	opacity: 0.8;
+	border-color: #ced4da;
+	box-shadow: 0 1px 2px rgba(0, 123, 255, 0.1);
+}
+
+/* Selected format suggestion */
+.format-suggestion.selected {
+	border-color: #28a745;
+	background: #f8fff9;
+	opacity: 1;
+	box-shadow: 0 2px 8px rgba(40, 167, 69, 0.2);
+}
+
+.format-suggestion.selected::after {
+	content: "✓";
+	position: absolute;
+	right: 8px;
+	top: 8px;
+	color: #28a745;
+	font-weight: bold;
+	font-size: 14px;
+}
+
+/* Confidence Level Indicators */
+.confidence-high {
+	border-left: 4px solid #28a745;
+}
+
+.confidence-medium {
+	border-left: 4px solid #ffc107;
+}
+
+.confidence-low {
+	border-left: 4px solid #6c757d;
+}
+
+/* Muted confidence colors for unselected items */
+.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-high {
+	border-left-color: #a8d5a8;
+}
+
+.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-medium {
+	border-left-color: #ffeaa7;
+}
+
+.format-suggestions-container.has-selection .format-suggestion:not(.selected).confidence-low {
+	border-left-color: #b6c2d0;
+}
+
+/* Warning Messages */
+.format-warning {
+	background: #fff3cd;
+	border: 1px solid #ffeaa7;
+	padding: 4px 8px;
+	border-radius: 3px;
+	margin-top: 4px;
+	font-size: 11px;
+	color: #856404;
+}
+
+/* No Format Found Message */
+.no-format-found {
+	background: #f8d7da;
+	border: 1px solid #f5c6cb;
+	padding: 8px;
+	border-radius: 4px;
+	text-align: center;
+	font-size: 12px;
+	color: #721c24;
+}
+
+/* Format Confirmation Banner */
+.format-confirmation-banner {
+	background: linear-gradient(135deg, #d4edda, #c3e6cb);
+	border: 2px solid #28a745;
+	border-radius: 8px;
+	padding: 15px;
+	margin: 10px 0;
+	box-shadow: 0 4px 12px rgba(40, 167, 69, 0.25);
+	animation: slideInFromTop 0.4s ease-out;
+	position: relative;
+}
+
+/* Smart Date Cell Styling */
+.smart-date-cell {
+	min-width: 350px;
+	padding: 10px !important;
+	position: relative;
+}
+
+/* Input States */
+.smart-date-input {
+	transition: border-color 0.3s ease, background-color 0.3s ease;
+}
+
+.smart-date-input.format-detected {
+	border-color: #9c27b0 !important;
+	background-color: #faf5ff;
+}
+
+.smart-date-input.sample-detected {
+	border-color: #007bff !important;
+	background-color: #f0f8ff;
+}
+
+.smart-date-input.format-selected {
+	border-color: #28a745 !important;
+	background-color: #f8fff9 !important;
+	font-weight: bold;
+}
+
+/* Format Badges */
+.format-badge {
+	display: inline-block;
+	padding: 1px 6px;
+	border-radius: 8px;
+	font-size: 10px;
+	font-weight: bold;
+	margin-left: 4px;
+}
+
+.format-badge.user-format {
+	background: #007bff;
+	color: white;
+}
+
+.format-badge.auto-detected {
+	background: #28a745;
+	color: white;
+}
+
+.format-badge.alternative {
+	background: #ffc107;
+	color: #333;
+}
+
+.format-badge.error {
+	background: #dc3545;
+	color: white;
+}
+
+/* Loading States */
+.format-loading {
+	text-align: center;
+	padding: 10px;
+	color: #666;
+	font-size: 12px;
+}
+
+.format-loading .spinner {
+	display: inline-block;
+	width: 16px;
+	height: 16px;
+	border: 2px solid #f3f3f3;
+	border-radius: 50%;
+	border-top: 2px solid #007bff;
+	animation: spin 1s linear infinite;
+	margin-right: 8px;
+}
+
+/* Manual Format Input */
+.manual-format-input {
+	margin-top: 8px;
+	padding: 8px;
+	background: #f8f9fa;
+	border: 1px dashed #ced4da;
+	border-radius: 4px;
+}
+
+.manual-format-toggle {
+	font-size: 11px;
+	color: #007bff;
+	text-decoration: none;
+	text-align: center;
+	display: block;
+	margin-top: 5px;
+	padding: 2px;
+}
+
+.manual-format-toggle:hover {
+	text-decoration: underline;
+	color: #0056b3;
+}
+
+/* Error Corrections */
+.format-corrections {
+	margin-top: 8px;
+	padding: 8px;
+	background: #e8f5e8;
+	border-radius: 4px;
+	border-left: 3px solid #28a745;
+}
+
+.format-corrections .correction-item {
+	margin: 4px 0;
+	font-size: 11px;
+}
+
+.format-corrections .correction-format {
+	background: #fff;
+	padding: 2px 6px;
+	border-radius: 3px;
+	font-family: monospace;
+	margin: 0 2px;
+}
+
+/* Buttons */
+.format-action-btn {
+	background: #6c757d;
+	color: white;
+	border: none;
+	padding: 4px 8px;
+	border-radius: 3px;
+	font-size: 11px;
+	cursor: pointer;
+	margin: 2px;
+	transition: background-color 0.2s ease;
+}
+
+.format-action-btn:hover {
+	background: #5a6268;
+}
+
+.format-action-btn.primary {
+	background: #007bff;
+}
+
+.format-action-btn.primary:hover {
+	background: #0056b3;
+}
+
+.format-action-btn.success {
+	background: #28a745;
+}
+
+.format-action-btn.success:hover {
+	background: #1e7e34;
+}
+
+.format-action-btn.info {
+	background: #17a2b8;
+}
+
+.format-action-btn.info:hover {
+	background: #138496;
+}
+
+/* Animations */
+@keyframes spin {
+	0% {
+		transform: rotate(0deg);
+	}
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+@keyframes slideInFromTop {
+	0% {
+		transform: translateY(-20px);
+		opacity: 0;
+	}
+	100% {
+		transform: translateY(0);
+		opacity: 1;
+	}
+}
+
+@keyframes checkmarkPop {
+	0% {
+		transform: scale(0);
+	}
+	50% {
+		transform: scale(1.2);
+	}
+	100% {
+		transform: scale(1);
+	}
+}
+
+@keyframes successFlash {
+	0% {
+		background-color: transparent;
+	}
+	50% {
+		background-color: rgba(40, 167, 69, 0.1);
+	}
+	100% {
+		background-color: transparent;
+	}
+}
+
+@keyframes pulse {
+	0%, 100% {
+		opacity: 1;
+	}
+	50% {
+		opacity: 0.5;
+	}
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+	.format-suggestions-container {
+		max-height: 200px;
+	}
+
+	.format-suggestion {
+		padding: 6px;
+		font-size: 11px;
+	}
+
+	.smart-date-cell {
+		min-width: 280px !important;
+	}
+
+	.format-confirmation-banner {
+		padding: 10px;
+		font-size: 12px;
+	}
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+	.format-suggestion {
+		border-width: 2px;
+	}
+
+	.format-suggestion:hover {
+		border-width: 3px;
+	}
+
+	.confidence-high,
+	.confidence-medium,
+	.confidence-low {
+		border-left-width: 6px;
+	}
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+	.format-suggestion {
+		transition: none;
+	}
+
+	.format-confirmation-banner {
+		animation: none;
+	}
+
+	.format-loading .spinner {
+		animation: none;
+		border-top-color: #007bff;
+	}
+}

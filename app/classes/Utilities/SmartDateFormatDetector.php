@@ -12,10 +12,35 @@ use Throwable;
  */
 final class SmartDateFormatDetector
 {
+
     /**
-     * Main entry point - auto-detect date format from sample data
+     * Public method to check if input looks like a PHP date format
+     * (Making the private method public for API access)
      *
-     * @param string $sampleDate Sample date string
+     * @param string $input Input string
+     * @return bool True if looks like a format
+     */
+    public static function looksLikeFormat(string $input): bool
+    {
+        return self::looksLikeDateFormat($input);
+    }
+
+    /**
+     * Validate and correct format strings for API endpoint
+     *
+     * @param string $format Format string to validate/correct
+     * @return array Array of suggestions including corrections
+     */
+    public static function validateAndCorrectFormat(string $format): array
+    {
+        return self::handleFormatString($format);
+    }
+
+    /**
+     * Main entry point - auto-detect date format from sample data OR validate format string
+     * This method now intelligently determines if input is a date sample or format string
+     *
+     * @param string $sampleDate Sample date string OR PHP date format string
      * @return array Array of possible formats with confidence scores
      */
     public static function detectFormat(string $sampleDate): array
@@ -25,8 +50,200 @@ final class SmartDateFormatDetector
             return [];
         }
 
+        // First check if this looks like a PHP date format string
+        if (self::looksLikeDateFormat($sampleDate)) {
+            return self::handleFormatString($sampleDate);
+        }
+
+        // Otherwise, treat as date sample and use existing detection logic
+        return self::detectFromDateSample($sampleDate);
+    }
+    /**
+     * Check if input string looks like a PHP date format
+     *
+     * @param string $input Input string
+     * @return bool True if looks like a format
+     */
+    private static function looksLikeDateFormat(string $input): bool
+    {
+        // PHP date format characters
+        $formatChars = [
+            // Day
+            'd',
+            'j',
+            'D',
+            'l',
+            'N',
+            'S',
+            'w',
+            'z',
+            // Week
+            'W',
+            // Month
+            'F',
+            'm',
+            'M',
+            'n',
+            't',
+            // Year
+            'L',
+            'o',
+            'Y',
+            'y',
+            // Time
+            'a',
+            'A',
+            'B',
+            'g',
+            'G',
+            'h',
+            'H',
+            'i',
+            's',
+            'u',
+            'v',
+            // Timezone
+            'e',
+            'I',
+            'O',
+            'P',
+            'T',
+            'Z',
+            // Full Date/Time
+            'c',
+            'r',
+            'U'
+        ];
+
+        // Count how many format characters vs total characters
+        $formatCharCount = 0;
+        $totalChars = strlen($input);
+
+        for ($i = 0; $i < $totalChars; $i++) {
+            if (in_array($input[$i], $formatChars)) {
+                $formatCharCount++;
+            }
+        }
+
+        // If more than 25% are format characters, likely a format string
+        $formatRatio = $formatCharCount / $totalChars;
+
+        // Additional checks for common format patterns
+        $hasCommonFormatPatterns = (
+            preg_match('/[YymdnjHGhgis]/', $input) && // Has date/time chars
+            preg_match('/[\/\-\.\s:]/', $input)       // Has separators
+        );
+
+        $hasSequentialFormats = preg_match('/[YymdnjHGhgis][\/\-\.\s:][YymdnjHGhgis]/', $input);
+
+        // More specific patterns that are definitely formats
+        $definitelyFormat = (
+            preg_match('/^[YymdnjHGhgis\/\-\.\s:AaMFl]+$/', $input) && // Only format chars and separators
+            $formatRatio > 0.4 // High ratio of format characters
+        );
+
+        return $definitelyFormat || ($formatRatio > 0.25 && $hasCommonFormatPatterns) || $hasSequentialFormats;
+    }
+
+    /**
+     * Handle when user enters a PHP date format string
+     *
+     * @param string $format PHP date format string
+     * @return array Suggestions array
+     */
+    private static function handleFormatString(string $format): array
+    {
         $suggestions = [];
-        $seenFormats = []; // Track formats we've already found
+
+        // Test if it's a valid format by trying to format a known date
+        try {
+            $testDate = Carbon::create(2025, 6, 19, 14, 30, 45);
+            $formatted = $testDate->format($format);
+
+            // Try to parse it back
+            $parsed = Carbon::createFromFormat($format, $formatted);
+
+            if ($parsed && $parsed->format($format) === $formatted) {
+                // Valid format - add as primary suggestion
+                $suggestions[] = [
+                    'format' => $format,
+                    'name' => '✏️ ' . self::describeFormat($format) . ' (Your Format)',
+                    'confidence' => 'high',
+                    'description' => self::generateDescription($format) . ' - Format you entered',
+                    'example' => $formatted,
+                    'method' => 'user_format_validation',
+                    'test_success' => true,
+                    'parsed_date' => $testDate->format('Y-m-d H:i:s'),
+                    'is_user_format' => true
+                ];
+
+                // Add similar/alternative formats
+                $alternatives = self::generateAlternativeFormats($format);
+                foreach ($alternatives as $altFormat) {
+                    try {
+                        $altFormatted = $testDate->format($altFormat);
+                        $altParsed = Carbon::createFromFormat($altFormat, $altFormatted);
+
+                        if ($altParsed && $altParsed->format($altFormat) === $altFormatted) {
+                            $suggestions[] = [
+                                'format' => $altFormat,
+                                'name' => self::describeFormat($altFormat) . ' (Alternative)',
+                                'confidence' => 'medium',
+                                'description' => self::generateDescription($altFormat) . ' - Similar to your format',
+                                'example' => $altFormatted,
+                                'method' => 'format_alternative',
+                                'test_success' => true,
+                                'parsed_date' => $testDate->format('Y-m-d H:i:s')
+                            ];
+                        }
+                    } catch (Throwable $e) {
+                        continue;
+                    }
+                }
+            }
+        } catch (Throwable $e) {
+            // Invalid format - suggest corrections
+            $suggestions[] = [
+                'format' => $format,
+                'name' => '❌ Invalid Format',
+                'confidence' => 'low',
+                'description' => 'This format contains errors: ' . $e->getMessage(),
+                'example' => 'Error: ' . $e->getMessage(),
+                'method' => 'format_validation_error',
+                'test_success' => false,
+                'error' => $e->getMessage()
+            ];
+
+            // Add corrected suggestions
+            $corrections = self::suggestFormatCorrections($format);
+            foreach ($corrections as $correction) {
+                $suggestions[] = [
+                    'format' => $correction['format'],
+                    'name' => '🔧 ' . self::describeFormat($correction['format']) . ' (Corrected)',
+                    'confidence' => 'medium',
+                    'description' => $correction['description'],
+                    'example' => self::generateExample($correction['format']),
+                    'method' => 'format_correction',
+                    'test_success' => true,
+                    'parsed_date' => Carbon::create(2025, 6, 19, 14, 30, 45)->format('Y-m-d H:i:s'),
+                    'correction_details' => $correction['changes']
+                ];
+            }
+        }
+
+        return $suggestions;
+    }
+
+    /**
+     * Original detection logic for date samples
+     *
+     * @param string $sampleDate Sample date string
+     * @return array Array of possible formats with confidence scores
+     */
+    private static function detectFromDateSample(string $sampleDate): array
+    {
+        $suggestions = [];
+        $seenFormats = [];
 
         // Method 1: Try Carbon's intelligent parsing first
         try {
@@ -45,7 +262,7 @@ final class SmartDateFormatDetector
             // Carbon couldn't parse it intelligently, continue with other methods
         }
 
-        // Method 1.5: Single-digit specific detection (high priority)
+        // Method 1.5: Single-digit specific detection
         $singleDigitFormats = self::generateSingleDigitFormats($sampleDate);
         foreach ($singleDigitFormats as $format) {
             if (!isset($seenFormats[$format]) && self::testFormatExactly($sampleDate, $format)) {
@@ -86,7 +303,6 @@ final class SmartDateFormatDetector
             }
         }
 
-        // Clean and sort suggestions
         return self::cleanAndSortSuggestions($suggestions);
     }
 
@@ -136,8 +352,9 @@ final class SmartDateFormatDetector
 
     /**
      * Get suggested formats in a user-friendly format for display
+     * This method now handles both date samples and format strings transparently
      *
-     * @param string $sampleDate Sample date string
+     * @param string $sampleDate Sample date string OR PHP date format string
      * @return array Formatted suggestions for UI display
      */
     public static function getSuggestionsForUI(string $sampleDate): array
@@ -150,11 +367,14 @@ final class SmartDateFormatDetector
                 'format' => $format['format'],
                 'name' => $format['name'] ?? self::describeFormat($format['format']),
                 'confidence' => $format['confidence'],
-                'description' => self::generateDescription($format['format']),
-                'example' => self::generateExample($format['format']),
+                'description' => $format['description'] ?? self::generateDescription($format['format']),
+                'example' => $format['example'] ?? self::generateExample($format['format']),
                 'test_success' => $format['test_success'] ?? true,
                 'test_result' => $format['parsed_date'] ?? $format['test_result'] ?? null,
-                'method' => $format['method'] ?? 'auto_detection'
+                'method' => $format['method'] ?? 'auto_detection',
+                'is_user_format' => $format['is_user_format'] ?? false,
+                'error' => $format['error'] ?? null,
+                'correction_details' => $format['correction_details'] ?? null
             ];
         }
 
@@ -215,6 +435,158 @@ final class SmartDateFormatDetector
         }
 
         return $formats;
+    }
+
+    /**
+     * Generate alternative formats based on input format
+     *
+     * @param string $format Original format
+     * @return array Alternative formats
+     */
+    private static function generateAlternativeFormats(string $format): array
+    {
+        $alternatives = [];
+
+        // Common substitutions
+        $substitutions = [
+            // Year variations
+            'Y' => 'y',   // 4-digit to 2-digit year
+            'y' => 'Y',   // 2-digit to 4-digit year
+
+            // Month variations
+            'm' => 'n',   // Zero-padded to no padding
+            'n' => 'm',   // No padding to zero-padded
+            'M' => 'm',   // Text month to numeric
+            'F' => 'm',   // Full month to numeric
+
+            // Day variations
+            'd' => 'j',   // Zero-padded to no padding
+            'j' => 'd',   // No padding to zero-padded
+
+            // Hour variations
+            'H' => 'G',   // 24-hour padded to unpadded
+            'G' => 'H',   // 24-hour unpadded to padded
+            'h' => 'g',   // 12-hour padded to unpadded
+            'g' => 'h',   // 12-hour unpadded to padded
+            'H' => 'h',   // 24-hour to 12-hour
+            'h' => 'H',   // 12-hour to 24-hour
+        ];
+
+        // Generate single-character substitutions
+        foreach ($substitutions as $from => $to) {
+            if (strpos($format, $from) !== false) {
+                $altFormat = str_replace($from, $to, $format);
+                if ($altFormat !== $format) {
+                    $alternatives[] = $altFormat;
+                }
+            }
+        }
+
+        // If 12-hour format without AM/PM, add AM/PM
+        if (preg_match('/[hg]/', $format) && !preg_match('/[aA]/', $format)) {
+            $alternatives[] = $format . ' A';
+        }
+
+        // If 24-hour format with AM/PM, remove AM/PM and convert to 12-hour
+        if (preg_match('/[HG].*[aA]/', $format)) {
+            $alt = preg_replace('/\s*[aA]/', '', $format);
+            $alt = str_replace(['H', 'G'], ['h', 'g'], $alt);
+            $alternatives[] = $alt;
+        }
+
+        return array_unique($alternatives);
+    }
+
+    /**
+     * Suggest corrections for invalid format strings
+     *
+     * @param string $format Invalid format
+     * @return array Suggested corrections
+     */
+    private static function suggestFormatCorrections(string $format): array
+    {
+        $corrections = [];
+
+        // Common mistakes and their fixes
+        $commonMistakes = [
+            // Wrong case or duplicates
+            'mm' => 'm',     // Double m
+            'dd' => 'd',     // Double d
+            'yy' => 'y',     // Double y (if not YYYY)
+            'yyyy' => 'Y',   // Lowercase yyyy
+            'YYYY' => 'Y',   // Uppercase YYYY
+            'MM' => 'M',     // Double M for month name
+            'DD' => 'D',     // Double D for day name
+            'hh' => 'h',     // Double h
+            'HH' => 'H',     // Double H
+            'ss' => 's',     // Double s
+            'ii' => 'i',     // Double i (minutes)
+
+            // Common format confusions
+            'MM/DD/YYYY' => 'm/d/Y',
+            'DD/MM/YYYY' => 'd/m/Y',
+            'YYYY-MM-DD' => 'Y-m-d',
+            'DD.MM.YYYY' => 'd.m.Y',
+            'mm/dd/yyyy' => 'm/d/Y',
+            'dd/mm/yyyy' => 'd/m/Y',
+
+            // Time format mistakes
+            '24' => 'H',     // Literal 24
+            '12' => 'h',     // Literal 12
+            'am/pm' => 'A',  // Literal am/pm
+            'AM/PM' => 'A',  // Literal AM/PM
+            'ampm' => 'A',   // No separator
+            'AMPM' => 'A',   // No separator
+        ];
+
+        $correctedFormat = $format;
+        $changesMade = [];
+
+        foreach ($commonMistakes as $mistake => $correction) {
+            if (strpos($correctedFormat, $mistake) !== false) {
+                $correctedFormat = str_replace($mistake, $correction, $correctedFormat);
+                $changesMade[] = "Changed '$mistake' to '$correction'";
+            }
+        }
+
+        // Test if correction is valid
+        if (!empty($changesMade)) {
+            try {
+                $testDate = Carbon::create(2025, 6, 19, 14, 30, 45);
+                $testDate->format($correctedFormat);
+
+                $corrections[] = [
+                    'format' => $correctedFormat,
+                    'changes' => $changesMade,
+                    'description' => 'Corrected common format mistakes: ' . implode(', ', $changesMade)
+                ];
+            } catch (Throwable $e) {
+                // Correction still invalid, continue to suggest common patterns
+            }
+        }
+
+        // Suggest common patterns if format is very wrong or no corrections worked
+        if (strlen($format) > 5 && (count($corrections) === 0 || count($changesMade) === 0)) {
+            $corrections[] = [
+                'format' => 'd/m/Y H:i',
+                'changes' => ['Suggested common European format'],
+                'description' => 'European date with time (Day/Month/Year Hour:Minute)'
+            ];
+
+            $corrections[] = [
+                'format' => 'm/d/Y H:i',
+                'changes' => ['Suggested common US format'],
+                'description' => 'US date with time (Month/Day/Year Hour:Minute)'
+            ];
+
+            $corrections[] = [
+                'format' => 'Y-m-d H:i:s',
+                'changes' => ['Suggested ISO format'],
+                'description' => 'ISO 8601 format (Year-Month-Day Hour:Minute:Second)'
+            ];
+        }
+
+        return $corrections;
     }
 
     /**
@@ -1439,7 +1811,6 @@ final class SmartDateFormatDetector
                     'reformatted' => $reformatted,
                     'exact_match' => $matches
                 ];
-
             } catch (Throwable $e) {
                 $results[] = [
                     'format' => $format,
