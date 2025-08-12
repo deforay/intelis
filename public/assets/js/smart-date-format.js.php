@@ -161,7 +161,7 @@
                     inputElement.removeClass('sample-detected format-selected')
                         .addClass('format-detected');
                     if (helpText.length) {
-                        helpText.html('📝 <?= _translate("PHP format detected - analyzing...", true); ?>')
+                        helpText.html('📝 <?= _translate("Date format detected - analyzing...", true); ?>')
                             .css('color', '#9c27b0');
                     }
                 } else if (input.length > 0) {
@@ -383,7 +383,7 @@
             buildFormatTip: function() {
                 return `
                 <div style="margin-top: 8px; padding: 8px; background: #e7f3ff; border-radius: 4px; font-size: 11px; color: #0066cc;">
-                    <strong>💡 <?= _translate("Tip:", true); ?></strong> <?= _translate("We detected you entered a PHP date format. You can also enter sample dates for auto-detection.", true); ?>
+                    <strong>💡 <?= _translate("Tip:", true); ?></strong> <?= _translate("We detected you entered a date format. You can also enter sample dates for auto-detection.", true); ?>
                 </div>
             `;
             },

@@ -154,7 +154,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 															id="dateFormat"
 															name="dateFormat"
 															value=""
-															placeholder="<?php echo _translate("PHP date format will appear here"); ?>"
+															placeholder="<?php echo _translate("Date format will appear here"); ?>"
 															style="margin-top: 8px; border: 1px solid #28a745; background: #f8fff9;"
 															readonly />
 
@@ -163,7 +163,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 															<input type="text"
 																class="form-control"
 																placeholder="<?php echo _translate("Manual: d/m/Y H:i"); ?>"
-																title="<?php echo _translate("Enter PHP date format manually"); ?>"
+																title="<?php echo _translate("Enter date format manually"); ?>"
 																style="border: 1px solid #ccc; font-size: 12px;"
 																onchange="document.getElementById('dateFormat').value = this.value;" />
 														</div>

@@ -626,7 +626,7 @@ $testTypeList = SystemService::getActiveModules(true);
 														<input type="text"
 															class="form-control"
 															placeholder="<?= _translate("Manual: d/m/Y H:i"); ?>"
-															title="<?= _translate("Enter PHP date format manually"); ?>"
+															title="<?= _translate("Enter date format manually"); ?>"
 															style="border: 1px solid #ccc; font-size: 12px;"
 															onchange="document.getElementById('dateFormat<?php echo $i; ?>').value = this.value;" />
 													</div>
@@ -703,7 +703,7 @@ $testTypeList = SystemService::getActiveModules(true);
 													<input type="text"
 														class="form-control"
 														placeholder="<?= _translate("Manual: d/m/Y H:i"); ?>"
-														title="<?= _translate("Enter PHP date format manually"); ?>"
+														title="<?= _translate("Enter date format manually"); ?>"
 														style="border: 1px solid #ccc; font-size: 12px;"
 														onchange="document.getElementById('dateFormat0').value = this.value;" />
 												</div>
@@ -1190,7 +1190,7 @@ function updateInputGuidance(input, rowIndex) {
         inputElement.removeClass('sample-detected format-selected')
             .addClass('format-detected');
         if (helpText.length) {
-            helpText.html('📝 PHP format detected - analyzing...')
+            helpText.html('📝 Date format detected - analyzing...')
                 .css('color', '#9c27b0');
         }
     } else if (input.length > 0) {

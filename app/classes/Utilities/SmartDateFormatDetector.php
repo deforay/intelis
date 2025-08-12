@@ -558,7 +558,7 @@ final class SmartDateFormatDetector
                 $corrections[] = [
                     'format' => $correctedFormat,
                     'changes' => $changesMade,
-                    'description' => _translate('Corrected common format mistakes: ' . implode(', ', $changesMade), true)
+                    'description' => _translate('Corrected common format mistakes:', true) . ' ' .  implode(', ', $changesMade)
                 ];
             } catch (Throwable $e) {
                 // Correction still invalid, continue to suggest common patterns
