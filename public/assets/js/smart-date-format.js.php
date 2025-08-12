@@ -380,9 +380,8 @@
                 this.animateSuccessSelection(settings);
 
                 // Show toast notification
-                if (window.toast && window.toast.success) {
-                    window.toast.success(`<?= _translate("Date format applied:", true); ?> ${format}"); ?>`);
-                }
+                toast.success(`<?= _translate("Date format applied:", true); ?> ${format}`);
+
 
                 // Call callback if provided
                 if (settings.onFormatSelected) {
@@ -424,14 +423,15 @@
                                         color: #28a745;
                                         font-weight: bold;
                                         cursor: pointer;
-                                        transition: all 0.2s ease;
-                                    " onclick="SmartDateFormat.copyFormatToClipboard('${format}')"
-                                       onmouseover="this.style.backgroundColor='#f0f9f0'"
-                                       onmouseout="this.style.backgroundColor='#fff'"
-                                       title="Click to copy format">
+                                        transition: all 0.2s ease;"
+                                        onclick="SmartDateFormat.copyFormatToClipboard('${format}')"
+                                        onmouseover="this.style.backgroundColor='#f0f9f0'"
+                                        onmouseout="this.style.backgroundColor='#fff'"
+                                        title="Click to copy format">
                                         ${format}
                                     </code>
-                                    <span style="color: #155724; font-size: 11px;">📋 Click to copy</span>
+                                    <span style="color: #155724; font-size: 11px;"
+                                        onclick="SmartDateFormat.copyFormatToClipboard('${format}')">📋 Click to copy</span>
                                 </div>
                             </div>
                         </div>
@@ -537,8 +537,8 @@
                 const sampleDate = input.length ? input.val().replace(' ✓', '') : '';
 
                 if (!sampleDate) {
-                    if (window.toast && window.toast.error) {
-                        window.toast.error("<?= _translate("Please enter a sample date first to test the format.", true); ?>");
+                    if (toast && toast.error) {
+                        toast.error("<?= _translate("Please enter a sample date first to test the format.", true); ?>");
                     }
                     return;
                 }
@@ -555,19 +555,15 @@
                     })
                     .done(function(response) {
                         if (response.success && response.valid) {
-                            if (window.toast && window.toast.success) {
-                                window.toast.success(`<?= _translate("Format test passed! Parsed:", true); ?> ${response.parsed_date}`);
-                            }
+                            toast.success(`<?= _translate("Format test passed! Parsed:", true); ?> ${response.parsed_date}`);
                         } else {
-                            if (window.toast && window.toast.error) {
-                                window.toast.error(`<?= _translate("Format test failed:", true); ?> ${response.error || 'Unknown error'}`);
-                            }
+                            toast.error(`<?= _translate("Format test failed:", true); ?> ${response.error || 'Unknown error'}`);
                         }
                     })
                     .fail(function() {
-                        if (window.toast && window.toast.error) {
-                            window.toast.error(`<?= _translate("Test failed - network error", true); ?>`);
-                        }
+
+                        toast.error(`<?= _translate("Test failed - network error", true); ?>`);
+
                     })
                     .always(function() {
                         testButton.innerHTML = originalText;
@@ -580,18 +576,12 @@
                 try {
                     const success = await Utilities.copyToClipboard(format);
                     if (success) {
-                        if (window.toast && window.toast.success) {
-                            window.toast.success("<?= _translate("Format copied to clipboard!", true); ?>");
-                        }
+                        toast.success("<?= _translate("Format copied to clipboard!", true); ?>");
                     } else {
-                        if (window.toast && window.toast.error) {
-                            window.toast.error("<?= _translate("Failed to copy format", true); ?>");
-                        }
+                        toast.error("<?= _translate("Failed to copy format", true); ?>");
                     }
                 } catch (error) {
-                    if (window.toast && window.toast.error) {
-                        window.toast.error("<?= _translate("Failed to copy format", true); ?>");
-                    }
+                    toast.error("<?= _translate("Failed to copy format", true); ?>");
                 }
             },
 
