@@ -273,7 +273,66 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 		}
 	});
 
-	// Fixed getConfigMachineName function
+	$("#configMachineName").on('change', function() {
+		updateDateFormatFromSelectedMachine();
+	});
+
+	// Extracted function to handle date format updates
+	function updateDateFormatFromSelectedMachine() {
+		// Get the date format from selected machine
+		const selectedFormat = $("#configMachineName").find(':selected').data("dateformat");
+
+		if (selectedFormat && selectedFormat !== '') {
+			// Update the format field
+			$('#dateFormat').val(selectedFormat);
+
+			// Update the sample input to show pre-configured state (but keep it editable)
+			const sampleInput = $('#sampleDateInput');
+			const helpText = sampleInput.siblings('small').first();
+			const container = $('#formatSuggestions');
+
+			// Make sample input show it's pre-configured but still editable
+			sampleInput.removeClass('sample-detected format-detected')
+				.addClass('format-selected')
+				.prop('placeholder', `✅ Pre-configured: ${selectedFormat} (click to change)`)
+				.prop('readonly', false) // Keep it editable!
+				.css('cursor', 'text');
+
+			if (helpText.length) {
+				helpText.html(`✅ <strong>Pre-configured format:</strong> <code>${selectedFormat}</code> | Click field to change`)
+					.css('color', '#28a745');
+			}
+
+			// Mark container as having selection but allow changes
+			container.addClass('has-selection').html('');
+
+			// Update the main guidance
+			if (window.SmartDateFormat) {
+				SmartDateFormat.updateInputGuidance('', SmartDateFormat.getInstance('import'));
+			}
+		} else {
+			// Reset if no format from machine
+			$('#dateFormat').val('d/m/Y H:i');
+
+			// Reset the sample input
+			const sampleInput = $('#sampleDateInput');
+			const helpText = sampleInput.siblings('small').first();
+			const container = $('#formatSuggestions');
+
+			sampleInput.removeClass('format-selected sample-detected format-detected')
+				.prop('placeholder', '📅 Enter sample date from your file')
+				.prop('readonly', false)
+				.css('cursor', 'text');
+
+			if (helpText.length) {
+				helpText.html('💡 Enter any date from your import file to auto-detect format')
+					.css('color', '#666');
+			}
+
+			container.removeClass('has-selection').html('');
+		}
+	}
+
 	function getConfigMachineName() {
 		if ($("#machineName").val() != '') {
 			$.post("/import-result/getConfigMachineName.php", {
@@ -281,58 +340,8 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 				},
 				function(data) {
 					$("#configMachineName").html(data);
-
-					// Get the date format from selected machine
-					const selectedFormat = $("#configMachineName").find(':selected').data("dateformat");
-					if (selectedFormat && selectedFormat !== '') {
-						// Update the format field
-						$('#dateFormat').val(selectedFormat);
-
-						// Update the sample input to show pre-configured state (but keep it editable)
-						const sampleInput = $('#sampleDateInput');
-						const helpText = sampleInput.siblings('small').first();
-						const container = $('#formatSuggestions');
-
-						// Make sample input show it's pre-configured but still editable
-						sampleInput.removeClass('sample-detected format-detected')
-							.addClass('format-selected')
-							.prop('placeholder', `✅ Pre-configured: ${selectedFormat} (click to change)`)
-							.prop('readonly', false) // Keep it editable!
-							.css('cursor', 'text');
-
-						if (helpText.length) {
-							helpText.html(`✅ <strong>Pre-configured format:</strong> <code>${selectedFormat}</code> | Click field to change`)
-								.css('color', '#28a745');
-						}
-
-						// Mark container as having selection but allow changes
-						container.addClass('has-selection').html('');
-
-						// Update the main guidance
-						if (window.SmartDateFormat) {
-							SmartDateFormat.updateInputGuidance('', SmartDateFormat.getInstance('import'));
-						}
-					} else {
-						// Reset if no format from machine
-						$('#dateFormat').val('d/m/Y H:i');
-
-						// Reset the sample input
-						const sampleInput = $('#sampleDateInput');
-						const helpText = sampleInput.siblings('small').first();
-						const container = $('#formatSuggestions');
-
-						sampleInput.removeClass('format-selected sample-detected format-detected')
-							.prop('placeholder', '📅 Enter sample date from your file')
-							.prop('readonly', false)
-							.css('cursor', 'text');
-
-						if (helpText.length) {
-							helpText.html('💡 Enter any date from your import file to auto-detect format')
-								.css('color', '#666');
-						}
-
-						container.removeClass('has-selection').html('');
-					}
+					// Apply date format after the dropdown is populated
+					updateDateFormatFromSelectedMachine();
 				});
 		}
 	}
