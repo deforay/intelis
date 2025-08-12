@@ -21,7 +21,7 @@ $output = _getFromFileCache($cacheKey, function () use ($db, $importMachineTable
     );
 
     $configMachineInfo = $db->rawQuery(
-        "SELECT config_machine_id, config_machine_name, file_name, `date_format` FROM instrument_machines WHERE instrument_id = ?",
+        "SELECT `config_machine_id`, `config_machine_name`, `file_name`, `date_format` FROM instrument_machines WHERE instrument_id = ?",
         [$iResult['instrument_id']]
     );
 

@@ -13,6 +13,9 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+$dateFormat = $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY';
+$dateTimeFormat = "$dateFormat HH:mm";
+
 $importedBy = $_SESSION['userId'];
 $module = $_POST['module'];
 
@@ -184,13 +187,25 @@ foreach ($rResult as $aRow) {
     } else {
         $aRow['sample_collection_date'] = '';
     }
+    // Always show datepicker for test dates
     if (isset($aRow['sample_tested_datetime']) && trim((string) $aRow['sample_tested_datetime']) != '' && $aRow['sample_tested_datetime'] != '0000-00-00 00:00:00') {
-        $aRow['sample_tested_datetime'] = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true) .
-            '<input type="hidden" class="missing-test-date-flag" value="0">';
+        // Has existing date - show datepicker with the date pre-filled
+        $existingDate = DateUtility::humanReadableDateFormat($aRow['sample_tested_datetime'], true);
+        $aRow['sample_tested_datetime'] = '<input type="text" class="test-date-picker form-control" id="testDate' . $aRow['temp_sample_id'] . '"
+           data-temp-sample-id="' . $aRow['temp_sample_id'] . '"
+           data-date-format="' . $dateTimeFormat . '"
+           value="' . $existingDate . '"
+           placeholder="' . _translate('Click to select date') . '" readonly />' .
+            '<input type="hidden" class="missing-test-date-flag" id="missingTestDateFlag' . $aRow['temp_sample_id'] . '" value="0">';
     } else {
-        $aRow['sample_tested_datetime'] = '<span style="color:#e8000b;font-weight:bold;font-size:1.2em;">' . _translate('COULD NOT FIND TEST DATE') . '</span>' .
-            '<input type="hidden" class="missing-test-date-flag" value="1">';
+        // No date - show empty datepicker
+        $aRow['sample_tested_datetime'] = '<input type="text" class="test-date-picker form-control" id="testDate' . $aRow['temp_sample_id'] . '"
+           data-temp-sample-id="' . $aRow['temp_sample_id'] . '"
+           data-date-format="' . $dateTimeFormat . '"
+           placeholder="' . _translate('Click to select date') . '" readonly />' .
+            '<input type="hidden" class="missing-test-date-flag" id="missingTestDateFlag' . $aRow['temp_sample_id'] . '" value="1">';
     }
+
     if ($aRow['sample_details'] == _translate('Result already exists')) {
         $rsDetails = _translate('Existing Result');
         $color = '<span style="color:#FFC300;font-weight:bold;"><em class="fa-solid fa-exclamation-circle"></em></span>';

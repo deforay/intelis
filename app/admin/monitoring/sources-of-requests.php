@@ -36,13 +36,6 @@ $sources = [
 $activeModules = SystemService::getActiveModules();
 $state = $geolocationService->getProvinces("yes");
 
-
-// Src of alert req
-$sources = $general->getSourcesOfTestRequests('form_vl');
-$srcOfReqList = [];
-foreach ($sources as $list) {
-    $srcOfReqList[$list['source_of_request']] = strtoupper((string) $list['source_of_request']);
-}
 ?>
 <style>
     .select2-selection__choice {
@@ -120,7 +113,8 @@ foreach ($sources as $list) {
                             <td>
                                 <strong>
                                     <?= _translate("Name of the Testing Lab"); ?>&nbsp;:
-                                </strong></td>
+                                </strong>
+                            </td>
                             <td>
                                 <select style="width:220px;" class="form-control select2" id="labName" name="labName" title="<?php echo _translate('Please select the Lab name'); ?>" multiple="multiple">
                                     <?= $general->generateSelectOptions($labNameList, null, '--Select--'); ?>
@@ -172,14 +166,12 @@ foreach ($sources as $list) {
                                     <?php echo _translate("Source of Request"); ?>&nbsp;:
                                 </strong></td>
                             <td>
-                                <select class="form-control" id="srcRequest" name="srcRequest" title="<?php echo _translate('Please select source of request'); ?>">
-                                    <?= $general->generateSelectOptions($srcOfReqList, null, "--Select--"); ?>
-                                </select>
+                                <select class="form-control" id="originalSourceOfRequest" name="originalSourceOfRequest" title="<?php echo _translate('Please select source of request'); ?>"></select>
                             </td>
                         </tr>
                         <tr>
 
-                            <td><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
+                            <td colspan="6"><button onclick="searchRequestData();" value="Search" class="btn btn-primary btn-sm"><span>
                                         <?php echo _translate("Search"); ?>
                                     </span></button>
                                 <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
@@ -278,9 +270,8 @@ foreach ($sources as $list) {
     var oTable = null;
     $(document).ready(function() {
         getSourceRequest('vl');
-        getSourcesOfRequestReport();
 
-        $("#srcRequest").val('api');
+
         $('#labName').select2({
             placeholder: "Select Lab to filter"
         });
@@ -420,6 +411,10 @@ foreach ($sources as $list) {
                     "name": "facilityId",
                     "value": $("#facilityId").val()
                 });
+                aoData.push({
+                    "name": "originalSourceOfRequest",
+                    "value": $("#originalSourceOfRequest").val()
+                });
                 $.ajax({
                     "dataType": 'json',
                     "type": "POST",
@@ -494,14 +489,14 @@ foreach ($sources as $list) {
 
     function getSourceRequest(testType) {
         $.blockUI();
-        $("#srcRequest").html("");
+        $("#originalSourceOfRequest").empty();
         $.post("/admin/monitoring/get-source-request-list.php", {
-                testType: testType,
-            },
-            function(data) {
-                $.unblockUI();
-                $("#srcRequest").html(data);
-            });
+            testType
+        }, function(data) {
+            $("#originalSourceOfRequest").html(data).val('api');
+            getSourcesOfRequestReport();
+            $.unblockUI();
+        });
     }
 </script>
 <?php

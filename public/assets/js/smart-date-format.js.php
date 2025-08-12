@@ -36,6 +36,7 @@
                     manualInputId: null,
                     rowId: null,
                     defaultFormat: 'd/m/Y H:i',
+                    clearWhenEmpty: false, // New option for import page behavior
                     onFormatSelected: null,
                     onError: null
                 }, options);
@@ -72,18 +73,70 @@
                 });
 
                 // Focus/blur events for better UX
-                input.on('focus', () => {
-                    this.updateInputGuidance(input.val(), settings);
+                input.on('focus', (e) => {
+                    this.handleInputFocus(e.target.value, settings);
                 });
 
                 input.on('blur', () => {
-                    // Optional: validate on blur
+                    this.handleInputBlur(settings);
                 });
+            },
+
+            // Handle input focus - show hidden suggestions if available
+            handleInputFocus: function(value, settings) {
+                const container = this.getContainer(settings);
+                const hasSelection = container.hasClass('has-selection');
+                const input = $('#' + settings.inputId);
+
+                // If field was pre-configured, make it clear it's now editable
+                if (hasSelection) {
+                    input.removeClass('format-selected')
+                          .addClass('sample-detected')
+                          .prop('placeholder', '📅 <?= _translate("Enter new sample date to change format", true); ?>')
+                          .prop('readonly', false)
+                          .css('cursor', 'text');
+
+                    // Update help text to show it's now editable
+                    const helpText = input.siblings('small').first();
+                    if (helpText.length) {
+                        helpText.html('📝 <?= _translate("Type a new sample date to change the format", true); ?>')
+                                .css('color', '#007bff');
+                    }
+
+                    this.showHiddenSuggestions(settings);
+                } else {
+                    this.updateInputGuidance(value, settings);
+                }
+            },
+
+            // Handle input blur - hide suggestions after selection
+            handleInputBlur: function(settings) {
+                const container = this.getContainer(settings);
+                const hasSelection = container.hasClass('has-selection');
+
+                // Only hide if there's a selection
+                if (hasSelection) {
+                    setTimeout(() => {
+                        // Check if user clicked on a suggestion (don't hide if so)
+                        if (!container.is(':hover')) {
+                            this.hideSuggestionsAfterSelection(settings);
+                        }
+                    }, 150); // Small delay to allow clicking on suggestions
+                }
             },
 
             // Handle input changes
             handleInput: function(value, settings) {
                 this.updateInputGuidance(value, settings);
+
+                const container = this.getContainer(settings);
+                const hasSelection = container.hasClass('has-selection');
+
+                // If input changed after selection, clear selection and detect again
+                if (hasSelection) {
+                    this.clearSelection(settings);
+                }
+
                 this.debounceDetection(value, settings);
             },
 
@@ -91,25 +144,37 @@
             updateInputGuidance: function(input, settings) {
                 const inputElement = $('#' + settings.inputId);
                 const helpText = inputElement.siblings('small').first();
+                const container = this.getContainer(settings);
+                const hasSelection = container.hasClass('has-selection');
+
+                // If format is already selected, show format info instead of generic messages
+                if (hasSelection) {
+                    const selectedFormat = $('#' + settings.hiddenFieldId).val();
+                    if (helpText.length && selectedFormat) {
+                        helpText.html(`✅ <strong><?= _translate("Selected format:", true); ?></strong> <code>${selectedFormat}</code> | <?= _translate("Click field to change", true); ?>`)
+                            .css('color', '#28a745');
+                    }
+                    return;
+                }
 
                 if (this.looksLikeDateFormat(input)) {
                     inputElement.removeClass('sample-detected format-selected')
                         .addClass('format-detected');
                     if (helpText.length) {
-                        helpText.html('📝 ' + "<?= _translate("Format detected! We'll validate this PHP date format", true); ?>")
+                        helpText.html('📝 <?= _translate("PHP format detected - analyzing...", true); ?>')
                             .css('color', '#9c27b0');
                     }
                 } else if (input.length > 0) {
                     inputElement.removeClass('format-detected format-selected')
                         .addClass('sample-detected');
                     if (helpText.length) {
-                        helpText.html('📅 ' + "<?= _translate("Sample date - we'll detect the format automatically", true); ?>")
+                        helpText.html('📅 <?= _translate("Sample date detected - finding format...", true); ?>')
                             .css('color', '#007bff');
                     }
                 } else {
                     inputElement.removeClass('format-detected sample-detected format-selected');
                     if (helpText.length) {
-                        helpText.html('💡 ' + "<?= _translate("Enter any date from your instrument to auto-detect format", true); ?>")
+                        helpText.html('💡 <?= _translate("Enter any date from your instrument to auto-detect format", true); ?>')
                             .css('color', '#666');
                     }
                 }
@@ -217,7 +282,7 @@
             `);
             },
 
-            // Show suggestions for sample dates
+            // Show suggestions for sample dates (clean version)
             showFormatSuggestions: function(suggestions, settings, regionalPreference) {
                 const uniqueSuggestions = Utilities.unique(suggestions, 'format');
                 const suggestionsHtml = uniqueSuggestions.map((suggestion, index) => {
@@ -225,17 +290,11 @@
                 }).join('');
 
                 const container = this.getContainer(settings);
-                container.html(`
-                <div style="margin-bottom: 5px; font-size: 11px; color: #666;">
-                    🎯 <strong><?= _translate("Auto-detected formats", true); ?></strong>
-                    <span class="format-badge auto-detected">📍 ${regionalPreference} </span>
-                </div>
-                ${suggestionsHtml}
-                ${this.buildMultipleWarning(uniqueSuggestions)}
-            `);
+                // Simple, clean display without extra badges and warnings
+                container.html(suggestionsHtml);
             },
 
-            // Show suggestions for format strings
+            // Show suggestions for format strings (clean version)
             showFormatStringSuggestions: function(suggestions, settings, originalInput) {
                 const suggestionsHtml = suggestions.map((suggestion, index) => {
                     if (suggestion.error) {
@@ -244,22 +303,9 @@
                     return this.buildSuggestionHtml(suggestion, index, settings);
                 }).join('');
 
-                const hasUserFormat = suggestions.some(s => s.is_user_format);
-                const headerText = hasUserFormat ?
-                    '📝 <strong><?= _translate("Format String Detected", true); ?></strong>' :
-                    '🎯 <strong><?= _translate("Auto-detected formats", true); ?></strong>';
-
                 const container = this.getContainer(settings);
-                container.html(`
-                <div style="margin-bottom: 5px; font-size: 11px; color: #666;">
-                    ${headerText}
-                    <span class="format-badge ${hasUserFormat ? 'user-format' : 'auto-detected'}">
-                        📍 ${hasUserFormat ? 'User Input' : 'Format validation'}
-                    </span>
-                </div>
-                ${suggestionsHtml}
-                ${hasUserFormat ? this.buildFormatTip() : ''}
-            `);
+                // Simple display without extra headers and tips
+                container.html(suggestionsHtml);
             },
 
             // Build suggestion HTML
@@ -273,7 +319,7 @@
 
                 return `
                 <div class="format-suggestion ${confidenceClass}"
-                     onclick="SmartDateFormat.selectDateFormat('${suggestion.format}', ${settings.rowId}, ${index})"
+                     onclick="SmartDateFormat.selectDateFormat('${suggestion.format}', '${settings.rowId}', ${index})"
                      title="<?= _translate("Click to select this format", true); ?>"
                      style="${style}">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
@@ -302,7 +348,7 @@
                     suggestion.corrections.map(correction =>
                         `<div class="format-corrections">
                         <div class="correction-item">
-                            <strong style="color: #28a745;">Suggested:</strong>
+                            <strong style="color: #28a745;"><?= _translate("Suggested:", true); ?></strong>
                             <span class="correction-format">${correction.format}</span>
                         </div>
                         <small style="color: #666;">${correction.description}</small>
@@ -314,12 +360,12 @@
                      style="border-left-color: #dc3545 !important; background: #f8d7da;">
                     <div style="display: flex; justify-content: space-between; align-items: flex-start;">
                         <div style="flex: 1;">
-                            <strong style="color: #721c24;">❌ Invalid Format</strong><br>
+                            <strong style="color: #721c24;">❌ <?= _translate("Invalid Format", true); ?></strong><br>
                             <code style="background: #f5c6cb; padding: 1px 4px; border-radius: 2px; font-size: 11px;">${suggestion.format}</code><br>
                             <small style="color: #721c24;">${suggestion.error}</small>
                             ${correctionsHtml}
                         </div>
-                        <span class="format-badge error">ERROR</span>
+                        <span class="format-badge error"><?= _translate("ERROR", true); ?></span>
                     </div>
                 </div>
             `;
@@ -366,7 +412,7 @@
                 if (input.length) {
                     input.removeClass('format-detected sample-detected')
                         .addClass('format-selected')
-                        .prop('placeholder', `✅ Format locked: ${format}`)
+                        .prop('placeholder', `✅ <?= _translate("Format locked:", true); ?> ${format}`)
                         .prop('readonly', true)
                         .css('cursor', 'default');
 
@@ -375,13 +421,15 @@
                     }
                 }
 
-                // Show confirmation
-                this.showFormatConfirmation(format, settings, suggestionIndex);
+                // Update help text with format info
+                this.updateInputGuidance('', settings);
+
+                // Animate success and hide suggestions
                 this.animateSuccessSelection(settings);
+                this.hideSuggestionsAfterSelection(settings);
 
                 // Show toast notification
                 toast.success(`<?= _translate("Date format applied:", true); ?> ${format}`);
-
 
                 // Call callback if provided
                 if (settings.onFormatSelected) {
@@ -389,83 +437,76 @@
                 }
             },
 
-            // Show format confirmation banner
+            // Show format confirmation banner (compact version)
             showFormatConfirmation: function(format, settings, suggestionIndex) {
                 const confirmationHtml = `
-                <div class="format-confirmation-banner">
+                <div class="format-confirmation-banner" style="
+                    background: linear-gradient(135deg, #d4edda 0%, #c3e6cb 100%);
+                    border: 1px solid #c3e6cb;
+                    border-radius: 6px;
+                    padding: 8px 12px;
+                    margin-bottom: 8px;
+                    font-size: 12px;
+                ">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <div style="display: flex; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
                             <div style="
                                 background: #28a745;
                                 color: white;
                                 border-radius: 50%;
-                                width: 28px;
-                                height: 28px;
+                                width: 18px;
+                                height: 18px;
                                 display: flex;
                                 align-items: center;
                                 justify-content: center;
-                                margin-right: 12px;
-                                font-size: 16px;
+                                font-size: 12px;
                                 font-weight: bold;
-                                animation: checkmarkPop 0.6s ease-out;
                             ">✓</div>
-                            <div>
-                                <div style="font-weight: bold; color: #155724; font-size: 14px; margin-bottom: 4px;">
-                                    📅 Date Format Selected & Applied
-                                </div>
-                                <div style="display: flex; align-items: center; gap: 8px;">
-                                    <code style="
-                                        background: #fff;
-                                        padding: 6px 12px;
-                                        border-radius: 6px;
-                                        border: 2px solid #28a745;
-                                        font-size: 13px;
-                                        color: #28a745;
-                                        font-weight: bold;
-                                        cursor: pointer;
-                                        transition: all 0.2s ease;"
-                                        onclick="SmartDateFormat.copyFormatToClipboard('${format}')"
-                                        onmouseover="this.style.backgroundColor='#f0f9f0'"
-                                        onmouseout="this.style.backgroundColor='#fff'"
-                                        title="Click to copy format">
-                                        ${format}
-                                    </code>
-                                    <span style="color: #155724; font-size: 11px;"
-                                        onclick="SmartDateFormat.copyFormatToClipboard('${format}')">📋 Click to copy</span>
-                                </div>
-                            </div>
+                            <span style="color: #155724; font-weight: 600;">
+                                <?= _translate("Applied:", true); ?>
+                            </span>
+                            <code style="
+                                background: #fff;
+                                padding: 2px 6px;
+                                border-radius: 3px;
+                                border: 1px solid #28a745;
+                                font-size: 11px;
+                                color: #28a745;
+                                font-weight: bold;
+                                cursor: pointer;
+                            " onclick="SmartDateFormat.copyFormatToClipboard('${format}')"
+                               title="<?= _translate("Click to copy format", true); ?>">
+                                ${format}
+                            </code>
                         </div>
-                        <div style="display: flex; flex-direction: column; gap: 4px;">
+                        <div style="display: flex; gap: 6px;">
                             <button onclick="SmartDateFormat.changeSelection(${settings.rowId})"
-                                    class="format-action-btn">
-                                📝 <?= _translate("Change Selection", true); ?>
+                                    style="
+                                        background: #6c757d;
+                                        color: white;
+                                        border: none;
+                                        padding: 3px 8px;
+                                        border-radius: 3px;
+                                        font-size: 10px;
+                                        cursor: pointer;
+                                    "
+                                    title="<?= _translate("Change Selection", true); ?>">
+                                📝
                             </button>
                             <button onclick="SmartDateFormat.testFormat('${format}', ${settings.rowId})"
-                                    class="format-action-btn info">
-                                🧪 <?= _translate("Test Format", true); ?>
+                                    style="
+                                        background: #17a2b8;
+                                        color: white;
+                                        border: none;
+                                        padding: 3px 8px;
+                                        border-radius: 3px;
+                                        font-size: 10px;
+                                        cursor: pointer;
+                                    "
+                                    title="<?= _translate("Test Format", true); ?>">
+                                🧪
                             </button>
                         </div>
-                    </div>
-                    <div style="
-                        margin-top: 10px;
-                        padding-top: 10px;
-                        border-top: 1px solid #b8dcc2;
-                        color: #155724;
-                        font-size: 11px;
-                        text-align: center;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        gap: 5px;
-                    ">
-                        <div style="
-                            width: 8px;
-                            height: 8px;
-                            background: #28a745;
-                            border-radius: 50%;
-                            animation: pulse 1.5s infinite;
-                        "></div>
-                        <?= _translate("Format ready for submission", true); ?>
                     </div>
                 </div>
             `;
@@ -491,41 +532,72 @@
                 });
             },
 
-            // Change selection (reset)
-            changeSelection: function(rowId) {
-                const settings = this.instances.get(rowId);
-                if (!settings) return;
-
+            // Clear selection and restore to detection mode
+            clearSelection: function(settings) {
                 const container = this.getContainer(settings);
                 const input = $('#' + settings.inputId);
 
                 // Reset input appearance
                 if (input.length) {
                     input.removeClass('format-selected')
-                        .addClass('sample-detected')
-                        .prop('placeholder', '📅 <?= _translate("Enter sample date", true); ?>')
                         .prop('readonly', false)
                         .css('cursor', 'text');
 
+                    // Remove checkmark if present
                     if (input.val().includes(' ✓')) {
                         input.val(input.val().replace(' ✓', ''));
                     }
+
+                    // Reset placeholder
+                    input.prop('placeholder', '📅 <?= _translate("Enter sample date", true); ?>');
                 }
 
-                // Remove confirmation banner
-                container.find('.format-confirmation-banner').remove();
+                // Remove selection state
+                container.removeClass('has-selection');
 
-                // Restore all suggestions
+                // Restore all suggestions opacity
                 const allSuggestions = container.find('.format-suggestion');
                 allSuggestions.css({
                     'opacity': '1',
                     'transform': 'scale(1)'
                 }).removeClass('selected');
 
-                container.removeClass('has-selection');
-
-                // Reset hidden field
+                // Reset hidden field to default
                 $('#' + settings.hiddenFieldId).val(settings.defaultFormat);
+            },
+
+            // Show hidden suggestions (after selection was made)
+            showHiddenSuggestions: function(settings) {
+                const container = this.getContainer(settings);
+                const allSuggestions = container.find('.format-suggestion');
+
+                if (allSuggestions.length > 0) {
+                    allSuggestions.show().css({
+                        'opacity': '1',
+                        'transform': 'scale(1)'
+                    });
+                }
+            },
+
+            // Hide suggestions after selection (with smooth animation)
+            hideSuggestionsAfterSelection: function(settings) {
+                const container = this.getContainer(settings);
+
+                setTimeout(() => {
+                    const allSuggestions = container.find('.format-suggestion');
+                    allSuggestions.fadeOut(300);
+                }, 300); // Reduced from 1000ms to 300ms
+            },
+
+            // Change selection (reset) - now uses clearSelection
+            changeSelection: function(rowId) {
+                const settings = this.instances.get(rowId);
+                if (!settings) return;
+
+                this.clearSelection(settings);
+
+                // Show hidden suggestions if available
+                this.showHiddenSuggestions(settings);
             },
 
             // Test format
@@ -557,13 +629,11 @@
                         if (response.success && response.valid) {
                             toast.success(`<?= _translate("Format test passed! Parsed:", true); ?> ${response.parsed_date}`);
                         } else {
-                            toast.error(`<?= _translate("Format test failed:", true); ?> ${response.error || 'Unknown error'}`);
+                            toast.error(`<?= _translate("Format test failed:", true); ?> ${response.error || '<?= _translate("Unknown error", true); ?>'}`);
                         }
                     })
                     .fail(function() {
-
                         toast.error(`<?= _translate("Test failed - network error", true); ?>`);
-
                     })
                     .always(function() {
                         testButton.innerHTML = originalText;
@@ -593,11 +663,11 @@
                     <strong>🤔 <?= _translate("Could not detect format", true); ?></strong><br>
                     <small><?= _translate("Try: 06/19/2025, 19.06.2025 23:19, 2025-06-19", true); ?></small>
                     <div style="margin-top: 5px;">
-                        <button onclick="SmartDateFormat.suggestCommonFormats(${settings.rowId})"
+                        <button onclick="SmartDateFormat.suggestCommonFormats('${settings.rowId}')"
                                 class="format-action-btn">
                             💡 <?= _translate("Show common formats", true); ?>
                         </button>
-                        <button onclick="SmartDateFormat.toggleManualFormat(${settings.rowId})"
+                        <button onclick="SmartDateFormat.toggleManualFormat('${settings.rowId}')"
                                 class="format-action-btn">
                             📝 <?= _translate("Enter manually", true); ?>
                         </button>
@@ -613,7 +683,7 @@
                     <strong>⏳ <?= _translate("Too many requests", true); ?></strong><br>
                     <small><?= _translate("Please wait a moment before trying again", true); ?></small>
                     <div style="margin-top: 5px;">
-                        <button onclick="SmartDateFormat.toggleManualFormat(${settings.rowId})"
+                        <button onclick="SmartDateFormat.toggleManualFormat('${settings.rowId}')"
                                 class="format-action-btn">
                             📝 <?= _translate("Enter format manually", true); ?>
                         </button>
@@ -629,11 +699,11 @@
                     <strong>❌ <?= _translate("Detection failed", true); ?></strong><br>
                     <small><?= _translate("Network error or server issue", true); ?></small>
                     <div style="margin-top: 5px;">
-                        <button onclick="SmartDateFormat.retryDetection('${input}', ${settings.rowId})"
+                        <button onclick="SmartDateFormat.retryDetection('${input}', '${settings.rowId}')"
                                 class="format-action-btn primary">
                             🔄 <?= _translate("Retry", true); ?>
                         </button>
-                        <button onclick="SmartDateFormat.toggleManualFormat(${settings.rowId})"
+                        <button onclick="SmartDateFormat.toggleManualFormat('${settings.rowId}')"
                                 class="format-action-btn">
                             📝 <?= _translate("Manual entry", true); ?>
                         </button>

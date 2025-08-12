@@ -9,7 +9,6 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -97,8 +96,8 @@ try {
 
 
     if (isset($_POST['dateRange']) && trim((string) $_POST['dateRange']) != '') {
-        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '');
-        $sWhere[] = " (DATE(vl.request_created_datetime) BETWEEN '$start_date' AND '$end_date') ";
+        [$start_date, $end_date] = DateUtility::convertDateRange($_POST['dateRange'] ?? '', includeTime: true);
+        $sWhere[] = " vl.request_created_datetime BETWEEN '$start_date' AND '$end_date' ";
     }
     if (isset($_POST['labName']) && trim((string) $_POST['labName']) != '') {
         $sWhere[] = " vl.lab_id IN (" . $_POST['labName'] . ")";
@@ -116,8 +115,8 @@ try {
         $sWhere[] = " vl.facility_id  IN ($facilityId)";
     }
 
-    if (isset($_POST['srcRequest']) && trim((string) $_POST['srcRequest']) != '') {
-        $sWhere[] = ' vl.source_of_request = "' . $_POST['srcRequest'] . '"';
+    if (isset($_POST['originalSourceOfRequest']) && trim((string) $_POST['originalSourceOfRequest']) != '') {
+        $sWhere[] = ' vl.source_of_request = "' . $_POST['originalSourceOfRequest'] . '"';
     }
 
     /* Implode all the where fields for filtering the data */
@@ -137,10 +136,7 @@ try {
         $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
 
-    //echo $sQuery;die;
-
     [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
-
 
     $output = [
         "sEcho" => (int) $_POST['sEcho'],

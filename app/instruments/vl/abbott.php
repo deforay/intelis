@@ -128,7 +128,6 @@ try {
 
         // Store parsed data with result determination
         if (!isset($infoFromFile[$sampleCode])) {
-
             $infoFromFile[$sampleCode] = [
                 "sampleCode" => $sampleCode,
                 "logVal" => $logVal,

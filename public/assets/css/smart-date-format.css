@@ -124,8 +124,7 @@
 
 /* Smart Date Cell Styling */
 .smart-date-cell {
-	min-width: 350px;
-	padding: 10px !important;
+	min-width: 300px;
 	position: relative;
 }
 

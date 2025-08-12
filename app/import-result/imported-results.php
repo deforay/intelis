@@ -163,6 +163,170 @@ foreach ($rejectionTypeResult as $type) {
 		left: 100%;
 		top: 24px;
 	}
+
+	/* Date picker wrapper and input styling */
+	.date-picker-wrapper {
+		position: relative;
+		display: inline-block;
+		width: 150px;
+		vertical-align: top;
+	}
+
+	.test-date-picker {
+		width: 100% !important;
+		height: 32px;
+		font-size: 12px;
+		padding: 6px 28px 6px 8px;
+		border: 1px solid #ddd;
+		border-radius: 4px;
+		background-color: #fff;
+		cursor: pointer;
+		box-sizing: border-box;
+		transition: border-color 0.2s ease;
+	}
+
+	.test-date-picker:hover {
+		border-color: #337ab7;
+	}
+
+	.test-date-picker:focus {
+		border-color: #337ab7;
+		outline: none;
+		box-shadow: 0 0 0 2px rgba(51, 122, 183, 0.2);
+	}
+
+	/* Placeholder styling */
+	.test-date-picker::placeholder {
+		color: #999;
+		font-style: italic;
+	}
+
+	/* Clear button styling */
+	.clear-date-btn {
+		position: absolute;
+		right: 4px;
+		top: 50%;
+		transform: translateY(-50%);
+		width: 22px;
+		height: 22px;
+		border: none;
+		background: #dc3545;
+		color: white;
+		font-size: 14px;
+		font-weight: bold;
+		cursor: pointer;
+		border-radius: 3px;
+		z-index: 10;
+		line-height: 1;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		transition: background-color 0.2s ease;
+	}
+
+	.clear-date-btn:hover {
+		background: #c82333;
+		transform: translateY(-50%) scale(1.05);
+	}
+
+	.clear-date-btn:active {
+		transform: translateY(-50%) scale(0.95);
+	}
+
+	/* Style for missing test dates */
+	.test-date-picker[data-missing="true"],
+	.missing-test-date-flag[value="1"]~.test-date-picker {
+		border-color: #dc3545;
+		background-color: #fff5f5;
+	}
+
+	.test-date-picker[data-missing="true"]::placeholder {
+		color: #dc3545;
+		font-weight: 500;
+	}
+
+	/* Style for filled date fields */
+	.test-date-picker[data-has-date="true"] {
+		background-color: #f8f9fa;
+		font-weight: 500;
+		color: #495057;
+	}
+
+	/* Table cell alignment */
+	td .date-picker-wrapper {
+		margin: 0 auto;
+	}
+
+	/* Responsive adjustments */
+	@media (max-width: 768px) {
+		.date-picker-wrapper {
+			width: 140px;
+		}
+
+		.test-date-picker {
+			font-size: 11px;
+			padding: 4px 24px 4px 6px;
+			height: 28px;
+		}
+
+		.clear-date-btn {
+			width: 18px;
+			height: 18px;
+			font-size: 12px;
+		}
+	}
+
+	/* Loading state */
+	.test-date-picker.loading {
+		background-image: url('data:image/svg+xml;charset=utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="%23ddd" stroke-width="2"/><path d="M12 2a10 10 0 0 1 10 10" stroke="%23337ab7" stroke-width="2" stroke-linecap="round"/></svg>');
+		background-repeat: no-repeat;
+		background-position: calc(100% - 30px) center;
+		background-size: 16px;
+		animation: spin 1s linear infinite;
+	}
+
+	@keyframes spin {
+		from {
+			transform: rotate(0deg);
+		}
+
+		to {
+			transform: rotate(360deg);
+		}
+	}
+
+	/* DateRangePicker dropdown styling */
+	.daterangepicker {
+		border: 1px solid #ddd;
+		border-radius: 6px;
+		box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+		padding: 0;
+	}
+
+	.daterangepicker .calendar-table {
+		background: white;
+	}
+
+	.daterangepicker .calendar-table th,
+	.daterangepicker .calendar-table td {
+		font-size: 12px;
+		padding: 6px;
+	}
+
+	.daterangepicker .ranges li {
+		font-size: 12px;
+		padding: 6px 12px;
+	}
+
+	.daterangepicker .drp-buttons {
+		border-top: 1px solid #eee;
+		padding: 8px;
+	}
+
+	.daterangepicker .btn {
+		font-size: 12px;
+		padding: 4px 12px;
+	}
 </style>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
@@ -223,7 +387,7 @@ foreach ($rejectionTypeResult as $type) {
 									<?= _translate("Only accepts samples that do not have status field already selected"); ?>
 								</strong>
 							</div>
-							<table aria-describedby="table" id="vlRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
+							<table aria-describedby="table" id="importedResultsTable" class="table table-bordered table-striped" aria-hidden="true">
 								<thead>
 									<tr>
 										<th style="width: 23%;">
@@ -363,32 +527,297 @@ foreach ($rejectionTypeResult as $type) {
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript">
-	var startDate = "";
-	var endDate = "";
-	var selectedTests = [];
-	var selectedTestsIdValue = [];
-	$(document).ready(function() {
-		$('#testedBy').select2({
-			width: '100%',
-			placeholder: "Select Tested By"
-		});
-		$('#reviewedBy').select2({
-			width: '100%',
-			placeholder: "Select Reviewed By"
-		});
-		$('#approvedBy').select2({
-			width: '100%',
-			placeholder: "Select Approved By"
-		});
-		loadVlRequestData();
-	});
+<script src="/assets/js/moment.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/assets/plugins/daterangepicker/daterangepicker.css" />
+<script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 
+<script type="text/javascript">
+	function initializeDateTimePickers() {
+		const systemDateFormat = '<?= $_SESSION['jsDateRangeFormat'] ?? 'DD-MMM-YYYY'; ?>';
+		const systemDateTimeFormat = systemDateFormat + ' HH:mm';
+
+		$('.test-date-picker').each(function() {
+			const $input = $(this);
+			const tempSampleId = $input.data('temp-sample-id');
+			const customFormat = $input.data('date-format') || systemDateTimeFormat;
+			const hasExistingDate = $input.val() !== '';
+
+			// Skip if already initialized
+			if ($input.hasClass('daterangepicker-initialized')) {
+				return;
+			}
+
+			// Set data attributes for styling
+			$input.attr('data-missing', hasExistingDate ? 'false' : 'true');
+			$input.attr('data-has-date', hasExistingDate ? 'true' : 'false');
+
+			// Create wrapper and clear button
+			if (!$input.parent().hasClass('date-picker-wrapper')) {
+				$input.wrap('<div class="date-picker-wrapper"></div>');
+
+				const $clearBtn = $('<button type="button" class="clear-date-btn" title="' +
+					'<?= _translate("Clear date", true); ?>' + '" aria-label="Clear date">×</button>');
+				$input.parent().append($clearBtn);
+
+				// Show/hide clear button based on whether there's a date
+				if (hasExistingDate) {
+					$clearBtn.show();
+				} else {
+					$clearBtn.hide();
+				}
+			}
+
+			// Initialize daterangepicker
+			$input.daterangepicker({
+				singleDatePicker: true,
+				timePicker: true,
+				timePicker24Hour: true,
+				timePickerIncrement: 30,
+				locale: {
+					format: customFormat,
+					cancelLabel: '<?= _translate("Clear", true); ?>',
+					applyLabel: '<?= _translate("Apply", true); ?>'
+				},
+				showDropdowns: true,
+				autoApply: false,
+				autoUpdateInput: false,
+				opens: 'left',
+				drops: 'down',
+				startDate: hasExistingDate ? moment($input.val(), customFormat) : moment().hour(9).minute(0)
+			});
+
+			// Handle successful date selection
+			$input.on('apply.daterangepicker', function(ev, picker) {
+				const $this = $(this);
+				const formattedDate = picker.startDate.format('YYYY-MM-DD HH:mm:ss');
+				const displayDate = picker.startDate.format(customFormat);
+
+				// Add loading state
+				$this.addClass('loading');
+
+				$this.val(displayDate);
+				$this.attr('data-missing', 'false');
+				$this.attr('data-has-date', 'true');
+				$('#missingTestDateFlag' + tempSampleId).val('0');
+
+				// Show clear button
+				$this.siblings('.clear-date-btn').show();
+
+				// Update server
+				updateSampleTestDate(tempSampleId, formattedDate, $this, function() {
+					// Remove loading state on completion
+					$this.removeClass('loading');
+				});
+
+				// Only offer bulk update if this was previously empty
+				if (!hasExistingDate) {
+					offerToApplyToOtherMissingDates(displayDate, formattedDate, tempSampleId);
+				}
+			});
+
+			// Handle cancel/clear from daterangepicker
+			$input.on('cancel.daterangepicker', function(ev, picker) {
+				const $this = $(this);
+
+				$this.addClass('loading');
+				$this.val('');
+				$this.attr('data-missing', 'true');
+				$this.attr('data-has-date', 'false');
+				$('#missingTestDateFlag' + tempSampleId).val('1');
+				$this.siblings('.clear-date-btn').hide();
+
+				clearSampleTestDate(tempSampleId, $this, function() {
+					$this.removeClass('loading');
+				});
+			});
+
+			// Handle manual clear button click
+			$input.siblings('.clear-date-btn').on('click', function(e) {
+				e.preventDefault();
+				e.stopPropagation();
+
+				const $dateInput = $(this).siblings('.test-date-picker');
+
+				$dateInput.addClass('loading');
+				$dateInput.val('');
+				$dateInput.attr('data-missing', 'true');
+				$dateInput.attr('data-has-date', 'false');
+				$('#missingTestDateFlag' + tempSampleId).val('1');
+				$(this).hide();
+
+				clearSampleTestDate(tempSampleId, $dateInput, function() {
+					$dateInput.removeClass('loading');
+				});
+			});
+
+			$input.addClass('daterangepicker-initialized');
+		});
+	}
+
+	function offerToApplyToOtherMissingDates(displayDate, formattedDate, excludeTempSampleId) {
+		let missingDatesCount = 0;
+		let missingDateElements = [];
+
+		$('.test-date-picker').each(function() {
+			const tempSampleId = $(this).data('temp-sample-id');
+			if (tempSampleId != excludeTempSampleId && $(this).val() === '') {
+				missingDatesCount++;
+				missingDateElements.push($(this));
+			}
+		});
+
+		if (missingDatesCount > 0) {
+			const baseMessage = "<?= _translate('Would you like to apply this same test date to the other samples that are missing test dates?', true); ?>";
+			const detailsMessage = "<?= _translate('Test Date', true); ?>: " + displayDate + "\n" +
+				"<?= _translate('Number of samples', true); ?>: " + missingDatesCount;
+			const fullMessage = baseMessage + "\n\n" + detailsMessage;
+
+			if (confirm(fullMessage)) {
+				bulkUpdateSampleTestDates(missingDateElements, displayDate, formattedDate);
+			}
+		}
+	}
+
+	function bulkUpdateSampleTestDates(elements, displayDate, formattedDate) {
+		const tempSampleIds = [];
+		elements.forEach(function($element) {
+			tempSampleIds.push($element.data('temp-sample-id'));
+		});
+
+		if (tempSampleIds.length === 0) return;
+
+		$.blockUI({
+			message: '<h3><?= _translate("Updating test dates", true); ?>...<br><?= _translate("Please wait", true); ?>...</h3>'
+		});
+
+		$.post("/import-result/updateImportedSample.php", {
+			bulkSampleTestDate: formattedDate,
+			tempSampleIds: tempSampleIds.join(',')
+		}, function(data) {
+			$.unblockUI();
+
+			if (data == "1") {
+				elements.forEach(function($element) {
+					const tempSampleId = $element.data('temp-sample-id');
+					$element.val(displayDate);
+					$('#missingTestDateFlag' + tempSampleId).val('0');
+
+					$element.css('border-color', '#5cb85c');
+					setTimeout(function() {
+						$element.css('border-color', '#ddd');
+					}, 2000);
+				});
+
+				const successMsg = "<?= _translate('Successfully updated test dates for', true); ?> " + tempSampleIds.length + " <?= _translate('samples', true); ?>";
+				showTemporaryMessage(successMsg, 'success');
+			} else {
+				alert("<?= _translate('Something went wrong! Please try again', true); ?>");
+				oTable.fnDraw();
+			}
+		}).fail(function() {
+			$.unblockUI();
+			alert("<?= _translate('Network error. Please try again', true); ?>");
+			oTable.fnDraw();
+		});
+	}
+
+	function showTemporaryMessage(message, type) {
+		const alertClass = type === 'success' ? 'alert-success' : 'alert-danger';
+		const $alert = $('<div class="alert ' + alertClass + ' alert-dismissible" style="position: fixed; top: 20px; right: 20px; z-index: 9999; max-width: 400px;">' +
+			'<button type="button" class="close" data-dismiss="alert">&times;</button>' +
+			message + '</div>');
+
+		$('body').append($alert);
+
+		setTimeout(function() {
+			$alert.fadeOut(500, function() {
+				$(this).remove();
+			});
+		}, 3000);
+	}
+
+	function updateSampleTestDate(tempSampleId, testDate, $input, callback) {
+		$.post("/import-result/updateImportedSample.php", {
+			sampleTestDate: testDate,
+			tempsampleId: tempSampleId
+		}, function(data) {
+			if (data == "1") {
+				$('#missingTestDateFlag' + tempSampleId).val('0');
+
+				// Success visual feedback
+				$input.css('border-color', '#28a745');
+				setTimeout(function() {
+					$input.css('border-color', '');
+				}, 1500);
+			} else {
+				alert("<?= _translate("Something went wrong! Please try again", true); ?>");
+				$input.val('');
+				$input.attr('data-missing', 'true');
+				$input.attr('data-has-date', 'false');
+			}
+
+			if (callback) callback();
+		}).fail(function() {
+			alert("<?= _translate('Network error. Please try again', true); ?>");
+			$input.val('');
+			$input.attr('data-missing', 'true');
+			$input.attr('data-has-date', 'false');
+
+			if (callback) callback();
+		});
+	}
+
+	// Updated clearSampleTestDate with callback
+	function clearSampleTestDate(tempSampleId, $input, callback) {
+		$.post("/import-result/updateImportedSample.php", {
+			clearSampleTestDate: true,
+			tempsampleId: tempSampleId
+		}, function(data) {
+			if (data == "1") {
+				// Success visual feedback
+				$input.css('border-color', '#ffc107');
+				setTimeout(function() {
+					$input.css('border-color', '');
+				}, 1500);
+
+				showTemporaryMessage("<?= _translate('Test date cleared', true); ?>", 'success');
+			} else {
+				alert("<?= _translate('Failed to clear test date', true); ?>");
+			}
+
+			if (callback) callback();
+		}).fail(function() {
+			alert("<?= _translate('Network error. Could not clear test date', true); ?>");
+
+			if (callback) callback();
+		});
+	}
+
+	// Modify the existing checkMissingSampleTestDate function
+	function checkMissingSampleTestDate() {
+		var missingTestDateFound = false;
+
+		$('.missing-test-date-flag').each(function() {
+			if ($(this).val() === '1') {
+				missingTestDateFound = true;
+				return false; // break loop
+			}
+		});
+
+		if (missingTestDateFound) {
+			alert("<?= _translate("Action Required: One or more samples do not have a test date. Please update all missing fields before submitting.", true); ?>");
+			return false;
+		}
+
+		return true;
+	}
+
+	// Update the existing loadVlRequestData function's fnDrawCallback
 	var oTable = null;
 
 	function loadVlRequestData() {
 		$.blockUI();
-		oTable = $('#vlRequestDataTable').dataTable({
+		oTable = $('#importedResultsTable').dataTable({
 			"oLanguage": {
 				"sLengthMenu": "_MENU_ records per page"
 			},
@@ -449,6 +878,11 @@ foreach ($rejectionTypeResult as $type) {
 				if (iTotalRecords == 0) {
 					window.location.href = "/import-result/importedStatistics.php?t=<?= $module; ?>";
 				}
+
+				// Initialize datetime pickers after table draw
+				setTimeout(function() {
+					initializeDateTimePickers();
+				}, 100);
 			},
 			"bProcessing": true,
 			"bServerSide": true,
@@ -469,6 +903,28 @@ foreach ($rejectionTypeResult as $type) {
 		});
 		$.unblockUI();
 	}
+
+	var startDate = "";
+	var endDate = "";
+	var selectedTests = [];
+	var selectedTestsIdValue = [];
+	$(document).ready(function() {
+		initializeDateTimePickers();
+		$('#testedBy').select2({
+			width: '100%',
+			placeholder: "Select Tested By"
+		});
+		$('#reviewedBy').select2({
+			width: '100%',
+			placeholder: "Select Reviewed By"
+		});
+		$('#approvedBy').select2({
+			width: '100%',
+			placeholder: "Select Approved By"
+		});
+		loadVlRequestData();
+	});
+
 
 	function toggleTest(obj, sampleCode) {
 		if (sampleCode == '') {
@@ -646,78 +1102,108 @@ foreach ($rejectionTypeResult as $type) {
 	}
 
 	function updateSampleCode(obj, oldSampleCode, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "right",
-			questionText: "<?= _translate("Are you sure you want to rename this Sample?", true); ?>",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
-						sampleCode: obj.value,
-						tempsampleId: tempsampleId
-					},
-					function(data) {
-						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldSampleCode);
-			}
-		});
+		const $input = $(obj);
+		const originalBorderColor = $input.css('border-color');
+
+		$input.css('border-color', '#f39c12');
+
+		$.post("/import-result/updateImportedSample.php", {
+					sampleCode: obj.value,
+					tempsampleId: tempsampleId
+				},
+				function(data) {
+					if (data == "1") {
+						$input.css('border-color', '#5cb85c');
+						setTimeout(function() {
+							$input.css('border-color', originalBorderColor);
+						}, 2000);
+					} else {
+						$input.css('border-color', '#e74c3c');
+						$input.val(oldSampleCode);
+						showTemporaryMessage("<?= _translate('Failed to update sample code', true); ?>", 'error');
+						setTimeout(function() {
+							$input.css('border-color', originalBorderColor);
+						}, 3000);
+					}
+				})
+			.fail(function() {
+				$input.css('border-color', '#e74c3c');
+				$input.val(oldSampleCode);
+				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
+				setTimeout(function() {
+					$input.css('border-color', originalBorderColor);
+				}, 3000);
+			});
 	}
 
 	function updateBatchCode(obj, oldBatchCode, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "right",
-			questionText: "Are you sure you want to rename this Batch?",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
-						batchCode: obj.value,
-						tempsampleId: tempsampleId
-					},
-					function(data) {
-						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldBatchCode);
-			}
-		});
+		const $input = $(obj);
+		const originalBorderColor = $input.css('border-color');
+
+		$input.css('border-color', '#f39c12');
+
+		$.post("/import-result/updateImportedSample.php", {
+					batchCode: obj.value,
+					tempsampleId: tempsampleId
+				},
+				function(data) {
+					if (data == "1") {
+						$input.css('border-color', '#5cb85c');
+						setTimeout(function() {
+							$input.css('border-color', originalBorderColor);
+						}, 2000);
+					} else {
+						$input.css('border-color', '#e74c3c');
+						$input.val(oldBatchCode);
+						showTemporaryMessage("<?= _translate('Failed to update batch code', true); ?>", 'error');
+						setTimeout(function() {
+							$input.css('border-color', originalBorderColor);
+						}, 3000);
+					}
+				})
+			.fail(function() {
+				$input.css('border-color', '#e74c3c');
+				$input.val(oldBatchCode);
+				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
+				setTimeout(function() {
+					$input.css('border-color', originalBorderColor);
+				}, 3000);
+			});
 	}
 
 	function sampleToControl(obj, oldValue, tempsampleId) {
-		$(obj).fastConfirm({
-			position: "left",
-			questionText: "<?= _translate("Are you sure you want to change this sample?", true); ?>",
-			onProceed: function(trigger) {
-				var pos = oTable.fnGetPosition(obj);
-				$.blockUI();
-				$.post("/import-result/updateImportedSample.php", {
-						sampleType: obj.value,
-						tempsampleId: tempsampleId
-					},
-					function(data) {
-						if (data == 0) {
-							alert("<?= _translate("Something went wrong! Please try again", true); ?>");
-							oTable.fnDraw();
-						}
-					});
-				$.unblockUI();
-			},
-			onCancel: function(trigger) {
-				$("#" + obj.id).val(oldValue);
-			}
-		});
+		const $select = $(obj);
+		const originalBorderColor = $select.css('border-color');
+
+		$select.css('border-color', '#f39c12');
+
+		$.post("/import-result/updateImportedSample.php", {
+					sampleType: obj.value,
+					tempsampleId: tempsampleId
+				},
+				function(data) {
+					if (data == "1") {
+						$select.css('border-color', '#5cb85c');
+						setTimeout(function() {
+							$select.css('border-color', originalBorderColor);
+						}, 2000);
+					} else {
+						$select.css('border-color', '#e74c3c');
+						$select.val(oldValue);
+						showTemporaryMessage("<?= _translate('Failed to update sample type', true); ?>", 'error');
+						setTimeout(function() {
+							$select.css('border-color', originalBorderColor);
+						}, 3000);
+					}
+				})
+			.fail(function() {
+				$select.css('border-color', '#e74c3c');
+				$select.val(oldValue);
+				showTemporaryMessage("<?= _translate('Network error. Changes not saved', true); ?>", 'error');
+				setTimeout(function() {
+					$select.css('border-color', originalBorderColor);
+				}, 3000);
+			});
 	}
 
 	function sampleToControlAlert(number) {

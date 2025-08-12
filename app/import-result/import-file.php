@@ -1,5 +1,5 @@
 <?php
-
+// this is import-file.php
 use App\Services\TestsService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
@@ -48,6 +48,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 
 
 ?>
+<link rel="stylesheet" media="all" type="text/css" href="/assets/css/smart-date-format.css">
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
@@ -118,6 +119,62 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
+												<label for="dateFormat" class="col-lg-5 control-label">
+													<?php echo _translate("Date Format"); ?> <span class="mandatory">*</span>
+													<br><small style="font-weight: normal; color: #666; font-size: 11px;">
+														📅 <?php echo _translate("Enter sample date to auto-detect format"); ?>
+													</small>
+												</label>
+												<div class="col-lg-7">
+													<div class="smart-date-cell">
+														<!-- Smart Date Format Detection Interface -->
+														<div style="margin-bottom: 8px;">
+															<input type="text"
+																name="sampleDateInput"
+																id="sampleDateInput"
+																class="form-control"
+																placeholder="📅 <?php echo _translate("Enter sample date from your file (e.g., 06.19.2025 11:19 AM)"); ?>"
+																title="<?php echo _translate("Enter a sample date from your import file"); ?>"
+																style="border: 2px solid #007bff; font-size: 13px;"
+																data-smart-date-format
+																data-suggestions-container="formatSuggestions"
+																data-hidden-field="dateFormat"
+																data-manual-input="manualFormatInput"
+																data-row-id="import"
+																data-default-format="d/m/Y H:i" />
+															<small style="color: #666; font-size: 11px;">💡 <?php echo _translate("Enter any date from your import file to auto-detect format"); ?></small>
+														</div>
+
+														<!-- Smart Suggestions Container -->
+														<div id="formatSuggestions" class="format-suggestions-container"></div>
+
+														<!-- The actual field your backend expects (KEEP EXACT NAMES) -->
+														<input type="hidden"
+															class="form-control isRequired"
+															id="dateFormat"
+															name="dateFormat"
+															value=""
+															placeholder="<?php echo _translate("PHP date format will appear here"); ?>"
+															style="margin-top: 8px; border: 1px solid #28a745; background: #f8fff9;"
+															readonly />
+
+														<!-- Manual Format Input (hidden by default) -->
+														<div id="manualFormatInput" style="display: none; margin-top: 8px;">
+															<input type="text"
+																class="form-control"
+																placeholder="<?php echo _translate("Manual: d/m/Y H:i"); ?>"
+																title="<?php echo _translate("Enter PHP date format manually"); ?>"
+																style="border: 1px solid #ccc; font-size: 12px;"
+																onchange="document.getElementById('dateFormat').value = this.value;" />
+														</div>
+													</div>
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="row">
+										<div class="col-md-6">
+											<div class="form-group">
 												<label for="labId" class="col-lg-5 control-label"><?php echo _translate("Testing Lab Name"); ?> <span class="mandatory">*</span></label>
 												<div class="col-lg-7">
 													<select name="labId" id="labId" class="form-control isRequired" title="<?php echo _translate('Please select the lab name'); ?>">
@@ -132,6 +189,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 											</div>
 										</div>
 									</div>
+
 									<div class="row">
 										<div class="col-md-6">
 											<div class="form-group">
@@ -153,7 +211,7 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 										<div class="box-footer">
 											<input type="hidden" id="vltestPlatform" name="vltestPlatform" value="" />
 											<input type="hidden" id="type" name="type" value="<?php echo $type; ?>" />
-											<input type="hidden" id="dateFormat" name="dateFormat" value="" />
+											<!-- <input type="hidden" id="dateFormat" name="dateFormat" value="" /> -->
 											<input type="hidden" id="fileName" name="fileName" value="" />
 											<a class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
 											<a href="/dashboard/index.php" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
@@ -176,14 +234,31 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 	<!-- /.content -->
 </div>
 
+<?php require_once WEB_ROOT . '/assets/js/smart-date-format.js.php'; ?>
 <script type="text/javascript">
+	$(document).ready(function() {
+		// Initialize Smart Date Format for import form
+		SmartDateFormat.init({
+			inputId: 'sampleDateInput',
+			containerId: 'formatSuggestions',
+			hiddenFieldId: 'dateFormat',
+			manualInputId: 'manualFormatInput',
+			rowId: 'import',
+			defaultFormat: 'd/m/Y H:i',
+			onFormatSelected: function(format, settings) {
+				console.log('Date format selected for import:', format);
+			}
+		});
+	});
+
 	function validateNow() {
 		$("#vltestPlatform").val($("#machineName option:selected").text());
-		$('#dateFormat').val($("#configMachineName").find(':selected').data("dateformat"));
 		$('#fileName').val($("#configMachineName").find(':selected').data("filename"));
-		flag = deforayValidator.init({
+
+		const flag = deforayValidator.init({
 			formId: 'importResultFileForm'
 		});
+
 		if (flag) {
 			document.getElementById('importResultFileForm').submit();
 		}
@@ -196,9 +271,9 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 			$("#vltestPlatform").val($("#machineName option:selected").text());
 			$("#configMachineName").trigger("change");
 		}
-
 	});
 
+	// Fixed getConfigMachineName function
 	function getConfigMachineName() {
 		if ($("#machineName").val() != '') {
 			$.post("/import-result/getConfigMachineName.php", {
@@ -206,6 +281,58 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 				},
 				function(data) {
 					$("#configMachineName").html(data);
+
+					// Get the date format from selected machine
+					const selectedFormat = $("#configMachineName").find(':selected').data("dateformat");
+					if (selectedFormat && selectedFormat !== '') {
+						// Update the format field
+						$('#dateFormat').val(selectedFormat);
+
+						// Update the sample input to show pre-configured state (but keep it editable)
+						const sampleInput = $('#sampleDateInput');
+						const helpText = sampleInput.siblings('small').first();
+						const container = $('#formatSuggestions');
+
+						// Make sample input show it's pre-configured but still editable
+						sampleInput.removeClass('sample-detected format-detected')
+							.addClass('format-selected')
+							.prop('placeholder', `✅ Pre-configured: ${selectedFormat} (click to change)`)
+							.prop('readonly', false) // Keep it editable!
+							.css('cursor', 'text');
+
+						if (helpText.length) {
+							helpText.html(`✅ <strong>Pre-configured format:</strong> <code>${selectedFormat}</code> | Click field to change`)
+								.css('color', '#28a745');
+						}
+
+						// Mark container as having selection but allow changes
+						container.addClass('has-selection').html('');
+
+						// Update the main guidance
+						if (window.SmartDateFormat) {
+							SmartDateFormat.updateInputGuidance('', SmartDateFormat.getInstance('import'));
+						}
+					} else {
+						// Reset if no format from machine
+						$('#dateFormat').val('d/m/Y H:i');
+
+						// Reset the sample input
+						const sampleInput = $('#sampleDateInput');
+						const helpText = sampleInput.siblings('small').first();
+						const container = $('#formatSuggestions');
+
+						sampleInput.removeClass('format-selected sample-detected format-detected')
+							.prop('placeholder', '📅 Enter sample date from your file')
+							.prop('readonly', false)
+							.css('cursor', 'text');
+
+						if (helpText.length) {
+							helpText.html('💡 Enter any date from your import file to auto-detect format')
+								.css('color', '#666');
+						}
+
+						container.removeClass('has-selection').html('');
+					}
 				});
 		}
 	}

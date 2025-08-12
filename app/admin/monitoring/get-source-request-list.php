@@ -12,9 +12,9 @@ if (isset($_POST['testType'])) {
     $testType = $_POST['testType'] ?? 'vl';
     $table = TestsService::getTestTableName($testType);
     $sourceList = $general->getSourcesOfTestRequests($table,  true);
-    $option = "";
+    $option = "<option value=''>"._translate("-- Unspecified --")."</option>";
     foreach ($sourceList as $optionValue => $displayText) {
-        $option .= "<option value='$optionValue'>$displayText</option>";
+        $option .= "<option value='". strtolower($optionValue). "'>$displayText</option>";
     }
     echo $option;
 }

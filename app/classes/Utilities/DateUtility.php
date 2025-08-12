@@ -359,7 +359,7 @@ final class DateUtility
                 if ($includeTime) {
                     $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
                         ? $end->format('Y-m-d H:i:s')
-                        : $end->addDay()->startOfDay()->format('Y-m-d H:i:s'); // exclusive end
+                        : $end->endOfDay()->format('Y-m-d H:i:s'); // end of day instead of next day start
                 } else {
                     $endDate = $end->format('Y-m-d');
                 }
