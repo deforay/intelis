@@ -294,12 +294,12 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 			// Make sample input show it's pre-configured but still editable
 			sampleInput.removeClass('sample-detected format-detected')
 				.addClass('format-selected')
-				.prop('placeholder', `✅ Pre-configured: ${selectedFormat} (click to change)`)
+				.prop('placeholder', `✅ <?= _translate("Pre-configured:", true); ?> ${selectedFormat} (<?= _translate("click to change", true); ?>)`)
 				.prop('readonly', false) // Keep it editable!
 				.css('cursor', 'text');
 
 			if (helpText.length) {
-				helpText.html(`✅ <strong>Pre-configured format:</strong> <code>${selectedFormat}</code> | Click field to change`)
+				helpText.html(`✅ <strong><?= _translate("Pre-configured format:", true); ?></strong> <code>${selectedFormat}</code> | <?= _translate("Click field to change", true); ?>`)
 					.css('color', '#28a745');
 			}
 
@@ -320,12 +320,12 @@ $facilitiesList = $facilitiesService->getFacilitiesForResultUpload($type);
 			const container = $('#formatSuggestions');
 
 			sampleInput.removeClass('format-selected sample-detected format-detected')
-				.prop('placeholder', '📅 Enter sample date from your file')
+				.prop('placeholder', '📅 <?= _translate("Enter sample date from your file", true); ?>')
 				.prop('readonly', false)
 				.css('cursor', 'text');
 
 			if (helpText.length) {
-				helpText.html('💡 Enter any date from your import file to auto-detect format')
+				helpText.html('💡 <?= _translate("Enter any date from your import file to auto-detect format", true); ?>')
 					.css('color', '#666');
 			}
 
