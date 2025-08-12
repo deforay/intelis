@@ -296,7 +296,7 @@ $state = $geolocationService->getProvinces("yes");
                     format: 'DD-MMM-YYYY',
                     separator: ' to ',
                 },
-                startDate: moment().subtract(14, 'days'),
+                startDate: moment().subtract(179, 'days'),
                 endDate: moment(),
                 maxDate: moment(),
                 ranges: {

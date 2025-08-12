@@ -68,30 +68,15 @@ try {
         $sWhere[] = $columnSearch;
     }
 
-    $sQuery = "SELECT
-                    vl.$primaryColumn,
-                    f.facility_name,
-                    l.facility_name as 'labname',
-                    vl.sample_code,
-                    ts.status_name,
-                    vl.external_sample_code,
-                    vl.app_sample_code,
-                    vl.sample_tested_datetime,
-                    vl.request_created_datetime as request_created,
-                    vl.remote_sample_code,
-                    vl.request_created_datetime,
-                    vl.sample_received_at_lab_datetime,
-                    b.request_created_datetime as batch_request_created,
-                    vl.$resultColumn,
-                    vl.result_reviewed_datetime,
-                    vl.result_approved_datetime,
-                    vl.result_sent_to_source_datetime,
-                    vl.last_modified_datetime
+
+    $fromQuery = "
                 FROM $table as vl
                 LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
                 LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                 LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
                 LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
+
+
 
 
 
@@ -120,9 +105,27 @@ try {
     }
 
     /* Implode all the where fields for filtering the data */
-    if (!empty($sWhere)) {
-        $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
-    }
+    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+
+    $sQuery = "SELECT
+                    vl.$primaryColumn,
+                    f.facility_name,
+                    l.facility_name as 'labname',
+                    vl.sample_code,
+                    ts.status_name,
+                    vl.external_sample_code,
+                    vl.app_sample_code,
+                    vl.sample_tested_datetime,
+                    vl.request_created_datetime as request_created,
+                    vl.remote_sample_code,
+                    vl.request_created_datetime,
+                    vl.sample_received_at_lab_datetime,
+                    b.request_created_datetime as batch_request_created,
+                    vl.$resultColumn,
+                    vl.result_reviewed_datetime,
+                    vl.result_approved_datetime,
+                    vl.result_sent_to_source_datetime,
+                    vl.last_modified_datetime $fromQuery $whereSql";
 
     //$sQuery = $sQuery . ' GROUP BY source_of_request, lab_id, DATE(vl.request_created_datetime)';
     if (!empty($sOrder) && $sOrder !== '') {
@@ -169,37 +172,6 @@ try {
         $output['aaData'][] = $row;
     }
 
-
-
-    // Calculate the total number of samples requested, acknowledged, received, tested, and dispatched
-    // for the samplewise report
-    // This is used to display the summary at the top of the report
-    $orderColumns = $aColumns = [
-        'f.facility_name',
-        'l.facility_name',
-        'vl.external_sample_code',
-        'vl.request_created_datetime',
-        'vl.remote_sample_code',
-        'vl.request_created_datetime',
-        'vl.sample_received_at_lab_datetime',
-        'b.request_created_datetime',
-        "vl.$resultColumn",
-        'vl.sample_tested_datetime',
-        'vl.result_approved_datetime',
-        'vl.result_sent_to_source_datetime',
-        'vl.last_modified_datetime'
-    ];
-
-
-    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
-
-
-    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
-    $sWhere = [];
-    if (!empty($columnSearch) && $columnSearch != '') {
-        $sWhere[] = $columnSearch;
-    }
-
     $calcValueQuery = "SELECT SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesRequested',
                 SUM(CASE WHEN (vl.request_created_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesAcknowledged',
                 SUM(CASE WHEN (vl.sample_received_at_lab_datetime is not null) THEN 1 ELSE 0 END) AS 'totalSamplesReceived',
@@ -208,11 +180,9 @@ try {
                 FROM $table as vl
             LEFT JOIN facility_details as l ON vl.lab_id = l.facility_id
             LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
-            LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id";
+            LEFT JOIN batch_details as b ON vl.sample_batch_id=b.batch_id
+            INNER JOIN ( SELECT vl.$primaryColumn AS id $fromQuery $whereSql ) AS flt ON flt.id = vl.$primaryColumn";
 
-    if (!empty($sWhere)) {
-        $calcValueQuery = $calcValueQuery . ' WHERE ' . implode(" AND ", $sWhere);
-    }
     $_SESSION['samplewiseReportsCalc'] = $calcValueQuery;
 
     $calculateFields = $db->rawQuery($calcValueQuery);
