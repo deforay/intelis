@@ -407,7 +407,7 @@ try {
 
                 $testedByUserId = $usersService->getOrCreateUser($tester);
 
-                if(empty($vlResult) || $vlResult == ''){
+                if (empty($vlResult) || $vlResult == '') {
                     $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL;
                 }
 
@@ -468,7 +468,7 @@ try {
                 //     $syncedIds[]  = $result['id'];
                 // }
 
-                $ignoredKeys = ['last_modified_datetime']; // add more if needed
+                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
 
                 $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
 
@@ -534,7 +534,7 @@ try {
                 //     $syncedIds[]  = $result['id'];
                 // }
 
-                $ignoredKeys = ['last_modified_datetime'];
+                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
 
                 $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
 
@@ -619,7 +619,7 @@ try {
                 //     $syncedIds[]  = $result['id'];
                 // }
 
-                $ignoredKeys = ['last_modified_datetime'];
+                $ignoredKeys = ['last_modified_datetime', 'result_printed_datetime']; // add more if needed
 
                 $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
 
