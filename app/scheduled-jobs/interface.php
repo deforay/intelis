@@ -385,7 +385,6 @@ try {
 
                     if (!empty($vlResult) && !in_array(strtolower($vlResult), ['fail', 'failed', 'failure', 'error', 'err'])) {
                         $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text'] ?? null);
-
                         if (!empty($interpretedResults)) {
                             $logVal = $interpretedResults['logVal'];
                             $vlResult = $interpretedResults['result'];

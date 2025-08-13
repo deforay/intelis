@@ -331,10 +331,12 @@ final class VlService extends AbstractTestService
             if (in_array(strtolower($originalResult), $this->failureCases, true)) {
                 $interpretedData =  [
                     'logVal' => null,
-                    'result' => null,
+                    'result' => $originalResult,
                     'absDecimalVal' => null,
                     'absVal' => null,
                     'txtVal' => $originalResult,
+                    'finalResult' => $originalResult,
+                    'originalResult' => $originalResult,
                     'resultStatus' => SAMPLE_STATUS\TEST_FAILED
                 ];
             } elseif ($vlResultType == 'numeric') {
