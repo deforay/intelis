@@ -468,9 +468,9 @@ try {
                 //     $syncedIds[]  = $result['id'];
                 // }
 
-                $ignoredKeys = ['last_modified_datetime']; // you can expand this as needed
+                $ignoredKeys = ['last_modified_datetime']; // add more if needed
 
-                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
+                $needsUpdate = MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
 
                 if ($needsUpdate) {
                     //echo "Updating VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;

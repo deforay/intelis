@@ -112,9 +112,9 @@ try {
      INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status ";
 
 
-     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
-     [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '');
-     [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '');
+     [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '', includeTime: true);
+     [$t_start_date, $t_end_date] = DateUtility::convertDateRange($_POST['sampleTestDate'] ?? '', includeTime: true);
+     [$r_start_date, $r_end_date] = DateUtility::convertDateRange($_POST['sampleReceivedDate'] ?? '', includeTime: true);
 
      if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
           $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -135,15 +135,15 @@ try {
      }
 
      if (!empty($_POST['sampleCollectionDate'])) {
-          $sWhere[] = " DATE(vl.sample_collection_date) BETWEEN '$start_date' AND '$end_date'";
+          $sWhere[] = " vl.sample_collection_date BETWEEN '$start_date' AND '$end_date'";
      }
 
      if (isset($_POST['sampleTestDate']) && trim((string) $_POST['sampleTestDate']) != '') {
-          $sWhere[] = " DATE(vl.sample_tested_datetime) BETWEEN '$t_start_date' AND '$t_end_date'";
+          $sWhere[] = " vl.sample_tested_datetime BETWEEN '$t_start_date' AND '$t_end_date'";
      }
 
      if (isset($_POST['sampleReceivedDate']) && trim((string) $_POST['sampleReceivedDate']) != '') {
-          $sWhere[] = " DATE(vl.sample_received_at_lab_datetime) BETWEEN '$r_start_date' AND '$r_end_date'";
+          $sWhere[] = " vl.sample_received_at_lab_datetime BETWEEN '$r_start_date' AND '$r_end_date'";
      }
 
 
@@ -163,7 +163,7 @@ try {
           } elseif ($_POST['status'] == 'result') {
                $statusCondition = ' (vl.result is NOT NULL AND vl.result !=""  AND vl.result_status = ' . SAMPLE_STATUS\REJECTED;
           } else {
-               $statusCondition = ' vl.result_status=4 ';
+               $statusCondition = ' vl.result_status= ' . SAMPLE_STATUS\REJECTED;
           }
           $sWhere[] = $statusCondition;
      }
@@ -183,13 +183,15 @@ try {
 
      // Only approved results can be printed
      if (!isset($_POST['status']) || trim((string) $_POST['status']) == '') {
+          $baseCondition = "((vl.result_status = " . SAMPLE_STATUS\ACCEPTED . " AND vl.result IS NOT NULL AND vl.result != '') OR (vl.result_status = " . SAMPLE_STATUS\REJECTED . " AND (vl.result IS NULL OR vl.result = '')))";
+
           if (isset($_POST['vlPrint']) && $_POST['vlPrint'] == 'print') {
-               $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND result_printed_datetime is NOT NULL";
+               $sWhere[] = "$baseCondition AND result_printed_datetime IS NOT NULL";
           } else {
-               $sWhere[] = " ((vl.result_status = 7 AND vl.result is NOT NULL AND vl.result !='') OR (vl.result_status = 4 AND (vl.result is NULL OR vl.result = ''))) AND (result_printed_datetime is NULL)";
+               $sWhere[] = "$baseCondition AND result_printed_datetime IS NULL";
           }
      } else {
-          $sWhere[] = " vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+          $sWhere[] = "vl.result_status != " . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
      }
 
      if (!empty($_SESSION['facilityMap'])) {
@@ -275,9 +277,8 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
-     LoggerUtility::logError( $e->getMessage(), [
+     LoggerUtility::logError($e->getMessage(), [
           'trace' => $e->getTraceAsString(),
           'file' => $e->getFile(),
           'line' => $e->getLine(),
