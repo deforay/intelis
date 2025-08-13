@@ -407,6 +407,10 @@ try {
 
                 $testedByUserId = $usersService->getOrCreateUser($tester);
 
+                if(empty($vlResult) || $vlResult == ''){
+                    $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL;
+                }
+
                 $data = [
                     'lab_id' => $labId,
                     'instrument_id' => $instrumentId,
@@ -421,6 +425,7 @@ try {
                     'result_value_absolute_decimal' => $absDecimalVal,
                     'result_value_text' => $txtVal,
                     'result' => $vlResult,
+                    'result_status' => $resultStatus ?? SAMPLE_STATUS\ACCEPTED,
                     'vl_test_platform' => $instrumentDetails['machine_name'] ?? $result['machine_used'],
                     'manual_result_entry' => 'no',
                     'import_machine_file_name' => 'interface',
@@ -431,10 +436,6 @@ try {
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
                 ];
-
-                if(!empty($resultStatus)) {
-                    $data['result_status'] = $resultStatus;
-                }
 
                 if ($silent === true) {
                     unset($data['last_modified_datetime']);
