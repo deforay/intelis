@@ -363,6 +363,7 @@ try {
                 $logVal = null;
                 $txtVal = null;
                 $vlResult = null;
+                $resultStatus = null;
                 //set result in result fields
                 if (!empty($result['results'])) {
 
@@ -387,10 +388,11 @@ try {
                         $interpretedResults = $vlService->interpretViralLoadResult($vlResult, $unit, $instrumentDetails['low_vl_result_text'] ?? null);
                         if (!empty($interpretedResults)) {
                             $logVal = $interpretedResults['logVal'];
-                            $vlResult = $interpretedResults['result'];
+                            $vlResult = $interpretedResults['result'] ?? $interpretedResults['txtVal'];
                             $absDecimalVal = $interpretedResults['absDecimalVal'];
                             $absVal = $interpretedResults['absVal'];
                             $txtVal = $interpretedResults['txtVal'];
+                            $resultStatus = $interpretedResults['resultStatus'] ?? SAMPLE_STATUS\ACCEPTED;
                         }
                     }
                 }
@@ -420,7 +422,6 @@ try {
                     'result_value_text' => $txtVal,
                     'result' => $vlResult,
                     'vl_test_platform' => $instrumentDetails['machine_name'] ?? $result['machine_used'],
-                    'result_status' => SAMPLE_STATUS\ACCEPTED,
                     'manual_result_entry' => 'no',
                     'import_machine_file_name' => 'interface',
                     'result_printed_datetime' => null,
@@ -430,6 +431,10 @@ try {
                     'last_modified_datetime' => DateUtility::getCurrentDateTime(),
                     'data_sync' => 0
                 ];
+
+                if(!empty($resultStatus)) {
+                    $data['result_status'] = $resultStatus;
+                }
 
                 if ($silent === true) {
                     unset($data['last_modified_datetime']);

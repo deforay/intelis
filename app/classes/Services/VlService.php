@@ -279,7 +279,7 @@ final class VlService extends AbstractTestService
             $finalResult = pow(10, $params['vlLog']);
         }
 
-        $hivDetection = $hivDetection ?? '';
+        $hivDetection ??= '';
         $finalResult = trim("$hivDetection $finalResult");
 
         if (
