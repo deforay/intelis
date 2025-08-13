@@ -296,7 +296,7 @@ try {
                 $conditions[] = "(sample_code IN (?, ?) OR remote_sample_code IN (?, ?) OR lab_assigned_code IN (?, ?))";
 
                 $conditions = implode(' AND ', $conditions);
-                $tableQuery = "SELECT $columnsToSelect
+                $tableQuery = "SELECT *
                                     FROM $individualTableName
                                     WHERE $conditions";
 
@@ -470,7 +470,7 @@ try {
 
                 $ignoredKeys = ['last_modified_datetime']; // add more if needed
 
-                $needsUpdate = MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
+                $needsUpdate = !MiscUtility::isArrayEqual($data, $tableInfo, $ignoredKeys);
 
                 if ($needsUpdate) {
                     //echo "Updating VL Sample Code: " . $tableInfo['sample_code'] . PHP_EOL;
