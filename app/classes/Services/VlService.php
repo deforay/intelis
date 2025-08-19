@@ -349,6 +349,25 @@ final class VlService extends AbstractTestService
         });
     }
 
+    public function countrySpecificInterpretations($vlResult)
+    {
+        return MemoUtility::remember(function () use ($vlResult) {
+            $formId = (int) $this->commonService->getGlobalConfig('vl_form');
+            if ($formId === COUNTRY\SOUTH_SUDAN) {
+                switch ($vlResult) {
+                    case 'bdl':
+                    case 'target not detected':
+                    case 'not detected':
+                    case 'tnd':
+                        return 'Below Detection Limit';
+                    default:
+                        return $vlResult;
+                }
+            }
+            return $vlResult;
+        });
+    }
+
     public function interpretViralLoadTextResult($result, $unit = null, $defaultLowVlResultText = null): ?array
     {
 
@@ -409,6 +428,7 @@ final class VlService extends AbstractTestService
                 break;
         }
 
+        $vlResult = $this->countrySpecificInterpretations($vlResult);
         $resultToUse = $interpretAndConvertResult ? $vlResult : $originalResultValue;
 
         return [

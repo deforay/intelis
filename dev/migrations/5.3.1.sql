@@ -87,9 +87,9 @@ ALTER TABLE `form_generic`
 
 
 -- VL
-ALTER TABLE `form_vl`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_vl` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_vl` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+
 
 ALTER TABLE `form_vl`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
