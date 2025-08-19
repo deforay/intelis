@@ -101,9 +101,8 @@ ALTER TABLE `form_vl`
 ALTER TABLE `form_eid` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `audit_form_eid` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 
-ALTER TABLE `form_eid`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_eid` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_eid` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_eid`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
@@ -117,26 +116,23 @@ ALTER TABLE `form_cd4`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
 
 -- COVID-19
-ALTER TABLE `form_covid19`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_covid19` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_covid19` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_covid19`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
 
 -- Hepatitis
-ALTER TABLE `form_hepatitis`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_hepatitis` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_hepatitis` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_hepatitis`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
 
 
 -- TB
-ALTER TABLE `form_tb`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_tb` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_tb` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_tb`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
@@ -146,9 +142,8 @@ ALTER TABLE `form_tb`
 ALTER TABLE `form_generic` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 ALTER TABLE `audit_form_generic` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
 
-ALTER TABLE `form_generic`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_generic` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_generic` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_generic`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
