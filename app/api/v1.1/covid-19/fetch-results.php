@@ -263,7 +263,7 @@ try {
     }
 
     $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $sQuery .= "$where ORDER BY vl.last_modified_datetime DESC limit 100 ";
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {
@@ -274,6 +274,36 @@ try {
             $rowData[$key]['c19ReasonForTesting'] = $covid19Service->getCovid19ReasonsForTestingByFormId($row['covid19Id'], false, true);
             $rowData[$key]['c19ReasonDetails'] = $covid19Service->getCovid19ReasonsDetailsForTestingByFormId($row['covid19Id'], true);
         }
+    }
+
+    $now = DateUtility::getCurrentDateTime();
+    /** Stamp “sent to source” once (don’t touch dispatched here) */
+    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
+    if (!empty($remoteSampleCodes)) {
+        // 1) result_sent_to_source / result_sent_to_source_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_sent_to_source_datetime', null);
+        $db->update('form_covid19', [
+            'result_sent_to_source'          => 'sent',
+            'result_sent_to_source_datetime' => $now,
+        ]);
+
+        // 2) result_dispatched_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_dispatched_datetime', null);
+        $db->update('form_covid19', [
+            'result_dispatched_datetime' => $now,
+        ]);
+    }
+
+    /** Stamp “first pulled via API” once for rows actually returned */
+    $sampleIds = array_values(array_filter(array_unique(array_column($rowData, 'covid19Id'))));
+    if (!empty($sampleIds)) {
+        $db->where('covid19_id', $sampleIds, 'IN');
+        $db->where('result_pulled_via_api_datetime', null);
+        $db->update('form_covid19', [
+            'result_pulled_via_api_datetime' => $now,
+        ]);
     }
 
     http_response_code(200);

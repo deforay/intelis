@@ -1,19 +1,11 @@
-
-
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
 
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
-
 --
 -- Database: `vlsm`
 --
-CREATE DATABASE IF NOT EXISTS `vlsm` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
+CREATE DATABASE IF NOT EXISTS `vlsm` DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci;
 USE `vlsm`;
 
 -- --------------------------------------------------------
@@ -22,15 +14,16 @@ USE `vlsm`;
 -- Table structure for table `activity_log`
 --
 
+DROP TABLE IF EXISTS `activity_log`;
 CREATE TABLE `activity_log` (
-  `log_id` int(11) NOT NULL,
+  `log_id` int NOT NULL,
   `event_type` varchar(255) DEFAULT NULL,
   `action` mediumtext,
   `resource` varchar(255) DEFAULT NULL,
   `user_id` varchar(256) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL,
   `ip_address` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -38,12 +31,13 @@ CREATE TABLE `activity_log` (
 -- Table structure for table `batch_details`
 --
 
+DROP TABLE IF EXISTS `batch_details`;
 CREATE TABLE `batch_details` (
-  `batch_id` int(11) NOT NULL,
+  `batch_id` int NOT NULL,
   `machine` varchar(50) NOT NULL,
   `lab_assigned_batch_code` varchar(64) DEFAULT NULL,
   `batch_code` varchar(255) DEFAULT NULL,
-  `batch_code_key` int(11) DEFAULT NULL,
+  `batch_code_key` int DEFAULT NULL,
   `test_type` varchar(255) DEFAULT NULL,
   `batch_status` varchar(255) NOT NULL DEFAULT 'completed',
   `batch_attributes` json DEFAULT NULL,
@@ -54,9 +48,9 @@ CREATE TABLE `batch_details` (
   `printed_datetime` datetime DEFAULT NULL,
   `created_by` varchar(256) DEFAULT NULL,
   `request_created_datetime` datetime NOT NULL,
-  `last_modified_by` varchar(256) DEFAULT NULL,
+  `last_modified_by` varchar(256) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -64,11 +58,12 @@ CREATE TABLE `batch_details` (
 -- Table structure for table `covid19_imported_controls`
 --
 
+DROP TABLE IF EXISTS `covid19_imported_controls`;
 CREATE TABLE `covid19_imported_controls` (
-  `control_id` int(11) NOT NULL,
+  `control_id` int NOT NULL,
   `control_code` varchar(255) NOT NULL,
-  `lab_id` int(11) DEFAULT NULL,
-  `batch_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
+  `batch_id` int DEFAULT NULL,
   `control_type` varchar(255) DEFAULT NULL,
   `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
@@ -88,7 +83,7 @@ CREATE TABLE `covid19_imported_controls` (
   `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -96,11 +91,12 @@ CREATE TABLE `covid19_imported_controls` (
 -- Table structure for table `covid19_patient_comorbidities`
 --
 
+DROP TABLE IF EXISTS `covid19_patient_comorbidities`;
 CREATE TABLE `covid19_patient_comorbidities` (
-  `covid19_id` int(11) NOT NULL,
-  `comorbidity_id` int(11) NOT NULL,
+  `covid19_id` int NOT NULL,
+  `comorbidity_id` int NOT NULL,
   `comorbidity_detected` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -108,12 +104,13 @@ CREATE TABLE `covid19_patient_comorbidities` (
 -- Table structure for table `covid19_patient_symptoms`
 --
 
+DROP TABLE IF EXISTS `covid19_patient_symptoms`;
 CREATE TABLE `covid19_patient_symptoms` (
-  `covid19_id` int(11) NOT NULL,
-  `symptom_id` int(11) NOT NULL,
+  `covid19_id` int NOT NULL,
+  `symptom_id` int NOT NULL,
   `symptom_detected` varchar(255) NOT NULL,
   `symptom_details` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -121,14 +118,15 @@ CREATE TABLE `covid19_patient_symptoms` (
 -- Table structure for table `covid19_positive_confirmation_manifest`
 --
 
+DROP TABLE IF EXISTS `covid19_positive_confirmation_manifest`;
 CREATE TABLE `covid19_positive_confirmation_manifest` (
-  `manifest_id` int(11) NOT NULL,
+  `manifest_id` int NOT NULL,
   `manifest_code` varchar(255) NOT NULL,
   `added_by` varchar(255) NOT NULL,
   `manifest_status` varchar(255) DEFAULT NULL,
   `module` varchar(255) DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -136,12 +134,13 @@ CREATE TABLE `covid19_positive_confirmation_manifest` (
 -- Table structure for table `covid19_reasons_for_testing`
 --
 
+DROP TABLE IF EXISTS `covid19_reasons_for_testing`;
 CREATE TABLE `covid19_reasons_for_testing` (
-  `covid19_id` int(11) NOT NULL,
-  `reasons_id` int(11) NOT NULL,
+  `covid19_id` int NOT NULL,
+  `reasons_id` int NOT NULL,
   `reasons_detected` varchar(50) DEFAULT NULL,
   `reason_details` text
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -149,10 +148,11 @@ CREATE TABLE `covid19_reasons_for_testing` (
 -- Table structure for table `covid19_tests`
 --
 
+DROP TABLE IF EXISTS `covid19_tests`;
 CREATE TABLE `covid19_tests` (
-  `test_id` int(11) NOT NULL,
-  `covid19_id` int(11) NOT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `test_id` int NOT NULL,
+  `covid19_id` int NOT NULL,
+  `facility_id` int DEFAULT NULL,
   `test_name` varchar(500) NOT NULL,
   `tested_by` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime NOT NULL,
@@ -162,7 +162,7 @@ CREATE TABLE `covid19_tests` (
   `kit_expiry_date` date DEFAULT NULL,
   `result` varchar(500) NOT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -170,11 +170,12 @@ CREATE TABLE `covid19_tests` (
 -- Table structure for table `eid_imported_controls`
 --
 
+DROP TABLE IF EXISTS `eid_imported_controls`;
 CREATE TABLE `eid_imported_controls` (
-  `control_id` int(11) NOT NULL,
+  `control_id` int NOT NULL,
   `control_code` varchar(255) NOT NULL,
-  `lab_id` int(11) DEFAULT NULL,
-  `batch_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
+  `batch_id` int DEFAULT NULL,
   `control_type` varchar(255) DEFAULT NULL,
   `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
@@ -194,7 +195,7 @@ CREATE TABLE `eid_imported_controls` (
   `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -202,8 +203,9 @@ CREATE TABLE `eid_imported_controls` (
 -- Table structure for table `facility_details`
 --
 
+DROP TABLE IF EXISTS `facility_details`;
 CREATE TABLE `facility_details` (
-  `facility_id` int(11) NOT NULL,
+  `facility_id` int NOT NULL,
   `facility_name` varchar(255) DEFAULT NULL,
   `facility_code` varchar(255) DEFAULT NULL,
   `vlsm_instance_id` varchar(255) NOT NULL,
@@ -214,24 +216,26 @@ CREATE TABLE `facility_details` (
   `facility_mobile_numbers` varchar(255) DEFAULT NULL,
   `address` varchar(255) DEFAULT NULL,
   `country` varchar(255) DEFAULT NULL,
-  `facility_state_id` int(11) DEFAULT NULL,
-  `facility_district_id` int(11) DEFAULT NULL,
+  `facility_state_id` int DEFAULT NULL,
+  `facility_district_id` int DEFAULT NULL,
   `facility_state` varchar(255) DEFAULT NULL,
   `facility_district` varchar(255) DEFAULT NULL,
   `facility_hub_name` varchar(255) DEFAULT NULL,
   `latitude` varchar(255) DEFAULT NULL,
   `longitude` varchar(255) DEFAULT NULL,
-  `facility_type` int(11) DEFAULT NULL,
+  `facility_type` int DEFAULT NULL,
+  `sts_token` varchar(64) DEFAULT NULL,
+  `sts_token_expiry` datetime DEFAULT NULL,
   `facility_attributes` json DEFAULT NULL,
   `testing_points` json DEFAULT NULL,
   `facility_logo` varchar(255) DEFAULT NULL,
   `header_text` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `data_sync` int NOT NULL DEFAULT '0',
   `test_type` varchar(255) DEFAULT NULL,
   `report_format` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -239,10 +243,11 @@ CREATE TABLE `facility_details` (
 -- Table structure for table `facility_type`
 --
 
+DROP TABLE IF EXISTS `facility_type`;
 CREATE TABLE `facility_type` (
-  `facility_type_id` int(11) NOT NULL,
+  `facility_type_id` int NOT NULL,
   `facility_type_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `facility_type`
@@ -259,9 +264,10 @@ INSERT INTO `facility_type` (`facility_type_id`, `facility_type_name`) VALUES
 -- Table structure for table `failed_result_retest_tracker`
 --
 
+DROP TABLE IF EXISTS `failed_result_retest_tracker`;
 CREATE TABLE `failed_result_retest_tracker` (
-  `frrt_id` int(11) NOT NULL,
-  `test_type_pid` int(11) DEFAULT NULL,
+  `frrt_id` int NOT NULL,
+  `test_type_pid` int DEFAULT NULL,
   `test_type` varchar(256) DEFAULT NULL,
   `sample_code` varchar(256) DEFAULT NULL,
   `sample_data` mediumtext NOT NULL,
@@ -272,7 +278,7 @@ CREATE TABLE `failed_result_retest_tracker` (
   `result_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   `updated_by` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -280,35 +286,36 @@ CREATE TABLE `failed_result_retest_tracker` (
 -- Table structure for table `form_cd4`
 --
 
+DROP TABLE IF EXISTS `form_cd4`;
 CREATE TABLE `form_cd4` (
-  `cd4_id` int(11) NOT NULL,
+  `cd4_id` int NOT NULL,
   `unique_id` varchar(64) DEFAULT NULL,
   `vlsm_instance_id` varchar(64) NOT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
   `remote_sample` varchar(10) NOT NULL DEFAULT 'no',
   `remote_sample_code` varchar(64) DEFAULT NULL,
   `external_sample_code` varchar(64) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `facility_sample_id` varchar(64) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` varchar(64) DEFAULT NULL,
   `sample_reordered` varchar(3) DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` varchar(64) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `sample_code_format` varchar(64) DEFAULT NULL,
   `sample_code` varchar(64) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
   `system_patient_code` varchar(64) DEFAULT NULL,
   `patient_first_name` varchar(64) DEFAULT NULL,
   `patient_middle_name` varchar(64) DEFAULT NULL,
   `patient_last_name` varchar(64) DEFAULT NULL,
   `patient_responsible_person` varchar(64) DEFAULT NULL,
-  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_nationality` int DEFAULT NULL,
   `patient_province` varchar(64) DEFAULT NULL,
   `patient_district` varchar(64) DEFAULT NULL,
   `patient_art_no` varchar(64) DEFAULT NULL,
@@ -320,21 +327,23 @@ CREATE TABLE `form_cd4` (
   `patient_address` mediumtext,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `specimen_type` int(11) DEFAULT NULL,
+  `specimen_type` int DEFAULT NULL,
   `is_patient_new` varchar(45) DEFAULT NULL,
-  `line_of_treatment` int(11) DEFAULT NULL,
+  `is_patient_initiated_on_art` varchar(10) DEFAULT NULL,
+  `line_of_treatment` int DEFAULT NULL,
   `current_regimen` varchar(64) DEFAULT NULL,
   `date_of_initiation_of_current_regimen` date DEFAULT NULL,
   `is_patient_pregnant` varchar(3) DEFAULT NULL,
-  `no_of_pregnancy_weeks` int(11) DEFAULT NULL,
+  `no_of_pregnancy_weeks` int DEFAULT NULL,
   `is_patient_breastfeeding` varchar(3) DEFAULT NULL,
-  `no_of_breastfeeding_weeks` int(11) DEFAULT NULL,
-  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `no_of_breastfeeding_weeks` int DEFAULT NULL,
+  `pregnancy_trimester` int DEFAULT NULL,
   `arv_adherance_percentage` varchar(64) DEFAULT NULL,
   `consent_to_receive_sms` varchar(64) DEFAULT NULL,
   `last_cd4_date` date DEFAULT NULL,
   `last_cd4_result` varchar(64) DEFAULT NULL,
   `last_cd4_result_percentage` varchar(64) DEFAULT NULL,
+  `last_cd4_crag_result` varchar(32) DEFAULT NULL,
   `request_clinician_name` varchar(64) DEFAULT NULL,
   `test_requested_on` date DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
@@ -344,22 +353,22 @@ CREATE TABLE `form_cd4` (
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(10) DEFAULT NULL,
-  `sample_rejection_facility` int(11) DEFAULT NULL,
-  `reason_for_sample_rejection` int(11) DEFAULT NULL,
-  `recommended_corrective_action` int(11) DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
+  `sample_rejection_facility` int DEFAULT NULL,
+  `reason_for_sample_rejection` int DEFAULT NULL,
+  `recommended_corrective_action` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `request_created_by` varchar(50) DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `last_modified_by` varchar(64) DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
   `patient_other_id` text,
-  `patient_age_in_years` int(11) DEFAULT NULL,
-  `patient_age_in_months` int(11) DEFAULT NULL,
+  `patient_age_in_years` int DEFAULT NULL,
+  `patient_age_in_months` int DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
   `lab_technician` varchar(64) DEFAULT NULL,
   `lab_contact_person` varchar(64) DEFAULT NULL,
   `lab_phone_number` varchar(64) DEFAULT NULL,
@@ -367,6 +376,7 @@ CREATE TABLE `form_cd4` (
   `sample_tested_datetime` datetime DEFAULT NULL,
   `cd4_result` varchar(64) DEFAULT NULL,
   `cd4_result_percentage` varchar(255) DEFAULT NULL,
+  `crag_test_results` varchar(50) DEFAULT NULL,
   `approver_comments` mediumtext,
   `result_modified` varchar(3) DEFAULT NULL,
   `reason_for_result_changes` text,
@@ -379,13 +389,13 @@ CREATE TABLE `form_cd4` (
   `result_reviewed_by` varchar(64) DEFAULT NULL,
   `result_reviewed_datetime` datetime DEFAULT NULL,
   `contact_complete_status` text,
-  `reason_for_cd4_testing` int(11) DEFAULT NULL,
+  `reason_for_cd4_testing` int DEFAULT NULL,
   `reason_for_cd4_testing_other` text,
   `sample_collected_by` varchar(64) DEFAULT NULL,
   `facility_comments` mediumtext,
   `cd4_test_platform` varchar(64) DEFAULT NULL,
   `instrument_id` varchar(50) DEFAULT NULL,
-  `import_machine_name` int(11) DEFAULT NULL,
+  `import_machine_name` int DEFAULT NULL,
   `facility_support_partner` varchar(64) DEFAULT NULL,
   `has_patient_changed_regimen` varchar(45) DEFAULT NULL,
   `reason_for_regimen_change` varchar(64) DEFAULT NULL,
@@ -403,35 +413,34 @@ CREATE TABLE `form_cd4` (
   `app_sample_code` varchar(64) DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
   `is_result_sms_sent` varchar(3) DEFAULT 'no',
-  `test_request_export` int(11) NOT NULL DEFAULT '0',
-  `test_request_import` int(11) NOT NULL DEFAULT '0',
-  `test_result_export` int(11) NOT NULL DEFAULT '0',
-  `test_result_import` int(11) NOT NULL DEFAULT '0',
+  `test_request_export` int NOT NULL DEFAULT '0',
+  `test_request_import` int NOT NULL DEFAULT '0',
+  `test_result_export` int NOT NULL DEFAULT '0',
+  `test_result_import` int NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `result_status` int(11) NOT NULL,
+  `result_status` int NOT NULL,
   `locked` varchar(10) DEFAULT 'no',
   `import_machine_file_name` text,
   `manual_result_entry` varchar(10) DEFAULT NULL,
-  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_facility_id` int DEFAULT NULL,
   `requesting_person` text,
   `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `data_sync` int NOT NULL DEFAULT '0',
   `file_name` varchar(255) DEFAULT NULL,
   `result_coming_from` varchar(255) DEFAULT NULL,
   `first_line` varchar(32) DEFAULT NULL,
   `second_line` varchar(32) DEFAULT NULL,
-  `vldash_sync` int(11) DEFAULT '0',
+  `vldash_sync` int DEFAULT '0',
   `source_of_request` text,
   `source_data_dump` text,
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -439,20 +448,21 @@ CREATE TABLE `form_cd4` (
 -- Table structure for table `form_covid19`
 --
 
+DROP TABLE IF EXISTS `form_covid19`;
 CREATE TABLE `form_covid19` (
-  `covid19_id` int(11) NOT NULL,
+  `covid19_id` int NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
   `vlsm_instance_id` varchar(255) DEFAULT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `sample_code_format` varchar(255) DEFAULT NULL,
   `sample_code` varchar(500) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
   `sample_reordered` varchar(3) DEFAULT 'no',
   `external_sample_code` varchar(255) DEFAULT NULL,
-  `test_number` int(11) DEFAULT NULL,
+  `test_number` int DEFAULT NULL,
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` varchar(255) DEFAULT NULL,
   `remote_sample_code` varchar(256) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
@@ -463,12 +473,12 @@ CREATE TABLE `form_covid19` (
   `tested_by` varchar(255) DEFAULT NULL,
   `lab_tech_comments` mediumtext,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
   `source_of_alert` varchar(255) DEFAULT NULL,
   `source_of_alert_other` varchar(255) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `is_encrypted` varchar(10) DEFAULT 'no',
   `system_patient_code` varchar(43) DEFAULT NULL,
   `patient_id` varchar(255) DEFAULT NULL,
@@ -497,7 +507,7 @@ CREATE TABLE `form_covid19` (
   `flight_transit` text,
   `reason_of_visit` varchar(500) DEFAULT NULL,
   `is_sample_collected` varchar(255) DEFAULT NULL,
-  `reason_for_covid19_test` int(11) DEFAULT NULL,
+  `reason_for_covid19_test` int DEFAULT NULL,
   `type_of_test_requested` text,
   `patient_province` text,
   `patient_district` text,
@@ -507,7 +517,7 @@ CREATE TABLE `form_covid19` (
   `specimen_type` varchar(255) DEFAULT NULL,
   `is_sample_post_mortem` varchar(255) DEFAULT NULL,
   `priority_status` varchar(255) DEFAULT NULL,
-  `number_of_days_sick` int(11) DEFAULT NULL,
+  `number_of_days_sick` int DEFAULT NULL,
   `asymptomatic` varchar(50) DEFAULT NULL,
   `date_of_symptom_onset` date DEFAULT NULL,
   `suspected_case` varchar(255) DEFAULT NULL,
@@ -518,16 +528,16 @@ CREATE TABLE `form_covid19` (
   `patient_cares_for_children` varchar(255) DEFAULT NULL,
   `fever_temp` varchar(255) DEFAULT NULL,
   `temperature_measurement_method` varchar(255) DEFAULT NULL,
-  `respiratory_rate` int(11) DEFAULT NULL,
+  `respiratory_rate` int DEFAULT NULL,
   `oxygen_saturation` double DEFAULT NULL,
   `close_contacts` mediumtext,
   `contact_with_confirmed_case` text,
   `has_recent_travel_history` text,
   `travel_country_names` text,
   `travel_return_date` date DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
   `lab_manager` text,
   `testing_point` varchar(255) DEFAULT NULL,
   `lab_technician` text,
@@ -543,11 +553,11 @@ CREATE TABLE `form_covid19` (
   `lab_reception_person` mediumtext,
   `covid19_test_platform` mediumtext,
   `covid19_test_name` varchar(500) DEFAULT NULL,
-  `result_status` int(11) DEFAULT NULL,
+  `result_status` int DEFAULT NULL,
   `locked` varchar(256) DEFAULT 'no',
-  `is_sample_rejected` varchar(255) DEFAULT NULL,
-  `reason_for_sample_rejection` int(11) DEFAULT NULL,
-  `recommended_corrective_action` int(11) DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
+  `reason_for_sample_rejection` int DEFAULT NULL,
+  `recommended_corrective_action` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `result` text,
   `if_have_other_diseases` varchar(50) DEFAULT NULL,
@@ -558,7 +568,7 @@ CREATE TABLE `form_covid19` (
   `revised_by` text,
   `revised_on` datetime DEFAULT NULL,
   `result_modified` varchar(3) DEFAULT NULL,
-  `reason_for_changing` text,
+  `reason_for_changing` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `result_reviewed_datetime` datetime DEFAULT NULL,
   `result_reviewed_by` mediumtext,
   `result_approved_datetime` datetime DEFAULT NULL,
@@ -575,10 +585,10 @@ CREATE TABLE `form_covid19` (
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_batch_id` int DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` mediumtext,
-  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_id` int DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
   `lot_number` varchar(255) DEFAULT NULL,
   `source_of_request` text,
@@ -591,26 +601,28 @@ CREATE TABLE `form_covid19` (
   `app_sample_code` varchar(255) DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` varchar(255) DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `form_eid`
 --
 
+DROP TABLE IF EXISTS `form_eid`;
 CREATE TABLE `form_eid` (
-  `eid_id` int(11) NOT NULL,
+  `eid_id` int NOT NULL,
   `unique_id` varchar(256) DEFAULT NULL,
   `vlsm_instance_id` varchar(100) NOT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `sample_code_format` varchar(100) DEFAULT NULL,
   `sample_code` varchar(100) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
   `sample_reordered` varchar(3) DEFAULT 'no',
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` varchar(100) DEFAULT NULL,
   `remote_sample_code` varchar(100) DEFAULT NULL,
   `external_sample_code` varchar(256) DEFAULT NULL,
@@ -622,26 +634,26 @@ CREATE TABLE `form_eid` (
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
-  `is_sample_rejected` varchar(10) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
   `test_1_date` date DEFAULT NULL,
-  `test_1_batch` int(11) DEFAULT NULL,
+  `test_1_batch` int DEFAULT NULL,
   `test_1_assay` text,
-  `test_1_ct_qs` int(11) DEFAULT NULL,
+  `test_1_ct_qs` int DEFAULT NULL,
   `test_1_result` text,
   `test_1_repeated` text,
   `test_1_repeat_reason` text,
   `test_2_date` date DEFAULT NULL,
-  `test_2_batch` int(11) DEFAULT NULL,
+  `test_2_batch` int DEFAULT NULL,
   `test_2_assay` text,
-  `test_2_ct_qs` int(11) DEFAULT NULL,
+  `test_2_ct_qs` int DEFAULT NULL,
   `test_2_result` text,
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
-  `recommended_corrective_action` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `is_encrypted` varchar(10) DEFAULT 'no',
   `mother_id` text,
   `mother_name` text,
@@ -662,19 +674,19 @@ CREATE TABLE `form_eid` (
   `child_name` text,
   `child_surname` text,
   `child_dob` date DEFAULT NULL,
-  `child_age` int(11) DEFAULT NULL,
-  `child_age_in_weeks` int(11) DEFAULT NULL,
+  `child_age` int DEFAULT NULL,
+  `child_age_in_weeks` int DEFAULT NULL,
   `child_gender` varchar(10) DEFAULT NULL,
   `health_insurance_code` varchar(32) DEFAULT NULL,
-  `child_weight` int(11) DEFAULT NULL,
+  `child_weight` int DEFAULT NULL,
   `child_prophylactic_arv` text,
   `child_prophylactic_arv_other` text,
   `mother_hiv_test_date` date DEFAULT NULL,
   `mother_hiv_status` varchar(16) DEFAULT NULL,
   `next_appointment_date` date DEFAULT NULL,
-  `no_of_exposed_children` int(11) DEFAULT NULL,
-  `no_of_infected_children` int(11) DEFAULT NULL,
-  `mother_arv_protocol` int(11) DEFAULT NULL,
+  `no_of_exposed_children` int DEFAULT NULL,
+  `no_of_infected_children` int DEFAULT NULL,
+  `mother_arv_protocol` int DEFAULT NULL,
   `mode_of_delivery` varchar(255) DEFAULT NULL,
   `mode_of_delivery_other` varchar(32) DEFAULT NULL,
   `mother_art_status` varchar(32) DEFAULT NULL,
@@ -694,7 +706,12 @@ CREATE TABLE `form_eid` (
   `child_treatment` varchar(255) DEFAULT NULL,
   `child_treatment_other` varchar(1000) DEFAULT NULL,
   `child_treatment_initiation_date` date DEFAULT NULL,
+  `child_age_in_days` int DEFAULT NULL,
+  `test_request_date` date DEFAULT NULL,
+  `infant_email` varchar(256) DEFAULT NULL,
+  `infant_phone` int DEFAULT NULL,
   `is_infant_receiving_treatment` varchar(255) DEFAULT NULL,
+  `specific_infant_treatment` varchar(128) DEFAULT NULL,
   `has_infant_stopped_breastfeeding` varchar(255) DEFAULT NULL,
   `infant_on_pmtct_prophylaxis` text,
   `infant_on_ctx_prophylaxis` text,
@@ -710,9 +727,10 @@ CREATE TABLE `form_eid` (
   `sample_requestor_phone` varchar(16) DEFAULT NULL,
   `specimen_quality` varchar(255) DEFAULT NULL,
   `specimen_type` varchar(255) DEFAULT NULL,
-  `reason_for_eid_test` int(11) DEFAULT NULL,
+  `location_of_sample_collection` varchar(20) DEFAULT NULL,
+  `reason_for_eid_test` int DEFAULT NULL,
   `pcr_test_performed_before` varchar(10) DEFAULT NULL,
-  `pcr_test_number` int(11) DEFAULT NULL,
+  `pcr_test_number` int DEFAULT NULL,
   `last_pcr_id` varchar(32) DEFAULT NULL,
   `previous_pcr_result` varchar(16) DEFAULT NULL,
   `last_pcr_date` date DEFAULT NULL,
@@ -729,20 +747,21 @@ CREATE TABLE `form_eid` (
   `pcr_3_test_date` date DEFAULT NULL,
   `pcr_3_test_result` varchar(50) DEFAULT NULL,
   `sample_collection_reason` text,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `lab_testing_point` text,
   `lab_testing_point_other` text,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
   `lab_technician` text,
   `lab_reception_person` text,
+  `eid_number` varchar(20) DEFAULT NULL,
   `eid_test_platform` varchar(64) DEFAULT NULL,
   `instrument_id` varchar(50) DEFAULT NULL,
-  `result_status` int(11) DEFAULT NULL,
+  `result_status` int DEFAULT NULL,
   `locked` varchar(10) DEFAULT 'no',
   `result` varchar(255) DEFAULT NULL,
   `result_modified` varchar(3) DEFAULT NULL,
-  `reason_for_changing` text,
+  `reason_for_changing` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `tested_by` varchar(50) DEFAULT NULL,
   `lab_tech_comments` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
@@ -770,8 +789,8 @@ CREATE TABLE `form_eid` (
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` text,
-  `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_batch_id` int DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` varchar(64) DEFAULT NULL,
   `lot_number` text,
   `source_of_request` text,
@@ -779,9 +798,8 @@ CREATE TABLE `form_eid` (
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
   `form_attributes` json DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -789,40 +807,41 @@ CREATE TABLE `form_eid` (
 -- Table structure for table `form_generic`
 --
 
+DROP TABLE IF EXISTS `form_generic`;
 CREATE TABLE `form_generic` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
-  `test_type` int(11) DEFAULT NULL,
+  `test_type` int DEFAULT NULL,
   `sub_tests` text,
   `test_type_form` json DEFAULT NULL,
   `vlsm_instance_id` varchar(255) NOT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
   `remote_sample_code` varchar(500) DEFAULT NULL,
   `remote_sample_code_format` varchar(255) DEFAULT NULL,
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `sample_code` varchar(500) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
   `sample_code_format` varchar(255) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `external_sample_code` varchar(256) DEFAULT NULL,
   `app_sample_code` varchar(256) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
   `province_id` varchar(255) DEFAULT NULL,
   `facility_sample_id` varchar(255) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` text,
   `sample_reordered` varchar(3) DEFAULT 'no',
   `test_urgency` varchar(255) DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
   `system_patient_code` varchar(43) DEFAULT NULL,
   `patient_first_name` text,
   `patient_middle_name` text,
   `patient_last_name` text,
   `patient_attendant` text,
-  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_nationality` int DEFAULT NULL,
   `patient_province` text,
   `patient_district` text,
   `patient_group` text,
@@ -836,11 +855,11 @@ CREATE TABLE `form_generic` (
   `is_encrypted` varchar(10) DEFAULT 'no',
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `specimen_type` int(11) DEFAULT NULL,
+  `specimen_type` int DEFAULT NULL,
   `treatment_initiation` text,
   `is_patient_pregnant` text,
   `is_patient_breastfeeding` text,
-  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `pregnancy_trimester` int DEFAULT NULL,
   `consent_to_receive_sms` text,
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
@@ -849,11 +868,11 @@ CREATE TABLE `form_generic` (
   `testing_lab_focal_person` text,
   `testing_lab_focal_person_phone_number` text,
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
-  `sample_received_at_testing_lab_datetime` datetime DEFAULT NULL,
+  `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(255) DEFAULT NULL,
-  `sample_rejection_facility` int(11) DEFAULT NULL,
-  `reason_for_sample_rejection` int(11) DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
+  `sample_rejection_facility` int DEFAULT NULL,
+  `reason_for_sample_rejection` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `request_created_by` varchar(500) NOT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
@@ -866,20 +885,20 @@ CREATE TABLE `form_generic` (
   `treatment_indication` text,
   `treatment_details` mediumtext,
   `lab_name` text,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
-  `lab_code` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
+  `lab_code` int DEFAULT NULL,
   `lab_technician` text,
   `lab_contact_person` text,
   `lab_phone_number` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
   `result` text,
-  `result_unit` int(11) DEFAULT NULL,
+  `result_unit` int DEFAULT NULL,
   `final_result_interpretation` text,
   `approver_comments` mediumtext,
-  `reason_for_test_result_changes` text,
+  `reason_for_test_result_changes` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `lot_number` text,
   `lot_expiration_date` date DEFAULT NULL,
   `tested_by` text,
@@ -896,7 +915,7 @@ CREATE TABLE `form_generic` (
   `sample_collected_by` text,
   `facility_comments` mediumtext,
   `test_platform` text,
-  `import_machine_name` int(11) DEFAULT NULL,
+  `import_machine_name` int DEFAULT NULL,
   `physician_name` text,
   `date_test_ordered_by_physician` date DEFAULT NULL,
   `test_number` text,
@@ -909,10 +928,10 @@ CREATE TABLE `form_generic` (
   `is_result_mail_sent` varchar(500) NOT NULL DEFAULT 'no',
   `result_mail_datetime` datetime DEFAULT NULL,
   `is_result_sms_sent` varchar(45) NOT NULL DEFAULT 'no',
-  `test_request_export` int(11) NOT NULL DEFAULT '0',
-  `test_request_import` int(11) NOT NULL DEFAULT '0',
-  `test_result_export` int(11) NOT NULL DEFAULT '0',
-  `test_result_import` int(11) NOT NULL DEFAULT '0',
+  `test_request_export` int NOT NULL DEFAULT '0',
+  `test_request_import` int NOT NULL DEFAULT '0',
+  `test_result_export` int NOT NULL DEFAULT '0',
+  `test_result_import` int NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
@@ -928,13 +947,13 @@ CREATE TABLE `form_generic` (
   `report_date` date DEFAULT NULL,
   `requesting_professional_number` text,
   `requesting_category` text,
-  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_facility_id` int DEFAULT NULL,
   `requesting_person` text,
   `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
   `result_coming_from` varchar(255) DEFAULT NULL,
   `sample_processed` varchar(255) DEFAULT NULL,
-  `vldash_sync` int(11) DEFAULT '0',
+  `vldash_sync` int DEFAULT '0',
   `source_of_request` text,
   `source_data_dump` text,
   `result_sent_to_source` varchar(256) DEFAULT 'pending',
@@ -942,20 +961,22 @@ CREATE TABLE `form_generic` (
   `form_attributes` json DEFAULT NULL,
   `locked` varchar(50) NOT NULL DEFAULT 'no',
   `data_sync` varchar(10) NOT NULL DEFAULT '0',
-  `result_status` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `result_status` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `form_hepatitis`
 --
 
+DROP TABLE IF EXISTS `form_hepatitis`;
 CREATE TABLE `form_hepatitis` (
-  `hepatitis_id` int(11) NOT NULL,
+  `hepatitis_id` int NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
   `vlsm_instance_id` varchar(255) DEFAULT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `sample_code_format` varchar(255) DEFAULT NULL,
   `sample_code` varchar(500) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
@@ -963,9 +984,9 @@ CREATE TABLE `form_hepatitis` (
   `external_sample_code` varchar(255) DEFAULT NULL,
   `app_sample_code` varchar(256) DEFAULT NULL,
   `hepatitis_test_type` text,
-  `test_number` int(11) DEFAULT NULL,
+  `test_number` int DEFAULT NULL,
   `remote_sample` varchar(255) NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` varchar(255) DEFAULT NULL,
   `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
@@ -974,10 +995,10 @@ CREATE TABLE `form_hepatitis` (
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_condition` varchar(255) DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `is_encrypted` varchar(10) DEFAULT 'no',
   `system_patient_code` varchar(43) DEFAULT NULL,
   `patient_id` text,
@@ -998,22 +1019,22 @@ CREATE TABLE `form_hepatitis` (
   `patient_insurance` text,
   `hbv_vaccination` text,
   `is_sample_collected` varchar(255) DEFAULT NULL,
-  `reason_for_hepatitis_test` int(11) DEFAULT NULL,
+  `reason_for_hepatitis_test` int DEFAULT NULL,
   `type_of_test_requested` text,
   `reason_for_vl_test` text,
   `specimen_type` varchar(255) DEFAULT NULL,
   `priority_status` text,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
   `lab_technician` text,
   `testing_point` varchar(255) DEFAULT NULL,
   `lab_reception_person` varchar(255) DEFAULT NULL,
   `hepatitis_test_platform` varchar(255) DEFAULT NULL,
   `instrument_id` varchar(50) DEFAULT NULL,
-  `result_status` int(11) DEFAULT NULL,
+  `result_status` int DEFAULT NULL,
   `locked` varchar(256) DEFAULT 'no',
-  `is_sample_rejected` varchar(255) DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
   `reason_for_sample_rejection` varchar(500) DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `result` text,
@@ -1051,10 +1072,10 @@ CREATE TABLE `form_hepatitis` (
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `request_created_by` text,
   `sample_registered_at_lab` datetime DEFAULT NULL,
-  `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_batch_id` int DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` text,
-  `positive_test_manifest_id` int(11) DEFAULT NULL,
+  `positive_test_manifest_id` int DEFAULT NULL,
   `positive_test_manifest_code` varchar(255) DEFAULT NULL,
   `lot_number` varchar(255) DEFAULT NULL,
   `source_of_request` text,
@@ -1066,9 +1087,8 @@ CREATE TABLE `form_hepatitis` (
   `is_result_mail_sent` varchar(255) DEFAULT 'no',
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` text,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1076,19 +1096,20 @@ CREATE TABLE `form_hepatitis` (
 -- Table structure for table `form_tb`
 --
 
+DROP TABLE IF EXISTS `form_tb`;
 CREATE TABLE `form_tb` (
-  `tb_id` int(11) NOT NULL,
+  `tb_id` int NOT NULL,
   `unique_id` varchar(500) DEFAULT NULL,
   `vlsm_instance_id` mediumtext,
-  `vlsm_country_id` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
   `sample_reordered` varchar(3) DEFAULT 'no',
-  `sample_code_key` int(11) NOT NULL,
+  `sample_code_key` int NOT NULL,
   `sample_code_format` mediumtext,
   `sample_code` varchar(500) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
   `external_sample_code` varchar(100) DEFAULT NULL,
   `remote_sample` varchar(1000) NOT NULL DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` mediumtext,
   `remote_sample_code` varchar(500) DEFAULT NULL,
   `sample_collection_date` datetime NOT NULL,
@@ -1096,12 +1117,12 @@ CREATE TABLE `form_tb` (
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `sample_tested_datetime` datetime DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
   `requesting_clinician` varchar(100) DEFAULT NULL,
   `system_patient_code` varchar(43) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `referring_unit` varchar(256) DEFAULT NULL,
   `other_referring_unit` mediumtext,
   `is_encrypted` varchar(10) DEFAULT 'no',
@@ -1123,7 +1144,7 @@ CREATE TABLE `form_tb` (
   `hiv_status` mediumtext,
   `previously_treated_for_tb` text,
   `tests_requested` json DEFAULT NULL,
-  `number_of_sputum_samples` int(11) DEFAULT NULL,
+  `number_of_sputum_samples` int DEFAULT NULL,
   `first_sputum_samples_collection_date` date DEFAULT NULL,
   `sample_requestor_name` mediumtext,
   `sample_requestor_phone` mediumtext,
@@ -1131,23 +1152,33 @@ CREATE TABLE `form_tb` (
   `specimen_type` mediumtext,
   `other_specimen_type` mediumtext,
   `reason_for_tb_test` json DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `lab_technician` mediumtext,
   `lab_reception_person` mediumtext,
-  `is_sample_rejected` varchar(1000) NOT NULL DEFAULT 'no',
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
   `reason_for_sample_rejection` mediumtext,
-  `recommended_corrective_action` int(11) DEFAULT NULL,
+  `recommended_corrective_action` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `tb_test_platform` mediumtext,
   `instrument_id` varchar(50) DEFAULT NULL,
-  `result_status` int(11) DEFAULT NULL,
+  `result_status` int DEFAULT NULL,
   `locked` varchar(256) DEFAULT 'no',
   `result` mediumtext,
   `xpert_mtb_result` mediumtext,
+  `culture_result` int DEFAULT NULL,
+  `identification_result` int DEFAULT NULL,
+  `drug_mgit_result` int DEFAULT NULL,
+  `drug_lpa_result` int DEFAULT NULL,
   `result_modified` varchar(3) DEFAULT NULL,
-  `reason_for_changing` text,
+  `reason_for_changing` text CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `tested_by` mediumtext,
   `result_date` datetime DEFAULT NULL,
+  `xpert_result_date` date DEFAULT NULL,
+  `tblam_result_date` date DEFAULT NULL,
+  `culture_result_date` date DEFAULT NULL,
+  `identification_result_date` date DEFAULT NULL,
+  `drug_mgit_result_date` date DEFAULT NULL,
+  `drug_lpa_result_date` date DEFAULT NULL,
   `lab_tech_comments` mediumtext,
   `result_reviewed_by` mediumtext,
   `result_reviewed_datetime` datetime DEFAULT NULL,
@@ -1172,52 +1203,54 @@ CREATE TABLE `form_tb` (
   `sample_registered_at_lab` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT NULL,
   `last_modified_by` mediumtext,
-  `sample_batch_id` int(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_batch_id` int DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` mediumtext,
   `source_of_request` varchar(50) DEFAULT NULL,
   `source_data_dump` mediumtext,
   `result_sent_to_source` mediumtext,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `form_vl`
 --
 
+DROP TABLE IF EXISTS `form_vl`;
 CREATE TABLE `form_vl` (
-  `vl_sample_id` int(11) NOT NULL,
+  `vl_sample_id` int NOT NULL,
   `unique_id` varchar(256) DEFAULT NULL,
   `vlsm_instance_id` varchar(100) NOT NULL,
-  `vlsm_country_id` int(11) DEFAULT NULL,
+  `vlsm_country_id` int DEFAULT NULL,
   `remote_sample_code` varchar(100) DEFAULT NULL,
   `external_sample_code` varchar(100) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
-  `province_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
+  `province_id` int DEFAULT NULL,
   `facility_sample_id` varchar(100) DEFAULT NULL,
   `sample_batch_id` varchar(11) DEFAULT NULL,
-  `sample_package_id` int(11) DEFAULT NULL,
+  `sample_package_id` int DEFAULT NULL,
   `sample_package_code` varchar(64) DEFAULT NULL,
   `sample_reordered` varchar(3) DEFAULT 'no',
-  `remote_sample_code_key` int(11) DEFAULT NULL,
+  `remote_sample_code_key` int DEFAULT NULL,
   `remote_sample_code_format` varchar(100) DEFAULT NULL,
-  `sample_code_key` int(11) DEFAULT NULL,
+  `sample_code_key` int DEFAULT NULL,
   `sample_code_format` varchar(100) DEFAULT NULL,
   `sample_code` varchar(100) DEFAULT NULL,
   `lab_assigned_code` varchar(32) DEFAULT NULL,
   `test_urgency` varchar(10) DEFAULT NULL,
-  `funding_source` int(11) DEFAULT NULL,
+  `funding_source` int DEFAULT NULL,
   `community_sample` varchar(10) DEFAULT NULL,
-  `implementing_partner` int(11) DEFAULT NULL,
+  `implementing_partner` int DEFAULT NULL,
   `system_patient_code` varchar(43) DEFAULT NULL,
   `patient_first_name` varchar(100) DEFAULT NULL,
   `patient_middle_name` varchar(100) DEFAULT NULL,
   `patient_last_name` varchar(100) DEFAULT NULL,
   `patient_responsible_person` text,
-  `patient_nationality` int(11) DEFAULT NULL,
+  `patient_nationality` int DEFAULT NULL,
   `patient_province` text,
   `patient_district` text,
   `patient_group` text,
@@ -1233,33 +1266,36 @@ CREATE TABLE `form_vl` (
   `patient_address` mediumtext,
   `sample_collection_date` datetime DEFAULT NULL,
   `sample_dispatched_datetime` datetime DEFAULT NULL,
-  `specimen_type` int(11) DEFAULT NULL,
+  `specimen_type` int DEFAULT NULL,
+  `location_of_sample_collection` varchar(20) DEFAULT NULL,
   `is_patient_new` varchar(45) DEFAULT NULL,
   `treatment_initiation` text,
-  `line_of_treatment` int(11) DEFAULT NULL,
+  `line_of_treatment` int DEFAULT NULL,
   `line_of_treatment_failure_assessed` text,
   `line_of_treatment_ref_type` text,
   `current_arv_protocol` text,
   `current_regimen` text,
   `date_of_initiation_of_current_regimen` date DEFAULT NULL,
   `is_patient_pregnant` varchar(3) DEFAULT NULL,
-  `no_of_pregnancy_weeks` int(11) DEFAULT NULL,
+  `no_of_pregnancy_weeks` int DEFAULT NULL,
   `is_patient_breastfeeding` varchar(3) DEFAULT NULL,
-  `no_of_breastfeeding_weeks` int(11) DEFAULT NULL,
+  `no_of_breastfeeding_weeks` int DEFAULT NULL,
   `patient_has_active_tb` varchar(3) DEFAULT NULL,
   `patient_active_tb_phase` text,
-  `pregnancy_trimester` int(11) DEFAULT NULL,
+  `pregnancy_trimester` int DEFAULT NULL,
   `arv_adherance_percentage` text,
   `consent_to_receive_sms` text,
   `last_vl_date_routine` date DEFAULT NULL,
   `last_vl_result_routine` text,
-  `last_vl_sample_type_routine` int(11) DEFAULT NULL,
+  `last_vl_sample_type_routine` int DEFAULT NULL,
   `last_vl_date_failure_ac` date DEFAULT NULL,
   `last_vl_result_failure_ac` text,
-  `last_vl_sample_type_failure_ac` int(11) DEFAULT NULL,
+  `last_vl_sample_type_failure_ac` int DEFAULT NULL,
   `last_vl_date_failure` date DEFAULT NULL,
   `last_vl_result_failure` text,
-  `last_vl_sample_type_failure` int(11) DEFAULT NULL,
+  `last_vl_date_recency` date DEFAULT NULL,
+  `last_vl_result_recency` text,
+  `last_vl_sample_type_failure` int DEFAULT NULL,
   `last_vl_date_ecd` date DEFAULT NULL,
   `last_vl_result_ecd` text,
   `last_vl_date_cf` date DEFAULT NULL,
@@ -1268,6 +1304,7 @@ CREATE TABLE `form_vl` (
   `last_vl_result_if` text,
   `request_clinician_name` text,
   `test_requested_on` date DEFAULT NULL,
+  `test_request_date` varchar(128) DEFAULT NULL,
   `request_clinician_phone_number` varchar(32) DEFAULT NULL,
   `cv_number` varchar(20) DEFAULT NULL,
   `sample_testing_date` datetime DEFAULT NULL,
@@ -1276,18 +1313,18 @@ CREATE TABLE `form_vl` (
   `sample_received_at_hub_datetime` datetime DEFAULT NULL,
   `sample_received_at_lab_datetime` datetime DEFAULT NULL,
   `result_dispatched_datetime` datetime DEFAULT NULL,
-  `is_sample_rejected` varchar(10) DEFAULT NULL,
-  `sample_rejection_facility` int(11) DEFAULT NULL,
-  `reason_for_sample_rejection` int(11) DEFAULT NULL,
-  `recommended_corrective_action` int(11) DEFAULT NULL,
+  `is_sample_rejected` enum('yes','no') CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
+  `sample_rejection_facility` int DEFAULT NULL,
+  `reason_for_sample_rejection` int DEFAULT NULL,
+  `recommended_corrective_action` int DEFAULT NULL,
   `rejection_on` date DEFAULT NULL,
   `request_created_by` varchar(50) DEFAULT NULL,
   `request_created_datetime` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `last_modified_by` text,
   `last_modified_datetime` datetime DEFAULT NULL,
   `patient_other_id` text,
-  `patient_age_in_years` int(11) DEFAULT NULL,
-  `patient_age_in_months` int(11) DEFAULT NULL,
+  `patient_age_in_years` int DEFAULT NULL,
+  `patient_age_in_months` int DEFAULT NULL,
   `treatment_initiated_date` date DEFAULT NULL,
   `treatment_duration` text,
   `treatment_duration_precise` varchar(50) DEFAULT NULL,
@@ -1302,10 +1339,10 @@ CREATE TABLE `form_vl` (
   `sample_visit_type` varchar(45) DEFAULT NULL,
   `vl_sample_suspected_treatment_failure_at` text,
   `lab_name` text,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `samples_referred_datetime` datetime DEFAULT NULL,
-  `referring_lab_id` int(11) DEFAULT NULL,
-  `lab_code` int(11) DEFAULT NULL,
+  `referring_lab_id` int DEFAULT NULL,
+  `lab_code` int DEFAULT NULL,
   `lab_technician` text,
   `lab_contact_person` text,
   `lab_phone_number` text,
@@ -1334,7 +1371,7 @@ CREATE TABLE `form_vl` (
   `last_viral_load_date` date DEFAULT NULL,
   `last_viral_load_result` text,
   `last_vl_result_in_log` text,
-  `reason_for_vl_testing` int(11) DEFAULT NULL,
+  `reason_for_vl_testing` int DEFAULT NULL,
   `reason_for_vl_testing_other` text,
   `control_vl_testing_type` text,
   `coinfection_type` text,
@@ -1345,7 +1382,7 @@ CREATE TABLE `form_vl` (
   `instrument_id` varchar(50) DEFAULT NULL,
   `result_value_hiv_detection` varchar(32) DEFAULT NULL,
   `cphl_vl_result` varchar(32) DEFAULT NULL,
-  `import_machine_name` int(11) DEFAULT NULL,
+  `import_machine_name` int DEFAULT NULL,
   `facility_support_partner` text,
   `has_patient_changed_regimen` varchar(45) DEFAULT NULL,
   `reason_for_regimen_change` text,
@@ -1366,25 +1403,27 @@ CREATE TABLE `form_vl` (
   `app_sample_code` varchar(100) DEFAULT NULL,
   `result_mail_datetime` datetime DEFAULT NULL,
   `is_result_sms_sent` varchar(3) DEFAULT 'no',
-  `test_request_export` int(11) NOT NULL DEFAULT '0',
-  `test_request_import` int(11) NOT NULL DEFAULT '0',
-  `test_result_export` int(11) NOT NULL DEFAULT '0',
-  `test_result_import` int(11) NOT NULL DEFAULT '0',
+  `test_request_export` int NOT NULL DEFAULT '0',
+  `test_request_import` int NOT NULL DEFAULT '0',
+  `test_result_export` int NOT NULL DEFAULT '0',
+  `test_result_import` int NOT NULL DEFAULT '0',
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `result_status` int(11) NOT NULL,
+  `result_status` int NOT NULL,
   `locked` varchar(10) DEFAULT 'no',
   `import_machine_file_name` text,
   `manual_result_entry` varchar(10) DEFAULT NULL,
   `first_line` varchar(32) DEFAULT NULL,
   `second_line` varchar(32) DEFAULT NULL,
   `vl_result_category` varchar(20) DEFAULT NULL,
-  `vldash_sync` int(11) DEFAULT '0',
+  `vldash_sync` int DEFAULT '0',
   `source_of_request` text,
   `source_data_dump` text,
   `result_sent_to_source` varchar(10) DEFAULT 'pending',
+  `result_sent_to_external` text,
+  `result_sent_to_external_datetime` text,
   `result_sent_to_source_datetime` datetime DEFAULT NULL,
   `form_attributes` json DEFAULT NULL,
   `source` varchar(100) DEFAULT 'manual',
@@ -1409,34 +1448,36 @@ CREATE TABLE `form_vl` (
   `failed_test_date` datetime DEFAULT NULL,
   `failed_test_tech` varchar(100) DEFAULT NULL,
   `failed_vl_result` varchar(32) DEFAULT NULL,
-  `reason_for_failure` int(11) DEFAULT NULL,
+  `reason_for_failure` int DEFAULT NULL,
   `failed_batch_quality` varchar(32) DEFAULT NULL,
   `failed_sample_test_quality` varchar(32) DEFAULT NULL,
   `failed_batch_id` varchar(32) DEFAULT NULL,
   `clinic_date` date DEFAULT NULL,
   `report_date` date DEFAULT NULL,
   `sample_to_transport` text,
-  `requesting_facility_id` int(11) DEFAULT NULL,
+  `requesting_facility_id` int DEFAULT NULL,
   `requesting_person` text,
   `requesting_phone` text,
   `requesting_date` date DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0',
+  `data_sync` int NOT NULL DEFAULT '0',
   `remote_sample` varchar(10) NOT NULL DEFAULT 'no',
-  `recency_vl` varchar(10) NOT NULL DEFAULT 'no',
-  `recency_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `recency_vl` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT 'no',
+  `recency_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+-- --------------------------------------------------------
 
 --
 -- Table structure for table `generic_sample_rejection_reason_map`
 --
 
+DROP TABLE IF EXISTS `generic_sample_rejection_reason_map`;
 CREATE TABLE `generic_sample_rejection_reason_map` (
-  `map_id` int(11) NOT NULL,
-  `rejection_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `rejection_reason_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1444,12 +1485,13 @@ CREATE TABLE `generic_sample_rejection_reason_map` (
 -- Table structure for table `generic_test_failure_reason_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_failure_reason_map`;
 CREATE TABLE `generic_test_failure_reason_map` (
-  `map_id` int(11) NOT NULL,
-  `test_failure_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `test_failure_reason_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1457,12 +1499,13 @@ CREATE TABLE `generic_test_failure_reason_map` (
 -- Table structure for table `generic_test_methods_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_methods_map`;
 CREATE TABLE `generic_test_methods_map` (
-  `map_id` int(11) NOT NULL,
-  `test_method_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `test_method_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1470,12 +1513,13 @@ CREATE TABLE `generic_test_methods_map` (
 -- Table structure for table `generic_test_reason_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_reason_map`;
 CREATE TABLE `generic_test_reason_map` (
-  `map_id` int(11) NOT NULL,
-  `test_reason_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `test_reason_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1483,10 +1527,11 @@ CREATE TABLE `generic_test_reason_map` (
 -- Table structure for table `generic_test_results`
 --
 
+DROP TABLE IF EXISTS `generic_test_results`;
 CREATE TABLE `generic_test_results` (
-  `test_id` int(11) NOT NULL,
-  `generic_id` int(11) NOT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `test_id` int NOT NULL,
+  `generic_id` int NOT NULL,
+  `facility_id` int DEFAULT NULL,
   `sub_test_name` varchar(256) DEFAULT NULL,
   `final_result_unit` varchar(256) DEFAULT NULL,
   `result_type` varchar(256) DEFAULT NULL,
@@ -1498,10 +1543,10 @@ CREATE TABLE `generic_test_results` (
   `kit_expiry_date` date DEFAULT NULL,
   `result` varchar(500) NOT NULL,
   `final_result` varchar(256) DEFAULT NULL,
-  `result_unit` int(11) DEFAULT NULL,
+  `result_unit` int DEFAULT NULL,
   `final_result_interpretation` text,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1509,12 +1554,13 @@ CREATE TABLE `generic_test_results` (
 -- Table structure for table `generic_test_result_units_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_result_units_map`;
 CREATE TABLE `generic_test_result_units_map` (
-  `map_id` int(11) NOT NULL,
-  `unit_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `unit_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1522,12 +1568,13 @@ CREATE TABLE `generic_test_result_units_map` (
 -- Table structure for table `generic_test_sample_type_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_sample_type_map`;
 CREATE TABLE `generic_test_sample_type_map` (
-  `map_id` int(11) NOT NULL,
-  `sample_type_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `sample_type_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1535,12 +1582,13 @@ CREATE TABLE `generic_test_sample_type_map` (
 -- Table structure for table `generic_test_symptoms_map`
 --
 
+DROP TABLE IF EXISTS `generic_test_symptoms_map`;
 CREATE TABLE `generic_test_symptoms_map` (
-  `map_id` int(11) NOT NULL,
-  `symptom_id` int(11) NOT NULL,
-  `test_type_id` int(11) NOT NULL,
+  `map_id` int NOT NULL,
+  `symptom_id` int NOT NULL,
+  `test_type_id` int NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1548,8 +1596,9 @@ CREATE TABLE `generic_test_symptoms_map` (
 -- Table structure for table `geographical_divisions`
 --
 
+DROP TABLE IF EXISTS `geographical_divisions`;
 CREATE TABLE `geographical_divisions` (
-  `geo_id` int(11) NOT NULL,
+  `geo_id` int NOT NULL,
   `geo_name` varchar(256) DEFAULT NULL,
   `geo_code` varchar(256) DEFAULT NULL,
   `geo_parent` varchar(256) NOT NULL DEFAULT '0',
@@ -1557,8 +1606,8 @@ CREATE TABLE `geographical_divisions` (
   `created_by` varchar(256) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1566,6 +1615,7 @@ CREATE TABLE `geographical_divisions` (
 -- Table structure for table `global_config`
 --
 
+DROP TABLE IF EXISTS `global_config`;
 CREATE TABLE `global_config` (
   `display_name` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -1576,7 +1626,7 @@ CREATE TABLE `global_config` (
   `updated_datetime` datetime DEFAULT NULL,
   `updated_by` mediumtext,
   `status` varchar(255) NOT NULL DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `global_config`
@@ -1586,8 +1636,8 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 ('App Locale/Language', 'app_locale', 'en_EN', NULL, 'common', 'no', NULL, NULL, 'active'),
 ('App Menu Name', 'app_menu_name', 'VLSM', NULL, 'app', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Auto Approval', 'auto_approval', 'yes', NULL, 'general', 'no', '2022-02-18 16:28:05', NULL, 'inactive'),
-('Barcode Format', 'barcode_format', 'C39', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Barcode Printing', 'bar_code_printing', 'off', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
+('Barcode Format', 'barcode_format', 'C39', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Batch Pdf Layout', 'batch_pdf_layout', 'standard', NULL, 'general', 'no', NULL, NULL, 'active'),
 ('Copy Request On Save and Next Form', 'cd4_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'cd4', 'yes', NULL, NULL, 'active'),
 ('Minimum Patient ID Length', 'cd4_min_patient_id_length', '', NULL, 'cd4', 'no', '2024-02-21 15:13:51', '456456amit2w343ersd3456t4yrgdfsew2', 'active'),
@@ -1627,6 +1677,7 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 ('Lab Tests Show Participant Name in Manifest', 'generic_show_participant_name_in_manifest', NULL, NULL, 'generic-tests', 'yes', '2021-11-02 17:48:32', NULL, 'active'),
 ('Other Tests Table in Results Pdf', 'generic_tests_table_in_results_pdf', 'no', NULL, 'generic-tests', 'yes', '2024-03-26 20:15:07', NULL, 'active'),
 ('Date Format', 'gui_date_format', 'd-M-Y', NULL, 'general', 'no', NULL, NULL, 'active'),
+('Result PDF High Viral Load Message', 'h_vl_msg', '', NULL, 'vl', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Header', 'header', 'MINISTRY OF HEALTH', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Copy Request On Save and Next Form', 'hepatitis_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'hepatitis', 'yes', NULL, NULL, 'active'),
 ('Minimum Patient ID Length', 'hepatitis_min_patient_id_length', NULL, NULL, 'hepatitis', 'no', NULL, NULL, 'active'),
@@ -1634,17 +1685,16 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 ('Hepatitis Sample Code Format', 'hepatitis_sample_code', 'MMYY', NULL, 'hepatitis', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Hepatitis Sample Code Prefix', 'hepatitis_sample_code_prefix', 'HEP', NULL, 'hepatitis', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Show Participant Name in Manifest', 'hepatitis_show_participant_name_in_manifest', 'yes', NULL, 'HEPATITIS', 'no', NULL, NULL, 'active'),
-('Result PDF High Viral Load Message', 'h_vl_msg', '', NULL, 'vl', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Import Non matching Sample Results from Machine generated file', 'import_non_matching_sample', 'yes', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Instance Type ', 'instance_type', 'Both', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Key', 'key', NULL, NULL, 'general', 'yes', NULL, NULL, 'active'),
+('Result PDF Low Viral Load Message', 'l_vl_msg', '', NULL, 'vl', 'yes', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Lock Approved Covid-19 Samples', 'lock_approved_covid19_samples', 'no', NULL, 'covid19', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Lock Approved EID Samples', 'lock_approved_eid_samples', 'no', NULL, 'eid', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Lock Approved TB Samples', 'lock_approved_tb_samples', 'no', NULL, 'tb', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Lock approved VL Samples', 'lock_approved_vl_samples', 'no', NULL, 'vl', 'no', '2022-02-18 16:28:05', NULL, 'active'),
 ('Logo', 'logo', NULL, NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Low Viral Load (text results)', 'low_vl_text_results', 'Target Not Detected, TND, < 20, < 40', NULL, 'vl', 'yes', '2022-02-18 16:28:05', NULL, 'active'),
-('Result PDF Low Viral Load Message', 'l_vl_msg', '', NULL, 'vl', 'yes', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Manager Email', 'manager_email', '', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Maximum Length', 'max_length', '', NULL, 'vl', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Maximum Length of Phone Number', 'max_phone_length', NULL, NULL, 'general', 'no', NULL, NULL, 'active'),
@@ -1671,7 +1721,6 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 ('Training Mode Text', 'training_mode_text', 'TRAINING SERVER', NULL, 'common', 'no', '2023-10-16 17:03:43', NULL, 'active'),
 ('Same user can Review and Approve', 'user_review_approve', 'yes', NULL, 'general', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('Viral Load Threshold Limit', 'viral_load_threshold_limit', '1000', NULL, 'vl', 'no', '2022-02-18 16:28:05', 'daemon', 'active'),
-('Vldashboard Url', 'vldashboard_url', NULL, NULL, 'general', 'yes', '2022-02-18 16:28:05', 'daemon', 'active'),
 ('VL Auto Approve API Results', 'vl_auto_approve_api_results', 'no', NULL, 'vl', 'no', NULL, NULL, 'active'),
 ('Copy Request On Save and Next Form', 'vl_copy_request_save_and_next', 'no', '2ef06893-f8ab-4c72-8946-3ad6c8bd36d1-mq6t', 'vl', 'yes', NULL, NULL, 'active'),
 ('Display VL Log Result', 'vl_display_log_result', 'yes', NULL, 'vl', 'no', NULL, NULL, 'active'),
@@ -1684,7 +1733,8 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 ('Minimum Patient ID Length', 'vl_min_patient_id_length', NULL, NULL, 'vl', 'no', NULL, NULL, 'active'),
 ('VL Monthly Target', 'vl_monthly_target', 'no', NULL, 'vl', 'no', '2022-02-18 16:28:05', '', 'active'),
 ('VL Report QR Code', 'vl_report_qr_code', 'yes', NULL, 'vl', 'no', NULL, NULL, 'active'),
-('Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', NULL, 'VL', 'no', NULL, NULL, 'active');
+('Show Participant Name in Manifest', 'vl_show_participant_name_in_manifest', 'yes', NULL, 'VL', 'no', NULL, NULL, 'active'),
+('Vldashboard Url', 'vldashboard_url', NULL, NULL, 'general', 'yes', '2022-02-18 16:28:05', 'daemon', 'active');
 
 -- --------------------------------------------------------
 
@@ -1692,11 +1742,12 @@ INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `ca
 -- Table structure for table `health_facilities`
 --
 
+DROP TABLE IF EXISTS `health_facilities`;
 CREATE TABLE `health_facilities` (
-  `test_type` varchar(24) NOT NULL,
-  `facility_id` int(11) NOT NULL,
+  `test_type` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `facility_id` int NOT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1704,11 +1755,12 @@ CREATE TABLE `health_facilities` (
 -- Table structure for table `hepatitis_patient_comorbidities`
 --
 
+DROP TABLE IF EXISTS `hepatitis_patient_comorbidities`;
 CREATE TABLE `hepatitis_patient_comorbidities` (
-  `hepatitis_id` int(11) NOT NULL,
-  `comorbidity_id` int(11) NOT NULL,
+  `hepatitis_id` int NOT NULL,
+  `comorbidity_id` int NOT NULL,
   `comorbidity_detected` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1716,11 +1768,12 @@ CREATE TABLE `hepatitis_patient_comorbidities` (
 -- Table structure for table `hepatitis_risk_factors`
 --
 
+DROP TABLE IF EXISTS `hepatitis_risk_factors`;
 CREATE TABLE `hepatitis_risk_factors` (
-  `hepatitis_id` int(11) NOT NULL,
-  `riskfactors_id` int(11) NOT NULL,
+  `hepatitis_id` int NOT NULL,
+  `riskfactors_id` int NOT NULL,
   `riskfactors_detected` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1728,11 +1781,12 @@ CREATE TABLE `hepatitis_risk_factors` (
 -- Table structure for table `hold_sample_import`
 --
 
+DROP TABLE IF EXISTS `hold_sample_import`;
 CREATE TABLE `hold_sample_import` (
-  `hold_sample_id` int(11) NOT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `hold_sample_id` int NOT NULL,
+  `facility_id` int DEFAULT NULL,
   `lab_name` varchar(255) DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `lab_contact_person` varchar(255) DEFAULT NULL,
   `lab_phone_number` varchar(255) DEFAULT NULL,
   `sample_received_at_vl_lab_datetime` varchar(255) DEFAULT NULL,
@@ -1755,12 +1809,13 @@ CREATE TABLE `hold_sample_import` (
   `result` varchar(255) DEFAULT NULL,
   `sample_details` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
-  `import_batch_tracking` int(11) DEFAULT NULL,
+  `import_batch_tracking` int DEFAULT NULL,
   `vl_test_platform` varchar(255) DEFAULT NULL,
-  `import_machine_name` int(11) DEFAULT NULL,
+  `instrument_id` varchar(128) DEFAULT NULL,
+  `import_machine_name` int DEFAULT NULL,
   `import_machine_file_name` varchar(255) DEFAULT NULL,
   `manual_result_entry` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1768,25 +1823,26 @@ CREATE TABLE `hold_sample_import` (
 -- Table structure for table `instruments`
 --
 
+DROP TABLE IF EXISTS `instruments`;
 CREATE TABLE `instruments` (
   `instrument_id` varchar(50) NOT NULL,
   `machine_name` varchar(255) DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `supported_tests` json DEFAULT NULL,
   `import_machine_file_name` varchar(255) DEFAULT NULL,
-  `lower_limit` int(11) DEFAULT NULL,
-  `higher_limit` int(11) DEFAULT NULL,
-  `max_no_of_samples_in_a_batch` int(11) NOT NULL,
-  `number_of_in_house_controls` int(11) DEFAULT NULL,
-  `number_of_manufacturer_controls` int(11) DEFAULT NULL,
-  `number_of_calibrators` int(11) DEFAULT NULL,
+  `lower_limit` int DEFAULT NULL,
+  `higher_limit` int DEFAULT NULL,
+  `max_no_of_samples_in_a_batch` int NOT NULL,
+  `number_of_in_house_controls` int DEFAULT NULL,
+  `number_of_manufacturer_controls` int DEFAULT NULL,
+  `number_of_calibrators` int DEFAULT NULL,
   `low_vl_result_text` mediumtext,
-  `additional_text` longtext,
+  `additional_text` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci,
   `approved_by` json DEFAULT NULL,
   `reviewed_by` json DEFAULT NULL,
   `status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1794,14 +1850,15 @@ CREATE TABLE `instruments` (
 -- Table structure for table `instrument_controls`
 --
 
+DROP TABLE IF EXISTS `instrument_controls`;
 CREATE TABLE `instrument_controls` (
   `test_type` varchar(255) NOT NULL,
   `instrument_id` varchar(50) NOT NULL,
-  `number_of_in_house_controls` int(11) DEFAULT NULL,
-  `number_of_manufacturer_controls` int(11) DEFAULT NULL,
-  `number_of_calibrators` int(11) DEFAULT NULL,
+  `number_of_in_house_controls` int DEFAULT NULL,
+  `number_of_manufacturer_controls` int DEFAULT NULL,
+  `number_of_calibrators` int DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1809,8 +1866,9 @@ CREATE TABLE `instrument_controls` (
 -- Table structure for table `instrument_machines`
 --
 
+DROP TABLE IF EXISTS `instrument_machines`;
 CREATE TABLE `instrument_machines` (
-  `config_machine_id` int(11) NOT NULL,
+  `config_machine_id` int NOT NULL,
   `instrument_id` varchar(50) NOT NULL,
   `config_machine_name` varchar(255) NOT NULL,
   `date_format` text,
@@ -1819,7 +1877,7 @@ CREATE TABLE `instrument_machines` (
   `latitude` varchar(255) DEFAULT NULL,
   `longitude` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1827,18 +1885,19 @@ CREATE TABLE `instrument_machines` (
 -- Table structure for table `lab_report_signatories`
 --
 
+DROP TABLE IF EXISTS `lab_report_signatories`;
 CREATE TABLE `lab_report_signatories` (
-  `signatory_id` int(11) NOT NULL,
+  `signatory_id` int NOT NULL,
   `name_of_signatory` varchar(255) DEFAULT NULL,
   `designation` varchar(255) DEFAULT NULL,
   `signature` varchar(255) DEFAULT NULL,
   `test_types` varchar(255) DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `display_order` varchar(50) DEFAULT NULL,
   `added_on` datetime DEFAULT NULL,
   `added_by` varchar(255) DEFAULT NULL,
   `signatory_status` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1846,14 +1905,15 @@ CREATE TABLE `lab_report_signatories` (
 -- Table structure for table `lab_storage`
 --
 
+DROP TABLE IF EXISTS `lab_storage`;
 CREATE TABLE `lab_storage` (
-  `storage_id` char(50) NOT NULL,
+  `storage_id` char(50) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
   `storage_code` varchar(255) NOT NULL,
-  `lab_id` int(11) NOT NULL,
-  `lab_storage_status` varchar(10) NOT NULL DEFAULT 'active',
+  `lab_id` int NOT NULL,
+  `storage_status` varchar(10) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1861,22 +1921,23 @@ CREATE TABLE `lab_storage` (
 -- Table structure for table `lab_storage_history`
 --
 
+DROP TABLE IF EXISTS `lab_storage_history`;
 CREATE TABLE `lab_storage_history` (
-  `history_id` int(11) NOT NULL,
+  `history_id` int NOT NULL,
   `test_type` varchar(20) NOT NULL,
   `sample_unique_id` varchar(256) NOT NULL,
   `volume` decimal(10,2) NOT NULL,
   `freezer_id` char(50) NOT NULL,
-  `rack` int(11) NOT NULL,
-  `box` int(11) NOT NULL,
-  `position` int(11) NOT NULL,
+  `rack` int NOT NULL,
+  `box` int NOT NULL,
+  `position` int NOT NULL,
   `sample_status` varchar(50) NOT NULL,
   `date_out` date DEFAULT NULL,
   `comments` text,
-  `sample_removal_reason` int(11) DEFAULT NULL,
+  `sample_removal_reason` int DEFAULT NULL,
   `updated_datetime` timestamp NOT NULL,
   `updated_by` varchar(100) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1884,15 +1945,16 @@ CREATE TABLE `lab_storage_history` (
 -- Table structure for table `log_result_updates`
 --
 
+DROP TABLE IF EXISTS `log_result_updates`;
 CREATE TABLE `log_result_updates` (
-  `result_log_id` int(11) NOT NULL,
+  `result_log_id` int NOT NULL,
   `user_id` text,
-  `vl_sample_id` int(11) NOT NULL,
+  `vl_sample_id` int NOT NULL,
   `test_type` varchar(244) DEFAULT NULL COMMENT 'vl, eid, covid19, hepatitis, tb',
   `result_method` varchar(256) DEFAULT NULL,
   `file_name` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1900,17 +1962,18 @@ CREATE TABLE `log_result_updates` (
 -- Table structure for table `move_samples`
 --
 
+DROP TABLE IF EXISTS `move_samples`;
 CREATE TABLE `move_samples` (
-  `move_sample_id` int(11) NOT NULL,
-  `moved_from_lab_id` int(11) NOT NULL,
-  `moved_to_lab_id` int(11) NOT NULL,
+  `move_sample_id` int NOT NULL,
+  `moved_from_lab_id` int NOT NULL,
+  `moved_to_lab_id` int NOT NULL,
   `test_type` varchar(256) DEFAULT NULL,
   `moved_on` date DEFAULT NULL,
   `moved_by` varchar(255) DEFAULT NULL,
   `reason_for_moving` mediumtext,
   `move_approved_by` varchar(255) DEFAULT NULL,
   `list_request_created_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1918,13 +1981,14 @@ CREATE TABLE `move_samples` (
 -- Table structure for table `move_samples_map`
 --
 
+DROP TABLE IF EXISTS `move_samples_map`;
 CREATE TABLE `move_samples_map` (
-  `sample_map_id` int(11) NOT NULL,
-  `move_sample_id` int(11) NOT NULL,
-  `test_type_sample_id` int(11) DEFAULT NULL,
+  `sample_map_id` int NOT NULL,
+  `move_sample_id` int NOT NULL,
+  `test_type_sample_id` int DEFAULT NULL,
   `test_type` varchar(256) DEFAULT NULL,
   `move_sync_status` varchar(255) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1932,12 +1996,13 @@ CREATE TABLE `move_samples_map` (
 -- Table structure for table `other_config`
 --
 
+DROP TABLE IF EXISTS `other_config`;
 CREATE TABLE `other_config` (
   `type` varchar(45) DEFAULT NULL,
   `display_name` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `value` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `other_config`
@@ -1957,17 +2022,20 @@ INSERT INTO `other_config` (`type`, `display_name`, `name`, `value`) VALUES
 -- Table structure for table `package_details`
 --
 
+DROP TABLE IF EXISTS `package_details`;
 CREATE TABLE `package_details` (
-  `package_id` int(11) NOT NULL,
+  `package_id` int NOT NULL,
   `package_code` varchar(255) NOT NULL,
   `added_by` varchar(255) NOT NULL,
   `package_status` varchar(255) DEFAULT NULL,
   `module` varchar(255) DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
-  `number_of_samples` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
+  `number_of_samples` int DEFAULT NULL,
+  `manifest_change_history` json DEFAULT NULL,
+  `manifest_print_history` json DEFAULT NULL,
   `request_created_datetime` datetime DEFAULT NULL,
   `last_modified_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -1975,31 +2043,32 @@ CREATE TABLE `package_details` (
 -- Table structure for table `patients`
 --
 
+DROP TABLE IF EXISTS `patients`;
 CREATE TABLE `patients` (
   `system_patient_code` varchar(43) NOT NULL,
   `is_encrypted` varchar(10) DEFAULT NULL,
   `patient_code_prefix` varchar(256) DEFAULT NULL,
-  `patient_code_key` int(11) DEFAULT NULL,
+  `patient_code_key` int DEFAULT NULL,
   `patient_code` varchar(256) DEFAULT NULL,
   `patient_first_name` text,
   `patient_middle_name` text,
   `patient_last_name` text,
   `patient_gender` varchar(256) DEFAULT NULL,
   `patient_phone_number` varchar(50) DEFAULT NULL,
-  `patient_age_in_years` int(11) DEFAULT NULL,
-  `patient_age_in_months` int(11) DEFAULT NULL,
+  `patient_age_in_years` int DEFAULT NULL,
+  `patient_age_in_months` int DEFAULT NULL,
   `patient_dob` date DEFAULT NULL,
   `patient_address` text,
   `is_patient_pregnant` varchar(10) DEFAULT NULL,
   `is_patient_breastfeeding` varchar(10) DEFAULT NULL,
-  `patient_province` int(11) DEFAULT NULL,
-  `patient_district` int(11) DEFAULT NULL,
+  `patient_province` int DEFAULT NULL,
+  `patient_district` int DEFAULT NULL,
   `status` varchar(11) DEFAULT NULL,
   `patient_registered_on` datetime DEFAULT NULL,
   `patient_registered_by` text,
-  `data_sync` int(11) DEFAULT '0',
+  `data_sync` int DEFAULT '0',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2007,30 +2076,31 @@ CREATE TABLE `patients` (
 -- Table structure for table `patients_old`
 --
 
+DROP TABLE IF EXISTS `patients_old`;
 CREATE TABLE `patients_old` (
   `system_patient_code` varchar(43) NOT NULL,
   `is_encrypted` varchar(10) DEFAULT NULL,
   `patient_code_prefix` varchar(256) DEFAULT NULL,
-  `patient_code_key` int(11) DEFAULT NULL,
+  `patient_code_key` int DEFAULT NULL,
   `patient_code` varchar(256) DEFAULT NULL,
   `patient_first_name` text,
   `patient_middle_name` text,
   `patient_last_name` text,
   `patient_gender` varchar(256) DEFAULT NULL,
   `patient_phone_number` varchar(50) DEFAULT NULL,
-  `patient_age_in_years` int(11) DEFAULT NULL,
-  `patient_age_in_months` int(11) DEFAULT NULL,
+  `patient_age_in_years` int DEFAULT NULL,
+  `patient_age_in_months` int DEFAULT NULL,
   `patient_dob` date DEFAULT NULL,
   `patient_address` text,
   `is_patient_pregnant` varchar(10) DEFAULT NULL,
   `is_patient_breastfeeding` varchar(10) DEFAULT NULL,
-  `patient_province` int(11) DEFAULT NULL,
-  `patient_district` int(11) DEFAULT NULL,
+  `patient_province` int DEFAULT NULL,
+  `patient_district` int DEFAULT NULL,
   `status` varchar(11) DEFAULT NULL,
   `patient_registered_on` datetime DEFAULT NULL,
   `patient_registered_by` text,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2038,15 +2108,16 @@ CREATE TABLE `patients_old` (
 -- Table structure for table `privileges`
 --
 
+DROP TABLE IF EXISTS `privileges`;
 CREATE TABLE `privileges` (
-  `privilege_id` int(11) NOT NULL,
+  `privilege_id` int NOT NULL,
   `resource_id` varchar(255) NOT NULL,
   `privilege_name` varchar(255) DEFAULT NULL,
   `shared_privileges` json DEFAULT NULL,
   `display_name` varchar(255) DEFAULT NULL,
-  `display_order` int(11) DEFAULT NULL,
+  `display_order` int DEFAULT NULL,
   `show_mode` varchar(32) DEFAULT 'always'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `privileges`
@@ -2057,7 +2128,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (2, 'users', '/users/addUser.php', NULL, 'Add', NULL, 'always'),
 (3, 'users', '/users/editUser.php', NULL, 'Edit', NULL, 'always'),
 (4, 'facilities', '/facilities/facilities.php', NULL, 'Access', NULL, 'always'),
-(5, 'facilities', '/facilities/addFacility.php', '[\"/facilities/mapTestType.php\", \"/facilities/facilityMap.php\", \"/facilities/upload-facilities.php\"]', 'Add', NULL, 'always'),
+(5, 'facilities', '/facilities/addFacility.php', '[\"/facilities/mapTestType.php\", \"/facilities/upload-facilities.php\"]', 'Add', NULL, 'always'),
 (6, 'facilities', '/facilities/editFacility.php', NULL, 'Edit', NULL, 'always'),
 (8, 'global-config', '/global-config/editGlobalConfig.php', NULL, 'Edit', NULL, 'always'),
 (9, 'instruments', '/instruments/instruments.php', NULL, 'Access', 1, 'always'),
@@ -2066,10 +2137,10 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (12, 'vl-requests', '/vl/requests/vl-requests.php', '[\"/vl/requests/upload-storage.php\", \"/vl/requests/sample-storage.php\"]', 'View', 1, 'always'),
 (13, 'vl-requests', '/vl/requests/addVlRequest.php', NULL, 'Add', 2, 'always'),
 (14, 'vl-requests', '/vl/requests/editVlRequest.php', NULL, 'Edit', 3, 'always'),
-(16, 'vl-batch', '/batch/batches.php?type=vl', '[\"/batch/generate-batch-pdf.php?type=vl\"]', 'Access', 1, 'always'),
+(16, 'vl-batch', '/batch/batches.php?type=vl', '[\"/batch/generate-batch-pdf.php?type=vl\", \"/batch/generate-compact-batch-pdf.php?type=vl\"]', 'Access', 1, 'always'),
 (17, 'vl-batch', '/batch/add-batch.php?type=vl', '[\"/batch/add-batch-position.php?type=vl\"]', 'Add', 2, 'always'),
 (18, 'vl-batch', '/batch/edit-batch.php?type=vl', '[\"/batch/delete-batch.php?type=vl\", \"/batch/edit-batch-position.php?type=vl\"]', 'Edit', 3, 'always'),
-(20, 'vl-results', '/vl/results/vlPrintResult.php', NULL, 'Print Result PDF', NULL, 'always'),
+(20, 'vl-results', '/vl/results/vl-print-results.php', NULL, 'Print Result PDF', NULL, 'always'),
 (21, 'vl-results', '/vl/results/vlTestResult.php', '[\"/vl/results/updateVlTestResult.php\", \"/vl/results/vl-failed-results.php\"]', 'Enter Result Manually', NULL, 'always'),
 (22, 'vl-reports', '/vl/program-management/vl-sample-status.php', NULL, 'Sample Status Report', NULL, 'always'),
 (23, 'vl-reports', '/vl/program-management/vl-export-data.php', NULL, 'Export VL Data', NULL, 'always'),
@@ -2095,7 +2166,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (74, 'eid-requests', '/eid/requests/eid-add-request.php', '[\"/eid/requests/eid-bulk-import-request.php\"]', 'Add', 2, 'always'),
 (75, 'eid-requests', '/eid/requests/eid-edit-request.php', NULL, 'Edit', 3, 'always'),
 (76, 'eid-requests', '/eid/requests/eid-requests.php', NULL, 'View', 1, 'always'),
-(77, 'eid-batches', '/batch/batches.php?type=eid', '[\"/batch/generate-batch-pdf.php?type=eid\"]', 'View Batches', 1, 'always'),
+(77, 'eid-batches', '/batch/batches.php?type=eid', '[\"/batch/generate-batch-pdf.php?type=eid\", \"/batch/generate-compact-batch-pdf.php?type=eid\"]', 'View Batches', 1, 'always'),
 (78, 'eid-batches', '/batch/add-batch.php?type=eid', '[\"/batch/add-batch-position.php?type=eid\"]', 'Add Batch', 2, 'always'),
 (79, 'eid-batches', '/batch/edit-batch.php?type=eid', '[\"/batch/delete-batch.php?type=eid\", \"/batch/edit-batch-position.php?type=eid\"]', 'Edit Batch', 3, 'always'),
 (80, 'eid-results', '/eid/results/eid-manual-results.php', '[\"/eid/results/eid-update-result.php\", \"/eid/results/eid-failed-results.php\"]', 'Enter Result Manually', NULL, 'always'),
@@ -2111,7 +2182,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (97, 'covid-19-requests', '/covid-19/requests/covid-19-requests.php', NULL, 'View', 1, 'always'),
 (98, 'covid-19-results', '/covid-19/results/covid-19-result-status.php', NULL, 'Manage Result Status', NULL, 'always'),
 (99, 'covid-19-results', '/covid-19/results/covid-19-print-results.php', '[\"/covid-19/mail/mail-covid-19-results.php\", \"/covid-19/mail/covid-19-result-mail-confirm.php\"]', 'Print Results', NULL, 'always'),
-(100, 'covid-19-batches', '/batch/batches.php?type=covid19', '[\"/batch/generate-batch-pdf.php?type=covid19\"]', 'View Batches', 1, 'always'),
+(100, 'covid-19-batches', '/batch/batches.php?type=covid19', '[\"/batch/generate-batch-pdf.php?type=covid19\", \"/batch/generate-compact-batch-pdf.php?type=covid19\"]', 'View Batches', 1, 'always'),
 (101, 'covid-19-batches', '/batch/add-batch.php?type=covid19', '[\"/batch/add-batch-position.php?type=covid19\"]', 'Add Batch', 2, 'always'),
 (102, 'covid-19-batches', '/batch/edit-batch.php?type=covid19', '[\"/batch/delete-batch.php?type=covid19\", \"/batch/edit-batch-position.php?type=covid19\"]', 'Edit Batch', 3, 'always'),
 (103, 'covid-19-results', '/covid-19/results/covid-19-manual-results.php', '[\"/covid-19/results/covid-19-update-result.php\", \"/covid-19/results/covid-19-failed-results.php\"]', 'Enter Result Manually', NULL, 'always'),
@@ -2150,7 +2221,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (166, 'hepatitis-results', '/hepatitis/results/hepatitis-result-status.php', NULL, 'Manage Result Status', NULL, 'always'),
 (167, 'hepatitis-reference', '/hepatitis/reference/hepatitis-sample-type.php', '[\"/hepatitis/reference/hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php\", \"/hepatitis/reference/hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-comorbidities.php\", \"/hepatitis/reference/add-hepatitis-sample-type.php\", \"/hepatitis/reference/hepatitis-results.php\", \"/hepatitis/reference/add-hepatitis-results.php\", \"/hepatitis/reference/hepatitis-risk-factors.php\", \"/hepatitis/reference/add-hepatitis-risk-factors.php\", \"/hepatitis/reference/hepatitis-test-reasons.php\", \"/hepatitis/reference/add-hepatitis-test-reasons.php\"]', 'Manage Hepatitis Reference', NULL, 'always'),
 (168, 'vl-reports', '/vl/program-management/vlSuppressedTargetReport.php', NULL, 'Suppressed Target report', NULL, 'always'),
-(169, 'hepatitis-batches', '/batch/batches.php?type=hepatitis', '[\"/batch/generate-batch-pdf.php?type=hepatitis\"]', 'View Batches', 1, 'always'),
+(169, 'hepatitis-batches', '/batch/batches.php?type=hepatitis', '[\"/batch/generate-batch-pdf.php?type=hepatitis\", \"/batch/generate-compact-batch-pdf.php?type=hepatitis\"]', 'View Batches', 1, 'always'),
 (170, 'hepatitis-batches', '/batch/add-batch.php?type=hepatitis', '[\"/batch/add-batch-position.php?type=hepatitis\"]', 'Add Batch', 2, 'always'),
 (171, 'hepatitis-batches', '/batch/edit-batch.php?type=hepatitis', '[\"/batch/delete-batch.php?type=hepatitis\", \"/batch/edit-batch-position.php?type=hepatitis\"]', 'Edit Batch', 3, 'always'),
 (174, 'hepatitis-requests', '/hepatitis/requests/add-samples-from-manifest.php', NULL, 'Add Samples from Manifest', 6, 'lis'),
@@ -2175,9 +2246,9 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (194, 'tb-results', '/tb/results/tb-manual-results.php', '[\"/tb/results/tb-update-result.php\", \"/tb/results/tb-failed-results.php\"]', 'Enter Result Manually', NULL, 'always'),
 (195, 'tb-results', '/tb/results/tb-print-results.php', NULL, 'Print Results', NULL, 'always'),
 (196, 'tb-results', '/tb/results/tb-result-status.php', NULL, 'Manage Result Status', NULL, 'always'),
-(197, 'tb-management', '/tb/management/tb-sample-type.php', '[\"/tb/reference/tb-sample-rejection-reasons.php\", \"/tb/reference/add-tb-sample-rejection-reason.php\", \"/tb/reference/add-tb-sample-type.php\", \"/tb/reference/tb-test-reasons.php\", \"/tb/reference/add-tb-test-reasons.php\", \"/tb/reference/tb-results.php\", \"/tb/reference/add-tb-results.php\"]', 'Manage Reference', NULL, 'always'),
+(197, 'tb-management', '/tb/management/tb-sample-type.php', NULL, 'Manage Reference', NULL, 'always'),
 (198, 'tb-management', '/tb/management/tb-export-data.php', NULL, 'Export Data', NULL, 'always'),
-(199, 'tb-batches', '/batch/batches.php?type=tb', '[\"/batch/generate-batch-pdf.php?type=tb\"]', 'View Batches', NULL, 'always'),
+(199, 'tb-batches', '/batch/batches.php?type=tb', '[\"/batch/generate-batch-pdf.php?type=tb\", \"/batch/generate-compact-batch-pdf.php?type=tb\"]', 'View Batches', NULL, 'always'),
 (200, 'tb-batches', '/batch/add-batch.php?type=tb', '[\"/batch/add-batch-position.php?type=tb\"]', 'Add Batch', NULL, 'always'),
 (201, 'tb-batches', '/batch/edit-batch.php?type=tb', '[\"/batch/delete-batch.php?type=tb\", \"/batch/edit-batch-position.php?type=tb\"]', 'Edit Batch', NULL, 'always'),
 (204, 'tb-requests', '/tb/requests/addSamplesFromManifest.php', NULL, 'Add Samples from Manifest', 6, 'lis'),
@@ -2257,7 +2328,7 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (353, 'generic-tests-config', '/generic-tests/configuration/test-result-units/generic-test-result-units.php', '[\"/generic-tests/configuration/test-result-units/generic-add-test-result-units.php\", \"/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php\"]', 'Manage Test Result Units', NULL, 'always'),
 (354, 'generic-tests-config', '/generic-tests/configuration/test-methods/generic-test-methods.php', '[\"/generic-tests/configuration/test-methods/generic-add-test-methods.php\", \"/generic-tests/configuration/test-methods/generic-edit-test-methods.php\"]', 'Manage Test Methods', NULL, 'always'),
 (355, 'generic-tests-config', '/generic-tests/configuration/test-categories/generic-test-categories.php', '[\"/generic-tests/configuration/test-categories/generic-add-test-categories.php\", \"/generic-tests/configuration/test-categories/generic-edit-test-categories.php\"]', 'Manage Test Categories', NULL, 'always'),
-(356, 'generic-tests-batches', '/batch/batches.php?type=generic-tests', '[\"/batch/generate-batch-pdf.php?type=generic-tests\"]', 'Manage Batch', 1, 'always'),
+(356, 'generic-tests-batches', '/batch/batches.php?type=generic-tests', '[\"/batch/generate-batch-pdf.php?type=generic-tests\", \"/batch/generate-compact-batch-pdf.php?type=generic-tests\"]', 'Manage Batch', 1, 'always'),
 (357, 'generic-tests-batches', '/batch/add-batch.php?type=generic-tests', '[\"/batch/add-batch-position.php?type=generic-tests\"]', 'Add New Batch', 2, 'always'),
 (358, 'generic-tests-batches', '/batch/edit-batch.php?type=generic-tests', '[\"/batch/delete-batch.php?type=generic-tests\", \"/batch/edit-batch-position.php?type=generic-tests\"]', 'Edit Batch', 3, 'always'),
 (411, 'hepatitis-requests', '/hepatitis/requests/edit-locked-hepatitis-samples', NULL, 'Edit Locked Samples', 5, 'always'),
@@ -2269,10 +2340,10 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (418, 'patients', 'add-patient.php', NULL, 'Add Patient', NULL, 'always'),
 (419, 'patients', 'edit-patient.php', NULL, 'Edit Patient', NULL, 'always'),
 (420, 'generic-requests', '/generic-tests/requests/edit-locked-generic-tests-samples', NULL, 'Edit Locked Generic Tests Samples', 6, 'always'),
-(421, 'eid-results', '/eid/results/email-results.php', '[\"/eid/results/email-results.php\", \"/eid/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
-(422, 'hepatitis-results', '/hepatitis/results/email-results.php', '[\"/hepatitis/results/email-results.php\", \"/hepatitis/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
-(423, 'tb-results', '/tb/results/email-results.php', '[\"/tb/results/email-results.php\", \"/tb/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
-(424, 'generic-results', '/generic-tests/results/email-results.php', '[\"/generic-tests/results/email-results.php\", \"/generic-tests/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
+(421, 'eid-results', '/eid/results/email-results.php', '[\"/eid/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
+(422, 'hepatitis-results', '/hepatitis/results/email-results.php', '[\"/hepatitis/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
+(423, 'tb-results', '/tb/results/email-results.php', '[\"/tb/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
+(424, 'generic-results', '/generic-tests/results/email-results.php', '[\"/generic-tests/results/email-results-confirm.php\"]', 'Email Test Result', NULL, 'always'),
 (426, 'generic-management', 'generic-tests-clinic-report.php', NULL, 'Clinic Report', NULL, 'always'),
 (427, 'cd4-requests', '/cd4/requests/cd4-add-request.php', '[\"/cd4/requests/cd4-bulk-import-request.php\"]', 'Add', NULL, 'always'),
 (428, 'cd4-requests', '/cd4/requests/cd4-edit-request.php', NULL, 'Edit', NULL, 'always'),
@@ -2282,12 +2353,12 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (432, 'cd4-requests', '/specimen-referral-manifest/add-manifest.php?t=cd4', NULL, 'Add CD4 Manifests', NULL, 'always'),
 (433, 'cd4-requests', '/specimen-referral-manifest/edit-manifest.php?t=cd4', NULL, 'Edit CD4 Manifests', NULL, 'always'),
 (434, 'cd4-requests', '/specimen-referral-manifest/view-manifest.php?t=cd4', NULL, 'View CD4 Manifests', NULL, 'always'),
-(435, 'cd4-batches', '/batch/batches.php?type=cd4', '[\"/batch/generate-batch-pdf.php?type=cd4\"]', 'View Batches', NULL, 'always'),
+(435, 'cd4-batches', '/batch/batches.php?type=cd4', '[\"/batch/generate-batch-pdf.php?type=cd4\", \"/batch/generate-compact-batch-pdf.php?type=cd4\"]', 'View Batches', NULL, 'always'),
 (436, 'cd4-batches', '/batch/add-batch.php?type=cd4', '[\"/batch/add-batch-position.php?type=cd4\"]', 'Add Batch', NULL, 'always'),
 (437, 'cd4-batches', '/batch/edit-batch.php?type=cd4', '[\"/batch/delete-batch.php?type=cd4\", \"/batch/edit-batch-position.php?type=cd4\"]', 'Edit Batches', NULL, 'always'),
 (438, 'cd4-results', '/cd4/results/cd4-result-status.php', NULL, 'Manage Result Status', NULL, 'always'),
-(439, 'cd4-results', '/cd4/results/email-results.php', '[\"/cd4/results/email-results.php\", \"/cd4/results/email-results-confirm.php\"]', 'Email Test Results', NULL, 'always'),
-(440, 'cd4-results', '/import-result/import-file.php?t=cd4', NULL, 'Import Result from Files', NULL, 'always'),
+(439, 'cd4-results', '/cd4/results/email-results.php', '[\"/cd4/results/email-results-confirm.php\"]', 'Email Test Results', NULL, 'always'),
+(440, 'cd4-results', '/import-result/import-file.php?t=cd4', '[\"/import-result/imported-results.php?t=cd4\", \"/import-result/importedStatistics.php?t=cd4\"]', 'Import Result from Files', NULL, 'always'),
 (441, 'cd4-management', '/cd4/management/cd4-clinic-report.php', NULL, 'CD4 Clinic Reports', NULL, 'always'),
 (442, 'cd4-management', '/cd4/management/cd4-export-data.php', NULL, 'Export Data', NULL, 'always'),
 (443, 'cd4-management', '/cd4/management/cd4-sample-rejection-report.php', NULL, 'Sample Rejection Report', NULL, 'always'),
@@ -2299,8 +2370,10 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 (449, 'common-reference', '/common/reference/edit-lab-storage.php', NULL, 'Edit Lab Storage', NULL, 'lis'),
 (468, 'cd4-results', '/cd4/results/cd4-print-results.php', NULL, 'Print Results', NULL, 'always'),
 (476, 'cd4-requests', '/specimen-referral-manifest/view-manifests.php?t=cd4', NULL, 'View CD4 Manifests', NULL, 'always'),
-(492, 'vl-reports', '/vl/program-management/sample-storage-reports.php', NULL, 'Freezer/Storage Reports', NULL, 'lis'),
-(493, 'common-reference', 'log-files.php', NULL, 'Log File Viewer', NULL, 'always');
+(492, 'vl-reports', '/vl/program-management/sample-storage-reports.php', NULL, 'Freezer/Storage Reports', NULL, 'always'),
+(493, 'common-reference', 'log-files.php', NULL, 'Log File Viewer', NULL, 'always'),
+(519, 'common-reference', 'test-results-metadata.php', NULL, 'Test Results Metadata', NULL, 'always'),
+(520, 'common-reference', '/admin/monitoring/system-settings.php', NULL, 'System Settings', NULL, 'always');
 
 -- --------------------------------------------------------
 
@@ -2308,13 +2381,14 @@ INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shar
 -- Table structure for table `province_details`
 --
 
+DROP TABLE IF EXISTS `province_details`;
 CREATE TABLE `province_details` (
-  `province_id` int(11) NOT NULL,
+  `province_id` int NOT NULL,
   `province_name` varchar(255) DEFAULT NULL,
   `province_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2322,22 +2396,23 @@ CREATE TABLE `province_details` (
 -- Table structure for table `qc_covid19`
 --
 
+DROP TABLE IF EXISTS `qc_covid19`;
 CREATE TABLE `qc_covid19` (
-  `qc_id` int(11) NOT NULL,
+  `qc_id` int NOT NULL,
   `unique_id` varchar(500) NOT NULL,
   `qc_code` varchar(256) NOT NULL,
-  `qc_code_key` int(11) NOT NULL,
-  `testkit` int(11) NOT NULL,
+  `qc_code_key` int NOT NULL,
+  `testkit` int NOT NULL,
   `lot_no` varchar(256) NOT NULL,
   `expiry_date` date NOT NULL,
-  `lab_id` int(11) NOT NULL,
+  `lab_id` int NOT NULL,
   `testing_point` varchar(256) DEFAULT NULL,
   `qc_received_datetime` datetime DEFAULT NULL,
   `tested_by` text NOT NULL,
   `qc_tested_datetime` datetime NOT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2345,12 +2420,13 @@ CREATE TABLE `qc_covid19` (
 -- Table structure for table `qc_covid19_tests`
 --
 
+DROP TABLE IF EXISTS `qc_covid19_tests`;
 CREATE TABLE `qc_covid19_tests` (
-  `qc_test_id` int(11) NOT NULL,
-  `qc_id` int(11) NOT NULL,
+  `qc_test_id` int NOT NULL,
+  `qc_id` int NOT NULL,
   `test_label` varchar(256) NOT NULL,
   `test_result` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2358,8 +2434,9 @@ CREATE TABLE `qc_covid19_tests` (
 -- Table structure for table `queue_sample_code_generation`
 --
 
+DROP TABLE IF EXISTS `queue_sample_code_generation`;
 CREATE TABLE `queue_sample_code_generation` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `unique_id` varchar(255) NOT NULL,
   `test_type` varchar(32) NOT NULL,
   `access_type` varchar(32) NOT NULL,
@@ -2369,8 +2446,9 @@ CREATE TABLE `queue_sample_code_generation` (
   `prefix` varchar(32) DEFAULT NULL,
   `created_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  `processed` tinyint(1) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `processed` tinyint(1) DEFAULT '0',
+  `processing_error` text
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2378,15 +2456,16 @@ CREATE TABLE `queue_sample_code_generation` (
 -- Table structure for table `report_to_mail`
 --
 
+DROP TABLE IF EXISTS `report_to_mail`;
 CREATE TABLE `report_to_mail` (
-  `report_mail_id` int(11) NOT NULL,
-  `batch_id` int(11) NOT NULL,
+  `report_mail_id` int NOT NULL,
+  `batch_id` int NOT NULL,
   `subject` varchar(255) DEFAULT NULL,
   `to_mail` varchar(255) DEFAULT NULL,
   `encrypt` varchar(255) DEFAULT NULL,
   `password` varchar(255) DEFAULT NULL,
   `comment` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2394,11 +2473,12 @@ CREATE TABLE `report_to_mail` (
 -- Table structure for table `resources`
 --
 
+DROP TABLE IF EXISTS `resources`;
 CREATE TABLE `resources` (
   `resource_id` varchar(255) NOT NULL,
   `module` varchar(255) NOT NULL,
   `display_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `resources`
@@ -2459,13 +2539,14 @@ INSERT INTO `resources` (`resource_id`, `module`, `display_name`) VALUES
 -- Table structure for table `result_import_stats`
 --
 
+DROP TABLE IF EXISTS `result_import_stats`;
 CREATE TABLE `result_import_stats` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `imported_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `no_of_results_imported` int(11) DEFAULT NULL,
+  `no_of_results_imported` int DEFAULT NULL,
   `imported_by` varchar(1000) DEFAULT NULL,
   `import_mode` varchar(500) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2473,14 +2554,15 @@ CREATE TABLE `result_import_stats` (
 -- Table structure for table `roles`
 --
 
+DROP TABLE IF EXISTS `roles`;
 CREATE TABLE `roles` (
-  `role_id` int(11) NOT NULL,
+  `role_id` int NOT NULL,
   `role_name` varchar(255) DEFAULT NULL,
   `role_code` varchar(255) DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `access_type` varchar(256) DEFAULT NULL,
   `landing_page` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `roles`
@@ -2498,11 +2580,12 @@ INSERT INTO `roles` (`role_id`, `role_name`, `role_code`, `status`, `access_type
 -- Table structure for table `roles_privileges_map`
 --
 
+DROP TABLE IF EXISTS `roles_privileges_map`;
 CREATE TABLE `roles_privileges_map` (
-  `map_id` int(11) NOT NULL,
-  `role_id` int(11) NOT NULL,
-  `privilege_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `map_id` int NOT NULL,
+  `role_id` int NOT NULL,
+  `privilege_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `roles_privileges_map`
@@ -2715,7 +2798,257 @@ INSERT INTO `roles_privileges_map` (`map_id`, `role_id`, `privilege_id`) VALUES
 (5494, 2, 14),
 (5495, 2, 209),
 (5496, 2, 89),
-(5497, 2, 20);
+(5497, 2, 20),
+(5498, 1, 436),
+(5499, 1, 435),
+(5500, 1, 437),
+(5501, 1, 441),
+(5502, 1, 442),
+(5503, 1, 443),
+(5504, 1, 444),
+(5505, 1, 445),
+(5506, 1, 447),
+(5507, 1, 446),
+(5508, 1, 427),
+(5509, 1, 428),
+(5510, 1, 430),
+(5511, 1, 431),
+(5512, 1, 432),
+(5513, 1, 433),
+(5514, 1, 434),
+(5515, 1, 476),
+(5516, 1, 429),
+(5517, 1, 468),
+(5518, 1, 438),
+(5519, 1, 439),
+(5520, 1, 440),
+(5521, 1, 208),
+(5522, 1, 224),
+(5523, 1, 187),
+(5524, 1, 226),
+(5525, 1, 520),
+(5526, 1, 184),
+(5527, 1, 448),
+(5528, 1, 185),
+(5529, 1, 449),
+(5530, 1, 183),
+(5531, 1, 219),
+(5532, 1, 493),
+(5533, 1, 220),
+(5534, 1, 519),
+(5535, 1, 236),
+(5536, 1, 238),
+(5537, 1, 237),
+(5538, 1, 243),
+(5539, 1, 244),
+(5540, 1, 242),
+(5541, 1, 241),
+(5542, 1, 240),
+(5543, 1, 239),
+(5544, 1, 101),
+(5545, 1, 100),
+(5546, 1, 102),
+(5547, 1, 112),
+(5548, 1, 111),
+(5549, 1, 114),
+(5550, 1, 113),
+(5551, 1, 122),
+(5552, 1, 105),
+(5553, 1, 106),
+(5554, 1, 107),
+(5555, 1, 145),
+(5556, 1, 125),
+(5557, 1, 128),
+(5558, 1, 124),
+(5559, 1, 127),
+(5560, 1, 123),
+(5561, 1, 126),
+(5562, 1, 129),
+(5563, 1, 180),
+(5564, 1, 109),
+(5565, 1, 95),
+(5566, 1, 181),
+(5567, 1, 96),
+(5568, 1, 97),
+(5569, 1, 182),
+(5570, 1, 142),
+(5571, 1, 211),
+(5572, 1, 108),
+(5573, 1, 110),
+(5574, 1, 331),
+(5575, 1, 337),
+(5576, 1, 325),
+(5577, 1, 319),
+(5578, 1, 222),
+(5579, 1, 103),
+(5580, 1, 99),
+(5581, 1, 221),
+(5582, 1, 98),
+(5583, 1, 223),
+(5584, 1, 78),
+(5585, 1, 77),
+(5586, 1, 79),
+(5587, 1, 121),
+(5588, 1, 86),
+(5589, 1, 87),
+(5590, 1, 88),
+(5591, 1, 144),
+(5592, 1, 131),
+(5593, 1, 91),
+(5594, 1, 141),
+(5595, 1, 74),
+(5596, 1, 75),
+(5597, 1, 76),
+(5598, 1, 210),
+(5599, 1, 330),
+(5600, 1, 336),
+(5601, 1, 324),
+(5602, 1, 80),
+(5603, 1, 85),
+(5604, 1, 84),
+(5605, 1, 421),
+(5606, 1, 318),
+(5607, 1, 5),
+(5608, 1, 6),
+(5609, 1, 4),
+(5610, 1, 64),
+(5611, 1, 66),
+(5612, 1, 281),
+(5613, 1, 284),
+(5614, 1, 280),
+(5615, 1, 283),
+(5616, 1, 282),
+(5617, 1, 426),
+(5618, 1, 246),
+(5619, 1, 247),
+(5620, 1, 416),
+(5621, 1, 420),
+(5622, 1, 252),
+(5623, 1, 245),
+(5624, 1, 334),
+(5625, 1, 340),
+(5626, 1, 328),
+(5627, 1, 424),
+(5628, 1, 278),
+(5629, 1, 279),
+(5630, 1, 277),
+(5631, 1, 322),
+(5632, 1, 357),
+(5633, 1, 356),
+(5634, 1, 358),
+(5635, 1, 351),
+(5636, 1, 348),
+(5637, 1, 350),
+(5638, 1, 355),
+(5639, 1, 352),
+(5640, 1, 354),
+(5641, 1, 353),
+(5642, 1, 347),
+(5643, 1, 349),
+(5644, 1, 413),
+(5645, 1, 414),
+(5646, 1, 8),
+(5647, 1, 170),
+(5648, 1, 169),
+(5649, 1, 171),
+(5650, 1, 176),
+(5651, 1, 188),
+(5652, 1, 178),
+(5653, 1, 179),
+(5654, 1, 177),
+(5655, 1, 167),
+(5656, 1, 174),
+(5657, 1, 411),
+(5658, 1, 212),
+(5659, 1, 153),
+(5660, 1, 186),
+(5661, 1, 154),
+(5662, 1, 152),
+(5663, 1, 332),
+(5664, 1, 338),
+(5665, 1, 326),
+(5666, 1, 422),
+(5667, 1, 164),
+(5668, 1, 165),
+(5669, 1, 166),
+(5670, 1, 320),
+(5671, 1, 24),
+(5672, 1, 10),
+(5673, 1, 11),
+(5674, 1, 9),
+(5675, 1, 191),
+(5676, 1, 192),
+(5677, 1, 418),
+(5678, 1, 419),
+(5679, 1, 417),
+(5680, 1, 39),
+(5681, 1, 26),
+(5682, 1, 25),
+(5683, 1, 200),
+(5684, 1, 199),
+(5685, 1, 201),
+(5686, 1, 207),
+(5687, 1, 198),
+(5688, 1, 206),
+(5689, 1, 205),
+(5690, 1, 197),
+(5691, 1, 333),
+(5692, 1, 339),
+(5693, 1, 327),
+(5694, 1, 204),
+(5695, 1, 412),
+(5696, 1, 213),
+(5697, 1, 190),
+(5698, 1, 193),
+(5699, 1, 189),
+(5700, 1, 321),
+(5701, 1, 423),
+(5702, 1, 194),
+(5703, 1, 195),
+(5704, 1, 196),
+(5705, 1, 43),
+(5706, 1, 28),
+(5707, 1, 49),
+(5708, 1, 48),
+(5709, 1, 231),
+(5710, 1, 232),
+(5711, 1, 230),
+(5712, 1, 2),
+(5713, 1, 3),
+(5714, 1, 1),
+(5715, 1, 17),
+(5716, 1, 16),
+(5717, 1, 18),
+(5718, 1, 300),
+(5719, 1, 301),
+(5720, 1, 130),
+(5721, 1, 225),
+(5722, 1, 34),
+(5723, 1, 33),
+(5724, 1, 492),
+(5725, 1, 57),
+(5726, 1, 23),
+(5727, 1, 22),
+(5728, 1, 63),
+(5729, 1, 59),
+(5730, 1, 143),
+(5731, 1, 70),
+(5732, 1, 168),
+(5733, 1, 40),
+(5734, 1, 56),
+(5735, 1, 329),
+(5736, 1, 335),
+(5737, 1, 323),
+(5738, 1, 89),
+(5739, 1, 13),
+(5740, 1, 140),
+(5741, 1, 14),
+(5742, 1, 209),
+(5743, 1, 12),
+(5744, 1, 317),
+(5745, 1, 20),
+(5746, 1, 31),
+(5747, 1, 21);
 
 -- --------------------------------------------------------
 
@@ -2723,15 +3056,16 @@ INSERT INTO `roles_privileges_map` (`map_id`, `role_id`, `privilege_id`) VALUES
 -- Table structure for table `r_cd4_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_cd4_sample_rejection_reasons`;
 CREATE TABLE `r_cd4_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2739,13 +3073,14 @@ CREATE TABLE `r_cd4_sample_rejection_reasons` (
 -- Table structure for table `r_cd4_sample_types`
 --
 
+DROP TABLE IF EXISTS `r_cd4_sample_types`;
 CREATE TABLE `r_cd4_sample_types` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2753,14 +3088,15 @@ CREATE TABLE `r_cd4_sample_types` (
 -- Table structure for table `r_cd4_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_cd4_test_reasons`;
 CREATE TABLE `r_cd4_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(255) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT '0',
+  `parent_reason` int DEFAULT '0',
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -2768,13 +3104,14 @@ CREATE TABLE `r_cd4_test_reasons` (
 -- Table structure for table `r_countries`
 --
 
+DROP TABLE IF EXISTS `r_countries`;
 CREATE TABLE `r_countries` (
-  `id` int(10) UNSIGNED NOT NULL,
+  `id` int UNSIGNED NOT NULL,
   `iso_name` varchar(255) NOT NULL,
   `iso2` varchar(2) NOT NULL,
   `iso3` varchar(3) NOT NULL,
-  `numeric_code` smallint(6) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `numeric_code` smallint NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_countries`
@@ -2835,7 +3172,7 @@ INSERT INTO `r_countries` (`id`, `iso_name`, `iso2`, `iso3`, `numeric_code`) VAL
 (52, 'Congo, the Democratic Republic of the', 'CD', 'COD', 180),
 (53, 'Cook Islands', 'CK', 'COK', 184),
 (54, 'Costa Rica', 'CR', 'CRI', 188),
-(55, 'Cote d\'Ivoire', 'CI', 'CIV', 384),
+(55, "Cote d'Ivoire", 'CI', 'CIV', 384),
 (56, 'Croatia', 'HR', 'HRV', 191),
 (57, 'Cuba', 'CU', 'CUB', 192),
 (58, 'Cura', 'CW', 'CUW', 531),
@@ -2898,11 +3235,11 @@ INSERT INTO `r_countries` (`id`, `iso_name`, `iso2`, `iso3`, `numeric_code`) VAL
 (115, 'Kazakhstan', 'KZ', 'KAZ', 398),
 (116, 'Kenya', 'KE', 'KEN', 404),
 (117, 'Kiribati', 'KI', 'KIR', 296),
-(118, 'Korea, Democratic People\'s Republic of', 'KP', 'PRK', 408),
+(118, "Korea, Democratic People's Republic of", 'KP', 'PRK', 408),
 (119, 'Korea, Republic of', 'KR', 'KOR', 410),
 (120, 'Kuwait', 'KW', 'KWT', 414),
 (121, 'Kyrgyzstan', 'KG', 'KGZ', 417),
-(122, 'Lao People\'s Democratic Republic', 'LA', 'LAO', 418),
+(122, "Lao People's Democratic Republic", 'LA', 'LAO', 418),
 (123, 'Latvia', 'LV', 'LVA', 428),
 (124, 'Lebanon', 'LB', 'LBN', 422),
 (125, 'Lesotho', 'LS', 'LSO', 426),
@@ -3037,12 +3374,13 @@ INSERT INTO `r_countries` (`id`, `iso_name`, `iso2`, `iso3`, `numeric_code`) VAL
 -- Table structure for table `r_covid19_comorbidities`
 --
 
+DROP TABLE IF EXISTS `r_covid19_comorbidities`;
 CREATE TABLE `r_covid19_comorbidities` (
-  `comorbidity_id` int(11) NOT NULL,
+  `comorbidity_id` int NOT NULL,
   `comorbidity_name` varchar(255) DEFAULT NULL,
   `comorbidity_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_comorbidities`
@@ -3065,14 +3403,15 @@ INSERT INTO `r_covid19_comorbidities` (`comorbidity_id`, `comorbidity_name`, `co
 -- Table structure for table `r_covid19_qc_testkits`
 --
 
+DROP TABLE IF EXISTS `r_covid19_qc_testkits`;
 CREATE TABLE `r_covid19_qc_testkits` (
-  `testkit_id` int(11) NOT NULL,
+  `testkit_id` int NOT NULL,
   `testkit_name` varchar(256) DEFAULT NULL,
-  `no_of_tests` int(11) DEFAULT NULL,
+  `no_of_tests` int DEFAULT NULL,
   `labels_and_expected_results` json DEFAULT NULL,
   `status` varchar(256) NOT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3080,13 +3419,14 @@ CREATE TABLE `r_covid19_qc_testkits` (
 -- Table structure for table `r_covid19_results`
 --
 
+DROP TABLE IF EXISTS `r_covid19_results`;
 CREATE TABLE `r_covid19_results` (
   `result_id` varchar(255) NOT NULL,
   `result` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_results`
@@ -3103,15 +3443,16 @@ INSERT INTO `r_covid19_results` (`result_id`, `result`, `status`, `updated_datet
 -- Table structure for table `r_covid19_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_covid19_sample_rejection_reasons`;
 CREATE TABLE `r_covid19_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_sample_rejection_reasons`
@@ -3159,13 +3500,14 @@ INSERT INTO `r_covid19_sample_rejection_reasons` (`rejection_reason_id`, `reject
 -- Table structure for table `r_covid19_sample_type`
 --
 
+DROP TABLE IF EXISTS `r_covid19_sample_type`;
 CREATE TABLE `r_covid19_sample_type` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_sample_type`
@@ -3191,13 +3533,14 @@ INSERT INTO `r_covid19_sample_type` (`sample_id`, `sample_name`, `status`, `upda
 -- Table structure for table `r_covid19_symptoms`
 --
 
+DROP TABLE IF EXISTS `r_covid19_symptoms`;
 CREATE TABLE `r_covid19_symptoms` (
-  `symptom_id` int(11) NOT NULL,
+  `symptom_id` int NOT NULL,
   `symptom_name` varchar(255) DEFAULT NULL,
-  `parent_symptom` int(11) DEFAULT NULL,
+  `parent_symptom` int DEFAULT NULL,
   `symptom_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_symptoms`
@@ -3220,13 +3563,14 @@ INSERT INTO `r_covid19_symptoms` (`symptom_id`, `symptom_name`, `parent_symptom`
 -- Table structure for table `r_covid19_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_covid19_test_reasons`;
 CREATE TABLE `r_covid19_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(255) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT NULL,
+  `parent_reason` int DEFAULT NULL,
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_covid19_test_reasons`
@@ -3245,13 +3589,14 @@ INSERT INTO `r_covid19_test_reasons` (`test_reason_id`, `test_reason_name`, `par
 -- Table structure for table `r_eid_results`
 --
 
+DROP TABLE IF EXISTS `r_eid_results`;
 CREATE TABLE `r_eid_results` (
   `result_id` varchar(256) NOT NULL,
   `result` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_eid_results`
@@ -3268,15 +3613,16 @@ INSERT INTO `r_eid_results` (`result_id`, `result`, `status`, `updated_datetime`
 -- Table structure for table `r_eid_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_eid_sample_rejection_reasons`;
 CREATE TABLE `r_eid_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_eid_sample_rejection_reasons`
@@ -3332,13 +3678,14 @@ INSERT INTO `r_eid_sample_rejection_reasons` (`rejection_reason_id`, `rejection_
 -- Table structure for table `r_eid_sample_type`
 --
 
+DROP TABLE IF EXISTS `r_eid_sample_type`;
 CREATE TABLE `r_eid_sample_type` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_eid_sample_type`
@@ -3354,14 +3701,15 @@ INSERT INTO `r_eid_sample_type` (`sample_id`, `sample_name`, `status`, `updated_
 -- Table structure for table `r_eid_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_eid_test_reasons`;
 CREATE TABLE `r_eid_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(255) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT '0',
+  `parent_reason` int DEFAULT '0',
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3369,13 +3717,14 @@ CREATE TABLE `r_eid_test_reasons` (
 -- Table structure for table `r_funding_sources`
 --
 
+DROP TABLE IF EXISTS `r_funding_sources`;
 CREATE TABLE `r_funding_sources` (
-  `funding_source_id` int(11) NOT NULL,
+  `funding_source_id` int NOT NULL,
   `funding_source_name` varchar(500) NOT NULL,
   `funding_source_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_funding_sources`
@@ -3390,15 +3739,16 @@ INSERT INTO `r_funding_sources` (`funding_source_id`, `funding_source_name`, `fu
 -- Table structure for table `r_generic_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_generic_sample_rejection_reasons`;
 CREATE TABLE `r_generic_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3406,13 +3756,14 @@ CREATE TABLE `r_generic_sample_rejection_reasons` (
 -- Table structure for table `r_generic_sample_types`
 --
 
+DROP TABLE IF EXISTS `r_generic_sample_types`;
 CREATE TABLE `r_generic_sample_types` (
-  `sample_type_id` int(11) NOT NULL,
+  `sample_type_id` int NOT NULL,
   `sample_type_code` varchar(256) DEFAULT NULL,
   `sample_type_name` varchar(256) DEFAULT NULL,
   `sample_type_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3420,13 +3771,14 @@ CREATE TABLE `r_generic_sample_types` (
 -- Table structure for table `r_generic_symptoms`
 --
 
+DROP TABLE IF EXISTS `r_generic_symptoms`;
 CREATE TABLE `r_generic_symptoms` (
-  `symptom_id` int(11) NOT NULL,
+  `symptom_id` int NOT NULL,
   `symptom_name` varchar(256) DEFAULT NULL,
   `symptom_code` varchar(256) DEFAULT NULL,
   `symptom_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3434,12 +3786,13 @@ CREATE TABLE `r_generic_symptoms` (
 -- Table structure for table `r_generic_test_categories`
 --
 
+DROP TABLE IF EXISTS `r_generic_test_categories`;
 CREATE TABLE `r_generic_test_categories` (
-  `test_category_id` int(11) NOT NULL,
+  `test_category_id` int NOT NULL,
   `test_category_name` varchar(256) DEFAULT NULL,
   `test_category_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3447,14 +3800,15 @@ CREATE TABLE `r_generic_test_categories` (
 -- Table structure for table `r_generic_test_failure_reasons`
 --
 
+DROP TABLE IF EXISTS `r_generic_test_failure_reasons`;
 CREATE TABLE `r_generic_test_failure_reasons` (
-  `test_failure_reason_id` int(11) NOT NULL,
+  `test_failure_reason_id` int NOT NULL,
   `test_failure_reason_code` varchar(256) NOT NULL,
   `test_failure_reason` varchar(256) DEFAULT NULL,
   `test_failure_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3462,12 +3816,13 @@ CREATE TABLE `r_generic_test_failure_reasons` (
 -- Table structure for table `r_generic_test_methods`
 --
 
+DROP TABLE IF EXISTS `r_generic_test_methods`;
 CREATE TABLE `r_generic_test_methods` (
-  `test_method_id` int(11) NOT NULL,
+  `test_method_id` int NOT NULL,
   `test_method_name` varchar(256) DEFAULT NULL,
   `test_method_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3475,14 +3830,15 @@ CREATE TABLE `r_generic_test_methods` (
 -- Table structure for table `r_generic_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_generic_test_reasons`;
 CREATE TABLE `r_generic_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_code` varchar(256) DEFAULT NULL,
   `test_reason` varchar(256) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT NULL,
+  `parent_reason` int DEFAULT NULL,
   `test_reason_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3490,12 +3846,13 @@ CREATE TABLE `r_generic_test_reasons` (
 -- Table structure for table `r_generic_test_result_units`
 --
 
+DROP TABLE IF EXISTS `r_generic_test_result_units`;
 CREATE TABLE `r_generic_test_result_units` (
-  `unit_id` int(11) NOT NULL,
+  `unit_id` int NOT NULL,
   `unit_name` varchar(256) DEFAULT NULL,
   `unit_status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3503,12 +3860,13 @@ CREATE TABLE `r_generic_test_result_units` (
 -- Table structure for table `r_hepatitis_comorbidities`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_comorbidities`;
 CREATE TABLE `r_hepatitis_comorbidities` (
-  `comorbidity_id` int(11) NOT NULL,
+  `comorbidity_id` int NOT NULL,
   `comorbidity_name` varchar(255) DEFAULT NULL,
   `comorbidity_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_comorbidities`
@@ -3528,13 +3886,14 @@ INSERT INTO `r_hepatitis_comorbidities` (`comorbidity_id`, `comorbidity_name`, `
 -- Table structure for table `r_hepatitis_results`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_results`;
 CREATE TABLE `r_hepatitis_results` (
-  `result_id` int(11) NOT NULL,
+  `result_id` int NOT NULL,
   `result` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_results`
@@ -3551,12 +3910,13 @@ INSERT INTO `r_hepatitis_results` (`result_id`, `result`, `status`, `updated_dat
 -- Table structure for table `r_hepatitis_risk_factors`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_risk_factors`;
 CREATE TABLE `r_hepatitis_risk_factors` (
-  `riskfactor_id` int(11) NOT NULL,
+  `riskfactor_id` int NOT NULL,
   `riskfactor_name` varchar(255) DEFAULT NULL,
   `riskfactor_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_risk_factors`
@@ -3577,15 +3937,16 @@ INSERT INTO `r_hepatitis_risk_factors` (`riskfactor_id`, `riskfactor_name`, `ris
 -- Table structure for table `r_hepatitis_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_sample_rejection_reasons`;
 CREATE TABLE `r_hepatitis_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_sample_rejection_reasons`
@@ -3611,13 +3972,14 @@ INSERT INTO `r_hepatitis_sample_rejection_reasons` (`rejection_reason_id`, `reje
 -- Table structure for table `r_hepatitis_sample_type`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_sample_type`;
 CREATE TABLE `r_hepatitis_sample_type` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_sample_type`
@@ -3632,13 +3994,14 @@ INSERT INTO `r_hepatitis_sample_type` (`sample_id`, `sample_name`, `status`, `up
 -- Table structure for table `r_hepatitis_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_hepatitis_test_reasons`;
 CREATE TABLE `r_hepatitis_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(255) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT NULL,
+  `parent_reason` int DEFAULT NULL,
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_hepatitis_test_reasons`
@@ -3654,13 +4017,14 @@ INSERT INTO `r_hepatitis_test_reasons` (`test_reason_id`, `test_reason_name`, `p
 -- Table structure for table `r_implementation_partners`
 --
 
+DROP TABLE IF EXISTS `r_implementation_partners`;
 CREATE TABLE `r_implementation_partners` (
-  `i_partner_id` int(11) NOT NULL,
+  `i_partner_id` int NOT NULL,
   `i_partner_name` varchar(500) NOT NULL,
   `i_partner_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_implementation_partners`
@@ -3675,13 +4039,14 @@ INSERT INTO `r_implementation_partners` (`i_partner_id`, `i_partner_name`, `i_pa
 -- Table structure for table `r_reasons_for_sample_removal`
 --
 
+DROP TABLE IF EXISTS `r_reasons_for_sample_removal`;
 CREATE TABLE `r_reasons_for_sample_removal` (
-  `removal_reason_id` int(11) NOT NULL,
+  `removal_reason_id` int NOT NULL,
   `removal_reason_name` varchar(255) DEFAULT NULL,
   `removal_reason_status` varchar(10) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3689,14 +4054,15 @@ CREATE TABLE `r_reasons_for_sample_removal` (
 -- Table structure for table `r_recommended_corrective_actions`
 --
 
+DROP TABLE IF EXISTS `r_recommended_corrective_actions`;
 CREATE TABLE `r_recommended_corrective_actions` (
-  `recommended_corrective_action_id` int(11) NOT NULL,
+  `recommended_corrective_action_id` int NOT NULL,
   `test_type` varchar(11) DEFAULT NULL,
   `recommended_corrective_action_name` varchar(256) DEFAULT NULL,
   `status` varchar(20) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3704,10 +4070,11 @@ CREATE TABLE `r_recommended_corrective_actions` (
 -- Table structure for table `r_sample_controls`
 --
 
+DROP TABLE IF EXISTS `r_sample_controls`;
 CREATE TABLE `r_sample_controls` (
-  `r_sample_control_id` int(11) NOT NULL,
+  `r_sample_control_id` int NOT NULL,
   `r_sample_control_name` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_sample_controls`
@@ -3725,11 +4092,12 @@ INSERT INTO `r_sample_controls` (`r_sample_control_id`, `r_sample_control_name`)
 -- Table structure for table `r_sample_status`
 --
 
+DROP TABLE IF EXISTS `r_sample_status`;
 CREATE TABLE `r_sample_status` (
-  `status_id` int(11) NOT NULL,
+  `status_id` int NOT NULL,
   `status_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) NOT NULL DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_sample_status`
@@ -3755,31 +4123,49 @@ INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES
 -- Table structure for table `r_tb_results`
 --
 
+DROP TABLE IF EXISTS `r_tb_results`;
 CREATE TABLE `r_tb_results` (
-  `result_id` varchar(256) NOT NULL,
+  `result_id` int NOT NULL,
   `result` varchar(256) DEFAULT NULL,
   `result_type` varchar(256) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_tb_results`
 --
 
 INSERT INTO `r_tb_results` (`result_id`, `result`, `result_type`, `status`, `updated_datetime`, `data_sync`) VALUES
-('1', 'Positive', NULL, 'active', '2021-11-16 15:23:42', 0),
-('10', 'TT (MTB detected (Trace) rifampicin resistance indeterminate)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
-('11', 'I (Invalid/Error/No result)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
-('2', 'Negative', NULL, 'active', '2021-11-16 15:23:42', 0),
-('3', 'Negative', 'lam', 'active', '2021-11-16 15:25:26', 0),
-('4', 'Positive', 'lam', 'active', '2021-11-16 15:25:26', 0),
-('5', 'Invalid', 'lam', 'active', '2021-11-16 15:25:26', 0),
-('6', 'N (MTB not detected)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
-('7', 'T (MTB detected rifampicin resistance not detected)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
-('8', 'TI (MTB detected rifampicin resistance indeterminate)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
-('9', 'RR (MTB detected rifampicin resistance detected)', 'lam', 'active', '2021-11-16 15:25:26', 0);
+(1, 'Positive', NULL, 'active', '2021-11-16 15:23:42', 0),
+(2, 'Negative', NULL, 'active', '2021-11-16 15:23:42', 0),
+(3, 'Negative', 'lam', 'active', '2021-11-16 15:25:26', 0),
+(4, 'Positive', 'lam', 'active', '2021-11-16 15:25:26', 0),
+(5, 'Invalid', 'lam', 'active', '2021-11-16 15:25:26', 0),
+(6, 'N (MTB not detected)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
+(7, 'T (MTB detected rifampicin resistance not detected)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
+(8, 'TI (MTB detected rifampicin resistance indeterminate)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
+(9, 'RR (MTB detected rifampicin resistance detected)', 'lam', 'active', '2021-11-16 15:25:26', 0),
+(10, 'TT (MTB detected (Trace) rifampicin resistance indeterminate)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
+(11, 'I (Invalid/Error/No result)', 'x-pert', 'active', '2021-11-16 15:25:26', 0),
+(12, 'No growth after 6 weeks', 'culture', 'active', '2025-08-18 15:26:35', 0),
+(13, 'Positive for AFB', 'culture', 'active', '2025-08-18 15:26:35', 0),
+(14, 'Contaminated', 'culture', 'active', '2025-08-18 15:26:35', 0),
+(15, 'MTBC', 'identification', 'active', '2025-08-18 15:26:35', 0),
+(16, 'NTM', 'identification', 'active', '2025-08-18 15:26:35', 0),
+(17, 'Streptomycin', 'drugMGIT', 'active', '2025-08-18 15:26:35', 0),
+(18, 'Isonaizid', 'drugMGIT', 'active', '2025-08-18 15:26:35', 0),
+(19, 'Rifampicin', 'drugMGIT', 'active', '2025-08-18 15:26:35', 0),
+(20, 'Ethambutol', 'drugMGIT', 'active', '2025-08-18 15:26:35', 0),
+(21, 'PZA', 'drugMGIT', 'active', '2025-08-18 15:26:35', 0),
+(22, 'RIF(rpoB)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(23, 'INH(katG)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(24, 'INH(inhA)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(25, 'FLQ(gyrA)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(26, 'FLQ(gyrB)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(27, 'AG/CP(rrs)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0),
+(28, 'LL Kana(eis)', 'drugLPA', 'active', '2025-08-18 15:26:35', 0);
 
 -- --------------------------------------------------------
 
@@ -3787,15 +4173,16 @@ INSERT INTO `r_tb_results` (`result_id`, `result`, `result_type`, `status`, `upd
 -- Table structure for table `r_tb_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_tb_sample_rejection_reasons`;
 CREATE TABLE `r_tb_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(256) DEFAULT NULL,
   `rejection_type` varchar(256) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(45) DEFAULT NULL,
   `rejection_reason_code` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_tb_sample_rejection_reasons`
@@ -3810,13 +4197,14 @@ INSERT INTO `r_tb_sample_rejection_reasons` (`rejection_reason_id`, `rejection_r
 -- Table structure for table `r_tb_sample_type`
 --
 
+DROP TABLE IF EXISTS `r_tb_sample_type`;
 CREATE TABLE `r_tb_sample_type` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(256) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_tb_sample_type`
@@ -3831,13 +4219,14 @@ INSERT INTO `r_tb_sample_type` (`sample_id`, `sample_name`, `status`, `updated_d
 -- Table structure for table `r_tb_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_tb_test_reasons`;
 CREATE TABLE `r_tb_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(256) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT NULL,
+  `parent_reason` int DEFAULT NULL,
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_tb_test_reasons`
@@ -3852,8 +4241,9 @@ INSERT INTO `r_tb_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_r
 -- Table structure for table `r_test_types`
 --
 
+DROP TABLE IF EXISTS `r_test_types`;
 CREATE TABLE `r_test_types` (
-  `test_type_id` int(11) NOT NULL,
+  `test_type_id` int NOT NULL,
   `test_standard_name` varchar(255) DEFAULT NULL,
   `test_generic_name` varchar(255) DEFAULT NULL,
   `test_short_code` varchar(255) DEFAULT NULL,
@@ -3863,7 +4253,7 @@ CREATE TABLE `r_test_types` (
   `test_results_config` text,
   `test_status` varchar(100) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3871,50 +4261,50 @@ CREATE TABLE `r_test_types` (
 -- Table structure for table `r_vl_art_regimen`
 --
 
+DROP TABLE IF EXISTS `r_vl_art_regimen`;
 CREATE TABLE `r_vl_art_regimen` (
-  `art_id` int(11) NOT NULL,
+  `art_id` int NOT NULL,
   `art_code` varchar(255) DEFAULT NULL,
-  `parent_art` int(11) NOT NULL,
+  `parent_art` int NOT NULL,
   `headings` varchar(255) DEFAULT NULL,
-  `nation_identifier` varchar(255) DEFAULT NULL,
   `art_status` varchar(45) NOT NULL DEFAULT 'active',
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_vl_art_regimen`
 --
 
-INSERT INTO `r_vl_art_regimen` (`art_id`, `art_code`, `parent_art`, `headings`, `nation_identifier`, `art_status`, `updated_datetime`, `data_sync`) VALUES
-(1, '1a = TDF+3TC+DTG', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(2, '1b = TDF+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(3, '1c = ABC+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(4, '1d = ABC+3TC+NVP', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(5, '1e = TDF+3TC+NVP', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(6, '1f = ABC+3TC+DTG', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(7, '1g = AZT+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(8, '1h = AZT+3TC+NVP', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(9, '2a = AZT+3TC+ATV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(10, '2b = AZT+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(11, '2c = AZT+3TC+DTG', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(12, '2d = TDF+3TC+ATV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(13, '2e = TDF+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(14, '2f = ABC+3TC+ATV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(15, '2g = ABC+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(16, '3a = RAL+ETV+DRV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(17, '4a = ABC+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(18, '4b = ABC+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(19, '4c = AZT+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(20, '4d = AZT+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(21, '4e = TDF+3TC+EFV', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(22, '4f = ABC+3TC+NVP', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(23, '4g = AZT+3TC+NVP', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(24, '5a = AZT+3TC+RAL', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(25, '5b = ABC+3TC+RAL', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(26, '5c = AZT+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(27, '5d = ABC+3TC+LPV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0),
-(28, '5e = AZT + 3TC+ ATV/r', 0, NULL, NULL, 'active', '2022-02-18 16:25:07', 0);
+INSERT INTO `r_vl_art_regimen` (`art_id`, `art_code`, `parent_art`, `headings`, `art_status`, `updated_datetime`, `data_sync`) VALUES
+(1, '1a = TDF+3TC+DTG', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(2, '1b = TDF+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(3, '1c = ABC+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(4, '1d = ABC+3TC+NVP', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(5, '1e = TDF+3TC+NVP', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(6, '1f = ABC+3TC+DTG', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(7, '1g = AZT+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(8, '1h = AZT+3TC+NVP', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(9, '2a = AZT+3TC+ATV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(10, '2b = AZT+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(11, '2c = AZT+3TC+DTG', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(12, '2d = TDF+3TC+ATV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(13, '2e = TDF+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(14, '2f = ABC+3TC+ATV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(15, '2g = ABC+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(16, '3a = RAL+ETV+DRV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(17, '4a = ABC+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(18, '4b = ABC+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(19, '4c = AZT+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(20, '4d = AZT+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(21, '4e = TDF+3TC+EFV', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(22, '4f = ABC+3TC+NVP', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(23, '4g = AZT+3TC+NVP', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(24, '5a = AZT+3TC+RAL', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(25, '5b = ABC+3TC+RAL', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(26, '5c = AZT+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(27, '5d = ABC+3TC+LPV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0),
+(28, '5e = AZT + 3TC+ ATV/r', 0, NULL, 'active', '2022-02-18 16:25:07', 0);
 
 -- --------------------------------------------------------
 
@@ -3922,15 +4312,16 @@ INSERT INTO `r_vl_art_regimen` (`art_id`, `art_code`, `parent_art`, `headings`, 
 -- Table structure for table `r_vl_results`
 --
 
+DROP TABLE IF EXISTS `r_vl_results`;
 CREATE TABLE `r_vl_results` (
-  `result_id` int(11) NOT NULL,
+  `result_id` int NOT NULL,
   `result` varchar(255) NOT NULL,
   `status` varchar(255) NOT NULL DEFAULT 'active',
   `available_for_instruments` json DEFAULT NULL,
   `interpretation` varchar(25) NOT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -3938,15 +4329,16 @@ CREATE TABLE `r_vl_results` (
 -- Table structure for table `r_vl_sample_rejection_reasons`
 --
 
+DROP TABLE IF EXISTS `r_vl_sample_rejection_reasons`;
 CREATE TABLE `r_vl_sample_rejection_reasons` (
-  `rejection_reason_id` int(11) NOT NULL,
+  `rejection_reason_id` int NOT NULL,
   `rejection_reason_name` varchar(255) DEFAULT NULL,
   `rejection_type` varchar(255) NOT NULL DEFAULT 'general',
   `rejection_reason_status` varchar(255) DEFAULT NULL,
   `rejection_reason_code` varchar(255) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_vl_sample_rejection_reasons`
@@ -4002,13 +4394,14 @@ INSERT INTO `r_vl_sample_rejection_reasons` (`rejection_reason_id`, `rejection_r
 -- Table structure for table `r_vl_sample_type`
 --
 
+DROP TABLE IF EXISTS `r_vl_sample_type`;
 CREATE TABLE `r_vl_sample_type` (
-  `sample_id` int(11) NOT NULL,
+  `sample_id` int NOT NULL,
   `sample_name` varchar(255) DEFAULT NULL,
   `status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_vl_sample_type`
@@ -4027,13 +4420,14 @@ INSERT INTO `r_vl_sample_type` (`sample_id`, `sample_name`, `status`, `updated_d
 -- Table structure for table `r_vl_test_failure_reasons`
 --
 
+DROP TABLE IF EXISTS `r_vl_test_failure_reasons`;
 CREATE TABLE `r_vl_test_failure_reasons` (
-  `failure_id` int(11) NOT NULL,
+  `failure_id` int NOT NULL,
   `failure_reason` varchar(256) DEFAULT NULL,
   `status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4041,14 +4435,15 @@ CREATE TABLE `r_vl_test_failure_reasons` (
 -- Table structure for table `r_vl_test_reasons`
 --
 
+DROP TABLE IF EXISTS `r_vl_test_reasons`;
 CREATE TABLE `r_vl_test_reasons` (
-  `test_reason_id` int(11) NOT NULL,
+  `test_reason_id` int NOT NULL,
   `test_reason_name` varchar(255) DEFAULT NULL,
-  `parent_reason` int(11) DEFAULT '0',
+  `parent_reason` int DEFAULT '0',
   `test_reason_status` varchar(45) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
-  `data_sync` int(11) DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `r_vl_test_reasons`
@@ -4077,8 +4472,9 @@ INSERT INTO `r_vl_test_reasons` (`test_reason_id`, `test_reason_name`, `parent_r
 -- Table structure for table `scheduled_jobs`
 --
 
+DROP TABLE IF EXISTS `scheduled_jobs`;
 CREATE TABLE `scheduled_jobs` (
-  `job_id` int(11) NOT NULL,
+  `job_id` int NOT NULL,
   `job` text,
   `requested_on` datetime DEFAULT CURRENT_TIMESTAMP,
   `requested_by` varchar(256) DEFAULT NULL,
@@ -4086,7 +4482,7 @@ CREATE TABLE `scheduled_jobs` (
   `run_once` varchar(3) DEFAULT 'no',
   `completed_on` datetime DEFAULT NULL,
   `status` varchar(20) NOT NULL DEFAULT 'pending'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4094,12 +4490,13 @@ CREATE TABLE `scheduled_jobs` (
 -- Table structure for table `sequence_counter`
 --
 
+DROP TABLE IF EXISTS `sequence_counter`;
 CREATE TABLE `sequence_counter` (
   `test_type` varchar(32) NOT NULL,
-  `year` int(11) NOT NULL,
+  `year` int NOT NULL,
   `code_type` varchar(32) NOT NULL COMMENT 'sample_code or remote_sample_code',
-  `max_sequence_number` int(11) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `max_sequence_number` int DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4107,15 +4504,16 @@ CREATE TABLE `sequence_counter` (
 -- Table structure for table `support`
 --
 
+DROP TABLE IF EXISTS `support`;
 CREATE TABLE `support` (
-  `support_id` int(11) NOT NULL,
+  `support_id` int NOT NULL,
   `feedback` varchar(500) DEFAULT NULL,
   `feedback_url` varchar(255) DEFAULT NULL,
   `upload_file_name` varchar(255) DEFAULT NULL,
   `attach_screenshot` varchar(100) DEFAULT NULL,
   `screenshot_file_name` varchar(255) DEFAULT NULL,
   `status` varchar(100) DEFAULT 'active'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4123,13 +4521,14 @@ CREATE TABLE `support` (
 -- Table structure for table `system_admin`
 --
 
+DROP TABLE IF EXISTS `system_admin`;
 CREATE TABLE `system_admin` (
-  `system_admin_id` int(11) NOT NULL,
+  `system_admin_id` int NOT NULL,
   `system_admin_name` mediumtext,
   `system_admin_email` varchar(255) DEFAULT NULL,
   `system_admin_login` mediumtext,
   `system_admin_password` mediumtext
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4137,11 +4536,12 @@ CREATE TABLE `system_admin` (
 -- Table structure for table `system_config`
 --
 
+DROP TABLE IF EXISTS `system_config`;
 CREATE TABLE `system_config` (
   `display_name` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `value` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `system_config`
@@ -4150,7 +4550,7 @@ CREATE TABLE `system_config` (
 INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 ('Testing Lab ID', 'sc_testing_lab_id', ''),
 ('User Type', 'sc_user_type', 'vluser'),
-('Version', 'sc_version', '5.2.9'),
+('Version', 'sc_version', '5.3.1'),
 ('Email Id', 'sup_email', NULL),
 ('Password', 'sup_password', NULL);
 
@@ -4160,8 +4560,9 @@ INSERT INTO `system_config` (`display_name`, `name`, `value`) VALUES
 -- Table structure for table `s_app_menu`
 --
 
+DROP TABLE IF EXISTS `s_app_menu`;
 CREATE TABLE `s_app_menu` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `module` varchar(256) NOT NULL,
   `sub_module` varchar(256) DEFAULT NULL,
   `is_header` varchar(256) DEFAULT NULL,
@@ -4172,11 +4573,11 @@ CREATE TABLE `s_app_menu` (
   `icon` varchar(256) DEFAULT NULL,
   `has_children` varchar(256) DEFAULT NULL,
   `additional_class_names` varchar(256) DEFAULT NULL,
-  `parent_id` int(11) DEFAULT '0',
-  `display_order` int(11) NOT NULL,
+  `parent_id` int DEFAULT '0',
+  `display_order` int NOT NULL,
   `status` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `s_app_menu`
@@ -4197,7 +4598,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (12, 'admin', 'covid19', 'no', 'Covid-19 Config', NULL, NULL, 'always', 'fa-solid fa-virus-covid', 'yes', 'treeview covid19-reference-manage', 2, 12, 'active', NULL),
 (13, 'admin', 'hepatitis', 'no', 'Hepatitis Config', NULL, NULL, 'always', 'fa-solid fa-square-h', 'yes', 'treeview hepatitis-reference-manage', 2, 13, 'active', NULL),
 (14, 'admin', 'tb', 'no', 'TB Config', NULL, NULL, 'always', 'fa-solid fa-heart-pulse', 'yes', 'treeview tb-reference-manage', 2, 14, 'active', NULL),
-(15, 'admin', NULL, 'no', 'User Activity Log', '/admin/monitoring/activity-log.php', NULL, 'always', 'fa-solid fa-file-lines', 'no', 'allMenu treeview activity-log-menu', 7, 15, 'active', NULL),
+(15, 'admin', NULL, 'no', 'User Activity Log', '/admin/monitoring/activity-log.php', NULL, 'always', 'fas fa-user-clock', 'no', 'allMenu treeview activity-log-menu', 7, 15, 'active', NULL),
 (16, 'admin', NULL, 'no', 'Audit Trail', '/admin/monitoring/audit-trail.php', NULL, 'always', 'fa-solid fa-clock-rotate-left', 'no', 'allMenu treeview audit-trail-menu', 7, 16, 'active', NULL),
 (17, 'admin', NULL, 'no', 'API History', '/admin/monitoring/api-sync-history.php', NULL, 'always', 'fa-solid fa-circle-nodes', 'no', 'allMenu treeview api-sync-history-menu', 7, 17, 'active', NULL),
 (18, 'admin', NULL, 'no', 'Source of Requests', '/admin/monitoring/sources-of-requests.php', NULL, 'always', 'fa-solid fa-circle-notch', 'no', 'allMenu treeview sources-of-requests-report-menu', 7, 18, 'active', NULL),
@@ -4283,14 +4684,14 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (98, 'vl', NULL, 'no', 'Add Samples from Manifest', '/vl/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', 69, 94, 'active', NULL),
 (99, 'vl', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=vl', '/batch/add-batch.php?type=vl,/batch/edit-batch.php?type=vl,/batch/edit-batch-position.php?type=vl', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 69, 95, 'active', NULL),
 (100, 'vl', NULL, 'no', 'VL Manifest', '/specimen-referral-manifest/view-manifests.php?t=vl', '/specimen-referral-manifest/add-manifest.php?t=vl,/specimen-referral-manifest/edit-manifest.php?t=vl,/specimen-referral-manifest/move-manifest.php?t=vl', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListVLMenu', 69, 96, 'active', NULL),
-(101, 'vl', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=vl', '/import-result/imported-results.php?t=vl,/import-result/importedStatistics.php?t=vl', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importResultMenu', 70, 97, 'active', NULL),
+(101, 'vl', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=vl', '/import-result/imported-results.php?t=vl,/import-result/importedStatistics.php?t=vl', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu importResultMenu', 70, 97, 'active', NULL),
 (102, 'vl', NULL, 'no', 'Enter Result Manually', '/vl/results/vlTestResult.php', '/vl/results/updateVlTestResult.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlTestResultMenu', 70, 98, 'active', NULL),
 (103, 'vl', NULL, 'no', 'Failed/Hold Samples', '/vl/results/vl-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlFailedResultMenu', 70, 99, 'active', NULL),
 (104, 'vl', NULL, 'no', 'Manage Results Status', '/vl/results/vlResultApproval.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 70, 100, 'active', NULL),
 (105, 'vl', NULL, 'no', 'Sample Status Report', '/vl/program-management/vl-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu missingResultMenu', 71, 100, 'active', NULL),
 (106, 'vl', NULL, 'no', 'Control Report', '/vl/program-management/vlControlReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 101, 'active', NULL),
 (107, 'vl', NULL, 'no', 'Export Results', '/vl/program-management/vl-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlResultMenu', 71, 102, 'active', NULL),
-(108, 'vl', NULL, 'no', 'Print Result', '/vl/results/vlPrintResult.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlPrintResultMenu', 71, 103, 'active', NULL),
+(108, 'vl', NULL, 'no', 'Print Result', '/vl/results/vl-print-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlPrintResultMenu', 71, 103, 'active', NULL),
 (109, 'vl', NULL, 'no', 'Clinic Reports', '/vl/program-management/highViralLoad.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlHighMenu', 71, 104, 'active', NULL),
 (110, 'vl', NULL, 'no', 'VL Lab Weekly Report', '/vl/program-management/vlWeeklyReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vlWeeklyReport', 71, 105, 'active', NULL),
 (111, 'vl', NULL, 'no', 'Sample Rejection Report', '/vl/program-management/sampleRejectionReport.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu sampleRejectionReport', 71, 106, 'active', NULL),
@@ -4301,7 +4702,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (116, 'eid', NULL, 'no', 'Add Samples from Manifest', '/eid/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestEidMenu', 75, 111, 'active', NULL),
 (117, 'eid', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=eid', '/batch/add-batch.php?type=eid,/batch/edit-batch.php?type=eid,/batch/add-batch-position.php?type=eid,/batch/edit-batch-position.php?type=eid', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidBatchCodeMenu', 75, 112, 'active', NULL),
 (118, 'eid', NULL, 'no', 'EID Manifest', '/specimen-referral-manifest/view-manifests.php?t=eid', '/specimen-referral-manifest/add-manifest.php?t=eid,/specimen-referral-manifest/edit-manifest.php?t=eid,/specimen-referral-manifest/move-manifest.php?t=eid', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListEIDMenu', 75, 113, 'active', NULL),
-(119, 'eid', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=eid', '/import-result/imported-results.php?t=eid,/import-result/importedStatistics.php?t=eid', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidImportResultMenu', 76, 114, 'active', NULL),
+(119, 'eid', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=eid', '/import-result/imported-results.php?t=eid,/import-result/importedStatistics.php?t=eid', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidImportResultMenu', 76, 114, 'active', NULL),
 (120, 'eid', NULL, 'no', 'Enter Result Manually', '/eid/results/eid-manual-results.php', '/eid/results/eid-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidResultsMenu', 76, 115, 'active', NULL),
 (121, 'eid', NULL, 'no', 'Failed/Hold Samples', '/eid/results/eid-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidFailedResultsMenu', 76, 116, 'active', NULL),
 (122, 'eid', NULL, 'no', 'Manage Results Status', '/eid/results/eid-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu eidResultStatus', 76, 117, 'active', NULL),
@@ -4316,7 +4717,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (131, 'covid19', NULL, 'no', 'Add Samples from Manifest', '/covid-19/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestCovid19Menu', 72, 126, 'active', NULL),
 (132, 'covid19', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=covid19', '/batch/add-batch.php?type=covid19,/batch/edit-batch.php?type=covid19,/batch/add-batch-position.php?type=covid19,/batch/edit-batch-position.php?type=covid19', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19BatchCodeMenu', 72, 127, 'active', NULL),
 (133, 'covid19', NULL, 'no', 'Covid-19 Manifest', '/specimen-referral-manifest/view-manifests.php?t=covid19', '/specimen-referral-manifest/add-manifest.php?t=covid19,/specimen-referral-manifest/edit-manifest.php?t=covid19,/specimen-referral-manifest/move-manifest.php?t=covid19', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListC19Menu', 72, 128, 'active', NULL),
-(134, 'covid19', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=covid19', '/import-result/imported-results.php?t=covid19,/import-result/importedStatistics.php?t=covid19', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ImportResultMenu', 73, 129, 'active', NULL),
+(134, 'covid19', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=covid19', '/import-result/imported-results.php?t=covid19,/import-result/importedStatistics.php?t=covid19', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ImportResultMenu', 73, 129, 'active', NULL),
 (135, 'covid19', NULL, 'no', 'Enter Result Manually', '/covid-19/results/covid-19-manual-results.php', '/covid-19/batch/covid-19-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsMenu', 73, 130, 'active', NULL),
 (136, 'covid19', NULL, 'no', 'Failed/Hold Samples', '/covid-19/results/covid-19-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu covid19FailedResultsMenu', 73, 131, 'active', NULL),
 (137, 'covid19', NULL, 'no', 'Confirmation Manifest', '/covid-19/results/covid-19-confirmation-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu covid19ResultsConfirmationMenu', 73, 132, 'active', NULL),
@@ -4334,7 +4735,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (149, 'hepatitis', NULL, 'no', 'Add Samples from Manifest', '/hepatitis/requests/add-samples-from-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestHepatitisMenu', 78, 144, 'active', NULL),
 (150, 'hepatitis', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=hepatitis', '/batch/add-batch.php?type=hepatitis,/batch/edit-batch.php?type=hepatitis,/batch/add-batch-position.php?type=hepatitis,/batch/edit-batch-position.php?type=hepatitis', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisBatchCodeMenu', 78, 145, 'active', NULL),
 (151, 'hepatitis', NULL, 'no', 'Hepatitis Manifest', '/specimen-referral-manifest/view-manifests.php?t=hepatitis', '/specimen-referral-manifest/add-manifest.php?t=hepatitis,/specimen-referral-manifest/edit-manifest.php?t=hepatitis,/specimen-referral-manifest/move-manifest.php?t=hepatitis', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListHepMenu', 78, 146, 'active', NULL),
-(152, 'hepatitis', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=hepatitis', '/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisImportResultMenu', 79, 146, 'active', NULL),
+(152, 'hepatitis', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=hepatitis', '/import-result/imported-results.php?t=hepatitis,/import-result/importedStatistics.php?t=hepatitis', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisImportResultMenu', 79, 146, 'active', NULL),
 (153, 'hepatitis', NULL, 'no', 'Enter Result Manually', '/hepatitis/results/hepatitis-manual-results.php', '/hepatitis/results/hepatitis-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultsMenu', 79, 147, 'active', NULL),
 (154, 'hepatitis', NULL, 'no', 'Failed/Hold Samples', '/hepatitis/results/hepatitis-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisFailedResultsMenu', 79, 148, 'active', NULL),
 (155, 'hepatitis', NULL, 'no', 'Manage Results Status', '/hepatitis/results/hepatitis-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu hepatitisResultStatus', 79, 149, 'active', NULL),
@@ -4349,7 +4750,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (164, 'tb', NULL, 'no', 'Add Samples from Manifest', '/tb/requests/addSamplesFromManifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestTbMenu', 81, 158, 'active', NULL),
 (165, 'tb', NULL, 'no', 'Manage Batch', '/batch/batches.php?type=tb', '/batch/add-batch.php?type=tb,/batch/edit-batch.php?type=tb,/batch/add-batch-position.php?type=tb,/batch/edit-batch-position.php?type=tb', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbBatchCodeMenu', 81, 159, 'active', NULL),
 (166, 'tb', NULL, 'no', 'TB Manifest', '/specimen-referral-manifest/view-manifests.php?t=tb', '/specimen-referral-manifest/add-manifest.php?t=tb,/specimen-referral-manifest/edit-manifest.php?t=tb,/specimen-referral-manifest/move-manifest.php?t=tb', 'sts', 'fa-solid fa-caret-right', 'no', 'allMenu specimenReferralManifestListTbMenu', 81, 160, 'active', NULL),
-(167, 'tb', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=tb', '/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbImportResultMenu', 82, 161, 'active', NULL),
+(167, 'tb', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=tb', '/import-result/imported-results.php?t=tb,/import-result/importedStatistics.php?t=tb', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbImportResultMenu', 82, 161, 'active', NULL),
 (168, 'tb', NULL, 'no', 'Enter Result Manually', '/tb/results/tb-manual-results.php', '/tb/results/tb-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbResultsMenu', 82, 162, 'active', NULL),
 (169, 'tb', NULL, 'no', 'Failed/Hold Samples', '/tb/results/tb-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', 82, 163, 'active', NULL),
 (170, 'tb', NULL, 'no', 'Manage Results Status', '/tb/results/tb-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbResultStatus', 82, 164, 'active', NULL),
@@ -4358,7 +4759,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (173, 'tb', NULL, 'no', 'Export Results', '/tb/management/tb-export-data.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbExportResult', 83, 167, 'active', NULL),
 (174, 'tb', NULL, 'no', 'Sample Rejection Report', '/tb/management/tb-sample-rejection-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbSampleRejectionReport', 83, 168, 'active', NULL),
 (175, 'tb', NULL, 'no', 'Clinic Reports', '/tb/management/tb-clinic-report.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbClinicReport', 83, 169, 'active', NULL),
-(176, 'admin', NULL, 'no', 'Lab Sync Status', '/admin/monitoring/sync-status.php', NULL, 'always', 'fa-solid fa-traffic-light', 'no', 'allMenu treeview api-sync-status-menu', 7, 18, 'active', NULL),
+(176, 'admin', NULL, 'no', 'Lab Sync Status', '/admin/monitoring/sync-status.php', NULL, 'sts', 'fa-solid fa-traffic-light', 'no', 'allMenu treeview api-sync-status-menu', 7, 18, 'active', NULL),
 (177, 'admin', NULL, 'no', 'Recommended Corrective Actions', '/vl/reference/vl-recommended-corrective-actions.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-recommended-corrective-actions', 10, 39, 'active', '2023-08-02 14:27:09'),
 (179, 'admin', NULL, 'no', 'Recommended Corrective Actions', '/common/reference/recommended-corrective-actions.php?testType=eid', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu common-recommended-corrective-actions\r\n', 12, 41, 'active', '2023-08-26 01:03:01'),
 (180, 'generic-tests', NULL, 'no', 'Send Result Mail', '/generic-tests/mail/mail-generic-tests-results.php', '/generic-tests/mail/generic-tests-result-mail-confirm.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu genericTestResultMenu', 62, 88, 'active', '2023-10-16 17:03:43'),
@@ -4380,7 +4781,7 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (197, 'cd4', NULL, 'no', 'Add Samples from Manifest', '/cd4/requests/add-samples-from-manifest.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu addSamplesFromManifestMenu', 190, 8, 'active', '2024-04-05 13:44:58'),
 (198, 'cd4', NULL, 'no', 'Enter Result Manually', '/cd4/results/cd4-manual-results.php', '/cd4/results/cd4-update-result.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ResultStatus', 191, 9, 'active', '2024-04-05 13:44:58'),
 (199, 'cd4', NULL, 'no', 'Manage Results Status', '/cd4/results/cd4-result-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu batchCodeMenu', 191, 10, 'active', '2024-04-05 13:44:58'),
-(200, 'cd4', NULL, 'no', 'Import Result From File', '/import-result/import-file.php?t=cd4', '/import-result/imported-results.php?t=cd4,/import-result/importedStatistics.php?t=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ImportResultMenu', 191, 11, 'active', '2024-04-05 13:44:58'),
+(200, 'cd4', NULL, 'no', 'Import Results From File', '/import-result/import-file.php?t=cd4', '/import-result/imported-results.php?t=cd4,/import-result/importedStatistics.php?t=cd4', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ImportResultMenu', 191, 11, 'active', '2024-04-05 13:44:58'),
 (201, 'cd4', NULL, 'no', 'Failed/Hold Samples', '/cd4/results/cd4-failed-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4FailedResultsMenu', 191, 12, 'active', '2024-04-05 13:44:58'),
 (202, 'cd4', NULL, 'no', 'E-mail Test Result', '/cd4/results/email-results.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4ResultMailMenu', 191, 13, 'active', '2024-04-05 13:44:58'),
 (203, 'cd4', NULL, 'no', 'Sample Status Report', '/cd4/management/cd4-sample-status.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4SampleStatus', 192, 14, 'active', '2024-04-05 13:44:58'),
@@ -4393,7 +4794,14 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 (210, 'admin', NULL, 'no', 'Test Reasons', '/cd4/reference/cd4-test-reasons.php', '/cd4/reference/add-cd4-test-reasons.php,/cd4/reference/edit-cd4-test-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu vl-test-reasons', 208, 44, 'active', '2024-04-05 13:44:58'),
 (211, 'admin', NULL, 'no', 'Rejection Reasons', '/cd4/reference/cd4-sample-rejection-reasons.php', '/cd4/reference/add-cd4-sample-rejection-reasons.php,/cd4/reference/edit-cd4-sample-rejection-reasons.php', 'always', 'fa-solid fa-caret-right', 'no', 'allMenu cd4-test-reasons', 208, 45, 'active', '2024-04-05 13:44:58'),
 (212, 'admin', NULL, 'no', 'Lab Storage', '/common/reference/lab-storage.php', '/common/reference/add-lab-storage.php', 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu common-reference-lab-storage', 8, 24, 'active', '2024-04-05 13:44:58'),
-(213, 'admin', NULL, 'no', 'Log File Viewer', '/admin/monitoring/log-files.php', NULL, 'always', 'fa-solid fa-gears', 'no', 'allMenu treeview log-file-viewer-menu', 7, 19, 'active', '2024-08-14 17:29:22');
+(213, 'admin', NULL, 'no', 'Log File Viewer', '/admin/monitoring/log-files.php', NULL, 'always', 'fa-solid fa-file-lines', 'no', 'allMenu treeview log-file-viewer-menu', 7, 19, 'active', '2024-08-14 17:29:22'),
+(215, 'admin', NULL, 'no', 'Test Results Metadata', '/admin/monitoring/test-results-metadata.php', NULL, 'always', 'fa-solid fa-table', 'no', 'allMenu treeview test-result-metadata-menu', 7, 20, 'active', '2025-08-18 15:26:34'),
+(216, 'cd4', NULL, 'yes', 'CLUSTERS OF DIFFERENTIATION 4', '#cd4', NULL, 'always', NULL, 'yes', 'header', 0, 179, 'active', '2025-08-18 09:56:36'),
+(217, 'cd4', NULL, 'no', 'Request Management', '#cd4-request-management', NULL, 'always', 'fa-solid fa-pen-to-square', 'yes', 'treeview request', 216, 1, 'active', '2025-08-18 09:56:36'),
+(218, 'cd4', NULL, 'no', 'Test Result Management', '#cd4-result-management', NULL, 'always', 'fa-solid fa-list-check', 'yes', 'treeview test', 216, 2, 'active', '2025-08-18 09:56:36'),
+(219, 'cd4', NULL, 'no', 'Management', '#cd4-program-management', NULL, 'always', 'fa-solid fa-book', 'yes', 'treeview program', 216, 3, 'active', '2025-08-18 09:56:36'),
+(220, 'admin', 'cd4', 'no', 'CD4 Config', '#cd4-config', NULL, 'always', 'fa-solid fa-eyedropper', 'yes', 'treeview tb-reference-manage', 2, 42, 'active', '2025-08-18 09:56:36'),
+(221, 'vl', NULL, 'no', 'Freezer/Storage Reports', '/vl/program-management/sample-storage-reports.php', NULL, 'lis', 'fa-solid fa-caret-right', 'no', 'allMenu vlStorageMenu', 71, 109, 'active', '2025-08-18 09:56:36');
 
 -- --------------------------------------------------------
 
@@ -4401,11 +4809,12 @@ INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_te
 -- Table structure for table `s_available_country_forms`
 --
 
+DROP TABLE IF EXISTS `s_available_country_forms`;
 CREATE TABLE `s_available_country_forms` (
-  `vlsm_country_id` int(11) NOT NULL,
+  `vlsm_country_id` int NOT NULL,
   `form_name` varchar(255) DEFAULT NULL,
   `short_name` varchar(256) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `s_available_country_forms`
@@ -4427,11 +4836,12 @@ INSERT INTO `s_available_country_forms` (`vlsm_country_id`, `form_name`, `short_
 -- Table structure for table `s_run_once_scripts_log`
 --
 
+DROP TABLE IF EXISTS `s_run_once_scripts_log`;
 CREATE TABLE `s_run_once_scripts_log` (
   `script_name` varchar(255) NOT NULL,
   `execution_date` datetime DEFAULT NULL,
   `status` varchar(50) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4439,12 +4849,14 @@ CREATE TABLE `s_run_once_scripts_log` (
 -- Table structure for table `s_vlsm_instance`
 --
 
+DROP TABLE IF EXISTS `s_vlsm_instance`;
 CREATE TABLE `s_vlsm_instance` (
   `vlsm_instance_id` varchar(255) NOT NULL,
   `instance_facility_name` varchar(255) DEFAULT NULL,
   `instance_facility_code` varchar(255) DEFAULT NULL,
   `instance_facility_type` varchar(255) DEFAULT NULL,
   `instance_facility_logo` varchar(255) DEFAULT NULL,
+  `sts_token` varchar(64) DEFAULT NULL,
   `instance_added_on` datetime DEFAULT NULL,
   `instance_update_on` datetime DEFAULT NULL,
   `instance_mac_address` varchar(255) DEFAULT NULL,
@@ -4457,7 +4869,7 @@ CREATE TABLE `s_vlsm_instance` (
   `last_remote_results_sync` datetime DEFAULT NULL,
   `last_remote_reference_data_sync` datetime DEFAULT NULL,
   `last_interface_sync` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4465,14 +4877,15 @@ CREATE TABLE `s_vlsm_instance` (
 -- Table structure for table `tb_tests`
 --
 
+DROP TABLE IF EXISTS `tb_tests`;
 CREATE TABLE `tb_tests` (
-  `tb_test_id` int(11) NOT NULL,
-  `tb_id` int(11) DEFAULT NULL,
+  `tb_test_id` int NOT NULL,
+  `tb_id` int DEFAULT NULL,
   `actual_no` varchar(256) DEFAULT NULL,
   `test_result` varchar(256) DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `data_sync` int(11) NOT NULL DEFAULT '0'
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `data_sync` int NOT NULL DEFAULT '0'
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4480,8 +4893,9 @@ CREATE TABLE `tb_tests` (
 -- Table structure for table `temp_mail`
 --
 
+DROP TABLE IF EXISTS `temp_mail`;
 CREATE TABLE `temp_mail` (
-  `id` int(11) NOT NULL,
+  `id` int NOT NULL,
   `test_type` varchar(25) DEFAULT NULL,
   `samples` varchar(256) DEFAULT NULL,
   `to_mail` varchar(255) DEFAULT NULL,
@@ -4491,7 +4905,7 @@ CREATE TABLE `temp_mail` (
   `attachment` varchar(255) DEFAULT NULL,
   `status` varchar(11) DEFAULT NULL,
   `created_on` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4499,12 +4913,13 @@ CREATE TABLE `temp_mail` (
 -- Table structure for table `temp_sample_import`
 --
 
+DROP TABLE IF EXISTS `temp_sample_import`;
 CREATE TABLE `temp_sample_import` (
-  `temp_sample_id` int(11) NOT NULL,
+  `temp_sample_id` int NOT NULL,
   `module` varchar(255) DEFAULT NULL,
-  `facility_id` int(11) DEFAULT NULL,
+  `facility_id` int DEFAULT NULL,
   `lab_name` varchar(255) DEFAULT NULL,
-  `lab_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
   `lab_contact_person` varchar(255) DEFAULT NULL,
   `lab_phone_number` varchar(255) DEFAULT NULL,
   `cv_number` varchar(20) DEFAULT NULL,
@@ -4532,15 +4947,15 @@ CREATE TABLE `temp_sample_import` (
   `result_status` varchar(255) DEFAULT NULL,
   `import_machine_file_name` varchar(255) DEFAULT NULL,
   `vl_test_platform` varchar(255) DEFAULT NULL,
-  `import_machine_name` int(11) DEFAULT NULL,
+  `import_machine_name` varchar(128) DEFAULT NULL,
   `request_exported_datetime` datetime DEFAULT NULL,
   `request_imported_datetime` datetime DEFAULT NULL,
   `result_exported_datetime` datetime DEFAULT NULL,
   `result_imported_datetime` datetime DEFAULT NULL,
-  `temp_sample_status` int(11) NOT NULL DEFAULT '0',
+  `temp_sample_status` int NOT NULL DEFAULT '0',
   `sample_review_by` varchar(255) DEFAULT NULL,
   `imported_by` varchar(255) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4548,14 +4963,15 @@ CREATE TABLE `temp_sample_import` (
 -- Table structure for table `testing_labs`
 --
 
+DROP TABLE IF EXISTS `testing_labs`;
 CREATE TABLE `testing_labs` (
-  `test_type` varchar(24) NOT NULL,
-  `facility_id` int(11) NOT NULL,
+  `test_type` varchar(24) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL,
+  `facility_id` int NOT NULL,
   `attributes` json DEFAULT NULL,
   `updated_datetime` datetime DEFAULT NULL,
   `monthly_target` varchar(255) DEFAULT NULL,
   `suppressed_monthly_target` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4563,11 +4979,12 @@ CREATE TABLE `testing_labs` (
 -- Table structure for table `testing_lab_health_facilities_map`
 --
 
+DROP TABLE IF EXISTS `testing_lab_health_facilities_map`;
 CREATE TABLE `testing_lab_health_facilities_map` (
-  `facility_map_id` int(11) NOT NULL,
-  `vl_lab_id` int(11) NOT NULL,
-  `facility_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `facility_map_id` int NOT NULL,
+  `vl_lab_id` int NOT NULL,
+  `facility_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4575,8 +4992,9 @@ CREATE TABLE `testing_lab_health_facilities_map` (
 -- Table structure for table `track_api_requests`
 --
 
+DROP TABLE IF EXISTS `track_api_requests`;
 CREATE TABLE `track_api_requests` (
-  `api_track_id` int(11) NOT NULL,
+  `api_track_id` int NOT NULL,
   `transaction_id` varchar(256) DEFAULT NULL,
   `requested_by` varchar(255) DEFAULT NULL,
   `requested_on` datetime DEFAULT NULL,
@@ -4589,7 +5007,7 @@ CREATE TABLE `track_api_requests` (
   `response_data` text,
   `facility_id` varchar(256) DEFAULT NULL,
   `data_format` varchar(255) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4597,16 +5015,17 @@ CREATE TABLE `track_api_requests` (
 -- Table structure for table `track_qr_code_page`
 --
 
+DROP TABLE IF EXISTS `track_qr_code_page`;
 CREATE TABLE `track_qr_code_page` (
-  `tqcp_d` int(11) NOT NULL,
+  `tqcp_d` int NOT NULL,
   `test_type` varchar(256) NOT NULL COMMENT 'vl, eid, covid19 or hepatitis',
-  `test_type_id` int(11) NOT NULL,
+  `test_type_id` int NOT NULL,
   `sample_code` varchar(256) DEFAULT NULL,
   `browser` varchar(256) DEFAULT NULL,
   `ip_address` varchar(256) DEFAULT NULL,
   `operating_system` varchar(256) DEFAULT NULL,
   `date_time` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4614,6 +5033,7 @@ CREATE TABLE `track_qr_code_page` (
 -- Table structure for table `user_details`
 --
 
+DROP TABLE IF EXISTS `user_details`;
 CREATE TABLE `user_details` (
   `user_id` varchar(50) NOT NULL,
   `user_name` varchar(500) DEFAULT NULL,
@@ -4622,19 +5042,19 @@ CREATE TABLE `user_details` (
   `phone_number` varchar(255) DEFAULT NULL,
   `login_id` varchar(255) DEFAULT NULL,
   `password` varchar(500) DEFAULT NULL,
-  `role_id` int(11) DEFAULT NULL,
+  `role_id` int DEFAULT NULL,
   `user_locale` varchar(256) DEFAULT NULL,
   `user_signature` mediumtext,
   `user_attributes` json DEFAULT NULL,
   `api_token` mediumtext,
   `api_token_generated_datetime` datetime DEFAULT NULL,
-  `api_token_exipiration_days` int(11) DEFAULT NULL,
-  `force_password_reset` int(11) DEFAULT NULL,
+  `api_token_exipiration_days` int DEFAULT NULL,
+  `force_password_reset` int DEFAULT NULL,
   `status` varchar(255) DEFAULT NULL,
   `app_access` varchar(50) DEFAULT 'no',
-  `data_sync` int(11) DEFAULT '0',
+  `data_sync` int DEFAULT '0',
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4642,11 +5062,12 @@ CREATE TABLE `user_details` (
 -- Table structure for table `user_facility_map`
 --
 
+DROP TABLE IF EXISTS `user_facility_map`;
 CREATE TABLE `user_facility_map` (
-  `user_facility_map_id` int(11) NOT NULL,
+  `user_facility_map_id` int NOT NULL,
   `user_id` varchar(255) NOT NULL,
-  `facility_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `facility_id` int NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4654,8 +5075,9 @@ CREATE TABLE `user_facility_map` (
 -- Table structure for table `user_login_history`
 --
 
+DROP TABLE IF EXISTS `user_login_history`;
 CREATE TABLE `user_login_history` (
-  `history_id` int(11) NOT NULL,
+  `history_id` int NOT NULL,
   `user_id` varchar(1000) DEFAULT NULL,
   `login_id` varchar(1000) NOT NULL,
   `login_attempted_datetime` datetime DEFAULT NULL,
@@ -4663,7 +5085,7 @@ CREATE TABLE `user_login_history` (
   `ip_address` varchar(256) DEFAULT NULL,
   `browser` varchar(1000) DEFAULT NULL,
   `operating_system` varchar(1000) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4671,12 +5093,13 @@ CREATE TABLE `user_login_history` (
 -- Table structure for table `user_preferences`
 --
 
+DROP TABLE IF EXISTS `user_preferences`;
 CREATE TABLE `user_preferences` (
-  `user_id` int(11) NOT NULL,
+  `user_id` int NOT NULL,
   `page_id` varchar(100) NOT NULL,
   `preferences` json DEFAULT NULL,
   `updated_datetime` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4684,13 +5107,14 @@ CREATE TABLE `user_preferences` (
 -- Table structure for table `vl_contact_notes`
 --
 
+DROP TABLE IF EXISTS `vl_contact_notes`;
 CREATE TABLE `vl_contact_notes` (
-  `contact_notes_id` int(11) NOT NULL,
-  `treament_contact_id` int(11) DEFAULT NULL,
+  `contact_notes_id` int NOT NULL,
+  `treament_contact_id` int DEFAULT NULL,
   `contact_notes` mediumtext,
   `collected_on` date DEFAULT NULL,
   `added_on` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
@@ -4698,11 +5122,12 @@ CREATE TABLE `vl_contact_notes` (
 -- Table structure for table `vl_imported_controls`
 --
 
+DROP TABLE IF EXISTS `vl_imported_controls`;
 CREATE TABLE `vl_imported_controls` (
-  `control_id` int(11) NOT NULL,
+  `control_id` int NOT NULL,
   `control_code` varchar(255) NOT NULL,
-  `lab_id` int(11) DEFAULT NULL,
-  `batch_id` int(11) DEFAULT NULL,
+  `lab_id` int DEFAULT NULL,
+  `batch_id` int DEFAULT NULL,
   `control_type` varchar(255) DEFAULT NULL,
   `lot_number` varchar(255) DEFAULT NULL,
   `lot_expiration_date` date DEFAULT NULL,
@@ -4726,7 +5151,7 @@ CREATE TABLE `vl_imported_controls` (
   `file_name` varchar(255) DEFAULT NULL,
   `imported_date_time` datetime DEFAULT NULL,
   `import_machine_file_name` varchar(256) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Indexes for dumped tables
@@ -4737,7 +5162,6 @@ CREATE TABLE `vl_imported_controls` (
 --
 ALTER TABLE `activity_log`
   ADD PRIMARY KEY (`log_id`);
-
 
 --
 -- Indexes for table `batch_details`
@@ -4935,7 +5359,8 @@ ALTER TABLE `form_vl`
   ADD KEY `sample_batch_id` (`sample_batch_id`),
   ADD KEY `funding_source` (`funding_source`),
   ADD KEY `implementing_partner` (`implementing_partner`),
-  ADD KEY `reason_for_sample_rejection` (`reason_for_sample_rejection`);
+  ADD KEY `reason_for_sample_rejection` (`reason_for_sample_rejection`),
+  ADD KEY `idx_vl_result_category_status` (`vl_result_category`,`result_status`);
 
 --
 -- Indexes for table `generic_sample_rejection_reason_map`
@@ -5512,7 +5937,8 @@ ALTER TABLE `system_config`
 ALTER TABLE `s_app_menu`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `link` (`link`,`parent_id`),
-  ADD UNIQUE KEY `parent_id` (`parent_id`,`link`);
+  ADD UNIQUE KEY `parent_id` (`parent_id`,`link`),
+  ADD UNIQUE KEY `parent_id_2` (`parent_id`,`link`);
 
 --
 -- Indexes for table `s_available_country_forms`
@@ -5628,601 +6054,607 @@ ALTER TABLE `vl_imported_controls`
 -- AUTO_INCREMENT for table `activity_log`
 --
 ALTER TABLE `activity_log`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `log_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `batch_details`
 --
 ALTER TABLE `batch_details`
-  MODIFY `batch_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `batch_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `covid19_imported_controls`
 --
 ALTER TABLE `covid19_imported_controls`
-  MODIFY `control_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `control_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `covid19_positive_confirmation_manifest`
 --
 ALTER TABLE `covid19_positive_confirmation_manifest`
-  MODIFY `manifest_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `manifest_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `covid19_tests`
 --
 ALTER TABLE `covid19_tests`
-  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `eid_imported_controls`
 --
 ALTER TABLE `eid_imported_controls`
-  MODIFY `control_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `control_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `facility_details`
 --
 ALTER TABLE `facility_details`
-  MODIFY `facility_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `facility_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `facility_type`
 --
 ALTER TABLE `facility_type`
-  MODIFY `facility_type_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `facility_type_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `failed_result_retest_tracker`
 --
 ALTER TABLE `failed_result_retest_tracker`
-  MODIFY `frrt_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `frrt_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_cd4`
 --
 ALTER TABLE `form_cd4`
-  MODIFY `cd4_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `cd4_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_covid19`
 --
 ALTER TABLE `form_covid19`
-  MODIFY `covid19_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `covid19_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_eid`
 --
 ALTER TABLE `form_eid`
-  MODIFY `eid_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `eid_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_generic`
 --
 ALTER TABLE `form_generic`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_hepatitis`
 --
 ALTER TABLE `form_hepatitis`
-  MODIFY `hepatitis_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `hepatitis_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_tb`
 --
 ALTER TABLE `form_tb`
-  MODIFY `tb_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tb_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `form_vl`
 --
 ALTER TABLE `form_vl`
-  MODIFY `vl_sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `vl_sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_sample_rejection_reason_map`
 --
 ALTER TABLE `generic_sample_rejection_reason_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_failure_reason_map`
 --
 ALTER TABLE `generic_test_failure_reason_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_methods_map`
 --
 ALTER TABLE `generic_test_methods_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_reason_map`
 --
 ALTER TABLE `generic_test_reason_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_results`
 --
 ALTER TABLE `generic_test_results`
-  MODIFY `test_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_result_units_map`
 --
 ALTER TABLE `generic_test_result_units_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_sample_type_map`
 --
 ALTER TABLE `generic_test_sample_type_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `generic_test_symptoms_map`
 --
 ALTER TABLE `generic_test_symptoms_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `geographical_divisions`
 --
 ALTER TABLE `geographical_divisions`
-  MODIFY `geo_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `geo_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `hold_sample_import`
 --
 ALTER TABLE `hold_sample_import`
-  MODIFY `hold_sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `hold_sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `instrument_machines`
 --
 ALTER TABLE `instrument_machines`
-  MODIFY `config_machine_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `config_machine_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `lab_report_signatories`
 --
 ALTER TABLE `lab_report_signatories`
-  MODIFY `signatory_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `signatory_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `lab_storage_history`
 --
 ALTER TABLE `lab_storage_history`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `history_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `log_result_updates`
 --
 ALTER TABLE `log_result_updates`
-  MODIFY `result_log_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `result_log_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `move_samples`
 --
 ALTER TABLE `move_samples`
-  MODIFY `move_sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `move_sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `move_samples_map`
 --
 ALTER TABLE `move_samples_map`
-  MODIFY `sample_map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sample_map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `package_details`
 --
 ALTER TABLE `package_details`
-  MODIFY `package_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `package_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `privileges`
 --
 ALTER TABLE `privileges`
-  MODIFY `privilege_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=494;
+  MODIFY `privilege_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=521;
 
 --
 -- AUTO_INCREMENT for table `province_details`
 --
 ALTER TABLE `province_details`
-  MODIFY `province_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `province_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `qc_covid19`
 --
 ALTER TABLE `qc_covid19`
-  MODIFY `qc_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `qc_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `qc_covid19_tests`
 --
 ALTER TABLE `qc_covid19_tests`
-  MODIFY `qc_test_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `qc_test_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `queue_sample_code_generation`
 --
 ALTER TABLE `queue_sample_code_generation`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `report_to_mail`
 --
 ALTER TABLE `report_to_mail`
-  MODIFY `report_mail_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `report_mail_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `result_import_stats`
 --
 ALTER TABLE `result_import_stats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `roles`
 --
 ALTER TABLE `roles`
-  MODIFY `role_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `role_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `roles_privileges_map`
 --
 ALTER TABLE `roles_privileges_map`
-  MODIFY `map_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5498;
+  MODIFY `map_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5753;
 
 --
 -- AUTO_INCREMENT for table `r_cd4_sample_rejection_reasons`
 --
 ALTER TABLE `r_cd4_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_cd4_sample_types`
 --
 ALTER TABLE `r_cd4_sample_types`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_cd4_test_reasons`
 --
 ALTER TABLE `r_cd4_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_countries`
 --
 ALTER TABLE `r_countries`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
+  MODIFY `id` int UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=250;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_comorbidities`
 --
 ALTER TABLE `r_covid19_comorbidities`
-  MODIFY `comorbidity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `comorbidity_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_qc_testkits`
 --
 ALTER TABLE `r_covid19_qc_testkits`
-  MODIFY `testkit_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `testkit_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_sample_rejection_reasons`
 --
 ALTER TABLE `r_covid19_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=35;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_sample_type`
 --
 ALTER TABLE `r_covid19_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_symptoms`
 --
 ALTER TABLE `r_covid19_symptoms`
-  MODIFY `symptom_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
+  MODIFY `symptom_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10;
 
 --
 -- AUTO_INCREMENT for table `r_covid19_test_reasons`
 --
 ALTER TABLE `r_covid19_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `r_eid_sample_rejection_reasons`
 --
 ALTER TABLE `r_eid_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `r_eid_sample_type`
 --
 ALTER TABLE `r_eid_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `r_eid_test_reasons`
 --
 ALTER TABLE `r_eid_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_funding_sources`
 --
 ALTER TABLE `r_funding_sources`
-  MODIFY `funding_source_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `funding_source_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_generic_sample_rejection_reasons`
 --
 ALTER TABLE `r_generic_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_sample_types`
 --
 ALTER TABLE `r_generic_sample_types`
-  MODIFY `sample_type_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `sample_type_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_symptoms`
 --
 ALTER TABLE `r_generic_symptoms`
-  MODIFY `symptom_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `symptom_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_test_categories`
 --
 ALTER TABLE `r_generic_test_categories`
-  MODIFY `test_category_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_category_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_test_failure_reasons`
 --
 ALTER TABLE `r_generic_test_failure_reasons`
-  MODIFY `test_failure_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_failure_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_test_methods`
 --
 ALTER TABLE `r_generic_test_methods`
-  MODIFY `test_method_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_method_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_test_reasons`
 --
 ALTER TABLE `r_generic_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_generic_test_result_units`
 --
 ALTER TABLE `r_generic_test_result_units`
-  MODIFY `unit_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `unit_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_comorbidities`
 --
 ALTER TABLE `r_hepatitis_comorbidities`
-  MODIFY `comorbidity_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
+  MODIFY `comorbidity_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_results`
 --
 ALTER TABLE `r_hepatitis_results`
-  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `result_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_risk_factors`
 --
 ALTER TABLE `r_hepatitis_risk_factors`
-  MODIFY `riskfactor_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `riskfactor_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_sample_rejection_reasons`
 --
 ALTER TABLE `r_hepatitis_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_sample_type`
 --
 ALTER TABLE `r_hepatitis_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_hepatitis_test_reasons`
 --
 ALTER TABLE `r_hepatitis_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `r_implementation_partners`
 --
 ALTER TABLE `r_implementation_partners`
-  MODIFY `i_partner_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `i_partner_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_reasons_for_sample_removal`
 --
 ALTER TABLE `r_reasons_for_sample_removal`
-  MODIFY `removal_reason_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `removal_reason_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_recommended_corrective_actions`
 --
 ALTER TABLE `r_recommended_corrective_actions`
-  MODIFY `recommended_corrective_action_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `recommended_corrective_action_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_sample_controls`
 --
 ALTER TABLE `r_sample_controls`
-  MODIFY `r_sample_control_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `r_sample_control_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 
 --
 -- AUTO_INCREMENT for table `r_sample_status`
 --
 ALTER TABLE `r_sample_status`
-  MODIFY `status_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `status_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+
+--
+-- AUTO_INCREMENT for table `r_tb_results`
+--
+ALTER TABLE `r_tb_results`
+  MODIFY `result_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `r_tb_sample_rejection_reasons`
 --
 ALTER TABLE `r_tb_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_tb_sample_type`
 --
 ALTER TABLE `r_tb_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_tb_test_reasons`
 --
 ALTER TABLE `r_tb_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- AUTO_INCREMENT for table `r_test_types`
 --
 ALTER TABLE `r_test_types`
-  MODIFY `test_type_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `test_type_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_vl_art_regimen`
 --
 ALTER TABLE `r_vl_art_regimen`
-  MODIFY `art_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
+  MODIFY `art_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=29;
 
 --
 -- AUTO_INCREMENT for table `r_vl_results`
 --
 ALTER TABLE `r_vl_results`
-  MODIFY `result_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `result_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_vl_sample_rejection_reasons`
 --
 ALTER TABLE `r_vl_sample_rejection_reasons`
-  MODIFY `rejection_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
+  MODIFY `rejection_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=43;
 
 --
 -- AUTO_INCREMENT for table `r_vl_sample_type`
 --
 ALTER TABLE `r_vl_sample_type`
-  MODIFY `sample_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `sample_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `r_vl_test_failure_reasons`
 --
 ALTER TABLE `r_vl_test_failure_reasons`
-  MODIFY `failure_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `failure_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `r_vl_test_reasons`
 --
 ALTER TABLE `r_vl_test_reasons`
-  MODIFY `test_reason_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000;
+  MODIFY `test_reason_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=10000;
 
 --
 -- AUTO_INCREMENT for table `scheduled_jobs`
 --
 ALTER TABLE `scheduled_jobs`
-  MODIFY `job_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `job_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `support`
 --
 ALTER TABLE `support`
-  MODIFY `support_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `support_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `system_admin`
 --
 ALTER TABLE `system_admin`
-  MODIFY `system_admin_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `system_admin_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `s_app_menu`
 --
 ALTER TABLE `s_app_menu`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=214;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=222;
 
 --
 -- AUTO_INCREMENT for table `s_available_country_forms`
 --
 ALTER TABLE `s_available_country_forms`
-  MODIFY `vlsm_country_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `vlsm_country_id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT for table `tb_tests`
 --
 ALTER TABLE `tb_tests`
-  MODIFY `tb_test_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tb_test_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `temp_mail`
 --
 ALTER TABLE `temp_mail`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `temp_sample_import`
 --
 ALTER TABLE `temp_sample_import`
-  MODIFY `temp_sample_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `temp_sample_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `testing_lab_health_facilities_map`
 --
 ALTER TABLE `testing_lab_health_facilities_map`
-  MODIFY `facility_map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `facility_map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `track_api_requests`
 --
 ALTER TABLE `track_api_requests`
-  MODIFY `api_track_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `api_track_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `track_qr_code_page`
 --
 ALTER TABLE `track_qr_code_page`
-  MODIFY `tqcp_d` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `tqcp_d` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_facility_map`
 --
 ALTER TABLE `user_facility_map`
-  MODIFY `user_facility_map_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `user_facility_map_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `user_login_history`
 --
 ALTER TABLE `user_login_history`
-  MODIFY `history_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `history_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `vl_contact_notes`
 --
 ALTER TABLE `vl_contact_notes`
-  MODIFY `contact_notes_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `contact_notes_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `vl_imported_controls`
 --
 ALTER TABLE `vl_imported_controls`
-  MODIFY `control_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `control_id` int NOT NULL AUTO_INCREMENT;
 
 --
 -- Constraints for dumped tables
@@ -6259,8 +6691,8 @@ ALTER TABLE `generic_test_results`
 ALTER TABLE `generic_test_result_units_map`
   ADD CONSTRAINT `generic_test_result_units_map_ibfk_1` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
   ADD CONSTRAINT `generic_test_result_units_map_ibfk_2` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`),
-  ADD CONSTRAINT `generic_test_result_units_map_ibfk_3` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `generic_test_result_units_map_ibfk_4` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+  ADD CONSTRAINT `generic_test_result_units_map_ibfk_3` FOREIGN KEY (`test_type_id`) REFERENCES `r_test_types` (`test_type_id`),
+  ADD CONSTRAINT `generic_test_result_units_map_ibfk_4` FOREIGN KEY (`unit_id`) REFERENCES `r_generic_test_result_units` (`unit_id`);
 
 --
 -- Constraints for table `generic_test_sample_type_map`
@@ -6326,7 +6758,3 @@ ALTER TABLE `user_details`
 ALTER TABLE `vl_contact_notes`
   ADD CONSTRAINT `vl_contact_notes_ibfk_1` FOREIGN KEY (`treament_contact_id`) REFERENCES `form_vl` (`vl_sample_id`);
 COMMIT;
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

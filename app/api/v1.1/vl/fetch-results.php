@@ -1,5 +1,7 @@
 <?php
 
+// api/v1.1/vl/fetch-results.php
+
 use App\Services\ApiService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
@@ -7,11 +9,11 @@ use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\LoggerUtility;
 
 session_unset(); // no need of session in json response
 
@@ -238,15 +240,33 @@ try {
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
 
-    $remoteSampleCodes = array_column($rowData, 'remote_sample_code');
+    $now = DateUtility::getCurrentDateTime();
+    /** Stamp “sent to source” once (don’t touch dispatched here) */
+    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
     if (!empty($remoteSampleCodes)) {
-        // update result_sent_to_source_datetime where result_sent_to_source_datetime null and remote_sample_code in (remoteSampleCodes)
+        // 1) result_sent_to_source / result_sent_to_source_datetime — set once
         $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
         $db->where('result_sent_to_source_datetime', null);
         $db->update('form_vl', [
-            'result_sent_to_source' => 'sent',
-            'result_dispatched_datetime' => DateUtility::getCurrentDateTime(),
-            'result_sent_to_source_datetime' => DateUtility::getCurrentDateTime()
+            'result_sent_to_source'          => 'sent',
+            'result_sent_to_source_datetime' => $now,
+        ]);
+
+        // 2) result_dispatched_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_dispatched_datetime', null);
+        $db->update('form_vl', [
+            'result_dispatched_datetime' => $now,
+        ]);
+    }
+
+    /** Stamp “first pulled via API” once for rows actually returned */
+    $vlIds = array_values(array_filter(array_unique(array_column($rowData, 'vlSampleId'))));
+    if (!empty($vlIds)) {
+        $db->where('vl_sample_id', $vlIds, 'IN');
+        $db->where('result_pulled_via_api_datetime', null);
+        $db->update('form_vl', [
+            'result_pulled_via_api_datetime' => $now,
         ]);
     }
 

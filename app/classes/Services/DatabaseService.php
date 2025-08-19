@@ -40,10 +40,19 @@ final class DatabaseService extends MysqliDb
         parent::__construct($host, $username, $password, $db, $port, $charset);
     }
 
+    public function getMySQLVersion(): string
+    {
+        return $this->mysqli()->server_info; // human-readable, e.g. "8.0.37-0ubuntu0.22.04.3"
+    }
+
+    public function getMySQLVersionId(): int
+    {
+        return $this->mysqli()->server_version; // e.g. 80037
+    }
+
     public function isMySQL8OrHigher(): bool
     {
-        $version = $this->mysqli()->server_version;
-        return $version >= 80000; // MySQL versions are expressed in the form of main_version * 10000 + minor_version * 100 + sub_version for example 8.0.21 is 80021
+        return $this->getMySQLVersionId() >= 80000;
     }
 
 
@@ -86,7 +95,7 @@ final class DatabaseService extends MysqliDb
      */
     public function rawQueryGenerator(?string $query, $bindParams = null)
     {
-        if(empty($query) || $query === '') {
+        if (empty($query) || $query === '') {
             return yield from [];
         }
         $this->_query = $query;

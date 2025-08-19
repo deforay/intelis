@@ -33,6 +33,7 @@ UPDATE user_details SET user_id = UUID() WHERE user_id IS NULL OR TRIM(user_id) 
 ALTER TABLE `r_vl_art_regimen` DROP `nation_identifier`;
 
 -- Amit 31-May-2025
+ALTER TABLE `form_vl` CHANGE `vl_result_category` `vl_result_category` VARCHAR(32) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL;
 CREATE INDEX idx_vl_result_category_status ON form_vl (vl_result_category, result_status);
 
 -- Amit 10-Jun-2025
@@ -61,23 +62,94 @@ ALTER TABLE `form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFA
 ALTER TABLE `audit_form_eid` ADD `location_of_sample_collection` VARCHAR(20) NULL DEFAULT NULL AFTER `specimen_type`;
 
 
--- Amit 31-Jul-2025
--- Check if the index exists
-SET @idx_exists := (
-  SELECT COUNT(*)
-  FROM information_schema.statistics
-  WHERE table_schema = DATABASE()
-    AND table_name = 'form_vl'
-    AND index_name = 'idx_sample_code_facility'
-);
+-- Amit 18-Aug-2025
+ALTER TABLE `form_vl`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
 
--- Prepare the appropriate statement: add only if missing
-SET @sql = IF(
-  @idx_exists = 0,
-  'ALTER TABLE `form_vl` ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`)',
-  'SELECT 1'
-);
+ALTER TABLE `form_eid`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
 
-PREPARE stmt FROM @sql;
-EXECUTE stmt;
-DEALLOCATE PREPARE stmt;
+ALTER TABLE `form_covid19`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
+
+ALTER TABLE `form_hepatitis`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
+
+ALTER TABLE `form_tb`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
+
+ALTER TABLE `form_cd4`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
+
+ALTER TABLE `form_generic`
+  ADD INDEX `idx_sample_code_facility` (`sample_code`, `facility_id`);
+
+
+
+-- VL
+ALTER TABLE `form_vl`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_vl`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+
+
+-- EID
+
+ALTER TABLE `form_eid` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_eid` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+ALTER TABLE `form_eid`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_eid`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+
+-- CD4
+ALTER TABLE `form_cd4`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_cd4`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+-- COVID-19
+ALTER TABLE `form_covid19`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_covid19`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+-- Hepatitis
+ALTER TABLE `form_hepatitis`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_hepatitis`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+
+-- TB
+ALTER TABLE `form_tb`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_tb`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+-- Generic Tests
+
+ALTER TABLE `form_generic` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+ALTER TABLE `audit_form_generic` ADD `result_sent_to_source_datetime` DATETIME NULL DEFAULT NULL AFTER `result_sent_to_source`;
+
+ALTER TABLE `form_generic`
+ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
+AFTER `result_sent_to_source_datetime`;
+
+ALTER TABLE `form_generic`
+  ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);

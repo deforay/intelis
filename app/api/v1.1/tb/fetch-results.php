@@ -199,13 +199,43 @@ try {
     if (!empty($where)) {
         $whereStr = " WHERE " . implode(" AND ", $where);
     }
-    $sQuery .= $whereStr . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $sQuery .= "$whereStr ORDER BY vl.last_modified_datetime DESC limit 100 ";
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {
         foreach ($rowData as $key => $row) {
             $rowData[$key]['tbTests'] = $tbService->getTbTestsByFormId($row['tbId']);
         }
+    }
+
+    $now = DateUtility::getCurrentDateTime();
+    /** Stamp “sent to source” once (don’t touch dispatched here) */
+    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
+    if (!empty($remoteSampleCodes)) {
+        // 1) result_sent_to_source / result_sent_to_source_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_sent_to_source_datetime', null);
+        $db->update('form_tb', [
+            'result_sent_to_source'          => 'sent',
+            'result_sent_to_source_datetime' => $now,
+        ]);
+
+        // 2) result_dispatched_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_dispatched_datetime', null);
+        $db->update('form_tb', [
+            'result_dispatched_datetime' => $now,
+        ]);
+    }
+
+    /** Stamp “first pulled via API” once for rows actually returned */
+    $tbIds = array_values(array_filter(array_unique(array_column($rowData, 'tbId'))));
+    if (!empty($tbIds)) {
+        $db->where('tb_id', $tbIds, 'IN');
+        $db->where('result_pulled_via_api_datetime', null);
+        $db->update('form_tb', [
+            'result_pulled_via_api_datetime' => $now,
+        ]);
     }
 
     http_response_code(200);

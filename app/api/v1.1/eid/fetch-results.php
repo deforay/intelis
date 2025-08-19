@@ -218,6 +218,36 @@ try {
 
     $rowData = $db->rawQuery($sQuery);
 
+    $now = DateUtility::getCurrentDateTime();
+    /** Stamp “sent to source” once (don’t touch dispatched here) */
+    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
+    if (!empty($remoteSampleCodes)) {
+        // 1) result_sent_to_source / result_sent_to_source_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_sent_to_source_datetime', null);
+        $db->update('form_eid', [
+            'result_sent_to_source'          => 'sent',
+            'result_sent_to_source_datetime' => $now,
+        ]);
+
+        // 2) result_dispatched_datetime — set once
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
+        $db->where('result_dispatched_datetime', null);
+        $db->update('form_eid', [
+            'result_dispatched_datetime' => $now,
+        ]);
+    }
+
+    /** Stamp “first pulled via API” once for rows actually returned */
+    $eidIds = array_values(array_filter(array_unique(array_column($rowData, 'eidId'))));
+    if (!empty($eidIds)) {
+        $db->where('eid_id', $eidIds, 'IN');
+        $db->where('result_pulled_via_api_datetime', null);
+        $db->update('form_eid', [
+            'result_pulled_via_api_datetime' => $now,
+        ]);
+    }
+
     http_response_code(200);
     $payload = [
         'status' => 'success',
