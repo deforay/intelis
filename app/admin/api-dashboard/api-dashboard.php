@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("Smart Dashboard");
+$title = _translate("API Dashboard");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */

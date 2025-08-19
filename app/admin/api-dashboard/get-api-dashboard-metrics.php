@@ -166,7 +166,7 @@ try {
     $metrics['duplicateSuspects'] = $duplicatesResult['duplicateSuspects'] ?? 0;
 
     // Debug logging
-    LoggerUtility::logDebug("Smart Dashboard Metrics - Duplicates Debug", [
+    LoggerUtility::logDebug("API Dashboard Metrics - Duplicates Debug", [
         'duplicates_count' => $metrics['duplicateSuspects'],
         'test_type' => $testType,
         'filters' => $_POST,

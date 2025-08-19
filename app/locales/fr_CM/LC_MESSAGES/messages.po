@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-08-12 16:51+0530\n"
-"PO-Revision-Date: 2025-08-12 16:51+0530\n"
+"POT-Creation-Date: 2025-08-19 14:47+0530\n"
+"PO-Revision-Date: 2025-08-19 14:49+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -17,15 +17,18 @@ msgstr ""
 "X-Poedit-SearchPath-2: public/assets/js/dates.js.php\n"
 "X-Poedit-SearchPath-3: public/assets/js/smart-date-format.js.php\n"
 
-#: app/admin/index.php:3 app/covid-19/requests/covid-19-add-request.php:9
-msgid "COVID-19 | Add New Request"
-msgstr "COVID-19 | Ajouter une nouvelle demande"
+#: app/admin/api-dashboard/api-dashboard.php:11
+#: app/admin/api-dashboard/api-dashboard.php:100
+#: app/admin/api-dashboard/api-dashboard.php:107
+#: app/admin/api-dashboard/duplicates-detail.php:49
+#: app/admin/api-dashboard/missing-samples-detail.php:48
+msgid "API Dashboard"
+msgstr "Tableau de bord de l’API"
 
-#: app/admin/index.php:9
-msgid "Welcome to Admin Page"
-msgstr "Bienvenue sur la page d’administration"
-
-#: app/admin/index.php:11 app/admin/monitoring/activity-log.php:47
+#: app/admin/api-dashboard/api-dashboard.php:104
+#: app/admin/api-dashboard/duplicates-detail.php:48
+#: app/admin/api-dashboard/missing-samples-detail.php:47 app/admin/index.php:11
+#: app/admin/monitoring/activity-log.php:47
 #: app/admin/monitoring/api-sync-history.php:40
 #: app/admin/monitoring/audit-trail.php:280
 #: app/admin/monitoring/lab-sync-details.php:98
@@ -268,489 +271,22 @@ msgstr "Bienvenue sur la page d’administration"
 msgid "Home"
 msgstr "Accueil"
 
-#: app/admin/index.php:12 app/admin/monitoring/log-files.php:10
-#: app/system-admin/admin-header.php:132
-msgid "Admin"
-msgstr "Administrateur"
+#: app/admin/api-dashboard/api-dashboard.php:119
+msgid "Filters"
+msgstr "Filtres"
 
-#: app/admin/monitoring/activity-log.php:8
-#: app/admin/monitoring/activity-log.php:43 app/system/translate-strings.php:21
-msgid "User Activity Log"
-msgstr "Journal d’activité de l’utilisateur"
+#: app/admin/api-dashboard/api-dashboard.php:123
+msgid "Test Request Date Range"
+msgstr "Date de la demande de test"
 
-#: app/admin/monitoring/activity-log.php:50
-#: app/admin/monitoring/audit-trail.php:14
-#: app/admin/monitoring/audit-trail.php:278
-#: app/admin/monitoring/audit-trail.php:281 app/system/translate-strings.php:22
-msgid "Audit Trail"
-msgstr "Piste d’audit"
-
-#: app/admin/monitoring/activity-log.php:63
-#: app/admin/monitoring/api-sync-history.php:56
-#: app/admin/monitoring/sources-of-requests.php:80 app/dashboard/index.php:125
-#: app/dashboard/index.php:169 app/dashboard/index.php:215
-#: app/dashboard/index.php:262 app/dashboard/index.php:310
-#: app/dashboard/index.php:358 app/dashboard/index.php:407
-#: app/dashboard/index.php:457
-#: app/specimen-referral-manifest/move-manifest.php:182
-#: app/specimen-referral-manifest/move-manifest.php:185
-msgid "Date Range"
-msgstr "Plage de dates"
-
+#: app/admin/api-dashboard/api-dashboard.php:126
 #: app/admin/monitoring/activity-log.php:66
 #: app/admin/monitoring/api-sync-history.php:59
 #: app/admin/monitoring/sources-of-requests.php:83
 msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
-#: app/admin/monitoring/activity-log.php:69 app/system/translate-strings.php:11
-#: app/users/addUser.php:61 app/users/edit-profile.php:40
-#: app/users/editUser.php:99 app/users/users.php:2 app/users/users.php:11
-#: app/users/users.php:14
-msgid "Users"
-msgstr "Utilisateurs"
-
-#: app/admin/monitoring/activity-log.php:72
-msgid "Please select the user name"
-msgstr "Veuillez sélectionner le nom d'utilisateur"
-
-#: app/admin/monitoring/activity-log.php:79
-#: app/admin/monitoring/activity-log.php:82
-#: app/admin/monitoring/activity-log.php:105
-msgid "Type of Action"
-msgstr "Type d'action"
-
-#: app/admin/monitoring/activity-log.php:88
-#: app/admin/monitoring/api-sync-history.php:112
-#: app/admin/monitoring/lab-sync-details.php:186
-#: app/admin/monitoring/log-files.php:324
-#: app/admin/monitoring/sources-of-requests.php:175
-#: app/admin/monitoring/sync-status.php:366
-#: app/admin/monitoring/test-results-metadata.php:114
-#: app/batch/get-samples-batch.php:236 app/batch/get-samples-batch.php:237
-#: app/cd4/management/cd4-clinic-report.php:177
-#: app/cd4/management/cd4-clinic-report.php:282
-#: app/cd4/management/cd4-clinic-report.php:378
-#: app/cd4/management/cd4-clinic-report.php:432
-#: app/cd4/management/cd4-clinic-report.php:495
-#: app/cd4/management/cd4-clinic-report.php:524
-#: app/cd4/management/cd4-export-data.php:191
-#: app/cd4/management/cd4-sample-rejection-report.php:77
-#: app/cd4/management/cd4-sample-status.php:96
-#: app/cd4/management/cd4-testing-target-report.php:212
-#: app/cd4/requests/cd4-requests.php:429
-#: app/cd4/results/cd4-failed-results.php:161
-#: app/cd4/results/cd4-manual-results.php:163
-#: app/cd4/results/cd4-print-results.php:144
-#: app/cd4/results/cd4-print-results.php:319
-#: app/cd4/results/cd4-result-status.php:183
-#: app/cd4/results/email-results.php:285
-#: app/covid-19/management/covid-19-clinic-report.php:169
-#: app/covid-19/management/covid-19-clinic-report.php:274
-#: app/covid-19/management/covid-19-clinic-report.php:373
-#: app/covid-19/management/covid-19-clinic-report.php:428
-#: app/covid-19/management/covid-19-clinic-report.php:491
-#: app/covid-19/management/covid-19-clinic-report.php:518
-#: app/covid-19/management/covid-19-export-data.php:211
-#: app/covid-19/management/covid-19-sample-rejection-report.php:72
-#: app/covid-19/management/covid-19-sample-status.php:91
-#: app/covid-19/management/covid19TestingTargetReport.php:215
-#: app/covid-19/requests/covid-19-requests.php:351
-#: app/covid-19/requests/forms/add-cameroon.php:198
-#: app/covid-19/requests/forms/edit-cameroon.php:215
-#: app/covid-19/results/covid-19-failed-results.php:160
-#: app/covid-19/results/covid-19-manual-results.php:114
-#: app/covid-19/results/covid-19-print-results.php:149
-#: app/covid-19/results/covid-19-print-results.php:325
-#: app/covid-19/results/covid-19-result-status.php:137
-#: app/covid-19/results/email-results.php:287
-#: app/dashboard/getSampleCount.php:116 app/dashboard/index.php:130
-#: app/dashboard/index.php:174 app/dashboard/index.php:220
-#: app/dashboard/index.php:267 app/dashboard/index.php:315
-#: app/dashboard/index.php:363 app/dashboard/index.php:412
-#: app/dashboard/index.php:462 app/eid/management/eid-clinic-report.php:170
-#: app/eid/management/eid-clinic-report.php:279
-#: app/eid/management/eid-clinic-report.php:376
-#: app/eid/management/eid-clinic-report.php:431
-#: app/eid/management/eid-clinic-report.php:494
-#: app/eid/management/eid-clinic-report.php:523
-#: app/eid/management/eid-export-data.php:229
-#: app/eid/management/eid-sample-rejection-report.php:70
-#: app/eid/management/eid-sample-status.php:95
-#: app/eid/management/eidTestingTargetReport.php:214
-#: app/eid/requests/eid-requests.php:365
-#: app/eid/requests/forms/add-burkina-faso.php:135
-#: app/eid/requests/forms/edit-burkina-faso.php:149
-#: app/eid/results/eid-failed-results.php:175
-#: app/eid/results/eid-manual-results.php:119
-#: app/eid/results/eid-print-results.php:132
-#: app/eid/results/eid-print-results.php:304
-#: app/eid/results/eid-result-status.php:137
-#: app/eid/results/email-results.php:284
-#: app/eid/results/forms/update-burkina-faso-result.php:148
-#: app/facilities/getFacilityMapUser.php:73
-#: app/facilities/getFacilityMapUser.php:74 app/facilities/mapTestType.php:156
-#: app/facilities/mapTestType.php:157
-#: app/generic-tests/program-management/generic-export-data.php:246
-#: app/generic-tests/program-management/generic-sample-status.php:126
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:86
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:115
-#: app/generic-tests/program-management/sample-rejection-report.php:96
-#: app/generic-tests/requests/view-requests.php:136
-#: app/generic-tests/results/email-results.php:287
-#: app/generic-tests/results/generic-failed-results.php:125
-#: app/generic-tests/results/generic-print-result.php:182
-#: app/generic-tests/results/generic-print-result.php:409
-#: app/generic-tests/results/generic-result-approval.php:176
-#: app/generic-tests/results/generic-test-results.php:151
-#: app/hepatitis/management/hepatitis-clinic-report.php:171
-#: app/hepatitis/management/hepatitis-clinic-report.php:277
-#: app/hepatitis/management/hepatitis-clinic-report.php:373
-#: app/hepatitis/management/hepatitis-clinic-report.php:427
-#: app/hepatitis/management/hepatitis-clinic-report.php:491
-#: app/hepatitis/management/hepatitis-clinic-report.php:518
-#: app/hepatitis/management/hepatitis-export-data.php:216
-#: app/hepatitis/management/hepatitis-sample-rejection-report.php:74
-#: app/hepatitis/management/hepatitis-sample-status.php:94
-#: app/hepatitis/management/hepatitis-testing-target-report.php:214
-#: app/hepatitis/requests/hepatitis-dhis2.php:238
-#: app/hepatitis/requests/hepatitis-requests.php:351
-#: app/hepatitis/results/email-results.php:287
-#: app/hepatitis/results/hepatitis-failed-results.php:159
-#: app/hepatitis/results/hepatitis-manual-results.php:115
-#: app/hepatitis/results/hepatitis-print-results.php:143
-#: app/hepatitis/results/hepatitis-print-results.php:318
-#: app/hepatitis/results/hepatitis-result-status.php:127
-#: app/mail/vlResultMail.php:287
-#: app/specimen-referral-manifest/add-manifest.php:233
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:134
-#: app/specimen-referral-manifest/get-samples-for-manifest.php:135
-#: app/system-admin/user-login-history/userLoginIndex.php:50
-#: app/tb/management/tb-clinic-report.php:169
-#: app/tb/management/tb-clinic-report.php:274
-#: app/tb/management/tb-clinic-report.php:371
-#: app/tb/management/tb-clinic-report.php:424
-#: app/tb/management/tb-clinic-report.php:487
-#: app/tb/management/tb-clinic-report.php:514
-#: app/tb/management/tb-export-data.php:205
-#: app/tb/management/tb-sample-rejection-report.php:72
-#: app/tb/management/tb-sample-status.php:93
-#: app/tb/requests/forms/add-burkina-faso.php:159
-#: app/tb/requests/forms/edit-burkina-faso.php:179
-#: app/tb/requests/tb-requests.php:267 app/tb/results/email-results.php:287
-#: app/tb/results/forms/update-burkina-faso.php:178
-#: app/tb/results/tb-failed-results.php:160
-#: app/tb/results/tb-manual-results.php:119
-#: app/tb/results/tb-print-results.php:144
-#: app/tb/results/tb-print-results.php:314
-#: app/tb/results/tb-result-status.php:131 app/users/addUser.php:364
-#: app/users/addUser.php:365 app/users/editUser.php:417
-#: app/users/editUser.php:418 app/vl/program-management/highViralLoad.php:304
-#: app/vl/program-management/highViralLoad.php:647
-#: app/vl/program-management/highViralLoad.php:849
-#: app/vl/program-management/highViralLoad.php:967
-#: app/vl/program-management/highViralLoad.php:1064
-#: app/vl/program-management/highViralLoad.php:1093
-#: app/vl/program-management/sample-storage-reports.php:107
-#: app/vl/program-management/sample-storage-reports.php:192
-#: app/vl/program-management/sampleRejectionReport.php:117
-#: app/vl/program-management/vl-export-data.php:369
-#: app/vl/program-management/vl-sample-status.php:129
-#: app/vl/program-management/vlControlReport.php:78
-#: app/vl/program-management/vlMonitoringReport.php:227
-#: app/vl/program-management/vlWeeklyReport.php:98
-#: app/vl/program-management/vlWeeklyReport.php:226
-#: app/vl/reference/add-vl-results.php:172
-#: app/vl/reference/add-vl-results.php:173
-#: app/vl/reference/edit-vl-results.php:175
-#: app/vl/reference/edit-vl-results.php:176
-#: app/vl/requests/forms/add-drc.php:172 app/vl/requests/vl-requests.php:476
-#: app/vl/results/email-results.php:287
-#: app/vl/results/vl-failed-results.php:132
-#: app/vl/results/vl-print-results.php:203
-#: app/vl/results/vl-print-results.php:460
-#: app/vl/results/vlResultApproval.php:183 app/vl/results/vlResultMail.php:287
-#: app/vl/results/vlTestResult.php:162
-msgid "Search"
-msgstr "Rechercher"
-
-#: app/admin/monitoring/activity-log.php:91
-#: app/admin/monitoring/activity-log.php:149
-#: app/admin/monitoring/api-sync-history.php:170
-#: app/admin/monitoring/sources-of-requests.php:295
-#: app/admin/monitoring/test-results-metadata.php:208
-#: app/batch/add-batch.php:404 app/batch/edit-batch.php:392
-#: app/cd4/management/cd4-clinic-report.php:626
-#: app/cd4/management/cd4-export-data.php:332
-#: app/cd4/management/cd4-sample-rejection-report.php:110
-#: app/cd4/management/cd4-sample-status.php:157
-#: app/cd4/management/cd4-testing-target-report.php:265
-#: app/cd4/requests/cd4-requests.php:727
-#: app/cd4/results/cd4-failed-results.php:330
-#: app/cd4/results/cd4-manual-results.php:312
-#: app/cd4/results/cd4-print-results.php:481
-#: app/cd4/results/cd4-result-status.php:292
-#: app/cd4/results/email-results.php:370
-#: app/covid-19/mail/mail-covid-19-results.php:281
-#: app/covid-19/management/covid-19-clinic-report.php:618
-#: app/covid-19/management/covid-19-export-data.php:352
-#: app/covid-19/management/covid-19-sample-rejection-report.php:106
-#: app/covid-19/management/covid-19-sample-status.php:155
-#: app/covid-19/management/covid19TestingTargetReport.php:268
-#: app/covid-19/requests/covid-19-dhis2.php:272
-#: app/covid-19/requests/covid-19-requests.php:593
-#: app/covid-19/results/can-record-confirmatory-tests.php:223
-#: app/covid-19/results/covid-19-failed-results.php:275
-#: app/covid-19/results/covid-19-manual-results.php:225
-#: app/covid-19/results/covid-19-print-results.php:496
-#: app/covid-19/results/covid-19-result-status.php:213
-#: app/covid-19/results/email-results.php:372 app/dashboard/index.php:532
-#: app/dashboard/index.php:881 app/dashboard/vlTestResultStatus.php:193
-#: app/eid/management/eid-clinic-report.php:625
-#: app/eid/management/eid-export-data.php:378
-#: app/eid/management/eid-export-data.php:409
-#: app/eid/management/eid-sample-rejection-report.php:103
-#: app/eid/management/eid-sample-status.php:181
-#: app/eid/management/eidTestingTargetReport.php:266
-#: app/eid/requests/eid-requests.php:608
-#: app/eid/results/eid-failed-results.php:351
-#: app/eid/results/eid-manual-results.php:267
-#: app/eid/results/eid-print-results.php:488
-#: app/eid/results/eid-result-status.php:218
-#: app/eid/results/email-results.php:369 app/facilities/editFacility.php:538
-#: app/generic-tests/mail/mail-generic-tests-results.php:326
-#: app/generic-tests/program-management/generic-export-data.php:385
-#: app/generic-tests/program-management/generic-sample-status.php:210
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:208
-#: app/generic-tests/program-management/sample-rejection-report.php:131
-#: app/generic-tests/requests/view-requests.php:309
-#: app/generic-tests/results/email-results.php:372
-#: app/generic-tests/results/generic-failed-results.php:298
-#: app/generic-tests/results/generic-print-result.php:588
-#: app/generic-tests/results/generic-result-approval.php:286
-#: app/generic-tests/results/generic-test-results.php:300
-#: app/global-config/editGlobalConfig.php:213
-#: app/hepatitis/mail/mail-hepatitis-results.php:271
-#: app/hepatitis/management/hepatitis-clinic-report.php:618
-#: app/hepatitis/management/hepatitis-export-data.php:354
-#: app/hepatitis/management/hepatitis-sample-rejection-report.php:107
-#: app/hepatitis/management/hepatitis-sample-status.php:155
-#: app/hepatitis/management/hepatitis-testing-target-report.php:267
-#: app/hepatitis/requests/hepatitis-dhis2.php:451
-#: app/hepatitis/requests/hepatitis-requests.php:569
-#: app/hepatitis/results/email-results.php:372
-#: app/hepatitis/results/hepatitis-failed-results.php:321
-#: app/hepatitis/results/hepatitis-manual-results.php:227
-#: app/hepatitis/results/hepatitis-print-results.php:483
-#: app/hepatitis/results/hepatitis-result-status.php:204
-#: app/import-result/imported-results.php:578 app/mail/vlResultMail.php:372
-#: app/move-samples/select-samples-to-move.php:233
-#: app/specimen-referral-manifest/add-manifest.php:234
-#: app/specimen-referral-manifest/add-manifest.php:291
-#: app/specimen-referral-manifest/edit-manifest.php:301
-#: app/specimen-referral-manifest/move-manifest.php:325
-#: app/system-admin/user-login-history/userLoginIndex.php:165
-#: app/tb/management/tb-clinic-report.php:614
-#: app/tb/management/tb-export-data.php:345
-#: app/tb/management/tb-sample-rejection-report.php:105
-#: app/tb/management/tb-sample-status.php:154
-#: app/tb/requests/tb-requests.php:438 app/tb/results/email-results.php:372
-#: app/tb/results/tb-failed-results.php:324
-#: app/tb/results/tb-manual-results.php:230
-#: app/tb/results/tb-print-results.php:477
-#: app/tb/results/tb-result-status.php:210 app/users/editUser.php:219
-#: app/vl/program-management/highViralLoad.php:1202
-#: app/vl/program-management/highViralLoad.php:1232
-#: app/vl/program-management/sampleRejectionReport.php:152
-#: app/vl/program-management/vl-export-data.php:583
-#: app/vl/program-management/vl-sample-status.php:218
-#: app/vl/program-management/vlControlReport.php:111
-#: app/vl/program-management/vlMonitoringReport.php:313
-#: app/vl/program-management/vlSuppressedTargetReport.php:261
-#: app/vl/program-management/vlTestingTargetReport.php:267
-#: app/vl/program-management/vlWeeklyReport.php:325
-#: app/vl/requests/sample-storage.php:463 app/vl/requests/vl-requests.php:806
-#: app/vl/results/email-results.php:372
-#: app/vl/results/vl-failed-results.php:308
-#: app/vl/results/vl-print-results.php:674
-#: app/vl/results/vlResultApproval.php:295 app/vl/results/vlResultMail.php:372
-#: app/vl/results/vlTestResult.php:308
-msgid "Clear"
-msgstr "Effacer"
-
-#: app/admin/monitoring/activity-log.php:102
-msgid "Audit Log"
-msgstr "Journal d'audit"
-
-#: app/admin/monitoring/activity-log.php:108
-#: app/system-admin/user-login-history/userLoginIndex.php:64
-#: app/users/edit-profile.php:153
-msgid "IP Address"
-msgstr "Adresse IP"
-
-#: app/admin/monitoring/activity-log.php:111
-msgid "Recorded On"
-msgstr "Enregistré le"
-
-#: app/admin/monitoring/activity-log.php:118
-#: app/admin/monitoring/api-sync-history.php:147 app/batch/batches.php:117
-#: app/cd4/management/cd4-clinic-report.php:203
-#: app/cd4/management/cd4-clinic-report.php:305
-#: app/cd4/management/cd4-clinic-report.php:402
-#: app/cd4/management/cd4-clinic-report.php:458
-#: app/cd4/management/cd4-clinic-report.php:578
-#: app/cd4/management/cd4-export-data.php:269
-#: app/cd4/management/cd4-sample-status.php:126
-#: app/cd4/management/cd4-testing-target-report.php:235
-#: app/cd4/reference/cd4-sample-rejection-reasons.php:50
-#: app/cd4/reference/cd4-sample-type.php:52
-#: app/cd4/reference/cd4-test-reasons.php:52
-#: app/cd4/requests/cd4-requests.php:608
-#: app/cd4/results/cd4-failed-results.php:228
-#: app/cd4/results/cd4-manual-results.php:279
-#: app/cd4/results/cd4-print-results.php:231
-#: app/cd4/results/cd4-print-results.php:405
-#: app/cd4/results/cd4-result-status.php:262
-#: app/common/reference/funding-sources.php:39
-#: app/common/reference/geographical-divisions-details.php:43
-#: app/common/reference/implementation-partners.php:39
-#: app/common/reference/lab-storage.php:49
-#: app/common/reference/recommended-corrective-actions.php:55
-#: app/covid-19/management/covid-19-clinic-report.php:195
-#: app/covid-19/management/covid-19-clinic-report.php:298
-#: app/covid-19/management/covid-19-clinic-report.php:396
-#: app/covid-19/management/covid-19-clinic-report.php:454
-#: app/covid-19/management/covid-19-clinic-report.php:570
-#: app/covid-19/management/covid-19-export-data.php:289
-#: app/covid-19/management/covid-19-sample-status.php:124
-#: app/covid-19/management/covid19TestingTargetReport.php:238
-#: app/covid-19/reference/covid19-comorbidities.php:69
-#: app/covid-19/reference/covid19-qc-test-kits.php:51
-#: app/covid-19/reference/covid19-results.php:41
-#: app/covid-19/reference/covid19-sample-rejection-reasons.php:53
-#: app/covid-19/reference/covid19-sample-type.php:69
-#: app/covid-19/reference/covid19-symptoms.php:51
-#: app/covid-19/reference/covid19-test-reasons.php:42
-#: app/covid-19/requests/covid-19-requests.php:479
-#: app/covid-19/results/covid-19-failed-results.php:228
-#: app/covid-19/results/covid-19-manual-results.php:193
-#: app/covid-19/results/covid-19-print-results.php:236
-#: app/covid-19/results/covid-19-print-results.php:411
-#: app/covid-19/results/covid-19-qc-data.php:96
-#: app/covid-19/results/covid-19-result-status.php:184
-#: app/eid/management/eid-clinic-report.php:197
-#: app/eid/management/eid-clinic-report.php:303
-#: app/eid/management/eid-clinic-report.php:399
-#: app/eid/management/eid-clinic-report.php:457
-#: app/eid/management/eid-clinic-report.php:577
-#: app/eid/management/eid-export-data.php:319
-#: app/eid/management/eid-sample-status.php:149
-#: app/eid/management/eidTestingTargetReport.php:236
-#: app/eid/reference/eid-results.php:49
-#: app/eid/reference/eid-sample-rejection-reasons.php:53
-#: app/eid/reference/eid-sample-type.php:50
-#: app/eid/reference/eid-test-reasons.php:51
-#: app/eid/requests/eid-requests.php:493
-#: app/eid/results/eid-failed-results.php:249
-#: app/eid/results/eid-manual-results.php:234
-#: app/eid/results/eid-print-results.php:233
-#: app/eid/results/eid-print-results.php:405
-#: app/eid/results/eid-result-status.php:189 app/facilities/facilities.php:182
-#: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:55
-#: app/generic-tests/configuration/sample-types/generic-sample-type.php:55
-#: app/generic-tests/configuration/symptoms/generic-symptoms.php:55
-#: app/generic-tests/configuration/test-categories/generic-test-categories.php:54
-#: app/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:55
-#: app/generic-tests/configuration/test-methods/generic-test-methods.php:54
-#: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:54
-#: app/generic-tests/configuration/test-type.php:56
-#: app/generic-tests/configuration/testing-reasons/generic-testing-reason.php:56
-#: app/generic-tests/program-management/generic-export-data.php:343
-#: app/generic-tests/program-management/generic-sample-status.php:177
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:169
-#: app/generic-tests/requests/view-requests.php:207
-#: app/generic-tests/results/generic-failed-results.php:211
-#: app/generic-tests/results/generic-print-result.php:299
-#: app/generic-tests/results/generic-print-result.php:525
-#: app/generic-tests/results/generic-result-approval.php:256
-#: app/generic-tests/results/generic-test-results.php:267
-#: app/hepatitis/management/hepatitis-clinic-report.php:198
-#: app/hepatitis/management/hepatitis-clinic-report.php:300
-#: app/hepatitis/management/hepatitis-clinic-report.php:397
-#: app/hepatitis/management/hepatitis-clinic-report.php:454
-#: app/hepatitis/management/hepatitis-clinic-report.php:570
-#: app/hepatitis/management/hepatitis-export-data.php:294
-#: app/hepatitis/management/hepatitis-sample-status.php:124
-#: app/hepatitis/management/hepatitis-testing-target-report.php:237
-#: app/hepatitis/reference/hepatitis-comorbidities.php:51
-#: app/hepatitis/reference/hepatitis-results.php:50
-#: app/hepatitis/reference/hepatitis-risk-factors.php:50
-#: app/hepatitis/reference/hepatitis-sample-rejection-reasons.php:53
-#: app/hepatitis/reference/hepatitis-sample-type.php:50
-#: app/hepatitis/reference/hepatitis-test-reasons.php:51
-#: app/hepatitis/requests/hepatitis-dhis2.php:355
-#: app/hepatitis/requests/hepatitis-requests.php:453
-#: app/hepatitis/results/hepatitis-failed-results.php:224
-#: app/hepatitis/results/hepatitis-manual-results.php:195
-#: app/hepatitis/results/hepatitis-print-results.php:230
-#: app/hepatitis/results/hepatitis-print-results.php:404
-#: app/hepatitis/results/hepatitis-result-status.php:175
-#: app/instruments/instruments.php:52 app/patients/view-patients.php:45
-#: app/roles/roles.php:45 app/system-admin/api-stats/api-stats.php:60
-#: app/system-admin/user-login-history/userLoginIndex.php:73
-#: app/tb/management/tb-clinic-report.php:195
-#: app/tb/management/tb-clinic-report.php:299
-#: app/tb/management/tb-clinic-report.php:394
-#: app/tb/management/tb-clinic-report.php:450
-#: app/tb/management/tb-clinic-report.php:566
-#: app/tb/management/tb-export-data.php:283
-#: app/tb/management/tb-sample-status.php:123
-#: app/tb/reference/tb-results.php:49
-#: app/tb/reference/tb-sample-rejection-reasons.php:51
-#: app/tb/reference/tb-sample-type.php:69
-#: app/tb/reference/tb-test-reasons.php:49 app/tb/requests/tb-requests.php:329
-#: app/tb/results/tb-failed-results.php:227
-#: app/tb/results/tb-manual-results.php:198
-#: app/tb/results/tb-print-results.php:226
-#: app/tb/results/tb-print-results.php:396
-#: app/tb/results/tb-result-status.php:181 app/users/users.php:69
-#: app/vl/program-management/highViralLoad.php:358
-#: app/vl/program-management/highViralLoad.php:694
-#: app/vl/program-management/highViralLoad.php:893
-#: app/vl/program-management/highViralLoad.php:1023
-#: app/vl/program-management/highViralLoad.php:1147
-#: app/vl/program-management/sample-storage-reports.php:159
-#: app/vl/program-management/sample-storage-reports.php:255
-#: app/vl/program-management/vl-export-data.php:524
-#: app/vl/program-management/vl-sample-status.php:186
-#: app/vl/program-management/vlMonitoringReport.php:278
-#: app/vl/program-management/vlWeeklyReport.php:191
-#: app/vl/program-management/vlWeeklyReport.php:286
-#: app/vl/reference/vl-art-code-details.php:48
-#: app/vl/reference/vl-results.php:52
-#: app/vl/reference/vl-sample-rejection-reasons.php:51
-#: app/vl/reference/vl-sample-type.php:50
-#: app/vl/reference/vl-test-failure-reasons.php:50
-#: app/vl/reference/vl-test-reasons.php:51 app/vl/requests/vl-requests.php:682
-#: app/vl/result-mail/testResultEmailConfig.php:36
-#: app/vl/results/vl-failed-results.php:218
-#: app/vl/results/vl-print-results.php:333
-#: app/vl/results/vl-print-results.php:589
-#: app/vl/results/vlResultApproval.php:265 app/vl/results/vlTestResult.php:275
-msgid "Loading data from server"
-msgstr "Chargement des données depuis le serveur"
-
-#: app/admin/monitoring/api-sync-history.php:7
-#: app/system/translate-strings.php:170
-msgid "API Sync History"
-msgstr "Historique de la synchronisation de l'API"
-
-#: app/admin/monitoring/api-sync-history.php:36
-#: app/admin/monitoring/api-sync-history.php:43
-#: app/system/translate-strings.php:23
-msgid "API History"
-msgstr "Historique de l’API"
-
+#: app/admin/api-dashboard/api-dashboard.php:128
 #: app/admin/monitoring/api-sync-history.php:62
 #: app/admin/monitoring/api-sync-history.php:131
 #: app/admin/monitoring/audit-trail.php:293
@@ -775,14 +311,473 @@ msgstr "Historique de l’API"
 msgid "Test Type"
 msgstr "Type de test"
 
-#: app/admin/monitoring/api-sync-history.php:65
-#: app/admin/monitoring/lab-sync-details.php:144
-#: app/admin/monitoring/sources-of-requests.php:129
-#: app/admin/monitoring/test-results-metadata.php:66
-#: app/facilities/facilities.php:86
-msgid "Please select the Test types"
-msgstr "Veuillez sélectionner les types de tests"
+#: app/admin/api-dashboard/api-dashboard.php:132
+#: app/admin/monitoring/api-sync-history.php:71
+#: app/admin/monitoring/lab-sync-details.php:147
+#: app/admin/monitoring/sources-of-requests.php:132
+#: app/admin/monitoring/test-results-metadata.php:69
+#: app/eid/requests/forms/add-burkina-faso.php:246
+#: app/eid/requests/forms/edit-burkina-faso.php:259
+#: app/eid/results/forms/update-burkina-faso-result.php:258
+#: app/facilities/addFacility.php:349 app/facilities/addFacility.php:707
+#: app/facilities/addFacility.php:1038 app/facilities/editFacility.php:376
+#: app/facilities/editFacility.php:676 app/facilities/editFacility.php:705
+#: app/facilities/editFacility.php:1049 app/facilities/facilities.php:89
+#: app/facilities/mapTestType.php:70 app/instruments/edit-instrument.php:171
+msgid "Viral Load"
+msgstr "CHARGE VIRALE"
 
+#: app/admin/api-dashboard/api-dashboard.php:135
+#: app/admin/monitoring/api-sync-history.php:76
+#: app/admin/monitoring/lab-sync-details.php:152
+#: app/admin/monitoring/sources-of-requests.php:137
+#: app/admin/monitoring/test-results-metadata.php:74
+#: app/classes/Services/TestsService.php:59 app/facilities/addFacility.php:354
+#: app/facilities/addFacility.php:712 app/facilities/addFacility.php:1039
+#: app/facilities/editFacility.php:379 app/facilities/editFacility.php:677
+#: app/facilities/editFacility.php:706 app/facilities/editFacility.php:997
+#: app/facilities/editFacility.php:1050 app/facilities/facilities.php:92
+#: app/facilities/mapTestType.php:73
+msgid "Early Infant Diagnosis"
+msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
+
+#: app/admin/api-dashboard/api-dashboard.php:138
+#: app/admin/monitoring/api-sync-history.php:81
+#: app/admin/monitoring/lab-sync-details.php:157
+#: app/admin/monitoring/sources-of-requests.php:142
+#: app/admin/monitoring/test-results-metadata.php:79
+#: app/classes/Services/TestsService.php:72 app/facilities/addFacility.php:359
+#: app/facilities/addFacility.php:717 app/facilities/addFacility.php:1040
+#: app/facilities/editFacility.php:382 app/facilities/editFacility.php:678
+#: app/facilities/editFacility.php:707 app/facilities/editFacility.php:1000
+#: app/facilities/editFacility.php:1051 app/facilities/facilities.php:95
+#: app/facilities/mapTestType.php:76 app/instruments/add-instrument.php:279
+#: app/instruments/add-instrument.php:411
+#: app/instruments/edit-instrument.php:177
+#: app/instruments/edit-instrument.php:355
+#: app/instruments/edit-instrument.php:487
+msgid "Covid-19"
+msgstr "COVID-19"
+
+#: app/admin/api-dashboard/api-dashboard.php:141
+#: app/admin/monitoring/api-sync-history.php:86
+#: app/admin/monitoring/lab-sync-details.php:162
+#: app/admin/monitoring/sources-of-requests.php:147
+#: app/admin/monitoring/test-results-metadata.php:84
+#: app/classes/Services/TestsService.php:85 app/facilities/addFacility.php:364
+#: app/facilities/addFacility.php:722 app/facilities/addFacility.php:1041
+#: app/facilities/editFacility.php:385 app/facilities/editFacility.php:679
+#: app/facilities/editFacility.php:708 app/facilities/editFacility.php:1052
+#: app/facilities/facilities.php:98 app/facilities/mapTestType.php:79
+#: app/hepatitis/management/hepatitis-clinic-report.php:70
+#: app/hepatitis/management/hepatitis-sample-rejection-report.php:37
+#: app/hepatitis/management/hepatitis-sample-status.php:47
+#: app/hepatitis/management/hepatitis-testing-target-report.php:179
+#: app/instruments/add-instrument.php:296
+#: app/instruments/add-instrument.php:424
+#: app/instruments/edit-instrument.php:180
+#: app/instruments/edit-instrument.php:372
+#: app/instruments/edit-instrument.php:500
+msgid "Hepatitis"
+msgstr "Hépatite"
+
+#: app/admin/api-dashboard/api-dashboard.php:144
+#: app/admin/monitoring/api-sync-history.php:91
+#: app/admin/monitoring/lab-sync-details.php:167
+#: app/admin/monitoring/sources-of-requests.php:152
+#: app/admin/monitoring/test-results-metadata.php:89
+#: app/facilities/addFacility.php:369 app/facilities/addFacility.php:727
+#: app/facilities/addFacility.php:1042 app/facilities/editFacility.php:388
+#: app/facilities/editFacility.php:680 app/facilities/editFacility.php:709
+#: app/facilities/editFacility.php:1053 app/facilities/facilities.php:101
+#: app/facilities/mapTestType.php:82 app/instruments/add-instrument.php:313
+#: app/instruments/add-instrument.php:437
+#: app/instruments/edit-instrument.php:183
+#: app/instruments/edit-instrument.php:389
+msgid "TB"
+msgstr "Tuberculose"
+
+#: app/admin/api-dashboard/api-dashboard.php:147
+#: app/admin/monitoring/api-sync-history.php:96
+#: app/admin/monitoring/lab-sync-details.php:172
+#: app/admin/monitoring/sources-of-requests.php:157
+#: app/admin/monitoring/test-results-metadata.php:94
+#: app/cd4/management/cd4-clinic-report.php:76
+#: app/cd4/management/cd4-sample-rejection-report.php:40
+#: app/cd4/management/cd4-sample-status.php:49
+#: app/cd4/management/cd4-testing-target-report.php:177
+#: app/classes/Services/TestsService.php:46 app/facilities/addFacility.php:374
+#: app/facilities/addFacility.php:737 app/facilities/addFacility.php:1044
+#: app/facilities/editFacility.php:391 app/facilities/editFacility.php:682
+#: app/facilities/editFacility.php:711 app/facilities/editFacility.php:1055
+#: app/facilities/facilities.php:104 app/facilities/mapTestType.php:85
+#: app/instruments/add-instrument.php:330
+#: app/instruments/add-instrument.php:449
+#: app/instruments/edit-instrument.php:406
+#: app/instruments/edit-instrument.php:525
+msgid "CD4"
+msgstr "CD4"
+
+#: app/admin/api-dashboard/api-dashboard.php:151
+#: app/cd4/management/cd4-clinic-report.php:196
+#: app/cd4/management/cd4-export-data.php:108
+#: app/cd4/management/cd4-sample-status.php:77
+#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/requests/cd4-requests.php:389 app/cd4/requests/cd4-requests.php:522
+#: app/cd4/requests/cd4-requests.php:575
+#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/results/cd4-failed-results.php:107
+#: app/cd4/results/cd4-manual-results.php:140
+#: app/cd4/results/cd4-manual-results.php:201
+#: app/cd4/results/cd4-manual-results.php:257
+#: app/common/reference/add-lab-storage.php:53
+#: app/common/reference/edit-lab-storage.php:64
+#: app/common/reference/lab-storage.php:41
+#: app/covid-19/management/covid-19-clinic-report.php:188
+#: app/covid-19/management/covid-19-export-data.php:118
+#: app/covid-19/management/covid-19-sample-status.php:72
+#: app/covid-19/requests/covid-19-requests.php:310
+#: app/covid-19/requests/covid-19-requests.php:437
+#: app/covid-19/results/add-covid-19-qc-data.php:132
+#: app/covid-19/results/covid-19-failed-results.php:106
+#: app/covid-19/results/covid-19-manual-results.php:106
+#: app/covid-19/results/covid-19-print-results.php:182
+#: app/covid-19/results/covid-19-print-results.php:224
+#: app/covid-19/results/covid-19-print-results.php:358
+#: app/covid-19/results/covid-19-print-results.php:399
+#: app/covid-19/results/covid-19-qc-data.php:85
+#: app/covid-19/results/edit-covid-19-qc-data.php:149
+#: app/eid/management/eid-clinic-report.php:190
+#: app/eid/management/eid-export-data.php:126
+#: app/eid/management/eid-sample-status.php:76
+#: app/eid/requests/eid-requests.php:299 app/eid/requests/eid-requests.php:446
+#: app/eid/results/eid-failed-results.php:107
+#: app/eid/results/eid-manual-results.php:110
+#: app/eid/results/eid-print-results.php:172
+#: app/eid/results/eid-print-results.php:217
+#: app/eid/results/eid-print-results.php:344
+#: app/eid/results/eid-print-results.php:389
+#: app/generic-tests/program-management/generic-export-data.php:111
+#: app/generic-tests/program-management/generic-sample-status.php:103
+#: app/generic-tests/requests/add-request.php:342
+#: app/generic-tests/requests/edit-request.php:532
+#: app/generic-tests/requests/view-requests.php:176
+#: app/generic-tests/results/generic-failed-results.php:87
+#: app/generic-tests/results/generic-print-result.php:219
+#: app/generic-tests/results/generic-print-result.php:271
+#: app/generic-tests/results/generic-print-result.php:445
+#: app/generic-tests/results/generic-print-result.php:497
+#: app/generic-tests/results/generic-test-results.php:128
+#: app/generic-tests/results/generic-test-results.php:189
+#: app/generic-tests/results/generic-test-results.php:245
+#: app/generic-tests/results/update-generic-test-result.php:679
+#: app/hepatitis/management/hepatitis-clinic-report.php:190
+#: app/hepatitis/management/hepatitis-export-data.php:109
+#: app/hepatitis/management/hepatitis-sample-status.php:75
+#: app/hepatitis/requests/hepatitis-dhis2.php:138
+#: app/hepatitis/requests/hepatitis-requests.php:298
+#: app/hepatitis/requests/hepatitis-requests.php:414
+#: app/hepatitis/results/hepatitis-failed-results.php:105
+#: app/hepatitis/results/hepatitis-manual-results.php:107
+#: app/instruments/add-instrument.php:111
+#: app/instruments/edit-instrument.php:151 app/roles/addRole.php:245
+#: app/roles/editRole.php:233
+#: app/specimen-referral-manifest/move-manifest.php:207
+#: app/specimen-referral-manifest/view-manifests.php:59
+#: app/tb/management/tb-clinic-report.php:188
+#: app/tb/management/tb-export-data.php:112
+#: app/tb/management/tb-sample-status.php:74
+#: app/tb/requests/tb-requests.php:231 app/tb/requests/tb-requests.php:309
+#: app/tb/results/tb-failed-results.php:106
+#: app/tb/results/tb-manual-results.php:111
+#: app/vl/program-management/export-vl-results.php:35
+#: app/vl/program-management/sample-storage-reports.php:89
+#: app/vl/program-management/sample-storage-reports.php:172
+#: app/vl/program-management/vl-export-data.php:146
+#: app/vl/program-management/vl-sample-status.php:106
+#: app/vl/requests/export-vl-requests.php:38
+#: app/vl/requests/forms/add-burkina-faso.php:186
+#: app/vl/requests/forms/edit-burkina-faso.php:283
+#: app/vl/requests/vl-requests.php:407 app/vl/requests/vl-requests.php:580
+#: app/vl/requests/vl-requests.php:641
+#: app/vl/results/forms/update-burkina-faso-result.php:283
+#: app/vl/results/forms/update-cameroon-result.php:311
+#: app/vl/results/vl-failed-results.php:90
+#: app/vl/results/vl-print-results.php:242
+#: app/vl/results/vl-print-results.php:300
+#: app/vl/results/vl-print-results.php:499
+#: app/vl/results/vl-print-results.php:556 app/vl/results/vlTestResult.php:139
+#: app/vl/results/vlTestResult.php:253
+msgid "Testing Lab"
+msgstr "Laboratoire du test"
+
+#: app/admin/api-dashboard/api-dashboard.php:154
+#: app/cd4/management/cd4-export-data.php:110
+#: app/cd4/results/cd4-failed-results.php:110
+#: app/covid-19/management/covid-19-export-data.php:120
+#: app/covid-19/requests/covid-19-requests.php:313
+#: app/covid-19/results/covid-19-failed-results.php:109
+#: app/covid-19/results/covid-19-manual-results.php:108
+#: app/eid/management/eid-export-data.php:128
+#: app/eid/requests/eid-requests.php:302
+#: app/eid/results/eid-failed-results.php:110
+#: app/eid/results/eid-manual-results.php:113
+#: app/generic-tests/program-management/generic-export-data.php:113
+#: app/generic-tests/results/generic-failed-results.php:89
+#: app/generic-tests/results/generic-test-results.php:131
+#: app/hepatitis/management/hepatitis-export-data.php:111
+#: app/hepatitis/requests/hepatitis-dhis2.php:141
+#: app/hepatitis/requests/hepatitis-requests.php:301
+#: app/hepatitis/results/hepatitis-failed-results.php:108
+#: app/hepatitis/results/hepatitis-manual-results.php:109
+#: app/setup/index.php:352 app/tb/management/tb-export-data.php:114
+#: app/tb/requests/tb-requests.php:233 app/tb/results/tb-failed-results.php:109
+#: app/tb/results/tb-manual-results.php:113
+#: app/vl/program-management/sample-storage-reports.php:92
+#: app/vl/program-management/sample-storage-reports.php:175
+#: app/vl/program-management/vl-export-data.php:149
+#: app/vl/requests/vl-requests.php:410 app/vl/results/vl-failed-results.php:92
+#: app/vl/results/vlTestResult.php:142
+msgid "Please select Testing Lab"
+msgstr "Veuiller selectionner le laboratoire de test"
+
+#: app/admin/api-dashboard/api-dashboard.php:160
+#: app/admin/monitoring/lab-sync-details.php:114
+#: app/admin/monitoring/sources-of-requests.php:86
+#: app/admin/monitoring/sync-status.php:343
+#: app/cd4/management/cd4-clinic-report.php:135
+#: app/cd4/management/cd4-clinic-report.php:243
+#: app/cd4/management/cd4-clinic-report.php:345
+#: app/cd4/management/cd4-clinic-report.php:449
+#: app/cd4/management/cd4-clinic-report.php:467
+#: app/cd4/management/cd4-export-data.php:87
+#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/requests/add-samples-from-manifest.php:108
+#: app/cd4/requests/cd4-requests.php:363 app/cd4/requests/cd4-requests.php:528
+#: app/cd4/requests/cd4-requests.php:581
+#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/results/cd4-failed-results.php:81
+#: app/cd4/results/cd4-failed-results.php:204
+#: app/cd4/results/cd4-print-results.php:82
+#: app/cd4/results/cd4-print-results.php:181
+#: app/cd4/results/cd4-print-results.php:220
+#: app/cd4/results/cd4-print-results.php:258
+#: app/cd4/results/cd4-print-results.php:355
+#: app/cd4/results/cd4-print-results.php:394
+#: app/cd4/results/email-results.php:206
+#: app/covid-19/management/covid-19-clinic-report.php:126
+#: app/covid-19/management/covid-19-clinic-report.php:235
+#: app/covid-19/management/covid-19-clinic-report.php:338
+#: app/covid-19/management/covid-19-clinic-report.php:445
+#: app/covid-19/management/covid-19-clinic-report.php:463
+#: app/covid-19/management/covid-19-export-data.php:97
+#: app/covid-19/requests/addSamplesFromManifest.php:109
+#: app/covid-19/requests/covid-19-requests.php:283
+#: app/covid-19/requests/covid-19-requests.php:455
+#: app/covid-19/requests/forms/add-cameroon.php:651
+#: app/covid-19/results/covid-19-failed-results.php:80
+#: app/covid-19/results/covid-19-failed-results.php:204
+#: app/covid-19/results/covid-19-print-results.php:86
+#: app/covid-19/results/covid-19-print-results.php:185
+#: app/covid-19/results/covid-19-print-results.php:225
+#: app/covid-19/results/covid-19-print-results.php:264
+#: app/covid-19/results/covid-19-print-results.php:361
+#: app/covid-19/results/covid-19-print-results.php:400
+#: app/covid-19/results/email-results.php:208
+#: app/eid/management/eid-clinic-report.php:128
+#: app/eid/management/eid-clinic-report.php:237
+#: app/eid/management/eid-clinic-report.php:343
+#: app/eid/management/eid-clinic-report.php:448
+#: app/eid/management/eid-clinic-report.php:466
+#: app/eid/management/eid-export-data.php:105
+#: app/eid/requests/addSamplesFromManifest.php:116
+#: app/eid/requests/eid-requests.php:272 app/eid/requests/eid-requests.php:464
+#: app/eid/results/eid-failed-results.php:81
+#: app/eid/results/eid-failed-results.php:225
+#: app/eid/results/eid-print-results.php:78
+#: app/eid/results/eid-print-results.php:181
+#: app/eid/results/eid-print-results.php:223
+#: app/eid/results/eid-print-results.php:247
+#: app/eid/results/eid-print-results.php:353
+#: app/eid/results/eid-print-results.php:395
+#: app/eid/results/email-results.php:205 app/facilities/addFacility.php:238
+#: app/facilities/editFacility.php:269 app/facilities/facilities.php:57
+#: app/generic-tests/mail/mail-generic-tests-results.php:222
+#: app/generic-tests/program-management/generic-export-data.php:90
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:58
+#: app/generic-tests/requests/add-samples-from-manifest.php:97
+#: app/generic-tests/requests/view-requests.php:182
+#: app/generic-tests/results/email-results.php:208
+#: app/generic-tests/results/generic-failed-results.php:67
+#: app/generic-tests/results/generic-failed-results.php:162
+#: app/generic-tests/results/generic-failed-results.php:198
+#: app/generic-tests/results/generic-print-result.php:90
+#: app/generic-tests/results/generic-print-result.php:222
+#: app/generic-tests/results/generic-print-result.php:274
+#: app/generic-tests/results/generic-print-result.php:318
+#: app/generic-tests/results/generic-print-result.php:448
+#: app/generic-tests/results/generic-print-result.php:500
+#: app/hepatitis/management/hepatitis-clinic-report.php:129
+#: app/hepatitis/management/hepatitis-clinic-report.php:238
+#: app/hepatitis/management/hepatitis-clinic-report.php:340
+#: app/hepatitis/management/hepatitis-clinic-report.php:444
+#: app/hepatitis/management/hepatitis-clinic-report.php:463
+#: app/hepatitis/management/hepatitis-export-data.php:88
+#: app/hepatitis/requests/add-samples-from-manifest.php:103
+#: app/hepatitis/requests/hepatitis-dhis2.php:124
+#: app/hepatitis/requests/hepatitis-dhis2.php:328
+#: app/hepatitis/requests/hepatitis-requests.php:272
+#: app/hepatitis/requests/hepatitis-requests.php:426
+#: app/hepatitis/results/email-results.php:208
+#: app/hepatitis/results/hepatitis-failed-results.php:79
+#: app/hepatitis/results/hepatitis-failed-results.php:202
+#: app/hepatitis/results/hepatitis-print-results.php:84
+#: app/hepatitis/results/hepatitis-print-results.php:179
+#: app/hepatitis/results/hepatitis-print-results.php:219
+#: app/hepatitis/results/hepatitis-print-results.php:257
+#: app/hepatitis/results/hepatitis-print-results.php:354
+#: app/hepatitis/results/hepatitis-print-results.php:393
+#: app/mail/vlResultMail.php:208 app/tb/management/tb-clinic-report.php:127
+#: app/tb/management/tb-clinic-report.php:235
+#: app/tb/management/tb-clinic-report.php:339
+#: app/tb/management/tb-clinic-report.php:441
+#: app/tb/management/tb-clinic-report.php:459
+#: app/tb/management/tb-export-data.php:91
+#: app/tb/requests/addSamplesFromManifest.php:72
+#: app/tb/requests/tb-requests.php:211 app/tb/requests/tb-requests.php:317
+#: app/tb/results/email-results.php:208 app/tb/results/tb-failed-results.php:80
+#: app/tb/results/tb-failed-results.php:203
+#: app/tb/results/tb-print-results.php:82
+#: app/tb/results/tb-print-results.php:180
+#: app/tb/results/tb-print-results.php:216
+#: app/tb/results/tb-print-results.php:253
+#: app/tb/results/tb-print-results.php:350
+#: app/tb/results/tb-print-results.php:386 app/users/addUser.php:271
+#: app/users/editUser.php:305
+#: app/vl/program-management/export-vl-results.php:35
+#: app/vl/program-management/highViralLoad.php:186
+#: app/vl/program-management/highViralLoad.php:368
+#: app/vl/program-management/highViralLoad.php:521
+#: app/vl/program-management/highViralLoad.php:746
+#: app/vl/program-management/highViralLoad.php:1004
+#: app/vl/program-management/highViralLoad.php:1033
+#: app/vl/program-management/vl-export-data.php:119
+#: app/vl/program-management/vlWeeklyReport.php:112
+#: app/vl/program-management/vlWeeklyReport.php:240
+#: app/vl/requests/addSamplesFromManifest.php:106
+#: app/vl/requests/export-vl-requests.php:38
+#: app/vl/requests/sample-storage.php:197 app/vl/requests/vl-requests.php:381
+#: app/vl/requests/vl-requests.php:586 app/vl/requests/vl-requests.php:647
+#: app/vl/result-mail/editTestResultEmailConfig.php:83
+#: app/vl/results/email-results.php:208 app/vl/results/vl-failed-results.php:70
+#: app/vl/results/vl-failed-results.php:169
+#: app/vl/results/vl-failed-results.php:205
+#: app/vl/results/vl-print-results.php:94
+#: app/vl/results/vl-print-results.php:250
+#: app/vl/results/vl-print-results.php:308
+#: app/vl/results/vl-print-results.php:352
+#: app/vl/results/vl-print-results.php:507
+#: app/vl/results/vl-print-results.php:564 app/vl/results/vlResultMail.php:208
+msgid "Province/State"
+msgstr "Région/Etat"
+
+#: app/admin/api-dashboard/api-dashboard.php:163
+#: app/admin/monitoring/lab-sync-details.php:125
+#: app/admin/monitoring/sources-of-requests.php:89
+#: app/admin/monitoring/sync-status.php:351
+#: app/cd4/management/cd4-clinic-report.php:137
+#: app/cd4/management/cd4-clinic-report.php:245
+#: app/cd4/management/cd4-clinic-report.php:347
+#: app/cd4/management/cd4-clinic-report.php:470
+#: app/cd4/management/cd4-export-data.php:89
+#: app/cd4/management/cd4-export-data.php:99
+#: app/cd4/requests/cd4-requests.php:377
+#: app/cd4/results/cd4-failed-results.php:84
+#: app/cd4/results/cd4-failed-results.php:92
+#: app/cd4/results/cd4-print-results.php:84
+#: app/cd4/results/cd4-print-results.php:91
+#: app/cd4/results/cd4-print-results.php:260
+#: app/cd4/results/cd4-print-results.php:267
+#: app/covid-19/management/covid-19-clinic-report.php:129
+#: app/covid-19/management/covid-19-clinic-report.php:237
+#: app/covid-19/management/covid-19-clinic-report.php:340
+#: app/covid-19/management/covid-19-clinic-report.php:466
+#: app/covid-19/management/covid-19-export-data.php:99
+#: app/covid-19/management/covid-19-export-data.php:109
+#: app/covid-19/requests/covid-19-requests.php:298
+#: app/covid-19/results/covid-19-failed-results.php:83
+#: app/covid-19/results/covid-19-failed-results.php:91
+#: app/covid-19/results/covid-19-print-results.php:88
+#: app/covid-19/results/covid-19-print-results.php:95
+#: app/covid-19/results/covid-19-print-results.php:266
+#: app/covid-19/results/covid-19-print-results.php:273
+#: app/eid/management/eid-clinic-report.php:130
+#: app/eid/management/eid-clinic-report.php:239
+#: app/eid/management/eid-clinic-report.php:345
+#: app/eid/management/eid-clinic-report.php:469
+#: app/eid/management/eid-export-data.php:107
+#: app/eid/management/eid-export-data.php:114
+#: app/eid/requests/eid-requests.php:287
+#: app/eid/results/eid-failed-results.php:84
+#: app/eid/results/eid-failed-results.php:92
+#: app/eid/results/eid-print-results.php:80
+#: app/eid/results/eid-print-results.php:86
+#: app/eid/results/eid-print-results.php:249
+#: app/eid/results/eid-print-results.php:256 app/facilities/facilities.php:59
+#: app/facilities/facilities.php:65
+#: app/generic-tests/program-management/generic-export-data.php:92
+#: app/generic-tests/program-management/generic-export-data.php:99
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:61
+#: app/generic-tests/results/generic-failed-results.php:69
+#: app/generic-tests/results/generic-failed-results.php:75
+#: app/generic-tests/results/generic-print-result.php:93
+#: app/generic-tests/results/generic-print-result.php:102
+#: app/generic-tests/results/generic-print-result.php:321
+#: app/generic-tests/results/generic-print-result.php:330
+#: app/hepatitis/management/hepatitis-clinic-report.php:131
+#: app/hepatitis/management/hepatitis-clinic-report.php:240
+#: app/hepatitis/management/hepatitis-clinic-report.php:342
+#: app/hepatitis/management/hepatitis-clinic-report.php:466
+#: app/hepatitis/management/hepatitis-export-data.php:90
+#: app/hepatitis/management/hepatitis-export-data.php:97
+#: app/hepatitis/requests/hepatitis-requests.php:286
+#: app/hepatitis/results/hepatitis-failed-results.php:82
+#: app/hepatitis/results/hepatitis-failed-results.php:90
+#: app/hepatitis/results/hepatitis-print-results.php:86
+#: app/hepatitis/results/hepatitis-print-results.php:93
+#: app/hepatitis/results/hepatitis-print-results.php:259
+#: app/hepatitis/results/hepatitis-print-results.php:266
+#: app/tb/management/tb-clinic-report.php:129
+#: app/tb/management/tb-clinic-report.php:237
+#: app/tb/management/tb-clinic-report.php:341
+#: app/tb/management/tb-clinic-report.php:462
+#: app/tb/management/tb-export-data.php:93
+#: app/tb/management/tb-export-data.php:103 app/tb/requests/tb-requests.php:222
+#: app/tb/results/tb-failed-results.php:83
+#: app/tb/results/tb-failed-results.php:91
+#: app/tb/results/tb-print-results.php:84
+#: app/tb/results/tb-print-results.php:91
+#: app/tb/results/tb-print-results.php:255
+#: app/tb/results/tb-print-results.php:262
+#: app/vl/program-management/highViralLoad.php:189
+#: app/vl/program-management/highViralLoad.php:371
+#: app/vl/program-management/highViralLoad.php:443
+#: app/vl/program-management/highViralLoad.php:524
+#: app/vl/program-management/highViralLoad.php:749
+#: app/vl/program-management/highViralLoad.php:1036
+#: app/vl/program-management/vl-export-data.php:122
+#: app/vl/program-management/vl-export-data.php:131
+#: app/vl/requests/sample-storage.php:200
+#: app/vl/results/vl-failed-results.php:72
+#: app/vl/results/vl-failed-results.php:78
+#: app/vl/results/vl-print-results.php:97
+#: app/vl/results/vl-print-results.php:106
+#: app/vl/results/vl-print-results.php:355
+#: app/vl/results/vl-print-results.php:364
+msgid "Please select Province/State"
+msgstr "Veuillez choisir Région/Etat"
+
+#: app/admin/api-dashboard/api-dashboard.php:165
 #: app/admin/monitoring/api-sync-history.php:67
 #: app/admin/monitoring/lab-sync-details.php:118
 #: app/admin/monitoring/sources-of-requests.php:90
@@ -1530,195 +1525,254 @@ msgstr "Veuillez sélectionner les types de tests"
 msgid "-- Select --"
 msgstr "-- Sélectionner --"
 
-#: app/admin/monitoring/api-sync-history.php:71
-#: app/admin/monitoring/lab-sync-details.php:147
-#: app/admin/monitoring/sources-of-requests.php:132
-#: app/admin/monitoring/test-results-metadata.php:69
-#: app/eid/requests/forms/add-burkina-faso.php:246
-#: app/eid/requests/forms/edit-burkina-faso.php:259
-#: app/eid/results/forms/update-burkina-faso-result.php:258
-#: app/facilities/addFacility.php:349 app/facilities/addFacility.php:707
-#: app/facilities/addFacility.php:1038 app/facilities/editFacility.php:376
-#: app/facilities/editFacility.php:676 app/facilities/editFacility.php:705
-#: app/facilities/editFacility.php:1049 app/facilities/facilities.php:89
-#: app/facilities/mapTestType.php:70 app/instruments/edit-instrument.php:171
-msgid "Viral Load"
-msgstr "CHARGE VIRALE"
+#: app/admin/api-dashboard/api-dashboard.php:168
+#: app/admin/monitoring/lab-sync-details.php:122
+#: app/admin/monitoring/sources-of-requests.php:94
+#: app/admin/monitoring/sync-status.php:350
+#: app/cd4/management/cd4-clinic-report.php:142
+#: app/cd4/management/cd4-clinic-report.php:250
+#: app/cd4/management/cd4-clinic-report.php:352
+#: app/cd4/management/cd4-clinic-report.php:450
+#: app/cd4/management/cd4-clinic-report.php:476
+#: app/cd4/management/cd4-export-data.php:97
+#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/requests/add-samples-from-manifest.php:111
+#: app/cd4/requests/cd4-requests.php:374 app/cd4/requests/cd4-requests.php:531
+#: app/cd4/requests/cd4-requests.php:584
+#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/results/cd4-failed-results.php:89
+#: app/cd4/results/cd4-failed-results.php:207
+#: app/cd4/results/cd4-print-results.php:89
+#: app/cd4/results/cd4-print-results.php:184
+#: app/cd4/results/cd4-print-results.php:221
+#: app/cd4/results/cd4-print-results.php:265
+#: app/cd4/results/cd4-print-results.php:358
+#: app/cd4/results/cd4-print-results.php:395
+#: app/cd4/results/email-results.php:221
+#: app/covid-19/management/covid-19-clinic-report.php:134
+#: app/covid-19/management/covid-19-clinic-report.php:242
+#: app/covid-19/management/covid-19-clinic-report.php:345
+#: app/covid-19/management/covid-19-clinic-report.php:446
+#: app/covid-19/management/covid-19-clinic-report.php:472
+#: app/covid-19/management/covid-19-export-data.php:107
+#: app/covid-19/requests/addSamplesFromManifest.php:112
+#: app/covid-19/requests/covid-19-requests.php:295
+#: app/covid-19/requests/covid-19-requests.php:458
+#: app/covid-19/requests/forms/add-cameroon.php:688
+#: app/covid-19/requests/forms/add-cameroon.php:690
+#: app/covid-19/results/covid-19-failed-results.php:88
+#: app/covid-19/results/covid-19-failed-results.php:207
+#: app/covid-19/results/covid-19-print-results.php:93
+#: app/covid-19/results/covid-19-print-results.php:188
+#: app/covid-19/results/covid-19-print-results.php:226
+#: app/covid-19/results/covid-19-print-results.php:271
+#: app/covid-19/results/covid-19-print-results.php:364
+#: app/covid-19/results/covid-19-print-results.php:401
+#: app/covid-19/results/email-results.php:223
+#: app/eid/management/eid-clinic-report.php:135
+#: app/eid/management/eid-clinic-report.php:244
+#: app/eid/management/eid-clinic-report.php:350
+#: app/eid/management/eid-clinic-report.php:449
+#: app/eid/management/eid-clinic-report.php:475
+#: app/eid/management/eid-export-data.php:112
+#: app/eid/requests/addSamplesFromManifest.php:119
+#: app/eid/requests/eid-requests.php:284 app/eid/requests/eid-requests.php:467
+#: app/eid/results/eid-failed-results.php:89
+#: app/eid/results/eid-failed-results.php:228
+#: app/eid/results/eid-print-results.php:84
+#: app/eid/results/eid-print-results.php:184
+#: app/eid/results/eid-print-results.php:224
+#: app/eid/results/eid-print-results.php:254
+#: app/eid/results/eid-print-results.php:356
+#: app/eid/results/eid-print-results.php:396
+#: app/eid/results/email-results.php:220 app/facilities/addFacility.php:263
+#: app/facilities/editFacility.php:291 app/facilities/facilities.php:63
+#: app/generic-tests/mail/mail-generic-tests-results.php:223
+#: app/generic-tests/program-management/generic-export-data.php:97
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:67
+#: app/generic-tests/requests/add-request.php:282
+#: app/generic-tests/requests/add-samples-from-manifest.php:100
+#: app/generic-tests/requests/edit-request.php:462
+#: app/generic-tests/requests/view-requests.php:185
+#: app/generic-tests/results/email-results.php:223
+#: app/generic-tests/results/generic-failed-results.php:73
+#: app/generic-tests/results/generic-failed-results.php:165
+#: app/generic-tests/results/generic-failed-results.php:199
+#: app/generic-tests/results/generic-print-result.php:99
+#: app/generic-tests/results/generic-print-result.php:225
+#: app/generic-tests/results/generic-print-result.php:277
+#: app/generic-tests/results/generic-print-result.php:327
+#: app/generic-tests/results/generic-print-result.php:451
+#: app/generic-tests/results/generic-print-result.php:503
+#: app/generic-tests/results/update-generic-test-result.php:446
+#: app/hepatitis/management/hepatitis-clinic-report.php:136
+#: app/hepatitis/management/hepatitis-clinic-report.php:245
+#: app/hepatitis/management/hepatitis-clinic-report.php:347
+#: app/hepatitis/management/hepatitis-clinic-report.php:445
+#: app/hepatitis/management/hepatitis-clinic-report.php:472
+#: app/hepatitis/management/hepatitis-export-data.php:95
+#: app/hepatitis/requests/add-samples-from-manifest.php:106
+#: app/hepatitis/requests/hepatitis-dhis2.php:130
+#: app/hepatitis/requests/hepatitis-dhis2.php:331
+#: app/hepatitis/requests/hepatitis-requests.php:283
+#: app/hepatitis/requests/hepatitis-requests.php:429
+#: app/hepatitis/results/email-results.php:223
+#: app/hepatitis/results/hepatitis-failed-results.php:87
+#: app/hepatitis/results/hepatitis-failed-results.php:205
+#: app/hepatitis/results/hepatitis-print-results.php:91
+#: app/hepatitis/results/hepatitis-print-results.php:182
+#: app/hepatitis/results/hepatitis-print-results.php:220
+#: app/hepatitis/results/hepatitis-print-results.php:264
+#: app/hepatitis/results/hepatitis-print-results.php:357
+#: app/hepatitis/results/hepatitis-print-results.php:394
+#: app/mail/vlResultMail.php:223 app/tb/management/tb-clinic-report.php:134
+#: app/tb/management/tb-clinic-report.php:242
+#: app/tb/management/tb-clinic-report.php:346
+#: app/tb/management/tb-clinic-report.php:442
+#: app/tb/management/tb-clinic-report.php:468
+#: app/tb/management/tb-export-data.php:101
+#: app/tb/requests/addSamplesFromManifest.php:73
+#: app/tb/requests/tb-requests.php:220 app/tb/requests/tb-requests.php:318
+#: app/tb/results/email-results.php:223 app/tb/results/tb-failed-results.php:88
+#: app/tb/results/tb-failed-results.php:206
+#: app/tb/results/tb-print-results.php:89
+#: app/tb/results/tb-print-results.php:183
+#: app/tb/results/tb-print-results.php:217
+#: app/tb/results/tb-print-results.php:260
+#: app/tb/results/tb-print-results.php:353
+#: app/tb/results/tb-print-results.php:387 app/users/addUser.php:281
+#: app/users/editUser.php:315
+#: app/vl/program-management/export-vl-results.php:35
+#: app/vl/program-management/highViralLoad.php:195
+#: app/vl/program-management/highViralLoad.php:377
+#: app/vl/program-management/highViralLoad.php:530
+#: app/vl/program-management/highViralLoad.php:755
+#: app/vl/program-management/highViralLoad.php:1007
+#: app/vl/program-management/highViralLoad.php:1042
+#: app/vl/program-management/vl-export-data.php:128
+#: app/vl/program-management/vlMonitoringReport.php:208
+#: app/vl/program-management/vlMonitoringReport.php:262
+#: app/vl/program-management/vlWeeklyReport.php:115
+#: app/vl/program-management/vlWeeklyReport.php:243
+#: app/vl/requests/addSamplesFromManifest.php:109
+#: app/vl/requests/export-vl-requests.php:38
+#: app/vl/requests/forms/add-burkina-faso.php:130
+#: app/vl/requests/forms/edit-burkina-faso.php:229
+#: app/vl/requests/sample-storage.php:205 app/vl/requests/vl-requests.php:392
+#: app/vl/requests/vl-requests.php:589 app/vl/requests/vl-requests.php:650
+#: app/vl/result-mail/editTestResultEmailConfig.php:84
+#: app/vl/results/email-results.php:223
+#: app/vl/results/forms/update-burkina-faso-result.php:229
+#: app/vl/results/vl-failed-results.php:76
+#: app/vl/results/vl-failed-results.php:172
+#: app/vl/results/vl-failed-results.php:206
+#: app/vl/results/vl-print-results.php:103
+#: app/vl/results/vl-print-results.php:253
+#: app/vl/results/vl-print-results.php:311
+#: app/vl/results/vl-print-results.php:361
+#: app/vl/results/vl-print-results.php:510
+#: app/vl/results/vl-print-results.php:567 app/vl/results/vlResultMail.php:223
+msgid "District/County"
+msgstr "District/Pays"
 
-#: app/admin/monitoring/api-sync-history.php:76
-#: app/admin/monitoring/lab-sync-details.php:152
-#: app/admin/monitoring/sources-of-requests.php:137
-#: app/admin/monitoring/test-results-metadata.php:74
-#: app/classes/Services/TestsService.php:59 app/facilities/addFacility.php:354
-#: app/facilities/addFacility.php:712 app/facilities/addFacility.php:1039
-#: app/facilities/editFacility.php:379 app/facilities/editFacility.php:677
-#: app/facilities/editFacility.php:706 app/facilities/editFacility.php:997
-#: app/facilities/editFacility.php:1050 app/facilities/facilities.php:92
-#: app/facilities/mapTestType.php:73
-msgid "Early Infant Diagnosis"
-msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
+#: app/admin/api-dashboard/api-dashboard.php:171
+#: app/admin/monitoring/sources-of-requests.php:98
+#: app/cd4/management/cd4-clinic-report.php:144
+#: app/cd4/management/cd4-clinic-report.php:252
+#: app/cd4/management/cd4-clinic-report.php:354
+#: app/cd4/management/cd4-clinic-report.php:479
+#: app/covid-19/management/covid-19-clinic-report.php:136
+#: app/covid-19/management/covid-19-clinic-report.php:244
+#: app/covid-19/management/covid-19-clinic-report.php:347
+#: app/covid-19/management/covid-19-clinic-report.php:475
+#: app/eid/management/eid-clinic-report.php:137
+#: app/eid/management/eid-clinic-report.php:246
+#: app/eid/management/eid-clinic-report.php:352
+#: app/eid/management/eid-clinic-report.php:478
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:70
+#: app/hepatitis/management/hepatitis-clinic-report.php:138
+#: app/hepatitis/management/hepatitis-clinic-report.php:247
+#: app/hepatitis/management/hepatitis-clinic-report.php:349
+#: app/hepatitis/management/hepatitis-clinic-report.php:475
+#: app/tb/management/tb-clinic-report.php:136
+#: app/tb/management/tb-clinic-report.php:244
+#: app/tb/management/tb-clinic-report.php:348
+#: app/tb/management/tb-clinic-report.php:471
+#: app/vl/program-management/highViralLoad.php:198
+#: app/vl/program-management/highViralLoad.php:380
+#: app/vl/program-management/highViralLoad.php:533
+#: app/vl/program-management/highViralLoad.php:758
+#: app/vl/program-management/highViralLoad.php:1045
+#: app/vl/requests/sample-storage.php:208 app/vl/requests/vl-requests.php:395
+msgid "Please select District/County"
+msgstr "Veuillez sélectionner le district/comté"
 
-#: app/admin/monitoring/api-sync-history.php:81
-#: app/admin/monitoring/lab-sync-details.php:157
-#: app/admin/monitoring/sources-of-requests.php:142
-#: app/admin/monitoring/test-results-metadata.php:79
-#: app/classes/Services/TestsService.php:72 app/facilities/addFacility.php:359
-#: app/facilities/addFacility.php:717 app/facilities/addFacility.php:1040
-#: app/facilities/editFacility.php:382 app/facilities/editFacility.php:678
-#: app/facilities/editFacility.php:707 app/facilities/editFacility.php:1000
-#: app/facilities/editFacility.php:1051 app/facilities/facilities.php:95
-#: app/facilities/mapTestType.php:76 app/instruments/add-instrument.php:279
-#: app/instruments/add-instrument.php:411
-#: app/instruments/edit-instrument.php:177
-#: app/instruments/edit-instrument.php:355
-#: app/instruments/edit-instrument.php:487
-msgid "Covid-19"
-msgstr "COVID-19"
+#: app/admin/api-dashboard/api-dashboard.php:175
+msgid "Requesting Facility"
+msgstr "Établissement demandeur"
 
-#: app/admin/monitoring/api-sync-history.php:86
-#: app/admin/monitoring/lab-sync-details.php:162
-#: app/admin/monitoring/sources-of-requests.php:147
-#: app/admin/monitoring/test-results-metadata.php:84
-#: app/classes/Services/TestsService.php:85 app/facilities/addFacility.php:364
-#: app/facilities/addFacility.php:722 app/facilities/addFacility.php:1041
-#: app/facilities/editFacility.php:385 app/facilities/editFacility.php:679
-#: app/facilities/editFacility.php:708 app/facilities/editFacility.php:1052
-#: app/facilities/facilities.php:98 app/facilities/mapTestType.php:79
-#: app/hepatitis/management/hepatitis-clinic-report.php:70
-#: app/hepatitis/management/hepatitis-sample-rejection-report.php:37
-#: app/hepatitis/management/hepatitis-sample-status.php:47
-#: app/hepatitis/management/hepatitis-testing-target-report.php:179
-#: app/instruments/add-instrument.php:296
-#: app/instruments/add-instrument.php:424
-#: app/instruments/edit-instrument.php:180
-#: app/instruments/edit-instrument.php:372
-#: app/instruments/edit-instrument.php:500
-msgid "Hepatitis"
-msgstr "Hépatite"
+#: app/admin/api-dashboard/api-dashboard.php:186
+msgid "Refresh Dashboard"
+msgstr "Rafraîchir le tableau de bord"
 
-#: app/admin/monitoring/api-sync-history.php:91
-#: app/admin/monitoring/lab-sync-details.php:167
-#: app/admin/monitoring/sources-of-requests.php:152
-#: app/admin/monitoring/test-results-metadata.php:89
-#: app/facilities/addFacility.php:369 app/facilities/addFacility.php:727
-#: app/facilities/addFacility.php:1042 app/facilities/editFacility.php:388
-#: app/facilities/editFacility.php:680 app/facilities/editFacility.php:709
-#: app/facilities/editFacility.php:1053 app/facilities/facilities.php:101
-#: app/facilities/mapTestType.php:82 app/instruments/add-instrument.php:313
-#: app/instruments/add-instrument.php:437
-#: app/instruments/edit-instrument.php:183
-#: app/instruments/edit-instrument.php:389
-msgid "TB"
-msgstr "Tuberculose"
+#: app/admin/api-dashboard/api-dashboard.php:189 app/batch/add-batch.php:298
+#: app/batch/edit-batch.php:240
+msgid "Reset Filters"
+msgstr "Réinitialiser les filtres"
 
-#: app/admin/monitoring/api-sync-history.php:96
-#: app/admin/monitoring/lab-sync-details.php:172
-#: app/admin/monitoring/sources-of-requests.php:157
-#: app/admin/monitoring/test-results-metadata.php:94
-#: app/cd4/management/cd4-clinic-report.php:76
-#: app/cd4/management/cd4-sample-rejection-report.php:40
-#: app/cd4/management/cd4-sample-status.php:49
-#: app/cd4/management/cd4-testing-target-report.php:177
-#: app/classes/Services/TestsService.php:46 app/facilities/addFacility.php:374
-#: app/facilities/addFacility.php:737 app/facilities/addFacility.php:1044
-#: app/facilities/editFacility.php:391 app/facilities/editFacility.php:682
-#: app/facilities/editFacility.php:711 app/facilities/editFacility.php:1055
-#: app/facilities/facilities.php:104 app/facilities/mapTestType.php:85
-#: app/instruments/add-instrument.php:330
-#: app/instruments/add-instrument.php:449
-#: app/instruments/edit-instrument.php:406
-#: app/instruments/edit-instrument.php:525
-msgid "CD4"
-msgstr "CD4"
+#: app/admin/api-dashboard/api-dashboard.php:202
+msgid "Critical Alerts"
+msgstr "Alertes critiques"
 
-#: app/admin/monitoring/api-sync-history.php:102
-msgid "API Type"
-msgstr "Type d'API"
+#: app/admin/api-dashboard/api-dashboard.php:214
+msgid "Quick Metrics Overview"
+msgstr "Aperçu des mesures rapides"
 
-#: app/admin/monitoring/api-sync-history.php:105
-msgid "Please select the API type"
-msgstr "Veuillez sélectionner le type d'API"
+#: app/admin/api-dashboard/api-dashboard.php:220
+msgid "Total Requests"
+msgstr "Total des Requêtes"
 
-#: app/admin/monitoring/api-sync-history.php:122
-msgid "Transaction ID"
-msgstr "ID de transaction"
+#: app/admin/api-dashboard/api-dashboard.php:226
+msgid "API Requests"
+msgstr "Demandes d'API"
 
-#: app/admin/monitoring/api-sync-history.php:125
-msgid "Number of Records Synced"
-msgstr "Nombre d'enregistrements synchronisés"
+#: app/admin/api-dashboard/api-dashboard.php:232
+msgid "Samples Not Received"
+msgstr "Échantillons non reçus"
 
-#: app/admin/monitoring/api-sync-history.php:128
-msgid "Sync Type"
-msgstr "Type de synchronisation"
+#: app/admin/api-dashboard/api-dashboard.php:238
+#: app/admin/api-dashboard/duplicates-detail.php:50
+msgid "Potential Duplicates"
+msgstr "Doublons potentiels"
 
-#: app/admin/monitoring/api-sync-history.php:134
-msgid "URL"
-msgstr "URL"
+#: app/admin/api-dashboard/api-dashboard.php:244
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:162
+msgid "Pending Tests"
+msgstr "Tests en cours"
 
-#: app/admin/monitoring/api-sync-history.php:137
-msgid "Synced On"
-msgstr "Synchronisé sur"
+#: app/admin/api-dashboard/api-dashboard.php:250
+msgid "Results Sent"
+msgstr "Envoi des résultats"
 
-#: app/admin/monitoring/api-sync-history.php:140 app/batch/batches.php:111
-#: app/cd4/management/cd4-export-data.php:264
-#: app/cd4/requests/cd4-requests.php:600
-#: app/cd4/results/cd4-failed-results.php:220
-#: app/cd4/results/cd4-manual-results.php:272
-#: app/cd4/results/cd4-print-results.php:226
-#: app/cd4/results/cd4-print-results.php:400
-#: app/common/reference/geographical-divisions-details.php:37
-#: app/common/reference/lab-storage.php:43
-#: app/covid-19/management/covid-19-export-data.php:284
-#: app/covid-19/reference/add-covid19-qc-test-kit.php:72
-#: app/covid-19/reference/edit-covid19-qc-test-kit.php:83
-#: app/covid-19/requests/covid-19-requests.php:471
-#: app/covid-19/results/covid-19-failed-results.php:220
-#: app/covid-19/results/covid-19-manual-results.php:188
-#: app/covid-19/results/covid-19-print-results.php:231
-#: app/covid-19/results/covid-19-print-results.php:406
-#: app/covid-19/results/covid-19-qc-data.php:90
-#: app/eid/management/eid-export-data.php:314
-#: app/eid/requests/eid-requests.php:485
-#: app/eid/results/eid-failed-results.php:241
-#: app/eid/results/eid-manual-results.php:227
-#: app/eid/results/eid-print-results.php:228
-#: app/eid/results/eid-print-results.php:400 app/facilities/addFacility.php:694
-#: app/facilities/editFacility.php:654 app/facilities/facilities.php:176
-#: app/generic-tests/configuration/add-test-type.php:219
-#: app/generic-tests/configuration/clone-test-type.php:258
-#: app/generic-tests/configuration/edit-test-type.php:263
-#: app/generic-tests/configuration/test-categories/generic-test-categories.php:48
-#: app/generic-tests/configuration/test-methods/generic-test-methods.php:48
-#: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:48
-#: app/generic-tests/configuration/test-type.php:50
-#: app/generic-tests/requests/view-requests.php:200
-#: app/generic-tests/results/generic-failed-results.php:205
-#: app/generic-tests/results/generic-print-result.php:292
-#: app/generic-tests/results/generic-print-result.php:518
-#: app/generic-tests/results/generic-test-results.php:260
-#: app/hepatitis/management/hepatitis-export-data.php:289
-#: app/hepatitis/requests/hepatitis-dhis2.php:347
-#: app/hepatitis/requests/hepatitis-requests.php:445
-#: app/hepatitis/results/hepatitis-failed-results.php:217
-#: app/hepatitis/results/hepatitis-manual-results.php:190
-#: app/hepatitis/results/hepatitis-print-results.php:225
-#: app/hepatitis/results/hepatitis-print-results.php:399
-#: app/instruments/add-instrument.php:501
-#: app/instruments/edit-instrument.php:573 app/instruments/instruments.php:45
-#: app/roles/roles.php:39 app/specimen-referral-manifest/view-manifests.php:63
-#: app/system-admin/instance-overview/instanceIndex.php:111
-#: app/tb/management/tb-export-data.php:278 app/tb/requests/tb-requests.php:323
-#: app/tb/results/tb-failed-results.php:219
-#: app/tb/results/tb-manual-results.php:193
-#: app/tb/results/tb-print-results.php:221
-#: app/tb/results/tb-print-results.php:391 app/users/users.php:63
-#: app/vl/requests/sample-storage.php:295 app/vl/requests/vl-requests.php:674
-#: app/vl/results/vl-failed-results.php:212
-#: app/vl/results/vl-print-results.php:326
-#: app/vl/results/vl-print-results.php:582 app/vl/results/vlTestResult.php:268
-msgid "Action"
-msgstr "Action"
+#: app/admin/api-dashboard/api-dashboard.php:260
+msgid "API Requests Without Sample Receipt"
+msgstr "Demandes d'API sans réception d'échantillon"
 
+#: app/admin/api-dashboard/api-dashboard.php:263
+msgid "View All Details"
+msgstr "Voir tous les détails"
+
+#: app/admin/api-dashboard/api-dashboard.php:270
+msgid ""
+"Showing only API requests that have not received samples at the lab and are "
+"not rejected."
+msgstr ""
+"Afficher uniquement les demandes d'API qui n'ont pas reçu d'échantillons au "
+"laboratoire et qui ne sont pas rejetées."
+
+#: app/admin/api-dashboard/api-dashboard.php:276
+#: app/admin/api-dashboard/api-dashboard.php:346
+#: app/admin/api-dashboard/missing-samples-detail.php:121
 #: app/admin/monitoring/audit-trail.php:305
 #: app/admin/monitoring/export-test-results-report.php:31
 #: app/admin/monitoring/test-results-metadata.php:130
@@ -1917,6 +1971,1160 @@ msgstr "Action"
 #: app/vl/results/vlTestResult.php:233
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
+
+#: app/admin/api-dashboard/api-dashboard.php:277
+#: app/admin/api-dashboard/api-dashboard.php:368
+#: app/admin/api-dashboard/missing-samples-detail.php:124
+#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
+#: app/cd4/management/cd4-clinic-report.php:147
+#: app/cd4/management/cd4-clinic-report.php:255
+#: app/cd4/management/cd4-clinic-report.php:357
+#: app/cd4/management/cd4-clinic-report.php:482
+#: app/covid-19/management/covid-19-clinic-report.php:139
+#: app/covid-19/management/covid-19-clinic-report.php:247
+#: app/covid-19/management/covid-19-clinic-report.php:350
+#: app/covid-19/management/covid-19-clinic-report.php:478
+#: app/covid-19/requests/forms/add-cameroon.php:136
+#: app/covid-19/requests/forms/edit-cameroon.php:159
+#: app/covid-19/results/covid-19-result-status.php:115
+#: app/covid-19/results/forms/update-cameroon-result.php:162
+#: app/eid/requests/forms/add-cameroon.php:110
+#: app/eid/requests/forms/edit-cameroon.php:133
+#: app/eid/results/forms/update-cameroon-result.php:121
+#: app/generic-tests/configuration/add-test-type.php:257
+#: app/generic-tests/configuration/add-test-type.php:589
+#: app/generic-tests/configuration/clone-test-type.php:312
+#: app/generic-tests/configuration/clone-test-type.php:376
+#: app/generic-tests/configuration/clone-test-type.php:432
+#: app/generic-tests/configuration/clone-test-type.php:815
+#: app/generic-tests/configuration/edit-test-type.php:316
+#: app/generic-tests/configuration/edit-test-type.php:380
+#: app/generic-tests/configuration/edit-test-type.php:436
+#: app/generic-tests/configuration/edit-test-type.php:849
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:73
+#: app/hepatitis/management/hepatitis-clinic-report.php:141
+#: app/hepatitis/management/hepatitis-clinic-report.php:250
+#: app/hepatitis/management/hepatitis-clinic-report.php:352
+#: app/hepatitis/management/hepatitis-clinic-report.php:478
+#: app/hepatitis/results/hepatitis-result-status.php:105
+#: app/tb/management/tb-clinic-report.php:139
+#: app/tb/management/tb-clinic-report.php:247
+#: app/tb/management/tb-clinic-report.php:351
+#: app/tb/management/tb-clinic-report.php:474
+#: app/tb/results/tb-result-status.php:109
+#: app/vl/program-management/highViralLoad.php:202
+#: app/vl/program-management/highViralLoad.php:383
+#: app/vl/program-management/highViralLoad.php:537
+#: app/vl/program-management/highViralLoad.php:762
+#: app/vl/program-management/highViralLoad.php:1048
+#: app/vl/requests/forms/add-cameroon.php:152
+#: app/vl/requests/forms/edit-cameroon.php:203
+#: app/vl/results/forms/update-cameroon-result.php:253
+msgid "Facility"
+msgstr "FOSA"
+
+#: app/admin/api-dashboard/api-dashboard.php:278
+#: app/admin/api-dashboard/missing-samples-detail.php:126
+msgid "Days Pending"
+msgstr "Jours en attente"
+
+#: app/admin/api-dashboard/api-dashboard.php:279
+#: app/admin/api-dashboard/missing-samples-detail.php:127
+msgid "Source"
+msgstr "Source"
+
+#: app/admin/api-dashboard/api-dashboard.php:289
+msgid "Showing first 10 records."
+msgstr "Les 10 premiers enregistrements sont affichés."
+
+#: app/admin/api-dashboard/api-dashboard.php:291
+msgid "View all records"
+msgstr "Voir tous les dossiers"
+
+#: app/admin/api-dashboard/api-dashboard.php:305
+msgid "Potential Duplicate Entries"
+msgstr "Entrées en double potentielles"
+
+#: app/admin/api-dashboard/api-dashboard.php:308
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:243
+msgid "View Details"
+msgstr "Voir les détails"
+
+#: app/admin/api-dashboard/api-dashboard.php:315
+msgid ""
+"Samples having same Patient ID/Name at same Lab or Facility within last 7 "
+"days are potentially duplicates"
+msgstr ""
+"Les échantillons ayant le même numéro d'identification/nom de patient dans "
+"le même laboratoire ou établissement au cours des 7 derniers jours sont "
+"potentiellement des doublons"
+
+#: app/admin/api-dashboard/api-dashboard.php:321
+#: app/admin/api-dashboard/missing-samples-detail.php:123
+msgid "Patient Info"
+msgstr "Information du patient"
+
+#: app/admin/api-dashboard/api-dashboard.php:322
+#: app/admin/api-dashboard/duplicates-detail.php:101
+msgid "Sample IDs"
+msgstr "ID des échantillons"
+
+#: app/admin/api-dashboard/api-dashboard.php:323
+#: app/admin/api-dashboard/duplicates-detail.php:102
+msgid "Collection Dates"
+msgstr "Dates de collecte"
+
+#: app/admin/api-dashboard/api-dashboard.php:324
+msgid "Sources"
+msgstr "Sources"
+
+#: app/admin/api-dashboard/api-dashboard.php:340
+msgid "Results Sent for Requests Not Originating via API"
+msgstr "Résultats envoyés pour les demandes ne provenant pas de l'API"
+
+#: app/admin/api-dashboard/api-dashboard.php:347
+msgid "Request Source"
+msgstr "Source de la demande"
+
+#: app/admin/api-dashboard/api-dashboard.php:348
+msgid "Result Sent"
+msgstr "Résultat envoyé"
+
+#: app/admin/api-dashboard/api-dashboard.php:349
+msgid "Days Diff"
+msgstr "Jours Diff"
+
+#: app/admin/api-dashboard/api-dashboard.php:362
+msgid "Source Distribution by Facility"
+msgstr "Répartition des sources par installation"
+
+#: app/admin/api-dashboard/api-dashboard.php:369
+msgid "API"
+msgstr "API"
+
+#: app/admin/api-dashboard/api-dashboard.php:370
+msgid "STS"
+msgstr "STS"
+
+#: app/admin/api-dashboard/api-dashboard.php:371
+msgid "Direct LIS"
+msgstr "LIS direct"
+
+#: app/admin/api-dashboard/api-dashboard.php:372
+#: app/dashboard/getSampleResult.php:755
+msgid "Total"
+msgstr "Total"
+
+#: app/admin/api-dashboard/api-dashboard.php:373
+msgid "API %"
+msgstr "API %"
+
+#: app/admin/api-dashboard/api-dashboard.php:411
+#: app/admin/monitoring/activity-log.php:91
+#: app/admin/monitoring/activity-log.php:149
+#: app/admin/monitoring/api-sync-history.php:170
+#: app/admin/monitoring/sources-of-requests.php:295
+#: app/admin/monitoring/test-results-metadata.php:208
+#: app/batch/add-batch.php:404 app/batch/edit-batch.php:392
+#: app/cd4/management/cd4-clinic-report.php:626
+#: app/cd4/management/cd4-export-data.php:332
+#: app/cd4/management/cd4-sample-rejection-report.php:110
+#: app/cd4/management/cd4-sample-status.php:157
+#: app/cd4/management/cd4-testing-target-report.php:265
+#: app/cd4/requests/cd4-requests.php:727
+#: app/cd4/results/cd4-failed-results.php:330
+#: app/cd4/results/cd4-manual-results.php:312
+#: app/cd4/results/cd4-print-results.php:481
+#: app/cd4/results/cd4-result-status.php:292
+#: app/cd4/results/email-results.php:370
+#: app/covid-19/mail/mail-covid-19-results.php:281
+#: app/covid-19/management/covid-19-clinic-report.php:618
+#: app/covid-19/management/covid-19-export-data.php:352
+#: app/covid-19/management/covid-19-sample-rejection-report.php:106
+#: app/covid-19/management/covid-19-sample-status.php:155
+#: app/covid-19/management/covid19TestingTargetReport.php:268
+#: app/covid-19/requests/covid-19-dhis2.php:272
+#: app/covid-19/requests/covid-19-requests.php:593
+#: app/covid-19/results/can-record-confirmatory-tests.php:223
+#: app/covid-19/results/covid-19-failed-results.php:275
+#: app/covid-19/results/covid-19-manual-results.php:225
+#: app/covid-19/results/covid-19-print-results.php:496
+#: app/covid-19/results/covid-19-result-status.php:213
+#: app/covid-19/results/email-results.php:372 app/dashboard/index.php:532
+#: app/dashboard/index.php:881 app/dashboard/vlTestResultStatus.php:193
+#: app/eid/management/eid-clinic-report.php:625
+#: app/eid/management/eid-export-data.php:378
+#: app/eid/management/eid-export-data.php:409
+#: app/eid/management/eid-sample-rejection-report.php:103
+#: app/eid/management/eid-sample-status.php:181
+#: app/eid/management/eidTestingTargetReport.php:266
+#: app/eid/requests/eid-requests.php:608
+#: app/eid/results/eid-failed-results.php:351
+#: app/eid/results/eid-manual-results.php:267
+#: app/eid/results/eid-print-results.php:488
+#: app/eid/results/eid-result-status.php:218
+#: app/eid/results/email-results.php:369 app/facilities/editFacility.php:538
+#: app/generic-tests/mail/mail-generic-tests-results.php:326
+#: app/generic-tests/program-management/generic-export-data.php:385
+#: app/generic-tests/program-management/generic-sample-status.php:210
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:208
+#: app/generic-tests/program-management/sample-rejection-report.php:131
+#: app/generic-tests/requests/view-requests.php:309
+#: app/generic-tests/results/email-results.php:372
+#: app/generic-tests/results/generic-failed-results.php:298
+#: app/generic-tests/results/generic-print-result.php:588
+#: app/generic-tests/results/generic-result-approval.php:286
+#: app/generic-tests/results/generic-test-results.php:300
+#: app/global-config/editGlobalConfig.php:213
+#: app/hepatitis/mail/mail-hepatitis-results.php:271
+#: app/hepatitis/management/hepatitis-clinic-report.php:618
+#: app/hepatitis/management/hepatitis-export-data.php:354
+#: app/hepatitis/management/hepatitis-sample-rejection-report.php:107
+#: app/hepatitis/management/hepatitis-sample-status.php:155
+#: app/hepatitis/management/hepatitis-testing-target-report.php:267
+#: app/hepatitis/requests/hepatitis-dhis2.php:451
+#: app/hepatitis/requests/hepatitis-requests.php:569
+#: app/hepatitis/results/email-results.php:372
+#: app/hepatitis/results/hepatitis-failed-results.php:321
+#: app/hepatitis/results/hepatitis-manual-results.php:227
+#: app/hepatitis/results/hepatitis-print-results.php:483
+#: app/hepatitis/results/hepatitis-result-status.php:204
+#: app/import-result/imported-results.php:578 app/mail/vlResultMail.php:372
+#: app/move-samples/select-samples-to-move.php:233
+#: app/specimen-referral-manifest/add-manifest.php:234
+#: app/specimen-referral-manifest/add-manifest.php:291
+#: app/specimen-referral-manifest/edit-manifest.php:301
+#: app/specimen-referral-manifest/move-manifest.php:325
+#: app/system-admin/user-login-history/userLoginIndex.php:165
+#: app/tb/management/tb-clinic-report.php:614
+#: app/tb/management/tb-export-data.php:345
+#: app/tb/management/tb-sample-rejection-report.php:105
+#: app/tb/management/tb-sample-status.php:154
+#: app/tb/requests/tb-requests.php:438 app/tb/results/email-results.php:372
+#: app/tb/results/tb-failed-results.php:324
+#: app/tb/results/tb-manual-results.php:230
+#: app/tb/results/tb-print-results.php:477
+#: app/tb/results/tb-result-status.php:210 app/users/editUser.php:219
+#: app/vl/program-management/highViralLoad.php:1202
+#: app/vl/program-management/highViralLoad.php:1232
+#: app/vl/program-management/sampleRejectionReport.php:152
+#: app/vl/program-management/vl-export-data.php:583
+#: app/vl/program-management/vl-sample-status.php:218
+#: app/vl/program-management/vlControlReport.php:111
+#: app/vl/program-management/vlMonitoringReport.php:313
+#: app/vl/program-management/vlSuppressedTargetReport.php:261
+#: app/vl/program-management/vlTestingTargetReport.php:267
+#: app/vl/program-management/vlWeeklyReport.php:325
+#: app/vl/requests/sample-storage.php:463 app/vl/requests/vl-requests.php:806
+#: app/vl/results/email-results.php:372
+#: app/vl/results/vl-failed-results.php:308
+#: app/vl/results/vl-print-results.php:674
+#: app/vl/results/vlResultApproval.php:295 app/vl/results/vlResultMail.php:372
+#: app/vl/results/vlTestResult.php:308
+msgid "Clear"
+msgstr "Effacer"
+
+#: app/admin/api-dashboard/api-dashboard.php:564
+msgid "No missing samples found"
+msgstr "Aucun échantillon manquant n'a été trouvé"
+
+#: app/admin/api-dashboard/api-dashboard.php:604
+msgid "No potential duplicates found"
+msgstr "Aucun doublon potentiel n'a été trouvé"
+
+#: app/admin/api-dashboard/api-dashboard.php:710
+msgid "Search facilities"
+msgstr "Facilités de recherche"
+
+#: app/admin/api-dashboard/api-dashboard.php:711
+msgid "Show"
+msgstr "Afficher"
+
+#: app/admin/api-dashboard/api-dashboard.php:711
+msgid "entries"
+msgstr "entrées"
+
+#: app/admin/api-dashboard/api-dashboard.php:712
+msgid "Showing"
+msgstr "Affichage"
+
+#: app/admin/api-dashboard/api-dashboard.php:712
+msgid "to"
+msgstr "à"
+
+#: app/admin/api-dashboard/api-dashboard.php:712
+#: app/classes/Helpers/ResultPDFHelpers/CD4ResultPDFHelper.php:116
+#: app/classes/Helpers/ResultPDFHelpers/Covid19ResultPDFHelper.php:158
+#: app/classes/Helpers/ResultPDFHelpers/EIDResultPDFHelper.php:129
+#: app/classes/Helpers/ResultPDFHelpers/GenericTestsResultPDFHelper.php:120
+#: app/classes/Helpers/ResultPDFHelpers/HepatitisResultPDFHelper.php:116
+#: app/classes/Helpers/ResultPDFHelpers/TBResultPDFHelper.php:145
+#: app/classes/Helpers/ResultPDFHelpers/VLResultPDFHelper.php:116
+msgid "of"
+msgstr "de"
+
+#: app/admin/api-dashboard/api-dashboard.php:712
+msgid "facilities"
+msgstr "Structures sanitaire"
+
+#: app/admin/api-dashboard/api-dashboard.php:713
+#: app/admin/monitoring/get-sync-status.php:76
+#: app/admin/monitoring/lab-sync-details.php:231
+msgid "No data available"
+msgstr "Pas de données disponibles"
+
+#: app/admin/api-dashboard/api-dashboard.php:714
+msgid "No matching facilities found"
+msgstr "Aucune installation correspondante n'a été trouvée"
+
+#: app/admin/api-dashboard/api-dashboard.php:716
+msgid "First"
+msgstr "Premier"
+
+#: app/admin/api-dashboard/api-dashboard.php:717
+msgid "Last"
+msgstr "Dernier"
+
+#: app/admin/api-dashboard/api-dashboard.php:718
+#: app/cd4/results/email-results.php:334
+#: app/covid-19/results/email-results.php:336
+#: app/eid/results/email-results.php:333
+#: app/generic-tests/results/email-results.php:336
+#: app/hepatitis/results/email-results.php:336 app/mail/vlResultMail.php:336
+#: app/setup/index.php:323 app/setup/index.php:407
+#: app/tb/results/email-results.php:336 app/vl/results/email-results.php:336
+#: app/vl/results/vlResultMail.php:336
+msgid "Next"
+msgstr "Suivante"
+
+#: app/admin/api-dashboard/api-dashboard.php:719
+msgid "Previous"
+msgstr "Précédent"
+
+#: app/admin/api-dashboard/api-dashboard.php:746
+msgid "No non-originating results found"
+msgstr "Aucun résultat non originaire n'a été trouvé"
+
+#: app/admin/api-dashboard/duplicates-detail.php:8
+msgid "Potential Duplicate Entries - Detailed View"
+msgstr "Entrées en double potentielles - Vue détaillée"
+
+#: app/admin/api-dashboard/duplicates-detail.php:45
+msgid "Potential Duplicate Entries - Detailed Analysis"
+msgstr "Analyse détaillée des entrées en double potentielles"
+
+#: app/admin/api-dashboard/duplicates-detail.php:60
+msgid "Potential Duplicate Test Requests"
+msgstr "Demandes de test en double potentielles"
+
+#: app/admin/api-dashboard/duplicates-detail.php:87
+#: app/admin/api-dashboard/missing-samples-detail.php:109
+msgid "Export to Excel"
+msgstr "Exporter vers Excel"
+
+#: app/admin/api-dashboard/duplicates-detail.php:90
+#: app/admin/api-dashboard/missing-samples-detail.php:112
+msgid "Refresh Data"
+msgstr "Actualiser les données"
+
+#: app/admin/api-dashboard/duplicates-detail.php:98
+msgid "Sort Value"
+msgstr "Valeur de tri"
+
+#: app/admin/api-dashboard/duplicates-detail.php:99
+msgid "Risk Level"
+msgstr "Niveau de risque"
+
+#: app/admin/api-dashboard/duplicates-detail.php:100
+#: app/covid-19/requests/forms/add-cameroon.php:196
+#: app/covid-19/requests/forms/edit-cameroon.php:213
+#: app/eid/requests/forms/add-burkina-faso.php:133
+#: app/eid/requests/forms/edit-burkina-faso.php:147
+#: app/eid/results/forms/update-burkina-faso-result.php:146
+#: app/generic-tests/requests/add-request.php:358
+#: app/generic-tests/requests/edit-request.php:549
+#: app/generic-tests/results/update-generic-test-result.php:521
+#: app/vl/requests/forms/add-burkina-faso.php:207
+#: app/vl/requests/forms/add-cameroon.php:225
+#: app/vl/requests/forms/edit-burkina-faso.php:304
+#: app/vl/requests/forms/edit-cameroon.php:280
+#: app/vl/results/forms/update-burkina-faso-result.php:297
+#: app/vl/results/forms/update-cameroon-result.php:332
+#: app/vl/results/pdf/result-pdf-cameroon-cresar.php:192
+msgid "Patient Information"
+msgstr "Information du patient"
+
+#: app/admin/api-dashboard/duplicates-detail.php:103
+msgid "Request Sources"
+msgstr "Demande de sources"
+
+#: app/admin/api-dashboard/duplicates-detail.php:104
+msgid "Count"
+msgstr "Nombre"
+
+#: app/admin/api-dashboard/duplicates-detail.php:105
+msgid "Date Span"
+msgstr "Date Span"
+
+#: app/admin/api-dashboard/duplicates-detail.php:106
+#: app/facilities/addFacility.php:80 app/facilities/editFacility.php:145
+#: app/facilities/facilities.php:9 app/facilities/facilities.php:42
+#: app/facilities/facilities.php:45 app/facilities/upload-facilities.php:83
+#: app/system/translate-strings.php:12
+msgid "Facilities"
+msgstr "FOSA"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:87
+msgid "High Missing API Sample Receipts"
+msgstr "Nombre élevé de reçus d'échantillons API manquants"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:88
+#, php-format
+msgid ""
+"%d API test requests have been waiting for sample receipt for more than 30 "
+"days"
+msgstr ""
+"%d Les demandes de test de l'API sont en attente de réception d'échantillon "
+"depuis plus de 30 jours"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:143
+msgid "Potential Duplicate Entries Detected"
+msgstr "Détection de doublons potentiels"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:144
+#, php-format
+msgid "%d groups of potential duplicate entries found"
+msgstr "%d groupes de doublons potentiels trouvés"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:166
+msgid "Critical: Many Long Pending Tests"
+msgstr "Critique : De nombreux tests en attente depuis longtemps"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:169
+msgid "Long Pending Tests"
+msgstr "Tests en attente depuis longtemps"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:175
+#, php-format
+msgid "%d samples have been pending testing for more than 30 days"
+msgstr "%d Les échantillons sont en attente de test depuis plus de 30 jours"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:194
+msgid "API Result Transmission Issues"
+msgstr "Problèmes de transmission des résultats de l'API"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:195
+#, php-format
+msgid "%d API results have transmission issues (pending/failed)"
+msgstr ""
+"%d Les résultats de l'API ont des problèmes de transmission (en attente/"
+"échec)"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:216
+msgid "High Sample Rejection Rate"
+msgstr "Taux élevé de rejet des échantillons"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:218
+#, php-format
+msgid "Sample rejection rate is %.1f%% (%d out of %d samples)"
+msgstr ""
+"Le taux de rejet des échantillons est de %.1f%% (%d sur %d échantillons)"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:233
+msgid "All Good!"
+msgstr "Tout va bien!"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:234
+msgid "No critical issues detected in the current time period."
+msgstr ""
+"Aucun problème critique n'a été détecté au cours de la période actuelle."
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:260
+msgid "Error"
+msgstr "Erreur"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:261
+msgid "Failed to load alerts"
+msgstr "Échec du chargement des alertes"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:11
+msgid "Missing Sample Receipts - Detailed View"
+msgstr "Reçus d'échantillons manquants - Vue détaillée"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:44
+msgid "Missing Sample Receipts - Detailed Analysis"
+msgstr "Reçus d'échantillons manquants - Analyse détaillée"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:49
+msgid "Missing Sample Receipts"
+msgstr "Reçus d'échantillons manquants"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:59
+msgid "Test Requests Without Sample Receipt"
+msgstr "Demandes de test sans réception d'échantillon"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:88
+msgid "High Priority"
+msgstr "Haute priorité"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:90
+msgid "Requests > 7 days old"
+msgstr "Demandes > 7 jours"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:98
+msgid "Medium Priority"
+msgstr "Priorité moyenne"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:100
+msgid "Requests 3-7 days old"
+msgstr "Demandes âgées de 3 à 7 jours"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:120
+msgid "Priority"
+msgstr "Priorité"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:122
+msgid "Remote ID"
+msgstr "Identification à distance"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:125
+#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/requests/export-cd4-requests.php:28
+#: app/vl/program-management/export-vl-results.php:35
+#: app/vl/requests/export-vl-requests.php:38
+msgid "Request Date"
+msgstr "Date de la demande"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:128
+msgid "Actions"
+msgstr "Actions"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:315
+msgid "Follow-up Actions"
+msgstr "Conditions de l'email marketing"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:319
+msgid "Sample Code"
+msgstr "Code d'échantillon"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:323
+msgid "Action Type"
+msgstr "Type d'impact"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:325
+msgid "Add Note"
+msgstr "Ajouter une note"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:326
+msgid "Send Alert"
+msgstr "Envoyer une alerte"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:327
+msgid "Contact Facility"
+msgstr "Mécanisme de contact"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:328
+msgid "Escalate Issue"
+msgstr "Escalade du problème"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:332
+#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/requests/export-cd4-requests.php:28
+#: app/eid/results/pdf/result-pdf-burkina-faso.php:428
+#: app/import-result/imported-results.php:441
+#: app/vl/program-management/export-vl-results.php:35
+#: app/vl/program-management/sample-storage-reports.php:242
+#: app/vl/program-management/storageHistoryDataToExcel.php:25
+#: app/vl/requests/export-sample-storage.php:26
+#: app/vl/requests/export-vl-requests.php:38
+#: app/vl/requests/sample-storage.php:289
+msgid "Comments"
+msgstr "Commentaires"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:333
+msgid "Enter your comments or notes..."
+msgstr "Saisissez vos commentaires ou notes..."
+
+#: app/admin/api-dashboard/missing-samples-detail.php:337
+#: app/batch/add-batch.php:359 app/batch/edit-batch.php:328
+#: app/cd4/reference/add-cd4-sample-rejection-reasons.php:75
+#: app/cd4/reference/add-cd4-sample-type.php:57
+#: app/cd4/reference/add-cd4-test-reasons.php:71
+#: app/cd4/results/email-results.php:331
+#: app/common/reference/add-funding-sources.php:57
+#: app/common/reference/add-geographical-divisions.php:99
+#: app/common/reference/add-implementation-partners.php:57
+#: app/common/reference/add-lab-storage.php:80
+#: app/common/reference/add-recommended-corrective-action.php:71
+#: app/common/reference/edit-geographical-divisions.php:109
+#: app/common/reference/edit-lab-storage.php:92
+#: app/common/reference/edit-recommended-corrective-action.php:85
+#: app/covid-19/reference/add-covid19-comorbidities.php:57
+#: app/covid-19/reference/add-covid19-qc-test-kit.php:94
+#: app/covid-19/reference/add-covid19-results.php:56
+#: app/covid-19/reference/add-covid19-sample-rejection-reason.php:75
+#: app/covid-19/reference/add-covid19-sample-type.php:57
+#: app/covid-19/reference/add-covid19-symptoms.php:76
+#: app/covid-19/reference/add-covid19-test-reasons.php:76
+#: app/covid-19/reference/edit-covid19-qc-test-kit.php:125
+#: app/covid-19/results/add-covid-19-qc-data.php:193
+#: app/covid-19/results/edit-covid-19-qc-data.php:222
+#: app/covid-19/results/email-results.php:333
+#: app/eid/reference/add-eid-results.php:56
+#: app/eid/reference/add-eid-sample-rejection-reasons.php:74
+#: app/eid/reference/add-eid-sample-type.php:57
+#: app/eid/reference/add-eid-test-reasons.php:70
+#: app/eid/requests/forms/add-burkina-faso.php:464
+#: app/eid/requests/forms/edit-burkina-faso.php:487
+#: app/eid/results/email-results.php:330
+#: app/eid/results/forms/update-burkina-faso-result.php:487
+#: app/facilities/addFacility.php:773 app/facilities/editFacility.php:742
+#: app/facilities/mapTestType.php:131 app/facilities/upload-facilities.php:148
+#: app/generic-tests/configuration/add-test-type.php:373
+#: app/generic-tests/configuration/clone-test-type.php:616
+#: app/generic-tests/configuration/edit-test-type.php:640
+#: app/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:74
+#: app/generic-tests/configuration/sample-types/generic-add-sample-type.php:65
+#: app/generic-tests/configuration/sample-types/generic-edit-sample-type.php:78
+#: app/generic-tests/configuration/symptoms/generic-add-symptoms.php:66
+#: app/generic-tests/configuration/symptoms/generic-edit-symptoms.php:77
+#: app/generic-tests/configuration/test-categories/generic-add-test-categories.php:57
+#: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:70
+#: app/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:66
+#: app/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:77
+#: app/generic-tests/configuration/test-methods/generic-add-test-methods.php:58
+#: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:71
+#: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:59
+#: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:70
+#: app/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:66
+#: app/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:77
+#: app/generic-tests/requests/add-request.php:728
+#: app/generic-tests/requests/edit-request.php:954
+#: app/generic-tests/results/email-results.php:333
+#: app/generic-tests/results/update-generic-test-result.php:916
+#: app/global-config/editGlobalConfig.php:1342
+#: app/hepatitis/reference/add-hepatitis-comorbidities.php:57
+#: app/hepatitis/reference/add-hepatitis-results.php:56
+#: app/hepatitis/reference/add-hepatitis-risk-factors.php:56
+#: app/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:75
+#: app/hepatitis/reference/add-hepatitis-sample-type.php:57
+#: app/hepatitis/reference/add-hepatitis-test-reasons.php:70
+#: app/hepatitis/results/email-results.php:333
+#: app/import-result/import-file.php:217 app/instruments/add-instrument.php:675
+#: app/instruments/edit-instrument.php:752 app/mail/vlResultMail.php:333
+#: app/patients/add-patient.php:238 app/patients/edit-patient.php:253
+#: app/roles/addRole.php:381 app/roles/editRole.php:381
+#: app/specimen-referral-manifest/add-manifest.php:251
+#: app/system-admin/edit-config/resetPassword.php:57
+#: app/system-admin/instance-overview/instanceIndex.php:117
+#: app/tb/reference/add-tb-results.php:92
+#: app/tb/reference/add-tb-sample-rejection-reason.php:75
+#: app/tb/reference/add-tb-sample-type.php:57
+#: app/tb/reference/add-tb-test-reasons.php:76
+#: app/tb/requests/forms/add-burkina-faso.php:498
+#: app/tb/results/email-results.php:333
+#: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:329
+#: app/users/edit-profile.php:139 app/users/editUser.php:371
+#: app/vl/program-management/upload-vl-control.php:127
+#: app/vl/reference/add-vl-art-code-details.php:93
+#: app/vl/reference/add-vl-results.php:151
+#: app/vl/reference/add-vl-sample-rejection-reasons.php:75
+#: app/vl/reference/add-vl-sample-type.php:57
+#: app/vl/reference/add-vl-test-failure-reason.php:58
+#: app/vl/reference/add-vl-test-reasons.php:71
+#: app/vl/reference/edit-vl-test-failure-reason.php:68
+#: app/vl/requests/forms/add-burkina-faso.php:682
+#: app/vl/requests/forms/add-cameroon.php:705
+#: app/vl/requests/forms/edit-cameroon.php:781
+#: app/vl/requests/sample-storage.php:396
+#: app/vl/requests/upload-storage.php:115
+#: app/vl/result-mail/editTestResultEmailConfig.php:127
+#: app/vl/results/email-results.php:333
+#: app/vl/results/forms/update-cameroon-result.php:752
+#: app/vl/results/vlResultMail.php:333
+msgid "Cancel"
+msgstr "Annuler"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:338
+msgid "Execute Action"
+msgstr "Exécuter l'action"
+
+#: app/admin/index.php:3 app/covid-19/requests/covid-19-add-request.php:9
+msgid "COVID-19 | Add New Request"
+msgstr "COVID-19 | Ajouter une nouvelle demande"
+
+#: app/admin/index.php:9
+msgid "Welcome to Admin Page"
+msgstr "Bienvenue sur la page d’administration"
+
+#: app/admin/index.php:12 app/admin/monitoring/log-files.php:10
+#: app/system-admin/admin-header.php:132
+msgid "Admin"
+msgstr "Administrateur"
+
+#: app/admin/monitoring/activity-log.php:8
+#: app/admin/monitoring/activity-log.php:43 app/system/translate-strings.php:21
+msgid "User Activity Log"
+msgstr "Journal d’activité de l’utilisateur"
+
+#: app/admin/monitoring/activity-log.php:50
+#: app/admin/monitoring/audit-trail.php:14
+#: app/admin/monitoring/audit-trail.php:278
+#: app/admin/monitoring/audit-trail.php:281 app/system/translate-strings.php:22
+msgid "Audit Trail"
+msgstr "Piste d’audit"
+
+#: app/admin/monitoring/activity-log.php:63
+#: app/admin/monitoring/api-sync-history.php:56
+#: app/admin/monitoring/sources-of-requests.php:80 app/dashboard/index.php:125
+#: app/dashboard/index.php:169 app/dashboard/index.php:215
+#: app/dashboard/index.php:262 app/dashboard/index.php:310
+#: app/dashboard/index.php:358 app/dashboard/index.php:407
+#: app/dashboard/index.php:457
+#: app/specimen-referral-manifest/move-manifest.php:182
+#: app/specimen-referral-manifest/move-manifest.php:185
+msgid "Date Range"
+msgstr "Plage de dates"
+
+#: app/admin/monitoring/activity-log.php:69 app/system/translate-strings.php:11
+#: app/users/addUser.php:61 app/users/edit-profile.php:40
+#: app/users/editUser.php:99 app/users/users.php:2 app/users/users.php:11
+#: app/users/users.php:14
+msgid "Users"
+msgstr "Utilisateurs"
+
+#: app/admin/monitoring/activity-log.php:72
+msgid "Please select the user name"
+msgstr "Veuillez sélectionner le nom d'utilisateur"
+
+#: app/admin/monitoring/activity-log.php:79
+#: app/admin/monitoring/activity-log.php:82
+#: app/admin/monitoring/activity-log.php:105
+msgid "Type of Action"
+msgstr "Type d'action"
+
+#: app/admin/monitoring/activity-log.php:88
+#: app/admin/monitoring/api-sync-history.php:112
+#: app/admin/monitoring/lab-sync-details.php:186
+#: app/admin/monitoring/log-files.php:324
+#: app/admin/monitoring/sources-of-requests.php:175
+#: app/admin/monitoring/sync-status.php:366
+#: app/admin/monitoring/test-results-metadata.php:114
+#: app/batch/get-samples-batch.php:236 app/batch/get-samples-batch.php:237
+#: app/cd4/management/cd4-clinic-report.php:177
+#: app/cd4/management/cd4-clinic-report.php:282
+#: app/cd4/management/cd4-clinic-report.php:378
+#: app/cd4/management/cd4-clinic-report.php:432
+#: app/cd4/management/cd4-clinic-report.php:495
+#: app/cd4/management/cd4-clinic-report.php:524
+#: app/cd4/management/cd4-export-data.php:191
+#: app/cd4/management/cd4-sample-rejection-report.php:77
+#: app/cd4/management/cd4-sample-status.php:96
+#: app/cd4/management/cd4-testing-target-report.php:212
+#: app/cd4/requests/cd4-requests.php:429
+#: app/cd4/results/cd4-failed-results.php:161
+#: app/cd4/results/cd4-manual-results.php:163
+#: app/cd4/results/cd4-print-results.php:144
+#: app/cd4/results/cd4-print-results.php:319
+#: app/cd4/results/cd4-result-status.php:183
+#: app/cd4/results/email-results.php:285
+#: app/covid-19/management/covid-19-clinic-report.php:169
+#: app/covid-19/management/covid-19-clinic-report.php:274
+#: app/covid-19/management/covid-19-clinic-report.php:373
+#: app/covid-19/management/covid-19-clinic-report.php:428
+#: app/covid-19/management/covid-19-clinic-report.php:491
+#: app/covid-19/management/covid-19-clinic-report.php:518
+#: app/covid-19/management/covid-19-export-data.php:211
+#: app/covid-19/management/covid-19-sample-rejection-report.php:72
+#: app/covid-19/management/covid-19-sample-status.php:91
+#: app/covid-19/management/covid19TestingTargetReport.php:215
+#: app/covid-19/requests/covid-19-requests.php:351
+#: app/covid-19/requests/forms/add-cameroon.php:198
+#: app/covid-19/requests/forms/edit-cameroon.php:215
+#: app/covid-19/results/covid-19-failed-results.php:160
+#: app/covid-19/results/covid-19-manual-results.php:114
+#: app/covid-19/results/covid-19-print-results.php:149
+#: app/covid-19/results/covid-19-print-results.php:325
+#: app/covid-19/results/covid-19-result-status.php:137
+#: app/covid-19/results/email-results.php:287
+#: app/dashboard/getSampleCount.php:116 app/dashboard/index.php:130
+#: app/dashboard/index.php:174 app/dashboard/index.php:220
+#: app/dashboard/index.php:267 app/dashboard/index.php:315
+#: app/dashboard/index.php:363 app/dashboard/index.php:412
+#: app/dashboard/index.php:462 app/eid/management/eid-clinic-report.php:170
+#: app/eid/management/eid-clinic-report.php:279
+#: app/eid/management/eid-clinic-report.php:376
+#: app/eid/management/eid-clinic-report.php:431
+#: app/eid/management/eid-clinic-report.php:494
+#: app/eid/management/eid-clinic-report.php:523
+#: app/eid/management/eid-export-data.php:229
+#: app/eid/management/eid-sample-rejection-report.php:70
+#: app/eid/management/eid-sample-status.php:95
+#: app/eid/management/eidTestingTargetReport.php:214
+#: app/eid/requests/eid-requests.php:365
+#: app/eid/requests/forms/add-burkina-faso.php:135
+#: app/eid/requests/forms/edit-burkina-faso.php:149
+#: app/eid/results/eid-failed-results.php:175
+#: app/eid/results/eid-manual-results.php:119
+#: app/eid/results/eid-print-results.php:132
+#: app/eid/results/eid-print-results.php:304
+#: app/eid/results/eid-result-status.php:137
+#: app/eid/results/email-results.php:284
+#: app/eid/results/forms/update-burkina-faso-result.php:148
+#: app/facilities/getFacilityMapUser.php:73
+#: app/facilities/getFacilityMapUser.php:74 app/facilities/mapTestType.php:156
+#: app/facilities/mapTestType.php:157
+#: app/generic-tests/program-management/generic-export-data.php:246
+#: app/generic-tests/program-management/generic-sample-status.php:126
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:86
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:115
+#: app/generic-tests/program-management/sample-rejection-report.php:96
+#: app/generic-tests/requests/view-requests.php:136
+#: app/generic-tests/results/email-results.php:287
+#: app/generic-tests/results/generic-failed-results.php:125
+#: app/generic-tests/results/generic-print-result.php:182
+#: app/generic-tests/results/generic-print-result.php:409
+#: app/generic-tests/results/generic-result-approval.php:176
+#: app/generic-tests/results/generic-test-results.php:151
+#: app/hepatitis/management/hepatitis-clinic-report.php:171
+#: app/hepatitis/management/hepatitis-clinic-report.php:277
+#: app/hepatitis/management/hepatitis-clinic-report.php:373
+#: app/hepatitis/management/hepatitis-clinic-report.php:427
+#: app/hepatitis/management/hepatitis-clinic-report.php:491
+#: app/hepatitis/management/hepatitis-clinic-report.php:518
+#: app/hepatitis/management/hepatitis-export-data.php:216
+#: app/hepatitis/management/hepatitis-sample-rejection-report.php:74
+#: app/hepatitis/management/hepatitis-sample-status.php:94
+#: app/hepatitis/management/hepatitis-testing-target-report.php:214
+#: app/hepatitis/requests/hepatitis-dhis2.php:238
+#: app/hepatitis/requests/hepatitis-requests.php:351
+#: app/hepatitis/results/email-results.php:287
+#: app/hepatitis/results/hepatitis-failed-results.php:159
+#: app/hepatitis/results/hepatitis-manual-results.php:115
+#: app/hepatitis/results/hepatitis-print-results.php:143
+#: app/hepatitis/results/hepatitis-print-results.php:318
+#: app/hepatitis/results/hepatitis-result-status.php:127
+#: app/mail/vlResultMail.php:287
+#: app/specimen-referral-manifest/add-manifest.php:233
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:134
+#: app/specimen-referral-manifest/get-samples-for-manifest.php:135
+#: app/system-admin/user-login-history/userLoginIndex.php:50
+#: app/tb/management/tb-clinic-report.php:169
+#: app/tb/management/tb-clinic-report.php:274
+#: app/tb/management/tb-clinic-report.php:371
+#: app/tb/management/tb-clinic-report.php:424
+#: app/tb/management/tb-clinic-report.php:487
+#: app/tb/management/tb-clinic-report.php:514
+#: app/tb/management/tb-export-data.php:205
+#: app/tb/management/tb-sample-rejection-report.php:72
+#: app/tb/management/tb-sample-status.php:93
+#: app/tb/requests/forms/add-burkina-faso.php:159
+#: app/tb/requests/forms/edit-burkina-faso.php:179
+#: app/tb/requests/tb-requests.php:267 app/tb/results/email-results.php:287
+#: app/tb/results/forms/update-burkina-faso.php:178
+#: app/tb/results/tb-failed-results.php:160
+#: app/tb/results/tb-manual-results.php:119
+#: app/tb/results/tb-print-results.php:144
+#: app/tb/results/tb-print-results.php:314
+#: app/tb/results/tb-result-status.php:131 app/users/addUser.php:364
+#: app/users/addUser.php:365 app/users/editUser.php:417
+#: app/users/editUser.php:418 app/vl/program-management/highViralLoad.php:304
+#: app/vl/program-management/highViralLoad.php:647
+#: app/vl/program-management/highViralLoad.php:849
+#: app/vl/program-management/highViralLoad.php:967
+#: app/vl/program-management/highViralLoad.php:1064
+#: app/vl/program-management/highViralLoad.php:1093
+#: app/vl/program-management/sample-storage-reports.php:107
+#: app/vl/program-management/sample-storage-reports.php:192
+#: app/vl/program-management/sampleRejectionReport.php:117
+#: app/vl/program-management/vl-export-data.php:369
+#: app/vl/program-management/vl-sample-status.php:129
+#: app/vl/program-management/vlControlReport.php:78
+#: app/vl/program-management/vlMonitoringReport.php:227
+#: app/vl/program-management/vlWeeklyReport.php:98
+#: app/vl/program-management/vlWeeklyReport.php:226
+#: app/vl/reference/add-vl-results.php:172
+#: app/vl/reference/add-vl-results.php:173
+#: app/vl/reference/edit-vl-results.php:175
+#: app/vl/reference/edit-vl-results.php:176
+#: app/vl/requests/forms/add-drc.php:172 app/vl/requests/vl-requests.php:476
+#: app/vl/results/email-results.php:287
+#: app/vl/results/vl-failed-results.php:132
+#: app/vl/results/vl-print-results.php:203
+#: app/vl/results/vl-print-results.php:460
+#: app/vl/results/vlResultApproval.php:183 app/vl/results/vlResultMail.php:287
+#: app/vl/results/vlTestResult.php:162
+msgid "Search"
+msgstr "Rechercher"
+
+#: app/admin/monitoring/activity-log.php:102
+msgid "Audit Log"
+msgstr "Journal d'audit"
+
+#: app/admin/monitoring/activity-log.php:108
+#: app/system-admin/user-login-history/userLoginIndex.php:64
+#: app/users/edit-profile.php:153
+msgid "IP Address"
+msgstr "Adresse IP"
+
+#: app/admin/monitoring/activity-log.php:111
+msgid "Recorded On"
+msgstr "Enregistré le"
+
+#: app/admin/monitoring/activity-log.php:118
+#: app/admin/monitoring/api-sync-history.php:147 app/batch/batches.php:117
+#: app/cd4/management/cd4-clinic-report.php:203
+#: app/cd4/management/cd4-clinic-report.php:305
+#: app/cd4/management/cd4-clinic-report.php:402
+#: app/cd4/management/cd4-clinic-report.php:458
+#: app/cd4/management/cd4-clinic-report.php:578
+#: app/cd4/management/cd4-export-data.php:269
+#: app/cd4/management/cd4-sample-status.php:126
+#: app/cd4/management/cd4-testing-target-report.php:235
+#: app/cd4/reference/cd4-sample-rejection-reasons.php:50
+#: app/cd4/reference/cd4-sample-type.php:52
+#: app/cd4/reference/cd4-test-reasons.php:52
+#: app/cd4/requests/cd4-requests.php:608
+#: app/cd4/results/cd4-failed-results.php:228
+#: app/cd4/results/cd4-manual-results.php:279
+#: app/cd4/results/cd4-print-results.php:231
+#: app/cd4/results/cd4-print-results.php:405
+#: app/cd4/results/cd4-result-status.php:262
+#: app/common/reference/funding-sources.php:39
+#: app/common/reference/geographical-divisions-details.php:43
+#: app/common/reference/implementation-partners.php:39
+#: app/common/reference/lab-storage.php:49
+#: app/common/reference/recommended-corrective-actions.php:55
+#: app/covid-19/management/covid-19-clinic-report.php:195
+#: app/covid-19/management/covid-19-clinic-report.php:298
+#: app/covid-19/management/covid-19-clinic-report.php:396
+#: app/covid-19/management/covid-19-clinic-report.php:454
+#: app/covid-19/management/covid-19-clinic-report.php:570
+#: app/covid-19/management/covid-19-export-data.php:289
+#: app/covid-19/management/covid-19-sample-status.php:124
+#: app/covid-19/management/covid19TestingTargetReport.php:238
+#: app/covid-19/reference/covid19-comorbidities.php:69
+#: app/covid-19/reference/covid19-qc-test-kits.php:51
+#: app/covid-19/reference/covid19-results.php:41
+#: app/covid-19/reference/covid19-sample-rejection-reasons.php:53
+#: app/covid-19/reference/covid19-sample-type.php:69
+#: app/covid-19/reference/covid19-symptoms.php:51
+#: app/covid-19/reference/covid19-test-reasons.php:42
+#: app/covid-19/requests/covid-19-requests.php:479
+#: app/covid-19/results/covid-19-failed-results.php:228
+#: app/covid-19/results/covid-19-manual-results.php:193
+#: app/covid-19/results/covid-19-print-results.php:236
+#: app/covid-19/results/covid-19-print-results.php:411
+#: app/covid-19/results/covid-19-qc-data.php:96
+#: app/covid-19/results/covid-19-result-status.php:184
+#: app/eid/management/eid-clinic-report.php:197
+#: app/eid/management/eid-clinic-report.php:303
+#: app/eid/management/eid-clinic-report.php:399
+#: app/eid/management/eid-clinic-report.php:457
+#: app/eid/management/eid-clinic-report.php:577
+#: app/eid/management/eid-export-data.php:319
+#: app/eid/management/eid-sample-status.php:149
+#: app/eid/management/eidTestingTargetReport.php:236
+#: app/eid/reference/eid-results.php:49
+#: app/eid/reference/eid-sample-rejection-reasons.php:53
+#: app/eid/reference/eid-sample-type.php:50
+#: app/eid/reference/eid-test-reasons.php:51
+#: app/eid/requests/eid-requests.php:493
+#: app/eid/results/eid-failed-results.php:249
+#: app/eid/results/eid-manual-results.php:234
+#: app/eid/results/eid-print-results.php:233
+#: app/eid/results/eid-print-results.php:405
+#: app/eid/results/eid-result-status.php:189 app/facilities/facilities.php:182
+#: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:55
+#: app/generic-tests/configuration/sample-types/generic-sample-type.php:55
+#: app/generic-tests/configuration/symptoms/generic-symptoms.php:55
+#: app/generic-tests/configuration/test-categories/generic-test-categories.php:54
+#: app/generic-tests/configuration/test-failure-reasons/generic-test-failure-reason.php:55
+#: app/generic-tests/configuration/test-methods/generic-test-methods.php:54
+#: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:54
+#: app/generic-tests/configuration/test-type.php:56
+#: app/generic-tests/configuration/testing-reasons/generic-testing-reason.php:56
+#: app/generic-tests/program-management/generic-export-data.php:343
+#: app/generic-tests/program-management/generic-sample-status.php:177
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:169
+#: app/generic-tests/requests/view-requests.php:207
+#: app/generic-tests/results/generic-failed-results.php:211
+#: app/generic-tests/results/generic-print-result.php:299
+#: app/generic-tests/results/generic-print-result.php:525
+#: app/generic-tests/results/generic-result-approval.php:256
+#: app/generic-tests/results/generic-test-results.php:267
+#: app/hepatitis/management/hepatitis-clinic-report.php:198
+#: app/hepatitis/management/hepatitis-clinic-report.php:300
+#: app/hepatitis/management/hepatitis-clinic-report.php:397
+#: app/hepatitis/management/hepatitis-clinic-report.php:454
+#: app/hepatitis/management/hepatitis-clinic-report.php:570
+#: app/hepatitis/management/hepatitis-export-data.php:294
+#: app/hepatitis/management/hepatitis-sample-status.php:124
+#: app/hepatitis/management/hepatitis-testing-target-report.php:237
+#: app/hepatitis/reference/hepatitis-comorbidities.php:51
+#: app/hepatitis/reference/hepatitis-results.php:50
+#: app/hepatitis/reference/hepatitis-risk-factors.php:50
+#: app/hepatitis/reference/hepatitis-sample-rejection-reasons.php:53
+#: app/hepatitis/reference/hepatitis-sample-type.php:50
+#: app/hepatitis/reference/hepatitis-test-reasons.php:51
+#: app/hepatitis/requests/hepatitis-dhis2.php:355
+#: app/hepatitis/requests/hepatitis-requests.php:453
+#: app/hepatitis/results/hepatitis-failed-results.php:224
+#: app/hepatitis/results/hepatitis-manual-results.php:195
+#: app/hepatitis/results/hepatitis-print-results.php:230
+#: app/hepatitis/results/hepatitis-print-results.php:404
+#: app/hepatitis/results/hepatitis-result-status.php:175
+#: app/instruments/instruments.php:52 app/patients/view-patients.php:45
+#: app/roles/roles.php:45 app/system-admin/api-stats/api-stats.php:60
+#: app/system-admin/user-login-history/userLoginIndex.php:73
+#: app/tb/management/tb-clinic-report.php:195
+#: app/tb/management/tb-clinic-report.php:299
+#: app/tb/management/tb-clinic-report.php:394
+#: app/tb/management/tb-clinic-report.php:450
+#: app/tb/management/tb-clinic-report.php:566
+#: app/tb/management/tb-export-data.php:283
+#: app/tb/management/tb-sample-status.php:123
+#: app/tb/reference/tb-results.php:49
+#: app/tb/reference/tb-sample-rejection-reasons.php:51
+#: app/tb/reference/tb-sample-type.php:69
+#: app/tb/reference/tb-test-reasons.php:49 app/tb/requests/tb-requests.php:329
+#: app/tb/results/tb-failed-results.php:227
+#: app/tb/results/tb-manual-results.php:198
+#: app/tb/results/tb-print-results.php:226
+#: app/tb/results/tb-print-results.php:396
+#: app/tb/results/tb-result-status.php:181 app/users/users.php:69
+#: app/vl/program-management/highViralLoad.php:358
+#: app/vl/program-management/highViralLoad.php:694
+#: app/vl/program-management/highViralLoad.php:893
+#: app/vl/program-management/highViralLoad.php:1023
+#: app/vl/program-management/highViralLoad.php:1147
+#: app/vl/program-management/sample-storage-reports.php:159
+#: app/vl/program-management/sample-storage-reports.php:255
+#: app/vl/program-management/vl-export-data.php:524
+#: app/vl/program-management/vl-sample-status.php:186
+#: app/vl/program-management/vlMonitoringReport.php:278
+#: app/vl/program-management/vlWeeklyReport.php:191
+#: app/vl/program-management/vlWeeklyReport.php:286
+#: app/vl/reference/vl-art-code-details.php:48
+#: app/vl/reference/vl-results.php:52
+#: app/vl/reference/vl-sample-rejection-reasons.php:51
+#: app/vl/reference/vl-sample-type.php:50
+#: app/vl/reference/vl-test-failure-reasons.php:50
+#: app/vl/reference/vl-test-reasons.php:51 app/vl/requests/vl-requests.php:682
+#: app/vl/result-mail/testResultEmailConfig.php:36
+#: app/vl/results/vl-failed-results.php:218
+#: app/vl/results/vl-print-results.php:333
+#: app/vl/results/vl-print-results.php:589
+#: app/vl/results/vlResultApproval.php:265 app/vl/results/vlTestResult.php:275
+msgid "Loading data from server"
+msgstr "Chargement des données depuis le serveur"
+
+#: app/admin/monitoring/api-sync-history.php:7
+#: app/system/translate-strings.php:170
+msgid "API Sync History"
+msgstr "Historique de la synchronisation de l'API"
+
+#: app/admin/monitoring/api-sync-history.php:36
+#: app/admin/monitoring/api-sync-history.php:43
+#: app/system/translate-strings.php:23
+msgid "API History"
+msgstr "Historique de l’API"
+
+#: app/admin/monitoring/api-sync-history.php:65
+#: app/admin/monitoring/lab-sync-details.php:144
+#: app/admin/monitoring/sources-of-requests.php:129
+#: app/admin/monitoring/test-results-metadata.php:66
+#: app/facilities/facilities.php:86
+msgid "Please select the Test types"
+msgstr "Veuillez sélectionner les types de tests"
+
+#: app/admin/monitoring/api-sync-history.php:102
+msgid "API Type"
+msgstr "Type d'API"
+
+#: app/admin/monitoring/api-sync-history.php:105
+msgid "Please select the API type"
+msgstr "Veuillez sélectionner le type d'API"
+
+#: app/admin/monitoring/api-sync-history.php:122
+msgid "Transaction ID"
+msgstr "ID de transaction"
+
+#: app/admin/monitoring/api-sync-history.php:125
+msgid "Number of Records Synced"
+msgstr "Nombre d'enregistrements synchronisés"
+
+#: app/admin/monitoring/api-sync-history.php:128
+msgid "Sync Type"
+msgstr "Type de synchronisation"
+
+#: app/admin/monitoring/api-sync-history.php:134
+msgid "URL"
+msgstr "URL"
+
+#: app/admin/monitoring/api-sync-history.php:137
+msgid "Synced On"
+msgstr "Synchronisé sur"
+
+#: app/admin/monitoring/api-sync-history.php:140 app/batch/batches.php:111
+#: app/cd4/management/cd4-export-data.php:264
+#: app/cd4/requests/cd4-requests.php:600
+#: app/cd4/results/cd4-failed-results.php:220
+#: app/cd4/results/cd4-manual-results.php:272
+#: app/cd4/results/cd4-print-results.php:226
+#: app/cd4/results/cd4-print-results.php:400
+#: app/common/reference/geographical-divisions-details.php:37
+#: app/common/reference/lab-storage.php:43
+#: app/covid-19/management/covid-19-export-data.php:284
+#: app/covid-19/reference/add-covid19-qc-test-kit.php:72
+#: app/covid-19/reference/edit-covid19-qc-test-kit.php:83
+#: app/covid-19/requests/covid-19-requests.php:471
+#: app/covid-19/results/covid-19-failed-results.php:220
+#: app/covid-19/results/covid-19-manual-results.php:188
+#: app/covid-19/results/covid-19-print-results.php:231
+#: app/covid-19/results/covid-19-print-results.php:406
+#: app/covid-19/results/covid-19-qc-data.php:90
+#: app/eid/management/eid-export-data.php:314
+#: app/eid/requests/eid-requests.php:485
+#: app/eid/results/eid-failed-results.php:241
+#: app/eid/results/eid-manual-results.php:227
+#: app/eid/results/eid-print-results.php:228
+#: app/eid/results/eid-print-results.php:400 app/facilities/addFacility.php:694
+#: app/facilities/editFacility.php:654 app/facilities/facilities.php:176
+#: app/generic-tests/configuration/add-test-type.php:219
+#: app/generic-tests/configuration/clone-test-type.php:258
+#: app/generic-tests/configuration/edit-test-type.php:263
+#: app/generic-tests/configuration/test-categories/generic-test-categories.php:48
+#: app/generic-tests/configuration/test-methods/generic-test-methods.php:48
+#: app/generic-tests/configuration/test-result-units/generic-test-result-units.php:48
+#: app/generic-tests/configuration/test-type.php:50
+#: app/generic-tests/requests/view-requests.php:200
+#: app/generic-tests/results/generic-failed-results.php:205
+#: app/generic-tests/results/generic-print-result.php:292
+#: app/generic-tests/results/generic-print-result.php:518
+#: app/generic-tests/results/generic-test-results.php:260
+#: app/hepatitis/management/hepatitis-export-data.php:289
+#: app/hepatitis/requests/hepatitis-dhis2.php:347
+#: app/hepatitis/requests/hepatitis-requests.php:445
+#: app/hepatitis/results/hepatitis-failed-results.php:217
+#: app/hepatitis/results/hepatitis-manual-results.php:190
+#: app/hepatitis/results/hepatitis-print-results.php:225
+#: app/hepatitis/results/hepatitis-print-results.php:399
+#: app/instruments/add-instrument.php:501
+#: app/instruments/edit-instrument.php:573 app/instruments/instruments.php:45
+#: app/roles/roles.php:39 app/specimen-referral-manifest/view-manifests.php:63
+#: app/system-admin/instance-overview/instanceIndex.php:111
+#: app/tb/management/tb-export-data.php:278 app/tb/requests/tb-requests.php:323
+#: app/tb/results/tb-failed-results.php:219
+#: app/tb/results/tb-manual-results.php:193
+#: app/tb/results/tb-print-results.php:221
+#: app/tb/results/tb-print-results.php:391 app/users/users.php:63
+#: app/vl/requests/sample-storage.php:295 app/vl/requests/vl-requests.php:674
+#: app/vl/results/vl-failed-results.php:212
+#: app/vl/results/vl-print-results.php:326
+#: app/vl/results/vl-print-results.php:582 app/vl/results/vlTestResult.php:268
+msgid "Action"
+msgstr "Action"
 
 #: app/admin/monitoring/audit-trail.php:312 app/batch/edit-batch.php:327
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
@@ -2596,7 +3804,7 @@ msgstr "Echantillon testé le"
 #: app/vl/requests/addSamplesFromManifest.php:115
 #: app/vl/requests/vl-requests.php:603 app/vl/requests/vl-requests.php:664
 #: app/vl/results/get-manual-results.php:274
-#: app/vl/results/get-results-for-print.php:235
+#: app/vl/results/get-results-for-print.php:237
 #: app/vl/results/vl-failed-results.php:178
 #: app/vl/results/vl-failed-results.php:208
 #: app/vl/results/vl-print-results.php:259
@@ -2837,11 +4045,6 @@ msgstr "Affichage du fichier journal le plus récent"
 msgid "-- Unspecified --"
 msgstr "-- Non spécifié --"
 
-#: app/admin/monitoring/get-sync-status.php:76
-#: app/admin/monitoring/lab-sync-details.php:231
-msgid "No data available"
-msgstr "Pas de données disponibles"
-
 #: app/admin/monitoring/lab-sync-details.php:11
 #: app/admin/monitoring/sources-of-requests.php:11
 msgid "Sources of Requests"
@@ -2855,145 +4058,6 @@ msgstr "Détails de la synchronisation des laboratoires pour "
 msgid "Lab Sync Details"
 msgstr "Détails de la synchronisation des laboratoires"
 
-#: app/admin/monitoring/lab-sync-details.php:114
-#: app/admin/monitoring/sources-of-requests.php:86
-#: app/admin/monitoring/sync-status.php:343
-#: app/cd4/management/cd4-clinic-report.php:135
-#: app/cd4/management/cd4-clinic-report.php:243
-#: app/cd4/management/cd4-clinic-report.php:345
-#: app/cd4/management/cd4-clinic-report.php:449
-#: app/cd4/management/cd4-clinic-report.php:467
-#: app/cd4/management/cd4-export-data.php:87
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/add-samples-from-manifest.php:108
-#: app/cd4/requests/cd4-requests.php:363 app/cd4/requests/cd4-requests.php:528
-#: app/cd4/requests/cd4-requests.php:581
-#: app/cd4/requests/export-cd4-requests.php:28
-#: app/cd4/results/cd4-failed-results.php:81
-#: app/cd4/results/cd4-failed-results.php:204
-#: app/cd4/results/cd4-print-results.php:82
-#: app/cd4/results/cd4-print-results.php:181
-#: app/cd4/results/cd4-print-results.php:220
-#: app/cd4/results/cd4-print-results.php:258
-#: app/cd4/results/cd4-print-results.php:355
-#: app/cd4/results/cd4-print-results.php:394
-#: app/cd4/results/email-results.php:206
-#: app/covid-19/management/covid-19-clinic-report.php:126
-#: app/covid-19/management/covid-19-clinic-report.php:235
-#: app/covid-19/management/covid-19-clinic-report.php:338
-#: app/covid-19/management/covid-19-clinic-report.php:445
-#: app/covid-19/management/covid-19-clinic-report.php:463
-#: app/covid-19/management/covid-19-export-data.php:97
-#: app/covid-19/requests/addSamplesFromManifest.php:109
-#: app/covid-19/requests/covid-19-requests.php:283
-#: app/covid-19/requests/covid-19-requests.php:455
-#: app/covid-19/requests/forms/add-cameroon.php:651
-#: app/covid-19/results/covid-19-failed-results.php:80
-#: app/covid-19/results/covid-19-failed-results.php:204
-#: app/covid-19/results/covid-19-print-results.php:86
-#: app/covid-19/results/covid-19-print-results.php:185
-#: app/covid-19/results/covid-19-print-results.php:225
-#: app/covid-19/results/covid-19-print-results.php:264
-#: app/covid-19/results/covid-19-print-results.php:361
-#: app/covid-19/results/covid-19-print-results.php:400
-#: app/covid-19/results/email-results.php:208
-#: app/eid/management/eid-clinic-report.php:128
-#: app/eid/management/eid-clinic-report.php:237
-#: app/eid/management/eid-clinic-report.php:343
-#: app/eid/management/eid-clinic-report.php:448
-#: app/eid/management/eid-clinic-report.php:466
-#: app/eid/management/eid-export-data.php:105
-#: app/eid/requests/addSamplesFromManifest.php:116
-#: app/eid/requests/eid-requests.php:272 app/eid/requests/eid-requests.php:464
-#: app/eid/results/eid-failed-results.php:81
-#: app/eid/results/eid-failed-results.php:225
-#: app/eid/results/eid-print-results.php:78
-#: app/eid/results/eid-print-results.php:181
-#: app/eid/results/eid-print-results.php:223
-#: app/eid/results/eid-print-results.php:247
-#: app/eid/results/eid-print-results.php:353
-#: app/eid/results/eid-print-results.php:395
-#: app/eid/results/email-results.php:205 app/facilities/addFacility.php:238
-#: app/facilities/editFacility.php:269 app/facilities/facilities.php:57
-#: app/generic-tests/mail/mail-generic-tests-results.php:222
-#: app/generic-tests/program-management/generic-export-data.php:90
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:58
-#: app/generic-tests/requests/add-samples-from-manifest.php:97
-#: app/generic-tests/requests/view-requests.php:182
-#: app/generic-tests/results/email-results.php:208
-#: app/generic-tests/results/generic-failed-results.php:67
-#: app/generic-tests/results/generic-failed-results.php:162
-#: app/generic-tests/results/generic-failed-results.php:198
-#: app/generic-tests/results/generic-print-result.php:90
-#: app/generic-tests/results/generic-print-result.php:222
-#: app/generic-tests/results/generic-print-result.php:274
-#: app/generic-tests/results/generic-print-result.php:318
-#: app/generic-tests/results/generic-print-result.php:448
-#: app/generic-tests/results/generic-print-result.php:500
-#: app/hepatitis/management/hepatitis-clinic-report.php:129
-#: app/hepatitis/management/hepatitis-clinic-report.php:238
-#: app/hepatitis/management/hepatitis-clinic-report.php:340
-#: app/hepatitis/management/hepatitis-clinic-report.php:444
-#: app/hepatitis/management/hepatitis-clinic-report.php:463
-#: app/hepatitis/management/hepatitis-export-data.php:88
-#: app/hepatitis/requests/add-samples-from-manifest.php:103
-#: app/hepatitis/requests/hepatitis-dhis2.php:124
-#: app/hepatitis/requests/hepatitis-dhis2.php:328
-#: app/hepatitis/requests/hepatitis-requests.php:272
-#: app/hepatitis/requests/hepatitis-requests.php:426
-#: app/hepatitis/results/email-results.php:208
-#: app/hepatitis/results/hepatitis-failed-results.php:79
-#: app/hepatitis/results/hepatitis-failed-results.php:202
-#: app/hepatitis/results/hepatitis-print-results.php:84
-#: app/hepatitis/results/hepatitis-print-results.php:179
-#: app/hepatitis/results/hepatitis-print-results.php:219
-#: app/hepatitis/results/hepatitis-print-results.php:257
-#: app/hepatitis/results/hepatitis-print-results.php:354
-#: app/hepatitis/results/hepatitis-print-results.php:393
-#: app/mail/vlResultMail.php:208 app/tb/management/tb-clinic-report.php:127
-#: app/tb/management/tb-clinic-report.php:235
-#: app/tb/management/tb-clinic-report.php:339
-#: app/tb/management/tb-clinic-report.php:441
-#: app/tb/management/tb-clinic-report.php:459
-#: app/tb/management/tb-export-data.php:91
-#: app/tb/requests/addSamplesFromManifest.php:72
-#: app/tb/requests/tb-requests.php:211 app/tb/requests/tb-requests.php:317
-#: app/tb/results/email-results.php:208 app/tb/results/tb-failed-results.php:80
-#: app/tb/results/tb-failed-results.php:203
-#: app/tb/results/tb-print-results.php:82
-#: app/tb/results/tb-print-results.php:180
-#: app/tb/results/tb-print-results.php:216
-#: app/tb/results/tb-print-results.php:253
-#: app/tb/results/tb-print-results.php:350
-#: app/tb/results/tb-print-results.php:386 app/users/addUser.php:271
-#: app/users/editUser.php:305
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/program-management/highViralLoad.php:186
-#: app/vl/program-management/highViralLoad.php:368
-#: app/vl/program-management/highViralLoad.php:521
-#: app/vl/program-management/highViralLoad.php:746
-#: app/vl/program-management/highViralLoad.php:1004
-#: app/vl/program-management/highViralLoad.php:1033
-#: app/vl/program-management/vl-export-data.php:119
-#: app/vl/program-management/vlWeeklyReport.php:112
-#: app/vl/program-management/vlWeeklyReport.php:240
-#: app/vl/requests/addSamplesFromManifest.php:106
-#: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/sample-storage.php:197 app/vl/requests/vl-requests.php:381
-#: app/vl/requests/vl-requests.php:586 app/vl/requests/vl-requests.php:647
-#: app/vl/result-mail/editTestResultEmailConfig.php:83
-#: app/vl/results/email-results.php:208 app/vl/results/vl-failed-results.php:70
-#: app/vl/results/vl-failed-results.php:169
-#: app/vl/results/vl-failed-results.php:205
-#: app/vl/results/vl-print-results.php:94
-#: app/vl/results/vl-print-results.php:250
-#: app/vl/results/vl-print-results.php:308
-#: app/vl/results/vl-print-results.php:352
-#: app/vl/results/vl-print-results.php:507
-#: app/vl/results/vl-print-results.php:564 app/vl/results/vlResultMail.php:208
-msgid "Province/State"
-msgstr "Région/Etat"
-
 #: app/admin/monitoring/lab-sync-details.php:117
 #: app/admin/monitoring/sync-status.php:344
 #: app/cd4/requests/cd4-requests.php:366
@@ -3005,250 +4069,6 @@ msgstr "Région/Etat"
 #: app/vl/requests/vl-requests.php:384
 msgid "Please choose Province/State/Region"
 msgstr "Veuillez choisir la Région/Etat"
-
-#: app/admin/monitoring/lab-sync-details.php:122
-#: app/admin/monitoring/sources-of-requests.php:94
-#: app/admin/monitoring/sync-status.php:350
-#: app/cd4/management/cd4-clinic-report.php:142
-#: app/cd4/management/cd4-clinic-report.php:250
-#: app/cd4/management/cd4-clinic-report.php:352
-#: app/cd4/management/cd4-clinic-report.php:450
-#: app/cd4/management/cd4-clinic-report.php:476
-#: app/cd4/management/cd4-export-data.php:97
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/add-samples-from-manifest.php:111
-#: app/cd4/requests/cd4-requests.php:374 app/cd4/requests/cd4-requests.php:531
-#: app/cd4/requests/cd4-requests.php:584
-#: app/cd4/requests/export-cd4-requests.php:28
-#: app/cd4/results/cd4-failed-results.php:89
-#: app/cd4/results/cd4-failed-results.php:207
-#: app/cd4/results/cd4-print-results.php:89
-#: app/cd4/results/cd4-print-results.php:184
-#: app/cd4/results/cd4-print-results.php:221
-#: app/cd4/results/cd4-print-results.php:265
-#: app/cd4/results/cd4-print-results.php:358
-#: app/cd4/results/cd4-print-results.php:395
-#: app/cd4/results/email-results.php:221
-#: app/covid-19/management/covid-19-clinic-report.php:134
-#: app/covid-19/management/covid-19-clinic-report.php:242
-#: app/covid-19/management/covid-19-clinic-report.php:345
-#: app/covid-19/management/covid-19-clinic-report.php:446
-#: app/covid-19/management/covid-19-clinic-report.php:472
-#: app/covid-19/management/covid-19-export-data.php:107
-#: app/covid-19/requests/addSamplesFromManifest.php:112
-#: app/covid-19/requests/covid-19-requests.php:295
-#: app/covid-19/requests/covid-19-requests.php:458
-#: app/covid-19/requests/forms/add-cameroon.php:688
-#: app/covid-19/requests/forms/add-cameroon.php:690
-#: app/covid-19/results/covid-19-failed-results.php:88
-#: app/covid-19/results/covid-19-failed-results.php:207
-#: app/covid-19/results/covid-19-print-results.php:93
-#: app/covid-19/results/covid-19-print-results.php:188
-#: app/covid-19/results/covid-19-print-results.php:226
-#: app/covid-19/results/covid-19-print-results.php:271
-#: app/covid-19/results/covid-19-print-results.php:364
-#: app/covid-19/results/covid-19-print-results.php:401
-#: app/covid-19/results/email-results.php:223
-#: app/eid/management/eid-clinic-report.php:135
-#: app/eid/management/eid-clinic-report.php:244
-#: app/eid/management/eid-clinic-report.php:350
-#: app/eid/management/eid-clinic-report.php:449
-#: app/eid/management/eid-clinic-report.php:475
-#: app/eid/management/eid-export-data.php:112
-#: app/eid/requests/addSamplesFromManifest.php:119
-#: app/eid/requests/eid-requests.php:284 app/eid/requests/eid-requests.php:467
-#: app/eid/results/eid-failed-results.php:89
-#: app/eid/results/eid-failed-results.php:228
-#: app/eid/results/eid-print-results.php:84
-#: app/eid/results/eid-print-results.php:184
-#: app/eid/results/eid-print-results.php:224
-#: app/eid/results/eid-print-results.php:254
-#: app/eid/results/eid-print-results.php:356
-#: app/eid/results/eid-print-results.php:396
-#: app/eid/results/email-results.php:220 app/facilities/addFacility.php:263
-#: app/facilities/editFacility.php:291 app/facilities/facilities.php:63
-#: app/generic-tests/mail/mail-generic-tests-results.php:223
-#: app/generic-tests/program-management/generic-export-data.php:97
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:67
-#: app/generic-tests/requests/add-request.php:282
-#: app/generic-tests/requests/add-samples-from-manifest.php:100
-#: app/generic-tests/requests/edit-request.php:462
-#: app/generic-tests/requests/view-requests.php:185
-#: app/generic-tests/results/email-results.php:223
-#: app/generic-tests/results/generic-failed-results.php:73
-#: app/generic-tests/results/generic-failed-results.php:165
-#: app/generic-tests/results/generic-failed-results.php:199
-#: app/generic-tests/results/generic-print-result.php:99
-#: app/generic-tests/results/generic-print-result.php:225
-#: app/generic-tests/results/generic-print-result.php:277
-#: app/generic-tests/results/generic-print-result.php:327
-#: app/generic-tests/results/generic-print-result.php:451
-#: app/generic-tests/results/generic-print-result.php:503
-#: app/generic-tests/results/update-generic-test-result.php:446
-#: app/hepatitis/management/hepatitis-clinic-report.php:136
-#: app/hepatitis/management/hepatitis-clinic-report.php:245
-#: app/hepatitis/management/hepatitis-clinic-report.php:347
-#: app/hepatitis/management/hepatitis-clinic-report.php:445
-#: app/hepatitis/management/hepatitis-clinic-report.php:472
-#: app/hepatitis/management/hepatitis-export-data.php:95
-#: app/hepatitis/requests/add-samples-from-manifest.php:106
-#: app/hepatitis/requests/hepatitis-dhis2.php:130
-#: app/hepatitis/requests/hepatitis-dhis2.php:331
-#: app/hepatitis/requests/hepatitis-requests.php:283
-#: app/hepatitis/requests/hepatitis-requests.php:429
-#: app/hepatitis/results/email-results.php:223
-#: app/hepatitis/results/hepatitis-failed-results.php:87
-#: app/hepatitis/results/hepatitis-failed-results.php:205
-#: app/hepatitis/results/hepatitis-print-results.php:91
-#: app/hepatitis/results/hepatitis-print-results.php:182
-#: app/hepatitis/results/hepatitis-print-results.php:220
-#: app/hepatitis/results/hepatitis-print-results.php:264
-#: app/hepatitis/results/hepatitis-print-results.php:357
-#: app/hepatitis/results/hepatitis-print-results.php:394
-#: app/mail/vlResultMail.php:223 app/tb/management/tb-clinic-report.php:134
-#: app/tb/management/tb-clinic-report.php:242
-#: app/tb/management/tb-clinic-report.php:346
-#: app/tb/management/tb-clinic-report.php:442
-#: app/tb/management/tb-clinic-report.php:468
-#: app/tb/management/tb-export-data.php:101
-#: app/tb/requests/addSamplesFromManifest.php:73
-#: app/tb/requests/tb-requests.php:220 app/tb/requests/tb-requests.php:318
-#: app/tb/results/email-results.php:223 app/tb/results/tb-failed-results.php:88
-#: app/tb/results/tb-failed-results.php:206
-#: app/tb/results/tb-print-results.php:89
-#: app/tb/results/tb-print-results.php:183
-#: app/tb/results/tb-print-results.php:217
-#: app/tb/results/tb-print-results.php:260
-#: app/tb/results/tb-print-results.php:353
-#: app/tb/results/tb-print-results.php:387 app/users/addUser.php:281
-#: app/users/editUser.php:315
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/program-management/highViralLoad.php:195
-#: app/vl/program-management/highViralLoad.php:377
-#: app/vl/program-management/highViralLoad.php:530
-#: app/vl/program-management/highViralLoad.php:755
-#: app/vl/program-management/highViralLoad.php:1007
-#: app/vl/program-management/highViralLoad.php:1042
-#: app/vl/program-management/vl-export-data.php:128
-#: app/vl/program-management/vlMonitoringReport.php:208
-#: app/vl/program-management/vlMonitoringReport.php:262
-#: app/vl/program-management/vlWeeklyReport.php:115
-#: app/vl/program-management/vlWeeklyReport.php:243
-#: app/vl/requests/addSamplesFromManifest.php:109
-#: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/forms/add-burkina-faso.php:130
-#: app/vl/requests/forms/edit-burkina-faso.php:229
-#: app/vl/requests/sample-storage.php:205 app/vl/requests/vl-requests.php:392
-#: app/vl/requests/vl-requests.php:589 app/vl/requests/vl-requests.php:650
-#: app/vl/result-mail/editTestResultEmailConfig.php:84
-#: app/vl/results/email-results.php:223
-#: app/vl/results/forms/update-burkina-faso-result.php:229
-#: app/vl/results/vl-failed-results.php:76
-#: app/vl/results/vl-failed-results.php:172
-#: app/vl/results/vl-failed-results.php:206
-#: app/vl/results/vl-print-results.php:103
-#: app/vl/results/vl-print-results.php:253
-#: app/vl/results/vl-print-results.php:311
-#: app/vl/results/vl-print-results.php:361
-#: app/vl/results/vl-print-results.php:510
-#: app/vl/results/vl-print-results.php:567 app/vl/results/vlResultMail.php:223
-msgid "District/County"
-msgstr "District/Pays"
-
-#: app/admin/monitoring/lab-sync-details.php:125
-#: app/admin/monitoring/sources-of-requests.php:89
-#: app/admin/monitoring/sync-status.php:351
-#: app/cd4/management/cd4-clinic-report.php:137
-#: app/cd4/management/cd4-clinic-report.php:245
-#: app/cd4/management/cd4-clinic-report.php:347
-#: app/cd4/management/cd4-clinic-report.php:470
-#: app/cd4/management/cd4-export-data.php:89
-#: app/cd4/management/cd4-export-data.php:99
-#: app/cd4/requests/cd4-requests.php:377
-#: app/cd4/results/cd4-failed-results.php:84
-#: app/cd4/results/cd4-failed-results.php:92
-#: app/cd4/results/cd4-print-results.php:84
-#: app/cd4/results/cd4-print-results.php:91
-#: app/cd4/results/cd4-print-results.php:260
-#: app/cd4/results/cd4-print-results.php:267
-#: app/covid-19/management/covid-19-clinic-report.php:129
-#: app/covid-19/management/covid-19-clinic-report.php:237
-#: app/covid-19/management/covid-19-clinic-report.php:340
-#: app/covid-19/management/covid-19-clinic-report.php:466
-#: app/covid-19/management/covid-19-export-data.php:99
-#: app/covid-19/management/covid-19-export-data.php:109
-#: app/covid-19/requests/covid-19-requests.php:298
-#: app/covid-19/results/covid-19-failed-results.php:83
-#: app/covid-19/results/covid-19-failed-results.php:91
-#: app/covid-19/results/covid-19-print-results.php:88
-#: app/covid-19/results/covid-19-print-results.php:95
-#: app/covid-19/results/covid-19-print-results.php:266
-#: app/covid-19/results/covid-19-print-results.php:273
-#: app/eid/management/eid-clinic-report.php:130
-#: app/eid/management/eid-clinic-report.php:239
-#: app/eid/management/eid-clinic-report.php:345
-#: app/eid/management/eid-clinic-report.php:469
-#: app/eid/management/eid-export-data.php:107
-#: app/eid/management/eid-export-data.php:114
-#: app/eid/requests/eid-requests.php:287
-#: app/eid/results/eid-failed-results.php:84
-#: app/eid/results/eid-failed-results.php:92
-#: app/eid/results/eid-print-results.php:80
-#: app/eid/results/eid-print-results.php:86
-#: app/eid/results/eid-print-results.php:249
-#: app/eid/results/eid-print-results.php:256 app/facilities/facilities.php:59
-#: app/facilities/facilities.php:65
-#: app/generic-tests/program-management/generic-export-data.php:92
-#: app/generic-tests/program-management/generic-export-data.php:99
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:61
-#: app/generic-tests/results/generic-failed-results.php:69
-#: app/generic-tests/results/generic-failed-results.php:75
-#: app/generic-tests/results/generic-print-result.php:93
-#: app/generic-tests/results/generic-print-result.php:102
-#: app/generic-tests/results/generic-print-result.php:321
-#: app/generic-tests/results/generic-print-result.php:330
-#: app/hepatitis/management/hepatitis-clinic-report.php:131
-#: app/hepatitis/management/hepatitis-clinic-report.php:240
-#: app/hepatitis/management/hepatitis-clinic-report.php:342
-#: app/hepatitis/management/hepatitis-clinic-report.php:466
-#: app/hepatitis/management/hepatitis-export-data.php:90
-#: app/hepatitis/management/hepatitis-export-data.php:97
-#: app/hepatitis/requests/hepatitis-requests.php:286
-#: app/hepatitis/results/hepatitis-failed-results.php:82
-#: app/hepatitis/results/hepatitis-failed-results.php:90
-#: app/hepatitis/results/hepatitis-print-results.php:86
-#: app/hepatitis/results/hepatitis-print-results.php:93
-#: app/hepatitis/results/hepatitis-print-results.php:259
-#: app/hepatitis/results/hepatitis-print-results.php:266
-#: app/tb/management/tb-clinic-report.php:129
-#: app/tb/management/tb-clinic-report.php:237
-#: app/tb/management/tb-clinic-report.php:341
-#: app/tb/management/tb-clinic-report.php:462
-#: app/tb/management/tb-export-data.php:93
-#: app/tb/management/tb-export-data.php:103 app/tb/requests/tb-requests.php:222
-#: app/tb/results/tb-failed-results.php:83
-#: app/tb/results/tb-failed-results.php:91
-#: app/tb/results/tb-print-results.php:84
-#: app/tb/results/tb-print-results.php:91
-#: app/tb/results/tb-print-results.php:255
-#: app/tb/results/tb-print-results.php:262
-#: app/vl/program-management/highViralLoad.php:189
-#: app/vl/program-management/highViralLoad.php:371
-#: app/vl/program-management/highViralLoad.php:443
-#: app/vl/program-management/highViralLoad.php:524
-#: app/vl/program-management/highViralLoad.php:749
-#: app/vl/program-management/highViralLoad.php:1036
-#: app/vl/program-management/vl-export-data.php:122
-#: app/vl/program-management/vl-export-data.php:131
-#: app/vl/requests/sample-storage.php:200
-#: app/vl/results/vl-failed-results.php:72
-#: app/vl/results/vl-failed-results.php:78
-#: app/vl/results/vl-print-results.php:97
-#: app/vl/results/vl-print-results.php:106
-#: app/vl/results/vl-print-results.php:355
-#: app/vl/results/vl-print-results.php:364
-msgid "Please select Province/State"
-msgstr "Veuillez choisir Région/Etat"
 
 #: app/admin/monitoring/lab-sync-details.php:131
 #: app/admin/monitoring/lab-sync-details.php:209
@@ -3699,37 +4519,6 @@ msgstr "Réponse"
 #: app/system/translate-strings.php:171
 msgid "Sources of Requests Report"
 msgstr "Sources du Rapport de la requête"
-
-#: app/admin/monitoring/sources-of-requests.php:98
-#: app/cd4/management/cd4-clinic-report.php:144
-#: app/cd4/management/cd4-clinic-report.php:252
-#: app/cd4/management/cd4-clinic-report.php:354
-#: app/cd4/management/cd4-clinic-report.php:479
-#: app/covid-19/management/covid-19-clinic-report.php:136
-#: app/covid-19/management/covid-19-clinic-report.php:244
-#: app/covid-19/management/covid-19-clinic-report.php:347
-#: app/covid-19/management/covid-19-clinic-report.php:475
-#: app/eid/management/eid-clinic-report.php:137
-#: app/eid/management/eid-clinic-report.php:246
-#: app/eid/management/eid-clinic-report.php:352
-#: app/eid/management/eid-clinic-report.php:478
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:70
-#: app/hepatitis/management/hepatitis-clinic-report.php:138
-#: app/hepatitis/management/hepatitis-clinic-report.php:247
-#: app/hepatitis/management/hepatitis-clinic-report.php:349
-#: app/hepatitis/management/hepatitis-clinic-report.php:475
-#: app/tb/management/tb-clinic-report.php:136
-#: app/tb/management/tb-clinic-report.php:244
-#: app/tb/management/tb-clinic-report.php:348
-#: app/tb/management/tb-clinic-report.php:471
-#: app/vl/program-management/highViralLoad.php:198
-#: app/vl/program-management/highViralLoad.php:380
-#: app/vl/program-management/highViralLoad.php:533
-#: app/vl/program-management/highViralLoad.php:758
-#: app/vl/program-management/highViralLoad.php:1045
-#: app/vl/requests/sample-storage.php:208 app/vl/requests/vl-requests.php:395
-msgid "Please select District/County"
-msgstr "Veuillez sélectionner le district/comté"
 
 #: app/admin/monitoring/sources-of-requests.php:105
 #: app/admin/monitoring/sources-of-requests.php:216
@@ -4335,21 +5124,21 @@ msgstr ""
 "l'échantillon/le code du lot pour obtenir les métadonnées du résultat"
 
 #: app/api/v1.1/cancel-requests.php:109
-#: app/api/v1.1/covid-19/fetch-results.php:293
+#: app/api/v1.1/covid-19/fetch-results.php:323
 #: app/api/v1.1/covid-19/get-request.php:272
 #: app/api/v1.1/covid-19/save-request.php:595
 #: app/api/v1.1/covid-19/save-request.php:643
-#: app/api/v1.1/eid/fetch-results.php:233 app/api/v1.1/eid/get-request.php:225
+#: app/api/v1.1/eid/fetch-results.php:263 app/api/v1.1/eid/get-request.php:225
 #: app/api/v1.1/eid/save-request.php:501 app/api/v1.1/eid/save-request.php:548
 #: app/api/v1.1/generate-manifest.php:150
-#: app/api/v1.1/generic-tests/fetch-results.php:272
+#: app/api/v1.1/generic-tests/fetch-results.php:302
 #: app/api/v1.1/generic-tests/get-request.php:135
 #: app/api/v1.1/generic-tests/save-request.php:454
 #: app/api/v1.1/generic-tests/save-request.php:501 app/api/v1.1/init.php:465
 #: app/api/v1.1/sample-status.php:92 app/api/v1.1/save-facilities.php:225
-#: app/api/v1.1/save-facilities.php:246 app/api/v1.1/tb/fetch-results.php:224
+#: app/api/v1.1/save-facilities.php:246 app/api/v1.1/tb/fetch-results.php:254
 #: app/api/v1.1/tb/get-request.php:201 app/api/v1.1/tb/save-request.php:431
-#: app/api/v1.1/tb/save-request.php:476 app/api/v1.1/vl/fetch-results.php:267
+#: app/api/v1.1/tb/save-request.php:476 app/api/v1.1/vl/fetch-results.php:287
 #: app/api/v1.1/vl/get-request.php:251 app/api/v1.1/vl/save-request.php:454
 #: app/api/v1.1/vl/save-request.php:503
 #: app/api/vl/fetch-recency-vl-results.php:126
@@ -4883,54 +5672,6 @@ msgstr "Veuillez choisir la machine"
 msgid "Show Advanced Search Options"
 msgstr "Afficher la recherche avancée"
 
-#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
-#: app/cd4/management/cd4-clinic-report.php:147
-#: app/cd4/management/cd4-clinic-report.php:255
-#: app/cd4/management/cd4-clinic-report.php:357
-#: app/cd4/management/cd4-clinic-report.php:482
-#: app/covid-19/management/covid-19-clinic-report.php:139
-#: app/covid-19/management/covid-19-clinic-report.php:247
-#: app/covid-19/management/covid-19-clinic-report.php:350
-#: app/covid-19/management/covid-19-clinic-report.php:478
-#: app/covid-19/requests/forms/add-cameroon.php:136
-#: app/covid-19/requests/forms/edit-cameroon.php:159
-#: app/covid-19/results/covid-19-result-status.php:115
-#: app/covid-19/results/forms/update-cameroon-result.php:162
-#: app/eid/requests/forms/add-cameroon.php:110
-#: app/eid/requests/forms/edit-cameroon.php:133
-#: app/eid/results/forms/update-cameroon-result.php:121
-#: app/generic-tests/configuration/add-test-type.php:257
-#: app/generic-tests/configuration/add-test-type.php:589
-#: app/generic-tests/configuration/clone-test-type.php:312
-#: app/generic-tests/configuration/clone-test-type.php:376
-#: app/generic-tests/configuration/clone-test-type.php:432
-#: app/generic-tests/configuration/clone-test-type.php:815
-#: app/generic-tests/configuration/edit-test-type.php:316
-#: app/generic-tests/configuration/edit-test-type.php:380
-#: app/generic-tests/configuration/edit-test-type.php:436
-#: app/generic-tests/configuration/edit-test-type.php:849
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:73
-#: app/hepatitis/management/hepatitis-clinic-report.php:141
-#: app/hepatitis/management/hepatitis-clinic-report.php:250
-#: app/hepatitis/management/hepatitis-clinic-report.php:352
-#: app/hepatitis/management/hepatitis-clinic-report.php:478
-#: app/hepatitis/results/hepatitis-result-status.php:105
-#: app/tb/management/tb-clinic-report.php:139
-#: app/tb/management/tb-clinic-report.php:247
-#: app/tb/management/tb-clinic-report.php:351
-#: app/tb/management/tb-clinic-report.php:474
-#: app/tb/results/tb-result-status.php:109
-#: app/vl/program-management/highViralLoad.php:202
-#: app/vl/program-management/highViralLoad.php:383
-#: app/vl/program-management/highViralLoad.php:537
-#: app/vl/program-management/highViralLoad.php:762
-#: app/vl/program-management/highViralLoad.php:1048
-#: app/vl/requests/forms/add-cameroon.php:152
-#: app/vl/requests/forms/edit-cameroon.php:203
-#: app/vl/results/forms/update-cameroon-result.php:253
-msgid "Facility"
-msgstr "FOSA"
-
 #: app/batch/add-batch.php:205 app/batch/edit-batch.php:164
 #: app/cd4/management/cd4-clinic-report.php:149
 #: app/cd4/management/cd4-clinic-report.php:257
@@ -5389,10 +6130,6 @@ msgstr "Type de tri"
 msgid "Filter Samples"
 msgstr "Filtrer les échantillons"
 
-#: app/batch/add-batch.php:298 app/batch/edit-batch.php:240
-msgid "Reset Filters"
-msgstr "Réinitialiser les filtres"
-
 #: app/batch/add-batch.php:301 app/batch/edit-batch.php:242
 #: app/cd4/requests/cd4-requests.php:434
 #: app/covid-19/requests/covid-19-requests.php:356
@@ -5432,105 +6169,6 @@ msgstr "Sélection automatique des échantillons pour le lot"
 #: app/vl/requests/forms/add-cameroon.php:704
 msgid "Save and Next"
 msgstr "Sauvegarder et Suivant"
-
-#: app/batch/add-batch.php:359 app/batch/edit-batch.php:328
-#: app/cd4/reference/add-cd4-sample-rejection-reasons.php:75
-#: app/cd4/reference/add-cd4-sample-type.php:57
-#: app/cd4/reference/add-cd4-test-reasons.php:71
-#: app/cd4/results/email-results.php:331
-#: app/common/reference/add-funding-sources.php:57
-#: app/common/reference/add-geographical-divisions.php:99
-#: app/common/reference/add-implementation-partners.php:57
-#: app/common/reference/add-lab-storage.php:80
-#: app/common/reference/add-recommended-corrective-action.php:71
-#: app/common/reference/edit-geographical-divisions.php:109
-#: app/common/reference/edit-lab-storage.php:92
-#: app/common/reference/edit-recommended-corrective-action.php:85
-#: app/covid-19/reference/add-covid19-comorbidities.php:57
-#: app/covid-19/reference/add-covid19-qc-test-kit.php:94
-#: app/covid-19/reference/add-covid19-results.php:56
-#: app/covid-19/reference/add-covid19-sample-rejection-reason.php:75
-#: app/covid-19/reference/add-covid19-sample-type.php:57
-#: app/covid-19/reference/add-covid19-symptoms.php:76
-#: app/covid-19/reference/add-covid19-test-reasons.php:76
-#: app/covid-19/reference/edit-covid19-qc-test-kit.php:125
-#: app/covid-19/results/add-covid-19-qc-data.php:193
-#: app/covid-19/results/edit-covid-19-qc-data.php:222
-#: app/covid-19/results/email-results.php:333
-#: app/eid/reference/add-eid-results.php:56
-#: app/eid/reference/add-eid-sample-rejection-reasons.php:74
-#: app/eid/reference/add-eid-sample-type.php:57
-#: app/eid/reference/add-eid-test-reasons.php:70
-#: app/eid/requests/forms/add-burkina-faso.php:464
-#: app/eid/requests/forms/edit-burkina-faso.php:487
-#: app/eid/results/email-results.php:330
-#: app/eid/results/forms/update-burkina-faso-result.php:487
-#: app/facilities/addFacility.php:773 app/facilities/editFacility.php:742
-#: app/facilities/mapTestType.php:131 app/facilities/upload-facilities.php:148
-#: app/generic-tests/configuration/add-test-type.php:373
-#: app/generic-tests/configuration/clone-test-type.php:616
-#: app/generic-tests/configuration/edit-test-type.php:640
-#: app/generic-tests/configuration/sample-rejection-reasons/generic-add-sample-rejection-reasons.php:74
-#: app/generic-tests/configuration/sample-types/generic-add-sample-type.php:65
-#: app/generic-tests/configuration/sample-types/generic-edit-sample-type.php:78
-#: app/generic-tests/configuration/symptoms/generic-add-symptoms.php:66
-#: app/generic-tests/configuration/symptoms/generic-edit-symptoms.php:77
-#: app/generic-tests/configuration/test-categories/generic-add-test-categories.php:57
-#: app/generic-tests/configuration/test-categories/generic-edit-test-categories.php:70
-#: app/generic-tests/configuration/test-failure-reasons/generic-add-test-failure-reason.php:66
-#: app/generic-tests/configuration/test-failure-reasons/generic-edit-test-failure-reason.php:77
-#: app/generic-tests/configuration/test-methods/generic-add-test-methods.php:58
-#: app/generic-tests/configuration/test-methods/generic-edit-test-methods.php:71
-#: app/generic-tests/configuration/test-result-units/generic-add-test-result-units.php:59
-#: app/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php:70
-#: app/generic-tests/configuration/testing-reasons/generic-add-testing-reason.php:66
-#: app/generic-tests/configuration/testing-reasons/generic-edit-testing-reason.php:77
-#: app/generic-tests/requests/add-request.php:728
-#: app/generic-tests/requests/edit-request.php:954
-#: app/generic-tests/results/email-results.php:333
-#: app/generic-tests/results/update-generic-test-result.php:916
-#: app/global-config/editGlobalConfig.php:1342
-#: app/hepatitis/reference/add-hepatitis-comorbidities.php:57
-#: app/hepatitis/reference/add-hepatitis-results.php:56
-#: app/hepatitis/reference/add-hepatitis-risk-factors.php:56
-#: app/hepatitis/reference/add-hepatitis-sample-rejection-reasons.php:75
-#: app/hepatitis/reference/add-hepatitis-sample-type.php:57
-#: app/hepatitis/reference/add-hepatitis-test-reasons.php:70
-#: app/hepatitis/results/email-results.php:333
-#: app/import-result/import-file.php:217 app/instruments/add-instrument.php:675
-#: app/instruments/edit-instrument.php:752 app/mail/vlResultMail.php:333
-#: app/patients/add-patient.php:238 app/patients/edit-patient.php:253
-#: app/roles/addRole.php:381 app/roles/editRole.php:381
-#: app/specimen-referral-manifest/add-manifest.php:251
-#: app/system-admin/edit-config/resetPassword.php:57
-#: app/system-admin/instance-overview/instanceIndex.php:117
-#: app/tb/reference/add-tb-results.php:92
-#: app/tb/reference/add-tb-sample-rejection-reason.php:75
-#: app/tb/reference/add-tb-sample-type.php:57
-#: app/tb/reference/add-tb-test-reasons.php:76
-#: app/tb/requests/forms/add-burkina-faso.php:498
-#: app/tb/results/email-results.php:333
-#: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:329
-#: app/users/edit-profile.php:139 app/users/editUser.php:371
-#: app/vl/program-management/upload-vl-control.php:127
-#: app/vl/reference/add-vl-art-code-details.php:93
-#: app/vl/reference/add-vl-results.php:151
-#: app/vl/reference/add-vl-sample-rejection-reasons.php:75
-#: app/vl/reference/add-vl-sample-type.php:57
-#: app/vl/reference/add-vl-test-failure-reason.php:58
-#: app/vl/reference/add-vl-test-reasons.php:71
-#: app/vl/reference/edit-vl-test-failure-reason.php:68
-#: app/vl/requests/forms/add-burkina-faso.php:682
-#: app/vl/requests/forms/add-cameroon.php:705
-#: app/vl/requests/forms/edit-cameroon.php:781
-#: app/vl/requests/sample-storage.php:396
-#: app/vl/requests/upload-storage.php:115
-#: app/vl/result-mail/editTestResultEmailConfig.php:127
-#: app/vl/results/email-results.php:333
-#: app/vl/results/forms/update-cameroon-result.php:752
-#: app/vl/results/vlResultMail.php:333
-msgid "Cancel"
-msgstr "Annuler"
 
 #: app/batch/add-batch.php:390 app/batch/batches.php:137
 #: app/facilities/addFacility.php:799 app/facilities/addFacility.php:886
@@ -6692,98 +7330,6 @@ msgstr "Noms du patient"
 msgid "Sample Tested Date"
 msgstr "Date de test de l'échantillon"
 
-#: app/cd4/management/cd4-clinic-report.php:196
-#: app/cd4/management/cd4-export-data.php:108
-#: app/cd4/management/cd4-sample-status.php:77
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/cd4-requests.php:389 app/cd4/requests/cd4-requests.php:522
-#: app/cd4/requests/cd4-requests.php:575
-#: app/cd4/requests/export-cd4-requests.php:28
-#: app/cd4/results/cd4-failed-results.php:107
-#: app/cd4/results/cd4-manual-results.php:140
-#: app/cd4/results/cd4-manual-results.php:201
-#: app/cd4/results/cd4-manual-results.php:257
-#: app/common/reference/add-lab-storage.php:53
-#: app/common/reference/edit-lab-storage.php:64
-#: app/common/reference/lab-storage.php:41
-#: app/covid-19/management/covid-19-clinic-report.php:188
-#: app/covid-19/management/covid-19-export-data.php:118
-#: app/covid-19/management/covid-19-sample-status.php:72
-#: app/covid-19/requests/covid-19-requests.php:310
-#: app/covid-19/requests/covid-19-requests.php:437
-#: app/covid-19/results/add-covid-19-qc-data.php:132
-#: app/covid-19/results/covid-19-failed-results.php:106
-#: app/covid-19/results/covid-19-manual-results.php:106
-#: app/covid-19/results/covid-19-print-results.php:182
-#: app/covid-19/results/covid-19-print-results.php:224
-#: app/covid-19/results/covid-19-print-results.php:358
-#: app/covid-19/results/covid-19-print-results.php:399
-#: app/covid-19/results/covid-19-qc-data.php:85
-#: app/covid-19/results/edit-covid-19-qc-data.php:149
-#: app/eid/management/eid-clinic-report.php:190
-#: app/eid/management/eid-export-data.php:126
-#: app/eid/management/eid-sample-status.php:76
-#: app/eid/requests/eid-requests.php:299 app/eid/requests/eid-requests.php:446
-#: app/eid/results/eid-failed-results.php:107
-#: app/eid/results/eid-manual-results.php:110
-#: app/eid/results/eid-print-results.php:172
-#: app/eid/results/eid-print-results.php:217
-#: app/eid/results/eid-print-results.php:344
-#: app/eid/results/eid-print-results.php:389
-#: app/generic-tests/program-management/generic-export-data.php:111
-#: app/generic-tests/program-management/generic-sample-status.php:103
-#: app/generic-tests/requests/add-request.php:342
-#: app/generic-tests/requests/edit-request.php:532
-#: app/generic-tests/requests/view-requests.php:176
-#: app/generic-tests/results/generic-failed-results.php:87
-#: app/generic-tests/results/generic-print-result.php:219
-#: app/generic-tests/results/generic-print-result.php:271
-#: app/generic-tests/results/generic-print-result.php:445
-#: app/generic-tests/results/generic-print-result.php:497
-#: app/generic-tests/results/generic-test-results.php:128
-#: app/generic-tests/results/generic-test-results.php:189
-#: app/generic-tests/results/generic-test-results.php:245
-#: app/generic-tests/results/update-generic-test-result.php:679
-#: app/hepatitis/management/hepatitis-clinic-report.php:190
-#: app/hepatitis/management/hepatitis-export-data.php:109
-#: app/hepatitis/management/hepatitis-sample-status.php:75
-#: app/hepatitis/requests/hepatitis-dhis2.php:138
-#: app/hepatitis/requests/hepatitis-requests.php:298
-#: app/hepatitis/requests/hepatitis-requests.php:414
-#: app/hepatitis/results/hepatitis-failed-results.php:105
-#: app/hepatitis/results/hepatitis-manual-results.php:107
-#: app/instruments/add-instrument.php:111
-#: app/instruments/edit-instrument.php:151 app/roles/addRole.php:245
-#: app/roles/editRole.php:233
-#: app/specimen-referral-manifest/move-manifest.php:207
-#: app/specimen-referral-manifest/view-manifests.php:59
-#: app/tb/management/tb-clinic-report.php:188
-#: app/tb/management/tb-export-data.php:112
-#: app/tb/management/tb-sample-status.php:74
-#: app/tb/requests/tb-requests.php:231 app/tb/requests/tb-requests.php:309
-#: app/tb/results/tb-failed-results.php:106
-#: app/tb/results/tb-manual-results.php:111
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/program-management/sample-storage-reports.php:89
-#: app/vl/program-management/sample-storage-reports.php:172
-#: app/vl/program-management/vl-export-data.php:146
-#: app/vl/program-management/vl-sample-status.php:106
-#: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/forms/add-burkina-faso.php:186
-#: app/vl/requests/forms/edit-burkina-faso.php:283
-#: app/vl/requests/vl-requests.php:407 app/vl/requests/vl-requests.php:580
-#: app/vl/requests/vl-requests.php:641
-#: app/vl/results/forms/update-burkina-faso-result.php:283
-#: app/vl/results/forms/update-cameroon-result.php:311
-#: app/vl/results/vl-failed-results.php:90
-#: app/vl/results/vl-print-results.php:242
-#: app/vl/results/vl-print-results.php:300
-#: app/vl/results/vl-print-results.php:499
-#: app/vl/results/vl-print-results.php:556 app/vl/results/vlTestResult.php:139
-#: app/vl/results/vlTestResult.php:253
-msgid "Testing Lab"
-msgstr "Laboratoire du test"
-
 #: app/cd4/management/cd4-clinic-report.php:197
 #: app/cd4/management/cd4-clinic-report.php:425
 #: app/cd4/requests/export-cd4-requests.php:28
@@ -7424,35 +7970,6 @@ msgstr "Échantillon reçu au labo"
 #: app/tb/management/tb-export-data.php:89
 msgid "Select Recieved Date"
 msgstr "Sélectionner la date de réception"
-
-#: app/cd4/management/cd4-export-data.php:110
-#: app/cd4/results/cd4-failed-results.php:110
-#: app/covid-19/management/covid-19-export-data.php:120
-#: app/covid-19/requests/covid-19-requests.php:313
-#: app/covid-19/results/covid-19-failed-results.php:109
-#: app/covid-19/results/covid-19-manual-results.php:108
-#: app/eid/management/eid-export-data.php:128
-#: app/eid/requests/eid-requests.php:302
-#: app/eid/results/eid-failed-results.php:110
-#: app/eid/results/eid-manual-results.php:113
-#: app/generic-tests/program-management/generic-export-data.php:113
-#: app/generic-tests/results/generic-failed-results.php:89
-#: app/generic-tests/results/generic-test-results.php:131
-#: app/hepatitis/management/hepatitis-export-data.php:111
-#: app/hepatitis/requests/hepatitis-dhis2.php:141
-#: app/hepatitis/requests/hepatitis-requests.php:301
-#: app/hepatitis/results/hepatitis-failed-results.php:108
-#: app/hepatitis/results/hepatitis-manual-results.php:109
-#: app/setup/index.php:352 app/tb/management/tb-export-data.php:114
-#: app/tb/requests/tb-requests.php:233 app/tb/results/tb-failed-results.php:109
-#: app/tb/results/tb-manual-results.php:113
-#: app/vl/program-management/sample-storage-reports.php:92
-#: app/vl/program-management/sample-storage-reports.php:175
-#: app/vl/program-management/vl-export-data.php:149
-#: app/vl/requests/vl-requests.php:410 app/vl/results/vl-failed-results.php:92
-#: app/vl/results/vlTestResult.php:142
-msgid "Please select Testing Lab"
-msgstr "Veuiller selectionner le laboratoire de test"
 
 #: app/cd4/management/cd4-export-data.php:123
 #: app/cd4/requests/cd4-requests.php:169
@@ -8862,13 +9379,6 @@ msgstr "Demande de numéro de téléphone portable du clinicien"
 
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/requests/export-vl-requests.php:38
-msgid "Request Date"
-msgstr "Date de la demande"
-
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
 #: app/covid-19/requests/forms/add-cameroon.php:416
 #: app/covid-19/requests/forms/add-drc.php:746
 #: app/covid-19/requests/forms/add-drc.php:748
@@ -8941,19 +9451,6 @@ msgstr "Résultats (journal)"
 
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
-#: app/eid/results/pdf/result-pdf-burkina-faso.php:428
-#: app/import-result/imported-results.php:441
-#: app/vl/program-management/export-vl-results.php:35
-#: app/vl/program-management/sample-storage-reports.php:242
-#: app/vl/program-management/storageHistoryDataToExcel.php:25
-#: app/vl/requests/export-sample-storage.php:26
-#: app/vl/requests/export-vl-requests.php:38
-#: app/vl/requests/sample-storage.php:289
-msgid "Comments"
-msgstr "Commentaires"
-
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
 #: app/generic-tests/program-management/generic-export-data.php:307
 #: app/generic-tests/program-management/generic-export-data.php:337
 #: app/vl/program-management/export-vl-results.php:35
@@ -9012,7 +9509,7 @@ msgstr "Non autorisé"
 #: app/tb/results/get-results-for-print.php:236
 #: app/vl/program-management/getPatientTestHistoryReport.php:138
 #: app/vl/results/get-manual-results.php:272
-#: app/vl/results/get-results-for-print.php:233
+#: app/vl/results/get-results-for-print.php:235
 msgid "Print"
 msgstr "Imprimer"
 
@@ -10768,7 +11265,7 @@ msgstr "Sexe du patient"
 #: app/tb/results/tb-samples-for-manual-result-entry.php:220
 #: app/vl/requests/get-request-list.php:429
 #: app/vl/results/get-manual-results.php:277
-#: app/vl/results/get-results-for-print.php:237
+#: app/vl/results/get-results-for-print.php:239
 msgid "Locked"
 msgstr "Verrouillé"
 
@@ -11738,17 +12235,6 @@ msgstr "Tout désélectionner"
 msgid "Please select sample(s)"
 msgstr "Veuillez sélectionner le(s) échantillon(s)"
 
-#: app/cd4/results/email-results.php:334
-#: app/covid-19/results/email-results.php:336
-#: app/eid/results/email-results.php:333
-#: app/generic-tests/results/email-results.php:336
-#: app/hepatitis/results/email-results.php:336 app/mail/vlResultMail.php:336
-#: app/setup/index.php:323 app/setup/index.php:407
-#: app/tb/results/email-results.php:336 app/vl/results/email-results.php:336
-#: app/vl/results/vlResultMail.php:336
-msgid "Next"
-msgstr "Suivante"
-
 #: app/cd4/results/email-results.php:358
 #: app/covid-19/results/email-results.php:360
 #: app/eid/results/email-results.php:357
@@ -11964,7 +12450,7 @@ msgstr "Retester"
 #: app/hepatitis/results/hepatitis-samples-for-manual-result-entry.php:156
 #: app/tb/results/tb-samples-for-manual-result-entry.php:217
 #: app/vl/results/get-manual-results.php:274
-#: app/vl/results/get-results-for-print.php:235
+#: app/vl/results/get-results-for-print.php:237
 msgid "Enter Result"
 msgstr "Saisir le résultat"
 
@@ -12176,16 +12662,6 @@ msgstr "Modèle de manifeste de renvoi"
 #: app/classes/Helpers/ResultPDFHelpers/VLResultPDFHelper.php:116
 msgid "Page"
 msgstr "Page"
-
-#: app/classes/Helpers/ResultPDFHelpers/CD4ResultPDFHelper.php:116
-#: app/classes/Helpers/ResultPDFHelpers/Covid19ResultPDFHelper.php:158
-#: app/classes/Helpers/ResultPDFHelpers/EIDResultPDFHelper.php:129
-#: app/classes/Helpers/ResultPDFHelpers/GenericTestsResultPDFHelper.php:120
-#: app/classes/Helpers/ResultPDFHelpers/HepatitisResultPDFHelper.php:116
-#: app/classes/Helpers/ResultPDFHelpers/TBResultPDFHelper.php:145
-#: app/classes/Helpers/ResultPDFHelpers/VLResultPDFHelper.php:116
-msgid "of"
-msgstr "de"
 
 #: app/classes/HttpHandlers/LegacyRequestHandler.php:76
 msgid "Sorry! We could not find this page or resource"
@@ -13749,24 +14225,6 @@ msgstr "Laboratoire de test"
 #: app/covid-19/results/forms/update-cameroon-result.php:194
 msgid "CASE DETAILS/DEMOGRAPHICS"
 msgstr "DÉTAILS DE CAS/DONNÉES DÉMOGRAPHIQUES"
-
-#: app/covid-19/requests/forms/add-cameroon.php:196
-#: app/covid-19/requests/forms/edit-cameroon.php:213
-#: app/eid/requests/forms/add-burkina-faso.php:133
-#: app/eid/requests/forms/edit-burkina-faso.php:147
-#: app/eid/results/forms/update-burkina-faso-result.php:146
-#: app/generic-tests/requests/add-request.php:358
-#: app/generic-tests/requests/edit-request.php:549
-#: app/generic-tests/results/update-generic-test-result.php:521
-#: app/vl/requests/forms/add-burkina-faso.php:207
-#: app/vl/requests/forms/add-cameroon.php:225
-#: app/vl/requests/forms/edit-burkina-faso.php:304
-#: app/vl/requests/forms/edit-cameroon.php:280
-#: app/vl/results/forms/update-burkina-faso-result.php:297
-#: app/vl/results/forms/update-cameroon-result.php:332
-#: app/vl/results/pdf/result-pdf-cameroon-cresar.php:192
-msgid "Patient Information"
-msgstr "Information du patient"
 
 #: app/covid-19/requests/forms/add-cameroon.php:197
 #: app/covid-19/requests/forms/edit-cameroon.php:214
@@ -15396,10 +15854,6 @@ msgstr "Échantillons en attente d'approbation"
 #: app/dashboard/getSampleResult.php:739
 msgid "Samples Registered at Collection Sites"
 msgstr "Échantillons enregistrés sur les sites de collecte"
-
-#: app/dashboard/getSampleResult.php:755
-msgid "Total"
-msgstr "Total"
 
 #: app/dashboard/index.php:3 app/roles/addRole.php:168
 #: app/roles/editRole.php:196 app/system/translate-strings.php:116
@@ -17361,13 +17815,6 @@ msgstr ""
 #: app/facilities/addFacility.php:73 app/facilities/facilities.php:156
 msgid "Add Facility"
 msgstr "Ajouter FOSA"
-
-#: app/facilities/addFacility.php:80 app/facilities/editFacility.php:145
-#: app/facilities/facilities.php:9 app/facilities/facilities.php:42
-#: app/facilities/facilities.php:45 app/facilities/upload-facilities.php:83
-#: app/system/translate-strings.php:12
-msgid "Facilities"
-msgstr "FOSA"
 
 #: app/facilities/addFacility.php:105 app/facilities/editFacility.php:165
 msgid "The facility name that you entered already exists.Enter another name"
@@ -21153,7 +21600,7 @@ msgid "Enter a sample date from your import file"
 msgstr ""
 "Saisissez une date d'échantillonnage à partir de votre fichier d'importation"
 
-#: app/import-result/import-file.php:145
+#: app/import-result/import-file.php:145 app/import-result/import-file.php:328
 msgid "Enter any date from your import file to auto-detect format"
 msgstr ""
 "Saisissez n'importe quelle date de votre fichier d'importation pour une "
@@ -21197,6 +21644,27 @@ msgstr "Veuillez choisir le fichier de résultat"
 #: app/import-result/import-file.php:199
 msgid "(Upload xls, xlsx, csv, txt format)"
 msgstr "(Télécharger les formats xls, xlsx, csv, txt)"
+
+#: app/import-result/import-file.php:297
+msgid "Pre-configured:"
+msgstr "Préconfiguré :"
+
+#: app/import-result/import-file.php:297
+msgid "click to change"
+msgstr "cliquez pour modifier"
+
+#: app/import-result/import-file.php:302
+msgid "Pre-configured format:"
+msgstr "Format préconfiguré :"
+
+#: app/import-result/import-file.php:302
+#: public/assets/js/smart-date-format.js.php:154
+msgid "Click field to change"
+msgstr "Cliquez sur le champ à modifier"
+
+#: app/import-result/import-file.php:323
+msgid "Enter sample date from your file"
+msgstr "Saisir la date de l'échantillon dans votre dossier"
 
 #: app/import-result/import-stats-eid.php:94
 msgid "Indeterminate"
@@ -26793,10 +27261,6 @@ msgstr "Saisissez une nouvelle date d'échantillonnage pour modifier le format"
 msgid "Selected format:"
 msgstr "Format sélectionné :"
 
-#: public/assets/js/smart-date-format.js.php:154
-msgid "Click field to change"
-msgstr "Cliquez sur le champ à modifier"
-
 #: public/assets/js/smart-date-format.js.php:164
 msgid "Date format detected - analyzing..."
 msgstr "Format de date détecté - analyse..."
@@ -27026,9 +27490,6 @@ msgstr "Format allemand"
 
 #~ msgid "File Name"
 #~ msgstr "Nom du fichier"
-
-#~ msgid "Sample Code"
-#~ msgstr "Code d'échantillon"
 
 #~ msgid "Remote Sample Code"
 #~ msgstr "Code d'échantillon prélevé à l'extérieur du labo"
@@ -27648,9 +28109,6 @@ msgstr "Format allemand"
 #~ msgid "Upload Facilities"
 #~ msgstr "Facilités de téléchargement"
 
-#~ msgid "Sample Receipt Date"
-#~ msgstr "Date de réception de l'échantillon"
-
 #~ msgid "Date Result Dispatched"
 #~ msgstr "Date d'envoi du résultat"
 
@@ -27700,9 +28158,6 @@ msgstr "Format allemand"
 #~ "ou que le nombre de copies/ml soit réduit ou augmenté d'un facteur 3\n"
 #~ "          nombre de copies/ml.\n"
 #~ "          "
-
-#~ msgid "Collection Date"
-#~ msgstr "Date de collecte de"
 
 #~ msgid "Request Clinician Name"
 #~ msgstr "Nom du clinicien à l'origine de la demande"
