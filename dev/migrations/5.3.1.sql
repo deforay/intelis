@@ -110,9 +110,8 @@ ALTER TABLE `form_eid`
 
 
 -- CD4
-ALTER TABLE `form_cd4`
-ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL
-AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `form_cd4` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
+ALTER TABLE `audit_form_cd4` ADD COLUMN `result_pulled_via_api_datetime` DATETIME NULL AFTER `result_sent_to_source_datetime`;
 
 ALTER TABLE `form_cd4`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);

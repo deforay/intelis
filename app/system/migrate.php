@@ -65,6 +65,31 @@ function current_db(DatabaseService $db): string
     }
     return $dbName;
 }
+/** Return ordered primary-key columns for a table (lowercased, no backticks). */
+function table_primary_key(DatabaseService $db, string $table): array
+{
+    $sql = "SELECT k.COLUMN_NAME
+                FROM information_schema.TABLE_CONSTRAINTS t
+                JOIN information_schema.KEY_COLUMN_USAGE k
+                    ON t.CONSTRAINT_NAME = k.CONSTRAINT_NAME
+                AND t.TABLE_SCHEMA = k.TABLE_SCHEMA
+                AND t.TABLE_NAME   = k.TABLE_NAME
+                WHERE t.TABLE_SCHEMA = ?
+                AND t.TABLE_NAME   = ?
+                AND t.CONSTRAINT_TYPE = 'PRIMARY KEY'
+                ORDER BY k.ORDINAL_POSITION";
+    $rows = $db->rawQuery($sql, [current_db($db), $table]) ?? [];
+    if (!$rows) return [];
+    return array_map(static fn($r) => strtolower(trim($r['COLUMN_NAME'] ?? '')), $rows);
+}
+
+/** Parse a column list like "`a`,`b`" into ['a','b'] (normalized). */
+function parse_cols_list(string $list): array
+{
+    $parts = array_map('trim', explode(',', $list));
+    return array_map(static fn($c) => strtolower(trim($c, "` \t\r\n")), $parts);
+}
+
 
 /** Add column only if absent (portable across MySQL 5.x/8.x). */
 function add_column_if_missing(DatabaseService $db, string $table, string $column, string $ddl): void
@@ -72,8 +97,8 @@ function add_column_if_missing(DatabaseService $db, string $table, string $colum
     $dbName = current_db($db);
     $exists = (int)($db->rawQueryOne(
         "SELECT COUNT(*) c
-           FROM information_schema.COLUMNS
-          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?",
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?",
         [$dbName, $table, $column]
     )['c'] ?? 0);
 
@@ -88,8 +113,8 @@ function index_exists(DatabaseService $db, string $table, string $index): bool
     $dbName = current_db($db);
     $row = $db->rawQueryOne(
         "SELECT 1 AS ok
-           FROM information_schema.STATISTICS
-          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND INDEX_NAME=? LIMIT 1",
+            FROM information_schema.STATISTICS
+            WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND INDEX_NAME=? LIMIT 1",
         [$dbName, $table, $index]
     );
     return (bool)$row;
@@ -193,6 +218,38 @@ function handle_idempotent_ddl(DatabaseService $db, string $query): bool
         drop_index_if_exists($db, $m[1], $m[2]);
         return true;
     }
+
+    // ALTER TABLE ... ADD PRIMARY KEY (...)
+    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+primary\s+key\s*\((.+)\)\s*;?$/is', $q, $m)) {
+        $table      = $m[1];
+        $wantedCols = parse_cols_list($m[2]);
+        $haveCols   = table_primary_key($db, $table);
+
+        if (empty($haveCols)) {
+            // No PK yet -> create it now
+            $db->rawQuery($q);
+        } elseif ($haveCols === $wantedCols) {
+            // Already the desired PK -> noop (treated as "skipped")
+            // nothing to do
+        } else {
+            // A different PK exists
+            if (getenv('MIG_REPLACE_PK')) {
+                // WARNING: may fail if FKs reference the current PK or data violates new uniqueness
+                $db->rawQuery("ALTER TABLE `{$table}` DROP PRIMARY KEY");
+                $colsSql = implode(',', array_map(static fn($c) => "`$c`", $wantedCols));
+                $db->rawQuery("ALTER TABLE `{$table}` ADD PRIMARY KEY ($colsSql)");
+            } else {
+                if (getenv('MIG_VERBOSE')) {
+                    echo "NOTE: Skipping PK change on {$table} (have: "
+                        . implode(',', $haveCols) . " want: "
+                        . implode(',', $wantedCols)
+                        . "). Set MIG_REPLACE_PK=1 to force.\n";
+                }
+            }
+        }
+        return true; // handled (executed or intentionally skipped)
+    }
+
 
     return false;
 }
