@@ -24,7 +24,7 @@ try {
 
     $sWhere = [];
 
-    // Base conditions for missing samples - API requests only
+    // Base conditions for missing samples - API/EMR requests only
     $sWhere[] = " t.source_of_request = 'api' ";
     $sWhere[] = " t.request_created_datetime IS NOT NULL ";
     $sWhere[] = " t.sample_received_at_lab_datetime IS NULL ";

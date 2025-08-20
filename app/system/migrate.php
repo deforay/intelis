@@ -32,6 +32,10 @@ if (version_compare($currentMajorVersion, '4.4.3', '<')) {
 // Define the logs directory path
 $logsDir = ROOT_PATH . "/logs";
 
+const MIG_NOT_HANDLED = 0;
+const MIG_EXECUTED    = 1;
+const MIG_SKIPPED     = 2;
+
 // Initialize a flag to determine if logging is possible
 $canLog = false;
 
@@ -65,6 +69,52 @@ function current_db(DatabaseService $db): string
     }
     return $dbName;
 }
+
+/** Common handler for both ADD PRIMARY KEY syntaxes. */
+function _apply_add_primary_key(DatabaseService $db, string $table, string $colsList, string $originalSql): int
+{
+    $wantedCols = parse_cols_list($colsList);
+    $haveCols   = table_primary_key($db, $table);
+
+    if (empty($haveCols)) {
+        $db->rawQuery($originalSql);
+        assert_no_errno($db, $originalSql);
+        return MIG_EXECUTED;
+    }
+    if ($haveCols === $wantedCols) {
+        return MIG_SKIPPED;
+    }
+
+    if (getenv('MIG_REPLACE_PK')) {
+        $sql = "ALTER TABLE `{$table}` DROP PRIMARY KEY";
+        $db->rawQuery($sql);
+        assert_no_errno($db, $sql);
+
+        $colsSql = implode(',', array_map(static fn($c) => "`$c`", $wantedCols));
+        $sql = "ALTER TABLE `{$table}` ADD PRIMARY KEY ($colsSql)";
+        $db->rawQuery($sql);
+        assert_no_errno($db, $sql);
+        return MIG_EXECUTED;
+    }
+
+    if (getenv('MIG_VERBOSE')) {
+        echo "NOTE: Skipping PK change on {$table} (have: "
+            . implode(',', $haveCols) . " want: "
+            . implode(',', $wantedCols)
+            . "). Set MIG_REPLACE_PK=1 to force.\n";
+    }
+    return MIG_SKIPPED;
+}
+
+
+function assert_no_errno(DatabaseService $db, string $sql): void
+{
+    $errno = $db->getLastErrno();
+    if ($errno > 0) {
+        throw new RuntimeException("DB error ($errno): " . $db->getLastError() . "\n$sql");
+    }
+}
+
 /** Return ordered primary-key columns for a table (lowercased, no backticks). */
 function table_primary_key(DatabaseService $db, string $table): array
 {
@@ -86,25 +136,34 @@ function table_primary_key(DatabaseService $db, string $table): array
 /** Parse a column list like "`a`,`b`" into ['a','b'] (normalized). */
 function parse_cols_list(string $list): array
 {
-    $parts = array_map('trim', explode(',', $list));
-    return array_map(static fn($c) => strtolower(trim($c, "` \t\r\n")), $parts);
+    $parts = preg_split('/\s*,\s*/', trim($list));
+    return array_map(static function ($c) {
+        $c = trim($c, " \t\r\n`");
+        // drop optional length like (10) or (10,2)
+        $c = preg_replace('/\s*\(\s*\d+(?:\s*,\s*\d+)?\s*\)\s*/', '', $c);
+        // drop ASC/DESC if present
+        $c = preg_replace('/\s+(ASC|DESC)\b/i', '', $c);
+        return strtolower($c);
+    }, $parts);
 }
 
 
 /** Add column only if absent (portable across MySQL 5.x/8.x). */
-function add_column_if_missing(DatabaseService $db, string $table, string $column, string $ddl): void
+function add_column_if_missing(DatabaseService $db, string $table, string $column, string $ddl): int
 {
     $dbName = current_db($db);
     $exists = (int)($db->rawQueryOne(
-        "SELECT COUNT(*) c
-            FROM information_schema.COLUMNS
+        "SELECT COUNT(*) c FROM information_schema.COLUMNS
             WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=?",
         [$dbName, $table, $column]
     )['c'] ?? 0);
 
     if ($exists === 0) {
         $db->rawQuery($ddl);
+        assert_no_errno($db, $ddl);
+        return MIG_EXECUTED;
     }
+    return MIG_SKIPPED;
 }
 
 /** Does an index exist on table (by name)? */
@@ -112,8 +171,7 @@ function index_exists(DatabaseService $db, string $table, string $index): bool
 {
     $dbName = current_db($db);
     $row = $db->rawQueryOne(
-        "SELECT 1 AS ok
-            FROM information_schema.STATISTICS
+        "SELECT 1 AS ok FROM information_schema.STATISTICS
             WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND INDEX_NAME=? LIMIT 1",
         [$dbName, $table, $index]
     );
@@ -121,11 +179,14 @@ function index_exists(DatabaseService $db, string $table, string $index): bool
 }
 
 /** Create index only if missing (works on MySQL 5.x/8.x and MariaDB). */
-function add_index_if_missing(DatabaseService $db, string $table, string $index, string $ddl): void
+function add_index_if_missing(DatabaseService $db, string $table, string $index, string $ddl): int
 {
     if (!index_exists($db, $table, $index)) {
         $db->rawQuery($ddl);
+        assert_no_errno($db, $ddl);
+        return MIG_EXECUTED;
     }
+    return MIG_SKIPPED;
 }
 
 /** Column exists? */
@@ -134,49 +195,54 @@ function column_exists(DatabaseService $db, string $table, string $column): bool
     $dbName = current_db($db);
     $row = $db->rawQueryOne(
         "SELECT 1
-           FROM information_schema.COLUMNS
-          WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
+            FROM information_schema.COLUMNS
+            WHERE TABLE_SCHEMA=? AND TABLE_NAME=? AND COLUMN_NAME=? LIMIT 1",
         [$dbName, $table, $column]
     );
     return (bool)$row;
 }
 
 /** DROP COLUMN only if present */
-function drop_column_if_exists(DatabaseService $db, string $table, string $column): void
+function drop_column_if_exists(DatabaseService $db, string $table, string $column): int
 {
     if (column_exists($db, $table, $column)) {
-        $db->rawQuery("ALTER TABLE `{$table}` DROP `{$column}`");
+        $sql = "ALTER TABLE `{$table}` DROP `{$column}`";
+        $db->rawQuery($sql);
+        assert_no_errno($db, $sql);
+        return MIG_EXECUTED;
     }
+    return MIG_SKIPPED;
 }
 
 /** DROP INDEX only if present */
-function drop_index_if_exists(DatabaseService $db, string $table, string $index): void
+function drop_index_if_exists(DatabaseService $db, string $table, string $index): int
 {
     if (index_exists($db, $table, $index)) {
-        $db->rawQuery("ALTER TABLE `{$table}` DROP INDEX `{$index}`");
+        $sql = "ALTER TABLE `{$table}` DROP INDEX `{$index}`";
+        $db->rawQuery($sql);
+        assert_no_errno($db, $sql);
+        return MIG_EXECUTED;
     }
+    return MIG_SKIPPED;
 }
 
 /**
  * Route known DDL patterns through idempotent helpers.
  * Returns true if handled (do not execute again), false to execute raw.
  */
-function handle_idempotent_ddl(DatabaseService $db, string $query): bool
+function handle_idempotent_ddl(DatabaseService $db, string $query): int
 {
     $q = trim($query);
-    // normalize occasional collapsed whitespace after parser->build()
     $q = preg_replace('/NULL\s*AFTER/i', 'NULL AFTER', $q);
 
     // ALTER TABLE ... ADD [COLUMN] `col` ...
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(?:column\s+)?`?([a-z0-9_]+)`?\s+/i', $q, $m)) {
-        add_column_if_missing($db, $m[1], $m[2], $q);
-        return true;
+        return add_column_if_missing($db, $m[1], $m[2], $q);
     }
 
     // CREATE [UNIQUE] INDEX idx ON table (...)
-    if (preg_match('/^create\s+(unique\s+)?index\s+`?([a-z0-9_]+)`?\s+on\s+`?([a-z0-9_]+)`?\s*\(/i', $q, $m)) {
-        add_index_if_missing($db, $m[3], $m[2], $q);
-        return true;
+    if (preg_match('/^create\s+(unique\s+)?index\s+`?([^`]+)`?\s*(?:using\s+btree)?\s+on\s+`?([^`]+)`?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+        return add_index_if_missing($db, $m[3], $m[2], $q);
     }
 
     // ALTER TABLE ... ADD [UNIQUE] INDEX idx (...)
@@ -186,84 +252,56 @@ function handle_idempotent_ddl(DatabaseService $db, string $query): bool
         $index = $m[3];
         $cols  = trim($m[4]);
         $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
-        add_index_if_missing($db, $table, $index, $ddl);
-        return true;
+        return add_index_if_missing($db, $table, $index, $ddl);
     }
 
-    // ALTER TABLE ... ADD [UNIQUE] KEY idx (...) (synonym for INDEX)
+    // ALTER TABLE ... ADD [UNIQUE] KEY idx (...) (synonym)
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+(unique\s+)?key\s+`?([a-z0-9_]+)`?\s*\((.+)\)\s*;?$/is', $q, $m)) {
         $table = $m[1];
         $uniqueKw = !empty($m[2]) ? 'UNIQUE ' : '';
         $index = $m[3];
         $cols  = trim($m[4]);
         $ddl   = sprintf('CREATE %sINDEX `%s` ON `%s` (%s)', $uniqueKw, $index, $table, $cols);
-        add_index_if_missing($db, $table, $index, $ddl);
-        return true;
+        return add_index_if_missing($db, $table, $index, $ddl);
     }
 
     // ALTER TABLE ... DROP COLUMN `col`
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+column\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        drop_column_if_exists($db, $m[1], $m[2]);
-        return true;
+        return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
-    // ALTER TABLE ... DROP `col` (shorthand without COLUMN)
+    // ALTER TABLE ... DROP `col` (shorthand)
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        drop_column_if_exists($db, $m[1], $m[2]);
-        return true;
+        return drop_column_if_exists($db, $m[1], $m[2]);
     }
 
     // ALTER TABLE ... DROP INDEX `idx`
     if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+drop\s+index\s+`?([a-z0-9_]+)`?/i', $q, $m)) {
-        drop_index_if_exists($db, $m[1], $m[2]);
-        return true;
+        return drop_index_if_exists($db, $m[1], $m[2]);
     }
 
-    // ALTER TABLE ... ADD PRIMARY KEY (...)
-    if (preg_match('/^alter\s+table\s+`?([a-z0-9_]+)`?\s+add\s+primary\s+key\s*\((.+)\)\s*;?$/is', $q, $m)) {
-        $table      = $m[1];
-        $wantedCols = parse_cols_list($m[2]);
-        $haveCols   = table_primary_key($db, $table);
-
-        if (empty($haveCols)) {
-            // No PK yet -> create it now
-            $db->rawQuery($q);
-        } elseif ($haveCols === $wantedCols) {
-            // Already the desired PK -> noop (treated as "skipped")
-            // nothing to do
-        } else {
-            // A different PK exists
-            if (getenv('MIG_REPLACE_PK')) {
-                // WARNING: may fail if FKs reference the current PK or data violates new uniqueness
-                $db->rawQuery("ALTER TABLE `{$table}` DROP PRIMARY KEY");
-                $colsSql = implode(',', array_map(static fn($c) => "`$c`", $wantedCols));
-                $db->rawQuery("ALTER TABLE `{$table}` ADD PRIMARY KEY ($colsSql)");
-            } else {
-                if (getenv('MIG_VERBOSE')) {
-                    echo "NOTE: Skipping PK change on {$table} (have: "
-                        . implode(',', $haveCols) . " want: "
-                        . implode(',', $wantedCols)
-                        . "). Set MIG_REPLACE_PK=1 to force.\n";
-                }
-            }
-        }
-        return true; // handled (executed or intentionally skipped)
+    // ALTER TABLE ... ADD PRIMARY KEY [USING BTREE] (...) [USING BTREE]
+    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+        return _apply_add_primary_key($db, $m[1], $m[2], $q);
     }
 
+    // ALTER TABLE ... ADD CONSTRAINT `name` PRIMARY KEY [USING BTREE] (...) [USING BTREE]
+    if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+constraint\s+`?([^`]+)`?\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
+        return _apply_add_primary_key($db, $m[1], $m[3], $q);
+    }
 
-    return false;
+    return MIG_NOT_HANDLED;
 }
+
 
 /* ---------------------- End helpers ---------------------- */
 
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
-$migrationFiles = glob(ROOT_PATH . '/dev/migrations/*.sql');
+$migrationFiles = (array)glob(ROOT_PATH . '/dev/migrations/*.sql');
 
 // Extract version numbers and map them to files
-$versions = array_map(function ($file) {
-    return basename($file, '.sql');
-}, $migrationFiles);
+$versions = array_map(fn($file) => basename($file, '.sql'), $migrationFiles);
 
 // Sort versions
 usort($versions, 'version_compare');
@@ -309,6 +347,7 @@ foreach ($versions as $version) {
         }
 
         $db->beginTransaction();
+        $aborted = false;
         try {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;");
 
@@ -316,56 +355,58 @@ foreach ($versions as $version) {
                 try {
                     $totalQueries++;
 
-                    if (handle_idempotent_ddl($db, $query)) {
-                        // Already satisfied (idempotent)
+                    $status = handle_idempotent_ddl($db, $query);
+                    if ($status === MIG_SKIPPED) {
                         $skippedQueries++;
+                        continue;
+                    }
+                    if ($status === MIG_EXECUTED) {
                         $successfulQueries++;
-                    } else {
-                        $db->rawQuery($query);
+                        continue;
+                    }
 
-                        // only check errno right after the call that can set it
-                        $errno = $db->getLastErrno();
-                        if ($errno > 0) {
-                            // benign idempotence outcomes
-                            if (in_array($errno, [1060, 1061, 1091], true)) {
-                                if (!$quietMode && getenv('MIG_VERBOSE')) {
-                                    $msg = "Benign idempotence (errno=$errno): {$db->getLastError()}\n{$db->getLastQuery()}\n";
-                                    echo $msg;
-                                    if ($canLog) LoggerUtility::log('info', $msg);
-                                }
-                                $skippedQueries++;
-                                $successfulQueries++;
-                            } else {
-                                // real error
-                                $totalErrors++;
-                                $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
-                                if (!$quietMode) {
-                                    echo $msg;
-                                    if ($canLog) LoggerUtility::log('error', $msg);
-                                }
-                                if (!$autoContinueOnError) {
-                                    echo "Do you want to continue? (y/n): ";
-                                    $handle = fopen("php://stdin", "r");
-                                    $response = trim(fgets($handle));
-                                    fclose($handle);
-                                    if (strtolower($response) !== 'y') {
-                                        throw new RuntimeException("Migration aborted by user.");
-                                    }
+                    $db->rawQuery($query);
+
+                    $errno = $db->getLastErrno();
+                    if ($errno > 0) {
+                        if (in_array($errno, [1060, 1061, 1068, 1091], true)) {
+                            if (!$quietMode && getenv('MIG_VERBOSE')) {
+                                $msg = "Benign idempotence (errno=$errno): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                echo $msg;
+                                if ($canLog) LoggerUtility::log('info', $msg);
+                            }
+                            $skippedQueries++;
+                            //$successfulQueries++;
+                        } else {
+                            $totalErrors++;
+                            $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                            if (!$quietMode) {
+                                echo $msg;
+                                if ($canLog) LoggerUtility::log('error', $msg);
+                            }
+                            if (!$autoContinueOnError) {
+                                echo "Do you want to continue? (y/n): ";
+                                $handle = fopen("php://stdin", "r");
+                                $response = trim(fgets($handle));
+                                fclose($handle);
+                                if (strtolower($response) !== 'y') {
+                                    $aborted = true;               // mark abort
+                                    throw new RuntimeException("Migration aborted by user.");
                                 }
                             }
-                        } else {
-                            $successfulQueries++;
                         }
+                    } else {
+                        $successfulQueries++;
                     }
                 } catch (Throwable $e) {
                     $msgStr  = $e->getMessage() ?? '';
                     $sqlInMsg = $query ?? '';
 
-                    // heuristics for benign idempotence
                     $isBenign =
                         stripos($msgStr, 'Duplicate column name') !== false ||
                         stripos($msgStr, 'Duplicate key name') !== false   ||
-                        (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false);
+                        (stripos($msgStr, "Can't DROP") !== false && stripos($msgStr, 'check that column/key exists') !== false) ||
+                        stripos($msgStr, 'Multiple primary key defined') !== false || strpos($msgStr, '1068') !== false;
 
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
@@ -373,9 +414,8 @@ foreach ($versions as $version) {
                             echo $msg;
                             if ($canLog) LoggerUtility::log('info', $msg);
                         }
-                        // Count as skipped + successful (desired state already met)
                         $skippedQueries++;
-                        $successfulQueries++;
+                        //$successfulQueries++;
                     } else {
                         $totalErrors++;
                         if (!$quietMode) {
@@ -389,12 +429,12 @@ foreach ($versions as $version) {
                             $response = trim(fgets($handle));
                             fclose($handle);
                             if (strtolower($response) !== 'y') {
+                                $aborted = true;               // mark abort
                                 throw new RuntimeException("Migration aborted by user.");
                             }
                         }
                     }
                 } finally {
-                    // progress tick
                     $processedForVersion++;
                     if ($showProgress && $versionTotal > 0) {
                         MiscUtility::progressBar($processedForVersion, $versionTotal);
@@ -404,15 +444,17 @@ foreach ($versions as $version) {
 
             echo "Migration to version $version completed.\n";
         } finally {
-            // best-effort ensure FK checks are restored
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
-            // commit if no fatal errors caused a throw
-            try {
-                $db->commitTransaction();
-            } catch (Throwable $e) {
+            if ($aborted) {
                 $db->rollbackTransaction();
-                throw $e;
+                exit("Migration aborted by user.\n");
             }
+
+            // Persist the version only if the run wasn't aborted
+            $db->where('name', 'sc_version');
+            $db->update('system_config', ['value' => $version]);
+
+            $db->commitTransaction();
         }
     }
 

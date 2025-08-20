@@ -1,5 +1,5 @@
 <?php
-// get-missing-samples.php
+// get-missing-samples.php - Aggregated by facility version
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -53,7 +53,7 @@ try {
         $sWhere[] = " t.facility_id IN ($facilityId)";
     }
 
-    // FOCUS: Only API requests
+    // FOCUS: Only API/EMR requests
     $sWhere[] = " t.source_of_request = 'api' ";
 
     // Only show requests without sample receipt
@@ -63,52 +63,56 @@ try {
     // Exclude rejected samples
     $sWhere[] = " (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') ";
 
-    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
+    $whereSql = !empty($sWhere) ? ('WHERE ' . implode(' AND ', $sWhere)) : '';
 
+    // Aggregated query by facility
     $query = "
         SELECT
-            t.sample_code,
-            t.remote_sample_code,
             f.facility_name,
-            t.request_created_datetime,
-            t.source_of_request,
-            DATEDIFF(NOW(), t.request_created_datetime) as days_pending,
-            t.patient_first_name,
-            t.patient_last_name,
-            t.patient_art_no,
-            t.is_sample_rejected,
-            t.reason_for_sample_rejection
+            f.facility_id,
+            COUNT(*) as missing_count,
+            MIN(DATEDIFF(NOW(), t.request_created_datetime)) as min_days_pending,
+            MAX(DATEDIFF(NOW(), t.request_created_datetime)) as max_days_pending,
+            AVG(DATEDIFF(NOW(), t.request_created_datetime)) as avg_days_pending,
+            SUM(CASE WHEN DATEDIFF(NOW(), t.request_created_datetime) > 7 THEN 1 ELSE 0 END) as over_7_days,
+            SUM(CASE WHEN DATEDIFF(NOW(), t.request_created_datetime) <= 7 THEN 1 ELSE 0 END) as within_7_days,
+            MIN(t.request_created_datetime) as oldest_request,
+            MAX(t.request_created_datetime) as newest_request
         FROM $table as t
         LEFT JOIN facility_details as f ON t.facility_id = f.facility_id
         $whereSql
-        ORDER BY t.request_created_datetime ASC
-        LIMIT 100";
+        GROUP BY f.facility_id, f.facility_name
+        HAVING missing_count > 0
+        ORDER BY missing_count DESC, max_days_pending DESC";
 
     $results = $db->rawQuery($query);
 
     // Format the results
     $formattedResults = [];
     foreach ($results as $row) {
-
-        // Priority level based on days pending
+        // Priority level based on max days pending and count
         $priority = 'Low';
-        if ($row['days_pending'] > 7) {
+        if ($row['max_days_pending'] > 14 || $row['missing_count'] > 10) {
+            $priority = 'Critical';
+        } elseif ($row['max_days_pending'] > 7 || $row['missing_count'] > 5) {
             $priority = 'High';
-        } elseif ($row['days_pending'] > 3) {
+        } elseif ($row['max_days_pending'] > 3 || $row['missing_count'] > 2) {
             $priority = 'Medium';
         }
 
         $formattedResults[] = [
-            'sample_code' => $row['sample_code'] ?: $row['remote_sample_code'],
-            'remote_sample_code' => $row['remote_sample_code'],
-            'facility_name' => $row['facility_name'] ?: 'Unknown Facility',
-            'days_pending' => $row['days_pending'],
-            'source_of_request' => 'API', // Since we're only showing API requests
-            'request_date' => DateUtility::humanReadableDateFormat($row['request_created_datetime'], true),
-            'patient_info' => trim(($row['patient_first_name'] ?? '') . ' ' . ($row['patient_last_name'] ?? '')) ?: $row['patient_art_no'],
+            'facility_name' => $row['facility_name'] ?: 'Unknown Facility #' . $row['facility_id'],
+            'facility_id' => $row['facility_id'],
+            'missing_count' => (int)$row['missing_count'],
+            'min_days_pending' => (int)$row['min_days_pending'],
+            'max_days_pending' => (int)$row['max_days_pending'],
+            'avg_days_pending' => round($row['avg_days_pending'], 1),
+            'over_7_days' => (int)$row['over_7_days'],
+            'within_7_days' => (int)$row['within_7_days'],
+            'oldest_request' => DateUtility::humanReadableDateFormat($row['oldest_request'], true),
+            'newest_request' => DateUtility::humanReadableDateFormat($row['newest_request'], true),
             'priority' => $priority,
-            'rejection_status' => $row['is_sample_rejected'] ?: 'No',
-            'rejection_reason' => $row['reason_for_sample_rejection'] ?: ''
+            'source_of_request' => 'API/EMR'
         ];
     }
 

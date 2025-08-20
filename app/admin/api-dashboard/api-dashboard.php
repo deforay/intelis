@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-$title = _translate("API Dashboard");
+$title = _translate("API/EMR Dashboard");
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
@@ -31,6 +31,10 @@ $state = $geolocationService->getProvinces("yes");
 ?>
 
 <style>
+    .box-title {
+        font-weight: bold;
+    }
+
     .alert-card {
         border-left: 4px solid #f39c12;
         background-color: #fef9e7;
@@ -58,25 +62,135 @@ $state = $geolocationService->getProvinces("yes");
         background-color: #fef9e7;
     }
 
+    /* Metric box with uniform height */
     .metric-box {
         background: white;
         border: 1px solid #ddd;
-        border-radius: 4px;
-        padding: 15px;
+        border-radius: 6px;
+        padding: 12px;
         margin-bottom: 15px;
-        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: box-shadow 0.3s ease;
+        height: 120px;
+        /* Fixed height for all boxes */
+        display: flex;
+        flex-direction: column;
     }
 
-    .metric-number {
-        font-size: 24px;
-        font-weight: bold;
+    .metric-box:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    }
+
+    .metric-header {
+        font-size: 13px;
+        font-weight: 600;
         color: #2c3e50;
+        margin-bottom: 8px;
+        text-align: center;
+        border-bottom: 1px solid #ecf0f1;
+        padding-bottom: 5px;
+        flex-shrink: 0;
+        /* Don't shrink */
     }
 
-    .metric-label {
-        font-size: 12px;
-        color: #7f8c8d;
-        margin-top: 5px;
+    .metric-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        /* Align to top instead of center */
+        flex: 1;
+        /* Take remaining space */
+    }
+
+    .metric-main {
+        flex: 1;
+        display: flex;
+        align-items: center;
+        /* Center the main number vertically */
+    }
+
+    .metric-main-number {
+        font-size: 28px;
+        font-weight: bold;
+        color: #2980b9;
+        line-height: 1;
+    }
+
+    .metric-breakdown {
+        flex: 1;
+        text-align: right;
+        padding-left: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        /* Center breakdown items vertically */
+        min-height: 60px;
+        /* Minimum height for breakdown area */
+    }
+
+    .metric-breakdown-item {
+        display: block;
+        font-size: 11px;
+        margin-bottom: 2px;
+        color: #2c3e50;
+        line-height: 1.2;
+    }
+
+    .metric-breakdown-number {
+        font-weight: 600;
+        color: #0d151cff;
+    }
+
+    /* Color coding for different metric types */
+    .metric-box.requests .metric-main-number {
+        color: #3498db;
+    }
+
+    .metric-box.api .metric-main-number {
+        color: #2ecc71;
+    }
+
+    .metric-box.received .metric-main-number {
+        color: #9b59b6;
+    }
+
+    .metric-box.pending .metric-main-number {
+        color: #f39c12;
+    }
+
+    .metric-box.duplicates .metric-main-number {
+        color: #e74c3c;
+    }
+
+    .metric-box.results .metric-main-number {
+        color: #1abc9c;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+        .metric-box {
+            height: auto;
+            /* Allow auto height on mobile */
+            min-height: 120px;
+            /* But maintain minimum */
+        }
+
+        .metric-content {
+            flex-direction: column;
+            text-align: center;
+            align-items: center;
+        }
+
+        .metric-breakdown {
+            text-align: center;
+            padding-left: 0;
+            margin-top: 8px;
+        }
+
+        .metric-breakdown-item {
+            display: inline-block;
+            margin: 0 8px 4px 0;
+        }
     }
 
     .dashboard-section {
@@ -97,14 +211,14 @@ $state = $geolocationService->getProvinces("yes");
     <!-- Content Header (Page header) -->
     <section class="content-header">
         <h1><em class="fa-solid fa-tachometer-alt"></em>
-            <?php echo _translate("API Dashboard"); ?>
+            <?php echo _translate("API/EMR Data Exchange Dashboard"); ?>
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em>
                     <?php echo _translate("Home"); ?>
                 </a></li>
             <li class="active">
-                <?php echo _translate("API Dashboard"); ?>
+                <?php echo _translate("API/EMR Dashboard"); ?>
             </li>
         </ol>
     </section>
@@ -214,50 +328,170 @@ $state = $geolocationService->getProvinces("yes");
                     <em class="fa-solid fa-chart-bar"></em> <?= _translate('Quick Metrics Overview'); ?>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="totalRequests">-</div>
-                    <div class="metric-label"><?= _translate('Total Requests'); ?></div>
+
+            <!-- Card 1: Total Requests -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box requests">
+                    <div class="metric-header"><?= _translate('Total Requests'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="totalRequests">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item">
+                                API/EMR: <span class="metric-breakdown-number" id="apiRequestsBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                Non-API/EMR: <span class="metric-breakdown-number" id="nonApiRequestsBreakdown">-</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="apiRequests">-</div>
-                    <div class="metric-label"><?= _translate('API Requests'); ?></div>
+
+            <!-- Card 2: API/EMR Requests Status -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box api">
+                    <div class="metric-header"><?= _translate('API/EMR Requests'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="apiRequests">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item">
+                                Received: <span class="metric-breakdown-number" id="apiReceivedBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                Not Received: <span class="metric-breakdown-number" id="apiNotReceivedBreakdown">-</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="missingReceipts">-</div>
-                    <div class="metric-label"><?= _translate('Samples Not Received'); ?></div>
+
+            <!-- Card 3: Received at Lab -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box received">
+                    <div class="metric-header"><?= _translate('Received at Lab'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="totalReceivedAtLab">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item">
+                                Tested: <span class="metric-breakdown-number" id="receivedTestedBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                Rejected: <span class="metric-breakdown-number" id="rejectedSamplesBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                Pending: <span class="metric-breakdown-number" id="receivedPendingBreakdown">-</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="duplicateSuspects">-</div>
-                    <div class="metric-label"><?= _translate('Potential Duplicates'); ?></div>
+
+            <!-- Card 4: Not Received at Lab -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box pending">
+                    <div class="metric-header"><?= _translate('Not Received at Lab'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="totalNotReceivedAtLab">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item">
+                                ≤ 7 days: <span class="metric-breakdown-number" id="notReceived7DaysBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                > 7 days: <span class="metric-breakdown-number" id="notReceivedOver7DaysBreakdown">-</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="pendingTests">-</div>
-                    <div class="metric-label"><?= _translate('Pending Tests'); ?></div>
+
+            <!-- Card 5: Potential Duplicates -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box duplicates">
+                    <div class="metric-header"><?= _translate('Potential Duplicates'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="duplicateSuspects">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item" style="font-size: 10px;">
+                                <?= _translate('Within 7 days'); ?>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="col-md-2 col-sm-4 col-xs-6">
-                <div class="metric-box">
-                    <div class="metric-number" id="resultsSent">-</div>
-                    <div class="metric-label"><?= _translate('Results Sent'); ?></div>
+
+            <!-- Card 6: Results Sent -->
+            <div class="col-lg-2 col-md-4 col-sm-6 col-xs-12">
+                <div class="metric-box results">
+                    <div class="metric-header"><?= _translate('Results Sent'); ?></div>
+                    <div class="metric-content">
+                        <div class="metric-main">
+                            <div class="metric-main-number" id="totalResultsSent">-</div>
+                        </div>
+                        <div class="metric-breakdown">
+                            <span class="metric-breakdown-item">
+                                Via API/EMR: <span class="metric-breakdown-number" id="resultsApiBreakdown">-</span>
+                            </span>
+                            <span class="metric-breakdown-item">
+                                Other: <span class="metric-breakdown-number" id="resultsOtherBreakdown">-</span>
+                            </span>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
+
+
         <!-- Detailed Reports -->
         <div class="row">
-            <div class="col-md-6">
+            <!-- Source Analysis with API/EMR Workflow -->
+            <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate('API Requests Without Sample Receipt'); ?></h3>
+                        <h3 class="box-title"><?= _translate('Source Distribution by Facility with API/EMR Workflow'); ?></h3>
+                    </div>
+                    <div class="box-body">
+                        <table class="table table-striped table-bordered" id="sourceDistributionTable" style="width:100%">
+                            <thead>
+                                <tr>
+                                    <th rowspan="2"><?= _translate('Facility'); ?></th>
+                                    <th colspan="4" class="text-center" style="background-color: #f8f9fa; text-align: center"><?= _translate('Source Distribution'); ?></th>
+                                    <th colspan="5" class="text-center" style="background-color: #e3f2fd; text-align: center"><?= _translate('API/EMR Workflow'); ?></th>
+                                </tr>
+                                <tr>
+                                    <th><?= _translate('API/EMR'); ?></th>
+                                    <th><?= _translate('STS'); ?></th>
+                                    <th><?= _translate('Direct LIS'); ?></th>
+                                    <th><?= _translate('API/EMR %'); ?></th>
+                                    <th><?= _translate('Not Received'); ?></th>
+                                    <th><?= _translate('Received'); ?></th>
+                                    <th><?= _translate('Tested'); ?></th>
+                                    <th><?= _translate('Pending'); ?></th>
+                                    <th><?= _translate('Results Sent'); ?></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data loaded via DataTables AJAX -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- API/EMR Requests Without Sample Receipt - Aggregated by Facility -->
+            <div class="col-md-12">
+                <div class="box">
+                    <div class="box-header">
+                        <h3 class="box-title"><?= _translate('API/EMR Requests Without Sample Receipt - By Facility'); ?></h3>
                         <div class="box-tools pull-right">
                             <button onclick="viewMissingSamples();" class="btn btn-sm btn-primary">
                                 <?= _translate('View All Details'); ?>
@@ -267,42 +501,34 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="box-body">
                         <div class="alert alert-info" style="margin-bottom: 10px; padding: 8px;">
                             <small><em class="fa-solid fa-info-circle"></em>
-                                <?= _translate('Showing only API requests that have not received samples at the lab and are not rejected.'); ?>
+                                <?= _translate('Facilities with API/EMR requests that have not received samples at the lab and are not rejected.'); ?>
                             </small>
                         </div>
-                        <table class="table table-condensed" id="missingSamplesTable">
+                        <table class="table table-condensed table-striped table-bordered" id="missingSamplesTable" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th><?= _translate('Sample ID'); ?></th>
                                     <th><?= _translate('Facility'); ?></th>
-                                    <th><?= _translate('Days Pending'); ?></th>
-                                    <th><?= _translate('Source'); ?></th>
+                                    <th class="text-center"><?= _translate('Missing Count'); ?></th>
+                                    <th class="text-center"><?= _translate('≤ 7 Days'); ?></th>
+                                    <th class="text-center"><?= _translate('> 7 Days'); ?></th>
+                                    <th class="text-center"><?= _translate('Avg Days'); ?></th>
+                                    <th class="text-center"><?= _translate('Max Days'); ?></th>
+                                    <th class="text-center"><?= _translate('Priority'); ?></th>
                                 </tr>
                             </thead>
-                            <tbody id="missingSamplesBody">
-                                <!-- Data loaded via AJAX -->
+                            <tbody>
+                                <!-- Data loaded via DataTables AJAX -->
                             </tbody>
-                            <tfoot id="missingSamplesFooter" style="display: none;">
-                                <tr>
-                                    <td colspan="4" class="text-center">
-                                        <small class="text-muted">
-                                            <?= _translate('Showing first 10 records.'); ?>
-                                            <a href="javascript:void(0);" onclick="viewMissingSamples();" class="text-primary">
-                                                <?= _translate('View all records'); ?>
-                                            </a>
-                                        </small>
-                                    </td>
-                                </tr>
-                            </tfoot>
                         </table>
                     </div>
                 </div>
             </div>
 
-            <div class="col-md-6">
+            <!-- Potential Duplicate Entries - Aggregated by Facility -->
+            <div class="col-md-12">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate('Potential Duplicate Entries'); ?></h3>
+                        <h3 class="box-title"><?= _translate('Potential Duplicate Entries - By Facility'); ?></h3>
                         <div class="box-tools pull-right">
                             <button onclick="viewDuplicates();" class="btn btn-sm btn-primary">
                                 <?= _translate('View Details'); ?>
@@ -312,20 +538,24 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="box-body">
                         <div class="alert alert-info" style="margin-bottom: 10px; padding: 8px;">
                             <small><em class="fa-solid fa-info-circle"></em>
-                                <?= _translate('Samples having same Patient ID/Name at same Lab or Facility within last 7 days are potentially duplicates'); ?>
+                                <?= _translate('Facilities with samples having same Patient ID/Name within last 7 days (at least one from API/EMR)'); ?>
                             </small>
                         </div>
-                        <table class="table table-condensed" id="duplicatesTable">
+                        <table class="table table-condensed table-striped table-bordered" id="duplicatesTable" style="width:100%">
                             <thead>
                                 <tr>
-                                    <th><?= _translate('Patient Info'); ?></th>
-                                    <th><?= _translate('Sample IDs'); ?></th>
-                                    <th><?= _translate('Collection Dates'); ?></th>
-                                    <th><?= _translate('Sources'); ?></th>
+                                    <th><?= _translate('Facility'); ?></th>
+                                    <th class="text-center"><?= _translate('Duplicate Groups'); ?></th>
+                                    <th class="text-center"><?= _translate('Total Samples'); ?></th>
+                                    <th class="text-center"><?= _translate('High Risk'); ?></th>
+                                    <th class="text-center"><?= _translate('Medium Risk'); ?></th>
+                                    <th class="text-center"><?= _translate('Low Risk'); ?></th>
+                                    <th class="text-center"><?= _translate('Risk Level'); ?></th>
+                                    <th class="text-center"><?= _translate('Latest'); ?></th>
                                 </tr>
                             </thead>
-                            <tbody id="duplicatesBody">
-                                <!-- Data loaded via AJAX -->
+                            <tbody>
+                                <!-- Data loaded via DataTables AJAX -->
                             </tbody>
                         </table>
                     </div>
@@ -337,7 +567,7 @@ $state = $geolocationService->getProvinces("yes");
             <!-- <div class="col-md-6">
                 <div class="box">
                     <div class="box-header">
-                        <h3 class="box-title"><?= _translate('Results Sent for Requests Not Originating via API'); ?></h3>
+                        <h3 class="box-title"><?= _translate('Results Sent for Requests Not Originating via API/EMR'); ?></h3>
                     </div>
                     <div class="box-body">
                         <table class="table table-condensed" id="nonOriginatingTable">
@@ -355,31 +585,7 @@ $state = $geolocationService->getProvinces("yes");
                     </div>
                 </div>
             </div> -->
-            <!-- Source Analysis -->
-            <div class="col-md-12">
-                <div class="box">
-                    <div class="box-header">
-                        <h3 class="box-title"><?= _translate('Source Distribution by Facility'); ?></h3>
-                    </div>
-                    <div class="box-body">
-                        <table class="table table-striped table-bordered" id="sourceDistributionTable" style="width:100%">
-                            <thead>
-                                <tr>
-                                    <th><?= _translate('Facility'); ?></th>
-                                    <th><?= _translate('API'); ?></th>
-                                    <th><?= _translate('STS'); ?></th>
-                                    <th><?= _translate('Direct LIS'); ?></th>
-                                    <th><?= _translate('Total'); ?></th>
-                                    <th><?= _translate('API %'); ?></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <!-- Data loaded via DataTables AJAX -->
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
+
     </section>
 </div>
 </div>
@@ -388,6 +594,8 @@ $state = $geolocationService->getProvinces("yes");
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script type="text/javascript">
     $(document).ready(function() {
+
+        $("#lis-body").addClass("sidebar-collapse");
         // Initialize Select2 for multi-select dropdowns
         $('#labName').select2({
             placeholder: "Select Testing Lab"
@@ -512,19 +720,62 @@ $state = $geolocationService->getProvinces("yes");
             .done(function(data) {
                 try {
                     const metrics = JSON.parse(data);
+
+                    // Card 1: Total Requests
                     $("#totalRequests").text(metrics.totalRequests || 0);
+                    $("#apiRequestsBreakdown").text(metrics.apiRequests || 0);
+                    $("#nonApiRequestsBreakdown").text(metrics.nonApiRequests || 0);
+
+                    // Card 2: API/EMR Requests
                     $("#apiRequests").text(metrics.apiRequests || 0);
-                    $("#missingReceipts").text(metrics.missingReceipts || 0);
+                    $("#apiReceivedBreakdown").text(metrics.apiReceivedAtLab || 0);
+                    $("#apiNotReceivedBreakdown").text(metrics.apiNotReceivedAtLab || 0);
+
+                    // Card 3: Received at Lab
+                    $("#totalReceivedAtLab").text(metrics.totalReceivedAtLab || 0);
+                    $("#receivedTestedBreakdown").text(metrics.receivedAndTested || 0);
+                    $("#rejectedSamplesBreakdown").text(metrics.rejectedSamples || 0);
+                    $("#receivedPendingBreakdown").text(metrics.receivedNotTested || 0);
+
+                    // Card 4: Not Received at Lab
+                    $("#totalNotReceivedAtLab").text(metrics.totalNotReceivedAtLab || 0);
+                    $("#notReceived7DaysBreakdown").text(metrics.notReceivedWithin7Days || 0);
+                    $("#notReceivedOver7DaysBreakdown").text(metrics.notReceivedOver7Days || 0);
+
+                    // Card 5: Potential Duplicates
                     $("#duplicateSuspects").text(metrics.duplicateSuspects || 0);
-                    $("#pendingTests").text(metrics.pendingTests || 0);
-                    $("#resultsSent").text(metrics.resultsSent || 0);
+
+                    // Card 6: Results Sent
+                    const totalResultsSent = parseInt(metrics.resultsSentViaApi || 0) + parseInt(metrics.resultsSentOtherMethods || 0);
+                    $("#totalResultsSent").text(totalResultsSent);
+                    $("#resultsApiBreakdown").text(parseInt(metrics.resultsSentViaApi || 0));
+                    $("#resultsOtherBreakdown").text(parseInt(metrics.resultsSentOtherMethods || 0));
+
                 } catch (e) {
                     console.error('Error parsing metrics data:', e);
-                    $("#totalRequests,#apiRequests,#missingReceipts,#duplicateSuspects,#pendingTests,#resultsSent").text('Error');
+                    // Reset all metrics to 'Error' on parsing failure
+                    const errorElements = [
+                        "#totalRequests", "#apiRequestsBreakdown", "#nonApiRequestsBreakdown",
+                        "#apiRequests", "#apiReceivedBreakdown", "#apiNotReceivedBreakdown",
+                        "#totalReceivedAtLab", "#receivedTestedBreakdown", "#rejectedSamplesBreakdown",
+                        "#receivedPendingBreakdown", "#totalNotReceivedAtLab", "#notReceived7DaysBreakdown",
+                        "#notReceivedOver7DaysBreakdown", "#duplicateSuspects", "#totalResultsSent",
+                        "#resultsApiBreakdown", "#resultsOtherBreakdown"
+                    ];
+                    errorElements.forEach(el => $(el).text('Error'));
                 }
             })
             .fail(function() {
-                $("#totalRequests,#apiRequests,#missingReceipts,#duplicateSuspects,#pendingTests,#resultsSent").text('Error');
+                // Reset all metrics to 'Error' on request failure
+                const errorElements = [
+                    "#totalRequests", "#apiRequestsBreakdown", "#nonApiRequestsBreakdown",
+                    "#apiRequests", "#apiReceivedBreakdown", "#apiNotReceivedBreakdown",
+                    "#totalReceivedAtLab", "#receivedTestedBreakdown", "#rejectedSamplesBreakdown",
+                    "#receivedPendingBreakdown", "#totalNotReceivedAtLab", "#notReceived7DaysBreakdown",
+                    "#notReceivedOver7DaysBreakdown", "#duplicateSuspects", "#totalResultsSent",
+                    "#resultsApiBreakdown", "#resultsOtherBreakdown"
+                ];
+                errorElements.forEach(el => $(el).text('Error'));
             });
     }
 
@@ -536,82 +787,240 @@ $state = $geolocationService->getProvinces("yes");
     }
 
     function loadMissingSamples(params) {
-        return $.post("/admin/api-dashboard/get-missing-samples.php", params)
-            .done(function(data) {
-                try {
-                    const samples = JSON.parse(data);
-                    let html = '';
+        // Destroy existing DataTable if it exists
+        if ($.fn.DataTable.isDataTable('#missingSamplesTable')) {
+            $('#missingSamplesTable').DataTable().destroy();
+        }
 
-                    if (Array.isArray(samples) && samples.length > 0) {
-                        samples.slice(0, 10).forEach(sample => {
-                            html += `<tr>
-                            <td>${sample.sample_code}</td>
-                            <td>${sample.facility_name}</td>
-                            <td><span class="label label-warning">${sample.days_pending}</span></td>
-                            <td>${sample.source_of_request}</td>
-                        </tr>`;
-                        });
-
-                        // Get the actual count from the metrics box instead of samples.length
-                        const totalCount = parseInt($("#missingReceipts").text()) || 0;
-                        if (totalCount > 10) {
-                            const remaining = totalCount - 10;
-                            html += `<tr><td colspan="4" class="text-center" style="background-color: #f9f9f9; border-top: 2px solid #ddd;">
-                            <small class="text-muted">... ${remaining} more records. <a href="javascript:void(0);" onclick="viewMissingSamples();">View all →</a></small>
-                        </td></tr>`;
-                        }
-                    } else {
-                        html = '<tr><td colspan="4" class="text-center"><?= _translate("No missing samples found"); ?></td></tr>';
+        // Initialize DataTable with AJAX
+        $('#missingSamplesTable').DataTable({
+            processing: true,
+            serverSide: false,
+            ajax: {
+                url: "/admin/api-dashboard/get-missing-samples.php",
+                type: "POST",
+                data: params,
+                dataSrc: function(json) {
+                    if (json.error) {
+                        console.error('Error loading missing samples:', json.error);
+                        return [];
                     }
-                    $("#missingSamplesBody").html(html);
-                } catch (e) {
-                    console.error('Error parsing missing samples data:', e);
-                    $("#missingSamplesBody").html('<tr><td colspan="4" class="text-center text-danger">Error loading missing samples data</td></tr>');
+                    return json;
                 }
-            })
-            .fail(function() {
-                $("#missingSamplesBody").html('<tr><td colspan="4" class="text-center text-danger">Failed to load missing samples data</td></tr>');
-            });
+            },
+            columns: [
+                // Facility Name
+                {
+                    data: 'facility_name',
+                    render: function(data, type, row) {
+                        return '<strong>' + data + '</strong><br><small class="text-muted">Oldest: ' + row.oldest_request + '</small>';
+                    }
+                },
+                // Missing Count
+                {
+                    data: 'missing_count',
+                    className: 'text-center'
+                },
+                // Within 7 Days
+                {
+                    data: 'within_7_days',
+                    className: 'text-center'
+                },
+                // Over 7 Days
+                {
+                    data: 'over_7_days',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (data > 0) {
+                            return '<span class="text-danger"><strong>' + data + '</strong></span>';
+                        }
+                        return data;
+                    }
+                },
+                // Average Days
+                {
+                    data: 'avg_days_pending',
+                    className: 'text-center'
+                },
+                // Max Days
+                {
+                    data: 'max_days_pending',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (data > 7) {
+                            return '<span class="text-danger"><strong>' + data + '</strong></span>';
+                        }
+                        return data;
+                    }
+                },
+                // Priority
+                {
+                    data: 'priority',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        let priorityClass = 'text-default';
+                        if (data === 'Critical') priorityClass = 'text-danger';
+                        else if (data === 'High') priorityClass = 'text-warning';
+                        else if (data === 'Medium') priorityClass = 'text-info';
+                        else priorityClass = 'text-success';
+
+                        return '<strong class="' + priorityClass + '">' + data + '</strong>';
+                    }
+                }
+            ],
+            order: [
+                [1, 'desc'],
+                [5, 'desc']
+            ], // Sort by missing count DESC, then max days DESC
+            pageLength: 25,
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "<?= _translate('Search facilities'); ?>:",
+                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('facilities'); ?>",
+                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to'); ?> _END_ <?= _translate('of'); ?> _TOTAL_ <?= _translate('facilities'); ?>",
+                emptyTable: "<?= _translate('No facilities with missing samples found'); ?>",
+                zeroRecords: "<?= _translate('No matching facilities found'); ?>",
+                paginate: {
+                    first: "<?= _translate('First'); ?>",
+                    last: "<?= _translate('Last'); ?>",
+                    next: "<?= _translate('Next'); ?>",
+                    previous: "<?= _translate('Previous'); ?>"
+                }
+            },
+            dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
+                '<"row"<"col-sm-12"tr>>' +
+                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            drawCallback: function(settings) {
+                // Re-enable tooltips after table redraw
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+        });
     }
 
     function loadDuplicates(params) {
-        return $.post("/admin/api-dashboard/get-duplicate-suspects.php", params)
-            .done(function(data) {
-                try {
-                    const duplicates = JSON.parse(data);
-                    let html = '';
+        // Destroy existing DataTable if it exists
+        if ($.fn.DataTable.isDataTable('#duplicatesTable')) {
+            $('#duplicatesTable').DataTable().destroy();
+        }
 
-                    // Check if duplicates is an array and has data
-                    if (Array.isArray(duplicates) && duplicates.length > 0) {
-                        duplicates.slice(0, 10).forEach(dup => {
-                            html += `<tr>
-                            <td>${dup.patient_info}</td>
-                            <td>${dup.sample_ids}</td>
-                            <td>${dup.collection_dates}</td>
-                            <td>${dup.sources}</td>
-                        </tr>`;
-                        });
-
-                        // Get the actual count from the metrics box
-                        const totalCount = parseInt($("#duplicateSuspects").text()) || 0;
-                        if (totalCount > 10) {
-                            const remaining = totalCount - 10;
-                            html += `<tr><td colspan="4" class="text-center" style="background-color: #f9f9f9; border-top: 2px solid #ddd;">
-                            <small class="text-muted">... ${remaining} more records. <a href="javascript:void(0);" onclick="viewDuplicates();">View all →</a></small>
-                        </td></tr>`;
-                        }
-                    } else {
-                        html = '<tr><td colspan="4" class="text-center"><?= _translate("No potential duplicates found"); ?></td></tr>';
+        // Initialize DataTable with AJAX
+        $('#duplicatesTable').DataTable({
+            processing: true,
+            serverSide: false,
+            ajax: {
+                url: "/admin/api-dashboard/get-duplicate-suspects.php",
+                type: "POST",
+                data: params,
+                dataSrc: function(json) {
+                    if (json.error) {
+                        console.error('Error loading duplicates:', json.error);
+                        return [];
                     }
-                    $("#duplicatesBody").html(html);
-                } catch (e) {
-                    console.error('Error parsing duplicates data:', e);
-                    $("#duplicatesBody").html('<tr><td colspan="4" class="text-center text-danger">Error loading duplicates data</td></tr>');
+                    return json;
                 }
-            })
-            .fail(function() {
-                $("#duplicatesBody").html('<tr><td colspan="4" class="text-center text-danger">Failed to load duplicates data</td></tr>');
-            });
+            },
+            columns: [
+                // Facility Name
+                {
+                    data: 'facility_name',
+                    render: function(data, type, row) {
+                        return '<strong>' + data + '</strong><br><small class="text-muted">Latest: ' + row.latest_duplicate + '</small>';
+                    }
+                },
+                // Duplicate Groups Count
+                {
+                    data: 'duplicate_groups_count',
+                    className: 'text-center'
+                },
+                // Total Duplicate Samples
+                {
+                    data: 'total_duplicate_samples',
+                    className: 'text-center'
+                },
+                // High Risk Groups (≤1 day)
+                {
+                    data: 'high_risk_groups',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (data > 0) {
+                            return '<span class="text-danger"><strong>' + data + '</strong></span>';
+                        }
+                        return data;
+                    }
+                },
+                // Medium Risk Groups (2-3 days)
+                {
+                    data: 'medium_risk_groups',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        if (data > 0) {
+                            return '<span class="text-warning"><strong>' + data + '</strong></span>';
+                        }
+                        return data;
+                    }
+                },
+                // Low Risk Groups (4-7 days)
+                {
+                    data: 'low_risk_groups',
+                    className: 'text-center'
+                },
+                // Overall Risk Level
+                {
+                    data: 'risk_level',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        let riskClass = 'label-default';
+                        if (data === 'High') riskClass = 'label-danger';
+                        else if (data === 'Medium') riskClass = 'label-warning';
+                        else riskClass = 'label-success';
+
+                        return '<span class="label ' + riskClass + '">' + data + '</span>';
+                    }
+                },
+                // Latest Duplicate
+                {
+                    data: 'latest_duplicate',
+                    className: 'text-center',
+                    render: function(data, type, row) {
+                        return '<small>' + data + '</small>';
+                    }
+                }
+            ],
+            order: [
+                [1, 'desc'],
+                [3, 'desc']
+            ], // Sort by duplicate groups DESC, then high risk DESC
+            pageLength: 25,
+            lengthMenu: [
+                [10, 25, 50, 100, -1],
+                [10, 25, 50, 100, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "<?= _translate('Search facilities'); ?>:",
+                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('facilities'); ?>",
+                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to'); ?> _END_ <?= _translate('of'); ?> _TOTAL_ <?= _translate('facilities'); ?>",
+                emptyTable: "<?= _translate('No facilities with duplicate suspects found'); ?>",
+                zeroRecords: "<?= _translate('No matching facilities found'); ?>",
+                paginate: {
+                    first: "<?= _translate('First'); ?>",
+                    last: "<?= _translate('Last'); ?>",
+                    next: "<?= _translate('Next'); ?>",
+                    previous: "<?= _translate('Previous'); ?>"
+                }
+            },
+            dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
+                '<"row"<"col-sm-12"tr>>' +
+                '<"row"<"col-sm-5"i><"col-sm-7"p>>',
+            drawCallback: function(settings) {
+                // Re-enable tooltips after table redraw
+                $('[data-toggle="tooltip"]').tooltip();
+            }
+        });
     }
 
     function loadSourceDistribution(params) {
@@ -636,76 +1045,73 @@ $state = $geolocationService->getProvinces("yes");
                     return json;
                 }
             },
-            columns: [{
+            columns: [
+                // Facility Name
+                {
                     data: 'facility_name',
                     render: function(data, type, row) {
                         return data || 'Unknown Facility #' + row.facility_id;
                     }
                 },
+                // API/EMR Count
                 {
                     data: 'api_count',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        if (data > 0) {
-                            return '<span class="label label-info">' + data + '</span>';
-                        } else {
-                            return '<span class="text-muted">0</span>';
-                        }
-                    }
+                    className: 'text-center'
                 },
+                // STS Count
                 {
                     data: 'sts_count',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        if (data > 0) {
-                            return '<span class="label label-success">' + data + '</span>';
-                        } else {
-                            return '<span class="text-muted">0</span>';
-                        }
-                    }
+                    className: 'text-center'
                 },
+                // LIS Count
                 {
                     data: 'lis_count',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        if (data > 0) {
-                            return '<span class="label label-primary">' + data + '</span>';
-                        } else {
-                            return '<span class="text-muted">0</span>';
-                        }
-                    }
+                    className: 'text-center'
                 },
-
-                {
-                    data: 'total_count',
-                    className: 'text-center',
-                    render: function(data, type, row) {
-                        return '<strong>' + data + '</strong>';
-                    }
-                },
+                // API/EMR Percentage
                 {
                     data: 'api_percentage',
                     className: 'text-center',
                     render: function(data, type, row) {
-                        let badgeClass = 'label-default';
-                        if (data >= 80) badgeClass = 'label-success';
-                        else if (data >= 50) badgeClass = 'label-info';
-                        else if (data >= 10) badgeClass = 'label-warning';
-                        else badgeClass = 'label-danger';
-
-                        return '<span class="label ' + badgeClass + '">' + data + '%</span>';
+                        return data + '%';
                     }
+                },
+                // API/EMR Not Received
+                {
+                    data: 'api_not_received',
+                    className: 'text-center'
+                },
+                // API/EMR Received
+                {
+                    data: 'api_received',
+                    className: 'text-center'
+                },
+                // API/EMR Tested
+                {
+                    data: 'api_tested',
+                    className: 'text-center'
+                },
+                // API/EMR Not Tested (Pending)
+                {
+                    data: 'api_not_tested',
+                    className: 'text-center'
+                },
+                // API/EMR Results Sent
+                {
+                    data: 'api_results_sent',
+                    className: 'text-center'
                 }
             ],
             order: [
-                [5, 'desc']
-            ], // Sort by total count descending
+                [1, 'desc']
+            ], // Sort by API/EMR count descending
             pageLength: 25,
             lengthMenu: [
                 [10, 25, 50, 100, -1],
                 [10, 25, 50, 100, "All"]
             ],
             responsive: true,
+            scrollX: true, // Enable horizontal scrolling for many columns
             language: {
                 search: "<?= _translate('Search facilities'); ?>:",
                 lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('entries'); ?>",

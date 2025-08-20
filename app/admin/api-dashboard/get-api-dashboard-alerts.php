@@ -68,7 +68,7 @@ try {
 
     $alerts = [];
 
-    // Alert 1: High number of API requests without sample receipt
+    // Alert 1: High number of API/EMR requests without sample receipt
     $missingSamplesQuery = "
         SELECT COUNT(*) as count
         FROM $table as t
@@ -84,8 +84,8 @@ try {
     if ($missingSamplesCount['count'] > 10) {
         $alerts[] = [
             'type' => 'danger',
-            'title' => _translate('High Missing API Sample Receipts'),
-            'message' => sprintf(_translate('%d API test requests have been waiting for sample receipt for more than 30 days'), $missingSamplesCount['count']),
+            'title' => _translate('High Missing API/EMR Sample Receipts'),
+            'message' => sprintf(_translate('%d API/EMR test requests have been waiting for sample receipt for more than 30 days'), $missingSamplesCount['count']),
             'action' => 'viewMissingSamples()'
         ];
     }
@@ -154,6 +154,7 @@ try {
         $whereSql
         AND t.sample_received_at_lab_datetime IS NOT NULL
         AND t.sample_tested_datetime IS NULL
+        AND t.source_of_request = 'api'
         AND DATEDIFF(NOW(), t.sample_received_at_lab_datetime) > 30";
 
     $longPendingCount = $db->rawQueryOne($longPendingQuery);
@@ -191,8 +192,8 @@ try {
     if ($resultsIssuesCount['count'] > 0) {
         $alerts[] = [
             'type' => 'warning',
-            'title' => _translate('API Result Transmission Issues'),
-            'message' => sprintf(_translate('%d API results have transmission issues (pending/failed)'), $resultsIssuesCount['count']),
+            'title' => _translate('API/EMR Result Transmission Issues'),
+            'message' => sprintf(_translate('%d API/EMR results have transmission issues (pending/failed)'), $resultsIssuesCount['count']),
             'action' => 'viewResultsIssues()'
         ];
     }

@@ -1,5 +1,5 @@
 <?php
-// get-smart-dashboard-metrics.php
+// get-api-dashboard-metrics.php
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
@@ -65,23 +65,27 @@ try {
     $metricsQuery = "SELECT
             COUNT(*) as totalRequests,
             SUM(CASE WHEN t.source_of_request = 'api' THEN 1 ELSE 0 END) as apiRequests,
-            SUM(CASE WHEN t.source_of_request = 'api'
-                    AND t.request_created_datetime IS NOT NULL
-                    AND t.sample_received_at_lab_datetime IS NULL
-                    AND (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes')
-                    THEN 1 ELSE 0 END) as missingReceipts,
-            SUM(CASE WHEN t.sample_received_at_lab_datetime IS NOT NULL AND t.sample_tested_datetime IS NULL THEN 1 ELSE 0 END) as pendingTests,
-            SUM(CASE WHEN t.result_pulled_via_api_datetime IS NOT NULL THEN 1 ELSE 0 END) as resultsSent
+            SUM(CASE WHEN t.source_of_request != 'api' OR t.source_of_request IS NULL THEN 1 ELSE 0 END) as nonApiRequests,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NOT NULL THEN 1 ELSE 0 END) as apiReceivedAtLab,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NULL AND (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') THEN 1 ELSE 0 END) as apiNotReceivedAtLab,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NOT NULL THEN 1 ELSE 0 END) as totalReceivedAtLab,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NOT NULL AND t.sample_tested_datetime IS NOT NULL THEN 1 ELSE 0 END) as receivedAndTested,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.is_sample_rejected = 'yes' THEN 1 ELSE 0 END) as rejectedSamples,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NOT NULL AND t.sample_tested_datetime IS NULL AND (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') THEN 1 ELSE 0 END) as receivedNotTested,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NULL AND (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') AND DATEDIFF(NOW(), t.request_created_datetime) <= 7 THEN 1 ELSE 0 END) as notReceivedWithin7Days,
+            SUM(CASE WHEN t.source_of_request = 'api' AND t.sample_received_at_lab_datetime IS NULL AND (t.is_sample_rejected IS NULL OR t.is_sample_rejected != 'yes') AND DATEDIFF(NOW(), t.request_created_datetime) > 7 THEN 1 ELSE 0 END) as notReceivedOver7Days,
+            SUM(CASE WHEN t.result_pulled_via_api_datetime IS NOT NULL AND t.source_of_request = 'api' THEN 1 ELSE 0 END) as resultsSentViaApi,
+SUM(CASE WHEN t.result_pulled_via_api_datetime IS NOT NULL AND (t.source_of_request != 'api' OR t.source_of_request IS NULL) THEN 1 ELSE 0 END) as resultsSentOtherMethods
         FROM $table as t
         $facilityJoin
         $whereSql";
 
     $metrics = $db->rawQueryOne($metricsQuery);
 
-    // DUPLICATE DETECTION LOGIC - Simplified approach
-    // Same patient identifier + Same facility_id + Within 7 days
+    // Calculate derived metrics
+    $metrics['totalNotReceivedAtLab'] = $metrics['notReceivedWithin7Days'] + $metrics['notReceivedOver7Days'];
 
-    // Build WHERE clause specifically for duplicates query
+    // DUPLICATE DETECTION LOGIC - Simplified approach
     $duplicatesWhere = [];
 
     // Date range filter
@@ -164,14 +168,6 @@ try {
 
     $duplicatesResult = $db->rawQueryOne($duplicatesQuery);
     $metrics['duplicateSuspects'] = $duplicatesResult['duplicateSuspects'] ?? 0;
-
-    // Debug logging
-    LoggerUtility::logDebug("API Dashboard Metrics - Duplicates Debug", [
-        'duplicates_count' => $metrics['duplicateSuspects'],
-        'test_type' => $testType,
-        'filters' => $_POST,
-        'query' => $duplicatesQuery
-    ]);
 
     echo JsonUtility::encodeUtf8Json($metrics);
 } catch (Throwable $e) {

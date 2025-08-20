@@ -87,7 +87,7 @@ try {
         } elseif ($requestSource === 'vlsts') {
             $issueType = 'STS result sent to API';
         } else {
-            $issueType = 'Non-API result sent';
+            $issueType = 'Non-API/EMR result sent';
         }
 
         $formattedResults[] = [

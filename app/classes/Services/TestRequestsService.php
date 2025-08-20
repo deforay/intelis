@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use COUNTRY;
+use DateTime;
 use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
@@ -522,5 +523,414 @@ final class TestRequestsService
         }
 
         return $found;
+    }
+
+    /**
+     * Duplicate detection
+     *
+     * @param array $vlFulldata Complete sample data array with actual column names
+     * @param string $testType The type of test (vl, cd4, eid, etc.)
+     * @param int $withinDays Number of days to check for duplicates (default: 7)
+     * @param bool $requireApiSource Whether to only consider duplicates from API sources (default: true)
+     * @return array Returns duplicate detection result with details
+     */
+    public function detectDuplicateSample(array $vlFulldata, string $testType = 'vl', int $withinDays = 7, bool $requireApiSource = true): array
+    {
+        try {
+            // Get test type configuration
+            $table = TestsService::getTestTableName($testType);
+            $primaryColumn = TestsService::getPrimaryColumn($testType);
+            $patientIdColumn = TestsService::getPatientIdColumn($testType);
+            $patientFirstNameColumn = TestsService::getPatientFirstNameColumn($testType);
+            $patientLastNameColumn = TestsService::getPatientLastNameColumn($testType);
+
+            // Extract and normalize parameters from the full data array
+            // Using actual database column names - much more reliable!
+            $patientId = $this->normalizeString($vlFulldata[$patientIdColumn] ?? $vlFulldata['patient_art_no'] ?? null);
+            $patientFirstName = $this->normalizeString($vlFulldata[$patientFirstNameColumn] ?? $vlFulldata['patient_first_name'] ?? null);
+            $patientLastName = $this->normalizeString($vlFulldata[$patientLastNameColumn] ?? $vlFulldata['patient_last_name'] ?? null);
+            $facilityId = $vlFulldata['facility_id'] ?? null;
+            $labId = $vlFulldata['lab_id'] ?? null;
+            $collectionDate = $vlFulldata['sample_collection_date'] ?? null;
+            $excludeSampleId = $vlFulldata['excludeSampleId'] ?? null;
+
+            // Validate minimum required data
+            if (empty($collectionDate)) {
+                return [
+                    'isDuplicate' => false,
+                    'error' => 'Collection date is required for duplicate detection'
+                ];
+            }
+
+            // Must have either patientId OR both first and last name (after normalization)
+            $hasPatientId = !empty($patientId);
+            $hasPatientName = !empty($patientFirstName) || !empty($patientLastName);
+
+            if (!$hasPatientId && !$hasPatientName) {
+                return [
+                    'isDuplicate' => false,
+                    'error' => 'Either patient ID or patient name is required'
+                ];
+            }
+
+            // Collection date should already be formatted, but double-check
+            if (!$collectionDate instanceof DateTime && !is_string($collectionDate)) {
+                return [
+                    'isDuplicate' => false,
+                    'error' => 'Invalid collection date format'
+                ];
+            }
+
+            // Convert to string if it's a DateTime object
+            if ($collectionDate instanceof DateTime) {
+                $collectionDate = $collectionDate->format('Y-m-d H:i:s');
+            }
+
+            // Build the duplicate detection query
+            $whereConditions = [];
+            $queryParams = [];
+
+            // Patient identification with multiple matching strategies
+            $patientMatchConditions = [];
+
+            if ($hasPatientId) {
+                // Match by patient ID (exact match)
+                $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientIdColumn), '') = ?";
+                $queryParams[] = $patientId;
+            }
+
+            if ($hasPatientName) {
+                // For VL tests, patient_first_name contains the full name
+                // For other tests, might use separate first/last name fields
+                if ($testType === 'vl') {
+                    // Match by full name stored in first_name field
+                    $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
+                    $queryParams[] = $patientFirstName;
+                } else {
+                    // Match by exact first AND last name using COALESCE
+                    if (!empty($patientFirstName) && !empty($patientLastName)) {
+                        $patientMatchConditions[] = "(COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?)";
+                        $queryParams[] = $patientFirstName;
+                        $queryParams[] = $patientLastName;
+                    } elseif (!empty($patientFirstName)) {
+                        $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
+                        $queryParams[] = $patientFirstName;
+                    } elseif (!empty($patientLastName)) {
+                        $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?";
+                        $queryParams[] = $patientLastName;
+                    }
+                }
+            }
+
+            if (empty($patientMatchConditions)) {
+                return [
+                    'isDuplicate' => false,
+                    'error' => 'No valid patient identifiers found'
+                ];
+            }
+
+            $whereConditions[] = "(" . implode(' OR ', $patientMatchConditions) . ")";
+
+            // Date range check
+            $startDate = date('Y-m-d H:i:s', strtotime($collectionDate . " -$withinDays days"));
+            $endDate = date('Y-m-d H:i:s', strtotime($collectionDate . " +$withinDays days"));
+
+            $whereConditions[] = "t1.sample_collection_date BETWEEN ? AND ?";
+            $queryParams[] = $startDate;
+            $queryParams[] = $endDate;
+
+            // Facility filter (if provided)
+            if (!empty($facilityId)) {
+                $whereConditions[] = "t1.facility_id = ?";
+                $queryParams[] = $facilityId;
+            }
+
+            // Lab filter (if provided)
+            if (!empty($labId)) {
+                $whereConditions[] = "t1.lab_id = ?";
+                $queryParams[] = $labId;
+            }
+
+            // Exclude current sample (for updates)
+            if (!empty($excludeSampleId)) {
+                $whereConditions[] = "t1.$primaryColumn != ?";
+                $queryParams[] = $excludeSampleId;
+            }
+
+            // Only consider samples that have collection dates
+            $whereConditions[] = "t1.sample_collection_date IS NOT NULL";
+
+            // API source filter
+            if ($requireApiSource) {
+                $whereConditions[] = "(COALESCE(t1.source_of_request, '') LIKE '%api%' OR COALESCE(t1.source_of_request, '') = 'api')";
+            }
+
+            // Data quality filters using COALESCE
+            $whereConditions[] = "(
+                COALESCE(TRIM(t1.$patientIdColumn), '') != ''
+                OR
+                (COALESCE(TRIM(t1.$patientFirstNameColumn), '') != '' OR COALESCE(TRIM(t1.$patientLastNameColumn), '') != '')
+            )";
+
+            $whereClause = implode(' AND ', $whereConditions);
+
+            $query = "
+                SELECT
+                    t1.$primaryColumn,
+                    COALESCE(TRIM(t1.$patientIdColumn), '') as patient_id,
+                    COALESCE(TRIM(t1.$patientFirstNameColumn), '') as patient_first_name,
+                    COALESCE(TRIM(t1.$patientLastNameColumn), '') as patient_last_name,
+                    t1.sample_collection_date,
+                    t1.facility_id,
+                    t1.lab_id,
+                    COALESCE(t1.source_of_request, 'manual') as source_of_request,
+                    t1.sample_code,
+                    t1.remote_sample_code,
+                    t1.app_sample_code,
+                    t1.result_status,
+                    f.facility_name,
+                    l.facility_name as lab_name,
+                    DATEDIFF(?, t1.sample_collection_date) as days_difference,
+                    ABS(DATEDIFF(?, t1.sample_collection_date)) as days_abs_difference,
+                    TRIM(CONCAT(
+                        COALESCE(t1.$patientFirstNameColumn, ''),
+                        CASE
+                            WHEN COALESCE(t1.$patientFirstNameColumn, '') != '' AND COALESCE(t1.$patientLastNameColumn, '') != ''
+                            THEN ' '
+                            ELSE ''
+                        END,
+                        COALESCE(t1.$patientLastNameColumn, '')
+                    )) as full_name,
+                    -- Match score for ranking duplicates
+                    CASE
+                        WHEN COALESCE(TRIM(t1.$patientIdColumn), '') = ? THEN 100
+                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? THEN 90
+                        WHEN COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 85
+                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 95
+                        ELSE 0
+                    END as match_score
+                FROM $table as t1
+                LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id
+                LEFT JOIN facility_details as l ON t1.lab_id = l.facility_id
+                WHERE $whereClause
+                ORDER BY match_score DESC, ABS(DATEDIFF(?, t1.sample_collection_date)) ASC, t1.sample_collection_date DESC
+                LIMIT 10
+            ";
+
+            // Add parameters for DATEDIFF and match score calculations
+            $scoreParams = [
+                $collectionDate, // for first DATEDIFF
+                $collectionDate, // for second DATEDIFF
+                $patientId ?? '',  // for patient ID match score
+                $patientFirstName ?? '', // for first name match score
+                $patientLastName ?? '',  // for last name match score
+                $patientFirstName ?? '', // for combined first name in score
+                $patientLastName ?? '',  // for combined last name in score
+                $collectionDate  // for final ORDER BY DATEDIFF
+            ];
+
+            $finalParams = array_merge($scoreParams, $queryParams);
+
+            $duplicates = $this->db->rawQuery($query, $finalParams);
+
+            if (empty($duplicates)) {
+                return [
+                    'isDuplicate' => false,
+                    'duplicates' => [],
+                    'message' => 'No duplicate samples found'
+                ];
+            }
+
+            // Analyze duplicates and determine risk level
+            $riskLevel = 'low';
+            $highRiskCount = 0;
+            $mediumRiskCount = 0;
+
+            foreach ($duplicates as &$duplicate) {
+                $daysDiff = abs($duplicate['days_abs_difference']);
+
+                if ($daysDiff <= 1) {
+                    $duplicate['risk_level'] = 'high';
+                    $highRiskCount++;
+                } elseif ($daysDiff <= 3) {
+                    $duplicate['risk_level'] = 'medium';
+                    $mediumRiskCount++;
+                } else {
+                    $duplicate['risk_level'] = 'low';
+                }
+
+                // Format dates for display
+                $duplicate['sample_collection_date_formatted'] = DateUtility::humanReadableDateFormat($duplicate['sample_collection_date'], true);
+
+                // Add match confidence based on score
+                if ($duplicate['match_score'] >= 100) {
+                    $duplicate['match_confidence'] = 'exact_id';
+                } elseif ($duplicate['match_score'] >= 95) {
+                    $duplicate['match_confidence'] = 'exact_full_name';
+                } elseif ($duplicate['match_score'] >= 90) {
+                    $duplicate['match_confidence'] = 'exact_first_name';
+                } elseif ($duplicate['match_score'] >= 85) {
+                    $duplicate['match_confidence'] = 'exact_last_name';
+                } else {
+                    $duplicate['match_confidence'] = 'partial';
+                }
+            }
+
+            // Overall risk assessment
+            if ($highRiskCount > 0) {
+                $riskLevel = 'high';
+            } elseif ($mediumRiskCount > 0) {
+                $riskLevel = 'medium';
+            }
+
+            return [
+                'isDuplicate' => true,
+                'duplicates' => $duplicates,
+                'duplicateCount' => count($duplicates),
+                'riskLevel' => $riskLevel,
+                'highRiskCount' => $highRiskCount,
+                'mediumRiskCount' => $mediumRiskCount,
+                'lowRiskCount' => count($duplicates) - $highRiskCount - $mediumRiskCount,
+                'message' => "Found " . count($duplicates) . " potential duplicate(s) within $withinDays days",
+                'withinDays' => $withinDays,
+                'searchCriteria' => [
+                    'patientId' => $patientId,
+                    'patientFirstName' => $patientFirstName,
+                    'patientLastName' => $patientLastName,
+                    'facilityId' => $facilityId,
+                    'labId' => $labId,
+                    'collectionDate' => $collectionDate,
+                    'testType' => $testType
+                ]
+            ];
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Duplicate detection error: " . $e->getMessage(), [
+                'vlFulldata' => $vlFulldata,
+                'testType' => $testType,
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return [
+                'isDuplicate' => false,
+                'error' => 'Error during duplicate detection: ' . $e->getMessage()
+            ];
+        }
+    }
+
+    /**
+     * Normalize string values for consistent comparison
+     *
+     * @param string|null $value
+     * @return string|null
+     */
+    private function normalizeString(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        // Trim whitespace and convert to uppercase for consistent comparison
+        $normalized = trim(strtoupper($value));
+
+        return $normalized === '' ? null : $normalized;
+    }
+
+    /**
+     * Patient duplicate analysis
+     */
+    public function getPatientDuplicateAnalysis(string $patientIdentifier, string $testType = 'vl', ?int $facilityId = null, int $dayRange = 30): array
+    {
+        try {
+            $table = TestsService::getTestTableName($testType);
+            $primaryColumn = TestsService::getPrimaryColumn($testType);
+            $patientIdColumn = TestsService::getPatientIdColumn($testType);
+            $patientFirstNameColumn = TestsService::getPatientFirstNameColumn($testType);
+            $patientLastNameColumn = TestsService::getPatientLastNameColumn($testType);
+
+            $whereConditions = [];
+            $queryParams = [];
+
+            $normalizedIdentifier = $this->normalizeString($patientIdentifier);
+
+            // Patient identification
+            $whereConditions[] = "(
+                COALESCE(UPPER(TRIM($patientIdColumn)), '') = ?
+                OR COALESCE(UPPER(TRIM($patientFirstNameColumn)), '') LIKE ?
+                OR COALESCE(UPPER(TRIM($patientLastNameColumn)), '') LIKE ?
+                OR UPPER(TRIM(CONCAT(COALESCE($patientFirstNameColumn, ''), ' ', COALESCE($patientLastNameColumn, '')))) LIKE ?
+            )";
+            $queryParams[] = $normalizedIdentifier;
+            $queryParams[] = "%$normalizedIdentifier%";
+            $queryParams[] = "%$normalizedIdentifier%";
+            $queryParams[] = "%$normalizedIdentifier%";
+
+            // Date range
+            $startDate = date('Y-m-d H:i:s', strtotime("-$dayRange days"));
+            $whereConditions[] = "sample_collection_date >= ?";
+            $queryParams[] = $startDate;
+
+            // Facility filter
+            if ($facilityId) {
+                $whereConditions[] = "facility_id = ?";
+                $queryParams[] = $facilityId;
+            }
+
+            $whereConditions[] = "sample_collection_date IS NOT NULL";
+            $whereConditions[] = "(
+                COALESCE(TRIM($patientIdColumn), '') != ''
+                OR
+                (COALESCE(TRIM($patientFirstNameColumn), '') != '' AND COALESCE(TRIM($patientLastNameColumn), '') != '')
+            )";
+
+            $whereClause = implode(' AND ', $whereConditions);
+
+            $query = "
+                SELECT
+                    $primaryColumn,
+                    COALESCE(TRIM($patientIdColumn), '') as patient_id,
+                    COALESCE(TRIM($patientFirstNameColumn), '') as patient_first_name,
+                    COALESCE(TRIM($patientLastNameColumn), '') as patient_last_name,
+                    sample_collection_date,
+                    facility_id,
+                    lab_id,
+                    COALESCE(source_of_request, 'manual') as source_of_request,
+                    sample_code,
+                    result_status,
+                    request_created_datetime,
+                    DATE(sample_collection_date) as collection_date_only
+                FROM $table
+                WHERE $whereClause
+                ORDER BY sample_collection_date DESC
+            ";
+
+            /** @var DatabaseService $db */
+            $db = $this->db ?? ContainerRegistry::get(DatabaseService::class);
+            $samples = $db->rawQuery($query, $queryParams);
+
+            // Group samples by date to identify clusters
+            $sampleGroups = [];
+            foreach ($samples as $sample) {
+                $dateKey = $sample['collection_date_only'];
+                $sampleGroups[$dateKey][] = $sample;
+            }
+
+            // Identify duplicate groups (same day collections)
+            $duplicateGroups = array_filter($sampleGroups, function ($group) {
+                return count($group) > 1;
+            });
+
+            return [
+                'totalSamples' => count($samples),
+                'duplicateGroups' => count($duplicateGroups),
+                'duplicateSamples' => array_sum(array_map('count', $duplicateGroups)),
+                'samples' => $samples,
+                'groupedByDate' => $sampleGroups,
+                'duplicateGroupsData' => $duplicateGroups,
+                'searchTerm' => $normalizedIdentifier
+            ];
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Patient duplicate analysis error: " . $e->getMessage());
+            return ['error' => $e->getMessage()];
+        }
     }
 }

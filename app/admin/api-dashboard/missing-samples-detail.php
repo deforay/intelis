@@ -45,7 +45,7 @@ $dateRange = $_GET['dateRange'] ?? '';
         </h1>
         <ol class="breadcrumb">
             <li><a href="/"><em class="fa-solid fa-chart-pie"></em> <?php echo _translate("Home"); ?></a></li>
-            <li><a href="/admin/api-dashboard/api-dashboard.php"><?php echo _translate("API Dashboard"); ?></a></li>
+            <li><a href="/admin/api-dashboard/api-dashboard.php"><?php echo _translate("API/EMR Dashboard"); ?></a></li>
             <li class="active"><?php echo _translate("Missing Sample Receipts"); ?></li>
         </ol>
     </section>

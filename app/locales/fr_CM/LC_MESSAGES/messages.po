@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-08-19 14:47+0530\n"
-"PO-Revision-Date: 2025-08-19 14:49+0530\n"
+"POT-Creation-Date: 2025-08-20 16:28+0530\n"
+"PO-Revision-Date: 2025-08-20 16:28+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 3.6\n"
+"X-Generator: Poedit 3.7\n"
 "X-Poedit-Basepath: ../../../..\n"
 "X-Poedit-KeywordsList: _translate\n"
 "X-Poedit-SearchPath-0: app\n"
@@ -18,14 +18,17 @@ msgstr ""
 "X-Poedit-SearchPath-3: public/assets/js/smart-date-format.js.php\n"
 
 #: app/admin/api-dashboard/api-dashboard.php:11
-#: app/admin/api-dashboard/api-dashboard.php:100
-#: app/admin/api-dashboard/api-dashboard.php:107
+#: app/admin/api-dashboard/api-dashboard.php:221
 #: app/admin/api-dashboard/duplicates-detail.php:49
 #: app/admin/api-dashboard/missing-samples-detail.php:48
-msgid "API Dashboard"
-msgstr "Tableau de bord de l’API"
+msgid "API/EMR Dashboard"
+msgstr "Tableau de bord API/EMR"
 
-#: app/admin/api-dashboard/api-dashboard.php:104
+#: app/admin/api-dashboard/api-dashboard.php:214
+msgid "API/EMR Data Exchange Dashboard"
+msgstr "Tableau de bord de l'échange de données API/EMR"
+
+#: app/admin/api-dashboard/api-dashboard.php:218
 #: app/admin/api-dashboard/duplicates-detail.php:48
 #: app/admin/api-dashboard/missing-samples-detail.php:47 app/admin/index.php:11
 #: app/admin/monitoring/activity-log.php:47
@@ -271,22 +274,22 @@ msgstr "Tableau de bord de l’API"
 msgid "Home"
 msgstr "Accueil"
 
-#: app/admin/api-dashboard/api-dashboard.php:119
+#: app/admin/api-dashboard/api-dashboard.php:233
 msgid "Filters"
 msgstr "Filtres"
 
-#: app/admin/api-dashboard/api-dashboard.php:123
+#: app/admin/api-dashboard/api-dashboard.php:237
 msgid "Test Request Date Range"
 msgstr "Date de la demande de test"
 
-#: app/admin/api-dashboard/api-dashboard.php:126
+#: app/admin/api-dashboard/api-dashboard.php:240
 #: app/admin/monitoring/activity-log.php:66
 #: app/admin/monitoring/api-sync-history.php:59
 #: app/admin/monitoring/sources-of-requests.php:83
 msgid "Enter date range"
 msgstr "Saisissez une plage de dates"
 
-#: app/admin/api-dashboard/api-dashboard.php:128
+#: app/admin/api-dashboard/api-dashboard.php:242
 #: app/admin/monitoring/api-sync-history.php:62
 #: app/admin/monitoring/api-sync-history.php:131
 #: app/admin/monitoring/audit-trail.php:293
@@ -311,7 +314,7 @@ msgstr "Saisissez une plage de dates"
 msgid "Test Type"
 msgstr "Type de test"
 
-#: app/admin/api-dashboard/api-dashboard.php:132
+#: app/admin/api-dashboard/api-dashboard.php:246
 #: app/admin/monitoring/api-sync-history.php:71
 #: app/admin/monitoring/lab-sync-details.php:147
 #: app/admin/monitoring/sources-of-requests.php:132
@@ -327,7 +330,7 @@ msgstr "Type de test"
 msgid "Viral Load"
 msgstr "CHARGE VIRALE"
 
-#: app/admin/api-dashboard/api-dashboard.php:135
+#: app/admin/api-dashboard/api-dashboard.php:249
 #: app/admin/monitoring/api-sync-history.php:76
 #: app/admin/monitoring/lab-sync-details.php:152
 #: app/admin/monitoring/sources-of-requests.php:137
@@ -341,7 +344,7 @@ msgstr "CHARGE VIRALE"
 msgid "Early Infant Diagnosis"
 msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 
-#: app/admin/api-dashboard/api-dashboard.php:138
+#: app/admin/api-dashboard/api-dashboard.php:252
 #: app/admin/monitoring/api-sync-history.php:81
 #: app/admin/monitoring/lab-sync-details.php:157
 #: app/admin/monitoring/sources-of-requests.php:142
@@ -359,7 +362,7 @@ msgstr "DIAGNOSTIC PRÉCOCE DU NOURRISSON (EID)"
 msgid "Covid-19"
 msgstr "COVID-19"
 
-#: app/admin/api-dashboard/api-dashboard.php:141
+#: app/admin/api-dashboard/api-dashboard.php:255
 #: app/admin/monitoring/api-sync-history.php:86
 #: app/admin/monitoring/lab-sync-details.php:162
 #: app/admin/monitoring/sources-of-requests.php:147
@@ -381,7 +384,7 @@ msgstr "COVID-19"
 msgid "Hepatitis"
 msgstr "Hépatite"
 
-#: app/admin/api-dashboard/api-dashboard.php:144
+#: app/admin/api-dashboard/api-dashboard.php:258
 #: app/admin/monitoring/api-sync-history.php:91
 #: app/admin/monitoring/lab-sync-details.php:167
 #: app/admin/monitoring/sources-of-requests.php:152
@@ -397,7 +400,7 @@ msgstr "Hépatite"
 msgid "TB"
 msgstr "Tuberculose"
 
-#: app/admin/api-dashboard/api-dashboard.php:147
+#: app/admin/api-dashboard/api-dashboard.php:261
 #: app/admin/monitoring/api-sync-history.php:96
 #: app/admin/monitoring/lab-sync-details.php:172
 #: app/admin/monitoring/sources-of-requests.php:157
@@ -418,7 +421,7 @@ msgstr "Tuberculose"
 msgid "CD4"
 msgstr "CD4"
 
-#: app/admin/api-dashboard/api-dashboard.php:151
+#: app/admin/api-dashboard/api-dashboard.php:265
 #: app/cd4/management/cd4-clinic-report.php:196
 #: app/cd4/management/cd4-export-data.php:108
 #: app/cd4/management/cd4-sample-status.php:77
@@ -511,7 +514,7 @@ msgstr "CD4"
 msgid "Testing Lab"
 msgstr "Laboratoire du test"
 
-#: app/admin/api-dashboard/api-dashboard.php:154
+#: app/admin/api-dashboard/api-dashboard.php:268
 #: app/cd4/management/cd4-export-data.php:110
 #: app/cd4/results/cd4-failed-results.php:110
 #: app/covid-19/management/covid-19-export-data.php:120
@@ -541,7 +544,7 @@ msgstr "Laboratoire du test"
 msgid "Please select Testing Lab"
 msgstr "Veuiller selectionner le laboratoire de test"
 
-#: app/admin/api-dashboard/api-dashboard.php:160
+#: app/admin/api-dashboard/api-dashboard.php:274
 #: app/admin/monitoring/lab-sync-details.php:114
 #: app/admin/monitoring/sources-of-requests.php:86
 #: app/admin/monitoring/sync-status.php:343
@@ -681,7 +684,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 msgid "Province/State"
 msgstr "Région/Etat"
 
-#: app/admin/api-dashboard/api-dashboard.php:163
+#: app/admin/api-dashboard/api-dashboard.php:277
 #: app/admin/monitoring/lab-sync-details.php:125
 #: app/admin/monitoring/sources-of-requests.php:89
 #: app/admin/monitoring/sync-status.php:351
@@ -777,7 +780,7 @@ msgstr "Région/Etat"
 msgid "Please select Province/State"
 msgstr "Veuillez choisir Région/Etat"
 
-#: app/admin/api-dashboard/api-dashboard.php:165
+#: app/admin/api-dashboard/api-dashboard.php:279
 #: app/admin/monitoring/api-sync-history.php:67
 #: app/admin/monitoring/lab-sync-details.php:118
 #: app/admin/monitoring/sources-of-requests.php:90
@@ -1525,7 +1528,7 @@ msgstr "Veuillez choisir Région/Etat"
 msgid "-- Select --"
 msgstr "-- Sélectionner --"
 
-#: app/admin/api-dashboard/api-dashboard.php:168
+#: app/admin/api-dashboard/api-dashboard.php:282
 #: app/admin/monitoring/lab-sync-details.php:122
 #: app/admin/monitoring/sources-of-requests.php:94
 #: app/admin/monitoring/sync-status.php:350
@@ -1675,7 +1678,7 @@ msgstr "-- Sélectionner --"
 msgid "District/County"
 msgstr "District/Pays"
 
-#: app/admin/api-dashboard/api-dashboard.php:171
+#: app/admin/api-dashboard/api-dashboard.php:285
 #: app/admin/monitoring/sources-of-requests.php:98
 #: app/cd4/management/cd4-clinic-report.php:144
 #: app/cd4/management/cd4-clinic-report.php:252
@@ -1707,71 +1710,246 @@ msgstr "District/Pays"
 msgid "Please select District/County"
 msgstr "Veuillez sélectionner le district/comté"
 
-#: app/admin/api-dashboard/api-dashboard.php:175
+#: app/admin/api-dashboard/api-dashboard.php:289
 msgid "Requesting Facility"
 msgstr "Établissement demandeur"
 
-#: app/admin/api-dashboard/api-dashboard.php:186
+#: app/admin/api-dashboard/api-dashboard.php:300
 msgid "Refresh Dashboard"
 msgstr "Rafraîchir le tableau de bord"
 
-#: app/admin/api-dashboard/api-dashboard.php:189 app/batch/add-batch.php:298
+#: app/admin/api-dashboard/api-dashboard.php:303 app/batch/add-batch.php:298
 #: app/batch/edit-batch.php:240
 msgid "Reset Filters"
 msgstr "Réinitialiser les filtres"
 
-#: app/admin/api-dashboard/api-dashboard.php:202
+#: app/admin/api-dashboard/api-dashboard.php:316
 msgid "Critical Alerts"
 msgstr "Alertes critiques"
 
-#: app/admin/api-dashboard/api-dashboard.php:214
+#: app/admin/api-dashboard/api-dashboard.php:328
 msgid "Quick Metrics Overview"
 msgstr "Aperçu des mesures rapides"
 
-#: app/admin/api-dashboard/api-dashboard.php:220
+#: app/admin/api-dashboard/api-dashboard.php:335
 msgid "Total Requests"
 msgstr "Total des Requêtes"
 
-#: app/admin/api-dashboard/api-dashboard.php:226
-msgid "API Requests"
-msgstr "Demandes d'API"
+#: app/admin/api-dashboard/api-dashboard.php:355
+msgid "API/EMR Requests"
+msgstr "Demandes API/EMR"
 
-#: app/admin/api-dashboard/api-dashboard.php:232
-msgid "Samples Not Received"
-msgstr "Échantillons non reçus"
+#: app/admin/api-dashboard/api-dashboard.php:375
+msgid "Received at Lab"
+msgstr "Reçu au laboratoire"
 
-#: app/admin/api-dashboard/api-dashboard.php:238
+#: app/admin/api-dashboard/api-dashboard.php:398
+msgid "Not Received at Lab"
+msgstr "Non reçu au laboratoire"
+
+#: app/admin/api-dashboard/api-dashboard.php:418
 #: app/admin/api-dashboard/duplicates-detail.php:50
 msgid "Potential Duplicates"
 msgstr "Doublons potentiels"
 
-#: app/admin/api-dashboard/api-dashboard.php:244
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:162
-msgid "Pending Tests"
-msgstr "Tests en cours"
+#: app/admin/api-dashboard/api-dashboard.php:425
+msgid "Within 7 days"
+msgstr "Dans les 7 jours"
 
-#: app/admin/api-dashboard/api-dashboard.php:250
+#: app/admin/api-dashboard/api-dashboard.php:435
+#: app/admin/api-dashboard/api-dashboard.php:480
 msgid "Results Sent"
 msgstr "Envoi des résultats"
 
-#: app/admin/api-dashboard/api-dashboard.php:260
-msgid "API Requests Without Sample Receipt"
-msgstr "Demandes d'API sans réception d'échantillon"
+#: app/admin/api-dashboard/api-dashboard.php:461
+msgid "Source Distribution by Facility with API/EMR Workflow"
+msgstr ""
+"Distribution des sources par établissement avec flux de travail API/EMR"
 
-#: app/admin/api-dashboard/api-dashboard.php:263
+#: app/admin/api-dashboard/api-dashboard.php:467
+#: app/admin/api-dashboard/api-dashboard.php:510
+#: app/admin/api-dashboard/api-dashboard.php:547
+#: app/admin/api-dashboard/missing-samples-detail.php:124
+#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
+#: app/cd4/management/cd4-clinic-report.php:147
+#: app/cd4/management/cd4-clinic-report.php:255
+#: app/cd4/management/cd4-clinic-report.php:357
+#: app/cd4/management/cd4-clinic-report.php:482
+#: app/covid-19/management/covid-19-clinic-report.php:139
+#: app/covid-19/management/covid-19-clinic-report.php:247
+#: app/covid-19/management/covid-19-clinic-report.php:350
+#: app/covid-19/management/covid-19-clinic-report.php:478
+#: app/covid-19/requests/forms/add-cameroon.php:136
+#: app/covid-19/requests/forms/edit-cameroon.php:159
+#: app/covid-19/results/covid-19-result-status.php:115
+#: app/covid-19/results/forms/update-cameroon-result.php:162
+#: app/eid/requests/forms/add-cameroon.php:110
+#: app/eid/requests/forms/edit-cameroon.php:133
+#: app/eid/results/forms/update-cameroon-result.php:121
+#: app/generic-tests/configuration/add-test-type.php:257
+#: app/generic-tests/configuration/add-test-type.php:589
+#: app/generic-tests/configuration/clone-test-type.php:312
+#: app/generic-tests/configuration/clone-test-type.php:376
+#: app/generic-tests/configuration/clone-test-type.php:432
+#: app/generic-tests/configuration/clone-test-type.php:815
+#: app/generic-tests/configuration/edit-test-type.php:316
+#: app/generic-tests/configuration/edit-test-type.php:380
+#: app/generic-tests/configuration/edit-test-type.php:436
+#: app/generic-tests/configuration/edit-test-type.php:849
+#: app/generic-tests/program-management/generic-tests-clinic-report.php:73
+#: app/hepatitis/management/hepatitis-clinic-report.php:141
+#: app/hepatitis/management/hepatitis-clinic-report.php:250
+#: app/hepatitis/management/hepatitis-clinic-report.php:352
+#: app/hepatitis/management/hepatitis-clinic-report.php:478
+#: app/hepatitis/results/hepatitis-result-status.php:105
+#: app/tb/management/tb-clinic-report.php:139
+#: app/tb/management/tb-clinic-report.php:247
+#: app/tb/management/tb-clinic-report.php:351
+#: app/tb/management/tb-clinic-report.php:474
+#: app/tb/results/tb-result-status.php:109
+#: app/vl/program-management/highViralLoad.php:202
+#: app/vl/program-management/highViralLoad.php:383
+#: app/vl/program-management/highViralLoad.php:537
+#: app/vl/program-management/highViralLoad.php:762
+#: app/vl/program-management/highViralLoad.php:1048
+#: app/vl/requests/forms/add-cameroon.php:152
+#: app/vl/requests/forms/edit-cameroon.php:203
+#: app/vl/results/forms/update-cameroon-result.php:253
+msgid "Facility"
+msgstr "FOSA"
+
+#: app/admin/api-dashboard/api-dashboard.php:468
+msgid "Source Distribution"
+msgstr "Distribution des sources"
+
+#: app/admin/api-dashboard/api-dashboard.php:469
+msgid "API/EMR Workflow"
+msgstr "Flux de travail API/EMR"
+
+#: app/admin/api-dashboard/api-dashboard.php:472
+msgid "API/EMR"
+msgstr "API/EMR"
+
+#: app/admin/api-dashboard/api-dashboard.php:473
+msgid "STS"
+msgstr "STS"
+
+#: app/admin/api-dashboard/api-dashboard.php:474
+msgid "Direct LIS"
+msgstr "LIS direct"
+
+#: app/admin/api-dashboard/api-dashboard.php:475
+msgid "API/EMR %"
+msgstr "API/EMR %"
+
+#: app/admin/api-dashboard/api-dashboard.php:476
+msgid "Not Received"
+msgstr "Non reçu"
+
+#: app/admin/api-dashboard/api-dashboard.php:477
+msgid "Received"
+msgstr "Reçu"
+
+#: app/admin/api-dashboard/api-dashboard.php:478
+msgid "Tested"
+msgstr "Testé"
+
+#: app/admin/api-dashboard/api-dashboard.php:479
+msgid "Pending"
+msgstr "En attente"
+
+#: app/admin/api-dashboard/api-dashboard.php:494
+msgid "API/EMR Requests Without Sample Receipt - By Facility"
+msgstr "Demandes API/EMR sans réception d'échantillon - par installation"
+
+#: app/admin/api-dashboard/api-dashboard.php:497
 msgid "View All Details"
 msgstr "Voir tous les détails"
 
-#: app/admin/api-dashboard/api-dashboard.php:270
+#: app/admin/api-dashboard/api-dashboard.php:504
 msgid ""
-"Showing only API requests that have not received samples at the lab and are "
-"not rejected."
+"Facilities with API/EMR requests that have not received samples at the lab "
+"and are not rejected."
 msgstr ""
-"Afficher uniquement les demandes d'API qui n'ont pas reçu d'échantillons au "
-"laboratoire et qui ne sont pas rejetées."
+"Installations ayant des demandes API/EMR qui n'ont pas reçu d'échantillons "
+"au laboratoire et qui ne sont pas rejetées."
 
-#: app/admin/api-dashboard/api-dashboard.php:276
-#: app/admin/api-dashboard/api-dashboard.php:346
+#: app/admin/api-dashboard/api-dashboard.php:511
+msgid "Missing Count"
+msgstr "Nombre de manquants"
+
+#: app/admin/api-dashboard/api-dashboard.php:512
+msgid "≤ 7 Days"
+msgstr "≤ 7 jours"
+
+#: app/admin/api-dashboard/api-dashboard.php:513
+msgid "> 7 Days"
+msgstr "> 7 jours"
+
+#: app/admin/api-dashboard/api-dashboard.php:514
+msgid "Avg Days"
+msgstr "Jours moyens"
+
+#: app/admin/api-dashboard/api-dashboard.php:515
+msgid "Max Days"
+msgstr "Jours Maximum"
+
+#: app/admin/api-dashboard/api-dashboard.php:516
+#: app/admin/api-dashboard/missing-samples-detail.php:120
+msgid "Priority"
+msgstr "Priorité"
+
+#: app/admin/api-dashboard/api-dashboard.php:531
+msgid "Potential Duplicate Entries - By Facility"
+msgstr "Entrées potentielles en double - par installation"
+
+#: app/admin/api-dashboard/api-dashboard.php:534
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:244
+msgid "View Details"
+msgstr "Voir les détails"
+
+#: app/admin/api-dashboard/api-dashboard.php:541
+msgid ""
+"Facilities with samples having same Patient ID/Name within last 7 days (at "
+"least one from API/EMR)"
+msgstr ""
+"Établissements avec des échantillons ayant le même ID/Nom de patient au "
+"cours des 7 derniers jours (au moins un provenant de l'API/EMR)"
+
+#: app/admin/api-dashboard/api-dashboard.php:548
+msgid "Duplicate Groups"
+msgstr "Groupes en double"
+
+#: app/admin/api-dashboard/api-dashboard.php:549
+msgid "Total Samples"
+msgstr "Total des échantillons"
+
+#: app/admin/api-dashboard/api-dashboard.php:550
+msgid "High Risk"
+msgstr "Risque élevé"
+
+#: app/admin/api-dashboard/api-dashboard.php:551
+msgid "Medium Risk"
+msgstr "Risque Moyen"
+
+#: app/admin/api-dashboard/api-dashboard.php:552
+msgid "Low Risk"
+msgstr "Risque faible"
+
+#: app/admin/api-dashboard/api-dashboard.php:553
+#: app/admin/api-dashboard/duplicates-detail.php:99
+msgid "Risk Level"
+msgstr "Niveau de risque"
+
+#: app/admin/api-dashboard/api-dashboard.php:554
+msgid "Latest"
+msgstr "Dernier"
+
+#: app/admin/api-dashboard/api-dashboard.php:570
+msgid "Results Sent for Requests Not Originating via API/EMR"
+msgstr "Résultats envoyés pour les demandes ne provenant pas de l'API/EMR"
+
+#: app/admin/api-dashboard/api-dashboard.php:576
 #: app/admin/api-dashboard/missing-samples-detail.php:121
 #: app/admin/monitoring/audit-trail.php:305
 #: app/admin/monitoring/export-test-results-report.php:31
@@ -1972,154 +2150,19 @@ msgstr ""
 msgid "Sample ID"
 msgstr "ID de l'échantillon"
 
-#: app/admin/api-dashboard/api-dashboard.php:277
-#: app/admin/api-dashboard/api-dashboard.php:368
-#: app/admin/api-dashboard/missing-samples-detail.php:124
-#: app/batch/add-batch.php:202 app/batch/edit-batch.php:162
-#: app/cd4/management/cd4-clinic-report.php:147
-#: app/cd4/management/cd4-clinic-report.php:255
-#: app/cd4/management/cd4-clinic-report.php:357
-#: app/cd4/management/cd4-clinic-report.php:482
-#: app/covid-19/management/covid-19-clinic-report.php:139
-#: app/covid-19/management/covid-19-clinic-report.php:247
-#: app/covid-19/management/covid-19-clinic-report.php:350
-#: app/covid-19/management/covid-19-clinic-report.php:478
-#: app/covid-19/requests/forms/add-cameroon.php:136
-#: app/covid-19/requests/forms/edit-cameroon.php:159
-#: app/covid-19/results/covid-19-result-status.php:115
-#: app/covid-19/results/forms/update-cameroon-result.php:162
-#: app/eid/requests/forms/add-cameroon.php:110
-#: app/eid/requests/forms/edit-cameroon.php:133
-#: app/eid/results/forms/update-cameroon-result.php:121
-#: app/generic-tests/configuration/add-test-type.php:257
-#: app/generic-tests/configuration/add-test-type.php:589
-#: app/generic-tests/configuration/clone-test-type.php:312
-#: app/generic-tests/configuration/clone-test-type.php:376
-#: app/generic-tests/configuration/clone-test-type.php:432
-#: app/generic-tests/configuration/clone-test-type.php:815
-#: app/generic-tests/configuration/edit-test-type.php:316
-#: app/generic-tests/configuration/edit-test-type.php:380
-#: app/generic-tests/configuration/edit-test-type.php:436
-#: app/generic-tests/configuration/edit-test-type.php:849
-#: app/generic-tests/program-management/generic-tests-clinic-report.php:73
-#: app/hepatitis/management/hepatitis-clinic-report.php:141
-#: app/hepatitis/management/hepatitis-clinic-report.php:250
-#: app/hepatitis/management/hepatitis-clinic-report.php:352
-#: app/hepatitis/management/hepatitis-clinic-report.php:478
-#: app/hepatitis/results/hepatitis-result-status.php:105
-#: app/tb/management/tb-clinic-report.php:139
-#: app/tb/management/tb-clinic-report.php:247
-#: app/tb/management/tb-clinic-report.php:351
-#: app/tb/management/tb-clinic-report.php:474
-#: app/tb/results/tb-result-status.php:109
-#: app/vl/program-management/highViralLoad.php:202
-#: app/vl/program-management/highViralLoad.php:383
-#: app/vl/program-management/highViralLoad.php:537
-#: app/vl/program-management/highViralLoad.php:762
-#: app/vl/program-management/highViralLoad.php:1048
-#: app/vl/requests/forms/add-cameroon.php:152
-#: app/vl/requests/forms/edit-cameroon.php:203
-#: app/vl/results/forms/update-cameroon-result.php:253
-msgid "Facility"
-msgstr "FOSA"
-
-#: app/admin/api-dashboard/api-dashboard.php:278
-#: app/admin/api-dashboard/missing-samples-detail.php:126
-msgid "Days Pending"
-msgstr "Jours en attente"
-
-#: app/admin/api-dashboard/api-dashboard.php:279
-#: app/admin/api-dashboard/missing-samples-detail.php:127
-msgid "Source"
-msgstr "Source"
-
-#: app/admin/api-dashboard/api-dashboard.php:289
-msgid "Showing first 10 records."
-msgstr "Les 10 premiers enregistrements sont affichés."
-
-#: app/admin/api-dashboard/api-dashboard.php:291
-msgid "View all records"
-msgstr "Voir tous les dossiers"
-
-#: app/admin/api-dashboard/api-dashboard.php:305
-msgid "Potential Duplicate Entries"
-msgstr "Entrées en double potentielles"
-
-#: app/admin/api-dashboard/api-dashboard.php:308
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:243
-msgid "View Details"
-msgstr "Voir les détails"
-
-#: app/admin/api-dashboard/api-dashboard.php:315
-msgid ""
-"Samples having same Patient ID/Name at same Lab or Facility within last 7 "
-"days are potentially duplicates"
-msgstr ""
-"Les échantillons ayant le même numéro d'identification/nom de patient dans "
-"le même laboratoire ou établissement au cours des 7 derniers jours sont "
-"potentiellement des doublons"
-
-#: app/admin/api-dashboard/api-dashboard.php:321
-#: app/admin/api-dashboard/missing-samples-detail.php:123
-msgid "Patient Info"
-msgstr "Information du patient"
-
-#: app/admin/api-dashboard/api-dashboard.php:322
-#: app/admin/api-dashboard/duplicates-detail.php:101
-msgid "Sample IDs"
-msgstr "ID des échantillons"
-
-#: app/admin/api-dashboard/api-dashboard.php:323
-#: app/admin/api-dashboard/duplicates-detail.php:102
-msgid "Collection Dates"
-msgstr "Dates de collecte"
-
-#: app/admin/api-dashboard/api-dashboard.php:324
-msgid "Sources"
-msgstr "Sources"
-
-#: app/admin/api-dashboard/api-dashboard.php:340
-msgid "Results Sent for Requests Not Originating via API"
-msgstr "Résultats envoyés pour les demandes ne provenant pas de l'API"
-
-#: app/admin/api-dashboard/api-dashboard.php:347
+#: app/admin/api-dashboard/api-dashboard.php:577
 msgid "Request Source"
 msgstr "Source de la demande"
 
-#: app/admin/api-dashboard/api-dashboard.php:348
+#: app/admin/api-dashboard/api-dashboard.php:578
 msgid "Result Sent"
 msgstr "Résultat envoyé"
 
-#: app/admin/api-dashboard/api-dashboard.php:349
+#: app/admin/api-dashboard/api-dashboard.php:579
 msgid "Days Diff"
 msgstr "Jours Diff"
 
-#: app/admin/api-dashboard/api-dashboard.php:362
-msgid "Source Distribution by Facility"
-msgstr "Répartition des sources par installation"
-
-#: app/admin/api-dashboard/api-dashboard.php:369
-msgid "API"
-msgstr "API"
-
-#: app/admin/api-dashboard/api-dashboard.php:370
-msgid "STS"
-msgstr "STS"
-
-#: app/admin/api-dashboard/api-dashboard.php:371
-msgid "Direct LIS"
-msgstr "LIS direct"
-
-#: app/admin/api-dashboard/api-dashboard.php:372
-#: app/dashboard/getSampleResult.php:755
-msgid "Total"
-msgstr "Total"
-
-#: app/admin/api-dashboard/api-dashboard.php:373
-msgid "API %"
-msgstr "API %"
-
-#: app/admin/api-dashboard/api-dashboard.php:411
+#: app/admin/api-dashboard/api-dashboard.php:619
 #: app/admin/monitoring/activity-log.php:91
 #: app/admin/monitoring/activity-log.php:149
 #: app/admin/monitoring/api-sync-history.php:170
@@ -2224,35 +2267,41 @@ msgstr "API %"
 msgid "Clear"
 msgstr "Effacer"
 
-#: app/admin/api-dashboard/api-dashboard.php:564
-msgid "No missing samples found"
-msgstr "Aucun échantillon manquant n'a été trouvé"
-
-#: app/admin/api-dashboard/api-dashboard.php:604
-msgid "No potential duplicates found"
-msgstr "Aucun doublon potentiel n'a été trouvé"
-
-#: app/admin/api-dashboard/api-dashboard.php:710
+#: app/admin/api-dashboard/api-dashboard.php:882
+#: app/admin/api-dashboard/api-dashboard.php:1004
+#: app/admin/api-dashboard/api-dashboard.php:1116
 msgid "Search facilities"
 msgstr "Facilités de recherche"
 
-#: app/admin/api-dashboard/api-dashboard.php:711
+#: app/admin/api-dashboard/api-dashboard.php:883
+#: app/admin/api-dashboard/api-dashboard.php:1005
+#: app/admin/api-dashboard/api-dashboard.php:1117
 msgid "Show"
 msgstr "Afficher"
 
-#: app/admin/api-dashboard/api-dashboard.php:711
-msgid "entries"
-msgstr "entrées"
+#: app/admin/api-dashboard/api-dashboard.php:883
+#: app/admin/api-dashboard/api-dashboard.php:884
+#: app/admin/api-dashboard/api-dashboard.php:1005
+#: app/admin/api-dashboard/api-dashboard.php:1006
+#: app/admin/api-dashboard/api-dashboard.php:1118
+msgid "facilities"
+msgstr "structures sanitaire"
 
-#: app/admin/api-dashboard/api-dashboard.php:712
+#: app/admin/api-dashboard/api-dashboard.php:884
+#: app/admin/api-dashboard/api-dashboard.php:1006
+#: app/admin/api-dashboard/api-dashboard.php:1118
 msgid "Showing"
 msgstr "Affichage"
 
-#: app/admin/api-dashboard/api-dashboard.php:712
+#: app/admin/api-dashboard/api-dashboard.php:884
+#: app/admin/api-dashboard/api-dashboard.php:1006
+#: app/admin/api-dashboard/api-dashboard.php:1118
 msgid "to"
 msgstr "à"
 
-#: app/admin/api-dashboard/api-dashboard.php:712
+#: app/admin/api-dashboard/api-dashboard.php:884
+#: app/admin/api-dashboard/api-dashboard.php:1006
+#: app/admin/api-dashboard/api-dashboard.php:1118
 #: app/classes/Helpers/ResultPDFHelpers/CD4ResultPDFHelper.php:116
 #: app/classes/Helpers/ResultPDFHelpers/Covid19ResultPDFHelper.php:158
 #: app/classes/Helpers/ResultPDFHelpers/EIDResultPDFHelper.php:129
@@ -2263,29 +2312,31 @@ msgstr "à"
 msgid "of"
 msgstr "de"
 
-#: app/admin/api-dashboard/api-dashboard.php:712
-msgid "facilities"
-msgstr "Structures sanitaire"
+#: app/admin/api-dashboard/api-dashboard.php:885
+msgid "No facilities with missing samples found"
+msgstr "Aucune installation avec des échantillons manquants n'a été trouvée"
 
-#: app/admin/api-dashboard/api-dashboard.php:713
-#: app/admin/monitoring/get-sync-status.php:76
-#: app/admin/monitoring/lab-sync-details.php:231
-msgid "No data available"
-msgstr "Pas de données disponibles"
-
-#: app/admin/api-dashboard/api-dashboard.php:714
+#: app/admin/api-dashboard/api-dashboard.php:886
+#: app/admin/api-dashboard/api-dashboard.php:1008
+#: app/admin/api-dashboard/api-dashboard.php:1120
 msgid "No matching facilities found"
 msgstr "Aucune installation correspondante n'a été trouvée"
 
-#: app/admin/api-dashboard/api-dashboard.php:716
+#: app/admin/api-dashboard/api-dashboard.php:888
+#: app/admin/api-dashboard/api-dashboard.php:1010
+#: app/admin/api-dashboard/api-dashboard.php:1122
 msgid "First"
 msgstr "Premier"
 
-#: app/admin/api-dashboard/api-dashboard.php:717
+#: app/admin/api-dashboard/api-dashboard.php:889
+#: app/admin/api-dashboard/api-dashboard.php:1011
+#: app/admin/api-dashboard/api-dashboard.php:1123
 msgid "Last"
 msgstr "Dernier"
 
-#: app/admin/api-dashboard/api-dashboard.php:718
+#: app/admin/api-dashboard/api-dashboard.php:890
+#: app/admin/api-dashboard/api-dashboard.php:1012
+#: app/admin/api-dashboard/api-dashboard.php:1124
 #: app/cd4/results/email-results.php:334
 #: app/covid-19/results/email-results.php:336
 #: app/eid/results/email-results.php:333
@@ -2297,11 +2348,27 @@ msgstr "Dernier"
 msgid "Next"
 msgstr "Suivante"
 
-#: app/admin/api-dashboard/api-dashboard.php:719
+#: app/admin/api-dashboard/api-dashboard.php:891
+#: app/admin/api-dashboard/api-dashboard.php:1013
+#: app/admin/api-dashboard/api-dashboard.php:1125
 msgid "Previous"
 msgstr "Précédent"
 
-#: app/admin/api-dashboard/api-dashboard.php:746
+#: app/admin/api-dashboard/api-dashboard.php:1007
+msgid "No facilities with duplicate suspects found"
+msgstr "Sélectionnez les structures"
+
+#: app/admin/api-dashboard/api-dashboard.php:1117
+msgid "entries"
+msgstr "entrées"
+
+#: app/admin/api-dashboard/api-dashboard.php:1119
+#: app/admin/monitoring/get-sync-status.php:76
+#: app/admin/monitoring/lab-sync-details.php:231
+msgid "No data available"
+msgstr "Pas de données disponibles"
+
+#: app/admin/api-dashboard/api-dashboard.php:1152
 msgid "No non-originating results found"
 msgstr "Aucun résultat non originaire n'a été trouvé"
 
@@ -2331,10 +2398,6 @@ msgstr "Actualiser les données"
 msgid "Sort Value"
 msgstr "Valeur de tri"
 
-#: app/admin/api-dashboard/duplicates-detail.php:99
-msgid "Risk Level"
-msgstr "Niveau de risque"
-
 #: app/admin/api-dashboard/duplicates-detail.php:100
 #: app/covid-19/requests/forms/add-cameroon.php:196
 #: app/covid-19/requests/forms/edit-cameroon.php:213
@@ -2353,6 +2416,14 @@ msgstr "Niveau de risque"
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:192
 msgid "Patient Information"
 msgstr "Information du patient"
+
+#: app/admin/api-dashboard/duplicates-detail.php:101
+msgid "Sample IDs"
+msgstr "ID des échantillons"
+
+#: app/admin/api-dashboard/duplicates-detail.php:102
+msgid "Collection Dates"
+msgstr "Dates de collecte"
 
 #: app/admin/api-dashboard/duplicates-detail.php:103
 msgid "Request Sources"
@@ -2375,16 +2446,16 @@ msgid "Facilities"
 msgstr "FOSA"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:87
-msgid "High Missing API Sample Receipts"
-msgstr "Nombre élevé de reçus d'échantillons API manquants"
+msgid "High Missing API/EMR Sample Receipts"
+msgstr "Élevé Absence de reçus d'échantillons API/EMR"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:88
 #, php-format
 msgid ""
-"%d API test requests have been waiting for sample receipt for more than 30 "
-"days"
+"%d API/EMR test requests have been waiting for sample receipt for more than "
+"30 days"
 msgstr ""
-"%d Les demandes de test de l'API sont en attente de réception d'échantillon "
+"%d Les demandes de test API/EMR attendent la réception de l'échantillon "
 "depuis plus de 30 jours"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:143
@@ -2396,54 +2467,58 @@ msgstr "Détection de doublons potentiels"
 msgid "%d groups of potential duplicate entries found"
 msgstr "%d groupes de doublons potentiels trouvés"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:166
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:163
+msgid "Pending Tests"
+msgstr "Tests en cours"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:167
 msgid "Critical: Many Long Pending Tests"
 msgstr "Critique : De nombreux tests en attente depuis longtemps"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:169
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:170
 msgid "Long Pending Tests"
 msgstr "Tests en attente depuis longtemps"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:175
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:176
 #, php-format
 msgid "%d samples have been pending testing for more than 30 days"
 msgstr "%d Les échantillons sont en attente de test depuis plus de 30 jours"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:194
-msgid "API Result Transmission Issues"
-msgstr "Problèmes de transmission des résultats de l'API"
-
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:195
+msgid "API/EMR Result Transmission Issues"
+msgstr "Problèmes de transmission des résultats API/EMR"
+
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:196
 #, php-format
-msgid "%d API results have transmission issues (pending/failed)"
+msgid "%d API/EMR results have transmission issues (pending/failed)"
 msgstr ""
-"%d Les résultats de l'API ont des problèmes de transmission (en attente/"
+"%d Les résultats de l'API/EMR ont des problèmes de transmission (en attente/"
 "échec)"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:216
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:217
 msgid "High Sample Rejection Rate"
 msgstr "Taux élevé de rejet des échantillons"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:218
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:219
 #, php-format
 msgid "Sample rejection rate is %.1f%% (%d out of %d samples)"
 msgstr ""
 "Le taux de rejet des échantillons est de %.1f%% (%d sur %d échantillons)"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:233
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:234
 msgid "All Good!"
 msgstr "Tout va bien!"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:234
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:235
 msgid "No critical issues detected in the current time period."
 msgstr ""
 "Aucun problème critique n'a été détecté au cours de la période actuelle."
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:260
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:261
 msgid "Error"
 msgstr "Erreur"
 
-#: app/admin/api-dashboard/get-api-dashboard-alerts.php:261
+#: app/admin/api-dashboard/get-api-dashboard-alerts.php:262
 msgid "Failed to load alerts"
 msgstr "Échec du chargement des alertes"
 
@@ -2479,13 +2554,13 @@ msgstr "Priorité moyenne"
 msgid "Requests 3-7 days old"
 msgstr "Demandes âgées de 3 à 7 jours"
 
-#: app/admin/api-dashboard/missing-samples-detail.php:120
-msgid "Priority"
-msgstr "Priorité"
-
 #: app/admin/api-dashboard/missing-samples-detail.php:122
 msgid "Remote ID"
 msgstr "Identification à distance"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:123
+msgid "Patient Info"
+msgstr "Information du patient"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:125
 #: app/cd4/management/export-cd4-results.php:32
@@ -2494,6 +2569,14 @@ msgstr "Identification à distance"
 #: app/vl/requests/export-vl-requests.php:38
 msgid "Request Date"
 msgstr "Date de la demande"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:126
+msgid "Days Pending"
+msgstr "Jours en attente"
+
+#: app/admin/api-dashboard/missing-samples-detail.php:127
+msgid "Source"
+msgstr "Source"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:128
 msgid "Actions"
@@ -15855,6 +15938,10 @@ msgstr "Échantillons en attente d'approbation"
 msgid "Samples Registered at Collection Sites"
 msgstr "Échantillons enregistrés sur les sites de collecte"
 
+#: app/dashboard/getSampleResult.php:755
+msgid "Total"
+msgstr "Total"
+
 #: app/dashboard/index.php:3 app/roles/addRole.php:168
 #: app/roles/editRole.php:196 app/system/translate-strings.php:116
 msgid "Dashboard"
@@ -27444,6 +27531,27 @@ msgstr "Format ISO"
 #: public/assets/js/smart-date-format.js.php:750
 msgid "German Format"
 msgstr "Format allemand"
+
+#~ msgid "Potential Duplicate Entries"
+#~ msgstr "Entrées en double potentielles"
+
+#~ msgid "Sources"
+#~ msgstr "Sources"
+
+#~ msgid "No potential duplicates found"
+#~ msgstr "Aucun doublon potentiel n'a été trouvé"
+
+#~ msgid "Showing first 10 records."
+#~ msgstr "Les 10 premiers enregistrements sont affichés."
+
+#~ msgid "View all records"
+#~ msgstr "Voir tous les dossiers"
+
+#~ msgid "API"
+#~ msgstr "API"
+
+#~ msgid "API %"
+#~ msgstr "API %"
 
 #~ msgid "COULD NOT FIND TEST DATE"
 #~ msgstr "N'A PAS PU TROUVER LA DATE DU TEST"

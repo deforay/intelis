@@ -1,5 +1,7 @@
 <?php
 
+// api/v1.1/vl/save-request.php
+
 use JsonMachine\Items;
 use App\Services\VlService;
 use App\Services\ApiService;
@@ -21,6 +23,10 @@ ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
 
+// Configuration flag for duplicate detection
+$enableDuplicateDetection = true; // TODO: Replace with global config once implemented
+// $enableDuplicateDetection = (bool) $general->getGlobalConfig('enable_duplicate_detection', true);
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -36,7 +42,6 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var VlService $vlService */
 $vlService = ContainerRegistry::get(VlService::class);
 
-
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
@@ -47,13 +52,14 @@ try {
     /** @var Slim\Psr7\Request $request */
     $request = AppRegistry::get('request');
     $noOfFailedRecords = 0;
+    $duplicateBlockedRecords = 0;
+    $duplicateWarningRecords = 0;
 
     $origJson = $apiService->getJsonFromRequest($request);
 
     if (JsonUtility::isJSON($origJson) === false) {
         throw new SystemException("Invalid JSON Payload", 400);
     }
-
 
     $updatedLabs = [];
 
@@ -63,11 +69,8 @@ try {
             'pointer' => '/appVersion',
             'decoder' => new ExtJsonDecoder(true)
         ]);
-
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
-
     } catch (PathNotFoundException | Throwable $e) {
-        // If the pointer is not found, appVersion remains null
         $appVersion = null;
     }
 
@@ -85,21 +88,16 @@ try {
 
     $transactionId = MiscUtility::generateULID();
 
-    $logVal = null;
-    $absDecimalVal = null;
-    $absVal = null;
-    $txtVal = null;
-    $finalResult = null;
-
     $authToken = ApiService::extractBearerToken($request);
     $user = $usersService->findUserByApiToken($authToken);
     $roleUser = $usersService->getUserRole($user['user_id']);
     $responseData = [];
+    $duplicateInfo = []; // Track duplicate detection results
     $uniqueIdsForSampleCodeGeneration = [];
     $instanceId = $general->getInstanceId();
     $formId = (int) $general->getGlobalConfig('vl_form');
+    $version = $general->getAppVersion();
 
-    $version =  $general->getAppVersion();
     /* To save the user attributes from API */
     $userAttributes = [];
     foreach (['deviceId', 'osVersion', 'ipAddress'] as $header) {
@@ -107,7 +105,6 @@ try {
     }
     $userAttributes = JsonUtility::jsonToSetString(json_encode($userAttributes), 'user_attributes');
     $usersService->saveUserAttributes($userAttributes, $user['user_id']);
-
 
     $dataCounter = 0;
     foreach ($input as $rootKey => $data) {
@@ -134,6 +131,7 @@ try {
 
         $data = MiscUtility::arrayEmptyStringsToNull($data);
 
+        // Basic validation checks
         if (MiscUtility::hasEmpty(array_intersect_key($data, array_flip($mandatoryFields)))) {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -156,6 +154,7 @@ try {
             continue;
         }
 
+        // Process province data
         if (!empty($data['provinceId']) && !is_numeric($data['provinceId'])) {
             $province = explode("##", (string) $data['provinceId']);
             if (!empty($province)) {
@@ -169,24 +168,14 @@ try {
         $provinceId = $data['provinceId'] ?? null;
         $sampleCollectionDate = $data['sampleCollectionDate'] = DateUtility::isoDateFormat($data['sampleCollectionDate'], true);
 
+        // Check for existing sample
         $update = "no";
         $rowData = null;
         $uniqueId = null;
         if (!empty($data['labId']) && !empty($data['appSampleCode'])) {
-
-            $sQuery = "SELECT vl_sample_id,
-                            unique_id,
-                            sample_code,
-                            remote_sample_code,
-                            result_status,
-                            locked
+            $sQuery = "SELECT vl_sample_id, unique_id, sample_code, remote_sample_code, result_status, locked
                         FROM form_vl
                         WHERE (app_sample_code like ? AND lab_id = ?) ";
-
-
-            if (!empty($sQueryWhere)) {
-                $sQuery .= " WHERE " . implode(" AND ", $sQueryWhere);
-            }
 
             $rowData = $db->rawQueryOne($sQuery, [$data['appSampleCode'], $data['labId']]);
             if (!empty($rowData)) {
@@ -208,6 +197,7 @@ try {
             }
         }
 
+        // Process sample insertion/update setup
         $currentSampleData = [];
         if (!empty($rowData)) {
             $data['vlSampleId'] = $rowData['vl_sample_id'];
@@ -226,8 +216,8 @@ try {
             $params['instanceType'] = $general->getInstanceType();
             $params['facilityId'] = $data['facilityId'] ?? null;
             $params['labId'] = $data['labId'] ?? null;
-
             $params['insertOperation'] = true;
+
             $currentSampleData['id'] = $vlService->insertSample($params);
             $uniqueIdsForSampleCodeGeneration[] = $currentSampleData['uniqueId'] = $uniqueId;
             $currentSampleData['action'] = 'inserted';
@@ -245,6 +235,7 @@ try {
             }
         }
 
+        // Process result status and data
         $status = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
         if ($roleUser['access_type'] != 'testing-lab') {
             $status = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
@@ -264,9 +255,8 @@ try {
             $data['vlResult'] = 'Below Detection Level';
         }
 
-        // Let us process the result entered by the user
+        // Process viral load results
         $processedResults = $vlService->processViralLoadResultFromForm($data);
-
         $isRejected = $processedResults['isRejected'];
         $finalResult = $processedResults['finalResult'];
         $absDecimalVal = $processedResults['absDecimalVal'];
@@ -276,12 +266,14 @@ try {
         $hivDetection = $processedResults['hivDetection'];
         $status = $processedResults['resultStatus'] ?? $status;
 
+        // Prepare form attributes
         $formAttributes = [
             'applicationVersion' => $version,
             'apiTransactionId' => $transactionId,
             'mobileAppVersion' => $appVersion,
             'deviceId' => $userAttributes['deviceId'] ?? null
         ];
+
         /* Reason for VL Result changes */
         $reasonForChanges = null;
         $allChange = [];
@@ -297,11 +289,12 @@ try {
         if (!empty($allChange)) {
             $reasonForChanges = json_encode($allChange);
         }
-        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+
         /* Field missing corrections */
         $data['dob'] = $data['dob'] ?? $data['patientDob'] ?? null;
         $data['sampleTestingDateAtLab'] = $data['sampleTestingDateAtLab'] ?? $data['sampleTestedDateTime'] ?? null;
 
+        // BUILD THE COMPLETE DATA ARRAY FIRST
         $vlFulldata = [
             'vlsm_instance_id' => $instanceId,
             'sample_collection_date' => $sampleCollectionDate,
@@ -382,10 +375,10 @@ try {
             'result_reviewed_by' => $data['reviewedBy'] ?? null,
             'result_reviewed_datetime' => DateUtility::isoDateFormat($data['reviewedOn'] ?? '', true),
             'source_of_request' => $data['sourceOfRequest'] ?? "API",
-            'form_attributes' => !empty($formAttributes) ? $db->func($formAttributes) : null,
             'result_sent_to_source' => 'pending'
         ];
 
+        // Process patient names - combining into single field as per your logic
         $vlFulldata['patient_first_name'] = $data['patientFirstName'] ?? '';
         $vlFulldata['patient_middle_name'] = $data['patientMiddleName'] ?? '';
         $vlFulldata['patient_last_name'] = $data['patientLastName'] ?? '';
@@ -410,6 +403,7 @@ try {
         $vlFulldata['patient_middle_name'] = null;
         $vlFulldata['patient_last_name'] = null;
 
+        // Set user and timestamps
         if (!empty($rowData)) {
             $vlFulldata['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $vlFulldata['last_modified_by'] = $user['user_id'];
@@ -421,22 +415,140 @@ try {
         $vlFulldata['request_created_by'] = $user['user_id'];
         $vlFulldata['last_modified_by'] = $user['user_id'];
 
+        // Process result category
         $vlFulldata['vl_result_category'] = $vlService->getVLResultCategory($vlFulldata['result_status'], $vlFulldata['result']);
         if ($vlFulldata['vl_result_category'] == 'failed' || $vlFulldata['vl_result_category'] == 'invalid') {
             $vlFulldata['result_status'] = SAMPLE_STATUS\TEST_FAILED;
         } elseif ($vlFulldata['vl_result_category'] == 'rejected') {
             $vlFulldata['result_status'] = SAMPLE_STATUS\REJECTED;
         }
+
+        // ========================================
+        // NOW DO DUPLICATE DETECTION WITH COMPLETE DATA
+        // ========================================
+        $duplicateWarning = null;
+
+        if ($enableDuplicateDetection) {
+            try {
+                // Pass the entire vlFulldata array - let the function extract what it needs
+                // Add exclude ID for updates
+                $vlFulldata['excludeSampleId'] = !empty($rowData) ? $rowData['vl_sample_id'] : null;
+
+                $duplicateCheck = $testRequestsService->detectDuplicateSample($vlFulldata, 'vl', 7, true);
+
+                if ($duplicateCheck['isDuplicate']) {
+                    $riskLevel = $duplicateCheck['riskLevel'];
+                    $duplicateCount = $duplicateCheck['duplicateCount'];
+
+                    // Store duplicate info for response payload
+                    $duplicateInfo[$rootKey] = [
+                        'detected' => true,
+                        'riskLevel' => $riskLevel,
+                        'duplicateCount' => $duplicateCount,
+                        'withinDays' => $duplicateCheck['withinDays'],
+                        'searchCriteria' => $duplicateCheck['searchCriteria'],
+                        'duplicates' => array_map(fn($dup) => [
+                            'sampleCode' => $dup['sample_code'] ?? $dup['remote_sample_code'] ?? $dup['app_sample_code'],
+                            'collectionDate' => $dup['sample_collection_date_formatted'],
+                            'daysDifference' => $dup['days_abs_difference'],
+                            'facility' => $dup['facility_name'],
+                            'lab' => $dup['lab_name'],
+                            'matchConfidence' => $dup['match_confidence'],
+                            'riskLevel' => $dup['risk_level']
+                        ], array_slice($duplicateCheck['duplicates'], 0, 5))
+                    ];
+
+                    // Log duplicate detection
+                    LoggerUtility::logInfo("Duplicate sample detected", [
+                        'appSampleCode' => $data['appSampleCode'],
+                        'patientArtNo' => $vlFulldata['patient_art_no'],
+                        'patientName' => $vlFulldata['patient_first_name'],
+                        'facilityId' => $vlFulldata['facility_id'],
+                        'riskLevel' => $riskLevel,
+                        'duplicateCount' => $duplicateCount,
+                        'action' => $riskLevel === 'high' ? 'blocked' : 'allowed_with_warning'
+                    ]);
+
+                    // Business logic based on risk level
+                    switch ($riskLevel) {
+                        case 'high':
+                            // Block high-risk duplicates (within 1 day)
+                            $noOfFailedRecords++;
+                            $duplicateBlockedRecords++;
+                            $responseData[$rootKey] = [
+                                'transactionId' => $transactionId,
+                                'appSampleCode' => $data['appSampleCode'] ?? null,
+                                'status' => 'failed',
+                                'action' => 'blocked_duplicate',
+                                'message' => _translate("Potential duplicate sample detected within 1 day"),
+                                'duplicateInfo' => $duplicateInfo[$rootKey]
+                            ];
+                            continue 2; // Continue to next record in the main loop
+
+                        case 'medium':
+                            // Warn but allow medium-risk duplicates (2-3 days)
+                            $duplicateWarningRecords++;
+                            $duplicateWarning = [
+                                'detected' => true,
+                                'riskLevel' => $riskLevel,
+                                'count' => $duplicateCount,
+                                'withinDays' => $duplicateCheck['withinDays'],
+                                'message' => _translate("Medium-risk duplicate detected") . " ($duplicateCount duplicates within {$duplicateCheck['withinDays']} days)"
+                            ];
+                            break;
+
+                        case 'low':
+                            // Log low-risk duplicates for monitoring (4-7 days)
+                            $duplicateWarning = [
+                                'detected' => true,
+                                'riskLevel' => $riskLevel,
+                                'count' => $duplicateCount,
+                                'withinDays' => $duplicateCheck['withinDays']
+                            ];
+                            break;
+                    }
+                }
+            } catch (Throwable $duplicateError) {
+                // Log duplicate detection errors but don't block the sample
+                LoggerUtility::logError("Duplicate detection failed for sample", [
+                    'appSampleCode' => $data['appSampleCode'],
+                    'error' => $duplicateError->getMessage(),
+                    'trace' => $duplicateError->getTraceAsString()
+                ]);
+
+                // Add error info for debugging
+                $duplicateInfo[$rootKey] = [
+                    'detected' => false,
+                    'error' => $duplicateError->getMessage(),
+                    'timestamp' => DateUtility::getCurrentDateTime()
+                ];
+            }
+        }
+
+        // Add duplicate detection info to form attributes (only for allowed samples)
+        if (!empty($duplicateWarning)) {
+            $formAttributes['duplicateWarning'] = $duplicateWarning;
+        }
+        if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
+            $formAttributes['duplicateDetection'] = $duplicateInfo[$rootKey];
+        }
+
+        // Finalize form attributes
+        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $vlFulldata['form_attributes'] = !empty($formAttributes) ? $db->func($formAttributes) : null;
+
+        // Clean up data and perform database update
+        $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
         $id = false;
 
-        $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
         if (!empty($data['vlSampleId'])) {
             $db->where('vl_sample_id', $data['vlSampleId']);
             $id = $db->update('form_vl', $vlFulldata);
         }
 
+        // Build response
         if ($id === true) {
-            $responseData[$rootKey] = [
+            $sampleResponse = [
                 'status' => 'success',
                 'action' => $currentSampleData['action'] ?? null,
                 'sampleCode' => $currentSampleData['remoteSampleCode'] ?? $currentSampleData['sampleCode'] ?? null,
@@ -444,6 +556,19 @@ try {
                 'uniqueId' => $uniqueId ?? $currentSampleData['uniqueId'] ?? null,
                 'appSampleCode' => $data['appSampleCode'] ?? null,
             ];
+
+            // Add duplicate warning information if present
+            if (!empty($duplicateWarning)) {
+                $sampleResponse['warning'] = $duplicateWarning['message'];
+                $sampleResponse['duplicateWarning'] = $duplicateWarning;
+            }
+
+            // Add duplicate detection info if available
+            if (isset($duplicateInfo[$rootKey]) && !isset($duplicateInfo[$rootKey]['error'])) {
+                $sampleResponse['duplicateInfo'] = $duplicateInfo[$rootKey];
+            }
+
+            $responseData[$rootKey] = $sampleResponse;
         } else {
             $noOfFailedRecords++;
             $responseData[$rootKey] = [
@@ -456,9 +581,7 @@ try {
         }
     }
 
-
     // Commit transaction after processing all records
-    // we are doing this before generating sample codes as that is a separate process in itself
     $db->commitTransaction();
 
     // For inserted samples, generate sample code
@@ -474,6 +597,7 @@ try {
         }
     }
 
+    // Determine overall payload status
     if ($noOfFailedRecords > 0 && $noOfFailedRecords == $dataCounter) {
         $payloadStatus = 'failed';
     } elseif ($noOfFailedRecords > 0) {
@@ -486,12 +610,36 @@ try {
         $updatedLabs[] = $data['lab_id'];
     }
 
+    // Payload with summary
     $payload = [
         'status' => $payloadStatus,
         'timestamp' => time(),
         'transactionId' => $transactionId,
-        'data' => $responseData ?? []
+        'data' => $responseData ?? [],
+        'summary' => [
+            'totalRecords' => $dataCounter,
+            'successfulRecords' => $dataCounter - $noOfFailedRecords,
+            'failedRecords' => $noOfFailedRecords,
+        ]
     ];
+
+    // Add detailed duplicate information only if duplicates were detected
+    if ($enableDuplicateDetection && !empty($duplicateInfo)) {
+        $payload['duplicateDetails'] = $duplicateInfo;
+        $payload['summary']['duplicateRecords'] = [
+            'blockedRecords' => $duplicateBlockedRecords,
+            'warningRecords' => $duplicateWarningRecords,
+            'totalDuplicatesDetected' => count($duplicateInfo),
+            'duplicates' => [
+                'highRisk' => $duplicateBlockedRecords,
+                'mediumRisk' => $duplicateWarningRecords - array_sum(array_map(function ($info) {
+                    return isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0;
+                }, $duplicateInfo)),
+                'lowRisk' => array_sum(array_map(fn($info) => isset($info['riskLevel']) && $info['riskLevel'] === 'low' ? 1 : 0, $duplicateInfo))
+            ]
+        ];
+    }
+
     http_response_code(200);
 } catch (Throwable $e) {
     $db->rollbackTransaction();
@@ -516,6 +664,4 @@ $general->addApiTracking($transactionId, $user['user_id'], $dataCounter, 'save-r
 
 $general->updateResultSyncDateTime('vl', null, $updatedLabs);
 
-
-//echo $payload
 echo ApiService::generateJsonResponse($payload, $request);
