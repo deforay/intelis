@@ -1114,15 +1114,15 @@ $state = $geolocationService->getProvinces("yes");
             scrollX: true, // Enable horizontal scrolling for many columns
             language: {
                 search: "<?= _translate('Search facilities'); ?>:",
-                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('entries'); ?>",
-                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to'); ?> _END_ <?= _translate('of'); ?> _TOTAL_ <?= _translate('facilities'); ?>",
-                emptyTable: "<?= _translate('No data available'); ?>",
-                zeroRecords: "<?= _translate('No matching facilities found'); ?>",
+                lengthMenu: "<?= _translate('Show'); ?> _MENU_ <?= _translate('entries', true); ?>",
+                info: "<?= _translate('Showing'); ?> _START_ <?= _translate('to', true); ?> _END_ <?= _translate('of', true); ?> _TOTAL_ <?= _translate('facilities', true); ?>",
+                emptyTable: "<?= _translate('No data available', true); ?>",
+                zeroRecords: "<?= _translate('No matching facilities found', true); ?>",
                 paginate: {
-                    first: "<?= _translate('First'); ?>",
-                    last: "<?= _translate('Last'); ?>",
-                    next: "<?= _translate('Next'); ?>",
-                    previous: "<?= _translate('Previous'); ?>"
+                    first: "<?= _translate('First', true); ?>",
+                    last: "<?= _translate('Last', true); ?>",
+                    next: "<?= _translate('Next', true); ?>",
+                    previous: "<?= _translate('Previous', true); ?>"
                 }
             },
             dom: '<"row"<"col-sm-6"l><"col-sm-6"f>>' +
@@ -1149,7 +1149,7 @@ $state = $geolocationService->getProvinces("yes");
                 </tr>`;
                 });
                 if (results.length === 0) {
-                    html = '<tr><td colspan="4" class="text-center"><?= _translate("No non-originating results found"); ?></td></tr>';
+                    html = '<tr><td colspan="4" class="text-center"><?= _translate("No non-originating results found", true); ?></td></tr>';
                 }
                 $("#nonOriginatingBody").html(html);
             });

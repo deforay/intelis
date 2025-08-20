@@ -34,7 +34,7 @@ class AclMiddleware implements MiddlewareInterface
             $currentURI = $this->getCurrentRequestUri();
             $user = $_SESSION['userName'] ?? null;
 
-            if ($this->isAccessAllowed($request, $currentURI, $user)) {
+            if ($_SESSION['roleId'] == 1 || $this->isAccessAllowed($request, $currentURI, $user)) {
                 return $handler->handle($request);
             }
 
