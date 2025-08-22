@@ -1,9 +1,10 @@
 <?php
 
+// app/api/v1.1/generate-manifest.php
+
 use App\Services\ApiService;
 use App\Services\TestsService;
 use App\Services\UsersService;
-use App\Services\FacilitiesService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -12,6 +13,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -29,7 +31,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-//$origJson = $request->getBody()->getContents();
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
@@ -45,7 +46,6 @@ if (
     throw new SystemException('Invalid request', 400);
 }
 
-
 $transactionId = MiscUtility::generateULID();
 
 /* For API Tracking params */
@@ -60,7 +60,8 @@ $testPrimaryKey = TestsService::getPrimaryColumn($input['testType']);
 $sampleManifestCode = strtoupper(str_replace("-", "", $input['testType']) . date('ymdH') .  MiscUtility::generateRandomString(4));
 
 try {
-    $sQuery = "SELECT unique_id, sample_code, remote_sample_code, $testPrimaryKey FROM $testTable as vl";
+    // Modified query to include sample_package_id and sample_package_code
+    $sQuery = "SELECT unique_id, sample_code, remote_sample_code, app_sample_code, sample_package_id, sample_package_code, $testPrimaryKey FROM $testTable as vl";
 
     $where = [];
     /* To check the sample id filter */
@@ -69,7 +70,9 @@ try {
         $sampleCode = implode("','", $sampleCode);
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') OR vl.app_sample_code IN ('$sampleCode') ) ";
     }
-    $where[] = " ((vl.sample_package_id IS NULL OR vl.sample_package_id = '') AND (vl.sample_package_code IS NULL  OR vl.sample_package_code = ''))";
+
+    // REMOVED: The condition that excludes samples already in manifests
+    // $where[] = " ((vl.sample_package_id IS NULL OR vl.sample_package_id = '') AND (vl.sample_package_code IS NULL  OR vl.sample_package_code = ''))";
 
     $facilityMap = $facilitiesService->getUserFacilityMap($user['user_id']);
     $response = [];
@@ -88,60 +91,127 @@ try {
 
     $sQuery .= ' WHERE ' . implode(' AND ', $where);
     $rowData = $db->rawQuery($sQuery);
-    $avilableSamples = [];
-    $missiedSamples = [];
+
+    // Separate samples into different categories
+    $availableSamples = [];
+    $alreadyInManifest = [];
+    $addedToManifest = [];
+    $missedSamples = [];
+
     if (isset($rowData) && !empty($rowData)) {
-        $data = [
-            'package_code' => $sampleManifestCode,
-            'module' => $input['testType'],
-            'added_by' => $user['user_id'],
-            'lab_id' => $input['labId'],
-            'number_of_samples' => count($rowData ?? []),
-            'package_status' => 'pending',
-            'request_created_datetime' => DateUtility::getCurrentDateTime(),
-            'last_modified_datetime' => DateUtility::getCurrentDateTime()
-        ];
-        $db->insert('package_details', $data);
-        $lastId = $db->getInsertId();
-        foreach ($rowData as $key => $row) {
-            $avilableSamples[] = $sampleId = $row['sample_code'] ?? $row['remote_sample_code'];
-            $tData = [
-                'sample_package_id' => $lastId,
-                'sample_package_code' => $sampleManifestCode,
-                'lab_id' => $input['labId'],
-                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                'data_sync' => 0
-            ];
-            $db->where($testPrimaryKey, $row[$testPrimaryKey]);
-            $status = $db->update($testTable, $tData);
-            if ($status) {
-                $response[$key] = [
+        // Separate samples based on their current manifest status
+        $samplesToAdd = [];
+
+        foreach ($rowData as $row) {
+            $sampleId = $row['sample_code'] ?? $row['remote_sample_code'];
+            $availableSamples[] = $sampleId;
+
+            // Check if sample is already in a manifest
+            if (!empty($row['sample_package_id']) && !empty($row['sample_package_code'])) {
+                // Sample is already in a manifest
+                $manifestCode = $row['sample_package_code'];
+                if (!isset($alreadyInManifest[$manifestCode])) {
+                    $alreadyInManifest[$manifestCode] = [];
+                }
+                $alreadyInManifest[$manifestCode][] = [
                     'sampleCode' => $row['sample_code'],
                     'remoteSampleCode' => $row['remote_sample_code'],
                     'appSampleCode' => $row['app_sample_code'],
                     'uniqueId' => $row['unique_id']
                 ];
+            } else {
+                // Sample is available to be added to new manifest
+                $samplesToAdd[] = $row;
             }
         }
 
-        $missiedSamples = array_values(array_diff($input['sampleCode'], $avilableSamples));
+        // Create new manifest only if there are samples to add
+        if (!empty($samplesToAdd)) {
+            $data = [
+                'package_code' => $sampleManifestCode,
+                'module' => $input['testType'],
+                'added_by' => $user['user_id'],
+                'lab_id' => $input['labId'],
+                'number_of_samples' => count($samplesToAdd),
+                'package_status' => 'pending',
+                'request_created_datetime' => DateUtility::getCurrentDateTime(),
+                'last_modified_datetime' => DateUtility::getCurrentDateTime()
+            ];
+            $db->insert('package_details', $data);
+            $lastId = $db->getInsertId();
 
-        $payload = [
-            'status' => 'success',
-            'timestamp' => time(),
-            'manifestCode' => $sampleManifestCode,
-            'data' => ['alreadyInManifest' => $missiedSamples, 'addedToManifest' => $response]
-        ];
+            foreach ($samplesToAdd as $key => $row) {
+                $tData = [
+                    'sample_package_id' => $lastId,
+                    'sample_package_code' => $sampleManifestCode,
+                    'lab_id' => $input['labId'],
+                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                    'data_sync' => 0
+                ];
+                $db->where($testPrimaryKey, $row[$testPrimaryKey]);
+                $status = $db->update($testTable, $tData);
+                if ($status) {
+                    $addedToManifest[] = [
+                        'sampleCode' => $row['sample_code'],
+                        'remoteSampleCode' => $row['remote_sample_code'],
+                        'appSampleCode' => $row['app_sample_code'],
+                        'uniqueId' => $row['unique_id']
+                    ];
+                }
+            }
+        }
+
+        // Find samples that were requested but not found
+        $missedSamples = array_values(array_diff($input['sampleCode'], $availableSamples));
+
+        // Prepare response maintaining backward compatibility
+        if (!empty($addedToManifest) || !empty($alreadyInManifest)) {
+            // Prepare the main data structure (maintaining old format)
+            $responseData = [
+                'alreadyInManifest' => $missedSamples, // Keep old key name for backward compatibility
+                'addedToManifest' => $addedToManifest
+            ];
+
+            // Add new existingManifests key for samples already in manifests
+            if (!empty($alreadyInManifest)) {
+                $responseData['existingManifests'] = [];
+                foreach ($alreadyInManifest as $manifestCode => $samples) {
+                    $responseData['existingManifests'][] = [
+                        'manifestCode' => $manifestCode,
+                        'samples' => $samples
+                    ];
+                }
+            }
+
+            $payload = [
+                'status' => 'success',
+                'timestamp' => time(),
+                'data' => $responseData
+            ];
+
+            // Add manifestCode only if new manifest was created (maintaining old structure)
+            if (!empty($addedToManifest)) {
+                $payload['manifestCode'] = $sampleManifestCode;
+            }
+
+        } else {
+            // No samples were processed - maintain old error format
+            $payload = [
+                'status' => 'Failed',
+                'timestamp' => time(),
+                'message' => 'Possibly incorrect lab. Failed to add samples to manifest',
+                'data' => []
+            ];
+        }
     } else {
         $payload = [
             'status' => 'Failed',
             'timestamp' => time(),
-            'message' => 'Possibly incorrect lab. Failed to add samples to manifest',
-            'data' => $response
+            'message' => 'No samples found matching the criteria',
+            'data' => []
         ];
     }
 } catch (Throwable $exc) {
-
     http_response_code(500);
     $payload = [
         'status' => 'failed',
@@ -157,10 +227,7 @@ try {
         'stacktrace' => $exc->getTraceAsString()
     ]);
 } finally {
-
     $payload = JsonUtility::encodeUtf8Json($payload);
     $general->addApiTracking($transactionId, $user['user_id'], count($rowData ?? []), 'manifest', $input['testType'], $requestUrl, $origJson, $payload, 'json');
-
-    //echo $payload
     echo ApiService::generateJsonResponse($payload, $request);
 }
