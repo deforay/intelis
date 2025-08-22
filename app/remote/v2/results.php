@@ -1,5 +1,5 @@
 <?php
-
+// /remote/v2/results.php -- receiver for results-sender.php
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -63,7 +63,7 @@ try {
 
     $payload = JsonUtility::encodeUtf8Json($sampleCodes);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $data, $payload, 'json', $labId);
     $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
 } catch (Throwable $e) {
     $payload = json_encode([]);

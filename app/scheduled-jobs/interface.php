@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+// app/scheduled-jobs/interface.php
+
 // only run from command line
 $isCli = php_sapi_name() === 'cli';
 

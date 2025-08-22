@@ -97,7 +97,13 @@ final class VlService extends AbstractTestService
      */
     private function preprocessViralLoadInput(string $input): string
     {
-        $input = trim(htmlspecialchars_decode($input));
+
+        $input = trim($input);
+
+        // Only decode if HTML entities are detected
+        if (str_contains($input, '&')) {
+            $input = html_entity_decode(htmlspecialchars_decode($input), ENT_QUOTES | ENT_HTML5, 'UTF-8');
+        }
 
         // Remove copy number units like cp/mL, copies/mL, etc.
         $input = str_ireplace($this->copiesPatterns, '', strtolower($input));

@@ -2,9 +2,9 @@
 
 # To use this script:
 # cd ~;
-# wget -O default-host-setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/default-host-setup.sh
-# sudo chmod u+x default-host-setup.sh;
-# sudo ./default-host-setup.sh -p /path/to/vlsm
+# wget -O intelis-host-setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/default-host-setup.sh
+# sudo chmod u+x intelis-host-setup.sh;
+# sudo ./intelis-host-setup.sh -p /path/to/vlsm
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then

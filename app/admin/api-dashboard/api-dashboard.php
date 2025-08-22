@@ -339,10 +339,10 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                API/EMR: <span class="metric-breakdown-number" id="apiRequestsBreakdown">-</span>
+                                <?= _translate('API/EMR'); ?>: <span class="metric-breakdown-number" id="apiRequestsBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                Non-API/EMR: <span class="metric-breakdown-number" id="nonApiRequestsBreakdown">-</span>
+                                <?= _translate('Non-API/EMR'); ?>: <span class="metric-breakdown-number" id="nonApiRequestsBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -359,10 +359,10 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                Received: <span class="metric-breakdown-number" id="apiReceivedBreakdown">-</span>
+                                <?= _translate('Received'); ?>: <span class="metric-breakdown-number" id="apiReceivedBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                Not Received: <span class="metric-breakdown-number" id="apiNotReceivedBreakdown">-</span>
+                                <?= _translate('Not Received'); ?>: <span class="metric-breakdown-number" id="apiNotReceivedBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -379,13 +379,13 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                Tested: <span class="metric-breakdown-number" id="receivedTestedBreakdown">-</span>
+                                <?= _translate('Tested'); ?>: <span class="metric-breakdown-number" id="receivedTestedBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                Rejected: <span class="metric-breakdown-number" id="rejectedSamplesBreakdown">-</span>
+                                <?= _translate('Rejected'); ?>: <span class="metric-breakdown-number" id="rejectedSamplesBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                Pending: <span class="metric-breakdown-number" id="receivedPendingBreakdown">-</span>
+                                <?= _translate('Pending'); ?>: <span class="metric-breakdown-number" id="receivedPendingBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -402,10 +402,10 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                ≤ 7 days: <span class="metric-breakdown-number" id="notReceived7DaysBreakdown">-</span>
+                                <?= _translate('≤ 7 days'); ?>: <span class="metric-breakdown-number" id="notReceived7DaysBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                > 7 days: <span class="metric-breakdown-number" id="notReceivedOver7DaysBreakdown">-</span>
+                                <?= _translate('> 7 days'); ?>: <span class="metric-breakdown-number" id="notReceivedOver7DaysBreakdown">-</span>
                             </span>
                         </div>
                     </div>
@@ -439,10 +439,10 @@ $state = $geolocationService->getProvinces("yes");
                         </div>
                         <div class="metric-breakdown">
                             <span class="metric-breakdown-item">
-                                Via API/EMR: <span class="metric-breakdown-number" id="resultsApiBreakdown">-</span>
+                                <?= _translate('Via API/EMR'); ?>: <span class="metric-breakdown-number" id="resultsApiBreakdown">-</span>
                             </span>
                             <span class="metric-breakdown-item">
-                                Other: <span class="metric-breakdown-number" id="resultsOtherBreakdown">-</span>
+                                <?= _translate('Other'); ?>: <span class="metric-breakdown-number" id="resultsOtherBreakdown">-</span>
                             </span>
                         </div>
                     </div>
