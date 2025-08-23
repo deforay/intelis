@@ -526,6 +526,56 @@ final class TestRequestsService
     }
 
     /**
+     * Debug helper function to validate data before database operations
+     */
+    private function validateDataForDatabase(array $data, string $tableName): array
+    {
+        try {
+            // Get actual table columns
+            $columns = $this->db->rawQuery("SHOW COLUMNS FROM `$tableName`");
+            $validColumns = array_column($columns, 'Field');
+
+            $invalidFields = [];
+            $validData = [];
+
+            foreach ($data as $key => $value) {
+                if (in_array($key, $validColumns)) {
+                    $validData[$key] = $value;
+                } else {
+                    $invalidFields[] = $key;
+                }
+            }
+
+            if (!empty($invalidFields)) {
+                LoggerUtility::logWarning("Invalid fields found for table $tableName", [
+                    'invalidFields' => $invalidFields,
+                    'tableName' => $tableName,
+                    'validColumns' => $validColumns
+                ]);
+            }
+
+            return [
+                'validData' => $validData,
+                'invalidFields' => $invalidFields,
+                'isValid' => empty($invalidFields)
+            ];
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Error validating data for database", [
+                'error' => $e->getMessage(),
+                'tableName' => $tableName
+            ]);
+
+            return [
+                'validData' => $data, // Return original data if validation fails
+                'invalidFields' => [],
+                'isValid' => false,
+                'error' => $e->getMessage()
+            ];
+        }
+    }
+
+
+    /**
      * Duplicate detection
      *
      * @param array $vlFulldata Complete sample data array with actual column names
@@ -545,7 +595,6 @@ final class TestRequestsService
             $patientLastNameColumn = TestsService::getPatientLastNameColumn($testType);
 
             // Extract and normalize parameters from the full data array
-            // Using actual database column names - much more reliable!
             $patientId = $this->normalizeString($vlFulldata[$patientIdColumn] ?? $vlFulldata['patient_art_no'] ?? null);
             $patientFirstName = $this->normalizeString($vlFulldata[$patientFirstNameColumn] ?? $vlFulldata['patient_first_name'] ?? null);
             $patientLastName = $this->normalizeString($vlFulldata[$patientLastNameColumn] ?? $vlFulldata['patient_last_name'] ?? null);
@@ -562,7 +611,7 @@ final class TestRequestsService
                 ];
             }
 
-            // Must have either patientId OR both first and last name (after normalization)
+            // Must have either patientId OR patient name (after normalization)
             $hasPatientId = !empty($patientId);
             $hasPatientName = !empty($patientFirstName) || !empty($patientLastName);
 
@@ -573,20 +622,12 @@ final class TestRequestsService
                 ];
             }
 
-            // Collection date should already be formatted, but double-check
-            if (!$collectionDate instanceof DateTime && !is_string($collectionDate)) {
-                return [
-                    'isDuplicate' => false,
-                    'error' => 'Invalid collection date format'
-                ];
-            }
-
-            // Convert to string if it's a DateTime object
+            // Ensure collection date is properly formatted
             if ($collectionDate instanceof DateTime) {
                 $collectionDate = $collectionDate->format('Y-m-d H:i:s');
             }
 
-            // Build the duplicate detection query
+            // Build the duplicate detection query with proper parameter handling
             $whereConditions = [];
             $queryParams = [];
 
@@ -594,20 +635,17 @@ final class TestRequestsService
             $patientMatchConditions = [];
 
             if ($hasPatientId) {
-                // Match by patient ID (exact match)
                 $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientIdColumn), '') = ?";
                 $queryParams[] = $patientId;
             }
 
             if ($hasPatientName) {
-                // For VL tests, patient_first_name contains the full name
-                // For other tests, might use separate first/last name fields
                 if ($testType === 'vl') {
-                    // Match by full name stored in first_name field
+                    // For VL, full name is stored in first_name field
                     $patientMatchConditions[] = "COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ?";
                     $queryParams[] = $patientFirstName;
                 } else {
-                    // Match by exact first AND last name using COALESCE
+                    // For other tests, use separate first/last name fields
                     if (!empty($patientFirstName) && !empty($patientLastName)) {
                         $patientMatchConditions[] = "(COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ?)";
                         $queryParams[] = $patientFirstName;
@@ -667,70 +705,72 @@ final class TestRequestsService
 
             // Data quality filters using COALESCE
             $whereConditions[] = "(
-                COALESCE(TRIM(t1.$patientIdColumn), '') != ''
-                OR
-                (COALESCE(TRIM(t1.$patientFirstNameColumn), '') != '' OR COALESCE(TRIM(t1.$patientLastNameColumn), '') != '')
-            )";
+            COALESCE(TRIM(t1.$patientIdColumn), '') != ''
+            OR
+            (COALESCE(TRIM(t1.$patientFirstNameColumn), '') != '' OR COALESCE(TRIM(t1.$patientLastNameColumn), '') != '')
+        )";
 
             $whereClause = implode(' AND ', $whereConditions);
 
+            // Build the complete query
             $query = "
-                SELECT
-                    t1.$primaryColumn,
-                    COALESCE(TRIM(t1.$patientIdColumn), '') as patient_id,
-                    COALESCE(TRIM(t1.$patientFirstNameColumn), '') as patient_first_name,
-                    COALESCE(TRIM(t1.$patientLastNameColumn), '') as patient_last_name,
-                    t1.sample_collection_date,
-                    t1.facility_id,
-                    t1.lab_id,
-                    COALESCE(t1.source_of_request, 'manual') as source_of_request,
-                    t1.sample_code,
-                    t1.remote_sample_code,
-                    t1.app_sample_code,
-                    t1.result_status,
-                    f.facility_name,
-                    l.facility_name as lab_name,
-                    DATEDIFF(?, t1.sample_collection_date) as days_difference,
-                    ABS(DATEDIFF(?, t1.sample_collection_date)) as days_abs_difference,
-                    TRIM(CONCAT(
-                        COALESCE(t1.$patientFirstNameColumn, ''),
-                        CASE
-                            WHEN COALESCE(t1.$patientFirstNameColumn, '') != '' AND COALESCE(t1.$patientLastNameColumn, '') != ''
-                            THEN ' '
-                            ELSE ''
-                        END,
-                        COALESCE(t1.$patientLastNameColumn, '')
-                    )) as full_name,
-                    -- Match score for ranking duplicates
+            SELECT
+                t1.$primaryColumn,
+                COALESCE(TRIM(t1.$patientIdColumn), '') as patient_id,
+                COALESCE(TRIM(t1.$patientFirstNameColumn), '') as patient_first_name,
+                COALESCE(TRIM(t1.$patientLastNameColumn), '') as patient_last_name,
+                t1.sample_collection_date,
+                t1.facility_id,
+                t1.lab_id,
+                COALESCE(t1.source_of_request, 'manual') as source_of_request,
+                t1.sample_code,
+                t1.remote_sample_code,
+                t1.app_sample_code,
+                t1.result_status,
+                f.facility_name,
+                l.facility_name as lab_name,
+                DATEDIFF(?, t1.sample_collection_date) as days_difference,
+                ABS(DATEDIFF(?, t1.sample_collection_date)) as days_abs_difference,
+                TRIM(CONCAT(
+                    COALESCE(t1.$patientFirstNameColumn, ''),
                     CASE
-                        WHEN COALESCE(TRIM(t1.$patientIdColumn), '') = ? THEN 100
-                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? THEN 90
-                        WHEN COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 85
-                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 95
-                        ELSE 0
-                    END as match_score
-                FROM $table as t1
-                LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id
-                LEFT JOIN facility_details as l ON t1.lab_id = l.facility_id
-                WHERE $whereClause
-                ORDER BY match_score DESC, ABS(DATEDIFF(?, t1.sample_collection_date)) ASC, t1.sample_collection_date DESC
-                LIMIT 10
-            ";
+                        WHEN COALESCE(t1.$patientFirstNameColumn, '') != '' AND COALESCE(t1.$patientLastNameColumn, '') != ''
+                        THEN ' '
+                        ELSE ''
+                    END,
+                    COALESCE(t1.$patientLastNameColumn, '')
+                )) as full_name,
+                CASE
+                    WHEN COALESCE(TRIM(t1.$patientIdColumn), '') = ? THEN 100
+                    WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? THEN 90
+                    WHEN COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 85
+                    WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 95
+                    ELSE 0
+                END as match_score
+            FROM $table as t1
+            LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id
+            LEFT JOIN facility_details as l ON t1.lab_id = l.facility_id
+            WHERE $whereClause
+            ORDER BY match_score DESC, ABS(DATEDIFF(?, t1.sample_collection_date)) ASC, t1.sample_collection_date DESC
+            LIMIT 10
+        ";
 
-            // Add parameters for DATEDIFF and match score calculations
-            $scoreParams = [
-                $collectionDate, // for first DATEDIFF
-                $collectionDate, // for second DATEDIFF
-                $patientId ?? '',  // for patient ID match score
+            // Prepare parameters for DATEDIFF and match score calculations - FIXED ORDER
+            $scoringParams = [
+                $collectionDate,     // for first DATEDIFF in SELECT
+                $collectionDate,     // for second DATEDIFF in SELECT
+                $patientId ?? '',    // for patient ID match score
                 $patientFirstName ?? '', // for first name match score
                 $patientLastName ?? '',  // for last name match score
                 $patientFirstName ?? '', // for combined first name in score
                 $patientLastName ?? '',  // for combined last name in score
-                $collectionDate  // for final ORDER BY DATEDIFF
+                $collectionDate      // for final ORDER BY DATEDIFF
             ];
 
-            $finalParams = array_merge($scoreParams, $queryParams);
+            // Combine all parameters in correct order
+            $finalParams = array_merge($scoringParams, $queryParams);
 
+            // Execute the query with error handling
             $duplicates = $this->db->rawQuery($query, $finalParams);
 
             if (empty($duplicates)) {
@@ -807,6 +847,8 @@ final class TestRequestsService
             LoggerUtility::logError("Duplicate detection error: " . $e->getMessage(), [
                 'vlFulldata' => $vlFulldata,
                 'testType' => $testType,
+                'query' => $query ?? 'Query not built',
+                'params' => $finalParams ?? 'Params not built',
                 'trace' => $e->getTraceAsString()
             ]);
 

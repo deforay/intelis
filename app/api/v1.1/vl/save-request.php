@@ -436,6 +436,9 @@ try {
 
                 $duplicateCheck = $testRequestsService->detectDuplicateSample($vlFulldata, 'vl', 7, true);
 
+                // IMPORTANT: Remove excludeSampleId from data before database operations
+                unset($vlFulldata['excludeSampleId']);
+
                 if ($duplicateCheck['isDuplicate']) {
                     $riskLevel = $duplicateCheck['riskLevel'];
                     $duplicateCount = $duplicateCheck['duplicateCount'];
@@ -522,6 +525,11 @@ try {
                     'error' => $duplicateError->getMessage(),
                     'timestamp' => DateUtility::getCurrentDateTime()
                 ];
+
+                // IMPORTANT: Ensure excludeSampleId is removed even on error
+                if (isset($vlFulldata['excludeSampleId'])) {
+                    unset($vlFulldata['excludeSampleId']);
+                }
             }
         }
 
@@ -539,6 +547,12 @@ try {
 
         // Clean up data and perform database update
         $vlFulldata = MiscUtility::arrayEmptyStringsToNull($vlFulldata);
+
+        // Double-check that excludeSampleId is not in the data
+        if (isset($vlFulldata['excludeSampleId'])) {
+            unset($vlFulldata['excludeSampleId']);
+        }
+
         $id = false;
 
         if (!empty($data['vlSampleId'])) {
