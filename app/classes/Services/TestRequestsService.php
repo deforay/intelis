@@ -525,54 +525,6 @@ final class TestRequestsService
         return $found;
     }
 
-    /**
-     * Debug helper function to validate data before database operations
-     */
-    private function validateDataForDatabase(array $data, string $tableName): array
-    {
-        try {
-            // Get actual table columns
-            $columns = $this->db->rawQuery("SHOW COLUMNS FROM `$tableName`");
-            $validColumns = array_column($columns, 'Field');
-
-            $invalidFields = [];
-            $validData = [];
-
-            foreach ($data as $key => $value) {
-                if (in_array($key, $validColumns)) {
-                    $validData[$key] = $value;
-                } else {
-                    $invalidFields[] = $key;
-                }
-            }
-
-            if (!empty($invalidFields)) {
-                LoggerUtility::logWarning("Invalid fields found for table $tableName", [
-                    'invalidFields' => $invalidFields,
-                    'tableName' => $tableName,
-                    'validColumns' => $validColumns
-                ]);
-            }
-
-            return [
-                'validData' => $validData,
-                'invalidFields' => $invalidFields,
-                'isValid' => empty($invalidFields)
-            ];
-        } catch (Throwable $e) {
-            LoggerUtility::logError("Error validating data for database", [
-                'error' => $e->getMessage(),
-                'tableName' => $tableName
-            ]);
-
-            return [
-                'validData' => $data, // Return original data if validation fails
-                'invalidFields' => [],
-                'isValid' => false,
-                'error' => $e->getMessage()
-            ];
-        }
-    }
 
 
     /**
@@ -705,55 +657,55 @@ final class TestRequestsService
 
             // Data quality filters using COALESCE
             $whereConditions[] = "(
-            COALESCE(TRIM(t1.$patientIdColumn), '') != ''
-            OR
-            (COALESCE(TRIM(t1.$patientFirstNameColumn), '') != '' OR COALESCE(TRIM(t1.$patientLastNameColumn), '') != '')
-        )";
+                COALESCE(TRIM(t1.$patientIdColumn), '') != ''
+                OR
+                (COALESCE(TRIM(t1.$patientFirstNameColumn), '') != '' OR COALESCE(TRIM(t1.$patientLastNameColumn), '') != '')
+            )";
 
             $whereClause = implode(' AND ', $whereConditions);
 
             // Build the complete query
             $query = "
-            SELECT
-                t1.$primaryColumn,
-                COALESCE(TRIM(t1.$patientIdColumn), '') as patient_id,
-                COALESCE(TRIM(t1.$patientFirstNameColumn), '') as patient_first_name,
-                COALESCE(TRIM(t1.$patientLastNameColumn), '') as patient_last_name,
-                t1.sample_collection_date,
-                t1.facility_id,
-                t1.lab_id,
-                COALESCE(t1.source_of_request, 'manual') as source_of_request,
-                t1.sample_code,
-                t1.remote_sample_code,
-                t1.app_sample_code,
-                t1.result_status,
-                f.facility_name,
-                l.facility_name as lab_name,
-                DATEDIFF(?, t1.sample_collection_date) as days_difference,
-                ABS(DATEDIFF(?, t1.sample_collection_date)) as days_abs_difference,
-                TRIM(CONCAT(
-                    COALESCE(t1.$patientFirstNameColumn, ''),
+                SELECT
+                    t1.$primaryColumn,
+                    COALESCE(TRIM(t1.$patientIdColumn), '') as patient_id,
+                    COALESCE(TRIM(t1.$patientFirstNameColumn), '') as patient_first_name,
+                    COALESCE(TRIM(t1.$patientLastNameColumn), '') as patient_last_name,
+                    t1.sample_collection_date,
+                    t1.facility_id,
+                    t1.lab_id,
+                    COALESCE(t1.source_of_request, 'manual') as source_of_request,
+                    t1.sample_code,
+                    t1.remote_sample_code,
+                    t1.app_sample_code,
+                    t1.result_status,
+                    f.facility_name,
+                    l.facility_name as lab_name,
+                    DATEDIFF(?, t1.sample_collection_date) as days_difference,
+                    ABS(DATEDIFF(?, t1.sample_collection_date)) as days_abs_difference,
+                    TRIM(CONCAT(
+                        COALESCE(t1.$patientFirstNameColumn, ''),
+                        CASE
+                            WHEN COALESCE(t1.$patientFirstNameColumn, '') != '' AND COALESCE(t1.$patientLastNameColumn, '') != ''
+                            THEN ' '
+                            ELSE ''
+                        END,
+                        COALESCE(t1.$patientLastNameColumn, '')
+                    )) as full_name,
                     CASE
-                        WHEN COALESCE(t1.$patientFirstNameColumn, '') != '' AND COALESCE(t1.$patientLastNameColumn, '') != ''
-                        THEN ' '
-                        ELSE ''
-                    END,
-                    COALESCE(t1.$patientLastNameColumn, '')
-                )) as full_name,
-                CASE
-                    WHEN COALESCE(TRIM(t1.$patientIdColumn), '') = ? THEN 100
-                    WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? THEN 90
-                    WHEN COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 85
-                    WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 95
-                    ELSE 0
-                END as match_score
-            FROM $table as t1
-            LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id
-            LEFT JOIN facility_details as l ON t1.lab_id = l.facility_id
-            WHERE $whereClause
-            ORDER BY match_score DESC, ABS(DATEDIFF(?, t1.sample_collection_date)) ASC, t1.sample_collection_date DESC
-            LIMIT 10
-        ";
+                        WHEN COALESCE(TRIM(t1.$patientIdColumn), '') = ? THEN 100
+                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? THEN 90
+                        WHEN COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 85
+                        WHEN COALESCE(TRIM(t1.$patientFirstNameColumn), '') = ? AND COALESCE(TRIM(t1.$patientLastNameColumn), '') = ? THEN 95
+                        ELSE 0
+                    END as match_score
+                FROM $table as t1
+                LEFT JOIN facility_details as f ON t1.facility_id = f.facility_id
+                LEFT JOIN facility_details as l ON t1.lab_id = l.facility_id
+                WHERE $whereClause
+                ORDER BY match_score DESC, ABS(DATEDIFF(?, t1.sample_collection_date)) ASC, t1.sample_collection_date DESC
+                LIMIT 10
+            ";
 
             // Prepare parameters for DATEDIFF and match score calculations - FIXED ORDER
             $scoringParams = [
