@@ -423,18 +423,66 @@ try {
             $vlFulldata['result_status'] = SAMPLE_STATUS\REJECTED;
         }
 
+
         // ========================================
-        // NOW DO DUPLICATE DETECTION WITH COMPLETE DATA
+        // DUPLICATE DETECTION - ONLY FOR NEW SAMPLES WITH DIFFERENT CODES
         // ========================================
         $duplicateWarning = null;
 
+        // Only check for duplicates if:
+        // 1. This is a new sample (no existing rowData), OR
+        // 2. This is an update but the appSampleCode is different from existing sample codes
+        $shouldCheckDuplicates = false;
+
         if ($enableDuplicateDetection) {
+            if (empty($rowData)) {
+                // New sample - always check for duplicates
+                $shouldCheckDuplicates = true;
+                LoggerUtility::logInfo("Duplicate check: New sample", [
+                    'appSampleCode' => $data['appSampleCode']
+                ]);
+            } else {
+                // Existing sample - only check if sample codes are different
+                $existingSampleCode = $rowData['sample_code'] ?? '';
+                $existingRemoteSampleCode = $rowData['remote_sample_code'] ?? '';
+                $currentAppSampleCode = $data['appSampleCode'] ?? '';
+
+                // Check if this is truly a different sample
+                if (
+                    $currentAppSampleCode !== $existingSampleCode &&
+                    $currentAppSampleCode !== $existingRemoteSampleCode
+                ) {
+                    $shouldCheckDuplicates = true;
+                    LoggerUtility::logInfo("Duplicate check: Different sample code", [
+                        'currentAppSampleCode' => $currentAppSampleCode,
+                        'existingSampleCode' => $existingSampleCode,
+                        'existingRemoteSampleCode' => $existingRemoteSampleCode
+                    ]);
+                } else {
+                    LoggerUtility::logInfo("Duplicate check: Same sample - skipping", [
+                        'currentAppSampleCode' => $currentAppSampleCode,
+                        'existingSampleCode' => $existingSampleCode,
+                        'existingRemoteSampleCode' => $existingRemoteSampleCode
+                    ]);
+                }
+            }
+        }
+
+        if ($shouldCheckDuplicates) {
             try {
                 // Pass the entire vlFulldata array - let the function extract what it needs
                 // Add exclude ID for updates
                 $vlFulldata['excludeSampleId'] = !empty($rowData) ? $rowData['vl_sample_id'] : null;
 
                 $duplicateCheck = $testRequestsService->detectDuplicateSample($vlFulldata, 'vl', 7, true);
+
+                LoggerUtility::logInfo("DEBUG: Duplicate detection result", [
+                    'appSampleCode' => $data['appSampleCode'],
+                    'isDuplicate' => $duplicateCheck['isDuplicate'] ?? false,
+                    'duplicateCount' => $duplicateCheck['duplicateCount'] ?? 0,
+                    'riskLevel' => $duplicateCheck['riskLevel'] ?? 'none',
+                    'error' => $duplicateCheck['error'] ?? null
+                ]);
 
                 // IMPORTANT: Remove excludeSampleId from data before database operations
                 unset($vlFulldata['excludeSampleId']);
@@ -531,6 +579,12 @@ try {
                     unset($vlFulldata['excludeSampleId']);
                 }
             }
+        } else {
+            // Skip duplicate detection - just log why
+            LoggerUtility::logInfo("Duplicate detection skipped", [
+                'appSampleCode' => $data['appSampleCode'],
+                'reason' => empty($rowData) ? 'new_sample' : 'same_sample_code'
+            ]);
         }
 
         // Add duplicate detection info to form attributes (only for allowed samples)
@@ -631,6 +685,7 @@ try {
         'transactionId' => $transactionId,
         'data' => $responseData ?? [],
         'summary' => [
+            'isDuplicateCheckEnabled' => $enableDuplicateDetection ? 'yes' : 'no',
             'totalRecords' => $dataCounter,
             'successfulRecords' => $dataCounter - $noOfFailedRecords,
             'failedRecords' => $noOfFailedRecords,
@@ -668,7 +723,9 @@ try {
     LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString()
+        'trace' => $e->getTraceAsString(),
+        'last_db_query' => $db->getLastQuery(),
+        'last_db_error' => $db->getLastError()
     ]);
 }
 

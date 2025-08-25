@@ -36,4 +36,11 @@ class ContainerRegistry
 
         return self::$container->get($id);
     }
+    public static function getContainer(): ContainerInterface
+    {
+        if (self::$container === null) {
+            throw new SystemException('Container is not set.');
+        }
+        return self::$container;
+    }
 }

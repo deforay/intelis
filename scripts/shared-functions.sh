@@ -1,5 +1,5 @@
 #!/bin/bash
-
+# shared-functions.sh - Common functions for LIS scripts
 # Unified print function for colored output
 print() {
     local type=$1
@@ -385,4 +385,183 @@ log_action() {
     fi
 
     echo "$(date +'%Y-%m-%d %H:%M:%S') - $message" >>"$logfile"
+}
+
+# Helper for idempotent file writing
+write_if_different() {
+    local target="$1"
+    local tmp
+    tmp="$(mktemp)"
+    cat >"$tmp"
+    if [[ -f "$target" ]] && cmp -s "$tmp" "$target"; then
+        rm -f "$tmp"
+        return 1  # unchanged
+    fi
+    install -D -m 0644 "$tmp" "$target"
+    rm -f "$tmp"
+    return 0  # written/changed
+}
+
+# Setup Intelis Scheduler (systemd timer replacement for cron)
+setup_intelis_scheduler() {
+    local lis_path="$1"
+    local application_env="${2:-production}"
+
+    # Create unique service name based on installation path
+    local service_name="intelis-$(basename "$lis_path")"
+
+    print info "Configuring Intelis Scheduler (systemd timer) for $(basename "$lis_path")..."
+    log_action "Configuring Intelis Scheduler with path: $lis_path, environment: $application_env, service: $service_name"
+
+    # Validate paths
+    if [[ ! -f "${lis_path}/cron.sh" ]]; then
+        print error "cron.sh not found at ${lis_path}/cron.sh"
+        log_action "ERROR: cron.sh not found at ${lis_path}/cron.sh"
+        return 1
+    fi
+
+    # Make cron.sh executable (idempotent)
+    chmod +x "${lis_path}/cron.sh"
+
+    # Track what actually changed
+    local service_changed=0
+    local timer_changed=0
+    local cron_removed=0
+
+    # Create/update systemd service
+    local service_file="/etc/systemd/system/${service_name}.service"
+    if write_if_different "$service_file" <<EOF
+[Unit]
+Description=Intelis Scheduler for $(basename "$lis_path") (crunzphp jobs)
+After=network-online.target mysql.service apache2.service
+Wants=network-online.target
+
+[Service]
+Type=oneshot
+User=www-data
+Group=www-data
+Environment=APPLICATION_ENV=${application_env}
+WorkingDirectory=${lis_path}
+ExecStart=${lis_path}/cron.sh ${application_env}
+
+# Prevent multiple instances
+RemainAfterExit=no
+
+# Logging
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=${service_name}
+EOF
+    then
+        service_changed=1
+        print info "Updated ${service_name}.service"
+        log_action "Updated ${service_name}.service"
+    else
+        print info "${service_name}.service already up to date"
+    fi
+
+    # Create/update systemd timer
+    local timer_file="/etc/systemd/system/${service_name}.timer"
+    if write_if_different "$timer_file" <<EOF
+[Unit]
+Description=Run Intelis scheduled jobs every minute for $(basename "$lis_path")
+
+[Timer]
+OnBootSec=120s
+OnUnitActiveSec=60s
+AccuracySec=5s
+Unit=${service_name}.service
+Persistent=true
+
+[Install]
+WantedBy=timers.target
+EOF
+    then
+        timer_changed=1
+        print info "Updated ${service_name}.timer"
+        log_action "Updated ${service_name}.timer"
+    else
+        print info "${service_name}.timer already up to date"
+    fi
+
+    # Only reload systemd if files actually changed
+    if [[ "$service_changed" == "1" || "$timer_changed" == "1" ]]; then
+        systemctl daemon-reload
+        print info "Reloaded systemd configuration"
+        log_action "Reloaded systemd due to timer/service changes"
+    fi
+
+    # Migrate from cron (idempotent) - comment out instead of removing
+    local cron_job="* * * * * cd ${lis_path} && ./cron.sh"
+    local current_crontab
+    current_crontab=$(crontab -l 2>/dev/null || echo "")
+
+    if echo "$current_crontab" | grep -Fq "$cron_job"; then
+        print info "Migrating from cron to systemd timer (commenting out old cron)..."
+        log_action "Migrating from cron to systemd timer - commenting out cron job"
+        # Comment out the exact matching cron entry
+        updated_crontab=$(echo "$current_crontab" | sed "s|^${cron_job//|/\\|}$|# MIGRATED TO SYSTEMD: &|")
+        echo "$updated_crontab" | crontab -
+        cron_removed=1
+        print success "Commented out old cron job (preserved as backup)"
+        log_action "Successfully commented out old cron job from crontab"
+    else
+        print info "No conflicting cron job found"
+    fi
+
+    # Clean up old generic intelis timer if it exists
+    if systemctl list-unit-files | grep -q "^intelis\.timer"; then
+        print info "Removing old generic intelis timer..."
+        systemctl disable --now intelis.timer 2>/dev/null || true
+        rm -f /etc/systemd/system/intelis.timer
+        rm -f /etc/systemd/system/intelis.service
+        systemctl daemon-reload
+        print success "Cleaned up old generic intelis timer"
+        log_action "Removed old generic intelis timer"
+    fi
+
+    # Clean up old intelis-scheduler if it exists
+    if systemctl list-unit-files | grep -q "intelis-scheduler.timer"; then
+        print info "Removing old intelis-scheduler timer..."
+        systemctl disable --now intelis-scheduler.timer 2>/dev/null || true
+        rm -f /etc/systemd/system/intelis-scheduler.timer
+        rm -f /etc/systemd/system/intelis-scheduler.service
+        systemctl daemon-reload
+        print success "Cleaned up old intelis-scheduler"
+        log_action "Removed old intelis-scheduler timer"
+    fi
+
+    # Enable timer (idempotent)
+    if ! systemctl is-enabled --quiet "${service_name}.timer"; then
+        systemctl enable "${service_name}.timer"
+        print info "Enabled ${service_name}.timer"
+        log_action "Enabled ${service_name}.timer"
+    else
+        print info "${service_name}.timer already enabled"
+    fi
+
+    # Start timer (idempotent)
+    if ! systemctl is-active --quiet "${service_name}.timer"; then
+        systemctl start "${service_name}.timer"
+        print info "Started ${service_name}.timer"
+        log_action "Started ${service_name}.timer"
+    else
+        print info "${service_name}.timer already running"
+    fi
+
+    # Summary of what happened
+    local changes_made=0
+    [[ "$service_changed" == "1" ]] && ((changes_made++))
+    [[ "$timer_changed" == "1" ]] && ((changes_made++))
+    [[ "$cron_removed" == "1" ]] && ((changes_made++))
+
+    if [[ "$changes_made" -gt 0 ]]; then
+        print success "✅ Intelis Scheduler configured for $(basename "$lis_path") ($changes_made changes made)"
+    else
+        print success "✅ Intelis Scheduler already configured correctly for $(basename "$lis_path")"
+    fi
+
+    print info "Monitor: journalctl -u ${service_name}.service -f"
+    print info "Status: systemctl status ${service_name}.timer"
+    log_action "Intelis Scheduler setup completed for $service_name (changes: $changes_made)"
 }

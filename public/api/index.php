@@ -3,7 +3,7 @@
 require_once dirname(__DIR__) . '/../bootstrap.php';
 
 // api/index.php
-use DI\Container;
+
 use Slim\Factory\AppFactory;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
@@ -17,8 +17,7 @@ use Slim\Factory\ServerRequestCreatorFactory;
 use App\Middlewares\Api\ApiErrorHandlingMiddleware;
 use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 
-$container = new Container();
-AppFactory::setContainer($container);
+AppFactory::setContainer(ContainerRegistry::getContainer());
 
 $apiService = AppFactory::create();
 $serverRequestCreator = ServerRequestCreatorFactory::create();

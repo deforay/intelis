@@ -977,31 +977,8 @@ if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
     sudo rm "${lis_path}/cache/CompiledContainer.php"
 fi
 
-# cron job
-chmod +x "${lis_path}/cron.sh"
-
-cron_job="* * * * * cd ${lis_path} && ./cron.sh"
-
-# Load current root crontab
-current_crontab=$(sudo crontab -l 2>/dev/null)
-
-# If active, do nothing
-if echo "$current_crontab" | grep -Fxq "$cron_job"; then
-    print info "Cron job for LIS already active. Skipping."
-    log_action "Cron job for LIS already active. Skipped."
-else
-    # Remove any commented version or similar-looking line
-    updated_crontab=$(echo "$current_crontab" | grep -vE "^\s*#?\s*\*\s\*\s\*\s\*\s\*\s+cd\s+${lis_path//\//\\/}\s+&&\s+\./cron\.sh")
-
-    # Append the correct cron job
-    {
-        echo "$updated_crontab"
-        echo "$cron_job"
-    } | sudo crontab -
-
-    print success "Cron job for LIS added/replaced in root's crontab."
-    log_action "Cron job for LIS added/replaced in root's crontab."
-fi
+# Cron job setup
+setup_intelis_scheduler "${lis_path}" "${APPLICATION_ENV:-production}"
 
 # Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh

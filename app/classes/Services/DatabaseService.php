@@ -18,26 +18,48 @@ final class DatabaseService extends MysqliDb
 
     private $isTransactionActive = false;
     private $useSavepoints = false;
+    private string $sessionCollation = 'utf8mb4_unicode_ci';
 
     public function __construct($host = null, $username = null, $password = null, $db = null, $port = null, $charset = 'utf8mb4')
     {
-        // Handle the case where an array of config is passed instead of individual parameters
+        // allow array config
         if (is_array($host)) {
-            $config = $host;
-            $host = $config['host'] ?? null;
-            $username = $config['username'] ?? null;
-            $password = $config['password'] ?? null;
-            $db = $config['db'] ?? null;
-            $port = $config['port'] ?? null;
-            $charset = $config['charset'] ?? 'utf8mb4';
+            $cfg     = $host;
+            $host    = $cfg['host']     ?? null;
+            $username = $cfg['username'] ?? null;
+            $password = $cfg['password'] ?? null;
+            $db      = $cfg['db']       ?? null;
+            $port    = $cfg['port']     ?? null;
+            $charset = $cfg['charset']  ?? 'utf8mb4';
         }
 
-        // Now add 'p:' prefix to the hostname for persistent connections
+        // persistent connection
         if ($host && is_string($host) && strpos($host, 'p:') !== 0) {
             $host = "p:$host";
         }
 
         parent::__construct($host, $username, $password, $db, $port, $charset);
+
+        // Ensure charset on the mysqli handle
+        mysqli_set_charset($this->mysqli(), $charset);
+
+        // Prefer the current database's default collation
+        $rowDb = $this->rawQueryOne("SHOW VARIABLES LIKE 'collation_database'");
+        $collation = $rowDb['Value'] ?? null;
+
+        // Fallback to server default if needed
+        if (!$collation) {
+            $rowSrv = $this->rawQueryOne("SHOW VARIABLES LIKE 'collation_server'");
+            $collation = $rowSrv['Value'] ?? null;
+        }
+
+        // Final fallback for very old installs
+        $this->sessionCollation = $collation ?: 'utf8mb4_unicode_ci';
+
+        // Apply for this connection/session
+        // (Use tokens, no quotes needed for SET NAMES)
+        $this->rawQuery("SET NAMES {$charset} COLLATE {$this->sessionCollation}");
+        $this->rawQuery("SET collation_connection = '{$this->sessionCollation}'");
     }
 
     public function getMySQLVersion(): string

@@ -1,6 +1,5 @@
 <?php
 
-use PHPMailer\PHPMailer\SMTP;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -24,7 +23,9 @@ try {
 
 
    //get vl result mail sent list
-   $resultmailSentQuery = "SELECT result_mail_datetime FROM form_vl where MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
+   $resultmailSentQuery = "SELECT result_mail_datetime
+                           FROM form_vl
+                           WHERE MONTH(result_mail_datetime) = MONTH(CURRENT_DATE())";
    $resultmailSentResult = $db->rawQuery($resultmailSentQuery);
    $sourcecode = sprintf("%02d", (count($resultmailSentResult) + 1));
 

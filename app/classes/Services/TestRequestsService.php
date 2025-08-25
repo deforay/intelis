@@ -622,8 +622,8 @@ final class TestRequestsService
             $whereConditions[] = "(" . implode(' OR ', $patientMatchConditions) . ")";
 
             // Date range check
-            $startDate = date('Y-m-d H:i:s', strtotime($collectionDate . " -$withinDays days"));
-            $endDate = date('Y-m-d H:i:s', strtotime($collectionDate . " +$withinDays days"));
+            $startDate = date('Y-m-d H:i:s', strtotime("$collectionDate -$withinDays days"));
+            $endDate = date('Y-m-d H:i:s', strtotime("$collectionDate +$withinDays days"));
 
             $whereConditions[] = "t1.sample_collection_date BETWEEN ? AND ?";
             $queryParams[] = $startDate;

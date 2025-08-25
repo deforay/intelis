@@ -440,23 +440,8 @@ restart_service apache || {
     exit 1
 }
 
-# cron job
-chmod +x ${lis_path}/cron.sh
-
-cron_job="* * * * * cd ${lis_path} && ./cron.sh"
-
-# Check if the cron job already exists
-if ! crontab -l | grep -qF "${cron_job}"; then
-    print info  "Adding cron job for LIS..."
-    log_action "Adding cron job for LIS..."
-    (
-        crontab -l
-        echo "${cron_job}"
-    ) | crontab -
-else
-    print info "Cron job for LIS already exists. Skipping."
-    log_action "Cron job for LIS already exists. Skipping."
-fi
+# Cron job setup
+setup_intelis_scheduler "${lis_path}" "${APPLICATION_ENV:-production}"
 
 # Update LIS config.production.php with database credentials
 config_file="${lis_path}/configs/config.production.php"

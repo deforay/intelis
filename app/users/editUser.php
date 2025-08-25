@@ -45,6 +45,7 @@ $signatureImagePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "users-signature";
 
 $activeFacilities = [];
 $display = 'display:none';
+$facilityMap = '';
 if ($general->isSTSInstance()) {
 
      $facilityMap = $facilitiesService->getUserFacilityMap($id);
@@ -248,10 +249,10 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                               <div class=" row">
                                    <div class="col-md-6">
                                         <div class="form-group">
-                                             <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> <span class="mandatory">*</span></label>
+                                             <label for="password" class="col-lg-4 control-label"><?php echo _translate("Password"); ?> </label>
                                              <div class="col-lg-7">
                                                   <div class="input-group">
-                                                       <input type="password" class="form-control ppwd isRequired" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
+                                                       <input type="password" class="form-control ppwd" id="password" name="password" placeholder="<?php echo _translate('Password'); ?>" title="<?php echo _translate('Please enter the password'); ?>" />
                                                        <span class="input-group-btn">
                                                             <button class="btn btn-default" type="button" id="generatePassword" onclick="passwordType();" title="Generate Password">
                                                                  <i class="fa fa-random"></i> <?= _translate("Generate"); ?>
