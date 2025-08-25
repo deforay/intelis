@@ -408,7 +408,12 @@ setup_intelis_scheduler() {
     local application_env="${2:-production}"
 
     # Create unique service name based on installation path
-    local service_name="intelis-$(basename "$lis_path")"
+    local base_name="$(basename "$lis_path")"
+    if [[ "$base_name" == "vlsm" || "$base_name" == "intelis" ]]; then
+        local service_name="intelis"
+    else
+        local service_name="intelis-$base_name"
+    fi
 
     print info "Configuring Intelis Scheduler (systemd timer) for $(basename "$lis_path")..."
     log_action "Configuring Intelis Scheduler with path: $lis_path, environment: $application_env, service: $service_name"
@@ -491,22 +496,22 @@ EOF
         log_action "Reloaded systemd due to timer/service changes"
     fi
 
-    # Migrate from cron (idempotent) - comment out instead of removing
-    local cron_job="* * * * * cd ${lis_path} && ./cron.sh"
+    # Migrate from cron (idempotent) - comment out matching lines
     local current_crontab
     current_crontab=$(crontab -l 2>/dev/null || echo "")
 
-    if echo "$current_crontab" | grep -Fq "$cron_job"; then
-        print info "Migrating from cron to systemd timer (commenting out old cron)..."
-        log_action "Migrating from cron to systemd timer - commenting out cron job"
-        # Comment out the exact matching cron entry
-        updated_crontab=$(echo "$current_crontab" | sed "s|^${cron_job//|/\\|}$|# MIGRATED TO SYSTEMD: &|")
+    # Only comment if there's an uncommented line with both lis_path and cron.sh
+    if echo "$current_crontab" | grep -v "^#" | grep -q "${lis_path}" && echo "$current_crontab" | grep -v "^#" | grep -q "cron.sh"; then
+        print info "Commenting out old cron job..."
+        log_action "Commenting out cron job for $lis_path"
+        # Comment out any uncommented line containing both lis_path and cron.sh
+        updated_crontab=$(echo "$current_crontab" | sed "s|^\([^#].*${lis_path//\//\\\/}.*cron\.sh.*\)|#\1|")
         echo "$updated_crontab" | crontab -
         cron_removed=1
-        print success "Commented out old cron job (preserved as backup)"
-        log_action "Successfully commented out old cron job from crontab"
+        print success "Commented out old cron job"
+        log_action "Successfully commented out cron job"
     else
-        print info "No conflicting cron job found"
+        print info "No active cron job found to comment"
     fi
 
     # Clean up old generic intelis timer if it exists
@@ -564,4 +569,53 @@ EOF
     print info "Monitor: journalctl -u ${service_name}.service -f"
     print info "Status: systemctl status ${service_name}.timer"
     log_action "Intelis Scheduler setup completed for $service_name (changes: $changes_made)"
+}
+
+
+# Remove timer and service by name
+remove_timer() {
+    local timer_name="$1"
+
+    if [[ -z "$timer_name" ]]; then
+        print error "Usage: remove_timer <timer-name>"
+        print info "Example: remove_timer intelis-vlsm"
+        return 1
+    fi
+
+    print info "Removing ${timer_name} timer..."
+
+    systemctl disable --now "${timer_name}.timer" 2>/dev/null || true
+    rm -f "/etc/systemd/system/${timer_name}.timer"
+    rm -f "/etc/systemd/system/${timer_name}.service"
+    systemctl daemon-reload
+
+    print success "${timer_name} timer removed"
+}
+
+# Remove all intelis timers
+remove_all_intelis_timers() {
+    print info "Removing all Intelis timers..."
+
+    systemctl disable --now intelis*.timer 2>/dev/null || true
+    rm -f /etc/systemd/system/intelis*.timer
+    rm -f /etc/systemd/system/intelis*.service
+    systemctl daemon-reload
+
+    print success "All Intelis timers removed"
+}
+
+# Remove all monitoring timers
+remove_all_monitoring() {
+    print info "Removing all monitoring timers..."
+
+    for timer in service-guard resource-monitor intelis*; do
+        systemctl disable --now "${timer}.timer" 2>/dev/null || true
+    done
+
+    rm -f /etc/systemd/system/service-guard.*
+    rm -f /etc/systemd/system/resource-monitor.*
+    rm -f /etc/systemd/system/intelis*.*
+    systemctl daemon-reload
+
+    print success "All monitoring timers removed"
 }
