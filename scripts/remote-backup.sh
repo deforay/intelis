@@ -1,387 +1,471 @@
 #!/bin/bash
+set -Eeuo pipefail
 
 # To use this script:
-# cd ~;
-# wget -O remote-intelis-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup.sh
-# sudo chmod u+x remote-intelis-backup.sh;
-# sudo ./remote-intelis-backup.sh;
+#   cd ~
+#   wget -O remote-intelis-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup.sh
+#   chmod u+x remote-intelis-backup.sh
+#   sudo ./remote-intelis-backup.sh
 
-# Check if running as root - fixed to be compatible with sh
+trap 'echo -e "\033[1;91m❌ Error:\033[0m setup failed at line $LINENO (status $?)"' ERR
+
+# --- helpers ------------------------------------------------------------------
+
+print() {
+  local type=${1:-info}; shift || true
+  local message=${1:-};  shift || true
+  local header_char="="
+  case "$type" in
+    error)   printf "\033[1;91m❌ Error:\033[0m %s\n" "$message" ;;
+    success) printf "\033[1;92m✅ Success:\033[0m %s\n" "$message" ;;
+    warning) printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message" ;;
+    info)    printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message" ;;
+    header)
+      local term_width msg_length padding pad_str
+      term_width=$(tput cols 2>/dev/null || echo 80)
+      msg_length=${#message}
+      padding=$(((term_width - msg_length) / 2)); ((padding<0)) && padding=0
+      pad_str=$(printf '%*s' "$padding" '')
+      printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
+      printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
+      printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
+      ;;
+    *)       printf "%s\n" "$message" ;;
+  esac
+}
+
+require_cmd() { command -v "$1" >/dev/null 2>&1 || { print error "Missing dependency: $1"; exit 1; }; }
+escape_sed() { printf '%s' "$1" | sed 's/[&/\]/\\&/g'; }
+
+# --- preflight ----------------------------------------------------------------
+
 if [ "$(id -u)" -ne 0 ]; then
-    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
-    exit 1
+  echo "Need admin privileges. Run with sudo."
+  exit 1
 fi
 
-# Check if script has been run before
+require_cmd realpath
+require_cmd ssh
+require_cmd ssh-keygen
+require_cmd ssh-copy-id
+require_cmd rsync
+require_cmd awk
+require_cmd sed
+
+# Idempotency check
 backup_script="/usr/local/bin/intelis-backup.sh"
 if [ -f "$backup_script" ]; then
-    echo "Backup script already exists at $backup_script."
-    echo "This script appears to have been run before."
-    echo -n "Do you want to continue and reconfigure? (y/n): "
-    read answer
-    if [[ ! "$answer" =~ ^[Yy]$ ]]; then
-        echo "Operation cancelled."
-        exit 0
-    fi
+  print warning "Backup script already exists at $backup_script."
+  read -r -p "Reconfigure anyway? (y/N): " answer
+  [[ "$answer" =~ ^[Yy]$ ]] || { print info "Cancelled."; exit 0; }
 fi
 
+# --- instance name ------------------------------------------------------------
 
-# Define a unified print function that colors the entire message
-print() {
-    local type=$1
-    local message=$2
-    local header_char="="
-
-    case $type in
-    error)
-        printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
-        ;;
-    success)
-        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
-        ;;
-    warning)
-        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
-        ;;
-    info)
-        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
-        ;;
-    debug)
-        printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
-        ;;
-    header)
-        local term_width
-        term_width=$(tput cols 2>/dev/null || echo 80)
-        local msg_length=${#message}
-        local padding=$(((term_width - msg_length) / 2))
-        ((padding < 0)) && padding=0
-
-        local pad_str
-        pad_str=$(printf '%*s' "$padding" '')
-
-        printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
-        printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
-        printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
-        ;;
-    *)
-        printf "%s\n" "$message"
-        ;;
-    esac
-}
-
-# Function to check if the provided path is a valid application installation
-is_valid_application_path() {
-    local path=$1
-    # Check for a specific file or directory that should exist in the application installation
-    if [ -f "$path/configs/config.production.php" ] && [ -d "$path/public" ]; then
-        return 0 # Path is valid
-    else
-        return 1 # Path is not valid
-    fi
-}
-
-# Step 1: Prompt for instance name and sanitize it
 print header "Setting up instance name"
-echo -n "Enter the current lab name or lab code: "
-read instance_name
-
-if [ -z "$instance_name" ]; then
-    print error "Instance name cannot be empty."
-    exit 1
+read -r -p "Enter the current lab name or lab code: " instance_name
+if [ -z "${instance_name// }" ]; then
+  print error "Instance name cannot be empty."
+  exit 1
 fi
-
-# Sanitize name - trim leading/trailing spaces first, then replace internal spaces with hyphens
-sanitized_name=$(echo "$instance_name" | xargs | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-')
-# Remove any trailing hyphens that might have been added
-sanitized_name=$(echo "$sanitized_name" | sed 's/-*$//')
-
+sanitized_name=$(echo "$instance_name" | xargs | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-' | sed 's/-*$//')
 instance_name_file="/var/www/.instance_name"
+mkdir -p /var/www
 echo "$sanitized_name" > "$instance_name_file"
 print success "Instance name set to: $sanitized_name"
 
-# Step 2: Prompt for LIS folder path with default
+# --- LIS path -----------------------------------------------------------------
+
 print header "Setting up LIS folder path"
 default_lis_path="/var/www/vlsm"
-echo -n "Enter the LIS folder path [default: $default_lis_path]: "
-read lis_path
-lis_path=${lis_path:-$default_lis_path}  # Use default if empty
+read -r -p "Enter the LIS folder path [default: $default_lis_path]: " lis_path
+lis_path=${lis_path:-$default_lis_path}
+[[ "$lis_path" != /* ]] && lis_path="$(realpath "$lis_path")" && print info "Converted to absolute path: $lis_path"
 
-# Convert relative path to absolute path if necessary
-if [[ "$lis_path" != /* ]]; then
-    lis_path="$(realpath "$lis_path")"
-    print info "Converted to absolute path: $lis_path"
+[ -d "$lis_path" ] || { print error "Path '$lis_path' does not exist."; exit 1; }
+
+# Minimal installation sanity check
+if [ ! -f "$lis_path/configs/config.production.php" ] || [ ! -d "$lis_path/public" ]; then
+  print error "'$lis_path' does not look like a valid LIS installation."
+  exit 1
 fi
 
-# Verify the path exists
-if [ ! -d "$lis_path" ]; then
-    print error "The specified path '$lis_path' does not exist. Please provide a valid path."
-    exit 1
-fi
+print success "Valid LIS installation: $lis_path"
 
-# Check if the path is a valid application installation
-if ! is_valid_application_path "$lis_path"; then
-    print error "The specified path '$lis_path' does not appear to be a valid LIS installation."
-    exit 1
-fi
+# --- remote host --------------------------------------------------------------
 
-# Also check if the required subdirectories exist
-required_dirs=("$lis_path/backups" "$lis_path/audit-trail" "$lis_path/public/uploads")
-missing_dirs=()
-
-for dir in "${required_dirs[@]}"; do
-    if [ ! -d "$dir" ]; then
-        missing_dirs+=("$dir")
-    fi
-done
-
-if [ ${#missing_dirs[@]} -gt 0 ]; then
-    print error "The following required directories do not exist:"
-    for dir in "${missing_dirs[@]}"; do
-        echo "  - $dir"
-    done
-    print error "Please ensure these directories exist before running this script."
-    exit 1
-fi
-print success "Valid LIS installation found at: $lis_path"
-
-# Step 3: Prompt for backup machine details
 print header "Setting up backup destination"
-echo -n "Enter the backup Ubuntu username: "
-read backup_user
-echo -n "Enter the backup Ubuntu hostname or IP: "
-read backup_host
-echo -n "Enter the SSH port (default 22): "
-read backup_port
-backup_port=${backup_port:-22}  # Set default port to 22 if left empty
+read -r -p "Enter the backup Ubuntu username: " backup_user
+read -r -p "Enter the backup Ubuntu hostname or IP: " backup_host
+read -r -p "Enter the SSH port [22]: " backup_port
+backup_port=${backup_port:-22}
 
-# Step 4: Generate SSH key first (before any connection attempts)
+# --- SSH keys -----------------------------------------------------------------
+
 print header "Setting up SSH keys"
-ssh_key="$HOME/.ssh/id_rsa"
+ssh_dir="$HOME/.ssh"
+ssh_key="$ssh_dir/id_ed25519"
+mkdir -p "$ssh_dir"; chmod 700 "$ssh_dir"
 if [ ! -f "$ssh_key" ]; then
-    print info "Generating SSH key..."
-    ssh-keygen -t rsa -b 4096 -C "$sanitized_name" -N "" -f "$ssh_key"
+  print info "Generating ed25519 SSH key..."
+  ssh-keygen -t ed25519 -C "$sanitized_name" -N "" -f "$ssh_key"
 else
-    print info "SSH key already exists."
+  print info "SSH key already exists."
+fi
+chmod 600 "$ssh_key" "$ssh_key.pub"
+
+print info "Copying SSH key to backup machine (one-time password expected)..."
+if ! ssh-copy-id -p "$backup_port" "$backup_user@$backup_host" >/dev/null; then
+  print error "ssh-copy-id failed. Check host/user/port."
+  exit 1
 fi
 
-# Step 5: Copy SSH key to backup machine (this will prompt for password once)
-print info "Copying SSH key to backup machine..."
-print info "You will be prompted for the password of the remote server."
-if ! ssh-copy-id -p "$backup_port" "$backup_user@$backup_host"; then
-    print error "Failed to connect to the backup server. Please check your credentials and try again."
-    exit 1
-fi
-
-# Now we can use SSH without password for the remaining operations
-print info "Testing connection to backup machine..."
-if ! ssh -p "$backup_port" "$backup_user@$backup_host" "echo Connection successful"; then
-    print error "Connection failed after key setup. This is unexpected. Terminating setup."
-    exit 1
+print info "Testing passwordless SSH..."
+if ! ssh -p "$backup_port" "$backup_user@$backup_host" "echo ok" >/dev/null; then
+  print error "SSH key auth test failed."
+  exit 1
 fi
 print success "SSH key setup successful"
 
-# Check if a folder with the same name already exists
-if ssh -p "$backup_port" "$backup_user@$backup_host" "[ -d ~/backups/$sanitized_name ]"; then
-    print warning "A folder with the name '$sanitized_name' already exists on the remote server."
-    echo -n "Enter a different name for this machine: "
-    read instance_name
+# --- Lab identity (UUID) ------------------------------------------------------
 
-    if [ -z "$instance_name" ]; then
-        print error "Instance name cannot be empty."
+LAB_UUID_FILE="/etc/intelis/lab-uuid"
+mkdir -p /etc/intelis
+if [ ! -f "$LAB_UUID_FILE" ]; then
+  LAB_UUID="$(cat /proc/sys/kernel/random/uuid)"
+  printf '%s\n' "$LAB_UUID" > "$LAB_UUID_FILE"
+  chmod 600 "$LAB_UUID_FILE"
+else
+  LAB_UUID="$(cat "$LAB_UUID_FILE")"
+fi
+print info "Lab UUID: $LAB_UUID"
+
+# --- Remote folder name & ownership ------------------------------------------
+
+print header "Remote lab folder"
+REMOTE_LAB_FOLDER="$sanitized_name"
+print info "Using lab name as remote folder: $REMOTE_LAB_FOLDER"
+
+# Resolve remote HOME to avoid '~' expansion issues
+REMOTE_HOME="$(ssh -p "$backup_port" "$backup_user@$backup_host" 'printf %s "$HOME"')"
+REMOTE_BASE_DIR="${REMOTE_HOME}/backups"
+DEST_DIR="${REMOTE_BASE_DIR}/${REMOTE_LAB_FOLDER}"
+REMOTE_META="${DEST_DIR}/.lab-meta"
+
+print info "Checking ${backup_user}@${backup_host}:${DEST_DIR}"
+if ssh -p "$backup_port" "$backup_user@$backup_host" "test -d \"$DEST_DIR\""; then
+  # Existing folder: read remote UUID (if any)
+  REMOTE_UUID="$(ssh -p "$backup_port" "$backup_user@$backup_host" \
+    "awk -F= '/^lab_uuid=/{print \$2}' \"$REMOTE_META\" 2>/dev/null || true")"
+
+  if [ -n "$REMOTE_UUID" ]; then
+    if [ "$REMOTE_UUID" = "$LAB_UUID" ]; then
+      # SAME LAB → allow with confirmation
+      if [ "${AUTO_CONFIRM:-0}" != "1" ]; then
+        print warning "Existing folder belongs to THIS lab (UUID matched)."
+        read -r -p "Proceed to reuse this folder (re-setup/restore scenario)? (y/N): " ans
+        [[ "$ans" =~ ^[Yy]$ ]] || { print info "Aborted by user."; exit 1; }
+        print info "Proceeding with same-lab reuse."
+      else
+        print info "AUTO_CONFIRM=1 set; proceeding with same-lab reuse."
+      fi
+    else
+      # DIFFERENT LAB → block unless operator claims
+      print error "Folder exists but UUID differs."
+      print info  "Remote: $REMOTE_UUID"
+      print info  "Local : $LAB_UUID"
+      if [ "${ALLOW_CLAIM:-0}" != "1" ]; then
+        print warning "Refusing to reuse. To force, rerun with ALLOW_CLAIM=1."
         exit 1
+      fi
+      read -r -p "Type 'CLAIM' to attach this machine to that folder: " c
+      [ "$c" = "CLAIM" ] || { print error "Claim aborted."; exit 1; }
+      ssh -p "$backup_port" "$backup_user@$backup_host" \
+        "printf 'lab_uuid=%s\nclaimed_at=%s\n' '$LAB_UUID' '$(date -u +%FT%TZ)' > \"$REMOTE_META\""
+      print warning "Folder claimed with new UUID."
+    fi
+  else
+    # No metadata → cautious: require explicit claim
+    print warning "Existing folder has no metadata."
+    if [ "${ALLOW_CLAIM:-0}" != "1" ]; then
+      print warning "Set ALLOW_CLAIM=1 to use it, or choose another name."
+      exit 1
+    fi
+    read -r -p "Type 'CLAIM' to initialize metadata for this folder: " c
+    [ "$c" = "CLAIM" ] || { print error "Claim aborted."; exit 1; }
+    ssh -p "$backup_port" "$backup_user@$backup_host" \
+      "printf 'lab_uuid=%s\ninitialized_at=%s\n' '$LAB_UUID' '$(date -u +%FT%TZ)' > \"$REMOTE_META\""
+    print success "Metadata written."
+  fi
+else
+  # New folder: create + write metadata
+  ssh -p "$backup_port" "$backup_user@$backup_host" \
+    "mkdir -p \"$DEST_DIR\" && printf 'lab_uuid=%s\ncreated_at=%s\n' '$LAB_UUID' '$(date -u +%FT%TZ)' > \"$REMOTE_META\""
+  print success "Created $DEST_DIR and metadata."
+fi
+
+print success "Remote structure ready."
+
+# --- ensure tools -------------------------------------------------------------
+
+print header "Ensuring required tools"
+apt-get update -y
+apt-get install -y rsync openssh-client
+print success "Tools installed"
+
+# --- Write backup runner ------------------------------------------------------
+
+print header "Creating backup runner"
+cat >/usr/local/bin/intelis-backup.sh <<'BACKUP_SCRIPT'
+#!/bin/bash
+set -Eeuo pipefail
+trap 'echo -e "\033[1;91m❌ Error:\033[0m backup failed at line $LINENO (status $?)" | tee -a "$LOGFILE"' ERR
+
+# Handle disable option
+if [ "${1:-}" = "--disable" ]; then
+    echo "🛑 Disabling Intelis backup system..."
+
+    # Remove cron jobs
+    if crontab -l 2>/dev/null | grep -q "/usr/local/bin/intelis-backup.sh"; then
+        crontab -l 2>/dev/null | grep -v "/usr/local/bin/intelis-backup.sh" | crontab -
+        echo "✅ Removed scheduled backups from cron"
+    else
+        echo "ℹ️  No scheduled backups found in cron"
     fi
 
-    # Sanitize the new name with the same rules
-    sanitized_name=$(echo "$instance_name" | xargs | tr -s '[:space:]' '-' | tr -cd '[:alnum:]-')
-    sanitized_name=$(echo "$sanitized_name" | sed 's/-*$//')
-    echo "$sanitized_name" > "$instance_name_file"
-    print info "Updated instance name to: $sanitized_name"
+    # Kill any running backup process
+    if pkill -f "intelis-backup.sh" 2>/dev/null; then
+        echo "✅ Stopped running backup process"
+    else
+        echo "ℹ️  No backup process currently running"
+    fi
+
+    echo ""
+    echo "✅ Backup system disabled successfully!"
+    echo "ℹ️  To re-enable, run the setup script again or manually add to cron"
+    echo "ℹ️  Manual backup still available: $0"
+    exit 0
 fi
 
-# Step 6: Update hostname
-print header "Updating hostname"
-print info "Setting hostname to: $sanitized_name"
-echo "$sanitized_name" | sudo tee /etc/hostname >/dev/null
-sudo hostnamectl set-hostname "$sanitized_name"
-# Check if hostname already exists in /etc/hosts before adding
-if ! grep -q "127.0.0.1 $sanitized_name" /etc/hosts; then
-    echo "127.0.0.1 $sanitized_name" | sudo tee -a /etc/hosts >/dev/null
-fi
-print success "Hostname updated successfully"
+# Logging
+LOGFILE="/var/log/intelis-backup.log"
+umask 027
+: > "$LOGFILE" 2>/dev/null || true
+chmod 640 "$LOGFILE" 2>/dev/null || true
+exec 1> >(tee -a "$LOGFILE")
+exec 2>&1
 
-# Step 7: Install required tools
-print header "Installing required tools"
-print info "Updating package list and installing rsync..."
-sudo apt update
-sudo apt install -y rsync
-print success "Required tools installed"
-
-# Step 8: Create remote backup directory if it doesn't exist
-print header "Setting up remote backup location"
-print info "Creating backup directory on remote server..."
-ssh -p "$backup_port" "$backup_user@$backup_host" "mkdir -p ~/backups/$sanitized_name"
-print success "Remote backup directory created: ~/backups/$sanitized_name"
-
-# Step 9: Create backup script
-print header "Creating backup script"
-print info "Writing backup script to $backup_script"
-cat <<EOL | sudo tee $backup_script >/dev/null
-#!/bin/bash
-
-# Intelis backup script - created $(date)
-# This script backs up critical data from $lis_path to $backup_host
-
-# Define print function for colored output
 print() {
-    local type=\$1
-    local message=\$2
-
-    case \$type in
-    error)
-        printf "\033[1;91m❌ Error:\033[0m %s\n" "\$message"
-        ;;
-    success)
-        printf "\033[1;92m✅ Success:\033[0m %s\n" "\$message"
-        ;;
-    warning)
-        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "\$message"
-        ;;
-    info)
-        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "\$message"
-        ;;
-    *)
-        printf "%s\n" "\$message"
-        ;;
-    esac
+  local t=${1:-info}; shift || true
+  local m=${1:-};     shift || true
+  local ts="[$(date '+%Y-%m-%d %H:%M:%S')]"
+  case "$t" in
+    error)   printf "%s \033[1;91m❌ Error:\033[0m %s\n" "$ts" "$m" ;;
+    success) printf "%s \033[1;92m✅ Success:\033[0m %s\n" "$ts" "$m" ;;
+    warning) printf "%s \033[1;93m⚠️ Warning:\033[0m %s\n" "$ts" "$m" ;;
+    info)    printf "%s \033[1;96mℹ️ Info:\033[0m %s\n" "$ts" "$m" ;;
+    *)       printf "%s %s\n" "$ts" "$m" ;;
+  esac
 }
 
-source_dir="$lis_path"
-backup_user="$backup_user"
-backup_host="$backup_host"
-backup_port="$backup_port"
-instance_name="$sanitized_name"
-backup_dir="~/backups/\${instance_name}"
+# Filled by setup
+SOURCE_DIR="__LIS_PATH__"
+BACKUP_USER="__BACKUP_USER__"
+BACKUP_HOST="__BACKUP_HOST__"
+BACKUP_PORT="__BACKUP_PORT__"
+DEST_DIR="__DEST_DIR__"
+LAB_UUID="__LAB_UUID__"
 
-print info "Starting backup at \$(date)"
-print info "Source: \${source_dir}"
-print info "Destination: \${backup_user}@\${backup_host}:\${backup_dir}"
+RSYNC_BIN="/usr/bin/rsync"
+SSH_RAW="/usr/bin/ssh"
+SSH_BIN="/usr/bin/ssh -o BatchMode=yes -o ConnectTimeout=10"
 
-# Check if source directories exist
-if [ ! -d "\${source_dir}/backups" ] || [ ! -d "\${source_dir}/audit-trail" ] || [ ! -d "\${source_dir}/public/uploads" ]; then
-    print error "One or more required source directories do not exist. Backup aborted."
-    exit 1
+print info "Starting full LIS backup"
+print info "Source: ${SOURCE_DIR}/"
+print info "Dest  : ${BACKUP_USER}@${BACKUP_HOST}:${DEST_DIR}/"
+
+# Verify remote UUID before doing anything
+REMOTE_UUID="$($SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" \
+  "awk -F= '/^lab_uuid=/{print \$2}' \"${DEST_DIR}/.lab-meta\" 2>/dev/null || true")"
+if [ -z "$REMOTE_UUID" ] || [ "$REMOTE_UUID" != "$LAB_UUID" ]; then
+  print error "Remote lab UUID mismatch or missing; aborting sync."
+  print info  "Remote: ${REMOTE_UUID:-<none>}  Local: $LAB_UUID"
+  exit 1
 fi
 
-# Create backup directories if they don't exist
-print info "Ensuring remote directories exist..."
-ssh -p "\${backup_port}" "\${backup_user}@\${backup_host}" "mkdir -p \${backup_dir}/backups \${backup_dir}/audit-trail \${backup_dir}/public/uploads"
+# Verify source directory exists
+[ -d "${SOURCE_DIR}" ] || { print error "Source directory ${SOURCE_DIR} does not exist"; exit 1; }
 
-# Sync only the required directories to backup location
-print info "Backing up backups directory..."
-rsync -avz -e "ssh -p \${backup_port}" --delete "\${source_dir}/backups/" "\${backup_user}@\${backup_host}:\${backup_dir}/backups/"
+# Disk-space check on remote (GiB, locale-agnostic)
+check_disk_space() {
+  local available
+  available=$($SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" \
+    "df -Pk \$(printf %q \"${DEST_DIR}\") 2>/dev/null | awk 'NR==2{print int(\$4/1024/1024)}'" \
+    || echo 0)
+  if [ "$available" -lt 5 ]; then
+    print warning "Low disk space on backup server at ${DEST_DIR}: ${available} GiB available"
+    [ "$available" -ge 2 ] || { print error "Critical: <2 GiB available"; return 1; }
+  fi
+  return 0
+}
 
-# Clear the backups directory after successful copy
-if [ $? -eq 0 ]; then
-    print info "Clearing source backups directory to free up space..."
-    # Keep a small number of most recent files/folders (adjust the number as needed)
-    cd "\${source_dir}/backups/" && ls -tp | grep -v '/
-rsync -avz -e "ssh -p \${backup_port}" --delete "\${source_dir}/audit-trail/" "\${backup_user}@\${backup_host}:\${backup_dir}/audit-trail/"
+verify_sync() {
+  local source_count dest_count diff
+  # Count files in source (excluding .lab-meta to avoid confusion)
+  source_count=$(find "$SOURCE_DIR" -type f | wc -l | tr -d ' ')
+  # Count files in destination (excluding .lab-meta)
+  dest_count=$($SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" \
+    "find \$(printf %q \"${DEST_DIR}\") -name '.lab-meta' -prune -o -type f -print 2>/dev/null | wc -l | tr -d ' '" \
+    || echo 0)
+  print info "Verification: Source: ${source_count} files, Dest: ${dest_count} files"
+  diff=$((source_count - dest_count))
+  [ "${diff#-}" -le 10 ] || return 1  # Allow slightly larger tolerance for full backup
+  return 0
+}
 
-print info "Backing up uploads directory..."
-rsync -avz -e "ssh -p \${backup_port}" --delete "\${source_dir}/public/uploads/" "\${backup_user}@\${backup_host}:\${backup_dir}/public/uploads/"
+check_disk_space || { print error "Disk space check failed - aborting"; exit 1; }
 
-print success "Backup completed at \$(date)"
-EOL
+# Get source directory name for better remote organization
+SOURCE_BASE_NAME=$(basename "${SOURCE_DIR}")
 
-sudo chmod +x $backup_script
-print success "Backup script created successfully"
+print info "Syncing entire LIS directory: ${SOURCE_BASE_NAME}/ …"
 
-# Step 10: Automate backups with cron
-print header "Setting up scheduled backups"
-print info "Setting up cron jobs..."
-# First remove any existing entries for our backup script
-existing_crontab=$(sudo crontab -l 2>/dev/null | grep -v "/usr/local/bin/intelis-backup.sh")
+# Create exclusion list for sensitive/unnecessary files
+EXCLUDE_LIST="/tmp/backup-excludes.$"
+cat > "$EXCLUDE_LIST" <<'EXCLUDES'
+# LIS-specific directories to exclude
+/public/temporary/
+/logs/
+/vendor/
+/cache/
 
-# Create a temporary file for the new crontab
-temp_crontab=$(mktemp)
+# Temporary and cache files
+*.tmp
+*.temp
+*.cache
+.DS_Store
+Thumbs.db
 
-# If there was an existing crontab, write it to our temp file
-if [ -n "$existing_crontab" ]; then
-    echo "$existing_crontab" > "$temp_crontab"
-fi
+# Lock files
+*.lock
+*.pid
 
-# Add our new entries
-echo "@reboot /usr/local/bin/intelis-backup.sh" >> "$temp_crontab"
-echo "0 */6 * * * /usr/local/bin/intelis-backup.sh" >> "$temp_crontab"
+# Session files
+/tmp/
+/temp/
 
-# Install the new crontab
-sudo crontab "$temp_crontab"
+# Version control
+.git/
+.svn/
+.hg/
 
-# Clean up
-rm "$temp_crontab"
-print success "Scheduled backups configured (every 6 hours and at reboot)"
+# IDE and editor files
+/.vscode/
+/.idea/
+*.swp
+*.swo
+*~
 
-# Final message
-print header "Setup Complete"
-print success "Backup system has been successfully configured!"
-print info "You can manually run the backup script anytime with: sudo /usr/local/bin/intelis-backup.sh"
-print info "The LIS folder being backed up is: $lis_path"
-print info "Specific directories backed up:"
-echo "  - $lis_path/backups"
-echo "  - $lis_path/audit-trail"
-echo "  - $lis_path/public/uploads"
-print info "Remote backup location: ~/backups/$sanitized_name"
- | tail -n +31 | xargs -I {} rm -- {} 2>/dev/null
-    # Alternative: remove all files older than 7 days
-    # find "\${source_dir}/backups/" -type f -mtime +7 -exec rm {} \; 2>/dev/null
-    print success "Cleared older backup files"
+# OS generated files
+.directory
+desktop.ini
+
+# Development dependencies that can be regenerated
+/node_modules/
+/bower_components/
+
+# Database dumps that might be in progress
+*.sql.tmp
+*.sql.partial
+EXCLUDES
+
+# Perform the full backup with rsync
+if $RSYNC_BIN -aHz --delete --partial --timeout=900 \
+    --exclude-from="$EXCLUDE_LIST" \
+    --exclude='.lab-meta' \
+    -e "$SSH_RAW -o BatchMode=yes -o ConnectTimeout=10 -p ${BACKUP_PORT}" \
+    "${SOURCE_DIR}/" "${BACKUP_USER}@${BACKUP_HOST}:${DEST_DIR}/"; then
+  print success "Full LIS directory sync completed"
+
+  # Clean up exclude list
+  rm -f "$EXCLUDE_LIST"
+
+  if ! verify_sync; then
+    print warning "File count mismatch detected (may be normal due to excludes)"
+  fi
+
+  # Apply retention policy for backup directories within the synced content
+  print info "Applying retention policy for internal backup directories..."
+  if $SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" "test -d \"${DEST_DIR}/backups\""; then
+    $SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" \
+      "cd \$(printf %q \"${DEST_DIR}/backups\") 2>/dev/null && ls -1t | tail -n +8 | xargs -r -I{} rm -rf -- \"{}\" 2>/dev/null || true"
+    print info "Applied retention policy to remote backups directory (kept 7 newest)"
+  fi
+
 else
-    print warning "Backup of backups directory had issues. Not clearing source directory."
+  rm -f "$EXCLUDE_LIST"
+  print error "Full LIS directory sync failed"; exit 1
 fi
 
-print info "Backing up audit-trail directory..."
-rsync -avz -e "ssh -p \${backup_port}" --delete "\${source_dir}/audit-trail/" "\${backup_user}@\${backup_host}:\${backup_dir}/audit-trail/"
+# Final verification
+if $SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" "ls -la \$(printf %q \"${DEST_DIR}\") >/dev/null"; then
+  print success "Full backup completed successfully at $(date)"
 
-print info "Backing up uploads directory..."
-rsync -avz -e "ssh -p \${backup_port}" --delete "\${source_dir}/public/uploads/" "\${backup_user}@\${backup_host}:\${backup_dir}/public/uploads/"
-
-print success "Backup completed at \$(date)"
-EOL
-
-sudo chmod +x $backup_script
-print success "Backup script created successfully"
-
-# Step 10: Automate backups with cron
-print header "Setting up scheduled backups"
-print info "Setting up cron jobs..."
-# First remove any existing entries for our backup script
-existing_crontab=$(sudo crontab -l 2>/dev/null | grep -v "/usr/local/bin/intelis-backup.sh")
-
-# Create a temporary file for the new crontab
-temp_crontab=$(mktemp)
-
-# If there was an existing crontab, write it to our temp file
-if [ -n "$existing_crontab" ]; then
-    echo "$existing_crontab" > "$temp_crontab"
+  # Report backup size
+  BACKUP_SIZE=$($SSH_BIN -p "${BACKUP_PORT}" "${BACKUP_USER}@${BACKUP_HOST}" \
+    "du -sh \$(printf %q \"${DEST_DIR}\") 2>/dev/null | cut -f1" || echo "unknown")
+  print info "Total backup size: ${BACKUP_SIZE}"
+else
+  print error "Final verification failed - destination not accessible"; exit 1
 fi
 
-# Add our new entries
-echo "@reboot /usr/local/bin/intelis-backup.sh" >> "$temp_crontab"
-echo "0 */6 * * * /usr/local/bin/intelis-backup.sh" >> "$temp_crontab"
+# Light log cleanup (recommend logrotate for production)
+find /var/log -maxdepth 1 -name "intelis-backup.log*" -mtime +30 -type f -delete 2>/dev/null || true
+BACKUP_SCRIPT
 
-# Install the new crontab
-sudo crontab "$temp_crontab"
+chmod 0755 /usr/local/bin/intelis-backup.sh
 
-# Clean up
-rm "$temp_crontab"
-print success "Scheduled backups configured (every 6 hours and at reboot)"
+# Substitute setup-time values into runner
+sed -i \
+  -e "s#__LIS_PATH__#$(escape_sed "$lis_path")#g" \
+  -e "s#__BACKUP_USER__#$(escape_sed "$backup_user")#g" \
+  -e "s#__BACKUP_HOST__#$(escape_sed "$backup_host")#g" \
+  -e "s#__BACKUP_PORT__#$(escape_sed "$backup_port")#g" \
+  -e "s#__DEST_DIR__#$(escape_sed "$DEST_DIR")#g" \
+  -e "s#__LAB_UUID__#$(escape_sed "$LAB_UUID")#g" \
+  /usr/local/bin/intelis-backup.sh
 
-# Final message
+print success "Backup runner written to $backup_script"
+
+# --- cron scheduling ----------------------------------------------------------
+
+print header "Scheduling backups (cron)"
+( crontab -l 2>/dev/null | grep -v "/usr/local/bin/intelis-backup.sh" || true ) | crontab -
+( crontab -l 2>/dev/null; echo "@reboot /usr/local/bin/intelis-backup.sh" ; echo "0 */8 * * * /usr/local/bin/intelis-backup.sh" ) | crontab -
+print success "Scheduled backups configured (every 8 hours and at reboot)"
+
+# --- initial backup -----------------------------------------------------------
+
+print header "Starting Initial Backup"
+print info "Launching first backup in background to verify configuration..."
+print info "You can monitor progress with: tail -f /var/log/intelis-backup.log"
+
+# Start backup in background and capture PID
+nohup /usr/local/bin/intelis-backup.sh > /dev/null 2>&1 &
+BACKUP_PID=$!
+
+print success "Initial backup started (PID: $BACKUP_PID)"
+print info "Setup complete! Backup is running in background."
+print info "Check status: ps -p $BACKUP_PID || echo 'Backup finished'"
+
+# --- summary ------------------------------------------------------------------
+
 print header "Setup Complete"
-print success "Backup system has been successfully configured!"
-print info "You can manually run the backup script anytime with: sudo /usr/local/bin/intelis-backup.sh"
-print info "The LIS folder being backed up is: $lis_path"
-print info "Specific directories backed up:"
-echo "  - $lis_path/backups"
-echo "  - $lis_path/audit-trail"
-echo "  - $lis_path/public/uploads"
-print info "Remote backup location: ~/backups/$sanitized_name"
+print success "Backup system configured! Initial backup is running in background."
+print info    "Monitor backup: tail -f /var/log/intelis-backup.log"
+print info    "Manual run: /usr/local/bin/intelis-backup.sh"
+print info    "Disable backups: /usr/local/bin/intelis-backup.sh --disable"
+print info    "LIS path  : $lis_path (entire directory will be backed up)"
+print info    "Remote    : ${DEST_DIR} on ${backup_user}@${backup_host}:${backup_port}"
+print info    "Schedule  : Every 8 hours and at reboot"
+print info    "Excluded items: public/temporary/, logs/, vendor/, cache/, temp files, version control"

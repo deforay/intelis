@@ -7,35 +7,35 @@ print() {
     local header_char="="
 
     case $type in
-    error)
-        printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
+        error)
+            printf "\033[1;91m❌ Error:\033[0m %s\n" "$message"
         ;;
-    success)
-        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
+        success)
+            printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
         ;;
-    warning)
-        printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
+        warning)
+            printf "\033[1;93m⚠️ Warning:\033[0m %s\n" "$message"
         ;;
-    info)
-        printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
+        info)
+            printf "\033[1;96mℹ️ Info:\033[0m %s\n" "$message"
         ;;
-    debug)
-        printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
+        debug)
+            printf "\033[1;95m🐛 Debug:\033[0m %s\n" "$message"
         ;;
-    header)
-        local term_width
-        term_width=$(tput cols 2>/dev/null || echo 80)
-        local msg_length=${#message}
-        local padding=$(((term_width - msg_length) / 2))
-        ((padding < 0)) && padding=0
-        local pad_str
-        pad_str=$(printf '%*s' "$padding" '')
-        printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
-        printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
-        printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
+        header)
+            local term_width
+            term_width=$( [ -t 1 ] && tput cols 2>/dev/null || echo 80 )
+            local msg_length=${#message}
+            local padding=$(((term_width - msg_length) / 2))
+            ((padding < 0)) && padding=0
+            local pad_str
+            pad_str=$(printf '%*s' "$padding" '')
+            printf "\n\033[1;96m%*s\033[0m\n" "$term_width" '' | tr ' ' "$header_char"
+            printf "\033[1;96m%s%s\033[0m\n" "$pad_str" "$message"
+            printf "\033[1;96m%*s\033[0m\n\n" "$term_width" '' | tr ' ' "$header_char"
         ;;
-    *)
-        printf "%s\n" "$message"
+        *)
+            printf "%s\n" "$message"
         ;;
     esac
 }
@@ -44,7 +44,7 @@ print() {
 install_packages() {
     if ! command -v aria2c &>/dev/null; then
         apt-get update
-        apt-get install -y aria2
+        apt-get install -y aria2 wget lsb-release
         if ! command -v aria2c &>/dev/null; then
             print error "Failed to install required packages. Exiting."
             exit 1
@@ -77,45 +77,20 @@ prepare_system() {
 spinner() {
     local pid=$1
     local message="${2:-Processing...}"
-    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
-    local delay=0.1
-    local i=0
-    local blue="\033[1;36m"  # Bright cyan/blue
-    local green="\033[1;32m" # Bright green
-    local red="\033[1;31m"   # Bright red
-    local reset="\033[0m"
-    local success_symbol="✅"
-    local failure_symbol="❌"
-    local last_status=0
+    ...
+    local cleanup() { [ -t 1 ] && tput cnorm; }
+    trap cleanup EXIT
 
-    # Save cursor position and hide it
-    tput sc
-    tput civis
-
-    # Show spinner while the process is running
-    while kill -0 "$pid" 2>/dev/null; do
-        printf "\r${blue}%s${reset} %s" "${frames[i]}" "$message"
-        i=$(((i + 1) % ${#frames[@]}))
-        sleep "$delay"
-    done
-
-    # Get the exit status of the process
-    wait "$pid"
-    last_status=$?
-
-    # Replace spinner with completion symbol and appropriate color
-    if [ $last_status -eq 0 ]; then
-        printf "\r${green}%s${reset} %s\n" "$success_symbol" "$message"
-    else
-        printf "\r${red}%s${reset} %s (failed with status $last_status)\n" "$failure_symbol" "$message"
-    fi
-
-    # Show cursor again
-    tput cnorm
-
-    # Return the process exit status
+    if [ -t 1 ]; then tput sc; tput civis; fi
+    ...
+    wait "$pid"; last_status=$?
+    ...
+    # Show cursor again (redundant but harmless due to trap)
+    if [ -t 1 ]; then tput cnorm; fi
+    trap - EXIT
     return $last_status
 }
+
 
 download_file() {
     local output_file="$1"
@@ -149,11 +124,10 @@ download_file() {
 
     # Correctly specify both download directory (-d) and output file (-o)
     aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 \
-        --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
+    --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
     local download_pid=$!
 
     spinner "$download_pid" "$message"
-    wait $download_pid
     local download_status=$?
 
     if [ $download_status -ne 0 ]; then
@@ -250,64 +224,117 @@ to_absolute_path() {
     readlink -f -- "$p"
 }
 
-# Set ACL-based permissions
+# Set ACL-based permissions (async by default; pass third arg "sync" to wait)
 set_permissions() {
     local path=$1
-    local mode=${2:-"full"}
+    local mode=${2:-"full"}          # full | quick | minimal
+    local wait_mode=${3:-"async"}    # async | sync
+
+    # Who to grant (robust under sudo/non-interactive)
+    local who="${SUDO_USER:-${USER:-root}}"
 
     if ! command -v setfacl &>/dev/null; then
         print warning "setfacl not found. Falling back to chown/chmod..."
-        chown -R "$USER":www-data "$path"
+        chown -R "$who":www-data "$path"
         chmod -R u+rwX,g+rwX "$path"
         return
     fi
 
-    print info "Setting permissions for ${path} (${mode} mode)..."
+    # Tunables
+    local PARALLEL=${PARALLEL:-$(nproc)}
+    local ACL_TIMEOUT_SEC=${ACL_TIMEOUT_SEC:-3}      # per-file timeout
+    local CPU_NICE="nice -n 10"
+    local IO_NICE=""
+    command -v ionice >/dev/null 2>&1 && IO_NICE="ionice -c3"
+    command -v timeout >/dev/null 2>&1 || ACL_TIMEOUT_SEC=0  # if no timeout, disable
+
+    print info "Setting permissions for ${path} (${mode}, ${wait_mode})..."
+
+    # Export env so subshells (xargs sh -c) can use them
+    export ACL_TIMEOUT_SEC CPU_NICE IO_NICE who
+
+    # Helper executed in subshell (sh -c), single file per invocation
+    _acl_apply_cmd='
+        target="$1"; perms="$2";
+        if [ -n "$ACL_TIMEOUT_SEC" ] && [ "$ACL_TIMEOUT_SEC" -gt 0 ]; then
+            $CPU_NICE $IO_NICE timeout "${ACL_TIMEOUT_SEC}s" setfacl -m "$perms" "$target" 2>/dev/null \
+            || printf "%s\t%s\n" "ACL_TIMEOUT_OR_FAIL" "$target" >>/tmp/acl_failures.log
+        else
+            $CPU_NICE $IO_NICE setfacl -m "$perms" "$target" 2>/dev/null \
+            || printf "%s\t%s\n" "ACL_FAIL" "$target" >>/tmp/acl_failures.log
+        fi
+    '
+
+    local pids=()
 
     case "$mode" in
-    full)
-        find "$path" -type d -not -path "*/.git*" -not -path "*/node_modules*" -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-        find "$path" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 | xargs -0 -P "$(nproc)" -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        full)
+            # Directories: rwx to user + www-data
+            find "$path" -type d -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
+            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            pids+=($!)
+
+            # Files: rw to user + www-data
+            find "$path" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
+            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            pids+=($!)
         ;;
-    quick)
-        find "$path" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
-        find "$path" -type f -name "*.php" -print0 | xargs -0 -P "$(nproc)" -I{} setfacl -m u:$USER:rw,u:www-data:rw {} 2>/dev/null &
+        quick)
+            find "$path" -type d -print0 \
+            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            pids+=($!)
+
+            find "$path" -type f -name "*.php" -print0 \
+            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            pids+=($!)
         ;;
-    minimal)
-        find "$path" -type d -exec setfacl -m u:$USER:rwx,u:www-data:rwx {} \; 2>/dev/null
+        minimal)
+            find "$path" -type d -print0 \
+            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            pids+=($!)
+        ;;
+      *)
+        print warning "Unknown mode '${mode}', using 'full'."
+        "$FUNCNAME" "$path" full "$wait_mode"
+        return
         ;;
     esac
+
+    if [[ "$wait_mode" == "sync" ]]; then
+        for pid in "${pids[@]}"; do wait "$pid"; done
+        [[ -s /tmp/acl_failures.log ]] && print warning "Some ACL operations timed out/failed. See /tmp/acl_failures.log"
+        print success "Permissions applied (sync)."
+    else
+        print info "ACLs applying in background (async)."
+    fi
 }
 
-# Function to restart a service
 # Function to restart a service (MySQL or Apache)
 restart_service() {
     local service_type=$1
 
     case "$service_type" in
-    apache)
-        if systemctl list-units --type=service | grep -q apache2; then
-            print info "Restarting Apache (apache2)..."
-            log_action "Restarting apache2"
-            systemctl restart apache2 || return 1
-        elif systemctl list-units --type=service | grep -q httpd; then
-            print info "Restarting Apache (httpd)..."
-            log_action "Restarting httpd"
-            systemctl restart httpd || return 1
-        else
-            print warning "Apache/httpd service not found"
-            log_action "Apache/httpd not found"
-            return 1
-        fi
+        apache)
+            if systemctl list-unit-files apache2.service >/dev/null 2>&1; then
+                print info "Restarting Apache (apache2)..."
+                log_action "Restarting apache2"
+                systemctl restart apache2 || return 1
+            elif systemctl list-unit-files httpd.service >/dev/null 2>&1; then
+                print info "Restarting Apache (httpd)..."
+                log_action "Restarting httpd"
+                systemctl restart httpd || return 1
+            else
+                print warning "Apache/httpd service not found"
+                log_action "Apache/httpd not found"
+                return 1
+            fi
+            ;;
+        mysql)
+            print info "Restarting MySQL..."
+            log_action "Restarting MySQL"
+            systemctl restart mysql || return 1
         ;;
-
-    mysql)
-        print info "Restarting MySQL..."
-        log_action "Restarting MySQL"
-        systemctl restart mysql || return 1
-        ;;
-
-    *)
+      *)
         print error "Unknown service type: $service_type"
         log_action "Unknown service type: $service_type"
         return 1
@@ -317,6 +344,7 @@ restart_service() {
     print success "$service_type restarted successfully"
     return 0
 }
+
 
 # Ask user yes/no
 ask_yes_no() {
@@ -355,7 +383,7 @@ ask_yes_no() {
         *)
             print warning "Invalid input. Using default: $default"
             [[ "$default" == "yes" ]] && return 0 || return 1
-            ;;
+        ;;
     esac
 }
 
@@ -402,7 +430,7 @@ write_if_different() {
     return 0  # written/changed
 }
 
-# Setup Intelis Scheduler (systemd timer replacement for cron)
+# Setup Scheduler (systemd timer replacement for cron)
 setup_intelis_scheduler() {
     local lis_path="$1"
     local application_env="${2:-production}"
@@ -415,8 +443,8 @@ setup_intelis_scheduler() {
         local service_name="intelis-$base_name"
     fi
 
-    print info "Configuring Intelis Scheduler (systemd timer) for $(basename "$lis_path")..."
-    log_action "Configuring Intelis Scheduler with path: $lis_path, environment: $application_env, service: $service_name"
+    print info "Configuring Scheduler (systemd timer) for ${lis_path}..."
+    log_action "Configuring Scheduler with path: $lis_path, environment: $application_env, service: $service_name"
 
     # Validate paths
     if [[ ! -f "${lis_path}/cron.sh" ]]; then
@@ -425,7 +453,7 @@ setup_intelis_scheduler() {
         return 1
     fi
 
-    # Make cron.sh executable (idempotent)
+    # Make cron.sh executable
     chmod +x "${lis_path}/cron.sh"
 
     # Track what actually changed
@@ -437,7 +465,7 @@ setup_intelis_scheduler() {
     local service_file="/etc/systemd/system/${service_name}.service"
     if write_if_different "$service_file" <<EOF
 [Unit]
-Description=Intelis Scheduler for $(basename "$lis_path") (crunzphp jobs)
+Description=Scheduler for ${lis_path}
 After=network-online.target mysql.service apache2.service
 Wants=network-online.target
 
@@ -469,7 +497,7 @@ EOF
     local timer_file="/etc/systemd/system/${service_name}.timer"
     if write_if_different "$timer_file" <<EOF
 [Unit]
-Description=Run Intelis scheduled jobs every minute for $(basename "$lis_path")
+Description=Run scheduled jobs every minute for ${lis_path}
 
 [Timer]
 OnBootSec=120s
@@ -496,7 +524,7 @@ EOF
         log_action "Reloaded systemd due to timer/service changes"
     fi
 
-    # Migrate from cron (idempotent) - comment out matching lines
+    # Migrate from cron  - comment out matching lines
     local current_crontab
     current_crontab=$(crontab -l 2>/dev/null || echo "")
 
@@ -536,7 +564,7 @@ EOF
         log_action "Removed old intelis-scheduler timer"
     fi
 
-    # Enable timer (idempotent)
+    # Enable timer
     if ! systemctl is-enabled --quiet "${service_name}.timer"; then
         systemctl enable "${service_name}.timer"
         print info "Enabled ${service_name}.timer"
@@ -545,7 +573,7 @@ EOF
         print info "${service_name}.timer already enabled"
     fi
 
-    # Start timer (idempotent)
+    # Start timer
     if ! systemctl is-active --quiet "${service_name}.timer"; then
         systemctl start "${service_name}.timer"
         print info "Started ${service_name}.timer"
@@ -561,14 +589,37 @@ EOF
     [[ "$cron_removed" == "1" ]] && ((changes_made++))
 
     if [[ "$changes_made" -gt 0 ]]; then
-        print success "✅ Intelis Scheduler configured for $(basename "$lis_path") ($changes_made changes made)"
+        print success "✅ Scheduler configured for ${lis_path} ($changes_made changes made)"
     else
-        print success "✅ Intelis Scheduler already configured correctly for $(basename "$lis_path")"
+        print success "✅ Scheduler already configured correctly for ${lis_path}"
     fi
 
     print info "Monitor: journalctl -u ${service_name}.service -f"
     print info "Status: systemctl status ${service_name}.timer"
-    log_action "Intelis Scheduler setup completed for $service_name (changes: $changes_made)"
+    log_action "Scheduler setup completed for $service_name (changes: $changes_made)"
+}
+
+# List active Intelis monitoring timers
+list_timers() {
+    print header "Intelis System Timers"
+
+    local timers_found=false
+
+    # Get timer info and filter for our timers
+    while IFS= read -r line; do
+        if [[ "$line" =~ (service-guard|resource-monitor|intelis) ]]; then
+            echo "$line"
+            timers_found=true
+        fi
+    done < <(systemctl list-timers --no-pager)
+
+    if [[ "$timers_found" == "false" ]]; then
+        print warning "No Intelis monitoring timers found"
+    fi
+
+    echo
+    print info "To check logs: journalctl -u <service-name> -f"
+    print info "To check status: systemctl status <timer-name>"
 }
 
 
@@ -596,26 +647,27 @@ remove_timer() {
 remove_all_intelis_timers() {
     print info "Removing all Intelis timers..."
 
-    systemctl disable --now intelis*.timer 2>/dev/null || true
-    rm -f /etc/systemd/system/intelis*.timer
-    rm -f /etc/systemd/system/intelis*.service
+    systemctl list-unit-files 'intelis*.timer' --no-legend \
+    | awk '{print $1}' | xargs -r systemctl disable --now 2>/dev/null || true
+    find /etc/systemd/system -maxdepth 1 \( -name 'intelis*.timer' -o -name 'intelis*.service' \) -type f -exec rm -f {} +
+
     systemctl daemon-reload
 
     print success "All Intelis timers removed"
 }
 
-# Remove all monitoring timers
+# Remove all monitoring timers (guard + resource-monitor only)
 remove_all_monitoring() {
     print info "Removing all monitoring timers..."
 
-    for timer in service-guard resource-monitor intelis*; do
+    for timer in service-guard resource-monitor; do
         systemctl disable --now "${timer}.timer" 2>/dev/null || true
+        rm -f "/etc/systemd/system/${timer}.timer" "/etc/systemd/system/${timer}.service"
     done
 
-    rm -f /etc/systemd/system/service-guard.*
-    rm -f /etc/systemd/system/resource-monitor.*
-    rm -f /etc/systemd/system/intelis*.*
     systemctl daemon-reload
 
     print success "All monitoring timers removed"
 }
+
+
