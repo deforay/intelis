@@ -99,8 +99,14 @@ spinner() {
     (( is_tty )) || use_unicode=0
 
     # Hide cursor if we can and restore on exit
-    if (( is_tty && has_tput )); then tput civis 2>/dev/null || true; fi
-    cleanup() { if (( is_tty && has_tput )); then tput cnorm 2>/dev/null || true; fi; }
+    if (( is_tty && has_tput )); then
+        tput civis 2>/dev/null || true
+    fi
+    cleanup() {
+        if (( is_tty && has_tput )); then
+            tput cnorm 2>/dev/null || true
+        fi
+    }
     trap cleanup EXIT INT TERM
 
     # Draw loop (only animate on TTY)
