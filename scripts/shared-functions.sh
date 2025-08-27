@@ -77,27 +77,74 @@ prepare_system() {
 spinner() {
     local pid=$1
     local message="${2:-Processing...}"
+    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
+    local ascii_frames=('|' '/' '-' '\')
+    local delay=0.1
+    local i=0
     local last_status=0
 
-    cleanup() { [ -t 1 ] && tput cnorm; }
-    trap cleanup EXIT
+    # Colors (only when TTY)
+    local blue="\033[1;36m"  # bright cyan
+    local green="\033[1;32m" # bright green
+    local red="\033[1;31m"   # bright red
+    local reset="\033[0m"
 
-    if [ -t 1 ]; then tput sc; tput civis; fi
+    # TTY + tput detection
+    local is_tty=0 has_tput=0
+    [ -t 1 ] && is_tty=1
+    command -v tput >/dev/null 2>&1 && has_tput=1
 
-    while kill -0 "$pid" 2>/dev/null; do
-        for c in '|' '/' '-' '\'; do
-            if [ -t 1 ]; then tput rc; fi
-            printf "%s %s" "$c" "$message"
-            sleep 0.1
+    # Choose frames based on UTF-8 capability (very lightweight heuristic)
+    local use_unicode=1
+    # If locale not UTF-8, fall back to ASCII
+    printf '%s' "$LC_ALL$LC_CTYPE$LANG" | grep -qi 'utf-8' || use_unicode=0
+    # If not a TTY, no spinner animation at all
+    (( is_tty )) || use_unicode=0
+
+    # Hide cursor if we can
+    if (( is_tty && has_tput )); then
+        tput civis 2>/dev/null || true
+    fi
+    # Always restore cursor on exit/interrupt
+    cleanup() { if (( is_tty && has_tput )); then tput cnorm 2>/dev/null || true; fi; }
+    trap cleanup EXIT INT TERM
+
+    # Draw loop (only animate on TTY)
+    if (( is_tty )); then
+        while kill -0 "$pid" 2>/dev/null; do
+            # Clear line and print
+            printf "\r\033[K"
+            if (( use_unicode )); then
+                printf "${blue}%s${reset} %s" "${frames[i]}" "$message"
+                (( i = (i + 1) % ${#frames[@]} ))
+            } else
+                printf "${blue}%s${reset} %s" "${ascii_frames[i]}" "$message"
+                (( i = (i + 1) % ${#ascii_frames[@]} ))
+            fi
+            sleep "$delay"
         done
-    done
+    fi
 
+    # Wait for process and capture status
     wait "$pid"; last_status=$?
 
-    # Show cursor again (redundant but harmless due to trap)
-    if [ -t 1 ]; then tput cnorm; fi
-    trap - EXIT
-    return $last_status
+    # Final line (TTY: colored; non-TTY: plain)
+    if (( is_tty )); then
+        if (( last_status == 0 )); then
+            printf "\r\033[K${green}✅${reset} %s\n" "$message"
+        else
+            printf "\r\033[K${red}❌${reset} %s (failed with status %d)\n" "$message" "$last_status"
+        fi
+    else
+        if (( last_status == 0 )); then
+            printf "[OK] %s\n" "$message"
+        else
+            printf "[FAIL:%d] %s\n" "$last_status" "$message"
+        fi
+    fi
+
+    # trap will restore cursor; return status
+    return "$last_status"
 }
 
 
