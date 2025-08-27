@@ -77,19 +77,29 @@ prepare_system() {
 spinner() {
     local pid=$1
     local message="${2:-Processing...}"
-    ...
-    local cleanup() { [ -t 1 ] && tput cnorm; }
+    local last_status=0
+
+    cleanup() { [ -t 1 ] && tput cnorm; }
     trap cleanup EXIT
 
     if [ -t 1 ]; then tput sc; tput civis; fi
-    ...
+
+    while kill -0 "$pid" 2>/dev/null; do
+        for c in '|' '/' '-' '\'; do
+            if [ -t 1 ]; then tput rc; fi
+            printf "%s %s" "$c" "$message"
+            sleep 0.1
+        done
+    done
+
     wait "$pid"; last_status=$?
-    ...
+
     # Show cursor again (redundant but harmless due to trap)
     if [ -t 1 ]; then tput cnorm; fi
     trap - EXIT
     return $last_status
 }
+
 
 
 download_file() {
