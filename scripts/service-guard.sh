@@ -120,13 +120,21 @@ for svc in "${services[@]}"; do
     apache2|httpd)
       if ! hc_http; then
         log "$svc health check failed; try-restart"
-        systemctl try-restart "$svc" || log "try-restart failed for $svc"
+        if systemctl try-restart "$svc"; then
+          log "RESTART: $svc restarted due to health check failure"
+        else
+          log "RESTART_FAILED: try-restart failed for $svc"
+        fi
       fi
       ;;
     mysql|mariadb)
       if ! hc_mysql; then
         log "$svc health check failed; try-restart"
-        systemctl try-restart "$svc" || log "try-restart failed for $svc"
+        if systemctl try-restart "$svc"; then
+          log "RESTART: $svc restarted due to health check failure"
+        else
+          log "RESTART_FAILED: try-restart failed for $svc"
+        fi
       fi
       ;;
   esac

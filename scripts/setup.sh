@@ -446,7 +446,7 @@ chmod +x "${lis_path}/cron.sh"
 cron_job="* * * * * cd ${lis_path} && ./cron.sh"
 
 # Load current root crontab
-current_crontab=$(sudo crontab -l 2>/dev/null)
+current_crontab="$(crontab -l 2>/dev/null || true)"
 
 # If active, do nothing
 if echo "$current_crontab" | grep -Fxq "$cron_job"; then
@@ -460,7 +460,7 @@ else
     {
         echo "$updated_crontab"
         echo "$cron_job"
-    } | sudo crontab -
+    } | crontab -
 
     print success "Cron job for LIS added/replaced in root's crontab."
     log_action "Cron job for LIS added/replaced in root's crontab."
