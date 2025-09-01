@@ -441,30 +441,8 @@ restart_service apache || {
 }
 
 # Cron job setup
-chmod +x "${lis_path}/cron.sh"
+setup_intelis_cron "${lis_path}"
 
-cron_job="* * * * * cd ${lis_path} && ./cron.sh"
-
-# Load current root crontab
-current_crontab="$(crontab -l 2>/dev/null || true)"
-
-# If active, do nothing
-if echo "$current_crontab" | grep -Fxq "$cron_job"; then
-    print info "Cron job for LIS already active. Skipping."
-    log_action "Cron job for LIS already active. Skipped."
-else
-    # Remove any commented version or similar-looking line
-    updated_crontab=$(echo "$current_crontab" | grep -vE "^\s*#?\s*\*\s\*\s\*\s\*\s\*\s+cd\s+${lis_path//\//\\/}\s+&&\s+\./cron\.sh")
-
-    # Append the correct cron job
-    {
-        echo "$updated_crontab"
-        echo "$cron_job"
-    } | crontab -
-
-    print success "Cron job for LIS added/replaced in root's crontab."
-    log_action "Cron job for LIS added/replaced in root's crontab."
-fi
 
 # Update LIS config.production.php with database credentials
 config_file="${lis_path}/configs/config.production.php"
