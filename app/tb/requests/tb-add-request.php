@@ -114,7 +114,6 @@ require_once($fileArray[$arr['vl_form']]);
 <script>
     $(document).ready(function() {
 
-
         $('#isSampleRejected').change(function(e) {
             if (this.value == 'yes') {
                 $('.show-rejection').show();
