@@ -226,12 +226,9 @@ try {
         $db->update('form_tb', [
             'result_dispatched_datetime' => $now,
         ]);
-    }
 
-    /** Stamp “first pulled via API” once for rows actually returned */
-    $tbIds = array_values(array_filter(array_unique(array_column($rowData, 'tbId'))));
-    if (!empty($tbIds)) {
-        $db->where('tb_id', $tbIds, 'IN');
+        // 3) Stamp “first pulled via API” once for rows actually returned
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
         $db->where('result_pulled_via_api_datetime', null);
         $db->update('form_tb', [
             'result_pulled_via_api_datetime' => $now,

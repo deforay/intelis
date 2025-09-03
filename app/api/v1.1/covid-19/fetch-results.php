@@ -294,12 +294,9 @@ try {
         $db->update('form_covid19', [
             'result_dispatched_datetime' => $now,
         ]);
-    }
 
-    /** Stamp “first pulled via API” once for rows actually returned */
-    $sampleIds = array_values(array_filter(array_unique(array_column($rowData, 'covid19Id'))));
-    if (!empty($sampleIds)) {
-        $db->where('covid19_id', $sampleIds, 'IN');
+        // 3) Stamp “first pulled via API” once for rows actually returned
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
         $db->where('result_pulled_via_api_datetime', null);
         $db->update('form_covid19', [
             'result_pulled_via_api_datetime' => $now,

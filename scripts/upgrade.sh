@@ -56,42 +56,50 @@ trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
 clear_opcache_apache() {
     local webroot="${lis_path}/public"
-    local token
-    token="$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 24)"
-    local fname="clear-opcache-${token}.php"
-    local fpath="${webroot}/${fname}"
+    if [ ! -d "$webroot" ]; then
+    print warning "OPcache clear skipped: webroot not found at ${webroot}"
+    return 0
+    fi
 
-# Create a one-shot local-only reset endpoint
-cat > "${fpath}" <<'PHP'
+    local token fname fpath
+    token="$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 24)"
+    fname="clear-opcache-${token}.php"
+    fpath="${webroot}/${fname}"
+
+    cat > "${fpath}" <<'PHP'
 <?php
 if (
-($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1' &&
-($_SERVER['REMOTE_ADDR'] ?? '') !== '::1'
+    ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1' &&
+    ($_SERVER['REMOTE_ADDR'] ?? '') !== '::1'
 ) { http_response_code(403); exit; }
 
 if (!function_exists('opcache_reset')) { echo "OPcache not available\n"; exit(0); }
-
-// Optional: also invalidate files under the app root if you prefer targeted clears
-// foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/..')) as $file) {
-//     if ($file->isFile() && preg_match('/\.php$/i', $file)) { @opcache_invalidate($file->getPathname(), true); }
-// }
-
 opcache_reset();
 echo "OK\n";
 PHP
 
-chmod 0640 "${fpath}"
+    # Ensure Apache can read it
+    chown www-data:www-data "${fpath}" 2>/dev/null || true
+    chmod 0644 "${fpath}"
 
-# Hit it via Apache (Host header not required if this vhost is default; adjust if needed)
-if curl -fsS "http://127.0.0.1/${fname}" | grep -q "OK"; then
-    print success "OPcache cleared via Apache SAPI"
-else
-    print warning "OPcache clear endpoint did not return OK (check vhost/default site)."
-fi
+    # Try with optional Host (for name-based vhosts) and follow redirects
+    local host_hdr=""
+    if [ -n "${INTELIS_HOSTNAME:-}" ]; then
+    host_hdr="-H Host:${INTELIS_HOSTNAME}"
+    fi
 
-# Remove the endpoint regardless
-rm -f "${fpath}"
+    # Try HTTPS first (common with HSTS), then HTTP
+    if curl -kfsSL ${host_hdr} "https://127.0.0.1/${fname}" | grep -q "OK"; then
+    print success "OPcache cleared via Apache (HTTPS)"
+    elif curl -fsSL ${host_hdr} "http://127.0.0.1/${fname}" | grep -q "OK"; then
+    print success "OPcache cleared via Apache (HTTP)"
+    else
+    print warning "OPcache clear endpoint did not return OK (check vhost/redirects)."
+    fi
+
+    rm -f "${fpath}"
 }
+
 
 # Function to update configuration
 update_configuration() {

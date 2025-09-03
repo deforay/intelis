@@ -236,12 +236,9 @@ try {
         $db->update('form_eid', [
             'result_dispatched_datetime' => $now,
         ]);
-    }
 
-    /** Stamp “first pulled via API” once for rows actually returned */
-    $eidIds = array_values(array_filter(array_unique(array_column($rowData, 'eidId'))));
-    if (!empty($eidIds)) {
-        $db->where('eid_id', $eidIds, 'IN');
+        // 3) Stamp “first pulled via API” once for rows actually returned
+        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
         $db->where('result_pulled_via_api_datetime', null);
         $db->update('form_eid', [
             'result_pulled_via_api_datetime' => $now,
