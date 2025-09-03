@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-08-20 16:28+0530\n"
-"PO-Revision-Date: 2025-08-20 16:28+0530\n"
+"POT-Creation-Date: 2025-09-03 15:46+0530\n"
+"PO-Revision-Date: 2025-09-03 15:48+0530\n"
 "Last-Translator: Deforay <support@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -22,11 +22,11 @@ msgstr ""
 #: app/admin/api-dashboard/duplicates-detail.php:49
 #: app/admin/api-dashboard/missing-samples-detail.php:48
 msgid "API/EMR Dashboard"
-msgstr "Tableau de bord API/EMR"
+msgstr "Tableau de bord LIS/DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:214
 msgid "API/EMR Data Exchange Dashboard"
-msgstr "Tableau de bord de l'échange de données API/EMR"
+msgstr "Tableau de bord de l'échange de données LIS/DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:218
 #: app/admin/api-dashboard/duplicates-detail.php:48
@@ -227,6 +227,7 @@ msgstr "Tableau de bord de l'échange de données API/EMR"
 #: app/tb/reference/tb-test-reasons.php:18
 #: app/tb/requests/addSamplesFromManifest.php:19
 #: app/tb/requests/forms/add-burkina-faso.php:62
+#: app/tb/requests/forms/add-rwanda.php:54
 #: app/tb/requests/forms/edit-burkina-faso.php:82
 #: app/tb/requests/tb-requests.php:107 app/tb/results/email-results.php:61
 #: app/tb/results/forms/update-burkina-faso.php:82
@@ -236,7 +237,7 @@ msgstr "Tableau de bord de l'échange de données API/EMR"
 #: app/tb/results/tb-manual-results.php:74
 #: app/tb/results/tb-print-results.php:43
 #: app/tb/results/tb-result-status.php:65 app/users/addUser.php:60
-#: app/users/edit-profile.php:39 app/users/editUser.php:98
+#: app/users/edit-profile.php:39 app/users/editUser.php:99
 #: app/users/users.php:13 app/vl/program-management/highViralLoad.php:121
 #: app/vl/program-management/sample-storage-reports.php:57
 #: app/vl/program-management/sampleRejectionReport.php:56
@@ -311,6 +312,7 @@ msgstr "Saisissez une plage de dates"
 #: app/specimen-referral-manifest/move-manifest.php:219
 #: app/specimen-referral-manifest/view-manifests.php:58
 #: app/system-admin/api-stats/api-stats.php:46
+#: app/tb/requests/forms/add-rwanda.php:519
 msgid "Test Type"
 msgstr "Type de test"
 
@@ -490,8 +492,8 @@ msgstr "CD4"
 #: app/tb/management/tb-clinic-report.php:188
 #: app/tb/management/tb-export-data.php:112
 #: app/tb/management/tb-sample-status.php:74
-#: app/tb/requests/tb-requests.php:231 app/tb/requests/tb-requests.php:309
-#: app/tb/results/tb-failed-results.php:106
+#: app/tb/requests/forms/add-rwanda.php:474 app/tb/requests/tb-requests.php:231
+#: app/tb/requests/tb-requests.php:309 app/tb/results/tb-failed-results.php:106
 #: app/tb/results/tb-manual-results.php:111
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/program-management/sample-storage-reports.php:89
@@ -656,7 +658,7 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/tb/results/tb-print-results.php:253
 #: app/tb/results/tb-print-results.php:350
 #: app/tb/results/tb-print-results.php:386 app/users/addUser.php:271
-#: app/users/editUser.php:305
+#: app/users/editUser.php:306
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/program-management/highViralLoad.php:186
 #: app/vl/program-management/highViralLoad.php:368
@@ -1375,8 +1377,8 @@ msgstr "Veuillez choisir Région/Etat"
 #: app/tb/results/tb-result-status.php:112 app/users/addUser.php:241
 #: app/users/addUser.php:251 app/users/addUser.php:276
 #: app/users/addUser.php:286 app/users/edit-profile.php:73
-#: app/users/editUser.php:285 app/users/editUser.php:310
-#: app/users/editUser.php:320
+#: app/users/editUser.php:286 app/users/editUser.php:311
+#: app/users/editUser.php:321
 #: app/vl/program-management/getHighVlResultDetails.php:236
 #: app/vl/program-management/highViralLoad.php:163
 #: app/vl/program-management/highViralLoad.php:176
@@ -1644,7 +1646,7 @@ msgstr "-- Sélectionner --"
 #: app/tb/results/tb-print-results.php:260
 #: app/tb/results/tb-print-results.php:353
 #: app/tb/results/tb-print-results.php:387 app/users/addUser.php:281
-#: app/users/editUser.php:315
+#: app/users/editUser.php:316
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/program-management/highViralLoad.php:195
 #: app/vl/program-management/highViralLoad.php:377
@@ -1735,17 +1737,97 @@ msgstr "Aperçu des mesures rapides"
 msgid "Total Requests"
 msgstr "Total des Requêtes"
 
+#: app/admin/api-dashboard/api-dashboard.php:342
+#: app/admin/api-dashboard/api-dashboard.php:472
+msgid "API/EMR"
+msgstr "LIS/DAMA"
+
+#: app/admin/api-dashboard/api-dashboard.php:345
+msgid "Non-API/EMR"
+msgstr "Non-LIS/DAMA"
+
 #: app/admin/api-dashboard/api-dashboard.php:355
 msgid "API/EMR Requests"
-msgstr "Demandes API/EMR"
+msgstr "Demandes LIS/DAMA"
+
+#: app/admin/api-dashboard/api-dashboard.php:362
+#: app/admin/api-dashboard/api-dashboard.php:477
+msgid "Received"
+msgstr "Reçu"
+
+#: app/admin/api-dashboard/api-dashboard.php:365
+#: app/admin/api-dashboard/api-dashboard.php:476
+msgid "Not Received"
+msgstr "Non reçu"
 
 #: app/admin/api-dashboard/api-dashboard.php:375
 msgid "Received at Lab"
 msgstr "Reçu au laboratoire"
 
+#: app/admin/api-dashboard/api-dashboard.php:382
+#: app/admin/api-dashboard/api-dashboard.php:478
+msgid "Tested"
+msgstr "Testé"
+
+#: app/admin/api-dashboard/api-dashboard.php:385
+#: app/cd4/management/cd4-export-data.php:132
+#: app/cd4/management/get-sample-status.php:379
+#: app/cd4/results/cd4-result-status.php:203
+#: app/cd4/results/email-results.php:259
+#: app/cd4/results/get-cd4-result-status.php:167
+#: app/covid-19/management/covid-19-export-data.php:153
+#: app/covid-19/management/getSampleStatus.php:301
+#: app/covid-19/requests/covid-19-requests.php:269
+#: app/covid-19/results/covid-19-result-status.php:150
+#: app/covid-19/results/email-results.php:261
+#: app/covid-19/results/get-covid-19-result-status.php:191
+#: app/eid/management/eid-export-data.php:158
+#: app/eid/requests/eid-requests.php:242
+#: app/eid/results/eid-result-status.php:150
+#: app/eid/results/email-results.php:258
+#: app/eid/results/get-eid-result-status.php:174
+#: app/eid/results/pdf/result-pdf-burkina-faso.php:302
+#: app/eid/results/pdf/result-pdf-cameroon.php:343
+#: app/generic-tests/program-management/generic-export-data.php:140
+#: app/generic-tests/results/email-results.php:261
+#: app/generic-tests/results/generic-result-approval.php:196
+#: app/generic-tests/results/get-generic-results-for-approval.php:181
+#: app/hepatitis/management/hepatitis-export-data.php:146
+#: app/hepatitis/requests/hepatitis-requests.php:230
+#: app/hepatitis/results/email-results.php:261
+#: app/hepatitis/results/get-hepatitis-result-status.php:149
+#: app/hepatitis/results/hepatitis-result-status.php:140
+#: app/mail/vlResultMail.php:261 app/system/translate-strings.php:98
+#: app/tb/management/getSampleStatus.php:383
+#: app/tb/management/tb-export-data.php:147 app/tb/requests/tb-requests.php:196
+#: app/tb/results/email-results.php:261
+#: app/tb/results/get-tb-result-status.php:198
+#: app/tb/results/pdf/result-pdf-burkina-faso.php:272
+#: app/tb/results/tb-result-status.php:144
+#: app/vl/program-management/vl-export-data.php:193
+#: app/vl/results/email-results.php:261
+#: app/vl/results/getVlResultsForApproval.php:113
+#: app/vl/results/pdf/result-pdf-burkina-faso.php:310
+#: app/vl/results/vlResultApproval.php:203 app/vl/results/vlResultMail.php:261
+msgid "Rejected"
+msgstr "Rejeté"
+
+#: app/admin/api-dashboard/api-dashboard.php:388
+#: app/admin/api-dashboard/api-dashboard.php:479
+msgid "Pending"
+msgstr "En attente"
+
 #: app/admin/api-dashboard/api-dashboard.php:398
 msgid "Not Received at Lab"
 msgstr "Non reçu au laboratoire"
+
+#: app/admin/api-dashboard/api-dashboard.php:405
+msgid "≤ 7 days"
+msgstr "≤ 7 jours"
+
+#: app/admin/api-dashboard/api-dashboard.php:408
+msgid "> 7 days"
+msgstr "> 7 jours"
 
 #: app/admin/api-dashboard/api-dashboard.php:418
 #: app/admin/api-dashboard/duplicates-detail.php:50
@@ -1761,10 +1843,57 @@ msgstr "Dans les 7 jours"
 msgid "Results Sent"
 msgstr "Envoi des résultats"
 
+#: app/admin/api-dashboard/api-dashboard.php:442
+msgid "Via API/EMR"
+msgstr "Via LIS/DAMA"
+
+#: app/admin/api-dashboard/api-dashboard.php:445
+#: app/covid-19/requests/forms/add-cameroon.php:662
+#: app/covid-19/results/forms/update-cameroon-result.php:228
+#: app/eid/requests/forms/add-burkina-faso.php:266
+#: app/eid/requests/forms/add-cameroon.php:231
+#: app/eid/requests/forms/add-cameroon.php:294
+#: app/eid/requests/forms/add-cameroon.php:457
+#: app/eid/requests/forms/edit-burkina-faso.php:279
+#: app/eid/requests/forms/edit-cameroon.php:256
+#: app/eid/requests/forms/edit-cameroon.php:320
+#: app/eid/requests/forms/edit-cameroon.php:485
+#: app/eid/results/forms/update-burkina-faso-result.php:278
+#: app/eid/results/forms/update-cameroon-result.php:230
+#: app/eid/results/forms/update-cameroon-result.php:294
+#: app/eid/results/forms/update-cameroon-result.php:457
+#: app/facilities/addFacility.php:245 app/facilities/addFacility.php:271
+#: app/facilities/addFacility.php:840 app/facilities/editFacility.php:814
+#: app/generic-tests/configuration/add-test-type.php:261
+#: app/generic-tests/configuration/add-test-type.php:593
+#: app/generic-tests/configuration/clone-test-type.php:316
+#: app/generic-tests/configuration/clone-test-type.php:380
+#: app/generic-tests/configuration/clone-test-type.php:436
+#: app/generic-tests/configuration/clone-test-type.php:819
+#: app/generic-tests/configuration/edit-test-type.php:320
+#: app/generic-tests/configuration/edit-test-type.php:384
+#: app/generic-tests/configuration/edit-test-type.php:440
+#: app/generic-tests/configuration/edit-test-type.php:853
+#: app/system/translate-strings-country-4.php:10
+#: app/tb/requests/forms/add-burkina-faso.php:246
+#: app/tb/requests/forms/add-burkina-faso.php:321
+#: app/tb/requests/forms/add-rwanda.php:169
+#: app/tb/requests/forms/add-rwanda.php:196
+#: app/tb/requests/forms/add-rwanda.php:440
+#: app/tb/requests/forms/edit-burkina-faso.php:266
+#: app/tb/requests/forms/edit-burkina-faso.php:341
+#: app/tb/results/forms/update-burkina-faso.php:220
+#: app/tb/results/forms/update-burkina-faso.php:266
+#: app/tb/results/forms/update-burkina-faso.php:340 app/users/addUser.php:445
+#: app/users/editUser.php:495
+#: app/vl/results/forms/update-cameroon-result.php:525
+msgid "Other"
+msgstr "Autre"
+
 #: app/admin/api-dashboard/api-dashboard.php:461
 msgid "Source Distribution by Facility with API/EMR Workflow"
 msgstr ""
-"Distribution des sources par établissement avec flux de travail API/EMR"
+"Distribution des sources par établissement avec flux de travail LIS/DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:467
 #: app/admin/api-dashboard/api-dashboard.php:510
@@ -1824,11 +1953,7 @@ msgstr "Distribution des sources"
 
 #: app/admin/api-dashboard/api-dashboard.php:469
 msgid "API/EMR Workflow"
-msgstr "Flux de travail API/EMR"
-
-#: app/admin/api-dashboard/api-dashboard.php:472
-msgid "API/EMR"
-msgstr "API/EMR"
+msgstr "Flux de travail LIS/DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:473
 msgid "STS"
@@ -1840,27 +1965,11 @@ msgstr "LIS direct"
 
 #: app/admin/api-dashboard/api-dashboard.php:475
 msgid "API/EMR %"
-msgstr "API/EMR %"
-
-#: app/admin/api-dashboard/api-dashboard.php:476
-msgid "Not Received"
-msgstr "Non reçu"
-
-#: app/admin/api-dashboard/api-dashboard.php:477
-msgid "Received"
-msgstr "Reçu"
-
-#: app/admin/api-dashboard/api-dashboard.php:478
-msgid "Tested"
-msgstr "Testé"
-
-#: app/admin/api-dashboard/api-dashboard.php:479
-msgid "Pending"
-msgstr "En attente"
+msgstr "LIS/DAMA %"
 
 #: app/admin/api-dashboard/api-dashboard.php:494
 msgid "API/EMR Requests Without Sample Receipt - By Facility"
-msgstr "Demandes API/EMR sans réception d'échantillon - par installation"
+msgstr "Demandes LIS/DAMA sans réception d'échantillon - par installation"
 
 #: app/admin/api-dashboard/api-dashboard.php:497
 msgid "View All Details"
@@ -1871,7 +1980,7 @@ msgid ""
 "Facilities with API/EMR requests that have not received samples at the lab "
 "and are not rejected."
 msgstr ""
-"Installations ayant des demandes API/EMR qui n'ont pas reçu d'échantillons "
+"Installations ayant des demandes LIS/DAMA qui n'ont pas reçu d'échantillons "
 "au laboratoire et qui ne sont pas rejetées."
 
 #: app/admin/api-dashboard/api-dashboard.php:511
@@ -1914,7 +2023,7 @@ msgid ""
 "least one from API/EMR)"
 msgstr ""
 "Établissements avec des échantillons ayant le même ID/Nom de patient au "
-"cours des 7 derniers jours (au moins un provenant de l'API/EMR)"
+"cours des 7 derniers jours (au moins un provenant de la LIS/DAMA)"
 
 #: app/admin/api-dashboard/api-dashboard.php:548
 msgid "Duplicate Groups"
@@ -1947,7 +2056,7 @@ msgstr "Dernier"
 
 #: app/admin/api-dashboard/api-dashboard.php:570
 msgid "Results Sent for Requests Not Originating via API/EMR"
-msgstr "Résultats envoyés pour les demandes ne provenant pas de l'API/EMR"
+msgstr "Résultats envoyés pour les demandes ne provenant pas de la LIS/DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:576
 #: app/admin/api-dashboard/missing-samples-detail.php:121
@@ -2094,6 +2203,8 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de l'API/EMR"
 #: app/tb/requests/addSamplesFromManifest.php:63
 #: app/tb/requests/forms/add-burkina-faso.php:86
 #: app/tb/requests/forms/add-burkina-faso.php:92
+#: app/tb/requests/forms/add-rwanda.php:78
+#: app/tb/requests/forms/add-rwanda.php:82
 #: app/tb/requests/forms/edit-burkina-faso.php:106
 #: app/tb/requests/forms/edit-burkina-faso.php:112
 #: app/tb/requests/tb-requests.php:303
@@ -2247,7 +2358,7 @@ msgstr "Jours Diff"
 #: app/tb/results/tb-failed-results.php:324
 #: app/tb/results/tb-manual-results.php:230
 #: app/tb/results/tb-print-results.php:477
-#: app/tb/results/tb-result-status.php:210 app/users/editUser.php:219
+#: app/tb/results/tb-result-status.php:210 app/users/editUser.php:220
 #: app/vl/program-management/highViralLoad.php:1202
 #: app/vl/program-management/highViralLoad.php:1232
 #: app/vl/program-management/sampleRejectionReport.php:152
@@ -2447,7 +2558,7 @@ msgstr "FOSA"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:87
 msgid "High Missing API/EMR Sample Receipts"
-msgstr "Élevé Absence de reçus d'échantillons API/EMR"
+msgstr "Élevé Absence de reçus d'échantillons LIS/DAMA"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:88
 #, php-format
@@ -2455,7 +2566,7 @@ msgid ""
 "%d API/EMR test requests have been waiting for sample receipt for more than "
 "30 days"
 msgstr ""
-"%d Les demandes de test API/EMR attendent la réception de l'échantillon "
+"%d Les demandes de test LIS/DAMA attendent la réception de l'échantillon "
 "depuis plus de 30 jours"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:143
@@ -2486,14 +2597,14 @@ msgstr "%d Les échantillons sont en attente de test depuis plus de 30 jours"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:195
 msgid "API/EMR Result Transmission Issues"
-msgstr "Problèmes de transmission des résultats API/EMR"
+msgstr "Problèmes de transmission des résultats LIS/DAMA"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:196
 #, php-format
 msgid "%d API/EMR results have transmission issues (pending/failed)"
 msgstr ""
-"%d Les résultats de l'API/EMR ont des problèmes de transmission (en attente/"
-"échec)"
+"%d Les résultats de la LIS/DAMA ont des problèmes de transmission (en "
+"attente/échec)"
 
 #: app/admin/api-dashboard/get-api-dashboard-alerts.php:217
 msgid "High Sample Rejection Rate"
@@ -2705,9 +2816,10 @@ msgstr "Saisissez vos commentaires ou notes..."
 #: app/tb/reference/add-tb-sample-type.php:57
 #: app/tb/reference/add-tb-test-reasons.php:76
 #: app/tb/requests/forms/add-burkina-faso.php:498
+#: app/tb/requests/forms/add-rwanda.php:588
 #: app/tb/results/email-results.php:333
 #: app/tb/results/forms/update-burkina-faso.php:550 app/users/addUser.php:329
-#: app/users/edit-profile.php:139 app/users/editUser.php:371
+#: app/users/edit-profile.php:139 app/users/editUser.php:372
 #: app/vl/program-management/upload-vl-control.php:127
 #: app/vl/reference/add-vl-art-code-details.php:93
 #: app/vl/reference/add-vl-results.php:151
@@ -2771,7 +2883,7 @@ msgstr "Plage de dates"
 
 #: app/admin/monitoring/activity-log.php:69 app/system/translate-strings.php:11
 #: app/users/addUser.php:61 app/users/edit-profile.php:40
-#: app/users/editUser.php:99 app/users/users.php:2 app/users/users.php:11
+#: app/users/editUser.php:100 app/users/users.php:2 app/users/users.php:11
 #: app/users/users.php:14
 msgid "Users"
 msgstr "Utilisateurs"
@@ -2902,6 +3014,7 @@ msgstr "Type d'action"
 #: app/tb/management/tb-sample-rejection-report.php:72
 #: app/tb/management/tb-sample-status.php:93
 #: app/tb/requests/forms/add-burkina-faso.php:159
+#: app/tb/requests/forms/add-rwanda.php:128
 #: app/tb/requests/forms/edit-burkina-faso.php:179
 #: app/tb/requests/tb-requests.php:267 app/tb/results/email-results.php:287
 #: app/tb/results/forms/update-burkina-faso.php:178
@@ -2910,8 +3023,8 @@ msgstr "Type d'action"
 #: app/tb/results/tb-print-results.php:144
 #: app/tb/results/tb-print-results.php:314
 #: app/tb/results/tb-result-status.php:131 app/users/addUser.php:364
-#: app/users/addUser.php:365 app/users/editUser.php:417
-#: app/users/editUser.php:418 app/vl/program-management/highViralLoad.php:304
+#: app/users/addUser.php:365 app/users/editUser.php:418
+#: app/users/editUser.php:419 app/vl/program-management/highViralLoad.php:304
 #: app/vl/program-management/highViralLoad.php:647
 #: app/vl/program-management/highViralLoad.php:849
 #: app/vl/program-management/highViralLoad.php:967
@@ -3279,7 +3392,7 @@ msgstr "Action"
 #: app/tb/reference/add-tb-sample-type.php:56
 #: app/tb/reference/add-tb-test-reasons.php:75
 #: app/tb/requests/addSamplesFromManifest.php:37 app/users/addUser.php:328
-#: app/users/edit-profile.php:138 app/users/editUser.php:370
+#: app/users/edit-profile.php:138 app/users/editUser.php:371
 #: app/vl/program-management/upload-vl-control.php:124
 #: app/vl/reference/add-vl-art-code-details.php:92
 #: app/vl/reference/add-vl-results.php:148
@@ -3390,7 +3503,7 @@ msgstr "Envoyer"
 #: app/tb/results/tb-print-results.php:145
 #: app/tb/results/tb-print-results.php:315
 #: app/tb/results/tb-result-status.php:132 app/users/addUser.php:293
-#: app/users/editUser.php:327 app/vl/program-management/highViralLoad.php:306
+#: app/users/editUser.php:328 app/vl/program-management/highViralLoad.php:306
 #: app/vl/program-management/highViralLoad.php:470
 #: app/vl/program-management/highViralLoad.php:649
 #: app/vl/program-management/highViralLoad.php:851
@@ -3709,8 +3822,9 @@ msgstr "ID de l'échantillon à distance"
 #: app/tb/management/tb-sample-status.php:59
 #: app/tb/management/tb-sample-status.php:114
 #: app/tb/requests/addSamplesFromManifest.php:67
-#: app/tb/requests/tb-requests.php:119 app/tb/requests/tb-requests.php:307
-#: app/tb/results/email-results.php:140 app/tb/results/tb-failed-results.php:74
+#: app/tb/requests/forms/add-rwanda.php:433 app/tb/requests/tb-requests.php:119
+#: app/tb/requests/tb-requests.php:307 app/tb/results/email-results.php:140
+#: app/tb/results/tb-failed-results.php:74
 #: app/tb/results/tb-failed-results.php:188
 #: app/tb/results/tb-manual-results.php:85
 #: app/tb/results/tb-print-results.php:65
@@ -4705,6 +4819,7 @@ msgstr "Statut de l'échantillon"
 #: app/covid-19/results/add-covid-19-qc-data.php:183
 #: app/covid-19/results/edit-covid-19-qc-data.php:199
 #: app/covid-19/results/forms/update-cameroon-result.php:431
+#: app/tb/requests/forms/add-rwanda.php:532
 msgid "Test Result"
 msgstr "Résultats du test"
 
@@ -4907,7 +5022,7 @@ msgstr "Selectinner le laboratoire du test"
 #: app/tb/management/tb-export-data.php:327
 #: app/tb/results/tb-failed-results.php:301
 #: app/tb/results/tb-print-results.php:462 app/users/addUser.php:417
-#: app/users/editUser.php:466 app/vl/program-management/highViralLoad.php:1182
+#: app/users/editUser.php:467 app/vl/program-management/highViralLoad.php:1182
 #: app/vl/program-management/vl-export-data.php:569
 #: app/vl/program-management/vlMonitoringReport.php:303
 #: app/vl/requests/forms/add-cameroon.php:789
@@ -4948,7 +5063,7 @@ msgstr "Sélectionner la région"
 #: app/tb/management/tb-export-data.php:330
 #: app/tb/results/tb-failed-results.php:304
 #: app/tb/results/tb-print-results.php:466 app/users/addUser.php:423
-#: app/users/editUser.php:472 app/vl/program-management/highViralLoad.php:1186
+#: app/users/editUser.php:473 app/vl/program-management/highViralLoad.php:1186
 #: app/vl/program-management/vl-export-data.php:572
 #: app/vl/program-management/vlMonitoringReport.php:306
 #: app/vl/requests/forms/add-cameroon.php:792
@@ -5213,7 +5328,7 @@ msgstr ""
 #: app/api/v1.1/covid-19/save-request.php:643
 #: app/api/v1.1/eid/fetch-results.php:263 app/api/v1.1/eid/get-request.php:225
 #: app/api/v1.1/eid/save-request.php:501 app/api/v1.1/eid/save-request.php:548
-#: app/api/v1.1/generate-manifest.php:150
+#: app/api/v1.1/generate-manifest.php:220
 #: app/api/v1.1/generic-tests/fetch-results.php:302
 #: app/api/v1.1/generic-tests/get-request.php:135
 #: app/api/v1.1/generic-tests/save-request.php:454
@@ -5222,8 +5337,8 @@ msgstr ""
 #: app/api/v1.1/save-facilities.php:246 app/api/v1.1/tb/fetch-results.php:254
 #: app/api/v1.1/tb/get-request.php:201 app/api/v1.1/tb/save-request.php:431
 #: app/api/v1.1/tb/save-request.php:476 app/api/v1.1/vl/fetch-results.php:287
-#: app/api/v1.1/vl/get-request.php:251 app/api/v1.1/vl/save-request.php:454
-#: app/api/v1.1/vl/save-request.php:503
+#: app/api/v1.1/vl/get-request.php:251 app/api/v1.1/vl/save-request.php:647
+#: app/api/v1.1/vl/save-request.php:720
 #: app/api/vl/fetch-recency-vl-results.php:126
 msgid ""
 "Failed to process this request. Please contact the system administrator if "
@@ -5236,28 +5351,28 @@ msgstr ""
 #: app/api/v1.1/eid/save-request.php:144
 #: app/api/v1.1/generic-tests/save-request.php:135
 #: app/api/v1.1/save-facilities.php:116 app/api/v1.1/tb/save-request.php:144
-#: app/api/v1.1/vl/save-request.php:144
+#: app/api/v1.1/vl/save-request.php:142
 msgid "Missing required fields"
 msgstr "Champs obligatoires manquants"
 
 #: app/api/v1.1/covid-19/save-request.php:157
 #: app/api/v1.1/eid/save-request.php:154
 #: app/api/v1.1/generic-tests/save-request.php:145
-#: app/api/v1.1/tb/save-request.php:154 app/api/v1.1/vl/save-request.php:154
+#: app/api/v1.1/tb/save-request.php:154 app/api/v1.1/vl/save-request.php:152
 msgid "Invalid Dates. Cannot be in the future"
 msgstr "Dates invalidées. Ne peut être dans le futur"
 
 #: app/api/v1.1/covid-19/save-request.php:229
 #: app/api/v1.1/eid/save-request.php:215
 #: app/api/v1.1/generic-tests/save-request.php:217
-#: app/api/v1.1/tb/save-request.php:227 app/api/v1.1/vl/save-request.php:200
+#: app/api/v1.1/tb/save-request.php:227 app/api/v1.1/vl/save-request.php:189
 msgid "Sample Locked or Finalized"
 msgstr "Échantillon verrouillé ou finalisé"
 
 #: app/api/v1.1/covid-19/save-request.php:272
 #: app/api/v1.1/eid/save-request.php:256
 #: app/api/v1.1/generic-tests/save-request.php:259
-#: app/api/v1.1/tb/save-request.php:270 app/api/v1.1/vl/save-request.php:242
+#: app/api/v1.1/tb/save-request.php:270 app/api/v1.1/vl/save-request.php:232
 msgid "Failed to insert sample"
 msgstr "Échec de l'insertion de l'échantillon"
 
@@ -5270,6 +5385,16 @@ msgstr "Veuillez vérifier les paramètres de votre demande."
 #: app/batch/save-batch-helper.php:84
 msgid "Something went wrong. Please try again later."
 msgstr "Une erreur s'est produite. Veuillez réessayer plus tard."
+
+#: app/api/v1.1/vl/save-request.php:534
+#, fuzzy
+#| msgid "Potential Duplicate Entries Detected"
+msgid "Potential duplicate sample detected within 1 day"
+msgstr "Détection de doublons potentiels"
+
+#: app/api/v1.1/vl/save-request.php:547
+msgid "Medium-risk duplicate detected"
+msgstr ""
 
 #: app/batch/add-batch-position.php:34
 msgid " | Add Batch Position"
@@ -5672,6 +5797,7 @@ msgstr "Créer un lot"
 #: app/tb/reference/add-tb-sample-type.php:22
 #: app/tb/reference/add-tb-test-reasons.php:24
 #: app/tb/requests/forms/add-burkina-faso.php:71
+#: app/tb/requests/forms/add-rwanda.php:63
 #: app/tb/requests/forms/add-sierraleone.php:91
 #: app/tb/requests/forms/add-southsudan.php:63
 #: app/tb/requests/forms/edit-burkina-faso.php:91
@@ -5681,7 +5807,7 @@ msgstr "Créer un lot"
 #: app/tb/results/forms/update-burkina-faso.php:91
 #: app/tb/results/forms/update-sierraleone.php:113
 #: app/tb/results/forms/update-southsudan.php:109 app/users/addUser.php:70
-#: app/users/edit-profile.php:49 app/users/editUser.php:108
+#: app/users/edit-profile.php:49 app/users/editUser.php:109
 #: app/vl/program-management/addContactNotes.php:45
 #: app/vl/program-management/upload-vl-control.php:62
 #: app/vl/reference/add-vl-art-code-details.php:35
@@ -6248,6 +6374,7 @@ msgstr "Sélection automatique des échantillons pour le lot"
 #: app/batch/add-batch.php:358 app/eid/requests/forms/add-burkina-faso.php:460
 #: app/generic-tests/requests/add-request.php:724
 #: app/tb/requests/forms/add-burkina-faso.php:495
+#: app/tb/requests/forms/add-rwanda.php:585
 #: app/vl/requests/forms/add-burkina-faso.php:681
 #: app/vl/requests/forms/add-cameroon.php:704
 msgid "Save and Next"
@@ -6823,6 +6950,7 @@ msgstr "Tout"
 #: app/tb/management/tb-clinic-report.php:256
 #: app/tb/management/tb-clinic-report.php:360
 #: app/tb/requests/forms/add-burkina-faso.php:195
+#: app/tb/requests/forms/add-rwanda.php:164
 #: app/tb/requests/forms/edit-burkina-faso.php:215
 #: app/tb/requests/patientModal.php:85 app/tb/requests/tb-requests.php:178
 #: app/tb/results/forms/update-burkina-faso.php:214
@@ -6954,6 +7082,7 @@ msgstr "Sélectionnez svp le sexe"
 #: app/tb/management/tb-clinic-report.php:260
 #: app/tb/management/tb-clinic-report.php:364
 #: app/tb/requests/forms/add-burkina-faso.php:199
+#: app/tb/requests/forms/add-rwanda.php:167
 #: app/tb/requests/forms/edit-burkina-faso.php:219
 #: app/tb/requests/tb-requests.php:182 app/tb/results/email-results.php:179
 #: app/tb/results/forms/update-burkina-faso.php:218
@@ -7021,6 +7150,7 @@ msgstr "Homme"
 #: app/tb/management/tb-clinic-report.php:261
 #: app/tb/management/tb-clinic-report.php:365
 #: app/tb/requests/forms/add-burkina-faso.php:200
+#: app/tb/requests/forms/add-rwanda.php:168
 #: app/tb/requests/forms/edit-burkina-faso.php:220
 #: app/tb/requests/tb-requests.php:183 app/tb/results/email-results.php:182
 #: app/tb/results/forms/update-burkina-faso.php:219
@@ -7282,8 +7412,9 @@ msgstr "Exporter vers Excel"
 #: app/tb/management/tb-export-data.php:233
 #: app/tb/management/tb-export-data.php:270
 #: app/tb/requests/addSamplesFromManifest.php:70
-#: app/tb/requests/patientModal.php:76 app/tb/requests/tb-requests.php:248
-#: app/tb/requests/tb-requests.php:314 app/tb/results/tb-failed-results.php:145
+#: app/tb/requests/forms/add-rwanda.php:160 app/tb/requests/patientModal.php:76
+#: app/tb/requests/tb-requests.php:248 app/tb/requests/tb-requests.php:314
+#: app/tb/results/tb-failed-results.php:145
 #: app/tb/results/tb-failed-results.php:197
 #: app/tb/results/tb-manual-results.php:188
 #: app/tb/results/tb-print-results.php:125
@@ -8142,48 +8273,6 @@ msgstr "Tous les statuts"
 msgid "Accepted"
 msgstr "Accepté"
 
-#: app/cd4/management/cd4-export-data.php:132
-#: app/cd4/management/get-sample-status.php:379
-#: app/cd4/results/cd4-result-status.php:203
-#: app/cd4/results/email-results.php:259
-#: app/cd4/results/get-cd4-result-status.php:167
-#: app/covid-19/management/covid-19-export-data.php:153
-#: app/covid-19/management/getSampleStatus.php:301
-#: app/covid-19/requests/covid-19-requests.php:269
-#: app/covid-19/results/covid-19-result-status.php:150
-#: app/covid-19/results/email-results.php:261
-#: app/covid-19/results/get-covid-19-result-status.php:191
-#: app/eid/management/eid-export-data.php:158
-#: app/eid/requests/eid-requests.php:242
-#: app/eid/results/eid-result-status.php:150
-#: app/eid/results/email-results.php:258
-#: app/eid/results/get-eid-result-status.php:174
-#: app/eid/results/pdf/result-pdf-burkina-faso.php:302
-#: app/eid/results/pdf/result-pdf-cameroon.php:343
-#: app/generic-tests/program-management/generic-export-data.php:140
-#: app/generic-tests/results/email-results.php:261
-#: app/generic-tests/results/generic-result-approval.php:196
-#: app/generic-tests/results/get-generic-results-for-approval.php:181
-#: app/hepatitis/management/hepatitis-export-data.php:146
-#: app/hepatitis/requests/hepatitis-requests.php:230
-#: app/hepatitis/results/email-results.php:261
-#: app/hepatitis/results/get-hepatitis-result-status.php:149
-#: app/hepatitis/results/hepatitis-result-status.php:140
-#: app/mail/vlResultMail.php:261 app/system/translate-strings.php:98
-#: app/tb/management/getSampleStatus.php:383
-#: app/tb/management/tb-export-data.php:147 app/tb/requests/tb-requests.php:196
-#: app/tb/results/email-results.php:261
-#: app/tb/results/get-tb-result-status.php:198
-#: app/tb/results/pdf/result-pdf-burkina-faso.php:272
-#: app/tb/results/tb-result-status.php:144
-#: app/vl/program-management/vl-export-data.php:193
-#: app/vl/results/email-results.php:261
-#: app/vl/results/getVlResultsForApproval.php:113
-#: app/vl/results/pdf/result-pdf-burkina-faso.php:310
-#: app/vl/results/vlResultApproval.php:203 app/vl/results/vlResultMail.php:261
-msgid "Rejected"
-msgstr "Rejeté"
-
 #: app/cd4/management/cd4-export-data.php:133
 #: app/covid-19/management/covid-19-export-data.php:154
 #: app/covid-19/requests/covid-19-requests.php:272
@@ -8522,6 +8611,10 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/requests/forms/add-burkina-faso.php:232
 #: app/tb/requests/forms/add-burkina-faso.php:254
 #: app/tb/requests/forms/add-burkina-faso.php:398
+#: app/tb/requests/forms/add-rwanda.php:137
+#: app/tb/requests/forms/add-rwanda.php:216
+#: app/tb/requests/forms/add-rwanda.php:451
+#: app/tb/requests/forms/add-rwanda.php:489
 #: app/tb/requests/forms/add-sierraleone.php:202
 #: app/tb/requests/forms/add-southsudan.php:170
 #: app/tb/requests/forms/edit-burkina-faso.php:188
@@ -8540,7 +8633,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/results/forms/update-burkina-faso.php:253
 #: app/tb/results/forms/update-burkina-faso.php:275
 #: app/tb/results/forms/update-burkina-faso.php:422 app/users/addUser.php:144
-#: app/users/editUser.php:187
+#: app/users/editUser.php:188
 #: app/vl/program-management/getHighVlResultDetails.php:237
 #: app/vl/program-management/highViralLoad.php:263
 #: app/vl/program-management/highViralLoad.php:282
@@ -8734,6 +8827,10 @@ msgstr "Oui"
 #: app/tb/requests/forms/add-burkina-faso.php:233
 #: app/tb/requests/forms/add-burkina-faso.php:255
 #: app/tb/requests/forms/add-burkina-faso.php:399
+#: app/tb/requests/forms/add-rwanda.php:136
+#: app/tb/requests/forms/add-rwanda.php:215
+#: app/tb/requests/forms/add-rwanda.php:450
+#: app/tb/requests/forms/add-rwanda.php:490
 #: app/tb/requests/forms/add-sierraleone.php:201
 #: app/tb/requests/forms/add-southsudan.php:169
 #: app/tb/requests/forms/edit-burkina-faso.php:187
@@ -8752,7 +8849,7 @@ msgstr "Oui"
 #: app/tb/results/forms/update-burkina-faso.php:252
 #: app/tb/results/forms/update-burkina-faso.php:274
 #: app/tb/results/forms/update-burkina-faso.php:423 app/users/addUser.php:145
-#: app/users/editUser.php:188
+#: app/users/editUser.php:189
 #: app/vl/program-management/getHighVlResultDetails.php:238
 #: app/vl/program-management/highViralLoad.php:266
 #: app/vl/program-management/highViralLoad.php:285
@@ -9278,6 +9375,7 @@ msgstr "S.No."
 
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
+#: app/tb/requests/forms/add-rwanda.php:92
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/requests/export-vl-requests.php:38
 msgid "Health Facility Name"
@@ -9330,6 +9428,8 @@ msgstr "Unique ART No."
 #: app/generic-tests/requests/edit-request.php:569
 #: app/generic-tests/results/update-generic-test-result.php:532
 #: app/tb/requests/forms/add-burkina-faso.php:187
+#: app/tb/requests/forms/add-rwanda.php:149
+#: app/tb/requests/forms/add-rwanda.php:150
 #: app/tb/requests/forms/edit-burkina-faso.php:207
 #: app/tb/results/forms/update-burkina-faso.php:206
 #: app/vl/program-management/export-vl-results.php:32
@@ -9385,6 +9485,7 @@ msgstr "Protocole actuel"
 
 #: app/cd4/management/export-cd4-results.php:32
 #: app/cd4/requests/export-cd4-requests.php:28
+#: app/tb/requests/forms/add-rwanda.php:230
 #: app/vl/program-management/export-vl-results.php:35
 #: app/vl/requests/export-vl-requests.php:38
 msgid "Date of Initiation of Current Regimen"
@@ -9483,6 +9584,7 @@ msgstr "Demande de numéro de téléphone portable du clinicien"
 #: app/generic-tests/requests/edit-request.php:782
 #: app/generic-tests/results/update-generic-test-result.php:750
 #: app/tb/requests/forms/add-burkina-faso.php:394
+#: app/tb/requests/forms/add-rwanda.php:486
 #: app/tb/requests/forms/edit-burkina-faso.php:415
 #: app/tb/results/forms/update-burkina-faso.php:418
 #: app/vl/program-management/export-vl-results.php:35
@@ -10017,7 +10119,7 @@ msgstr "Veuillez saisir le statut du motif de rejet"
 #: app/tb/reference/get-tb-results-helper.php:97
 #: app/tb/reference/getTbSampleRejectionDetails.php:103
 #: app/tb/reference/getTbSampleTypeDetails.php:103
-#: app/tb/reference/getTbTestReasonsDetails.php:97 app/users/editUser.php:286
+#: app/tb/reference/getTbTestReasonsDetails.php:97 app/users/editUser.php:287
 #: app/vl/reference/add-vl-art-code-details.php:81
 #: app/vl/reference/add-vl-results.php:76
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:62
@@ -10117,7 +10219,7 @@ msgstr "Actif"
 #: app/tb/reference/get-tb-results-helper.php:98
 #: app/tb/reference/getTbSampleRejectionDetails.php:104
 #: app/tb/reference/getTbSampleTypeDetails.php:104
-#: app/tb/reference/getTbTestReasonsDetails.php:98 app/users/editUser.php:287
+#: app/tb/reference/getTbTestReasonsDetails.php:98 app/users/editUser.php:288
 #: app/vl/reference/add-vl-art-code-details.php:82
 #: app/vl/reference/add-vl-results.php:79
 #: app/vl/reference/add-vl-sample-rejection-reasons.php:63
@@ -10977,7 +11079,7 @@ msgstr "Essai de synchronisation"
 #: app/hepatitis/requests/hepatitis-requests.php:847
 #: app/import-result/imported-results.php:690
 #: app/tb/requests/tb-requests.php:733 app/users/addUser.php:466
-#: app/users/editUser.php:516 app/vl/requests/vl-requests.php:1223
+#: app/users/editUser.php:517 app/vl/requests/vl-requests.php:1223
 #: app/vl/requests/vl-requests.php:1247 app/vl/requests/vl-requests.php:1278
 msgid "Please wait"
 msgstr "Veuillez patienter"
@@ -11036,6 +11138,7 @@ msgstr "Résultat CD4 (%)"
 #: app/hepatitis/requests/forms/edit-rwanda.php:102
 #: app/hepatitis/results/forms/update-rwanda-result.php:92
 #: app/tb/requests/forms/add-burkina-faso.php:94
+#: app/tb/requests/forms/add-rwanda.php:83
 #: app/tb/requests/forms/add-sierraleone.php:117
 #: app/tb/requests/forms/edit-burkina-faso.php:114
 #: app/tb/requests/forms/edit-sierraleone.php:154
@@ -11102,6 +11205,7 @@ msgstr ""
 #: app/hepatitis/requests/forms/add-rwanda.php:80
 #: app/patients/add-patient.php:45 app/patients/edit-patient.php:62
 #: app/tb/requests/forms/add-burkina-faso.php:165
+#: app/tb/requests/forms/add-rwanda.php:134
 #: app/tb/requests/forms/add-sierraleone.php:199
 #: app/tb/requests/forms/add-southsudan.php:167
 #: app/tb/requests/forms/edit-burkina-faso.php:185
@@ -11120,6 +11224,7 @@ msgstr "Cryptage des données d'identification des patients"
 
 #: app/cd4/requests/forms/add-rwanda.php:216
 #: app/cd4/requests/forms/edit-rwanda.php:261
+#: app/common/get-by-district-id.php:38
 #: app/common/reference/add-funding-sources.php:44
 #: app/common/reference/add-geographical-divisions.php:84
 #: app/common/reference/add-implementation-partners.php:44
@@ -11190,14 +11295,15 @@ msgstr "Cryptage des données d'identification des patients"
 #: app/patients/add-patient.php:46 app/patients/add-patient.php:224
 #: app/patients/edit-patient.php:63 app/patients/edit-patient.php:240
 #: app/tb/requests/forms/add-burkina-faso.php:166
+#: app/tb/requests/forms/add-rwanda.php:135
 #: app/tb/requests/forms/add-sierraleone.php:200
 #: app/tb/requests/forms/add-southsudan.php:168
 #: app/tb/requests/forms/edit-burkina-faso.php:186
 #: app/tb/requests/forms/edit-sierraleone.php:237
 #: app/tb/requests/forms/edit-southsudan.php:197
 #: app/tb/results/forms/update-burkina-faso.php:185 app/users/addUser.php:109
-#: app/users/addUser.php:143 app/users/editUser.php:149
-#: app/users/editUser.php:186 app/vl/reference/add-vl-art-code-details.php:69
+#: app/users/addUser.php:143 app/users/editUser.php:150
+#: app/users/editUser.php:187 app/vl/reference/add-vl-art-code-details.php:69
 #: app/vl/reference/add-vl-art-code-details.php:80
 #: app/vl/reference/add-vl-test-failure-reason.php:44
 #: app/vl/reference/edit-vl-test-failure-reason.php:53
@@ -11316,6 +11422,7 @@ msgstr "DoB du patient"
 #: app/covid-19/requests/get-request-list.php:318
 #: app/generic-tests/requests/get-request-list.php:138
 #: app/hepatitis/requests/get-request-list.php:274
+#: app/tb/requests/forms/add-rwanda.php:154
 #: app/tb/requests/get-request-list.php:279
 #: app/vl/requests/get-request-list.php:377
 msgid "Patient Age"
@@ -11393,6 +11500,13 @@ msgstr "Synchroniser"
 #: app/tb/requests/forms/add-burkina-faso.php:580
 #: app/tb/requests/forms/add-burkina-faso.php:602
 #: app/tb/requests/forms/add-burkina-faso.php:654
+#: app/tb/requests/forms/add-rwanda.php:99
+#: app/tb/requests/forms/add-rwanda.php:166
+#: app/tb/requests/forms/add-rwanda.php:191
+#: app/tb/requests/forms/add-rwanda.php:214
+#: app/tb/requests/forms/add-rwanda.php:449
+#: app/tb/requests/forms/add-rwanda.php:488
+#: app/tb/requests/forms/add-rwanda.php:496
 #: app/tb/requests/forms/edit-burkina-faso.php:128
 #: app/tb/requests/forms/edit-burkina-faso.php:218
 #: app/tb/requests/forms/edit-burkina-faso.php:251
@@ -12142,7 +12256,7 @@ msgstr "Urgent"
 #: app/generic-tests/results/email-results.php:211
 #: app/hepatitis/results/email-results.php:211 app/mail/vlResultMail.php:211
 #: app/tb/results/email-results.php:211 app/users/addUser.php:275
-#: app/users/editUser.php:309 app/vl/results/email-results.php:211
+#: app/users/editUser.php:310 app/vl/results/email-results.php:211
 #: app/vl/results/vlResultMail.php:211
 msgid "Please choose province/state"
 msgstr "Veuillez choisir Région/Etat"
@@ -13584,6 +13698,8 @@ msgstr "Statut du spécimen"
 #: app/covid-19/requests/forms/edit-cameroon.php:362
 #: app/covid-19/results/forms/update-cameroon-result.php:318
 #: app/tb/requests/forms/add-burkina-faso.php:317
+#: app/tb/requests/forms/add-rwanda.php:437
+#: app/tb/requests/forms/add-rwanda.php:513
 #: app/tb/requests/forms/edit-burkina-faso.php:337
 #: app/tb/results/forms/update-burkina-faso.php:336
 msgid "Specimen Type"
@@ -13963,7 +14079,7 @@ msgstr ""
 #: app/eid/requests/eid-add-request.php:181
 #: app/hepatitis/requests/hepatitis-add-request.php:207
 #: app/hepatitis/requests/hepatitis-quick-add.php:182
-#: app/tb/requests/tb-add-request.php:202
+#: app/tb/requests/tb-add-request.php:201
 msgid "We could not save this form. Please try saving again."
 msgstr ""
 "Nous n'avons pas pu enregistrer ce formulaire. Veuillez réessayer de "
@@ -14158,6 +14274,7 @@ msgstr "COVID-19-FORMULAIRE DE DEMANDE DE TEST DE LABORATOIRE"
 #: app/covid-19/requests/forms/quick-add-southsudan.php:46
 #: app/system/translate-strings.php:57
 #: app/tb/requests/forms/add-burkina-faso.php:63
+#: app/tb/requests/forms/add-rwanda.php:55
 msgid "Add New Request"
 msgstr "Ajouter une nouvelle demande"
 
@@ -14177,6 +14294,7 @@ msgstr "INFORMATIONS SUR LE SITE"
 #: app/eid/requests/forms/edit-cameroon.php:100
 #: app/eid/results/forms/update-burkina-faso-result.php:71
 #: app/eid/results/forms/update-cameroon-result.php:89
+#: app/tb/requests/forms/add-rwanda.php:88
 msgid "To be filled by requesting Clinician/Nurse"
 msgstr "A remplir par le clinicien/infirmier demandeur"
 
@@ -14274,6 +14392,7 @@ msgstr "Région"
 #: app/covid-19/requests/forms/add-cameroon.php:126
 #: app/covid-19/requests/forms/edit-cameroon.php:149
 #: app/covid-19/results/forms/update-cameroon-result.php:152
+#: app/tb/requests/forms/add-rwanda.php:105
 msgid "Please choose State"
 msgstr "Veuillez choisir l'État"
 
@@ -14297,6 +14416,7 @@ msgstr "Nom du projet"
 #: app/eid/requests/forms/edit-burkina-faso.php:132
 #: app/eid/results/forms/update-burkina-faso-result.php:131
 #: app/tb/requests/forms/add-burkina-faso.php:143
+#: app/tb/requests/forms/add-rwanda.php:115
 #: app/tb/requests/forms/edit-burkina-faso.php:163
 #: app/tb/results/forms/update-burkina-faso.php:162
 #: app/tb/results/forms/update-burkina-faso.php:389
@@ -14316,6 +14436,7 @@ msgstr "Saisir l'identifiant du cas ou le nom du patient"
 
 #: app/covid-19/requests/forms/add-cameroon.php:197
 #: app/covid-19/requests/forms/edit-cameroon.php:214
+#: app/tb/requests/forms/add-rwanda.php:129
 #: app/vl/requests/forms/add-cameroon.php:226
 #: app/vl/requests/forms/edit-cameroon.php:281
 msgid "Enter art number or patient name"
@@ -14326,6 +14447,7 @@ msgstr "Saisir le code TARV ou le nom du patient"
 #: app/eid/requests/forms/add-burkina-faso.php:135
 #: app/eid/requests/forms/edit-burkina-faso.php:149
 #: app/eid/results/forms/update-burkina-faso-result.php:148
+#: app/tb/requests/forms/add-rwanda.php:128
 #: app/vl/requests/forms/add-cameroon.php:227
 #: app/vl/requests/forms/add-drc.php:174
 msgid "No Patient Found"
@@ -14361,6 +14483,7 @@ msgstr "Aucun patient trouvé"
 #: app/hepatitis/requests/forms/edit-rwanda.php:160
 #: app/hepatitis/requests/forms/edit-rwanda.php:162
 #: app/tb/requests/forms/add-burkina-faso.php:163
+#: app/tb/requests/forms/add-rwanda.php:133
 #: app/tb/requests/forms/add-sierraleone.php:197
 #: app/tb/requests/forms/add-southsudan.php:165
 #: app/tb/requests/forms/edit-burkina-faso.php:183
@@ -14406,6 +14529,8 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: app/covid-19/results/forms/update-cameroon-result.php:201
 #: app/global-config/editGlobalConfig.php:1325
 #: app/tb/requests/forms/add-burkina-faso.php:177
+#: app/tb/requests/forms/add-rwanda.php:175
+#: app/tb/requests/forms/add-rwanda.php:176
 #: app/tb/requests/forms/edit-burkina-faso.php:197
 #: app/tb/results/forms/update-burkina-faso.php:196
 msgid "First Name"
@@ -14416,6 +14541,8 @@ msgstr "Prénom"
 #: app/covid-19/requests/forms/edit-cameroon.php:243
 #: app/covid-19/results/forms/update-cameroon-result.php:203
 #: app/covid-19/results/forms/update-cameroon-result.php:205
+#: app/tb/requests/forms/add-rwanda.php:180
+#: app/tb/requests/forms/add-rwanda.php:186
 msgid "Last name"
 msgstr "Nom"
 
@@ -14427,11 +14554,13 @@ msgstr "Nom"
 #: app/eid/requests/forms/edit-cameroon.php:284
 #: app/eid/results/forms/update-cameroon-result.php:190
 #: app/eid/results/forms/update-cameroon-result.php:258
+#: app/tb/requests/forms/add-rwanda.php:150
 msgid "Please enter Date of birth"
 msgstr "Veuillez saisir votre date de naissance"
 
 #: app/covid-19/requests/forms/add-cameroon.php:236
 #: app/tb/requests/forms/add-burkina-faso.php:193
+#: app/tb/requests/forms/add-rwanda.php:153
 #: app/tb/requests/forms/edit-burkina-faso.php:213
 #: app/tb/results/forms/update-burkina-faso.php:212
 msgid "Age (years)"
@@ -14455,6 +14584,7 @@ msgstr "Âge du cas"
 #: app/generic-tests/results/update-generic-test-result.php:563
 #: app/generic-tests/results/update-generic-test-result.php:567
 #: app/generic-tests/results/update-generic-test-result.php:571
+#: app/tb/requests/forms/add-rwanda.php:165
 #: app/vl/results/forms/update-cameroon-result.php:377
 #: app/vl/results/forms/update-cameroon-result.php:381
 msgid "Please choose sex"
@@ -14507,8 +14637,8 @@ msgstr "Numéro de téléphone"
 #: app/patients/add-patient.php:203 app/patients/edit-patient.php:220
 #: app/patients/view-patients.php:37 app/users/addUser.php:98
 #: app/users/addUser.php:100 app/users/edit-profile.php:97
-#: app/users/edit-profile.php:99 app/users/editUser.php:137
-#: app/users/editUser.php:139 app/vl/requests/forms/add-cameroon.php:312
+#: app/users/edit-profile.php:99 app/users/editUser.php:138
+#: app/users/editUser.php:140 app/vl/requests/forms/add-cameroon.php:312
 #: app/vl/requests/forms/add-cameroon.php:396
 #: app/vl/requests/forms/edit-cameroon.php:364
 #: app/vl/requests/forms/edit-cameroon.php:452
@@ -14597,6 +14727,7 @@ msgstr "Veuillez saisir le numéro de passeport"
 #: app/covid-19/requests/forms/edit-cameroon.php:318
 #: app/covid-19/results/forms/update-cameroon-result.php:275
 #: app/tb/requests/forms/add-burkina-faso.php:308
+#: app/tb/requests/forms/add-rwanda.php:424
 #: app/tb/requests/forms/edit-burkina-faso.php:328
 #: app/tb/results/forms/update-burkina-faso.php:328
 msgid "SPECIMEN INFORMATION"
@@ -14697,6 +14828,7 @@ msgstr "Veuillez choisir la raison du test"
 #: app/generic-tests/results/update-generic-test-result.php:648
 #: app/generic-tests/results/update-generic-test-result.php:650
 #: app/tb/requests/forms/add-burkina-faso.php:382
+#: app/tb/requests/forms/add-rwanda.php:509
 #: app/tb/requests/forms/edit-burkina-faso.php:403
 #: app/tb/results/forms/update-burkina-faso.php:406
 #: app/vl/requests/forms/add-burkina-faso.php:295
@@ -14710,6 +14842,8 @@ msgstr "Échantillon envoyé le"
 #: app/covid-19/requests/forms/edit-cameroon.php:364
 #: app/covid-19/results/forms/update-cameroon-result.php:301
 #: app/covid-19/results/forms/update-cameroon-result.php:320
+#: app/tb/requests/forms/add-rwanda.php:438
+#: app/tb/requests/forms/add-rwanda.php:514
 msgid "Please choose specimen type"
 msgstr "Veuillez choisir le type de spécimen"
 
@@ -14834,6 +14968,9 @@ msgstr "Date de réception"
 #: app/tb/requests/forms/add-burkina-faso.php:361
 #: app/tb/requests/forms/add-burkina-faso.php:380
 #: app/tb/requests/forms/add-burkina-faso.php:384
+#: app/tb/requests/forms/add-rwanda.php:481
+#: app/tb/requests/forms/add-rwanda.php:510
+#: app/tb/requests/forms/add-rwanda.php:539
 #: app/tb/requests/forms/add-sierraleone.php:153
 #: app/tb/requests/forms/add-sierraleone.php:434
 #: app/tb/requests/forms/add-sierraleone.php:440
@@ -14911,6 +15048,7 @@ msgstr "Veuillez saisir la date"
 #: app/covid-19/requests/forms/edit-cameroon.php:383
 #: app/covid-19/results/forms/update-cameroon-result.php:351
 #: app/eid/results/forms/update-cameroon-result.php:530
+#: app/tb/requests/forms/add-rwanda.php:481
 msgid "Please enter sample receipt date"
 msgstr "Veuillez entrer la date de réception"
 
@@ -14929,6 +15067,7 @@ msgstr "Réservé à l'usage des laboratoires"
 #: app/covid-19/requests/forms/edit-cameroon.php:171
 #: app/covid-19/requests/forms/edit-cameroon.php:403
 #: app/covid-19/results/forms/update-cameroon-result.php:355
+#: app/tb/requests/forms/add-rwanda.php:116
 msgid "Please select Testing Testing Laboratory"
 msgstr "Veuillez sélectionner le laboratoire de test"
 
@@ -14972,6 +15111,7 @@ msgstr "Veuillez sélectionner un point de testing"
 #: app/eid/results/forms/update-burkina-faso-result.php:400
 #: app/eid/results/forms/update-cameroon-result.php:550
 #: app/tb/requests/forms/add-burkina-faso.php:404
+#: app/tb/requests/forms/add-rwanda.php:494
 #: app/tb/requests/forms/edit-burkina-faso.php:425
 #: app/tb/results/forms/update-burkina-faso.php:428
 msgid "Reason for Rejection"
@@ -14995,6 +15135,7 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: app/generic-tests/requests/edit-request.php:821
 #: app/generic-tests/results/update-generic-test-result.php:790
 #: app/tb/requests/forms/add-burkina-faso.php:411
+#: app/tb/requests/forms/add-rwanda.php:503
 #: app/tb/requests/forms/edit-burkina-faso.php:444
 #: app/tb/results/forms/update-burkina-faso.php:447
 #: app/vl/requests/forms/add-burkina-faso.php:538
@@ -15124,45 +15265,6 @@ msgstr "eg. VCT, PMTCT"
 msgid "Contact Person"
 msgstr "Personne à contacter"
 
-#: app/covid-19/requests/forms/add-cameroon.php:662
-#: app/covid-19/results/forms/update-cameroon-result.php:228
-#: app/eid/requests/forms/add-burkina-faso.php:266
-#: app/eid/requests/forms/add-cameroon.php:231
-#: app/eid/requests/forms/add-cameroon.php:294
-#: app/eid/requests/forms/add-cameroon.php:457
-#: app/eid/requests/forms/edit-burkina-faso.php:279
-#: app/eid/requests/forms/edit-cameroon.php:256
-#: app/eid/requests/forms/edit-cameroon.php:320
-#: app/eid/requests/forms/edit-cameroon.php:485
-#: app/eid/results/forms/update-burkina-faso-result.php:278
-#: app/eid/results/forms/update-cameroon-result.php:230
-#: app/eid/results/forms/update-cameroon-result.php:294
-#: app/eid/results/forms/update-cameroon-result.php:457
-#: app/facilities/addFacility.php:245 app/facilities/addFacility.php:271
-#: app/facilities/addFacility.php:840 app/facilities/editFacility.php:814
-#: app/generic-tests/configuration/add-test-type.php:261
-#: app/generic-tests/configuration/add-test-type.php:593
-#: app/generic-tests/configuration/clone-test-type.php:316
-#: app/generic-tests/configuration/clone-test-type.php:380
-#: app/generic-tests/configuration/clone-test-type.php:436
-#: app/generic-tests/configuration/clone-test-type.php:819
-#: app/generic-tests/configuration/edit-test-type.php:320
-#: app/generic-tests/configuration/edit-test-type.php:384
-#: app/generic-tests/configuration/edit-test-type.php:440
-#: app/generic-tests/configuration/edit-test-type.php:853
-#: app/system/translate-strings-country-4.php:10
-#: app/tb/requests/forms/add-burkina-faso.php:246
-#: app/tb/requests/forms/add-burkina-faso.php:321
-#: app/tb/requests/forms/edit-burkina-faso.php:266
-#: app/tb/requests/forms/edit-burkina-faso.php:341
-#: app/tb/results/forms/update-burkina-faso.php:220
-#: app/tb/results/forms/update-burkina-faso.php:266
-#: app/tb/results/forms/update-burkina-faso.php:340 app/users/addUser.php:445
-#: app/users/editUser.php:494
-#: app/vl/results/forms/update-cameroon-result.php:525
-msgid "Other"
-msgstr "Autre"
-
 #: app/covid-19/requests/forms/add-cameroon.php:664
 #: app/facilities/addFacility.php:248 app/facilities/addFacility.php:251
 #: app/facilities/editFacility.php:276 app/facilities/editFacility.php:280
@@ -15260,6 +15362,7 @@ msgstr "Sélectionner Révisé par"
 #: app/generic-tests/requests/edit-request.php:1054
 #: app/generic-tests/results/update-generic-test-result.php:991
 #: app/generic-tests/results/update-generic-test-result.php:1008
+#: app/tb/requests/forms/add-rwanda.php:1073
 #: app/vl/requests/forms/add-cameroon.php:796
 msgid "Select Clinic/Health Center"
 msgstr "Sélectionner une clinique/un centre de santé"
@@ -15317,6 +15420,7 @@ msgstr "Veuillez saisir l'ID de l'échantillon"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:155
 #: app/covid-19/results/forms/update-cameroon-result.php:158
+#: app/tb/requests/forms/add-rwanda.php:98
 msgid "Please choose County"
 msgstr "Veuillez choisir le comté"
 
@@ -15325,6 +15429,7 @@ msgstr "Veuillez choisir le comté"
 #: app/eid/requests/forms/add-drc.php:99
 #: app/eid/requests/forms/edit-drc.php:139
 #: app/eid/results/forms/update-drc-result.php:123
+#: app/tb/requests/forms/add-rwanda.php:93
 #: app/vl/requests/forms/add-drc.php:115
 #: app/vl/results/forms/update-drc-result.php:142
 msgid "Please choose facility"
@@ -15367,6 +15472,7 @@ msgstr "Cas Âge (années)"
 
 #: app/covid-19/requests/forms/edit-cameroon.php:254
 #: app/covid-19/results/forms/update-cameroon-result.php:220
+#: app/tb/requests/forms/add-rwanda.php:154
 msgid "Age (in years)"
 msgstr "Âge (en années)"
 
@@ -15492,6 +15598,7 @@ msgstr "Résultat final"
 #: app/generic-tests/results/update-generic-test-result.php:828
 #: app/import-result/imported-results.php:462
 #: app/tb/requests/forms/add-burkina-faso.php:462
+#: app/tb/requests/forms/add-rwanda.php:544
 #: app/tb/requests/forms/edit-burkina-faso.php:512
 #: app/tb/results/forms/update-burkina-faso.php:515
 #: app/vl/requests/forms/add-burkina-faso.php:570
@@ -15511,6 +15618,7 @@ msgstr "Révisé par"
 #: app/generic-tests/requests/add-request.php:648
 #: app/generic-tests/requests/edit-request.php:870
 #: app/generic-tests/results/update-generic-test-result.php:830
+#: app/tb/requests/forms/add-rwanda.php:545
 #: app/vl/requests/forms/add-cameroon.php:621
 #: app/vl/requests/forms/edit-cameroon.php:688
 #: app/vl/results/forms/update-cameroon-result.php:692
@@ -15529,6 +15637,8 @@ msgstr "Veuillez choisir examiné par"
 #: app/generic-tests/requests/edit-request.php:879
 #: app/generic-tests/results/update-generic-test-result.php:839
 #: app/tb/requests/forms/add-burkina-faso.php:468
+#: app/tb/requests/forms/add-rwanda.php:550
+#: app/tb/requests/forms/add-rwanda.php:551
 #: app/tb/requests/forms/edit-burkina-faso.php:518
 #: app/tb/results/forms/update-burkina-faso.php:521
 #: app/vl/requests/forms/add-cameroon.php:615
@@ -15544,6 +15654,7 @@ msgstr "Examiné le"
 #: app/generic-tests/requests/add-request.php:656
 #: app/generic-tests/requests/edit-request.php:879
 #: app/generic-tests/results/update-generic-test-result.php:839
+#: app/tb/requests/forms/add-rwanda.php:551
 #: app/vl/requests/forms/add-cameroon.php:615
 #: app/vl/requests/forms/edit-cameroon.php:682
 #: app/vl/results/forms/update-cameroon-result.php:686
@@ -15560,6 +15671,7 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: app/generic-tests/requests/edit-request.php:903
 #: app/generic-tests/results/update-generic-test-result.php:848
 #: app/generic-tests/results/update-generic-test-result.php:863
+#: app/tb/requests/forms/add-rwanda.php:557
 #: app/vl/requests/forms/add-cameroon.php:637
 msgid "Please choose approved by"
 msgstr "Veuillez choisir approuvé par"
@@ -15720,6 +15832,7 @@ msgstr "Veuillez saisir reçu le"
 #: app/covid-19/results/add-covid-19-qc-data.php:170
 #: app/covid-19/results/covid-19-qc-data.php:87
 #: app/covid-19/results/edit-covid-19-qc-data.php:186
+#: app/tb/requests/forms/add-rwanda.php:538
 msgid "Tested On"
 msgstr "Testé sur"
 
@@ -16771,6 +16884,7 @@ msgstr "Machine utilisée pour le test"
 #: app/generic-tests/results/update-generic-test-result.php:860
 #: app/import-result/imported-results.php:478
 #: app/tb/requests/forms/add-burkina-faso.php:472
+#: app/tb/requests/forms/add-rwanda.php:556
 #: app/tb/requests/forms/edit-burkina-faso.php:522
 #: app/tb/results/forms/update-burkina-faso.php:525
 #: app/vl/requests/forms/add-burkina-faso.php:621
@@ -16828,6 +16942,7 @@ msgstr "Commentaires du Technicien labo"
 #: app/specimen-referral-manifest/add-manifest.php:250
 #: app/system-admin/instance-overview/instanceIndex.php:116
 #: app/tb/requests/forms/add-burkina-faso.php:494
+#: app/tb/requests/forms/add-rwanda.php:584
 #: app/tb/results/forms/update-burkina-faso.php:547
 #: app/vl/requests/forms/add-burkina-faso.php:673
 #: app/vl/requests/forms/add-cameroon.php:696
@@ -17321,6 +17436,8 @@ msgstr "Veuillez choisir le motif du rejet"
 #: app/eid/requests/forms/edit-cameroon.php:633
 #: app/eid/results/forms/update-cameroon-result.php:599
 #: app/tb/requests/forms/add-burkina-faso.php:478
+#: app/tb/requests/forms/add-rwanda.php:562
+#: app/tb/requests/forms/add-rwanda.php:563
 #: app/tb/requests/forms/edit-burkina-faso.php:528
 #: app/tb/results/forms/update-burkina-faso.php:531
 #: app/vl/requests/forms/add-cameroon.php:631
@@ -17946,7 +18063,7 @@ msgstr ""
 "numéro."
 
 #: app/facilities/addFacility.php:266 app/facilities/editFacility.php:293
-#: app/users/addUser.php:284 app/users/editUser.php:318
+#: app/users/addUser.php:284 app/users/editUser.php:319
 #: app/vl/program-management/vlMonitoringReport.php:212
 msgid "Please choose District/County"
 msgstr "Veuillez choisir le district/comté"
@@ -18014,7 +18131,7 @@ msgstr "Format du Rapport pour CV"
 #: app/generic-tests/configuration/clone-test-type.php:235
 #: app/generic-tests/configuration/edit-test-type.php:240
 #: app/roles/addRole.php:218 app/roles/editRole.php:211
-#: app/system-admin/reset-password/get-user.php:51 app/users/editUser.php:284
+#: app/system-admin/reset-password/get-user.php:51 app/users/editUser.php:285
 msgid "Please select the status"
 msgstr "Veuillez sélectionner le statut"
 
@@ -18046,7 +18163,7 @@ msgstr "Sélectionner une image"
 
 #: app/facilities/addFacility.php:549 app/facilities/editFacility.php:532
 #: app/global-config/editGlobalConfig.php:207 app/users/addUser.php:164
-#: app/users/editUser.php:213
+#: app/users/editUser.php:214
 msgid "Change"
 msgstr "Changer"
 
@@ -18057,7 +18174,7 @@ msgstr "Veuillez sélectionner l'image du logo"
 
 #: app/facilities/addFacility.php:554 app/facilities/editFacility.php:540
 #: app/global-config/editGlobalConfig.php:215 app/users/addUser.php:168
-#: app/users/editUser.php:221
+#: app/users/editUser.php:222
 msgid "Remove"
 msgstr "Supprimer"
 
@@ -18171,7 +18288,7 @@ msgstr "Veuillez saisir la désignation"
 
 #: app/facilities/addFacility.php:702 app/facilities/editFacility.php:672
 #: app/facilities/editFacility.php:702 app/facilities/editFacility.php:1046
-#: app/users/addUser.php:155 app/users/editUser.php:198
+#: app/users/addUser.php:155 app/users/editUser.php:199
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:298
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:304
 #: app/vl/results/pdf/result-pdf-cameroon-cresar.php:314
@@ -18296,22 +18413,22 @@ msgid "for test type"
 msgstr "pour le type de test"
 
 #: app/facilities/mapTestType.php:105 app/users/addUser.php:307
-#: app/users/editUser.php:342
+#: app/users/editUser.php:343
 msgid "Number of unselected facilities"
 msgstr "Nombre des FOSA non sélectionnées"
 
 #: app/facilities/mapTestType.php:117 app/users/addUser.php:319
-#: app/users/editUser.php:360
+#: app/users/editUser.php:361
 msgid "Number of selected facilities"
 msgstr "Nombre des FOSA sélectionnées"
 
 #: app/facilities/mapTestType.php:208 app/users/addUser.php:466
-#: app/users/editUser.php:516
+#: app/users/editUser.php:517
 msgid "Trying to get mapped facilities"
 msgstr "Essayer d'obtenir la cartographie des FOSA"
 
 #: app/facilities/mapTestType.php:222 app/users/addUser.php:483
-#: app/users/editUser.php:534
+#: app/users/editUser.php:535
 msgid ""
 "No facilities found for the selected facility type. Please add a new "
 "facility or edit an existing facility."
@@ -21410,6 +21527,7 @@ msgid "Risk Factor Name"
 msgstr "Nom du facteur de risque"
 
 #: app/hepatitis/reference/add-hepatitis-risk-factors.php:35
+#: app/tb/requests/forms/add-rwanda.php:227
 msgid "Please enter Risk Factor name"
 msgstr "Veuillez saisir le nom du facteur de risque"
 
@@ -22589,8 +22707,8 @@ msgid "Please enter your lab name"
 msgstr "Veuillez saisir le nom de votre laboratoire"
 
 #: app/login/login.php:191 app/system-admin/login/login.php:76
-#: app/system-admin/setup/index.php:86 app/users/editUser.php:118
-#: app/users/editUser.php:120 app/users/users.php:30 app/users/users.php:57
+#: app/system-admin/setup/index.php:86 app/users/editUser.php:119
+#: app/users/editUser.php:121 app/users/users.php:30 app/users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
@@ -22606,8 +22724,8 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:193
 #: app/users/addUser.php:196 app/users/edit-profile.php:108
-#: app/users/edit-profile.php:111 app/users/editUser.php:251
-#: app/users/editUser.php:254
+#: app/users/edit-profile.php:111 app/users/editUser.php:252
+#: app/users/editUser.php:255
 #: app/vl/result-mail/editTestResultEmailConfig.php:65
 #: app/vl/result-mail/editTestResultEmailConfig.php:67
 msgid "Password"
@@ -23059,8 +23177,8 @@ msgstr "Identifiant de connexion"
 #: app/system-admin/reset-password/get-user.php:41
 #: app/system-admin/setup/index.php:102 app/users/addUser.php:212
 #: app/users/addUser.php:214 app/users/edit-profile.php:127
-#: app/users/edit-profile.php:129 app/users/editUser.php:270
-#: app/users/editUser.php:272
+#: app/users/edit-profile.php:129 app/users/editUser.php:271
+#: app/users/editUser.php:273
 msgid "Confirm Password"
 msgstr "Confirmer le mot de passe"
 
@@ -23074,8 +23192,8 @@ msgstr "Terminer"
 #: app/system-admin/reset-password/reset-password.php:111
 #: app/system-admin/setup/index.php:140 app/users/addUser.php:205
 #: app/users/addUser.php:534 app/users/edit-profile.php:120
-#: app/users/edit-profile.php:249 app/users/editUser.php:263
-#: app/users/editUser.php:588
+#: app/users/edit-profile.php:249 app/users/editUser.php:264
+#: app/users/editUser.php:589
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
 "number, one alphabet and may have special characters."
@@ -23325,7 +23443,7 @@ msgstr "Gérer le mot de passe"
 #: app/system-admin/login/login.php:80
 #: app/system-admin/reset-password/get-user.php:31
 #: app/system-admin/setup/index.php:98 app/users/addUser.php:196
-#: app/users/edit-profile.php:111 app/users/editUser.php:254
+#: app/users/edit-profile.php:111 app/users/editUser.php:255
 msgid "Please enter the password"
 msgstr "Veuillez saisir votre mot de passe actuel"
 
@@ -23418,7 +23536,7 @@ msgstr "Utilisateur"
 
 #: app/system-admin/reset-password/reset-password.php:128
 #: app/users/addUser.php:624 app/users/edit-profile.php:266
-#: app/users/editUser.php:676
+#: app/users/editUser.php:677
 msgid "Password generated and copied to clipboard"
 msgstr "Mot de passe généré et copié dans le presse-papiers"
 
@@ -23463,8 +23581,8 @@ msgid "Please select login id"
 msgstr "Veuillez sélectionner l'identifiant de connexion"
 
 #: app/system-admin/user-login-history/userLoginIndex.php:62
-#: app/users/addUser.php:181 app/users/editUser.php:234
-#: app/users/editUser.php:236
+#: app/users/addUser.php:181 app/users/editUser.php:235
+#: app/users/editUser.php:237
 msgid "Login Id"
 msgstr "ID de connexion"
 
@@ -23823,7 +23941,7 @@ msgstr "Co-morbidités"
 msgid "QC Test Kits"
 msgstr "Kits de test QC"
 
-#: app/system/translate-strings.php:46
+#: app/system/translate-strings.php:46 app/tb/requests/forms/add-rwanda.php:236
 msgid "Risk Factors"
 msgstr "Facteurs de risque"
 
@@ -24763,6 +24881,7 @@ msgid "TB Test Request"
 msgstr "Tuberculose-Demande de test"
 
 #: app/tb/requests/forms/add-burkina-faso.php:60
+#: app/tb/requests/forms/add-rwanda.php:52
 #: app/tb/requests/forms/edit-burkina-faso.php:80
 #: app/tb/results/forms/update-burkina-faso.php:80
 #: app/tb/results/forms/update-sierraleone.php:103
@@ -24819,6 +24938,7 @@ msgid "Unique ART Number"
 msgstr "Code TARV du patient"
 
 #: app/tb/requests/forms/add-burkina-faso.php:183
+#: app/tb/requests/forms/add-rwanda.php:179
 #: app/tb/requests/forms/edit-burkina-faso.php:203
 #: app/tb/results/forms/update-burkina-faso.php:202
 msgid "Surname"
@@ -24843,6 +24963,7 @@ msgid "Displaced Population"
 msgstr "Population déplacée"
 
 #: app/tb/requests/forms/add-burkina-faso.php:238
+#: app/tb/requests/forms/add-rwanda.php:189
 #: app/tb/requests/forms/edit-burkina-faso.php:258
 #: app/tb/results/forms/update-burkina-faso.php:258
 msgid "Type of patient"
@@ -24913,6 +25034,7 @@ msgid "Follow Up"
 msgstr "Suivi"
 
 #: app/tb/requests/forms/add-burkina-faso.php:312
+#: app/tb/requests/forms/add-rwanda.php:432
 #: app/tb/requests/forms/edit-burkina-faso.php:332
 #: app/tb/results/forms/update-burkina-faso.php:332
 msgid "Date Specimen Collected"
@@ -24991,6 +25113,331 @@ msgstr "Résultat Xpert MTB"
 #: app/tb/results/forms/update-burkina-faso.php:507
 msgid "TB LAM Result"
 msgstr "TB LAM Résultat"
+
+#: app/tb/requests/forms/add-rwanda.php:74
+#, fuzzy
+#| msgid "HEALTH FACILITY INFORMATION"
+msgid "FACILITY INFORMATION"
+msgstr "INFORMATIONS SUR LA FOSA"
+
+#: app/tb/requests/forms/add-rwanda.php:97
+#, fuzzy
+#| msgid "Health Facility/POE County"
+msgid "Health Facility County"
+msgstr "FOSA/POE Comté"
+
+#: app/tb/requests/forms/add-rwanda.php:104
+#, fuzzy
+#| msgid "Health Facility/POE State"
+msgid "Health Facility State"
+msgstr "FOSA/POE État"
+
+#: app/tb/requests/forms/add-rwanda.php:109
+#, fuzzy
+#| msgid "Category of testing site"
+msgid "Afflicated TB Testing Site"
+msgstr "Catégorie de type de site"
+
+#: app/tb/requests/forms/add-rwanda.php:110
+#, fuzzy
+#| msgid "Please select sample testing date"
+msgid "Please select afflicated TB testing site"
+msgstr "Veuillez sélectionner la date de test de l'échantillon"
+
+#: app/tb/requests/forms/add-rwanda.php:124
+#, fuzzy
+#| msgid "PATIENT IDENTIFIER"
+msgid "PATIENT DETAILS"
+msgstr "CODE TARV"
+
+#: app/tb/requests/forms/add-rwanda.php:127
+msgid ""
+"Complete full information on patient identification, contact and type of "
+"patient by TB program definition"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:129
+#, fuzzy
+#| msgid "Enter Case ID or Patient Name"
+msgid "Enter Patient ID or Patient Name"
+msgstr "Saisir l'identifiant du cas ou le nom du patient"
+
+#: app/tb/requests/forms/add-rwanda.php:143
+msgid "e-TB tracker No."
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:144
+#, fuzzy
+#| msgid "Enter art number"
+msgid "Enter the e-TB tracker number"
+msgstr "Saisir le code TARV"
+
+#: app/tb/requests/forms/add-rwanda.php:144
+#, fuzzy
+#| msgid "Please enter the Enter EPID Number"
+msgid "Please enter the e-TB tracker number"
+msgstr "Veuillez saisir le numéro de l'EPID"
+
+#: app/tb/requests/forms/add-rwanda.php:161
+#, fuzzy
+#| msgid "Please enter the Patient ID"
+msgid "Please enter Patient ID"
+msgstr "Veuillez entrer le ID du patient"
+
+#: app/tb/requests/forms/add-rwanda.php:176
+#, fuzzy
+#| msgid "Please enter unit name"
+msgid "Please enter First name"
+msgstr "Veuillez saisir le nom de l'unité"
+
+#: app/tb/requests/forms/add-rwanda.php:180
+#: app/tb/requests/forms/add-rwanda.php:186
+#, fuzzy
+#| msgid "Please enter the name"
+msgid "Please enter Last name"
+msgstr "Veuillez saisir le nom"
+
+#: app/tb/requests/forms/add-rwanda.php:185
+#, fuzzy
+#| msgid "Close Contacts"
+msgid "Phone contact"
+msgstr "Contacts étroits"
+
+#: app/tb/requests/forms/add-rwanda.php:190
+#, fuzzy
+#| msgid "Please select the postion"
+msgid "Please select the type of patient"
+msgstr "Veuillez sélectionner le poste"
+
+#: app/tb/requests/forms/add-rwanda.php:198
+#, fuzzy
+#| msgid "Enter patient id"
+msgid "Enter type of patient if others"
+msgstr "Saisir l'identifiant du patient"
+
+#: app/tb/requests/forms/add-rwanda.php:198
+#, fuzzy
+#| msgid "Please enter the patient ID to search"
+msgid "Please enter type of patient if others"
+msgstr "Veuillez saisir l'identifiant du patient à rechercher"
+
+#: app/tb/requests/forms/add-rwanda.php:204
+#, fuzzy
+#| msgid "HEALTH FACILITY INFORMATION"
+msgid "TREATMENT AND RISK FACTORS INFORMATION"
+msgstr "INFORMATIONS SUR LA FOSA"
+
+#: app/tb/requests/forms/add-rwanda.php:207
+msgid ""
+"Please complete full information on treatment history, TB regimen and risk "
+"factors"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:212
+#, fuzzy
+#| msgid "How long has this patient been on treatment ?"
+msgid "Is patient initiated on TB treatment?"
+msgstr "Depuis combien de temps ce patient est-il sous traitement ?"
+
+#: app/tb/requests/forms/add-rwanda.php:220
+#, fuzzy
+#| msgid "Date of Treatment Initiation"
+msgid "Date of treatment Initiation"
+msgstr "Date d’initiation du traitement ARV"
+
+#: app/tb/requests/forms/add-rwanda.php:226
+#, fuzzy
+#| msgid "Current Regimen"
+msgid "Current regimen"
+msgstr "Protocole actuel"
+
+#: app/tb/requests/forms/add-rwanda.php:227
+#, fuzzy
+#| msgid "Continue on current regimen"
+msgid "Enter the current regimen"
+msgstr "Poursuivre le protocole actuel"
+
+#: app/tb/requests/forms/add-rwanda.php:308
+msgid "No information provided"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:315
+msgid "PURPOSE AND TEST(S) REQUESTED FOR TB DIAGNOSTICS"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:318
+msgid "Please tick/ circle all as applicable below"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:324
+#, fuzzy
+#| msgid "Reason for Examination"
+msgid "Select reason for examination"
+msgstr "Motif de l'examen"
+
+#: app/tb/requests/forms/add-rwanda.php:325
+#, fuzzy
+#| msgid "No. of Tests"
+msgid "Purpose of TB test(s)"
+msgstr "Nombre de tests"
+
+#: app/tb/requests/forms/add-rwanda.php:381
+#, fuzzy
+#| msgid "Test(s) requested"
+msgid "TB test(s) requested"
+msgstr "Test(s) demandé(s)"
+
+#: app/tb/requests/forms/add-rwanda.php:415
+msgid "TB culture and Drug susceptibility test (DST)"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:427
+msgid "Please complete full information and circle/ tick as appropriate"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:442
+#, fuzzy
+#| msgid "Date specimen registered"
+msgid "Enter specimen type of others"
+msgstr "Date d'enregistrement du spécimen"
+
+#: app/tb/requests/forms/add-rwanda.php:442
+#, fuzzy
+#| msgid "Please enter the specimen quality"
+msgid "Please enter the specimen type if others"
+msgstr "Veuillez indiquer la qualité de l'échantillon"
+
+#: app/tb/requests/forms/add-rwanda.php:447
+#, fuzzy
+#| msgid "Recommended Corrective action"
+msgid "Is specimen re-ordered as part of corrective action?"
+msgstr "Action correctrice recommandée"
+
+#: app/tb/requests/forms/add-rwanda.php:448
+#, fuzzy
+#| msgid "Recommended Corrective action"
+msgid "Is specimen re-ordered as part of corrective action"
+msgstr "Action correctrice recommandée"
+
+#: app/tb/requests/forms/add-rwanda.php:462
+#, fuzzy
+#| msgid "SITE INFORMATION"
+msgid "TEST RESULTS INFORMATION"
+msgstr "INFORMATIONS SUR LE SITE"
+
+#: app/tb/requests/forms/add-rwanda.php:465
+msgid ""
+"Please complete full information and appropriate results with reference to "
+"TB test(s) requested above"
+msgstr ""
+
+#: app/tb/requests/forms/add-rwanda.php:475
+#, fuzzy
+#| msgid "Please select testing labs"
+msgid "Please select testing laboratory"
+msgstr "Veuillez selectionner le Laboratoire de test"
+
+#: app/tb/requests/forms/add-rwanda.php:480
+#, fuzzy
+#| msgid "Date Sample Received at Testing Lab"
+msgid "Date specimen received at TB testing site"
+msgstr "Date de réception de l'échantillon au laboratoire de test"
+
+#: app/tb/requests/forms/add-rwanda.php:487
+#, fuzzy
+#| msgid "Please select if sample is rejected"
+msgid "Please select the Is sample rejected?"
+msgstr "Veuillez sélectionner si l'échantillon est rejeté"
+
+#: app/tb/requests/forms/add-rwanda.php:495
+#, fuzzy
+#| msgid "Please select the Reason for Rejection"
+msgid "Please select the reason for rejection"
+msgstr "Veuillez sélectionner le motif du rejet"
+
+#: app/tb/requests/forms/add-rwanda.php:504
+#, fuzzy
+#| msgid "Select Rejection Date"
+msgid "Select rejection date"
+msgstr "Sélectionner la date de rejet"
+
+#: app/tb/requests/forms/add-rwanda.php:504
+#, fuzzy
+#| msgid "Please select the Rejection Date"
+msgid "Please select the rejection date"
+msgstr "Veuillez sélectionner le statut"
+
+#: app/tb/requests/forms/add-rwanda.php:510
+#, fuzzy
+#| msgid "Please select sample dispatched on"
+msgid "Please choose sample dispatched date"
+msgstr "Veuillez sélectionner l'échantillon expédié le"
+
+#: app/tb/requests/forms/add-rwanda.php:520
+#, fuzzy
+#| msgid "Please select the Test types"
+msgid "Please select the test type"
+msgstr "Veuillez sélectionner les types de tests"
+
+#: app/tb/requests/forms/add-rwanda.php:521
+#, fuzzy
+#| msgid "Select Test Type"
+msgid "Select test type"
+msgstr "Sélectionnez le Type d'essai"
+
+#: app/tb/requests/forms/add-rwanda.php:533
+#, fuzzy
+#| msgid "Please select the tests"
+msgid "Please select the test result"
+msgstr "Veuillez sélectionner les tests"
+
+#: app/tb/requests/forms/add-rwanda.php:534
+#, fuzzy
+#| msgid "Select Test Result Unit"
+msgid "Select test result"
+msgstr "Sélectionner l'unité de résultat des test"
+
+#: app/tb/requests/forms/add-rwanda.php:539
+#, fuzzy
+#| msgid "Please enter sample id"
+msgid "Please enter sample tested"
+msgstr "Veuillez saisir l'identifiant de l'échantillon"
+
+#: app/tb/requests/forms/add-rwanda.php:563
+#, fuzzy
+#| msgid "Please enter the Approved on"
+msgid "Please enter the approved on"
+msgstr "Veuillez saisir approuvée sur"
+
+#: app/tb/requests/forms/add-rwanda.php:927
+#, fuzzy
+#| msgid "Select"
+msgid "Select "
+msgstr "Sélectionner"
+
+#: app/tb/requests/forms/add-rwanda.php:1053
+#, fuzzy
+#| msgid "Select Option"
+msgid "Select option"
+msgstr "Choisir une option"
+
+#: app/tb/requests/forms/add-rwanda.php:1059
+#, fuzzy
+#| msgid "Select Specimen Type"
+msgid "Select patient type"
+msgstr "Sélectionner le type de spécimen"
+
+#: app/tb/requests/forms/add-rwanda.php:1064
+#, fuzzy
+#| msgid "Select Specimen Type"
+msgid "Select specimen type"
+msgstr "Sélectionner le type de spécimen"
+
+#: app/tb/requests/forms/add-rwanda.php:1069
+#, fuzzy
+#| msgid "Select Testing Lab"
+msgid "Select testing lab"
+msgstr "Selectinner le laboratoire du test"
 
 #: app/tb/requests/forms/add-sierraleone.php:157
 #: app/tb/requests/forms/edit-sierraleone.php:194
@@ -25130,106 +25577,106 @@ msgid "Add User"
 msgstr "Ajouter un utilisateur"
 
 #: app/users/addUser.php:82 app/users/edit-profile.php:61
-#: app/users/editUser.php:120
+#: app/users/editUser.php:121
 msgid "Please enter user name"
 msgstr "Veuillez saisir votre nom d'utilisateur"
 
-#: app/users/addUser.php:88 app/users/addUser.php:90 app/users/editUser.php:127
-#: app/users/editUser.php:129 app/users/users.php:33 app/users/users.php:59
+#: app/users/addUser.php:88 app/users/addUser.php:90 app/users/editUser.php:128
+#: app/users/editUser.php:130 app/users/users.php:33 app/users/users.php:59
 msgid "Email"
 msgstr "Courriel"
 
 #: app/users/addUser.php:90 app/users/edit-profile.php:91
-#: app/users/editUser.php:129
+#: app/users/editUser.php:130
 #: app/vl/result-mail/editTestResultEmailConfig.php:57
 msgid "Please enter email"
 msgstr "Veuillez entrer votre email"
 
 #: app/users/addUser.php:90 app/users/edit-profile.php:91
-#: app/users/editUser.php:129
+#: app/users/editUser.php:130
 msgid "This email id that you entered already exists.Try another email id"
 msgstr ""
 "L'adresse électronique que vous avez saisie existe déjà. Essayez une autre "
 "adresse électronique"
 
 #: app/users/addUser.php:100 app/users/edit-profile.php:99
-#: app/users/editUser.php:139 app/vl/requests/forms/add-drc.php:127
+#: app/users/editUser.php:140 app/vl/requests/forms/add-drc.php:127
 #: app/vl/results/forms/update-drc-result.php:154
 msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
 
-#: app/users/addUser.php:106 app/users/editUser.php:146 app/users/users.php:36
+#: app/users/addUser.php:106 app/users/editUser.php:147 app/users/users.php:36
 #: app/users/users.php:60
 msgid "Role"
 msgstr "Rôle"
 
-#: app/users/addUser.php:108 app/users/editUser.php:148
+#: app/users/addUser.php:108 app/users/editUser.php:149
 msgid "Please select the role"
 msgstr "Veuillez sélectionner le rôle"
 
-#: app/users/addUser.php:121 app/users/editUser.php:164
+#: app/users/addUser.php:121 app/users/editUser.php:165
 msgid "AuthToken"
 msgstr "AuthToken"
 
-#: app/users/addUser.php:123 app/users/editUser.php:166
+#: app/users/addUser.php:123 app/users/editUser.php:167
 msgid "Auth Token"
 msgstr "Jeton d'authentification"
 
-#: app/users/addUser.php:123 app/users/editUser.php:166
+#: app/users/addUser.php:123 app/users/editUser.php:167
 msgid "Please Generate the auth token"
 msgstr "Veuillez générer le jeton d'authentification"
 
-#: app/users/addUser.php:124 app/users/editUser.php:167
+#: app/users/addUser.php:124 app/users/editUser.php:168
 msgid "Generate Another Token"
 msgstr "Générer un autre jeton"
 
-#: app/users/addUser.php:132 app/users/editUser.php:175
+#: app/users/addUser.php:132 app/users/editUser.php:176
 msgid "Interface User Name (from your Molecular testing machine)"
 msgstr ""
 "Nom d'utilisateur de l'interface (de votre machine de test moléculaire)"
 
-#: app/users/addUser.php:134 app/users/editUser.php:177
+#: app/users/addUser.php:134 app/users/editUser.php:178
 msgid "Interface User Name"
 msgstr "Nom de l'utilisateur de l'interface"
 
-#: app/users/addUser.php:134 app/users/editUser.php:177
+#: app/users/addUser.php:134 app/users/editUser.php:178
 msgid "Please enter interface user name"
 msgstr "Veuillez saisir le nom de l'utilisateur de l'interface"
 
-#: app/users/addUser.php:140 app/users/editUser.php:183
+#: app/users/addUser.php:140 app/users/editUser.php:184
 msgid "Mobile App Access"
 msgstr "Accès à l'application mobile"
 
-#: app/users/addUser.php:142 app/users/editUser.php:185
+#: app/users/addUser.php:142 app/users/editUser.php:186
 msgid "Please select the mobile App access or not"
 msgstr "Veuillez sélectionner l'accès à l'application mobile ou non"
 
-#: app/users/addUser.php:155 app/users/editUser.php:198
+#: app/users/addUser.php:155 app/users/editUser.php:199
 msgid "(Used to embed in Result PDF)"
 msgstr "(Utilisé pour intégrer dans le résultat PDF)"
 
-#: app/users/addUser.php:164 app/users/editUser.php:213
+#: app/users/addUser.php:164 app/users/editUser.php:214
 msgid "Select Signature Image"
 msgstr "Sélectionner l'image de la signature"
 
-#: app/users/addUser.php:165 app/users/editUser.php:214
+#: app/users/addUser.php:165 app/users/editUser.php:215
 msgid "Please select user signature"
 msgstr "Veuillez sélectionner la signature de l'utilisateur"
 
-#: app/users/addUser.php:172 app/users/editUser.php:225
+#: app/users/addUser.php:172 app/users/editUser.php:226
 msgid "Image Size"
 msgstr "Taille de l'image"
 
-#: app/users/addUser.php:181 app/users/editUser.php:236
+#: app/users/addUser.php:181 app/users/editUser.php:237
 msgid "Please enter login id"
 msgstr "Veuillez saisir l'identifiant de connexion"
 
-#: app/users/addUser.php:181 app/users/editUser.php:236
+#: app/users/addUser.php:181 app/users/editUser.php:237
 msgid "This login id that you entered already exists.Try another login id"
 msgstr ""
 "L'identifiant que vous avez saisi existe déjà. Essayez un autre identifiant"
 
-#: app/users/addUser.php:183 app/users/editUser.php:238
+#: app/users/addUser.php:183 app/users/editUser.php:239
 msgid ""
 "Only lowercase letters, numbers, hyphens (-), and underscores (_) are "
 "allowed. No spaces."
@@ -25238,7 +25685,7 @@ msgstr ""
 "caractères de soulignement (_) sont autorisés. Il n'y a pas d'espace."
 
 #: app/users/addUser.php:199 app/users/edit-profile.php:114
-#: app/users/editUser.php:257
+#: app/users/editUser.php:258
 msgid "Generate"
 msgstr "Générer"
 
@@ -25254,12 +25701,12 @@ msgstr "Veuillez choisir la région"
 msgid "Please choose district"
 msgstr "Veuillez choisir un district"
 
-#: app/users/addUser.php:302 app/users/editUser.php:337
+#: app/users/addUser.php:302 app/users/editUser.php:338
 msgid "Map User to Selected Facilities (optional)"
 msgstr ""
 "Carte de l'utilisateur vers les installations sélectionnées (facultatif)"
 
-#: app/users/addUser.php:411 app/users/editUser.php:460
+#: app/users/addUser.php:411 app/users/editUser.php:461
 msgid ""
 "Invalid file type. Please upload correct image format like JPG or JPEG or PNG"
 msgstr ""
@@ -25313,11 +25760,11 @@ msgstr "Date et heure de la tentative de connexion"
 msgid "Login Status"
 msgstr "Statut de connexion"
 
-#: app/users/editUser.php:16 app/users/editUser.php:96
+#: app/users/editUser.php:16 app/users/editUser.php:97
 msgid "Edit User"
 msgstr "Modifier l'utilisateur"
 
-#: app/users/editUser.php:282
+#: app/users/editUser.php:283
 msgid "User Status"
 msgstr "Statut de l'utilisateur"
 
