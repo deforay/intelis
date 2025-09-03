@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-09-03 15:44+0530\n"
-"PO-Revision-Date: 2025-09-03 15:50+0530\n"
+"POT-Creation-Date: 2025-09-03 15:58+0530\n"
+"PO-Revision-Date: 2025-09-03 16:01+0530\n"
 "Last-Translator: \n"
 "Language-Team: \n"
 "Language: en\n"
@@ -1586,23 +1586,21 @@ msgstr ""
 #: admin/api-dashboard/api-dashboard.php:342
 #: admin/api-dashboard/api-dashboard.php:472
 msgid "API/EMR"
-msgstr "LIS/DAMA"
+msgstr "DAMA"
 
 #: admin/api-dashboard/api-dashboard.php:345
 msgid "Non-API/EMR"
-msgstr "Non-LIS/DAMA"
+msgstr "Non-DAMA"
 
 #: admin/api-dashboard/api-dashboard.php:355
 msgid "API/EMR Requests"
-msgstr "LIS/DAMA Requests"
+msgstr "DAMA Requests"
 
 #: admin/api-dashboard/api-dashboard.php:362
-#: admin/api-dashboard/api-dashboard.php:477
 msgid "Received"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:365
-#: admin/api-dashboard/api-dashboard.php:476
 msgid "Not Received"
 msgstr ""
 
@@ -1611,7 +1609,6 @@ msgid "Received at Lab"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:382
-#: admin/api-dashboard/api-dashboard.php:478
 msgid "Tested"
 msgstr ""
 
@@ -1653,7 +1650,6 @@ msgid "Rejected"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:388
-#: admin/api-dashboard/api-dashboard.php:479
 msgid "Pending"
 msgstr ""
 
@@ -1679,13 +1675,12 @@ msgid "Within 7 days"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:435
-#: admin/api-dashboard/api-dashboard.php:480
 msgid "Results Sent"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:442
 msgid "Via API/EMR"
-msgstr "Via LIS/DAMA"
+msgstr "Via DAMA"
 
 #: admin/api-dashboard/api-dashboard.php:445
 #: covid-19/requests/forms/add-cameroon.php:662
@@ -1730,7 +1725,7 @@ msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:461
 msgid "Source Distribution by Facility with API/EMR Workflow"
-msgstr "Source Distribution by Facility with LIS/DAMA Workflow"
+msgstr "Source Distribution by Facility with DAMA Workflow"
 
 #: admin/api-dashboard/api-dashboard.php:467
 #: admin/api-dashboard/api-dashboard.php:510
@@ -1783,12 +1778,12 @@ msgid "Facility"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:468
-msgid "Source Distribution"
+msgid "Source of Samples"
 msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:469
 msgid "API/EMR Workflow"
-msgstr "LIS/DAMA Workflow"
+msgstr "DAMA Workflow"
 
 #: admin/api-dashboard/api-dashboard.php:473
 msgid "STS"
@@ -1800,11 +1795,31 @@ msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:475
 msgid "API/EMR %"
-msgstr "LIS/DAMA %"
+msgstr "DAMA %"
+
+#: admin/api-dashboard/api-dashboard.php:476
+msgid "Registered via API/EMR but Not Received at Testing Lab"
+msgstr "Registered via DAMA but Not Received at Testing Lab"
+
+#: admin/api-dashboard/api-dashboard.php:477
+msgid "Registered via API/EMR and Received at Testing Lab"
+msgstr "Registered via DAMA and Received at Testing Lab"
+
+#: admin/api-dashboard/api-dashboard.php:478
+msgid "Registered via API/EMR and Tested"
+msgstr "Registered via DAMA and Tested"
+
+#: admin/api-dashboard/api-dashboard.php:479
+msgid "Registered vis API/EMR and Not Yet Tested"
+msgstr "Registered vis DAMA and Not Yet Tested"
+
+#: admin/api-dashboard/api-dashboard.php:480
+msgid "Results Sent back to API/EMR"
+msgstr "Results Sent back to DAMA"
 
 #: admin/api-dashboard/api-dashboard.php:494
 msgid "API/EMR Requests Without Sample Receipt - By Facility"
-msgstr "LIS/DAMA Requests Without Sample Receipt - By Facility"
+msgstr "DAMA Requests Without Sample Receipt - By Facility"
 
 #: admin/api-dashboard/api-dashboard.php:497
 msgid "View All Details"
@@ -1815,8 +1830,8 @@ msgid ""
 "Facilities with API/EMR requests that have not received samples at the lab "
 "and are not rejected."
 msgstr ""
-"Facilities with LIS/DAMA requests that have not received samples at the lab "
-"and are not rejected."
+"Facilities with DAMA requests that have not received samples at the lab and "
+"are not rejected."
 
 #: admin/api-dashboard/api-dashboard.php:511
 msgid "Missing Count"
@@ -1858,7 +1873,7 @@ msgid ""
 "least one from API/EMR)"
 msgstr ""
 "Facilities with samples having same Patient ID/Name within last 7 days (at "
-"least one from LIS/DAMA)"
+"least one from DAMA)"
 
 #: admin/api-dashboard/api-dashboard.php:548
 msgid "Duplicate Groups"
@@ -1891,7 +1906,7 @@ msgstr ""
 
 #: admin/api-dashboard/api-dashboard.php:570
 msgid "Results Sent for Requests Not Originating via API/EMR"
-msgstr "Results Sent for Requests Not Originating via LIS/DAMA"
+msgstr "Results Sent for Requests Not Originating via DAMA"
 
 #: admin/api-dashboard/api-dashboard.php:576
 #: admin/api-dashboard/missing-samples-detail.php:121
@@ -2357,7 +2372,7 @@ msgstr ""
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:87
 msgid "High Missing API/EMR Sample Receipts"
-msgstr "High Missing LIS/DAMA Sample Receipts"
+msgstr "High Missing DAMA Sample Receipts"
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:88
 #, php-format
@@ -2365,8 +2380,8 @@ msgid ""
 "%d API/EMR test requests have been waiting for sample receipt for more than "
 "30 days"
 msgstr ""
-"%d LIS/DAMA test requests have been waiting for sample receipt for more than "
-"30 days"
+"%d DAMA test requests have been waiting for sample receipt for more than 30 "
+"days"
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:143
 msgid "Potential Duplicate Entries Detected"
@@ -2396,12 +2411,12 @@ msgstr ""
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:195
 msgid "API/EMR Result Transmission Issues"
-msgstr "LIS/DAMA Result Transmission Issues"
+msgstr "DAMA Result Transmission Issues"
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:196
 #, php-format
 msgid "%d API/EMR results have transmission issues (pending/failed)"
-msgstr "%d LIS/DAMA results have transmission issues (pending/failed)"
+msgstr "%d DAMA results have transmission issues (pending/failed)"
 
 #: admin/api-dashboard/get-api-dashboard-alerts.php:217
 msgid "High Sample Rejection Rate"
