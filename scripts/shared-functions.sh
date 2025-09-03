@@ -323,26 +323,26 @@ set_permissions() {
         full)
             # Directories: rwx to user + www-data
             find "$path" -type d -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
 
             # Files: rw to user + www-data
             find "$path" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
             pids+=($!)
         ;;
         quick)
             find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
 
             find "$path" -type f -name "*.php" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
             pids+=($!)
         ;;
         minimal)
             find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
         ;;
       *)

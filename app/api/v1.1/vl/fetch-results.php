@@ -192,7 +192,7 @@ try {
         if (!empty($facilityMap)) {
             $where[] = " vl.facility_id IN ($facilityMap)";
         } else {
-            //$where[] = " (vl.request_created_by = '{$user['user_id']}') ";
+            $where[] = " (vl.request_created_by = '{$user['user_id']}') ";
         }
     }
 
