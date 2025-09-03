@@ -508,7 +508,7 @@ $state = $geolocationService->getProvinces("yes");
                             <thead>
                                 <tr>
                                     <th><?= _translate('Facility'); ?></th>
-                                    <th class="text-center"><?= _translate('Missing Count'); ?></th>
+                                    <th class="text-center"><?= _translate('Not Yet Received at Testing Lab'); ?></th>
                                     <th class="text-center"><?= _translate('≤ 7 Days'); ?></th>
                                     <th class="text-center"><?= _translate('> 7 Days'); ?></th>
                                     <th class="text-center"><?= _translate('Avg Days'); ?></th>

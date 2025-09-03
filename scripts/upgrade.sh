@@ -53,6 +53,46 @@ done
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
+
+clear_opcache_apache() {
+    local webroot="${lis_path}/public"
+    local token
+    token="$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 24)"
+    local fname="clear-opcache-${token}.php"
+    local fpath="${webroot}/${fname}"
+
+# Create a one-shot local-only reset endpoint
+cat > "${fpath}" <<'PHP'
+<?php
+if (
+($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1' &&
+($_SERVER['REMOTE_ADDR'] ?? '') !== '::1'
+) { http_response_code(403); exit; }
+
+if (!function_exists('opcache_reset')) { echo "OPcache not available\n"; exit(0); }
+
+// Optional: also invalidate files under the app root if you prefer targeted clears
+// foreach (new RecursiveIteratorIterator(new RecursiveDirectoryIterator(__DIR__.'/..')) as $file) {
+//     if ($file->isFile() && preg_match('/\.php$/i', $file)) { @opcache_invalidate($file->getPathname(), true); }
+// }
+
+opcache_reset();
+echo "OK\n";
+PHP
+
+chmod 0640 "${fpath}"
+
+# Hit it via Apache (Host header not required if this vhost is default; adjust if needed)
+if curl -fsS "http://127.0.0.1/${fname}" | grep -q "OK"; then
+    print success "OPcache cleared via Apache SAPI"
+else
+    print warning "OPcache clear endpoint did not return OK (check vhost/default site)."
+fi
+
+# Remove the endpoint regardless
+rm -f "${fpath}"
+}
+
 # Function to update configuration
 update_configuration() {
     local mysql_root_password
@@ -959,6 +999,8 @@ sudo -u www-data composer dump-autoload -o
 
 print success "Composer operations completed."
 log_action "Composer operations completed."
+
+clear_opcache_apache
 
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
