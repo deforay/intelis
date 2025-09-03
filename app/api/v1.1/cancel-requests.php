@@ -32,7 +32,7 @@ $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 
 if (
     empty($input) ||
@@ -78,7 +78,11 @@ try {
         $where[] = " (vl.sample_code IN ('$sampleCode') OR vl.remote_sample_code IN ('$sampleCode') ) ";
     }
 
-    $sQuery .= ' WHERE ' . implode(' AND ', $where);
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= $whereString;
     $rowData = $db->rawQuery($sQuery);
     $response = [];
     foreach ($rowData as $key => $row) {

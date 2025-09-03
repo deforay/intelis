@@ -19,13 +19,8 @@ ini_set('max_execution_time', 20000);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-$origJson = "";
-/* //$origJson = $request->getBody()->getContents();
-    $origJson = $apiService->getJsonFromRequest($request);
-if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload", 400);
-} */
-$input = $request->getParsedBody();
+
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -44,6 +39,12 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Covid19Service $covid19Service */
 $covid19Service = ContainerRegistry::get(Covid19Service::class);
+
+$origJson = $apiService->getJsonFromRequest($request);
+if (JsonUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload", 400);
+}
+$input = JsonUtility::decodeJson($origJson, true);
 
 $transactionId = MiscUtility::generateULID();
 
@@ -241,8 +242,11 @@ try {
         $where[] = " vl.facility_id IN ('$facilityId') ";
     }
     $where[] = " vl.app_sample_code is not null";
-    $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC limit 100 ";
 
     $rowData = $db->rawQuery($sQuery);
 

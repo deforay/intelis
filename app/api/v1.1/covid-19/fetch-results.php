@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -30,7 +31,7 @@ $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -53,6 +54,8 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
+$primaryKey = TestsService::getPrimaryColumn('covid19');
+$tableName = TestsService::getTestTableName('covid19');
 
 try {
 
@@ -262,8 +265,11 @@ try {
         $where[] = " result_status IN ('$sampleStatus') ";
     }
 
-    $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= "$where ORDER BY vl.last_modified_datetime DESC limit 100 ";
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC limit 100 ";
     $rowData = $db->rawQuery($sQuery);
 
     if (!empty($rowData)) {
@@ -277,27 +283,26 @@ try {
     }
 
     $now = DateUtility::getCurrentDateTime();
-    /** Stamp “sent to source” once (don’t touch dispatched here) */
-    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
-    if (!empty($remoteSampleCodes)) {
+    $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'covid19Id'))));
+    if (!empty($affectedSamples)) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_sent_to_source_datetime', null);
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_sent_to_source_datetime IS NULL');
         $db->update('form_covid19', [
             'result_sent_to_source'          => 'sent',
             'result_sent_to_source_datetime' => $now,
         ]);
 
         // 2) result_dispatched_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_dispatched_datetime', null);
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_dispatched_datetime IS NULL');
         $db->update('form_covid19', [
             'result_dispatched_datetime' => $now,
         ]);
 
         // 3) Stamp “first pulled via API” once for rows actually returned
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_pulled_via_api_datetime', null);
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_pulled_via_api_datetime IS NULL');
         $db->update('form_covid19', [
             'result_pulled_via_api_datetime' => $now,
         ]);

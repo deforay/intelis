@@ -35,7 +35,7 @@ $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 if (
     empty($input) ||
     empty($input['testType']) ||
@@ -89,7 +89,12 @@ try {
         $where[] = " vl.facility_id IN ($facilityMap)";
     }
 
-    $sQuery .= ' WHERE ' . implode(' AND ', $where);
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= $whereString;
+
     $rowData = $db->rawQuery($sQuery);
 
     // Separate samples into different categories
