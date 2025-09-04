@@ -163,26 +163,37 @@ final class TbService extends AbstractTestService
     public function insertSample($params, $returnSampleData = false)
     {
         try {
-
-            // Start a new transaction (this starts a new transaction if not already started)
-            // see the beginTransaction() function implementation to understand how this works
+            // Start transaction
             $this->db->beginTransaction();
 
+            // Get form configuration and extract parameters
             $formId = (int) $this->commonService->getGlobalConfig('vl_form');
-            $provinceCode = $params['provinceCode'] ?? null;
-            $provinceId = $params['provinceId'] ?? null;
+            $params['provinceId'] = $params['provinceId'] ?? $params['province'];
+            if (strpos($params['provinceId'], '##') !== false) {
+                $parray = explode('##', $params['provinceId']);
+                $provinceId = $parray[0];
+            } else {
+
+                $provinceId = $params['provinceId'] ?? null;
+            }
             $sampleCollectionDate = $params['sampleCollectionDate'] ?? null;
 
-            // PNG FORM (formId = 5) CANNOT HAVE PROVINCE EMPTY
-            // Sample Collection Date Cannot be Empty
-            if (empty($sampleCollectionDate) || DateUtility::isDateValid($sampleCollectionDate) === false || ($formId == COUNTRY\PNG && empty($provinceId))) {
-                return 0;
+            // Validate required fields
+            if (
+                empty($sampleCollectionDate) ||
+                !DateUtility::isDateValid($sampleCollectionDate) ||
+                ($formId == COUNTRY\PNG && empty($provinceId))
+            ) {
+                return $returnSampleData ? ['id' => 0, 'uniqueId' => null] : 0;
             }
 
+            // Generate unique ID and get access type
             $uniqueId = $params['uniqueId'] ?? MiscUtility::generateULID();
             $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
+            $userId = $_SESSION['userId'] ?? $params['userId'] ?? null;
+            $currentDateTime = DateUtility::getCurrentDateTime();
 
-            // Insert into the Code Generation Queue
+            // Add to sample code queue
             $this->testRequestsService->addToSampleCodeQueue(
                 $uniqueId,
                 $this->testType,
@@ -193,67 +204,71 @@ final class TbService extends AbstractTestService
                 $accessType
             );
 
-            $id = 0;
-            $tesRequestData = [
+            // Prepare test request data
+            $testRequestData = [
                 'vlsm_country_id' => $formId,
                 'sample_reordered' => $params['sampleReordered'] ?? 'no',
                 'sample_collection_date' => DateUtility::isoDateFormat($sampleCollectionDate, true),
                 'unique_id' => $uniqueId,
                 'facility_id' => $params['facilityId'] ?? null,
-                'lab_id' => $params['labId'] ?? null,
+                'lab_id' => $params['labId'] ?? $params['testResult']['labId'][0] ?? null,
                 'app_sample_code' => $params['appSampleCode'] ?? null,
-                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId() ?? null,
+                'vlsm_instance_id' => $_SESSION['instanceId'] ?? $this->commonService->getInstanceId(),
                 'province_id' => _castVariable($provinceId, 'int'),
-                'request_created_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'form_attributes' => $params['formAttributes'] ?? "{}",
-                'request_created_datetime' => DateUtility::getCurrentDateTime(),
-                'last_modified_by' => $_SESSION['userId'] ?? $params['userId'] ?? null,
-                'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                'request_created_by' => $userId,
+                'request_created_datetime' => $currentDateTime,
+                'last_modified_by' => $userId,
+                'last_modified_datetime' => $currentDateTime
             ];
-
-            $accessType = $params['accessType'] ?? $_SESSION['accessType'] ?? null;
-
+            // Set remote sample and result status based on instance type
             if ($this->commonService->isSTSInstance()) {
-                $tesRequestData['remote_sample'] = 'yes';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_CLINIC;
-                if ($accessType === 'testing-lab') {
-                    $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
-                }
+                $testRequestData['remote_sample'] = 'yes';
+                $testRequestData['result_status'] = ($accessType === 'testing-lab')
+                    ? SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB
+                    : SAMPLE_STATUS\RECEIVED_AT_CLINIC;
             } else {
-                $tesRequestData['remote_sample'] = 'no';
-                $tesRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+                $testRequestData['remote_sample'] = 'no';
+                $testRequestData['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
             }
+
+            // Add form attributes
             $formAttributes = [
                 'applicationVersion' => $this->commonService->getAppVersion(),
                 'ip_address' => $this->commonService->getClientIpAddress()
             ];
-            $tesRequestData['form_attributes'] = json_encode($formAttributes);
-            $this->db->insert($this->table, $tesRequestData);
+            $testRequestData['form_attributes'] = json_encode($formAttributes);
+
+            // Insert data and get ID
+            $this->db->insert($this->table, $testRequestData);
             $id = $this->db->getInsertId();
+
+            // Check for database errors
             if ($this->db->getLastErrno() > 0) {
-                throw new SystemException($this->db->getLastErrno() . " | " .  $this->db->getLastError());
+                throw new SystemException($this->db->getLastErrno() . " | " . $this->db->getLastError());
             }
-            // Commit the transaction after the successful insert
+
+            // Commit transaction
             $this->db->commitTransaction();
+
+            return $returnSampleData
+                ? ['id' => $id, 'uniqueId' => $uniqueId]
+                : $id;
         } catch (Throwable $e) {
-            // Rollback the current transaction to release locks and undo changes
+            // Rollback transaction
             $this->db->rollbackTransaction();
 
-            LoggerUtility::log('error', 'Insert TB Sample : ' . $e->getMessage(), [
+            // Log error with context
+            LoggerUtility::log('error', 'Insert Sample Error: ' . $e->getMessage(), [
                 'exception' => $e,
-                'file' => $e->getFile(), // File where the error occurred
-                'line' => $e->getLine(), // Line number of the error
-                'stacktrace' => $e->getTraceAsString()
+                'file' => $e->getFile(),
+                'line' => $e->getLine(),
+                'stacktrace' => $e->getTraceAsString(),
+                'params' => $params
             ]);
-            $id = 0;
-        }
-        if ($returnSampleData === true) {
-            return [
-                'id' => max($id, 0),
-                'uniqueId' => $uniqueId
-            ];
-        } else {
-            return max($id, 0);
+
+            return $returnSampleData
+                ? ['id' => 0, 'uniqueId' => $uniqueId ?? null]
+                : 0;
         }
     }
 }

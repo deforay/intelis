@@ -147,3 +147,24 @@ ALTER TABLE `audit_form_generic` ADD COLUMN `result_pulled_via_api_datetime` DAT
 
 ALTER TABLE `form_generic`
   ADD INDEX `idx_result_pulled_via_api` (`result_pulled_via_api_datetime`);
+
+
+-- Thana 03-Aug-2025
+ALTER TABLE `tb_tests` 
+ADD `lab_id` INT NULL DEFAULT NULL AFTER `tb_id`, 
+ADD `specimen_type` VARCHAR(255) NULL DEFAULT NULL AFTER `lab_id`, 
+ADD `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL AFTER `specimen_type`, 
+ADD `is_sample_rejected` VARCHAR(255) NULL DEFAULT NULL AFTER `sample_received_at_lab_datetime`, 
+ADD `reason_for_sample_rejection` VARCHAR(255) NULL DEFAULT NULL AFTER `is_sample_rejected`, 
+ADD `rejection_on` DATETIME NULL DEFAULT NULL AFTER `reason_for_sample_rejection`, 
+ADD `test_type` VARCHAR(255) NULL DEFAULT NULL AFTER `rejection_on`, 
+ADD `sample_tested_datetime` DATETIME NULL DEFAULT NULL AFTER `test_type`, 
+ADD `result_reviewed_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`, 
+ADD `result_reviewed_datetime` DATETIME NULL DEFAULT NULL AFTER `result_reviewed_by`, 
+ADD `result_approved_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_reviewed_datetime`, 
+ADD `result_approved_datetime` DATETIME NULL DEFAULT NULL AFTER `result_approved_by`;
+
+-- Thana 04-Aug-2025
+ALTER TABLE `form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `audit_form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
+ALTER TABLE `tb_tests` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL, CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_sample_rejection` `reason_for_sample_rejection` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `rejection_on` `rejection_on` DATETIME NULL DEFAULT NULL, CHANGE `test_type` `test_type` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
