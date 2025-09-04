@@ -449,9 +449,6 @@ if ($isGeneXpert === true && !empty($vlQueryInfo['result_value_hiv_detection']) 
 											</div>
 										</div>
 
-									</div>
-
-									<div class="row">
 										<div class="col-xs-3 col-md-3">
 											<div class="form-group">
 												<label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span> </label>
