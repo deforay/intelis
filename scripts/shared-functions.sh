@@ -44,7 +44,7 @@ print() {
 install_packages() {
     if ! command -v aria2c &>/dev/null; then
         apt-get update
-        apt-get install -y aria2 wget lsb-release
+        apt-get install -y aria2 wget lsb-release bc
         if ! command -v aria2c &>/dev/null; then
             print error "Failed to install required packages. Exiting."
             exit 1
@@ -323,26 +323,26 @@ set_permissions() {
         full)
             # Directories: rwx to user + www-data
             find "$path" -type d -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
 
             # Files: rw to user + www-data
             find "$path" -type f -not -path "*/.git*" -not -path "*/node_modules*" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
             pids+=($!)
         ;;
         quick)
             find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
 
             find "$path" -type f -name "*.php" -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rw,u:www-data:rw" &
             pids+=($!)
         ;;
         minimal)
             find "$path" -type d -print0 \
-            | xargs -0 -P "$PARALLEL" -n 1 -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
+            | xargs -0 -P "$PARALLEL" -I{} sh -c "$_acl_apply_cmd" _ {} "u:${who}:rwx,u:www-data:rwx" &
             pids+=($!)
         ;;
       *)
@@ -723,3 +723,41 @@ remove_all_monitoring() {
 }
 
 
+
+
+
+# Setup Intelis cron job (classic crontab, idempotent)
+setup_intelis_cron() {
+    local lis_path="$1"
+    local cron_job="* * * * * cd ${lis_path} && ./cron.sh"
+
+    # Ensure cron.sh is executable
+    chmod +x "${lis_path}/cron.sh"
+
+    # Load current root crontab without failing if none exists
+    local current_crontab
+    current_crontab="$(crontab -l 2>/dev/null || true)"
+
+    # Already present?
+    if printf '%s\n' "$current_crontab" | grep -Fxq "$cron_job"; then
+        print info "Cron job for LIS already active. Skipping."
+        log_action "Cron job for LIS already active. Skipped."
+        return 0
+    fi
+
+    # Remove any existing (active or commented) similar entry
+    local updated_crontab
+    updated_crontab="$(
+        printf '%s\n' "$current_crontab" |
+        sed -E "/^[[:space:]]*#?[[:space:]]*\*[[:space:]]\*[[:space:]]\*[[:space:]]\*[[:space:]]\*[[:space:]]+cd[[:space:]]+$(printf '%s' "${lis_path}" | sed 's|/|\\/|g')[[:space:]]+&&[[:space:]]+\\./cron\\.sh$/d"
+    )"
+
+    # Write back crontab with our job appended
+    {
+        printf '%s\n' "$updated_crontab"
+        printf '%s\n' "$cron_job"
+    } | crontab -
+
+    print success "Cron job for LIS added/replaced in root's crontab."
+    log_action "Cron job for LIS added/replaced in root's crontab."
+}

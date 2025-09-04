@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -36,14 +37,17 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $apiService = ContainerRegistry::get(ApiService::class);
 
 
-//$origJson = $request->getBody()->getContents();
+
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 
 $user = null;
+
+$primaryKey = TestsService::getPrimaryColumn('eid');
+$tableName = TestsService::getTestTableName('eid');
 
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
@@ -55,7 +59,7 @@ try {
     $sQuery = "SELECT
         vl.app_sample_code                                   as appSampleCode,
         vl.unique_id                                         as uniqueId,
-        vl.eid_id                                            as eidId,
+        vl.eid_id                                            as testRequestId,
         vl.sample_code                                       as sampleCode,
         vl.remote_sample_code                                as remoteSampleCode,
         vl.vlsm_instance_id                                  as instanceId,
@@ -213,37 +217,36 @@ try {
         $where[] = " result_status IN ('$sampleStatus') ";
     }
 
-    $where = " WHERE " . implode(" AND ", $where);
-    $sQuery .= $where . " ORDER BY vl.last_modified_datetime DESC limit 100;";
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= "$whereString ORDER BY vl.last_modified_datetime DESC limit 100 ";
 
     $rowData = $db->rawQuery($sQuery);
 
     $now = DateUtility::getCurrentDateTime();
-    /** Stamp “sent to source” once (don’t touch dispatched here) */
-    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
-    if (!empty($remoteSampleCodes)) {
+    $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
+    if (!empty($affectedSamples)) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_sent_to_source_datetime', null);
-        $db->update('form_eid', [
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_sent_to_source_datetime IS NULL');
+        $db->update($tableName, [
             'result_sent_to_source'          => 'sent',
             'result_sent_to_source_datetime' => $now,
         ]);
 
         // 2) result_dispatched_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_dispatched_datetime', null);
-        $db->update('form_eid', [
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_dispatched_datetime IS NULL');
+        $db->update($tableName, [
             'result_dispatched_datetime' => $now,
         ]);
-    }
 
-    /** Stamp “first pulled via API” once for rows actually returned */
-    $eidIds = array_values(array_filter(array_unique(array_column($rowData, 'eidId'))));
-    if (!empty($eidIds)) {
-        $db->where('eid_id', $eidIds, 'IN');
-        $db->where('result_pulled_via_api_datetime', null);
-        $db->update('form_eid', [
+        // 3) Stamp “first pulled via API” once for rows actually returned
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_pulled_via_api_datetime IS NULL');
+        $db->update($tableName, [
             'result_pulled_via_api_datetime' => $now,
         ]);
     }

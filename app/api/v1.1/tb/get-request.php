@@ -19,13 +19,7 @@ ini_set('max_execution_time', 20000);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
-$origJson = "";
-/* //$origJson = $request->getBody()->getContents();
-    $origJson = $apiService->getJsonFromRequest($request);
-if (JsonUtility::isJSON($origJson) === false) {
-    throw new SystemException("Invalid JSON Payload", 400);
-} */
-$input = $request->getParsedBody();
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -44,6 +38,13 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
+
+
+$origJson = $apiService->getJsonFromRequest($request);
+if (JsonUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload", 400);
+}
+$input = JsonUtility::decodeJson($origJson, true);
 
 $transactionId = MiscUtility::generateULID();
 $user = null;

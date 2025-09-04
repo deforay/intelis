@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
 use App\Utilities\JsonUtility;
@@ -40,15 +41,19 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 
-//$origJson = $request->getBody()->getContents();
+
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 
 
 $user = null;
+
+$primaryKey = TestsService::getPrimaryColumn('generic-tests');
+$tableName = TestsService::getTestTableName('generic-tests');
+
 /* For API Tracking params */
 $requestUrl = $_SERVER['HTTP_HOST'];
 $requestUrl .= $_SERVER['REQUEST_URI'];
@@ -57,7 +62,7 @@ $user = $usersService->findUserByApiToken($authToken);
 try {
     $transactionId = MiscUtility::generateULID();
     $sQuery = "SELECT
-        vl.sample_id as genericId,
+        vl.sample_id as testRequestId,
         vl.unique_id as uniqueId,
         vl.app_sample_code as appSampleCode,
         vl.test_type as testType,
@@ -258,31 +263,27 @@ try {
     }
 
     $now = DateUtility::getCurrentDateTime();
-    /** Stamp “sent to source” once (don’t touch dispatched here) */
-    $remoteSampleCodes = array_values(array_filter(array_unique(array_column($rowData, 'remote_sample_code'))));
-    if (!empty($remoteSampleCodes)) {
+    $affectedSamples = array_values(array_filter(array_unique(array_column($rowData, 'testRequestId'))));
+    if (!empty($affectedSamples)) {
         // 1) result_sent_to_source / result_sent_to_source_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_sent_to_source_datetime', null);
-        $db->update('form_generic', [
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_sent_to_source_datetime IS NULL');
+        $db->update($tableName, [
             'result_sent_to_source'          => 'sent',
             'result_sent_to_source_datetime' => $now,
         ]);
 
         // 2) result_dispatched_datetime — set once
-        $db->where('remote_sample_code', $remoteSampleCodes, 'IN');
-        $db->where('result_dispatched_datetime', null);
-        $db->update('form_generic', [
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_dispatched_datetime IS NULL');
+        $db->update($tableName, [
             'result_dispatched_datetime' => $now,
         ]);
-    }
 
-    /** Stamp “first pulled via API” once for rows actually returned */
-    $sampleIds = array_values(array_filter(array_unique(array_column($rowData, 'genericId'))));
-    if (!empty($sampleIds)) {
-        $db->where('sample_id', $sampleIds, 'IN');
-        $db->where('result_pulled_via_api_datetime', null);
-        $db->update('form_generic', [
+        // 3) Stamp “first pulled via API” once for rows actually returned
+        $db->where($primaryKey, $affectedSamples, 'IN');
+        $db->where('result_pulled_via_api_datetime IS NULL');
+        $db->update($tableName, [
             'result_pulled_via_api_datetime' => $now,
         ]);
     }

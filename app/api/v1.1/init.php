@@ -7,19 +7,16 @@ use App\Services\EidService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
-
-/** @var Slim\Psr7\Request $request */
-$request = $GLOBALS['request'];
-
-$input = $request->getParsedBody();
 
 $applicationConfig = ContainerRegistry::get('applicationConfig');
 
@@ -40,6 +37,16 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
+
+
+/** @var Slim\Psr7\Request $request */
+$request = AppRegistry::get('request');
+$origJson = $apiService->getJsonFromRequest($request);
+if (JsonUtility::isJSON($origJson) === false) {
+    throw new SystemException("Invalid JSON Payload", 400);
+}
+$input = JsonUtility::decodeJson($origJson, true);
+
 
 try {
     $transactionId = MiscUtility::generateULID();

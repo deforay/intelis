@@ -27,12 +27,12 @@ $usersService = ContainerRegistry::get(UsersService::class);
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
 
-//$origJson = $request->getBody()->getContents();
+
 $origJson = $apiService->getJsonFromRequest($request);
 if (JsonUtility::isJSON($origJson) === false) {
     throw new SystemException("Invalid JSON Payload", 400);
 }
-$input = $request->getParsedBody();
+$input = JsonUtility::decodeJson($origJson, true);
 if (
     empty($input) ||
     empty($input['testType']) ||
@@ -74,7 +74,11 @@ try {
 
     /* To skip some status */
     // $where[] = " (vl.result_status NOT IN (4, 7, 8)) ";
-    $sQuery .= ' WHERE ' . implode(' AND ', $where);
+    $whereString = '';
+    if (!empty($where)) {
+        $whereString = " WHERE " . implode(" AND ", $where);
+    }
+    $sQuery .= $whereString;
     // die($sQuery);
     $rowData = $db->rawQuery($sQuery);
     $payload = [

@@ -465,7 +465,7 @@ $state = $geolocationService->getProvinces("yes");
                             <thead>
                                 <tr>
                                     <th rowspan="2"><?= _translate('Facility'); ?></th>
-                                    <th colspan="4" class="text-center" style="background-color: #f8f9fa; text-align: center"><?= _translate('Source Distribution'); ?></th>
+                                    <th colspan="4" class="text-center" style="background-color: #f8f9fa; text-align: center"><?= _translate('Source of Samples'); ?></th>
                                     <th colspan="5" class="text-center" style="background-color: #e3f2fd; text-align: center"><?= _translate('API/EMR Workflow'); ?></th>
                                 </tr>
                                 <tr>
@@ -473,11 +473,11 @@ $state = $geolocationService->getProvinces("yes");
                                     <th><?= _translate('STS'); ?></th>
                                     <th><?= _translate('Direct LIS'); ?></th>
                                     <th><?= _translate('API/EMR %'); ?></th>
-                                    <th><?= _translate('Not Received'); ?></th>
-                                    <th><?= _translate('Received'); ?></th>
-                                    <th><?= _translate('Tested'); ?></th>
-                                    <th><?= _translate('Pending'); ?></th>
-                                    <th><?= _translate('Results Sent'); ?></th>
+                                    <th><?= _translate('Registered via API/EMR but Not Received at Testing Lab'); ?></th>
+                                    <th><?= _translate('Registered via API/EMR and Received at Testing Lab'); ?></th>
+                                    <th><?= _translate('Registered via API/EMR and Tested'); ?></th>
+                                    <th><?= _translate('Registered vis API/EMR and Not Yet Tested'); ?></th>
+                                    <th><?= _translate('Results Sent back to API/EMR'); ?></th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -508,7 +508,7 @@ $state = $geolocationService->getProvinces("yes");
                             <thead>
                                 <tr>
                                     <th><?= _translate('Facility'); ?></th>
-                                    <th class="text-center"><?= _translate('Missing Count'); ?></th>
+                                    <th class="text-center"><?= _translate('Not Yet Received at Testing Lab'); ?></th>
                                     <th class="text-center"><?= _translate('≤ 7 Days'); ?></th>
                                     <th class="text-center"><?= _translate('> 7 Days'); ?></th>
                                     <th class="text-center"><?= _translate('Avg Days'); ?></th>
