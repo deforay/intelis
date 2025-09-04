@@ -363,25 +363,25 @@ $sFormat = '';
                                                             </select>
                                                        </div>
                                                   </div>
-                                                  <?php if ($general->isLISInstance()) { ?>
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
-                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
-                                                            </div>
-                                                       </div>
-                                                  <?php } ?>
-                                             </div>
-                                             <?php if ($general->isLISInstance()) { ?>
-                                                  <div class="row">
-                                                       <div class="col-xs-3 col-md-3">
-                                                            <div class="form-group">
-                                                                 <label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>
-                                                                 <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
-                                                            </div>
+
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="">Date Sample Received at Hub (PHL) <span class="mandatory">*</span></label>
+                                                            <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                        </div>
                                                   </div>
-                                             <?php } ?>
+
+                                             </div>
+
+                                             <div class="row">
+                                                  <div class="col-xs-3 col-md-3">
+                                                       <div class="form-group">
+                                                            <label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>
+                                                            <input type="text" class="form-control dateTime" id="sampleReceivedDate" name="sampleReceivedDate" placeholder="Sample Received at LAB Date" title="Please select sample received at Lab date" />
+                                                       </div>
+                                                  </div>
+                                             </div>
+
                                         </div>
                                         <div class="box box-primary">
                                              <div class="box-header with-border">
@@ -412,10 +412,9 @@ $sFormat = '';
                                                                                 }
                                                                                 ?>
                                                                            </optgroup>
-                                                                      <?php }
-                                                                      if ($general->isLISInstance() === false) { ?>
-                                                                           <option value="other">Other</option>
-                                                                      <?php } ?>
+                                                                      <?php }  ?>
+                                                                      <option value="other">Other</option>
+
                                                                  </select>
                                                                  <input type="text" class="form-control newArtRegimen" name="newArtRegimen" id="newArtRegimen" placeholder="ART Regimen" title="Please enter art regimen" style="width:100%;display:none;margin-top:2px;">
                                                             </div>
@@ -634,10 +633,9 @@ $sFormat = '';
                                                                                           <?php }
                                                                                           } ?>
                                                                                      </optgroup>
-                                                                                <?php }
-                                                                                if ($general->isLISInstance() === false) { ?>
-                                                                                     <option value="other">Other (Please Specify) </option>
-                                                                                <?php } ?>
+                                                                                <?php }  ?>
+                                                                                <option value="other">Other (Please Specify) </option>
+
                                                                            </select>
                                                                            <input type="text" class="form-control newRejectionReason" name="newRejectionReason" id="newRejectionReason" placeholder="Rejection Reason" title="Please enter rejection reason" style="width:100%;display:none;margin-top:2px;">
                                                                       </div>
