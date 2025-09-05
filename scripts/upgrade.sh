@@ -1,18 +1,18 @@
 #!/bin/bash
 
 # To use this script:
-# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/vlsm/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
+# sudo wget -O /usr/local/bin/intelis-update https://raw.githubusercontent.com/deforay/intelis/master/scripts/upgrade.sh && sudo chmod +x /usr/local/bin/intelis-update
 # sudo intelis-update
 
 # Check if running as root
 if [ "$EUID" -ne 0 ]; then
-    print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
     exit 1
 fi
 
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
@@ -32,6 +32,30 @@ source "$SHARED_FN_PATH"
 
 
 prepare_system
+
+
+DEFAULT_LIS_PATH_INTELIS="/var/www/intelis"
+LEGACY_LIS_PATH_VLSM="/var/www/vlsm"
+
+resolve_lis_path() {
+    local provided="$1"
+
+    # If user provided (-p or prompt) → always use that
+    if [ -n "$provided" ]; then
+        echo "$(to_absolute_path "$provided")"
+        return 0
+    fi
+
+    # Otherwise: prefer new default, else fallback to legacy
+    if [ -d "$DEFAULT_LIS_PATH_INTELIS" ]; then
+        echo "$DEFAULT_LIS_PATH_INTELIS"
+    elif [ -d "$LEGACY_LIS_PATH_VLSM" ]; then
+        echo "$LEGACY_LIS_PATH_VLSM"
+    else
+        # Neither exists — still return new default, validation will catch it
+        echo "$DEFAULT_LIS_PATH_INTELIS"
+    fi
+}
 
 # Initialize flags
 skip_ubuntu_updates=false
@@ -85,7 +109,7 @@ PHP
     # Try with optional Host (for name-based vhosts) and follow redirects
     local host_hdr=""
     if [ -n "${INTELIS_HOSTNAME:-}" ]; then
-    host_hdr="-H Host:${INTELIS_HOSTNAME}"
+    host_hdr="-H Host: ${INTELIS_HOSTNAME}"
     fi
 
     # Try HTTPS first (common with HSTS), then HTTP
@@ -147,22 +171,17 @@ trap - ERR
 
 # Prompt for the LIS path if not provided via the command-line argument
 if [ -z "$lis_path" ]; then
-    echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
-    read -t 60 lis_path
-
-    # Check if read command timed out or no input was provided
-    if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-        lis_path="/var/www/vlsm"
-        print info "Using default path: $lis_path"
+    echo "Enter the LIS installation path [press enter for /var/www/intelis]: "
+    if read -t 60 lis_path && [ -n "$lis_path" ]; then
+        : # user provided a value; resolver will honor it as-is
     else
-        print info "LIS path entered as ${lis_path}"
+        lis_path=""  # empty => resolver will auto-pick intelis, else vlsm
     fi
-else
-    print info "LIS path entered as ${lis_path}"
 fi
 
-# Convert VLSM path to absolute path
-lis_path=$(to_absolute_path "$lis_path")
+# Resolve LIS path
+lis_path="$(resolve_lis_path "$lis_path")"
+
 
 print info "LIS path is set to ${lis_path}"
 log_action "LIS path is set to ${lis_path}"
@@ -184,7 +203,7 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
-config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+MYSQL_CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 # Calculate total system memory in MB
 total_mem_kb=$(grep MemTotal /proc/meminfo | awk '{print $2}')
@@ -355,7 +374,7 @@ changes_needed=false
 
 # --- dry-run check first ---
 for setting in "${!mysql_settings[@]}"; do
-    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$MYSQL_CONFIG_FILE"; then
         changes_needed=true
         break
     fi
@@ -363,22 +382,22 @@ done
 
 if [ "$changes_needed" = true ]; then
     print info "Changes needed. Backing up and updating MySQL config..."
-    cp "$config_file" "${config_file}.bak.${backup_timestamp}"
+    cp "$MYSQL_CONFIG_FILE" "${MYSQL_CONFIG_FILE}.bak.${backup_timestamp}"
 
     for setting in "${!mysql_settings[@]}"; do
-        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$MYSQL_CONFIG_FILE"; then
             # Comment existing wrong setting if found
-            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$config_file"; then
-                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$config_file"
+            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$MYSQL_CONFIG_FILE"; then
+                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$MYSQL_CONFIG_FILE"
             fi
-            echo "$setting = ${mysql_settings[$setting]}" >>"$config_file"
+            echo "$setting = ${mysql_settings[$setting]}" >>"$MYSQL_CONFIG_FILE"
         fi
     done
 
     print info "Restarting MySQL service to apply changes..."
     restart_service mysql || {
         print error "Failed to restart MySQL. Restoring backup and exiting..."
-        mv "${config_file}.bak.${backup_timestamp}" "$config_file"
+        mv "${MYSQL_CONFIG_FILE}.bak.${backup_timestamp}" "$MYSQL_CONFIG_FILE"
         restart_service mysql
         exit 1
     }
@@ -390,7 +409,7 @@ else
 fi
 
 # --- Always clean up old .bak files ---
-find "$(dirname "$config_file")" -maxdepth 1 -type f -name "$(basename "$config_file").bak.*" -exec rm -f {} \;
+find "$(dirname "$MYSQL_CONFIG_FILE")" -maxdepth 1 -type f -name "$(basename "$MYSQL_CONFIG_FILE").bak.*" -exec rm -f {} \;
 print info "Removed all MySQL backup files matching *.bak.*"
 
 print info "Applying SET PERSIST sql_mode='' to override MySQL defaults..."
@@ -424,7 +443,8 @@ else
     log_action "SET PERSIST sql_mode failed: $persist_result"
 fi
 
-chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+chmod 644 "$MYSQL_CONFIG_FILE"
+
 
 # Check for Apache
 if ! command -v apache2ctl &>/dev/null; then
@@ -792,7 +812,7 @@ fi
 
 print header "Downloading LIS"
 
-download_file "master.tar.gz" "https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master" "Downloading LIS package..." || {
+download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master" "Downloading LIS package..." || {
     print error "LIS download failed - cannot continue with update"
     log_action "LIS download failed - update aborted"
     exit 1
@@ -807,7 +827,7 @@ tar_pid=$!           # Save tar PID
 spinner "${tar_pid}" # Spinner tracks extraction
 wait ${tar_pid}      # Wait for extraction to finish
 
-# Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
+# Copy the unzipped content to the LIS PATH, overwriting any existing files
 # Find all symlinks in the destination directory and create an exclude pattern
 exclude_options=""
 # Initialize symlinks_found to 0 before using it
@@ -823,7 +843,7 @@ done
 print info "Found $symlinks_found symlinks that will be preserved."
 
 # Use the dynamically generated exclude options in the rsync command
-eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/" &
+eval rsync -a --inplace --whole-file $exclude_options --info=progress2 "$temp_dir/intelis-master/" "$lis_path/" &
 rsync_pid=$!           # Save the process ID of the rsync command
 spinner "${rsync_pid}" # Start the spinner
 wait ${rsync_pid}      # Wait for the rsync process to finish
@@ -840,8 +860,11 @@ fi
 
 # Remove the empty directory and the downloaded tar file
 # Remove the empty directory if it exists
-if [ -d "$temp_dir/vlsm-master/" ]; then
-    rm -rf "$temp_dir/vlsm-master/"
+if [ -d "$temp_dir/intelis-master/" ]; then
+    rm -rf "$temp_dir/intelis-master/"
+fi
+if [ -d "$temp_dir" ]; then
+    rm -rf "$temp_dir"
 fi
 
 # Remove the downloaded tar file if it exists
@@ -943,16 +966,16 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
     print info "Dependency update needed. Checking for vendor packages..."
 
     # Check if the vendor package exists
-    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz"; then
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
         # Download the vendor archive
-        download_file "vendor.tar.gz" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
+        download_file "vendor.tar.gz" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
         if [ $? -ne 0 ]; then
             print error "Failed to download vendor.tar.gz"
             exit 1
         fi
 
         # Download the checksum file
-        download_file "vendor.tar.gz.md5" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
+        download_file "vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
         if [ $? -ne 0 ]; then
             print error "Failed to download vendor.tar.gz.md5"
             exit 1
@@ -1097,7 +1120,7 @@ fi
 setup_intelis_cron "${lis_path}"
 
 # Set proper permissions
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh
+download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
     intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
