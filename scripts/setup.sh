@@ -92,12 +92,12 @@ current_trap=$(trap -p ERR)
 # Disable the error trap temporarily
 trap - ERR
 
-echo "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
+echo "Enter the LIS installation path [press enter to select /var/www/intelis]: "
 read -t 60 lis_path
 
 # Check if read command timed out or no input was provided
 if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-    lis_path="/var/www/vlsm"
+    lis_path="/var/www/intelis"
     echo "Using default path: $lis_path"
 else
     echo "LIS installation path is set to ${lis_path}."
@@ -357,7 +357,7 @@ configure_vhost() {
 }
 
 # Ask user for the hostname
-read -p "Enter domain name (press enter to use 'vlsm'): " hostname
+read -p "Enter domain name (press enter to use 'intelis'): " hostname
 
 # Clean up the hostname: remove protocol and trailing slashes
 if [[ -n "$hostname" ]]; then
@@ -375,13 +375,13 @@ if [[ -n "$hostname" ]]; then
 
     # If user entered something that became empty after cleanup, use default
     if [[ -z "$hostname" ]]; then
-        hostname="vlsm"
+        hostname="intelis"
         print info "Using default hostname: $hostname"
     else
         print info "Using cleaned hostname: $hostname"
     fi
 else
-    hostname="vlsm"
+    hostname="intelis"
     print info "Using default hostname: $hostname"
 fi
 
@@ -405,14 +405,14 @@ installation_type="${installation_type:-LIS}"
 first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
 
 if [[ "$first_char" == "l" ]]; then
-    echo "Installing Intelis as the default host..."
-    log_action "Installing Intelis as the default host..."
+    echo "Installing InteLIS as the default host..."
+    log_action "Installing InteLIS as the default host..."
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 elif [[ "$first_char" == "s" ]]; then
-    echo "Installing Intelis alongside other apps..."
-    log_action "Installing Intelis alongside other apps..."
+    echo "Installing InteLIS alongside other apps..."
+    log_action "Installing InteLIS alongside other apps..."
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
