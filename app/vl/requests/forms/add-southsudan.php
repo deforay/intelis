@@ -370,8 +370,7 @@ $sFormat = '';
                                                             <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                        </div>
                                                   </div>
-
-                                             
+                                                  
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>

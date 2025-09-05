@@ -3,7 +3,7 @@ set -Eeuo pipefail
 
 # To use this script:
 #   cd ~
-#   wget -O remote-intelis-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/remote-backup.sh
+#   wget -O remote-intelis-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/remote-backup.sh
 #   chmod u+x remote-intelis-backup.sh
 #   sudo ./remote-intelis-backup.sh
 

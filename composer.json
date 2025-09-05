@@ -1,7 +1,7 @@
 {
-    "name": "deforay/vlsm",
-    "description": "Open Source LIS",
-    "homepage": "https://github.com/deforay/vlsm",
+    "name": "deforay/intelis",
+    "description": "InteLIS - Open Source LIS",
+    "homepage": "https://github.com/deforay/intelis",
     "type": "project",
     "license": "AGPL-3.0-or-later",
     "version": "5.3.1",

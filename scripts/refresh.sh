@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # To use this script:
-# sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
+# sudo wget -O /usr/local/bin/intelis-refresh https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh && sudo chmod +x /usr/local/bin/intelis-refresh
 # sudo intelis-refresh
 
 if [ "$EUID" -ne 0 ]; then
@@ -12,7 +12,7 @@ fi
 
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 

@@ -65,7 +65,8 @@ $sQuery = "SELECT tsr.temp_sample_id,
                     tsr.batch_code,fd.facility_name,
                     rsrr.rejection_reason_name,
                     tsr.sample_type,tsr.result,
-                    tsr.result_status,ts.status_name
+                    tsr.result_status,
+                    ts.status_name
                     FROM temp_sample_import as tsr
                     LEFT JOIN $mainTableName as vl ON vl.sample_code=tsr.sample_code
                     LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
