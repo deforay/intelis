@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O intelis-setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/setup.sh
+# wget -O intelis-setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/setup.sh
 # sudo chmod u+x intelis-setup.sh;
 # sudo ./intelis-setup.sh;
 
@@ -14,7 +14,7 @@ fi
 
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
@@ -173,7 +173,7 @@ fi
 # LIS Setup
 print header "Downloading LIS"
 
-download_file "master.tar.gz" "https://codeload.github.com/deforay/vlsm/tar.gz/refs/heads/master" "Downloading LIS package..." || {
+download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.gz/refs/heads/master" "Downloading LIS package..." || {
     print error "LIS download failed - cannot continue with setup"
     log_action "LIS download failed - setup aborted"
     exit 1
@@ -197,12 +197,12 @@ else
     mkdir -p "${lis_path}"
 fi
 
-# Copy the unzipped content to the /var/www/vlsm directory, overwriting any existing files
-# cp -R "$temp_dir/vlsm-master/"* "${lis_path}"
-rsync -a --info=progress2 "$temp_dir/vlsm-master/" "$lis_path/"
+# Copy the unzipped content to the LIS PATH, overwriting any existing files
+# cp -R "$temp_dir/intelis-master/"* "${lis_path}"
+rsync -a --info=progress2 "$temp_dir/intelis-master/" "$lis_path/"
 
 # Remove the empty directory and the downloaded zip file
-rm -rf "$temp_dir/vlsm-master/"
+rm -rf "$temp_dir/intelis-master/"
 rm master.tar.gz
 
 log_action "LIS copied to ${lis_path}."
@@ -268,16 +268,16 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
     print info "Dependency update needed. Checking for vendor packages..."
 
     # Check if the vendor package exists
-    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz"; then
+    if curl --output /dev/null --silent --head --fail "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz"; then
         # Download the vendor archive
-        download_file "vendor.tar.gz" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
+        download_file "vendor.tar.gz" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz" "Downloading vendor packages..."
         if [ $? -ne 0 ]; then
             print error "Failed to download vendor.tar.gz"
             exit 1
         fi
 
         # Download the checksum file
-        download_file "vendor.tar.gz.md5" "https://github.com/deforay/vlsm/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
+        download_file "vendor.tar.gz.md5" "https://github.com/deforay/intelis/releases/download/vendor-latest/vendor.tar.gz.md5" "Downloading checksum file..."
         if [ $? -ne 0 ]; then
             print error "Failed to download vendor.tar.gz.md5"
             exit 1
@@ -713,7 +713,7 @@ fi
 
 # Set proper permissions
 # Set proper permissions
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/vlsm/master/scripts/refresh.sh
+download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
     intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&

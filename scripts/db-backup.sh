@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O db-backup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/db-backup.sh
+# wget -O db-backup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/db-backup.sh
 # sudo chmod u+x db-backup.sh;
 # sudo ./db-backup.sh;
 

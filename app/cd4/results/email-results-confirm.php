@@ -127,7 +127,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
                   //opTable.fnDraw();
                   //window.open('/download.php?f=' + data, '_blank');
                   const link = document.createElement('a');
-                  link.href = 'http://vlsm/download.php?f=' + data;
+                  link.href = '/download.php?f=' + data;
                   // link.target = '_blank';
                   link.download = data;
 

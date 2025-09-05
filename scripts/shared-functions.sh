@@ -147,8 +147,8 @@ spinner() {
 download_file() {
     local output_file="$1"
     local url="$2"
-
-    local message="Downloading $(basename "$output_file")..."
+    local default_msg="Downloading $(basename "$output_file")..."
+    local message="${3:-$default_msg}"
 
     # Get output directory and filename
     local output_dir
@@ -165,34 +165,33 @@ download_file() {
     fi
 
     # Remove existing file if it exists
-    if [ -f "$output_file" ]; then
-        rm -f "$output_file"
-    fi
+    [ -f "$output_file" ] && rm -f "$output_file"
 
     print info "$message"
 
     local log_file
     log_file=$(mktemp)
 
-    # Correctly specify both download directory (-d) and output file (-o)
+    # Download with aria2c
     aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 \
-    --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
+        --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
     local download_pid=$!
 
     spinner "$download_pid" "$message"
     local download_status=$?
 
     if [ $download_status -ne 0 ]; then
-        print error "Download failed"
+        print error "Download failed for: $filename"
         print info "Detailed download logs:"
         cat "$log_file"
     else
-        print success "Download completed successfully"
+        print success "Download completed: $filename"
     fi
 
     rm -f "$log_file"
     return $download_status
 }
+
 
 # Download a file only if the remote version has changed
 download_if_changed() {
@@ -270,11 +269,31 @@ is_valid_application_path() {
 # Convert to absolute path
 to_absolute_path() {
     local p="$1"
-    # expand leading “~” → $HOME
+
+    # empty → echo empty (caller decides fallback)
+    [ -z "$p" ] && { echo ""; return 0; }
+
+    # expand leading "~" → $HOME
     [[ "$p" == "~"* ]] && p="${p/#\~/$HOME}"
-    # canonicalize, resolving ., .., and symlinks
-    readlink -f -- "$p"
+
+    if command -v realpath >/dev/null 2>&1; then
+        # -m: canonicalize even if components don’t exist; "." works too
+        realpath -m -- "$p"
+        return $?
+    fi
+
+    # GNU readlink: prefer -m if available, else -f (requires existing path)
+    if readlink -m / >/dev/null 2>&1; then
+        readlink -m -- "$p"
+        return $?
+    fi
+
+    case "$p" in
+        /*) printf '%s\n' "$p" ;;
+        *)  printf '%s\n' "$(pwd)/$p" ;;
+    esac
 }
+
 
 # Set ACL-based permissions (async by default; pass third arg "sync" to wait)
 set_permissions() {

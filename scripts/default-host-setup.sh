@@ -2,7 +2,7 @@
 
 # To use this script:
 # cd ~;
-# wget -O intelis-host-setup.sh https://raw.githubusercontent.com/deforay/vlsm/master/scripts/default-host-setup.sh
+# wget -O intelis-host-setup.sh https://raw.githubusercontent.com/deforay/intelis/master/scripts/default-host-setup.sh
 # sudo chmod u+x intelis-host-setup.sh;
 # sudo ./intelis-host-setup.sh -p /path/to/vlsm
 
@@ -14,7 +14,7 @@ fi
 
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
-SHARED_FN_URL="https://raw.githubusercontent.com/deforay/vlsm/master/scripts/shared-functions.sh"
+SHARED_FN_URL="https://raw.githubusercontent.com/deforay/intelis/master/scripts/shared-functions.sh"
 
 mkdir -p "$(dirname "$SHARED_FN_PATH")"
 
