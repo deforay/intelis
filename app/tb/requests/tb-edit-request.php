@@ -68,6 +68,7 @@ $id = (isset($_GET['id'])) ? base64_decode((string) $_GET['id']) : null;
 
 $tbQuery = "SELECT * from form_tb where tb_id=?";
 $tbInfo = $db->rawQueryOne($tbQuery, array($id));
+
 if (!$tbInfo) {
     header("Location:/tb/requests/tb-requests.php");
 }
@@ -77,7 +78,6 @@ if (isset($tbInfo['tests_requested']) && $tbInfo['tests_requested'] != "") {
 }
 $testQuery = "SELECT * from tb_tests where tb_id=? ORDER BY tb_test_id ASC";
 $tbTestInfo = $db->rawQuery($testQuery, array($id));
-
 $specimenTypeResult = $general->fetchDataFromTable('r_tb_sample_type', "status = 'active'");
 
 

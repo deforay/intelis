@@ -312,8 +312,6 @@ try {
     die; */
     if ($_POST['formId'] == 7) {
         if (!empty($_POST['testResult'])) {
-            $db->where('tb_id', $_POST['tbSampleId']);
-            $db->delete($testTableName);
             foreach ($_POST['testResult']['labId'] as $key => $labid) {
                 $testResult = $_POST['testResult'];
                 if (!empty($testResult['labId'])) {
