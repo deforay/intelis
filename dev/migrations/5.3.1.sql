@@ -181,7 +181,8 @@ ALTER TABLE `form_tb`
   ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
   ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
   ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
-  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`; 
+  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
+  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
 
 ALTER TABLE `audit_form_tb` 
   ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
@@ -191,5 +192,6 @@ ALTER TABLE `audit_form_tb`
   ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
   ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
   ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
-  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`; 
+  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
+  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
 
