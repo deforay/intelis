@@ -17,7 +17,7 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
 // Getting the list of Provinces, Districts and Facilities
 /** @var TbService $tbService */
 $tbService = ContainerRegistry::get(TbService::class);
-
+$tbResults = $tbService->getTbResults();
 $tbXPertResults = $tbService->getTbResults('x-pert');
 $tbLamResults = $tbService->getTbResults('lam');
 $specimenTypeResult = $tbService->getTbSampleTypes();
@@ -246,7 +246,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                 <tr class="treatmentSelected" style="display: none;">
                                     <td style="width: 50%;">
                                         <label class="label-control" for="riskFactors"><?php echo _translate("Risk Factors"); ?><span class="mandatory">*</span></label>
-                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors" onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').show();">
+                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors" onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact">TB Contact</option>
                                             <option value="PLHIV">PLHIV</option>
@@ -317,8 +317,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                 </tr>
                                 <tr>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
-                                        <select class="form-control" name="reOrderedCorrectiveAction" id="reOrderedCorrectiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
+                                        <label class="label-control" for="correctiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
+                                        <select class="form-control" name="correctiveAction" id="correctiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
                                             <option value="">--<?php echo _translate("Select"); ?>--</option>
                                             <option value="no"><?php echo _translate("No"); ?></option>
                                             <option value="yes"><?php echo _translate("Yes"); ?></option>
@@ -441,8 +441,16 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                 </div>
 
                                 <div class="controls" style="margin-top: 20px;">
-                                    <button type="button" class="btn btn-success" onclick="addTestSection()">+ Add Test</button>
-                                    <button type="button" class="btn btn-danger" onclick="removeTestSection()">- Remove Test</button>
+                                    <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
+                                    <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
+                                </div>
+                                <div class="row pr-5" style="margin-right: 5px;">
+                                    <div class="col-md-6" align="right">
+                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Results"); ?></label>
+                                    </div>
+                                    <div class="col-md-6" style=" padding-right: 3px; ">
+                                        <input type="text" name="finalResult" id="finalResult" class="form-control" placeholder="Enter final result" title="Please enter the final result" />
+                                    </div>
                                 </div>
                             </div>
                         </div>
