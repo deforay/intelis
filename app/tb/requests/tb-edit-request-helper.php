@@ -203,7 +203,7 @@ try {
         }
     }
 
-    $reason = $_POST['reasonForTbTest'];
+    $reason = $_POST['reasonForTbTest'] ?? null;
     $reason['reason'] = array($reason['reason'] => 'yes');
 
     //Update patient Information in Patients Table
@@ -217,6 +217,8 @@ try {
         'specimen_quality' => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
         'province_id' => !empty($_POST['provinceId']) ? $_POST['provinceId'] : null,
         'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
+        'affiliated_lab_id' => !empty($_POST['affiliatedLabId']) ? $_POST['affiliatedLabId'] : null,
+        'etb_tracker_number' => !empty($_POST['trackerNo']) ? $_POST['trackerNo'] : null,
         //'system_patient_code' => $systemPatientCode,
         'implementing_partner' => !empty($_POST['implementingPartner']) ? $_POST['implementingPartner'] : null,
         'funding_source' => !empty($_POST['fundingSource']) ? $_POST['fundingSource'] : null,
@@ -237,8 +239,14 @@ try {
         'is_referred_by_community_actor' => !empty($_POST['isReferredByCommunityActor']) ? $_POST['isReferredByCommunityActor'] : null,
         'reason_for_tb_test' => !empty($reason) ? json_encode($reason) : null,
         'risk_factors' => !empty($_POST['riskFactors']) ? $_POST['riskFactors'] : null,
+        'risk_factor_other' => !empty($_POST['riskFactorsOther']) ? $_POST['riskFactorsOther'] : null,
+        'is_specimen_reordered' => !empty($_POST['reOrderedCorrectiveAction']) ? $_POST['reOrderedCorrectiveAction'] : null,
         'purpose_of_test' => !empty($_POST['purposeOfTbTest']) ? $_POST['purposeOfTbTest'] : null,
         'hiv_status' => !empty($_POST['hivStatus']) ? $_POST['hivStatus'] : null,
+        'is_patient_initiated_on_tb_treatment' => !empty($_POST['isPatientInitiatedTreatment']) ? $_POST['isPatientInitiatedTreatment'] : null,
+        'date_of_treatment_initiation' => !empty($_POST['treatmentDate']) ? DateUtility::isoDateFormat($_POST['treatmentDate']) : null,
+        'current_regimen' => !empty($_POST['currentRegimen']) ? $_POST['currentRegimen'] : null,
+        'date_of_initiation_of_current_regimen' => !empty($_POST['regimenDate']) ? DateUtility::isoDateFormat($_POST['regimenDate']) : null,
         'previously_treated_for_tb' => !empty($_POST['previouslyTreatedForTB']) ? $_POST['previouslyTreatedForTB'] : null,
         'tests_requested' => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         'number_of_sputum_samples' => !empty($_POST['numberOfSputumSamples']) ? $_POST['numberOfSputumSamples'] : null,
@@ -250,7 +258,7 @@ try {
         'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : '',
         'recommended_corrective_action' => !empty($_POST['correctiveAction']) ? $_POST['correctiveAction'] : '',
-        'result' => !empty($_POST['result']) ? $_POST['result'] : $_POST['xPertMTMResult'],
+        'result' => !empty($_POST['result']) ? $_POST['result'] : $_POST['xPertMTMResult'] ?? null,
         'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
         'culture_result' => !empty($_POST['cultureResult']) ? $_POST['cultureResult'] : null,
         'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
@@ -287,9 +295,9 @@ try {
         'source_of_request' => "web"
     ];
 
-
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
+
     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {
         $tbData['result_modified'] = "yes";
     } else {
@@ -365,7 +373,6 @@ try {
         $tbData['patient_surname'] = $encryptedPatientSurName;
         $tbData['is_encrypted'] = 'yes';
     }
-
 
     if (!empty($_POST['tbSampleId'])) {
         $db->where('tb_id', $_POST['tbSampleId']);
