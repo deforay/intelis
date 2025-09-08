@@ -124,8 +124,10 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="testNumber"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
-                                        <input type="text" name="testNumber" value="<?php echo $tbInfo['specimen_quality']; ?>" id="testNumber" placeholder="Enter the affiliated TB testing site" class="form-control" title="<?php echo _translate("Please select affiliated TB testing site"); ?>" />
+                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                        <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2 isRequired" title="<?php echo _translate("Please select afflicated laboratory"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
+                                        </select>
                                     </td>
                                 </tr>
                                 <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
@@ -165,7 +167,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <tr>
                                     <td style="width: 40%;">
                                         <label for="trackerNo"><?= _translate('e-TB tracker No.'); ?></label>
-                                        <input type="text" class="form-control" id="trackerNo" name="trackerNo" placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>" title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
+                                        <input type="text" value="<?php echo $tbInfo['etb_tracker_number']; ?>" class="form-control" id="trackerNo" name="trackerNo" placeholder="<?php echo _translate("Enter the e-TB tracker number"); ?>" title="<?php echo _translate("Please enter the e-TB tracker number"); ?>" />
                                     </td>
                                     <td style="width: 60%;display: flex;gap: 10px;">
                                         <div style="width:50%">
@@ -206,7 +208,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <tr>
                                     <td style="width: 50%;">
                                         <label for="patientPhoneNumber"><?php echo _translate("Phone contact"); ?>:</label>
-                                        <input type="text" class="form-control checkNum" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?php echo _translate("Phone Number"); ?>" title="<?php echo _translate("Please enter phone number"); ?>" />
+                                        <input type="text" value="<?php echo $tbInfo['patient_phone']; ?>" class="form-control checkNum" id="patientPhoneNumber" name="patientPhoneNumber" placeholder="<?php echo _translate("Phone Number"); ?>" title="<?php echo _translate("Please enter phone number"); ?>" />
                                     </td>
                                     <td style="width: 50%;">
                                         <label for="typeOfPatient"><?php echo _translate("Type of patient"); ?><span class="mandatory">*</span></label>
@@ -237,29 +239,29 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                         <label for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
                                         <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment" class="form-control isRequired" title="Please choose treatment status">
                                             <option value=''>-- <?php echo _translate("Select"); ?> --</option>
-                                            <option value='no'><?php echo _translate("No"); ?></option>
-                                            <option value='yes'><?php echo _translate("Yes"); ?></option>
+                                            <option value='no' <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'no') ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
+                                            <option value='yes' <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
                                         </select>
                                     </td>
-                                    <td class="treatmentSelected" style="width: 50%; display: none;">
+                                    <td class="treatmentSelected" style="width: 50%; <?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                         <label class="label-control" for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span class="mandatory">*</span></label>
-                                        <input type="text" name="treatmentDate" id="treatmentDate" class="treatmentSelectedInput form-control date" title="Please choose treatment date" />
+                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_treatment_initiation']) ?? ''; ?>" name="treatmentDate" id="treatmentDate" class="treatmentSelectedInput form-control date" title="Please choose treatment date" />
                                     </td>
                                 </tr>
-                                <tr class="treatmentSelected" style="display: none;">
+                                <tr class="treatmentSelected" style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                     <td style="width: 50%;">
                                         <label for="currentRegimen" class="label-control"><?php echo _translate("Current regimen"); ?><span class="mandatory">*</span></label>
-                                        <input type="text" class="form-control treatmentSelectedInput" id="currentRegimen" name="currentRegimen" placeholder="<?php echo _translate('Enter the current regimen'); ?>" title="<?php echo _translate('Please enter current regimen'); ?>">
+                                        <input type="text" value="<?php echo $tbInfo['current_regimen'] ?? ''; ?>" class="form-control treatmentSelectedInput" id="currentRegimen" name="currentRegimen" placeholder="<?php echo _translate('Enter the current regimen'); ?>" title="<?php echo _translate('Please enter current regimen'); ?>">
                                     </td>
                                     <td style="width: 50%;">
                                         <label class="label-control" for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span class="mandatory">*</span></label>
-                                        <input type="text" name="regimenDate" id="regimenDate" class="treatmentSelectedInput form-control date" title="Please choose date of current regimen" />
+                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($tbInfo['date_of_initiation_of_current_regimen']) ?? ''; ?>" name="regimenDate" id="regimenDate" class="treatmentSelectedInput form-control date" title="Please choose date of current regimen" />
                                     </td>
                                 </tr>
-                                <tr class="treatmentSelected" style="display: none;">
+                                <tr class="treatmentSelected" style="<?php echo (isset($tbInfo['is_patient_initiated_on_tb_treatment']) && !empty($tbInfo['is_patient_initiated_on_tb_treatment']) && $tbInfo['is_patient_initiated_on_tb_treatment'] != 'yes') ? "display: none;" : ""; ?>">
                                     <td style="width: 50%;">
                                         <label class="label-control" for="riskFactors"><?php echo _translate("Risk Factors"); ?><span class="mandatory">*</span></label>
-                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors">
+                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors" onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').hide();">
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'TB Contact') ? 'selected="selected"' : ''; ?>>TB Contact</option>
                                             <option value="PLHIV" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'PLHIV') ? 'selected="selected"' : ''; ?>>PLHIV</option>
@@ -273,6 +275,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                             <option value="Refugee camp" <?php echo (isset($tbInfo['risk_factors']) && !empty($tbInfo['risk_factors']) && $tbInfo['risk_factors'] == 'Refugee camp') ? 'selected="selected"' : ''; ?>>Refugee camp</option>
                                             <option value="Others">Others</option>
                                         </select>
+                                        <input style="<?php echo (isset($tbInfo['risk_factor_other']) && !empty($tbInfo['risk_factor_other'])) ? "" : "display: none"; ?>" value="<?php echo $tbInfo['risk_factor_other'] ?? ''; ?>" type="text" id="riskFactorsOther" name="riskFactorsOther" class="form-control" placeholder="Enter the other risk factor" title="Please enter the other risk factor" />
                                     </td>
                                 </tr>
                             </table>
@@ -332,8 +335,8 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                         <label class="label-control" for="reOrderedCorrectiveAction"><?php echo _translate("Is specimen re-ordered as part of corrective action?"); ?></label>
                                         <select class="form-control" name="reOrderedCorrectiveAction" id="reOrderedCorrectiveAction" title="<?php echo _translate("Is specimen re-ordered as part of corrective action"); ?>">
                                             <option value="">--<?php echo _translate("Select"); ?>--</option>
-                                            <option value="no"><?php echo _translate("No"); ?></option>
-                                            <option value="yes"><?php echo _translate("Yes"); ?></option>
+                                            <option value="no" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'no') ? 'selected="selected"' : ''; ?>><?php echo _translate("No"); ?></option>
+                                            <option value="yes" <?php echo (isset($tbInfo['is_specimen_reordered']) && !empty($tbInfo['is_specimen_reordered']) && $tbInfo['is_specimen_reordered'] == 'yes') ? 'selected="selected"' : ''; ?>><?php echo _translate("Yes"); ?></option>
                                         </select>
                                     </td>
                                 </tr>
@@ -380,7 +383,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
                                                         </td>
-                                                        <td style="width: 50%;display:none;" class="rejection-reason-field">
+                                                        <td style="width: 50%;<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>" class="rejection-reason-field">
                                                             <label class="label-control" for="sampleRejectionReason<?php echo $n; ?>"><?php echo _translate("Reason for Rejection"); ?><span class="mandatory">*</span></label>
                                                             <select class="form-control rejection-reason-select" name="testResult[sampleRejectionReason][]" id="sampleRejectionReason<?php echo $n; ?>" title="<?php echo _translate("Please select the reason for rejection"); ?>">
                                                                 <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
@@ -401,7 +404,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                             </select>
                                                         </td>
                                                     </tr>
-                                                    <tr class="rejection-date-field" style="display:none;">
+                                                    <tr class="rejection-date-field" style="<?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] != 'yes') ? 'display:none;' : ''; ?>">
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="rejectionDate<?php echo $n; ?>"><?php echo _translate("Rejection Date"); ?><span class="mandatory">*</span></label>
                                                             <input class="form-control date rejection-date" value="<?php echo DateUtility::humanReadableDateFormat($test['rejection_on']); ?>" type="text" name="testResult[rejectionDate][]" id="rejectionDate<?php echo $n; ?>" placeholder="<?php echo _translate("Select rejection date"); ?>" title="<?php echo _translate("Please select the rejection date"); ?>" />

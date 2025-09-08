@@ -109,8 +109,10 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="testNumber"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
-                                        <input type="text" name="testNumber" id="testNumber" placeholder="Enter the affiliated TB testing site" class="form-control" title="<?php echo _translate("Please select affiliated TB testing site"); ?>" />
+                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                        <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2 isRequired" title="<?php echo _translate("Please select afflicated laboratory"); ?>">
+                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                        </select>
                                     </td>
                                 </tr>
                                 <?php if ($_SESSION['accessType'] == 'collection-site') { ?>
@@ -244,7 +246,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                 <tr class="treatmentSelected" style="display: none;">
                                     <td style="width: 50%;">
                                         <label class="label-control" for="riskFactors"><?php echo _translate("Risk Factors"); ?><span class="mandatory">*</span></label>
-                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors">
+                                        <select id="riskFactors" name="riskFactors" class="form-control treatmentSelectedInput" title="Please select the any one of risk factors" onchange="(this.value == 'Others') ? $('#riskFactorsOther').show() : $('#riskFactorsOther').show();">
                                             <option value="">Select risk factor...</option>
                                             <option value="TB Contact">TB Contact</option>
                                             <option value="PLHIV">PLHIV</option>
@@ -258,6 +260,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                             <option value="Refugee camp">Refugee camp</option>
                                             <option value="Others">Others</option>
                                         </select>
+                                        <input style="display: none;" type="text" id="riskFactorsOther" name="riskFactorsOther" class="form-control" placeholder="Enter the other risk factor" title="Please enter the other risk factor" />
                                     </td>
                                 </tr>
                             </table>

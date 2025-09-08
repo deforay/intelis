@@ -168,3 +168,30 @@ ADD `result_approved_datetime` DATETIME NULL DEFAULT NULL AFTER `result_approved
 ALTER TABLE `form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
 ALTER TABLE `audit_form_tb` ADD `risk_factors` VARCHAR(256) NULL DEFAULT NULL AFTER `reason_for_tb_test`, ADD `purpose_of_test` VARCHAR(256) NULL DEFAULT NULL AFTER `risk_factors`;
 ALTER TABLE `tb_tests` CHANGE `sample_received_at_lab_datetime` `sample_received_at_lab_datetime` DATETIME NULL DEFAULT NULL, CHANGE `is_sample_rejected` `is_sample_rejected` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `reason_for_sample_rejection` `reason_for_sample_rejection` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `rejection_on` `rejection_on` DATETIME NULL DEFAULT NULL, CHANGE `test_type` `test_type` VARCHAR(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci NULL DEFAULT NULL, CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL;
+
+-- Thana 08-Aug-2025
+ALTER TABLE `form_tb` DROP `risk_factors`;
+ALTER TABLE `audit_form_tb` DROP `risk_factors`;
+
+ALTER TABLE `form_tb` 
+  ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
+  ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`, 
+  ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`,
+  ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`, 
+  ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
+  ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
+  ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
+  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
+  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
+
+ALTER TABLE `audit_form_tb` 
+  ADD `affiliated_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, 
+  ADD `etb_tracker_number` VARCHAR(24) NULL DEFAULT NULL AFTER `external_sample_code`, 
+  ADD `is_patient_initiated_on_tb_treatment` ENUM('yes','no','','') NULL DEFAULT NULL AFTER `hiv_status`,
+  ADD `date_of_treatment_initiation` DATE NULL DEFAULT NULL AFTER `is_patient_initiated_on_tb_treatment`, 
+  ADD `current_regimen` VARCHAR(24) NULL DEFAULT NULL AFTER `date_of_treatment_initiation`, 
+  ADD `date_of_initiation_of_current_regimen` DATE NULL DEFAULT NULL AFTER `current_regimen`, 
+  ADD `risk_factors` VARCHAR(36) NULL DEFAULT NULL AFTER `date_of_initiation_of_current_regimen`, 
+  ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
+  ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
+
