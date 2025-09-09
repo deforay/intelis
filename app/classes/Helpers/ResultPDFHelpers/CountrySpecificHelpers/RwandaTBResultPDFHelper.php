@@ -4,7 +4,7 @@ namespace App\Helpers\ResultPDFHelpers\CountrySpecificHelpers;
 
 use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
-class SouthSudanTBResultPDFHelper extends TBResultPDFHelper
+class RwandaTBResultPDFHelper extends TBResultPDFHelper
 {
     //Page header
     public function Header()
@@ -13,7 +13,7 @@ class SouthSudanTBResultPDFHelper extends TBResultPDFHelper
 
         if (!empty($this->htitle) && trim($this->htitle) != '') {
 
-            if (isset($this->formId) && $this->formId == 7) {
+            if (isset($this->formId) && $this->formId == 1) {
                 if (!empty($this->logo) && trim($this->logo) != '') {
                     if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo)) {
                         $imageFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'logo' . DIRECTORY_SEPARATOR . $this->logo;
@@ -70,5 +70,17 @@ class SouthSudanTBResultPDFHelper extends TBResultPDFHelper
                 $this->writeHTMLCell(0, 0, 15, 38, '<hr>', 0, 0, 0, true, 'C');
             }
         }
+    }
+
+    // Page footer
+    public function Footer(): void
+    {
+        // Position at 15 mm from bottom
+        $this->SetY(-15);
+        // Set font
+        $this->SetFont('helvetica', '', 8);
+        // Page number
+        // $this->Cell(0, 10, "", 0, false, 'L  ', 0);
+        $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . ' of ' . $this->getAliasNbPages(), 0, false, 'R', 0);
     }
 }
