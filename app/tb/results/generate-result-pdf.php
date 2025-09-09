@@ -61,8 +61,6 @@ if (isset($_POST['id']) && trim((string) $_POST['id']) != '') {
                 l.facility_attributes,
 				rip.i_partner_name,
 				rsrr.rejection_reason_name ,
-				u_d.user_name as reviewedBy,
-				a_u_d.user_name as approvedBy,
 				requestor_user.user_name as requestedBy,
                 reviewer_user.user_name as reviewedBy,
                 reviewer_user.user_id as reviewedByUserId,

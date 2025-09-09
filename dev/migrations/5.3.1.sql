@@ -195,3 +195,10 @@ ALTER TABLE `audit_form_tb`
   ADD `risk_factor_other` VARCHAR(36) NULL DEFAULT NULL AFTER `risk_factors`, 
   ADD `is_specimen_reordered` ENUM('yes','no','','') NULL AFTER `risk_factor_other`; 
 
+-- Thana 09-Aug-2025
+ALTER TABLE `tb_tests` 
+ADD `tested_by` VARCHAR(255) NULL DEFAULT NULL AFTER `test_result`,
+ADD `revised_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_approved_datetime`, 
+ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`, 
+ADD `reason_for_result_change` VARCHAR(255) NULL DEFAULT NULL AFTER `revised_on`,
+ADD `comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `reason_for_result_change`;
