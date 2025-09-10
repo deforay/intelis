@@ -8,13 +8,15 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Helpers\PdfWatermarkHelper;
-use App\Helpers\PdfConcatenateHelper;
+use App\Services\TbService;
 use App\Registries\ContainerRegistry;
 use App\Helpers\ResultPDFHelpers\CountrySpecificHelpers\RwandaTBResultPDFHelper;
 
 
 $usersService = ContainerRegistry::get(UsersService::class);
-
+/** @var TbService $tbService */
+$tbService = ContainerRegistry::get(TbService::class);
+$tbResults = $tbService->getTbResults();
 $tbLamResults = $tbService->getTbResults('lam');
 $tbXPertResults = $tbService->getTbResults('x-pert');
 
@@ -29,7 +31,7 @@ if (!empty($requestResult)) {
     $page = 1;
     foreach ($requestResult as $result) {
 
-        $tbTestQuery = "SELECT tt.*, rtst.sample_name, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewdBy, revised.user_name as revisedBy, reject.rejection_reason_name as rejectionReason
+        $tbTestQuery = "SELECT tt.*, rtst.sample_name, l.facility_name as lab_name, test.user_name as testedBy, review.user_name as reviewedBy, revised.user_name as revisedBy, reject.rejection_reason_name as rejectionReason
         from tb_tests as tt 
         INNER JOIN r_tb_sample_type as rtst ON tt.specimen_type=rtst.sample_id  
         INNER JOIN facility_details as l ON tt.lab_id=l.facility_id 
@@ -278,7 +280,7 @@ if (!empty($requestResult)) {
         $html .= '</table>';
         $html .= '<span style="text-align:center;font-size:14px;font-weight:bolt;"><u>PATIENT RESULT REPORT</u></span><br><br>';
         $html .= '<table style="padding:3px;">';
-        $html .= '<tr style="font-size:10px;font-weight:bolt;border-style:1px;border-radius:20%;width:100%;background-color:#c0c0c0;">';
+        $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;">';
         $html .= '   <td colspan="4">HEALTH FACILITY INFORMATION</td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -299,7 +301,7 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">District:</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $fdistrict . '</td>';
         $html .= '</tr>';
-        $html .= '<tr style="font-size:10px;font-weight:bolt;border-style:1px;border-radius:20%;width:100%;background-color:#c0c0c0;">';
+        $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;">';
         $html .= '   <td colspan="4">PATIENT INFORMATION</td>';
         $html .= '</tr>';
         $html .= '<tr>';
@@ -320,48 +322,39 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Age:</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $ageCalc['year'] . 'Year(s) ' . $ageCalc['months'] . 'Months</td>';
         $html .= '</tr>';
-        $html .= '</table><br><hr>';
+        $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;">';
+        $html .= '   <td colspan="4" style="background-color:#c0c0c0;">SPECIMEN INFORMATION</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Collection Date:</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered Date:</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($result['sample_registered_at_lab'], true) . '</td>';
+        $html .= '</tr>';
+        $html .= '<tr>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Purpose of Test:</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['purpose_of_test'] . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered By:</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
+        $html .= '</tr>';
+        $html .= '</table><br><br>';
 
         if (!empty($tbTestInfo)) {
             $n = 1;
             foreach ($tbTestInfo as $row) {
                 $html .= '<table border="1" style="padding:3px;">';
-                $html .= '<tr style="font-size:13px;font-weight:bolt;border-style:1px;border-radius:20%;width:100%;">';
-                $html .= '   <td colspan="4"><u>Tab ' . $n . '</u></td>';
-                $html .= '</tr>';
-                $html .= '<tr style="font-size:10px;font-weight:bolt;border-style:1px;border-radius:20%;width:100%;">';
-                $html .= '   <td colspan="4" style="background-color:#c0c0c0;">SPECIMEN INFORMATION</td>';
+                $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;border:2px;">';
+                $html .= '<td colspan="4">LABORATORY RESULT - ' . $n . '</td>';
                 $html .= '</tr>';
                 $html .= '<tr>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Specimen Collected:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['sample_name'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered Date:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($result['sample_registered_at_lab'], true) . '</td>';
-                $html .= '</tr>';
-                $html .= '<tr>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Purpose of Test:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['purpose_of_test'] . '</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Registered By:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
-                $html .= '</tr>';
-                $html .= '<tr>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Collection Date:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['sample_collection_date'] . " " . $sampleCollectionTime . '</td>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Laboratory:</td>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['lab_name'] . '</td>';
+                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Specimen Collected:</td>';
+                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['sample_name'] . '</td>';
                 $html .= '</tr>';
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Date of reception:</td>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($row['sample_received_at_lab_datetime']) . '</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Container/Tube:</td>';
-                $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['current_regimen'] . '</td>';
-                $html .= '</tr>';
-
-                $html .= '<tr>';
-                $html .= '<td colspan="4"><br>';
-
-                $html .= '<table><tr style="font-size:10px;font-weight:bolt;border-style:1px;border-radius:20%;width:100%;background-color:#c0c0c0;border:2px;">';
-                $html .= '<td colspan="4">LABORATORY RESULTS</td>';
                 $html .= '</tr>';
 
                 if (isset($row['is_sample_rejected']) && !empty($row['is_sample_rejected']) && $row['is_sample_rejected'] == 'yes') {
@@ -379,7 +372,6 @@ if (!empty($requestResult)) {
                     $html .= '            <td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['test_result'] . '</td>';
                     $html .= '          </tr>';
                 }
-                $html .= '</table></td></tr>';
                 $html .= '<tr>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Tested By:</td>';
                 $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $row['testedBy'] . '</td>';
@@ -402,15 +394,12 @@ if (!empty($requestResult)) {
                 $html .= '<td colspan="4" style="line-height:17px;font-size:12px;text-align:left;width:100%">Interpretation(Review Note): ' . $row['comments'] . '</td>';
                 $html .= '</tr>';
                 $n += 1;
-                $html .= '</table>';
+                $html .= '</table><br><br>';
             }
             $html .= '<table border="1" style="padding:3px;">';
-            $html .= '<tr>';
-            $html .= ' <td style="line-height:17px;font-size:14px;text-align:left;width:20%">Final Result</td>';
-            $html .= ' <td style="line-height:17px;font-size:14px;text-align:left;width:30%">' . $result['result'] . '</td>';
-            $html .= ' <td style="line-height:17px;font-size:12px;text-align:left;width:20%"></td>';
-            $html .= ' <td style="line-height:17px;font-size:12px;text-align:left;width:30%"></td>';
-            $html .= '<tr>';
+            $html .= '<tr style="font-size:13px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;border:2px;">';
+            $html .= '<td colspan="4">Final Interpretation : ' .  $tbResults[$result['result']] . '</td>';
+            $html .= '</tr>';
             $html .= '</table>';
         }
 
