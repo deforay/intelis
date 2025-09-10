@@ -336,10 +336,14 @@ try {
                             'test_type' => $testResult['testType'][$key] ?? null,
                             'test_result' => $testResult['testResult'][$key] ?? null,
                             'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
+                            'tested_by' => $testResult['testedBy'][$key] ?? null,
                             'result_reviewed_by' => $testResult['reviewedBy'][$key] ?? null,
                             'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
                             'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
                             'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
+                            'revised_by' => $testResult['revisedBy'][$key] ?? null,
+                            'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
+                            'comments' => $testResult['comments'][$key] ?? null,
                             'updated_datetime' => DateUtility::getCurrentDateTime()
                         ]
                     );
