@@ -333,6 +333,7 @@ try {
                             'revised_by' => $testResult['revisedBy'][$key] ?? null,
                             'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
                             'comments' => $testResult['comments'][$key] ?? null,
+                            'reason_for_result_change' => $testResult['comments'][$key] ?? null,
                             'updated_datetime' => DateUtility::getCurrentDateTime()
                         ]
                     );

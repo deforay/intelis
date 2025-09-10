@@ -376,9 +376,9 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     <tr>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="isSampleRejected<?php echo $n; ?>"><?php echo _translate("Is Sample Rejected?"); ?></label>
-                                                            <select class="form-control sample-rejection-select" name="testResult[isSampleRejected][]" id="isSampleRejected<?php echo $n; ?>" title="<?php echo _translate("Please select the Is sample rejected?"); ?>">
+                                                            <select class="form-control sample-rejection-select" name="testResult[isSampleRejected][]" id="isSampleRejected<?php echo $n; ?>" title="<?php echo _translate("Please select the Is sample rejected?"); ?>" onchange="$('.reasonForChange').show();>
                                                                 <option value=''> -- <?php echo _translate("Select"); ?> -- </option>
-                                                                <option value="yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
+                                                                <option value=" yes" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'yes') ? 'selected="selected"' : ''; ?>> <?php echo _translate("Yes"); ?> </option>
                                                                 <option value="no" <?php echo (isset($test['is_sample_rejected']) && !empty($test['is_sample_rejected']) && $test['is_sample_rejected'] == 'no') ? 'selected="selected"' : ''; ?>> <?php echo _translate("No"); ?> </option>
                                                             </select>
                                                         </td>
@@ -419,9 +419,9 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                         </td>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
-                                                            <select class="form-control test-type-select" name="testResult[testType][]" id="testType<?php echo $n; ?>" title="<?php echo _translate("Please select the test type"); ?>">
+                                                            <select class="form-control test-type-select" name="testResult[testType][]" id="testType<?php echo $n; ?>" title="<?php echo _translate("Please select the test type"); ?>" onchange="$('.reasonForChange<?php echo $n; ?>').show();>
                                                                 <option value=""><?php echo _translate("Select test type"); ?></option>
-                                                                <option value="Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
+                                                                <option value=" Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
                                                                 <option value="TB LAM test" <?php echo ($test['test_type'] == 'TB LAM test') ? 'selected="selected"' : ''; ?>>TB LAM test</option>
                                                                 <option value="MTB/ RIF Ultra" <?php echo ($test['test_type'] == 'MTB/ RIF Ultra') ? 'selected="selected"' : ''; ?>>MTB/ RIF Ultra</option>
                                                                 <option value="MTB/ XDR (if RIF detected)" <?php echo ($test['test_type'] == 'MTB/ XDR (if RIF detected)') ? 'selected="selected"' : ''; ?>>MTB/ XDR (if RIF detected)</option>
@@ -432,9 +432,21 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     <tr>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="testResult<?php echo $n; ?>"><?php echo _translate("Test Result"); ?></label>
-                                                            <select class="form-control test-result-select" name="testResult[testResult][]" id="testResult<?php echo $n; ?>" title="<?php echo _translate("Please select the test result"); ?>">
+                                                            <select class="form-control test-result-select" name="testResult[testResult][]" id="testResult<?php echo $n; ?>" title="<?php echo _translate("Please select the test result"); ?>" onchange="$('.reasonForChange<?php echo $n; ?>').show();">
                                                                 <option value=""><?php echo _translate("Select test result"); ?></option>
                                                                 <option value="<?php echo $test['test_type']; ?>" selected="selected"><?php echo $test['test_type']; ?></option>
+                                                            </select>
+                                                        </td>
+                                                        <td style="width: 50%;">
+                                                            <label class="label-control" for="comments<?php echo $n; ?>"><?php echo _translate("Comments"); ?></label>
+                                                            <textarea class="form-control" id="comments<?php echo $n; ?>" name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>" title="<?php echo _translate("Please enter comments"); ?>"><?php echo $test['comments']; ?></textarea>
+                                                        </td>
+                                                    </tr>
+                                                    <tr>
+                                                        <td style="width: 50%;">
+                                                            <label class="label-control" for="testedBy<?php echo $n; ?>"><?php echo _translate("Tested By"); ?></label>
+                                                            <select name="testResult[testedBy][]" id="testedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose tested by"); ?>">
+                                                                <?= $general->generateSelectOptions($userInfo, $test['tested_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
@@ -468,14 +480,20 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     </tr>
                                                     <tr>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
-                                                            <select name="testResult[revisedBy][]" id="revisedBy1" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
+                                                            <label class="label-control" for="revisedBy<?php echo $n; ?>"><?php echo _translate("Revised By"); ?></label>
+                                                            <select name="testResult[revisedBy][]" id="revisedBy<?php echo $n; ?>" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
                                                                 <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                             </select>
                                                         </td>
                                                         <td style="width: 50%;">
-                                                            <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
-                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                            <label class="label-control" for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
+                                                            <input value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" type="text" name="testResult[revisedOn][]" id="revisedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                        </td>
+                                                    </tr>
+                                                    <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
+                                                        <td style="width: 50%;">
+                                                            <label class="label-control" for="reasonForChange<?php echo $n; ?>"><?php echo _translate('Reason for result change'); ?></label>
+                                                            <textarea class="form-control" name="testResult[reasonForChange][]" id="reasonForChange<?php echo $n; ?>" placeholder="Enter the reason for result change" title="Please enter the reason for result change"></textarea>
                                                         </td>
                                                     </tr>
                                                 </table>
@@ -550,6 +568,18 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
+                                                        <label class="label-control" for="comments1"><?php echo _translate("Comments"); ?></label>
+                                                        <textarea class="form-control" id="comments1" name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>" title="<?php echo _translate("Please enter comments"); ?>"></textarea>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td style="width: 50%;">
+                                                        <label class="label-control" for="testedBy1"><?php echo _translate("Tested By"); ?></label>
+                                                        <select name="testResult[testedBy][]" id="testedBy1" class="form-control" title="<?php echo _translate("Please choose tested by"); ?>">
+                                                            <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                        </select>
+                                                    </td>
+                                                    <td style="width: 50%;">
                                                         <label class="label-control" for="sampleTestedDateTime1"><?php echo _translate("Tested On"); ?></label>
                                                         <input type="text" class="date-time form-control" id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample tested"); ?>" />
                                                     </td>
@@ -582,19 +612,18 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     <td style="width: 50%;">
                                                         <label class="label-control" for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
                                                         <select name="testResult[revisedBy][]" id="revisedBy1" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
-                                                            <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                            <?= $general->generateSelectOptions($userInfo, $test['revised_by'], '-- Select --'); ?>
                                                         </select>
                                                     </td>
                                                     <td style="width: 50%;">
                                                         <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
-                                                        <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                        <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
                                                     </td>
                                                 </tr>
                                             </table>
                                         </div>
                                     <?php } ?>
                                 </div>
-
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
