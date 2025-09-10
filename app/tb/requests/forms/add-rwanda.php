@@ -408,6 +408,18 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                     </select>
                                                 </td>
                                                 <td style="width: 50%;">
+                                                    <label class="label-control" for="comments1"><?php echo _translate("Comments"); ?></label>
+                                                    <textarea class="form-control" id="comments1" name="testResult[comments][]" placeholder="<?= _translate("Please enter comments"); ?>" title="<?php echo _translate("Please enter comments"); ?>"></textarea>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 50%;">
+                                                    <label class="label-control" for="testedBy1"><?php echo _translate("Tested By"); ?></label>
+                                                    <select name="testResult[testedBy][]" id="testedBy1" class="form-control" title="<?php echo _translate("Please choose tested by"); ?>">
+                                                        <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                    </select>
+                                                </td>
+                                                <td style="width: 50%;">
                                                     <label class="label-control" for="sampleTestedDateTime1"><?php echo _translate("Tested On"); ?></label>
                                                     <input type="text" class="date-time form-control" id="sampleTestedDateTime1" name="testResult[sampleTestedDateTime][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample tested"); ?>" />
                                                 </td>
@@ -434,6 +446,18 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                 <td style="width: 50%;">
                                                     <label class="label-control" for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
                                                     <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on"); ?>" />
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td style="width: 50%;">
+                                                    <label class="label-control" for="revisedBy1"><?php echo _translate("Revised By"); ?></label>
+                                                    <select name="testResult[revisedBy][]" id="revisedBy1" class="form-control" title="<?php echo _translate("Please choose revised by"); ?>">
+                                                        <?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+                                                    </select>
+                                                </td>
+                                                <td style="width: 50%;">
+                                                    <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
+                                                    <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
                                                 </td>
                                             </tr>
                                         </table>
