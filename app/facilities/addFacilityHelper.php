@@ -44,9 +44,13 @@ $apiService = ContainerRegistry::get(ApiService::class);
 $uploadedFiles = $request->getUploadedFiles();
 
 // Sanitize and validate the uploaded files
-$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
-$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
+$sanitizedLabLogo = $sanitizedSignature = $sanitizedReportTemplate = "";
+if (isset($uploadedFiles['reportTemplate']))
+	$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'], ['pdf']);
+if (isset($uploadedFiles['labLogo']))
+	$sanitizedLabLogo = _sanitizeFiles($uploadedFiles['labLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+if (isset($uploadedFiles['signature']))
+	$sanitizedSignature = _sanitizeFiles($uploadedFiles['signature'], ['png', 'jpg', 'jpeg', 'gif']);
 
 try {
 
@@ -125,7 +129,7 @@ try {
 			'test_type' => (!empty($_POST['testType'])) ?  implode(', ', $_POST['testType'])  : null,
 			'testing_points' => $_POST['testingPoints'],
 			'header_text' => $_POST['headerText'],
-			'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($_POST['reportFormat']) : null,
+			// 'report_format' => (isset($_POST['facilityType']) && $_POST['facilityType'] == 2) ? json_encode($fileResponse) : null,
 			'updated_datetime' => DateUtility::getCurrentDateTime(),
 			'status' => 'active'
 		];
@@ -136,6 +140,33 @@ try {
 
 		if ($data['facility_type'] == 2) {
 			$stsTokensService->createToken($lastId);
+			if (isset($_POST['testTypeFile']) && !empty($_POST['testTypeFile'])) {
+				$fileResponse = [];
+				$directories = [UPLOAD_PATH, 'labs', $lastId, 'report-template'];
+				$currentPath = '';
+				foreach ($directories as $directory) {
+					$currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
+					MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
+				}
+				foreach ($_POST['testTypeFile'] as $key => $test) {
+					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
+					if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+						MiscUtility::makeDirectory($directoryPath, 0777, true);
+						$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
+						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
+						$fileName = "report-template-" . $string . $extension;
+						$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+						$fileResponse[$row] = $fileName;
+
+
+						// Move the uploaded file to the desired location
+						$sanitizedReportTemplate->moveTo($filePath);
+					}
+				}
+				$db->where('facility_id', $lastId);
+				$db->update('facility_details', ['report_format' => json_encode($fileResponse)]);
+			}
 		}
 
 		$facilityAttributes = [];
@@ -317,4 +348,6 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
+	$_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
+	header("Location:/facilities/addFacility.php");
 }

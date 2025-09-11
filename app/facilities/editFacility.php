@@ -45,7 +45,7 @@ $facilityInfo = $db->rawQueryOne('SELECT * FROM facility_details WHERE facility_
 $facilityAttributes = json_decode((string) $facilityInfo['facility_attributes']);
 
 
-
+$facilityReportFormat = (array)json_decode($facilityInfo['report_format']);
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
@@ -732,6 +732,89 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<div class="row" id="testDetails" style="display:none;">
 						<?php echo $div; ?>
 					</div>
+
+					<div class="row testTypeFileSection" <?php echo (isset($facilityReportFormat) && !empty($facilityReportFormat)) ? "" : 'style="display:none;"'; ?>>
+						<div class="col-md-12">
+							<hr>
+							<h4><?php echo _translate("Test Type Templates"); ?></h4>
+							<table class="table table-bordered" id="testTypeFileTable">
+								<thead>
+									<tr>
+										<th style="width:40%;"><?php echo _translate("Test Type"); ?></th>
+										<th style="width:40%;"><?php echo _translate("Upload File (PDF)"); ?></th>
+										<th style="width:20%;"><?php echo _translate("Action"); ?></th>
+									</tr>
+								</thead>
+								<tbody id="testTypeFileDetails">
+									<?php if (isset($facilityReportFormat) && !empty($facilityReportFormat)) {
+										$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;
+										$n = 1;
+										foreach ($facilityReportFormat as $test => $file) { ?>
+											<tr>
+												<td>
+													<select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile1">
+														<option value=""><?php echo _translate("Select Test Type"); ?></option>
+														<option value="default" <?php echo ($test == 'default') ? 'selected="selected"' : ''; ?>><?php echo _translate("Default format"); ?></option>
+														<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+															<option value="vl" <?php echo ($test == 'vl') ? 'selected="selected"' : ''; ?>><?php echo _translate("Viral Load"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+															<option value="eid" <?php echo ($test == 'eid') ? 'selected="selected"' : ''; ?>><?php echo _translate("Early Infant Diagnosis"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+															<option value="covid19" <?php echo ($test == 'covid19') ? 'selected="selected"' : ''; ?>><?php echo _translate("Covid-19"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+															<option value='hepatitis' <?php echo ($test == 'hepatitis') ? 'selected="selected"' : ''; ?>><?php echo _translate("Hepatitis"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+															<option value='tb' <?php echo ($test == 'tb') ? 'selected="selected"' : ''; ?>><?php echo _translate("TB"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+															<option value='cd4' <?php echo ($test == 'cd4') ? 'selected="selected"' : ''; ?>><?php echo _translate("CD4"); ?></option>
+														<?php }
+														if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
+															<option value='generic-tests' <?php echo ($test == 'generic-tests') ? 'selected="selected"' : ''; ?>><?php echo _translate("Other Lab Tests"); ?></option>
+														<?php } ?>
+													</select>
+												</td>
+												<td>
+													<?php if (isset($file) && !empty($file) && file_exists($filePath)) { ?>
+														<div style="width: auto;" class="oldFile">
+															<embed width="100%" height="auto" class="oldFile" name="plugin" src="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file; ?>" type="application/pdf">
+															<a href="javascript:void(0);" class="btn btn-sm btn-primary" title="View / Expend Current File" onclick="layoutModal('/d/<?php echo base64_encode($filePath); ?>', 800, 700);" style=" position: absolute; margin-left: -35px; "><i class="icon-fullscreen" aria-hidden="true"></i></a>
+														</div>
+														<a href="javascript:void(0);" class="btn btn-default oldFile mandatory" title="Replace Report Layout" onclick="removeReport();">Replace Report Layout</a>
+														<a href="javascript:void(0);" class="btn btn-danger oldFile" title="Delete Report Template" onclick="deleteReport();removeReport();"><i class="icon-trash"></i></a>
+														<input type="hidden" name="deleteTemplate[]" id="deleteTemplate<?php echo $n; ?>" />
+													<?php } ?>
+													<input <?php echo (isset($file) && !empty($file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control newFile" name="reportTemplate[]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+												</td>
+												<td style="vertical-align:middle;text-align: center;">
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+													<a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+												</td>
+											</tr>
+										<?php $n += 1;
+										}
+									} else { ?>
+										<tr>
+											<td style="text-align: center;">
+												<input type="hidden" value="default" class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile1">
+												<label class="label-control text-center"><?php echo _translate("Default"); ?></label>
+											</td>
+											<td>
+												<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate1" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+											</td>
+											<td style="vertical-align:middle;text-align: center;">
+												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+											</td>
+										</tr>
+									<?php } ?>
+								</tbody>
+							</table>
+						</div>
+					</div>
 			</div>
 			<!-- /.box-body -->
 			<div class="box-footer">
@@ -1100,6 +1183,97 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		deletedRowVar.push(val);
 		$('#deletedRow').val(deletedRowVar);
 		console.log($('#deletedRow').val());
+	}
+	let testTypeFileCounter = <?php echo (count($facilityReportFormat) > 0) ? count($facilityReportFormat) : 1; ?>;
+	// Function to add new test type file row
+	function addTestTypeFileRow() {
+		testTypeFileCounter++;
+		let rowString = `<tr>
+            <td>
+                <select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile${testTypeFileCounter}">
+                    <option value=""><?php echo _translate("Select Test Type", true); ?></option>
+					<option value="default"><?php echo _translate("Default format"); ?></option>
+                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+                        <option value="vl"><?php echo _translate("Viral Load", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+                        <option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+                        <option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+                        <option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+                        <option value='tb'><?php echo _translate("TB", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+                        <option value='cd4'><?php echo _translate("CD4", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
+                        <option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
+            </td>
+            <td style="vertical-align:middle;text-align: center;">
+                <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
+
+		$("#testTypeFileDetails").append(rowString);
+	}
+
+	// Function to remove test type file row
+	function removeTestTypeFileRow(el) {
+		let rowCount = document.getElementById("testTypeFileDetails").rows.length;
+		if (rowCount > 1) {
+			$(el).fadeOut("slow", function() {
+				el.parentNode.removeChild(el);
+			});
+		} else {
+			alert("<?php echo _translate('At least one row is required', true); ?>");
+		}
+	}
+
+	// Show/hide the test type file section based on facility type
+	function showTestTypeFileSection(facilityType) {
+		if (facilityType == 2) {
+			$(".testTypeFileSection").show();
+		} else {
+			$(".testTypeFileSection").hide();
+		}
+	}
+
+	// Modify your existing showSignature function to include the new section
+	// Replace your existing showSignature function with this updated version:
+	function showSignature(facilityType) {
+		if (facilityType == 2) {
+			$(".labDiv").show();
+			$(".testTypeFileSection").show(); // Add this line
+			$("#testSignType1").select2({
+				placeholder: '<?php echo _translate("Select Test Type", true); ?>',
+				width: '100%'
+			});
+		} else {
+			$(".labDiv").hide();
+			$(".testTypeFileSection").hide(); // Add this line
+		}
+	}
+
+	function removeReport() {
+		$('.newFile').show();
+		$('.oldFile').hide();
+	}
+
+	function deleteReport(row) {
+		if (confirm("Are you sure want to remove the template? once deleted can't be undone!")) {
+			$('#deleteTemplate' + row).val('yes');
+		}
 	}
 </script>
 

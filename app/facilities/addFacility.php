@@ -594,18 +594,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</div>
 								</div>
 							</div>
-							<div class="row reportTemplate" style="display:none;">
-								<div class="col-md-6">
-									<div class="form-group">
-										<label for="reportTemplate" class="col-lg-4 control-label">
-											<?php echo _translate("Upload Report Template"); ?>
-										</label>
-										<div class="col-lg-7">
-											<input type="file" class="form-control" id="reportTemplate" name="reportTemplate" placeholder="<?php echo _translate('Upload Report Template'); ?>" accept=".pdf" title="<?php echo _translate('Please Upload Report Template'); ?>" />
-										</div>
-									</div>
-								</div>
-							</div>
 							<?php if ($formId == COUNTRY\CAMEROON) { ?>
 								<div class="row">
 									<div class="col-md-6">
@@ -762,6 +750,35 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<div class="row" id="userDetails"></div>
 							<div class="row" id="testDetails" style="display:none;"></div>
 
+							<div class="row testTypeFileSection" style="display:none;">
+								<div class="col-md-12">
+									<hr>
+									<h4><?php echo _translate("Test Type Templates"); ?></h4>
+									<table class="table table-bordered" id="testTypeFileTable">
+										<thead>
+											<tr>
+												<th style="width:40%;"><?php echo _translate("Test Type"); ?></th>
+												<th style="width:40%;"><?php echo _translate("Upload File (PDF)"); ?></th>
+												<th style="width:20%;"><?php echo _translate("Action"); ?></th>
+											</tr>
+										</thead>
+										<tbody id="testTypeFileDetails">
+											<tr>
+												<td style="text-align: center;">
+													<input type="hidden" value="default" class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile1">
+													<label class="label-control text-center"><?php echo _translate("Default"); ?></label>
+												</td>
+												<td>
+													<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate1" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+												</td>
+												<td style="vertical-align:middle;text-align: center;">
+													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+												</td>
+											</tr>
+										</tbody>
+									</table>
+								</div>
+							</div>
 						</div>
 						<!-- /.box-body -->
 						<div class="box-footer">
@@ -788,6 +805,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
+	let testTypeFileCounter = 1;
+
 	$(document).ready(function() {
 
 
@@ -852,7 +871,13 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				$('#district').val($("#districtId option:selected").text());
 			}
 		});
+		// Initialize the test type file section when main test type changes
+		$('#testType').on('change', function() {
+			updateRowVisibility();
+		});
 
+		// Initialize on page load
+		updateRowVisibility();
 	});
 
 	function validateNow() {
@@ -879,7 +904,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		}
 	}
 
-	function showSignature(facilityType) {
+	/* function showSignature(facilityType) {
 		if (facilityType == 2) {
 			$(".labDiv").show();
 			$("#testSignType1").select2({
@@ -889,7 +914,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		} else {
 			$(".labDiv").hide();
 		}
-	}
+	} */
 
 	function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
 		var removeDots = obj.value.replace(/\./g, "");
@@ -953,10 +978,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		}
 		if ($("#facilityType").val() == '2') {
 			$(".logoImage").show();
-			$(".reportTemplate").show();
+			$(".testTypeFileSection").show();
 		} else {
 			$(".logoImage").hide();
-			$(".reportTemplate").hide();
+			$(".testTypeFileSection").hide();
 		}
 	}
 
@@ -1025,7 +1050,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			$("#sampleType").html('');
 		}
 	}
-	let testCounter = 1;
 
 	function addNewRow() {
 		testCounter++;
@@ -1073,6 +1097,86 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				addNewRow();
 			}
 		});
+	}
+
+	// Function to add new test type file row
+	function addTestTypeFileRow() {
+		testTypeFileCounter++;
+		let rowString = `<tr>
+            <td>
+                <select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile${testTypeFileCounter}">
+                    <option value=""><?php echo _translate("Select Test Type", true); ?></option>
+					<option value="default"><?php echo _translate("Default format"); ?></option>
+                    <?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
+                        <option value="vl"><?php echo _translate("Viral Load", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) { ?>
+                        <option value="eid"><?php echo _translate("Early Infant Diagnosis", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) { ?>
+                        <option value="covid19"><?php echo _translate("Covid-19", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['hepatitis'] === true) { ?>
+                        <option value='hepatitis'><?php echo _translate("Hepatitis", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) { ?>
+                        <option value='tb'><?php echo _translate("TB", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['cd4']) && SYSTEM_CONFIG['modules']['cd4'] === true) { ?>
+                        <option value='cd4'><?php echo _translate("CD4", true); ?></option>
+                    <?php }
+					if (isset(SYSTEM_CONFIG['modules']['generic-tests']) && SYSTEM_CONFIG['modules']['generic-tests'] === true) { ?>
+                        <option value='generic-tests'><?php echo _translate("Other Lab Tests", true); ?></option>
+                    <?php } ?>
+                </select>
+            </td>
+            <td>
+                <input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
+            </td>
+            <td style="vertical-align:middle;text-align: center;">
+                <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
+                <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+            </td>
+        </tr>`;
+
+		$("#testTypeFileDetails").append(rowString);
+	}
+
+	// Function to remove test type file row
+	function removeTestTypeFileRow(el) {
+		let rowCount = document.getElementById("testTypeFileDetails").rows.length;
+		if (rowCount > 1) {
+			$(el).fadeOut("slow", function() {
+				el.parentNode.removeChild(el);
+			});
+		} else {
+			alert("<?php echo _translate('At least one row is required', true); ?>");
+		}
+	}
+
+	// Show/hide the test type file section based on facility type
+	function showTestTypeFileSection(facilityType) {
+		if (facilityType == 2) {
+			$(".testTypeFileSection").show();
+		} else {
+			$(".testTypeFileSection").hide();
+		}
+	}
+
+	// Modify your existing showSignature function to include the new section
+	// Replace your existing showSignature function with this updated version:
+	function showSignature(facilityType) {
+		if (facilityType == 2) {
+			$(".labDiv").show();
+			$(".testTypeFileSection").show(); // Add this line
+			$("#testSignType1").select2({
+				placeholder: '<?php echo _translate("Select Test Type", true); ?>',
+				width: '100%'
+			});
+		} else {
+			$(".labDiv").hide();
+			$(".testTypeFileSection").hide(); // Add this line
+		}
 	}
 </script>
 
