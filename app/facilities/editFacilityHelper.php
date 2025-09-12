@@ -161,11 +161,14 @@ try {
 		if (!empty($_POST['bottomTextLocation'])) {
 			$facilityAttributes['bottom_text_location'] = $_POST['bottomTextLocation'];
 		}
-
+		/* echo "<pre>";
+		print_r($_POST);
+		print_r($uploadedFiles['reportTemplate']);
+		die; */
 		if ($data['facility_type'] == 2) {
 			if (isset($_POST['testTypeFile']) && !empty($_POST['testTypeFile'])) {
 				$fileResponse = [];
-				$directories = [UPLOAD_PATH, 'labs', $lastId, 'report-template'];
+				$directories = [UPLOAD_PATH, 'labs', $facilityId, 'report-template'];
 				$currentPath = '';
 				foreach ($directories as $directory) {
 					$currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
@@ -173,10 +176,10 @@ try {
 				}
 				foreach ($_POST['testTypeFile'] as $key => $test) {
 					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key]))
-						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
+						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
 					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
-					if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+					if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
 						MiscUtility::makeDirectory($directoryPath, 0777, true);
 						$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
 						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
@@ -187,9 +190,11 @@ try {
 
 						// Move the uploaded file to the desired location
 						$sanitizedReportTemplate->moveTo($filePath);
+					} else {
+						$fileResponse[$test] = $_POST['oldTemplate'][$key];
 					}
 				}
-				$db->where('facility_id', $lastId);
+				$db->where('facility_id', $facilityId);
 				$db->update('facility_details', ['report_format' => json_encode($fileResponse)]);
 			}
 		}
@@ -380,4 +385,6 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
+	$_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
+	header("Location:facilities.php");
 }
