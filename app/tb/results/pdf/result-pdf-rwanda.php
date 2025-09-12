@@ -95,7 +95,7 @@ if (!empty($requestResult)) {
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(10, PDF_MARGIN_TOP + 14, 10);
+        $pdf->SetMargins(10, PDF_MARGIN_TOP + 6, 10);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
@@ -280,7 +280,7 @@ if (!empty($requestResult)) {
         $html = '<table style="padding:3px;">';
         $html .= '<tr>';
         $html .= '   <td style="font-size:13px;font-weight:bolt;text-align:left">SAMPLE ID: ' . $sampleCode . '</td>';
-        // $html .= '   <td style="text-align:right"><img style="width:50px;height:50px;" src="' . $general->get2DBarcodeImageContent($sampleCode, $barcodeFormat) . '"></td>';
+        $html .= '   <td style="text-align:right"><img style="width:300px;height:25px;" src="' . $general->getBarcodeImageContent($sampleCode, $barcodeFormat) . '"></td>';
         $html .= '</tr>';
         $html .= '</table>';
         $html .= '<span style="text-align:center;font-size:14px;font-weight:bolt;"><u>PATIENT RESULT REPORT</u></span><br><br>';
