@@ -2,16 +2,48 @@
 
 namespace App\Helpers\ResultPDFHelpers\CountrySpecificHelpers;
 
+use App\Utilities\MiscUtility;
 use App\Helpers\ResultPDFHelpers\TBResultPDFHelper;
 
 class RwandaTBResultPDFHelper extends TBResultPDFHelper
 {
+    public ?string $logo = null;
+    public ?string $text = null;
+    public ?string $lab = null;
+    public ?string $htitle = null;
+    public ?string $labFacilityId = null;
+    public ?string $formId = null;
+    public array $facilityInfo = [];
+    public ?string $trainingTxt = null;
+    private ?string $pdfTemplatePath = null;
+    private bool $templateImported = false;
+    private bool $enableFooter = true; // Default is true to render footer
+
+    public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $pdfTemplatePath)
+    {
+        $this->logo = $logo;
+        $this->text = $text;
+        $this->lab = $lab;
+        $this->htitle = $title;
+        $this->labFacilityId = $labFacilityId;
+        $this->formId = $formId;
+        $this->facilityInfo = $facilityInfo;
+        $this->pdfTemplatePath = $pdfTemplatePath ?? null;
+    }
     //Page header
     public function Header()
     {
+        // die($this->pdfTemplatePath);
+        // die;
         // Logo
-
-        if (!empty($this->htitle) && trim($this->htitle) != '') {
+        if (!empty($this->pdfTemplatePath) && MiscUtility::fileExists($this->pdfTemplatePath)) {
+            if (!$this->templateImported) {
+                $this->setSourceFile($this->pdfTemplatePath);
+                $this->templateImported = true;
+            }
+            $tplIdx = $this->importPage(1);
+            $this->useTemplate($tplIdx, 0, 0);
+        } else if (!empty($this->htitle) && trim($this->htitle) != '') {
 
             if (isset($this->formId) && $this->formId == 1) {
                 if (!empty($this->logo) && trim($this->logo) != '') {

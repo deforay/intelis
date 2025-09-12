@@ -29,7 +29,7 @@ class TBResultPDFHelper extends Fpdi
 
 
     //Page header
-    public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [])
+    public function setHeading($logo, $text, $lab, $title = null, $labFacilityId = null, $formId = null, $facilityInfo = [], $pdfTemplatePath)
     {
         $this->logo = $logo;
         $this->text = $text;
@@ -38,6 +38,7 @@ class TBResultPDFHelper extends Fpdi
         $this->labFacilityId = $labFacilityId;
         $this->formId = $formId;
         $this->facilityInfo = $facilityInfo;
+        $this->pdfTemplatePath = $pdfTemplatePath ?? null;
     }
     //Page header
     public function Header()
