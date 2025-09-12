@@ -740,19 +740,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 							<table class="table table-bordered" id="testTypeFileTable">
 								<thead>
 									<tr>
-										<th style="width:40%;"><?php echo _translate("Test Type"); ?></th>
-										<th style="width:40%;"><?php echo _translate("Upload File (PDF)"); ?></th>
-										<th style="width:20%;"><?php echo _translate("Action"); ?></th>
+										<th style="width:30%;vertical-align:middle;text-align: center;"><?php echo _translate("Test Type"); ?></th>
+										<th style="width:50%;vertical-align:middle;text-align: center;"><?php echo _translate("Upload File (PDF)"); ?></th>
+										<th style="width:20%;vertical-align:middle;text-align: center;"><?php echo _translate("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="testTypeFileDetails">
 									<?php if (isset($facilityReportFormat) && !empty($facilityReportFormat)) {
-										$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;
 										$n = 1;
-										foreach ($facilityReportFormat as $test => $file) { ?>
+										foreach ($facilityReportFormat as $test => $file) {
+											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;  ?>
 											<tr>
 												<td>
-													<select class="form-control testTypeFileSelect" name="testTypeFile[]" id="testTypeFile1">
+													<select class="form-control testTypeFileSelect" name="testTypeFile[<?php echo ($n - 1); ?>]" id="testTypeFile1">
 														<option value=""><?php echo _translate("Select Test Type"); ?></option>
 														<option value="default" <?php echo ($test == 'default') ? 'selected="selected"' : ''; ?>><?php echo _translate("Default format"); ?></option>
 														<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
@@ -778,15 +778,15 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 														<?php } ?>
 													</select>
 												</td>
-												<td>
+												<td style="vertical-align:middle;text-align: center;margin-left:20px;">
 													<?php if (isset($file) && !empty($file) && file_exists($filePath)) { ?>
-														<div style="width: auto;" class="oldFile">
-															<embed width="100%" height="auto" class="oldFile" name="plugin" src="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file; ?>" type="application/pdf">
-															<a href="javascript:void(0);" class="btn btn-sm btn-primary" title="View / Expend Current File" onclick="layoutModal('/d/<?php echo base64_encode($filePath); ?>', 800, 700);" style=" position: absolute; margin-left: -35px; "><i class="icon-fullscreen" aria-hidden="true"></i></a>
+														<div class="m-5">
+															<a href="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file; ?>" class="oldFile btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
+															<a href="javascript:void(0);" class="btn btn-warning oldFile" title="Replace Report Layout" onclick="removeReport();">Replace</a>
+															<a href="javascript:void(0);" class="btn btn-danger oldFile" title="Delete Report Template" onclick="deleteReport();removeReport();"><i class="icon-trash"></i> Remove</a>
+															<input type="hidden" name="deleteTemplate[<?php echo ($n - 1); ?>]" id="deleteTemplate<?php echo $n; ?>" />
+															<input type="hidden" value="<?php echo $file; ?>" name="oldTemplate[<?php echo ($n - 1); ?>]" id="oldTemplate<?php echo $n; ?>" />
 														</div>
-														<a href="javascript:void(0);" class="btn btn-default oldFile mandatory" title="Replace Report Layout" onclick="removeReport();">Replace Report Layout</a>
-														<a href="javascript:void(0);" class="btn btn-danger oldFile" title="Delete Report Template" onclick="deleteReport();removeReport();"><i class="icon-trash"></i></a>
-														<input type="hidden" name="deleteTemplate[]" id="deleteTemplate<?php echo $n; ?>" />
 													<?php } ?>
 													<input <?php echo (isset($file) && !empty($file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control newFile" name="reportTemplate[]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
 												</td>
