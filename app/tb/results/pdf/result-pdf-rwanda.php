@@ -65,14 +65,19 @@ if (!empty($requestResult)) {
                 break;
             }
         }
+        $pdfTemplatePath = null;
+        if (isset($selectedReportFormats['tb']) && !empty($selectedReportFormats['tb']))
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $selectedReportFormats['tb'];
+        if (isset($selectedReportFormats['default']) && !empty($selectedReportFormats['default']))
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $selectedReportFormats['default'];
         // create new PDF document
-        $pdf = new RwandaTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        $pdf = new RwandaTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $pdfTemplatePath);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
             $logoPrintInPdf = $result['facilityLogo'];
         } else {
             $logoPrintInPdf = $arr['logo'];
         }
-        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'RWANDA TB SAMPLES REFERRAL SYSTEM', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo);
+        $pdf->setHeading($logoPrintInPdf, $arr['header'], $result['labName'], $title = 'RWANDA TB SAMPLES REFERRAL SYSTEM', $labFacilityId = null, $formId = (int) $arr['vl_form'], $facilityInfo, $pdfTemplatePath);
         // set document information
         $pdf->SetCreator('VLSM');
         $pdf->SetTitle('RWANDA TB SAMPLES REFERRAL SYSTEM');
@@ -281,7 +286,7 @@ if (!empty($requestResult)) {
         $html .= '<span style="text-align:center;font-size:14px;font-weight:bolt;"><u>PATIENT RESULT REPORT</u></span><br><br>';
         $html .= '<table style="padding:3px;">';
         $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;">';
-        $html .= '   <td colspan="4">HEALTH FACILITY INFORMATION</td>';
+        $html .= '   <td colspan="4">HEALTH FACILITY INFORMATION ' . $selectedReportFormats['tb'] . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Health Facility Name:</td>';
@@ -291,15 +296,15 @@ if (!empty($requestResult)) {
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Facility Type:</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['facility_type'] . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['facilityType'] . '</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Province:</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $fstate . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['province'] . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Facility Code:</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['facility_code'] . '</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">District:</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $fdistrict . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['district'] . '</td>';
         $html .= '</tr>';
         $html .= '<tr style="font-size:10px;font-weight:bolt;border-radius:20%;width:100%;background-color:#c0c0c0;">';
         $html .= '   <td colspan="4">PATIENT INFORMATION</td>';
@@ -308,13 +313,13 @@ if (!empty($requestResult)) {
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Patient Identifier:</td>';
         $html .= '<th style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $result['patient_id'] . '</th>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Gender:</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . (str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . ucwords(str_replace("_", " ", (string) $result['patient_gender'])) . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Full Name:</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . $patientFname . ' ' . $patientLname . '</td>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">Date of Birth:</td>';
-        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($ageCalc['dob']) . '</td>';
+        $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:30%">' . DateUtility::humanReadableDateFormat($result['patient_dob']) . '</td>';
         $html .= '</tr>';
         $html .= '<tr>';
         $html .= '<td style="line-height:17px;font-size:12px;text-align:left;width:20%">TRACNET ID:</td>';

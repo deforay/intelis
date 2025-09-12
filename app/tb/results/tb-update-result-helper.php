@@ -195,7 +195,7 @@ try {
     }
     $tbData = array(
         //'specimen_quality'                    => !empty($_POST['testNumber']) ? $_POST['testNumber'] : null,
-        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : null,
+        'lab_id' => !empty($_POST['labId']) ? $_POST['labId'] : $_POST['testResult']['labId'][0],
         //'reason_for_tb_test'                  => !empty($_POST['reasonForTbTest']) ? json_encode($_POST['reasonForTbTest']) : null,
         //'tests_requested'                     => !empty($_POST['testTypeRequested']) ? json_encode($_POST['testTypeRequested']) : null,
         //'specimen_type'                       => !empty($_POST['specimenType']) ? $_POST['specimenType'] : null,
