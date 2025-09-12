@@ -71,7 +71,11 @@
     "config": {
         "preferred-install": "dist",
         "sort-packages": true,
-        "secure-http": true
+        "secure-http": true,
+        "platform": {
+            "php": "8.2.29",
+            "php-64bit": "8.2.29"
+        }
     },
     "require-dev": {
         "kint-php/kint": "^5.1",
