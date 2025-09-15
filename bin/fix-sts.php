@@ -5,7 +5,6 @@
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
-use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 require_once __DIR__ . "/../bootstrap.php";
@@ -26,13 +25,10 @@ if (!$isLIS || !$cliMode) {
     exit(0);
 }
 
-(ContainerRegistry::get(FileCacheUtility::class))->clear();
-
 /**
  * Function to read user input from command line
  */
-function readUserInput($prompt = '')
-{
+function readUserInput($prompt = '') {
     echo $prompt;
     $handle = fopen("php://stdin", "r");
     $input = trim(fgets($handle));
@@ -43,421 +39,498 @@ function readUserInput($prompt = '')
 /**
  * Function to validate URL format
  */
-function isValidUrl($url)
-{
+function isValidUrl($url) {
     return filter_var($url, FILTER_VALIDATE_URL) !== false;
 }
 
+/**
+ * Function to check if STS URL is working by hitting the version API
+ */
+function validateStsUrl($url, $labId = null) {
+    // Get VERSION constant or default
+    $version = defined('VERSION') ? VERSION : '1.0';
+    
+    // Use current lab ID if available, or a default test value
+    $testLabId = $labId ?: '1';
+    
+    $apiUrl = rtrim($url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
+    
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $apiUrl);
+    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+    
+    $result = curl_exec($ch);
+    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+    
+    return $httpCode === 200;
+}
+
+/**
+ * Function to normalize URL with smart STS validation
+ */
+function normalizeUrl($url, $labId = null) {
+    $url = trim($url);
+    
+    // If URL already has a protocol, test it as-is first
+    if (preg_match('/^https?:\/\//', $url)) {
+        $testUrl = rtrim($url, '/');
+        if (validateStsUrl($testUrl, $labId)) {
+            return $testUrl;
+        }
+        // If the provided protocol doesn't work, we'll still try the opposite
+        $domain = preg_replace('/^https?:\/\//', '', $url);
+    } else {
+        $domain = $url;
+    }
+    
+    // Try HTTPS first
+    $httpsUrl = 'https://' . rtrim($domain, '/');
+    if (validateStsUrl($httpsUrl, $labId)) {
+        return $httpsUrl;
+    }
+    
+    // Fallback to HTTP
+    $httpUrl = 'http://' . rtrim($domain, '/');
+    if (validateStsUrl($httpUrl, $labId)) {
+        return $httpUrl;
+    }
+    
+    // Neither worked, return HTTPS version anyway (let later validation handle the error)
+    return $httpsUrl;
+}
+
 // Parse CLI arguments
-$options = getopt('s', ['silent', 'key:']);
-$silentMode = isset($options['s']) || isset($options['silent']);
+$options = getopt('k', ['key:']);
 $apiKey = $options['key'] ?? null;
 
-if ($silentMode) {
-    echo "=== Silent Mode - Validating Configuration ===" . PHP_EOL;
+// Interactive mode - handle STS and Lab setup
+echo "=== STS Configuration Setup ===" . PHP_EOL;
+echo PHP_EOL;
 
-    // In silent mode, just validate and proceed to token generation
-    $currentRemoteURL = rtrim($general->getRemoteURL(), '/');
-    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
+// Step 1: Handle STS URL
+$currentRemoteURL = rtrim($general->getRemoteURL(), '/');
+$urlWasEmpty = empty($currentRemoteURL);
+$urlChanged = false;
 
-    if (empty($currentRemoteURL)) {
-        echo "✗ Error: No STS URL configured. Please run without --silent to configure." . PHP_EOL;
-        exit(1);
-    }
+// Get current lab ID for URL validation
+$currentLabId = $general->getSystemConfig('sc_testing_lab_id');
 
-    if (empty($currentLabId)) {
-        echo "✗ Error: No lab ID configured. Please run without --silent to configure." . PHP_EOL;
-        exit(1);
-    }
+if (empty($currentRemoteURL)) {
+    echo "No STS URL is currently configured." . PHP_EOL;
+    echo "Please enter the STS URL:" . PHP_EOL;
 
-    echo "✓ Configuration validated. Proceeding to token generation..." . PHP_EOL;
-    echo PHP_EOL;
+    do {
+        $userInput = readUserInput("STS URL: ");
+        
+        if (empty(trim($userInput))) {
+            echo "STS URL cannot be empty. Please try again." . PHP_EOL;
+            continue;
+        }
+
+        $newRemoteURL = normalizeUrl($userInput, $currentLabId);
+
+        if (!isValidUrl($newRemoteURL)) {
+            echo "Unable to create a valid URL. Please try again." . PHP_EOL;
+            continue;
+        }
+
+        // Test if the STS URL actually works
+        if (!validateStsUrl($newRemoteURL, $currentLabId)) {
+            echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
+            continue;
+        }
+
+        echo "Using: " . $newRemoteURL . PHP_EOL;
+        break;
+        
+    } while (true);
+
+    $urlChanged = true;
+    
 } else {
-    // Interactive mode - handle STS and Lab setup
-    echo "=== STS Configuration Setup ===" . PHP_EOL;
+    echo "Current STS URL: " . $currentRemoteURL . PHP_EOL;
     echo PHP_EOL;
 
-    // Step 1: Handle STS URL
-    $currentRemoteURL = rtrim($general->getRemoteURL(), '/');
-    $urlWasEmpty = empty($currentRemoteURL);
-    $urlChanged = false;
+    $confirmUrl = readUserInput("Is this STS URL correct? (y/n) [y]: ");
+    $confirmUrl = strtolower(trim($confirmUrl));
 
-    if (empty($currentRemoteURL)) {
-        echo "No STS URL is currently configured." . PHP_EOL;
-        echo "Please enter the STS URL:" . PHP_EOL;
+    if (empty($confirmUrl)) {
+        $confirmUrl = 'y';
+    }
+
+    if ($confirmUrl !== 'y' && $confirmUrl !== 'yes') {
+        echo PHP_EOL;
+        echo "Please enter the correct STS URL:" . PHP_EOL;
 
         do {
-            $newRemoteURL = readUserInput("STS URL: ");
-            $newRemoteURL = rtrim(trim($newRemoteURL), '/');
-
-            if (empty($newRemoteURL)) {
+            $userInput = readUserInput("STS URL: ");
+            
+            if (empty(trim($userInput))) {
                 echo "STS URL cannot be empty. Please try again." . PHP_EOL;
                 continue;
             }
 
+            $newRemoteURL = normalizeUrl($userInput, $currentLabId);
+
             if (!isValidUrl($newRemoteURL)) {
-                echo "Invalid URL format. Please enter a valid URL (e.g., https://example.com)" . PHP_EOL;
+                echo "Unable to create a valid URL. Please try again." . PHP_EOL;
                 continue;
             }
 
+            // Test if the STS URL actually works
+            if (!validateStsUrl($newRemoteURL, $currentLabId)) {
+                echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
+                continue;
+            }
+
+            echo "Using: " . $newRemoteURL . PHP_EOL;
             break;
+            
         } while (true);
 
         $urlChanged = true;
     } else {
-        echo "Current STS URL: " . $currentRemoteURL . PHP_EOL;
-        echo PHP_EOL;
-
-        $confirmUrl = readUserInput("Is this STS URL correct? (y/n) [y]: ");
-        $confirmUrl = strtolower(trim($confirmUrl));
-
-        if (empty($confirmUrl)) {
-            $confirmUrl = 'y';
-        }
-
-        if ($confirmUrl !== 'y' && $confirmUrl !== 'yes') {
-            echo PHP_EOL;
-            echo "Please enter the correct STS URL:" . PHP_EOL;
-
-            do {
-                $newRemoteURL = readUserInput("STS URL: ");
-                $newRemoteURL = rtrim(trim($newRemoteURL), '/');
-
-                if (empty($newRemoteURL)) {
-                    echo "STS URL cannot be empty. Please try again." . PHP_EOL;
-                    continue;
-                }
-
-                if (!isValidUrl($newRemoteURL)) {
-                    echo "Invalid URL format. Please enter a valid URL (e.g., https://example.com)" . PHP_EOL;
-                    continue;
-                }
-
-                break;
-            } while (true);
-
-            $urlChanged = true;
-        } else {
-            $newRemoteURL = $currentRemoteURL;
-        }
+        $newRemoteURL = $currentRemoteURL;
     }
-
-    // Step 2: Update STS URL if changed
-    if ($urlChanged) {
-        echo PHP_EOL;
-        echo "Updating STS URL in configuration..." . PHP_EOL;
-
-        try {
-            $updatedConfig = ['remoteURL' => $newRemoteURL];
-            $configService->updateConfig($updatedConfig);
-            echo "✓ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
-        } catch (Exception $e) {
-            LoggerUtility::logError(
-                "Error updating STS URL: " . $e->getMessage(),
-                [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString(),
-                ]
-            );
-            echo "✗ Error updating STS URL. Please check logs for details." . PHP_EOL;
-            exit(1);
-        }
-    }
-
-    // Step 3: Run metadata refresh if URL was changed or freshly set
-    if ($urlWasEmpty || $urlChanged) {
-        $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
-
-        echo PHP_EOL;
-        echo "=== Refreshing Database Metadata ===" . PHP_EOL;
-        echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
-
-        $metadataScriptPath = __DIR__ . "/../app/tasks/remote/sts-metadata-receiver.php";
-
-        if (!file_exists($metadataScriptPath)) {
-            echo "✗ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
-            echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-            echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
-            exit(1);
-        } else {
-            $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-            echo "Executing: " . $metadataCommand . PHP_EOL;
-            echo PHP_EOL;
-
-            $output = [];
-            $returnCode = 0;
-            exec($metadataCommand . " 2>&1", $output, $returnCode);
-
-            foreach ($output as $line) {
-                echo $line . PHP_EOL;
-            }
-
-            if ($returnCode === 0) {
-                echo PHP_EOL;
-                echo "✓ Metadata refresh completed successfully." . PHP_EOL;
-            } else {
-                echo PHP_EOL;
-                echo "✗ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
-                echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-                exit(1);
-            }
-        }
-    }
-
-    // Step 4: Handle Lab Configuration
-    echo PHP_EOL;
-    echo "=== Lab Configuration ===" . PHP_EOL;
-
-    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
-
-    if (empty($currentLabId)) {
-        echo "No lab is currently configured." . PHP_EOL;
-        $needLabSelection = true;
-    } else {
-        $labDetails = $db->rawQueryOne(
-            "SELECT facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
-            [$currentLabId]
-        );
-
-        if ($labDetails) {
-            echo "Current Lab ID: " . $currentLabId . PHP_EOL;
-            echo "Lab Name: " . $labDetails['facility_name'] . PHP_EOL;
-            echo PHP_EOL;
-
-            $confirmLab = readUserInput("Is this the correct lab? (y/n) [y]: ");
-            $confirmLab = strtolower(trim($confirmLab));
-
-            if (empty($confirmLab)) {
-                $confirmLab = 'y';
-            }
-
-            $needLabSelection = $confirmLab !== 'y' && $confirmLab !== 'yes';
-        } else {
-            echo "Current lab ID (" . $currentLabId . ") not found in active facilities." . PHP_EOL;
-            $needLabSelection = true;
-        }
-    }
-
-    if ($needLabSelection) {
-        echo PHP_EOL;
-        echo "=== Lab Selection ===" . PHP_EOL;
-
-        $testingLabs = $db->rawQuery(
-            "SELECT facility_id, facility_name FROM facility_details 
-                WHERE facility_type = 2 AND status = 'active' 
-                ORDER BY facility_name"
-        );
-
-        if (empty($testingLabs)) {
-            echo "✗ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
-            exit(1);
-        }
-
-        echo "Found " . count($testingLabs) . " available labs." . PHP_EOL;
-        echo PHP_EOL;
-        echo "Choose selection method:" . PHP_EOL;
-        echo "1. Search by name" . PHP_EOL;
-        echo "2. Browse all labs" . PHP_EOL;
-        echo "3. Enter facility ID directly" . PHP_EOL;
-        echo PHP_EOL;
-
-        $method = readUserInput("Select method (1-3) [1]: ");
-        $method = trim($method);
-        if (empty($method)) $method = '1';
-
-        $selectedLab = null;
-
-        if ($method === '1') {
-            // Search by name
-            do {
-                echo PHP_EOL;
-                $searchTerm = readUserInput("Enter lab name (or part of name) to search: ");
-                $searchTerm = trim($searchTerm);
-
-                if (empty($searchTerm)) {
-                    echo "Search term cannot be empty." . PHP_EOL;
-                    continue;
-                }
-
-                $filteredLabs = array_filter($testingLabs, function ($lab) use ($searchTerm) {
-                    return stripos($lab['facility_name'], $searchTerm) !== false;
-                });
-
-                if (empty($filteredLabs)) {
-                    echo "No labs found matching '" . $searchTerm . "'. Try a different search term." . PHP_EOL;
-                    continue;
-                }
-
-                echo PHP_EOL;
-                echo "Found " . count($filteredLabs) . " matching lab(s):" . PHP_EOL;
-                $filteredLabs = array_values($filteredLabs); // Reindex
-
-                foreach ($filteredLabs as $index => $lab) {
-                    echo ($index + 1) . ". [InteLIS ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
-                }
-
-                echo PHP_EOL;
-
-                if (count($filteredLabs) === 1) {
-                    $confirm = readUserInput("Select this lab? (y/n) [y]: ");
-                    if (empty($confirm) || strtolower($confirm) === 'y') {
-                        $selectedLab = $filteredLabs[0];
-                        break;
-                    }
-                } else {
-                    $selection = readUserInput("Select lab number (1-" . count($filteredLabs) . ") or 's' to search again: ");
-                    $selection = trim($selection);
-
-                    if (strtolower($selection) === 's') {
-                        continue; // Search again
-                    }
-
-                    if (is_numeric($selection)) {
-                        $selectedIndex = (int)$selection - 1;
-                        if ($selectedIndex >= 0 && $selectedIndex < count($filteredLabs)) {
-                            $selectedLab = $filteredLabs[$selectedIndex];
-                            break;
-                        }
-                    }
-                    echo "Invalid selection. Please try again." . PHP_EOL;
-                }
-            } while (true);
-        } elseif ($method === '2') {
-            // Browse all labs (paginated)
-            $pageSize = 20;
-            $totalLabs = count($testingLabs);
-            $currentPage = 0;
-
-            do {
-                $startIndex = $currentPage * $pageSize;
-                $endIndex = min($startIndex + $pageSize, $totalLabs);
-
-                echo PHP_EOL;
-                echo "=== Labs " . ($startIndex + 1) . "-" . $endIndex . " of " . $totalLabs . " ===" . PHP_EOL;
-
-                for ($i = $startIndex; $i < $endIndex; $i++) {
-                    $lab = $testingLabs[$i];
-                    echo ($i + 1) . ". [ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
-                }
-
-                echo PHP_EOL;
-                echo "Commands: [number] = select lab, [n] = next page, [p] = previous page, [s] = search, [q] = quit" . PHP_EOL;
-
-                $input = readUserInput("Enter choice: ");
-                $input = trim(strtolower($input));
-
-                if ($input === 'n' && $endIndex < $totalLabs) {
-                    $currentPage++;
-                } elseif ($input === 'p' && $currentPage > 0) {
-                    $currentPage--;
-                } elseif ($input === 's') {
-                    $method = '1'; // Switch to search mode
-                    break;
-                } elseif ($input === 'q') {
-                    echo "Lab selection cancelled." . PHP_EOL;
-                    exit(0);
-                } elseif (is_numeric($input)) {
-                    $selectedIndex = (int)$input - 1;
-                    if ($selectedIndex >= 0 && $selectedIndex < $totalLabs) {
-                        $selectedLab = $testingLabs[$selectedIndex];
-                        break;
-                    } else {
-                        echo "Invalid lab number. Please enter a number between 1 and " . $totalLabs . "." . PHP_EOL;
-                    }
-                } else {
-                    echo "Invalid command." . PHP_EOL;
-                }
-            } while (true);
-        } elseif ($method === '3') {
-            // Enter facility ID directly
-            do {
-                echo PHP_EOL;
-                $facilityId = readUserInput("Enter facility ID: ");
-                $facilityId = trim($facilityId);
-
-                if (empty($facilityId)) {
-                    echo "Facility ID cannot be empty." . PHP_EOL;
-                    continue;
-                }
-
-                // Find lab by ID
-                $foundLab = null;
-                foreach ($testingLabs as $lab) {
-                    if ($lab['facility_id'] == $facilityId) {
-                        $foundLab = $lab;
-                        break;
-                    }
-                }
-
-                if ($foundLab) {
-                    echo "Found: [ID: " . $foundLab['facility_id'] . "] " . $foundLab['facility_name'] . PHP_EOL;
-                    $confirm = readUserInput("Select this lab? (y/n) [y]: ");
-                    if (empty($confirm) || strtolower($confirm) === 'y') {
-                        $selectedLab = $foundLab;
-                        break;
-                    }
-                } else {
-                    echo "Facility ID '" . $facilityId . "' not found in active labs." . PHP_EOL;
-                    $retry = readUserInput("Try again? (y/n) [y]: ");
-                    if (!empty($retry) && strtolower($retry) === 'n') {
-                        break;
-                    }
-                }
-            } while (true);
-        } else {
-            echo "Invalid method selected. Defaulting to search..." . PHP_EOL;
-            $method = '1';
-        }
-
-        // If we switched methods, restart the selection process
-        if ($method === '1' && $selectedLab === null) {
-            // Recursive call or loop back - for simplicity, let's use a goto-like approach
-            $needLabSelection = true;
-            // This would restart the lab selection process
-        }
-
-        if ($selectedLab === null) {
-            echo "No lab selected. Exiting." . PHP_EOL;
-            exit(0);
-        }
-
-        echo PHP_EOL;
-        echo "Updating lab configuration..." . PHP_EOL;
-        echo "Selected Lab: [InteLIS ID: " . $selectedLab['facility_id'] . "] " . $selectedLab['facility_name'] . PHP_EOL;
-
-        try {
-            $data = ['value' => $selectedLab['facility_id']];
-            $db->where('name', 'sc_testing_lab_id');
-            $result = $db->update('system_config', $data);
-
-            if ($result) {
-                echo "✓ Lab ID updated successfully." . PHP_EOL;
-            } else {
-                echo "✗ Failed to update lab ID in system configuration." . PHP_EOL;
-                exit(1);
-            }
-        } catch (Exception $e) {
-            LoggerUtility::logError(
-                "Error updating lab ID: " . $e->getMessage(),
-                [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString(),
-                ]
-            );
-            echo "✗ Error updating lab ID. Please check logs for details." . PHP_EOL;
-            exit(1);
-        }
-    }
-
-    echo PHP_EOL;
-    echo "✓ Configuration setup complete!" . PHP_EOL;
-    echo PHP_EOL;
 }
 
+// Step 2: Update STS URL if changed
+if ($urlChanged) {
+    echo PHP_EOL;
+    echo "Updating STS URL in configuration..." . PHP_EOL;
+
+    try {
+        $updatedConfig = ['remoteURL' => $newRemoteURL];
+        $configService->updateConfig($updatedConfig);
+        echo "✓ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
+    } catch (Exception $e) {
+        LoggerUtility::logError(
+            "Error updating STS URL: " . $e->getMessage(),
+            [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]
+        );
+        echo "✗ Error updating STS URL. Please check logs for details." . PHP_EOL;
+        exit(1);
+    }
+}
+
+// Step 3: Run metadata refresh if URL was changed or freshly set
+if ($urlWasEmpty || $urlChanged) {
+    $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
+
+    echo PHP_EOL;
+    echo "=== Refreshing Database Metadata ===" . PHP_EOL;
+    echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
+
+    $metadataScriptPath = __DIR__ . "/../app/tasks/remote/sts-metadata-receiver.php";
+
+    if (!file_exists($metadataScriptPath)) {
+        echo "✗ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
+        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
+        exit(1);
+    } else {
+        $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+        echo "Executing: " . $metadataCommand . PHP_EOL;
+        echo PHP_EOL;
+
+        $output = [];
+        $returnCode = 0;
+        exec($metadataCommand . " 2>&1", $output, $returnCode);
+
+        foreach ($output as $line) {
+            echo $line . PHP_EOL;
+        }
+
+        if ($returnCode === 0) {
+            echo PHP_EOL;
+            echo "✓ Metadata refresh completed successfully." . PHP_EOL;
+        } else {
+            echo PHP_EOL;
+            echo "✗ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+            echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+            exit(1);
+        }
+    }
+}
+
+// Step 4: Handle Lab Configuration
+echo PHP_EOL;
+echo "=== Lab Configuration ===" . PHP_EOL;
+
+$currentLabId = $general->getSystemConfig('sc_testing_lab_id');
+
+if (empty($currentLabId)) {
+    echo "No lab is currently configured." . PHP_EOL;
+    $needLabSelection = true;
+} else {
+    $labDetails = $db->rawQueryOne(
+        "SELECT facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
+        [$currentLabId]
+    );
+
+    if ($labDetails) {
+        echo "Current InteLIS Lab ID: " . $currentLabId . PHP_EOL;
+        echo "Lab Name: " . $labDetails['facility_name'] . PHP_EOL;
+        echo PHP_EOL;
+
+        $confirmLab = readUserInput("Is this the correct lab? (y/n) [y]: ");
+        $confirmLab = strtolower(trim($confirmLab));
+
+        if (empty($confirmLab)) {
+            $confirmLab = 'y';
+        }
+
+        $needLabSelection = ($confirmLab !== 'y' && $confirmLab !== 'yes');
+    } else {
+        echo "Current lab ID (" . $currentLabId . ") not found in active facilities." . PHP_EOL;
+        $needLabSelection = true;
+    }
+}
+
+if ($needLabSelection) {
+    echo PHP_EOL;
+    echo "=== Lab Selection ===" . PHP_EOL;
+
+    $testingLabs = $db->rawQuery(
+        "SELECT facility_id, facility_name FROM facility_details 
+         WHERE facility_type = 2 AND status = 'active' 
+         ORDER BY facility_name"
+    );
+
+    if (empty($testingLabs)) {
+        echo "✗ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
+        exit(1);
+    }
+
+    echo "Found " . count($testingLabs) . " available labs." . PHP_EOL;
+    echo PHP_EOL;
+    echo "Choose selection method:" . PHP_EOL;
+    echo "1. Search by name" . PHP_EOL;
+    echo "2. Browse all labs" . PHP_EOL;
+    echo "3. Enter facility ID directly" . PHP_EOL;
+    echo PHP_EOL;
+
+    $method = readUserInput("Select method (1-3) [1]: ");
+    $method = trim($method);
+    if (empty($method)) $method = '1';
+
+    $selectedLab = null;
+
+    if ($method === '1') {
+        // Search by name
+        do {
+            echo PHP_EOL;
+            $searchTerm = readUserInput("Enter lab name (or part of name) to search: ");
+            $searchTerm = trim($searchTerm);
+
+            if (empty($searchTerm)) {
+                echo "Search term cannot be empty." . PHP_EOL;
+                continue;
+            }
+
+            $filteredLabs = array_filter($testingLabs, function ($lab) use ($searchTerm) {
+                return stripos($lab['facility_name'], $searchTerm) !== false;
+            });
+
+            if (empty($filteredLabs)) {
+                echo "No labs found matching '" . $searchTerm . "'. Try a different search term." . PHP_EOL;
+                continue;
+            }
+
+            echo PHP_EOL;
+            echo "Found " . count($filteredLabs) . " matching lab(s):" . PHP_EOL;
+            $filteredLabs = array_values($filteredLabs); // Reindex
+
+            foreach ($filteredLabs as $index => $lab) {
+                echo ($index + 1) . ". [ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
+            }
+
+            echo PHP_EOL;
+
+            if (count($filteredLabs) === 1) {
+                $confirm = readUserInput("Select this lab? (y/n) [y]: ");
+                if (empty($confirm) || strtolower($confirm) === 'y') {
+                    $selectedLab = $filteredLabs[0];
+                    break;
+                }
+            } else {
+                $selection = readUserInput("Select lab number (1-" . count($filteredLabs) . ") or 's' to search again: ");
+                $selection = trim($selection);
+
+                if (strtolower($selection) === 's') {
+                    continue; // Search again
+                }
+
+                if (is_numeric($selection)) {
+                    $selectedIndex = (int)$selection - 1;
+                    if ($selectedIndex >= 0 && $selectedIndex < count($filteredLabs)) {
+                        $selectedLab = $filteredLabs[$selectedIndex];
+                        break;
+                    }
+                }
+                echo "Invalid selection. Please try again." . PHP_EOL;
+            }
+        } while (true);
+        
+    } elseif ($method === '2') {
+        // Browse all labs (paginated)
+        $pageSize = 20;
+        $totalLabs = count($testingLabs);
+        $currentPage = 0;
+
+        do {
+            $startIndex = $currentPage * $pageSize;
+            $endIndex = min($startIndex + $pageSize, $totalLabs);
+
+            echo PHP_EOL;
+            echo "=== Labs " . ($startIndex + 1) . "-" . $endIndex . " of " . $totalLabs . " ===" . PHP_EOL;
+
+            for ($i = $startIndex; $i < $endIndex; $i++) {
+                $lab = $testingLabs[$i];
+                echo ($i + 1) . ". [ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
+            }
+
+            echo PHP_EOL;
+            echo "Commands: [number] = select lab, [n] = next page, [p] = previous page, [s] = search, [q] = quit" . PHP_EOL;
+
+            $input = readUserInput("Enter choice: ");
+            $input = trim(strtolower($input));
+
+            if ($input === 'n' && $endIndex < $totalLabs) {
+                $currentPage++;
+            } elseif ($input === 'p' && $currentPage > 0) {
+                $currentPage--;
+            } elseif ($input === 's') {
+                $method = '1'; // Switch to search mode
+                break;
+            } elseif ($input === 'q') {
+                echo "Lab selection cancelled." . PHP_EOL;
+                exit(0);
+            } elseif (is_numeric($input)) {
+                $selectedIndex = (int)$input - 1;
+                if ($selectedIndex >= 0 && $selectedIndex < $totalLabs) {
+                    $selectedLab = $testingLabs[$selectedIndex];
+                    break;
+                } else {
+                    echo "Invalid lab number. Please enter a number between 1 and " . $totalLabs . "." . PHP_EOL;
+                }
+            } else {
+                echo "Invalid command." . PHP_EOL;
+            }
+        } while (true);
+        
+    } elseif ($method === '3') {
+        // Enter facility ID directly
+        do {
+            echo PHP_EOL;
+            $facilityId = readUserInput("Enter facility ID: ");
+            $facilityId = trim($facilityId);
+
+            if (empty($facilityId)) {
+                echo "Facility ID cannot be empty." . PHP_EOL;
+                continue;
+            }
+
+            // Find lab by ID
+            $foundLab = null;
+            foreach ($testingLabs as $lab) {
+                if ($lab['facility_id'] == $facilityId) {
+                    $foundLab = $lab;
+                    break;
+                }
+            }
+
+            if ($foundLab) {
+                echo "Found: [ID: " . $foundLab['facility_id'] . "] " . $foundLab['facility_name'] . PHP_EOL;
+                $confirm = readUserInput("Select this lab? (y/n) [y]: ");
+                if (empty($confirm) || strtolower($confirm) === 'y') {
+                    $selectedLab = $foundLab;
+                    break;
+                }
+            } else {
+                echo "Facility ID '" . $facilityId . "' not found in active labs." . PHP_EOL;
+                $retry = readUserInput("Try again? (y/n) [y]: ");
+                if (!empty($retry) && strtolower($retry) === 'n') {
+                    break;
+                }
+            }
+        } while (true);
+    }
+
+    if ($selectedLab === null) {
+        echo "No lab selected. Exiting." . PHP_EOL;
+        exit(0);
+    }
+
+    echo PHP_EOL;
+    echo "Updating lab configuration..." . PHP_EOL;
+    echo "Selected Lab: [InteLIS Lab ID: " . $selectedLab['facility_id'] . "] " . $selectedLab['facility_name'] . PHP_EOL;
+
+    try {
+        $data = ['value' => $selectedLab['facility_id']];
+        $db->where('name', 'sc_testing_lab_id');
+        $result = $db->update('system_config', $data);
+
+        $data = ['value' => 'vluser'];
+        $db->where('name', 'sc_user_type');
+        $result = $db->update('system_config', $data);
+
+        if ($result) {
+            echo "✓ Lab ID updated successfully." . PHP_EOL;
+        } else {
+            echo "✗ Failed to update lab ID in system configuration." . PHP_EOL;
+            exit(1);
+        }
+    } catch (Exception $e) {
+        LoggerUtility::logError(
+            "Error updating lab ID: " . $e->getMessage(),
+            [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]
+        );
+        echo "✗ Error updating lab ID. Please check logs for details." . PHP_EOL;
+        exit(1);
+    }
+} else {
+    // Use existing lab ID and get details for display
+    $selectedLab = $db->rawQueryOne(
+        "SELECT facility_id, facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
+        [$currentLabId]
+    );
+}
+
+echo PHP_EOL;
+echo "✓ Configuration setup complete!" . PHP_EOL;
+echo PHP_EOL;
+
 // Step 5: Call the original token generation script
-echo "=== Generating Token ===" . PHP_EOL;
+$remoteURL = isset($newRemoteURL) ? $newRemoteURL : $currentRemoteURL;
+
+if (isset($selectedLab)) {
+    $labId = $selectedLab['facility_id'];
+    $labName = $selectedLab['facility_name'];
+} else {
+    $labId = $currentLabId;
+    $labName = isset($labDetails) ? $labDetails['facility_name'] : 'Unknown';
+}
+
+echo "=== Proceeding with Token Generation ===" . PHP_EOL;
+echo "Using STS URL: " . $remoteURL . PHP_EOL;
+echo "InteLIS Lab ID: " . $labId . PHP_EOL;
+echo "Lab Name: " . $labName . PHP_EOL;
+echo PHP_EOL;
 
 $tokenScriptPath = __DIR__ . "/token.php";
 $tokenCommand = "php " . escapeshellarg($tokenScriptPath);
@@ -473,7 +546,7 @@ echo PHP_EOL;
 // Execute the token script and capture output
 $output = [];
 $returnCode = 0;
-exec($tokenCommand . " 2>&1", $output, $returnCode);
+exec("$tokenCommand 2>&1", $output, $returnCode);
 
 // Display the output from token script
 foreach ($output as $line) {
