@@ -1,5 +1,7 @@
 <?php
 
+// bin/token.php
+
 use App\Services\ApiService;
 use App\Utilities\JsonUtility;
 use App\Services\CommonService;
