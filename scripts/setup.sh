@@ -707,6 +707,17 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     fi
 fi
 
+# Make the intelis script executable
+chmod +x "${lis_path}/intelis" 2>/dev/null
+sudo rm /usr/local/bin/intelis 2>/dev/null
+sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
+
+# Show success message only if symlink was created successfully
+if [ -L "/usr/local/bin/intelis" ]; then
+    echo "✓ intelis command installed successfully!"
+    echo "You can now use: intelis interface, intelis token, etc."
+fi
+
 if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
     rm "${lis_path}/cache/CompiledContainer.php"
 fi
