@@ -1,11 +1,14 @@
 #!/usr/bin/env bash
 # File: intelis
 
-# Get the directory where this script is located
-SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-
-# Change to the project directory
-cd "$SCRIPT_DIR"
+# If we're already in a directory with composer.json, use current directory
+if [ -f "composer.json" ]; then
+    WORK_DIR="$(pwd)"
+else
+    # Otherwise, use script's directory
+    WORK_DIR="$(cd "$(dirname "$(readlink -f "${BASH_SOURCE[0]}")")" && pwd)"
+    cd "$WORK_DIR"
+fi
 
 # Run composer with the passed arguments
 composer "$@"
