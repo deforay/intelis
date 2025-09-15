@@ -995,6 +995,17 @@ wait $pid
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
+# Make the intelis script executable
+chmod +x "${lis_path}/intelis" 2>/dev/null
+sudo rm /usr/local/bin/intelis 2>/dev/null
+sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
+
+# Show success message only if symlink was created successfully
+if [ -L "/usr/local/bin/intelis" ]; then
+    echo "✓ intelis command installed successfully!"
+    echo "You can now use: intelis interface, intelis token, etc."
+fi
+
 if [ -d "${lis_path}/run-once" ]; then
     # Check if there are any PHP scripts in the run-once directory
     run_once_scripts=("${lis_path}/run-once/"*.php)

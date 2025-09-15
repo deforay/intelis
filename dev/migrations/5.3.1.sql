@@ -202,3 +202,16 @@ ADD `revised_by` VARCHAR(255) NULL DEFAULT NULL AFTER `result_approved_datetime`
 ADD `revised_on` DATETIME NULL DEFAULT NULL AFTER `revised_by`, 
 ADD `reason_for_result_change` VARCHAR(255) NULL DEFAULT NULL AFTER `revised_on`,
 ADD `comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `reason_for_result_change`;
+
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
+-- END OF VERSION --
