@@ -709,7 +709,7 @@ fi
 
 # Make the intelis script executable
 chmod +x "${lis_path}/intelis" 2>/dev/null
-sudo rm /usr/local/bin/intelis 2>/dev/null
+sudo rm /usr/local/bin/intelis 2>/dev/null || true
 sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
 
 # Show success message only if symlink was created successfully
