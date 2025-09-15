@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
+$smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 $remoteURL = $general->getRemoteURL();
 
@@ -25,21 +25,21 @@ $schedule = new Schedule();
 touch(ROOT_PATH . DIRECTORY_SEPARATOR . ".cron_heartbeat");
 
 // Archive Data from Audit Tables
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/archive-audit-tables.php")
+$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/archive-audit-tables.php")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Archiving Audit Tables');
 
 // Generate Sample IDs
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sample-code-generator.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
     ->everyMinute()
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Generating sample codes');
 
 // DB Backup
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/db-backups.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-backups.php")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -47,14 +47,14 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/db-backups
 
 
 // Cleanup Old Files
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/cleanup.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/cleanup.php")
     ->cron('45 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
     ->description('Cleaning Up Old Backups and Temporary files');
 
 // Expiring/Locking Samples
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sample-status.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-sample-status.php")
     ->cron('5 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -63,14 +63,14 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-sam
 // MACHINE INTERFACING
 if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacing']['enabled'] === true) {
     // Syncing data from SQLite to MySQL
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/sync-interface-sqlite-mysql.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sync-interface-sqlite-mysql.php")
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Importing data from sqlite db into mysql db');
 
     // Importing data from interface db into lis db`
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/interface.php")
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/interface.php")
         ->everyMinute()
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -78,7 +78,7 @@ if (!empty(SYSTEM_CONFIG['interfacing']['enabled']) && SYSTEM_CONFIG['interfacin
 }
 
 // UPDATE VL RESULT INTERPRETATION
-$schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-suppression.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
     ->everyMinute()
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -87,25 +87,25 @@ $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/update-vl-
 
 // REMOTE SYNC JOBS START
 if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/sts-metadata-receiver.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php")
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing metadata from STS');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/requests-receiver.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/requests-receiver.php")
         ->everyFifteenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing requests from STS');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/results-sender.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/results-sender.php")
         ->everyTenMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing results to STS');
 
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/remote/lab-metadata-sender.php")
+    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/lab-metadata-sender.php")
         ->everyThirtyMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -115,10 +115,10 @@ if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
 
 
 
-// DASHBOARD JOBS START
+// Smart-Connect DASHBOARD JOBS START
 
-if (!empty($vldashboardUrl)) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-metadata.php")
+if (!empty($smartConnectURL)) {
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/metadata.php")
         ->cron('*/20 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
@@ -126,23 +126,23 @@ if (!empty($vldashboardUrl)) {
 }
 
 
-if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-vl.php")
+if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) {
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/vl.php")
         ->cron('*/25 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing VL data from local database to Dashboard');
 }
 
-if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-eid.php")
+if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['eid']) && SYSTEM_CONFIG['modules']['eid'] === true) {
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/eid.php")
         ->cron('*/30 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Syncing EID data from local database to Dashboard');
 }
-if (!empty($vldashboardUrl) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/scheduled-jobs/vldashboard/vldashboard-covid19.php")
+if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && SYSTEM_CONFIG['modules']['covid19'] === true) {
+    $schedule->run(PHP_BINARY . " " . BIN_PATH . "/smart-connect/covid19.php")
         ->cron('*/35 * * * *')
         ->timezone($timeZone)
         ->preventOverlapping()

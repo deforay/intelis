@@ -7,7 +7,7 @@ if ($isCli === false) {
     exit(0);
 }
 
-require_once __DIR__ . "/../../bootstrap.php";
+require_once __DIR__ . "/../bootstrap.php";
 
 use App\Services\TestsService;
 use App\Utilities\DateUtility;

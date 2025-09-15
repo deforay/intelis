@@ -107,7 +107,7 @@ try {
         // Archive latest audit data for this sample
         $client = new Client();
         try {
-            $response = $client->get("{$baseUrl}/scheduled-jobs/archive-audit-tables.php?sampleCode=$sampleCode", [
+            $response = $client->get("{$baseUrl}/tasks/archive-audit-tables.php?sampleCode=$sampleCode", [
                 'headers' => [
                     'X-CSRF-Token' => $_SESSION['csrf_token'],
                     'X-Requested-With' => 'XMLHttpRequest', // Spoof as AJAX to avoid ACL. Auth etc.

@@ -5,7 +5,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 try {
 
@@ -20,8 +20,8 @@ try {
 
     if (!empty($scheduledJobs)) {
         foreach ($scheduledJobs as $job) {
-            $db->update('scheduled_jobs', array('status' => "processing"), "job_id = " . $job['job_id']);
-            exec($phpPath . " " . realpath(APPLICATION_PATH . "/scheduled-jobs") . DIRECTORY_SEPARATOR .  $job['job']);
+            $db->update('scheduled_jobs', ['status' => "processing"], "job_id = " . $job['job_id']);
+            exec($phpPath . " " . realpath(BIN_PATH) . DIRECTORY_SEPARATOR .  $job['job']);
             $db->where("job_id = " . $job['job_id']);
             $db->update('scheduled_jobs', [
                 "completed_on" => DateUtility::getCurrentDateTime(),

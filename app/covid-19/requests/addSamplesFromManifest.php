@@ -239,7 +239,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/scheduled-jobs/remote/requests-receiver.php", {
+			$.post("/tasks/remote/requests-receiver.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'covid19'
 				},
