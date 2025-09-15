@@ -7,7 +7,7 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
-require_once __DIR__ . "/../../../bootstrap.php";
+require_once __DIR__ . "/../bootstrap.php";
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -44,7 +44,7 @@ if (empty($apiKey)) {
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {
-    echo "Usage: php token.php --key <API_KEY>" . PHP_EOL;
+    echo "Usage: php bin/token.php --key <API_KEY>" . PHP_EOL;
     exit(1);
 }
 

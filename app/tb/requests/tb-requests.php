@@ -735,7 +735,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
             if (remoteSync && remoteURL != null && remoteURL != '') {
                 var jqxhr = $.ajax({
-                        url: "/scheduled-jobs/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=tb",
+                        url: "/tasks/remote/results-sender.php?sampleCode=" + sampleCode + "&forceSyncModule=tb",
                     })
                     .done(function(data) {
                         ////console.log(data);

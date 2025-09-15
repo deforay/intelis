@@ -1,5 +1,10 @@
 <?php
 
+$cliMode = php_sapi_name() === 'cli';
+if ($cliMode) {
+    require_once(__DIR__ . "/../../bootstrap.php");
+}
+
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -11,13 +16,6 @@ use App\Registries\ContainerRegistry;
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 20000);
-
-$cliMode = php_sapi_name() === 'cli';
-if ($cliMode) {
-    require_once(__DIR__ . "/../../../bootstrap.php");
-}
-
-
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -33,23 +31,23 @@ $output = [];
 
 try {
 
-    $vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
+    $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
-    if (empty($vldashboardUrl)) {
+    if (empty($smartConnectURL)) {
         echo "VL Dashboard URL not set";
         exit(0);
     }
 
-    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-eid";
+    $url = rtrim((string) $smartConnectURL, "/") . "/api/vlsm-covid19";
 
-    $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'eid_last_dash_sync');
+    $instanceUpdateOn = $db->getValue('s_vlsm_instance', 'covid19_last_dash_sync');
 
     if (!empty($instanceUpdateOn)) {
         $db->where('last_modified_datetime', $instanceUpdateOn, ">");
     }
 
     $db->orderBy("last_modified_datetime", "ASC");
-    $rResult = $db->get('form_eid', 5000);
+    $rResult = $db->get('form_covid19', 5000);
 
     if (empty($rResult)) {
         exit(0);
@@ -59,13 +57,10 @@ try {
     $output['timestamp'] = !empty($instanceUpdateOn) ? strtotime((string) $instanceUpdateOn) : time();
     $output['data'] = $rResult;
 
-
     $filename = MiscUtility::generateRandomString(12) . time() . '.json';
     $fp = fopen(TEMP_PATH . DIRECTORY_SEPARATOR . $filename, 'w');
     fwrite($fp, json_encode($output));
     fclose($fp);
-
-
 
 
 
@@ -85,14 +80,13 @@ try {
         ]
     ];
 
-    $response  = $apiService->postFile($url, 'eidFile', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
+    $response  = $apiService->postFile($url, 'covid19File', TEMP_PATH . DIRECTORY_SEPARATOR . $filename, $params, true);
     $deResult = json_decode($response, true);
 
     if (isset($deResult['status']) && trim((string) $deResult['status']) == 'success') {
         $data = array(
-            'eid_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
+            'covid19_last_dash_sync' => (!empty($lastUpdate) ? $lastUpdate : DateUtility::getCurrentDateTime())
         );
-
         $db->update('s_vlsm_instance', $data);
     }
     MiscUtility::deleteFile(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);

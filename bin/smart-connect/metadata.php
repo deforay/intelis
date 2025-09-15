@@ -3,7 +3,7 @@
 
 $cliMode = php_sapi_name() === 'cli';
 if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
+    require_once(__DIR__ . "/../../bootstrap.php");
 }
 
 use App\Services\ApiService;
@@ -27,9 +27,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var ApiService $apiService */
 $apiService = ContainerRegistry::get(ApiService::class);
 
-$vldashboardUrl = $general->getGlobalConfig('vldashboard_url');
+$smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
-if (empty($vldashboardUrl)) {
+if (empty($smartConnectURL)) {
     echo "VL Dashboard URL not set";
     exit(0);
 }
@@ -129,7 +129,7 @@ try {
     fclose($fp);
 
 
-    $url = rtrim((string) $vldashboardUrl, "/") . "/api/vlsm-metadata";
+    $url = rtrim((string) $smartConnectURL, "/") . "/api/vlsm-metadata";
 
     $params = [
         [

@@ -52,6 +52,7 @@ define('WEB_ROOT', ROOT_PATH . '/public');
 define('CACHE_PATH', ROOT_PATH . '/cache');
 define('LOG_PATH', ROOT_PATH . '/logs');
 define('APPLICATION_PATH', ROOT_PATH . '/app');
+define('BIN_PATH', ROOT_PATH . '/bin');
 define('UPLOAD_PATH', WEB_ROOT . '/uploads');
 define('TEMP_PATH', WEB_ROOT . '/temporary');
 
