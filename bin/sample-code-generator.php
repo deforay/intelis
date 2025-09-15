@@ -7,7 +7,7 @@ use App\Services\TestRequestsService;
 
 $parallelProcess = false;
 if (php_sapi_name() === 'cli') {
-    require_once __DIR__ . "/../../bootstrap.php";
+    require_once __DIR__ . "/../bootstrap.php";
     $options = getopt("f");
     $parallelProcess = isset($options['f']);
 }

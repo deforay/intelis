@@ -7,7 +7,7 @@ if ($isCli === false) {
 }
 
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 declare(ticks=1);
 

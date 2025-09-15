@@ -9,7 +9,7 @@ use PHPMailer\PHPMailer\PHPMailer;
 use App\Registries\ContainerRegistry;
 
 
-require_once(__DIR__ . "/../../bootstrap.php");
+require_once(__DIR__ . "/../bootstrap.php");
 
 try {
 

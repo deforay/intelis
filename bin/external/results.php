@@ -6,7 +6,7 @@ $cliMode = php_sapi_name() === 'cli';
 $forceRun = false;
 
 if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
+    require_once __DIR__ . "/../../bootstrap.php";
 
     declare(ticks=1);
 

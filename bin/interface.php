@@ -1,7 +1,7 @@
 #!/usr/bin/env php
 <?php
 
-// app/scheduled-jobs/interface.php
+// bin/interface.php
 
 // only run from command line
 $isCli = php_sapi_name() === 'cli';
@@ -10,7 +10,7 @@ if ($isCli === false) {
     exit(0);
 }
 
-require_once __DIR__ . "/../../bootstrap.php";
+require_once __DIR__ . "/../bootstrap.php";
 
 declare(ticks=1);
 

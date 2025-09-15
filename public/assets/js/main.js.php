@@ -112,7 +112,7 @@ $remoteURL = $general->getRemoteURL();
                     message: "<h3><?= _translate("Receiving Metadata from STS", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
                 });
                 $.ajax({
-                        url: "/scheduled-jobs/remote/sts-metadata-receiver.php",
+                        url: "/tasks/remote/sts-metadata-receiver.php",
                     })
                     .done(function(data) {
                         console.log("Metadata Synced | STS -> LIS");
@@ -139,7 +139,7 @@ $remoteURL = $general->getRemoteURL();
                     message: "<h3><?= _translate("Sending Lab Metadata", escapeTextOrContext: true); ?><br><?= _translate("Please wait...", escapeTextOrContext: true); ?></h3>"
                 });
                 $.ajax({
-                        url: "/scheduled-jobs/remote/lab-metadata-sender.php",
+                        url: "/tasks/remote/lab-metadata-sender.php",
                     })
                     .done(function(data) {
                         console.log("Lab Metadata Synced | LIS -> STS");
@@ -163,7 +163,7 @@ $remoteURL = $general->getRemoteURL();
 
             if (remoteSync) {
                 $.ajax({
-                        url: "/scheduled-jobs/remote/results-sender.php",
+                        url: "/tasks/remote/results-sender.php",
                     })
                     .done(function(data) {
                         console.log("Results Synced | LIS -> STS");
@@ -187,7 +187,7 @@ $remoteURL = $general->getRemoteURL();
 
             if (remoteSync) {
                 $.ajax({
-                        url: "/scheduled-jobs/remote/requests-receiver.php",
+                        url: "/tasks/remote/requests-receiver.php",
                     })
                     .done(function(data) {
                         console.log("Requests Synced | STS -> LIS");
@@ -204,7 +204,7 @@ $remoteURL = $general->getRemoteURL();
             (function getLastSTSSyncDateTime() {
                 let currentDateTime = new Date();
                 $.ajax({
-                    url: '/scheduled-jobs/remote/get-last-sts-sync-datetime.php',
+                    url: '/tasks/remote/get-last-sts-sync-datetime.php',
                     cache: false,
                     success: function(lastSyncDateString) {
                         if (lastSyncDateString != null && lastSyncDateString != undefined) {
@@ -471,11 +471,11 @@ $remoteURL = $general->getRemoteURL();
     }
 
 
-    // Define your scripts with their intervals in milliseconds
-    const scriptsToRun = {
-        // "/scheduled-jobs/sample-code-generator.php": 60000, // Run every 1 minute
-        //"/scheduled-jobs/archive-audit-tables.php": 1800000 // Run every 30 minutes
-    };
+    // // Define your scripts with their intervals in milliseconds
+    // const scriptsToRun = {
+    //     // "/tasks/sample-code-generator.php": 60000, // Run every 1 minute
+    //     //"/tasks/archive-audit-tables.php": 1800000 // Run every 30 minutes
+    // };
 
     function checkARTRegimenValue() {
         var artRegimen = $("#artRegimen").val();

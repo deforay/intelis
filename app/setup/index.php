@@ -525,7 +525,7 @@ $testName = TestsService::getTestTypes();
 
         if ($('#instanceType').val() == 'vluser' && $('#remoteURL').val() != "") {
           $.blockUI();
-          $.post("/scheduled-jobs/remote/sts-metadata-receiver.php", {
+          $.post("/tasks/remote/sts-metadata-receiver.php", {
               remoteURL: $('#remoteURL').val()
             },
             function(data) {

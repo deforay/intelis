@@ -226,7 +226,7 @@ require_once APPLICATION_PATH . '/header.php';
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/scheduled-jobs/remote/requests-receiver.php", {
+			$.post("/tasks/remote/requests-receiver.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'vl'
 				},

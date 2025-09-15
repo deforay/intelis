@@ -6,7 +6,7 @@ if (php_sapi_name() !== 'cli') {
     exit(0);
 }
 
-require_once __DIR__ . "/../../bootstrap.php";
+require_once __DIR__ . "/../bootstrap.php";
 
 use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;

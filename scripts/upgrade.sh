@@ -77,54 +77,6 @@ done
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
-
-clear_opcache_apache() {
-    local webroot="${lis_path}/public"
-    if [ ! -d "$webroot" ]; then
-    print warning "OPcache clear skipped: webroot not found at ${webroot}"
-    return 0
-    fi
-
-    local token fname fpath
-    token="$(tr -dc 'a-zA-Z0-9' </dev/urandom | head -c 24)"
-    fname="clear-opcache-${token}.php"
-    fpath="${webroot}/${fname}"
-
-    cat > "${fpath}" <<'PHP'
-<?php
-if (
-    ($_SERVER['REMOTE_ADDR'] ?? '') !== '127.0.0.1' &&
-    ($_SERVER['REMOTE_ADDR'] ?? '') !== '::1'
-) { http_response_code(403); exit; }
-
-if (!function_exists('opcache_reset')) { echo "OPcache not available\n"; exit(0); }
-opcache_reset();
-echo "OK\n";
-PHP
-
-    # Ensure Apache can read it
-    chown www-data:www-data "${fpath}" 2>/dev/null || true
-    chmod 0644 "${fpath}"
-
-    # Try with optional Host (for name-based vhosts) and follow redirects
-    local host_hdr=""
-    if [ -n "${INTELIS_HOSTNAME:-}" ]; then
-    host_hdr="-H Host: ${INTELIS_HOSTNAME}"
-    fi
-
-    # Try HTTPS first (common with HSTS), then HTTP
-    if curl -kfsSL ${host_hdr} "https://127.0.0.1/${fname}" | grep -q "OK"; then
-    print success "OPcache cleared via Apache (HTTPS)"
-    elif curl -fsSL ${host_hdr} "http://127.0.0.1/${fname}" | grep -q "OK"; then
-    print success "OPcache cleared via Apache (HTTP)"
-    else
-    print warning "OPcache clear endpoint did not return OK (check vhost/redirects)."
-    fi
-
-    rm -f "${fpath}"
-}
-
-
 # Function to update configuration
 update_configuration() {
     local mysql_root_password
@@ -1031,7 +983,7 @@ sudo -u www-data composer dump-autoload -o
 print success "Composer operations completed."
 log_action "Composer operations completed."
 
-clear_opcache_apache
+apache2ctl -k graceful || systemctl reload apache2
 
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
