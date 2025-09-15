@@ -250,7 +250,7 @@ final class FacilitiesService
         if (!$byPassFacilityMap && !empty($userId)) {
             $facilityMap = $this->getUserFacilityMap($userId, 2);
             if (!empty($facilityMap)) {
-                $this->db->where("`facility_id` IN (" . $facilityMap . ")");
+                $this->db->where("`facility_id` IN ($facilityMap)");
             }
         }
 

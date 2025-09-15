@@ -94,6 +94,7 @@
         "audit-tables-fix": "php bin/fix-audit-tables.php",
         "archive-audit-tables": "php app/tasks/archive-audit-tables.php",
         "token": "php bin/token.php",
+        "fix-sts": "php bin/fix-sts.php",
         "migrate": "php bin/migrate.php -y",
         "sample-generator": "php bin/sample-code-generator.php",
         "force-metadata": "php app/tasks/remote/sts-metadata-receiver.php -ft",
