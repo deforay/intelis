@@ -21,6 +21,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
+use App\Services\TbService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -46,7 +47,6 @@ if (empty($remoteURL)) {
 }
 
 $stsBearerToken = $general->getSTSToken();
-
 $apiService->setBearerToken($stsBearerToken);
 
 
@@ -379,6 +379,9 @@ try {
 
     // TB TEST RESULTS
     if (isset($systemConfig['modules']['tb']) && $systemConfig['modules']['tb'] === true) {
+        /** @var TbService $tbService */
+        $tbService = ContainerRegistry::get(TbService::class);
+
         if ($cliMode) {
             echo "Trying to send test results from TB...\n";
         }
@@ -400,11 +403,16 @@ try {
 
         $db->reset();
         $tbLabResult = $db->rawQuery($tbQuery);
-
+        $tbTestResultData = [];
+        foreach ($tbLabResult as $key => $r) {
+            $tbTestResultData[$r['unique_id']] = [];
+            $tbTestResultData[$r['unique_id']]['form_data'] = $r;
+            $tbTestResultData[$r['unique_id']]['data_from_tests'] = $tbService->getTbTestsByFormId($r['tb_id']);
+        }
 
         $payload = [
             "labId" => $labId,
-            "results" => $tbLabResult,
+            "results" => $tbTestResultData,
             "testType" => "tb",
             'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
