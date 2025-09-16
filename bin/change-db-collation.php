@@ -346,7 +346,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
     }
 
     if (!$tableNeedsConversion) {
-        echoMessage("✓ Table $tableName ($tableSize MB) already uses $collation - skipping table conversion", 'green');
+        echoMessage("✅ Table $tableName ($tableSize MB) already uses $collation - skipping table conversion", 'green');
         $result['tableSkipped'] = true;
         $skippedTables[] = "$tableName (already using $collation)";
     } else {
@@ -357,7 +357,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                 $startTime = microtime(true);
                 $db->connection($connectionName)->rawQuery("ALTER TABLE `$tableName` CONVERT TO CHARACTER SET utf8mb4 COLLATE $collation");
                 $duration = round(microtime(true) - $startTime, 2);
-                echoMessage("✓ Table converted successfully in $duration seconds", 'green');
+                echoMessage("✅ Table converted successfully in $duration seconds", 'green');
                 $result['tableConverted'] = true;
                 $successfulTables[] = $tableName;
             } catch (Throwable $e) {
@@ -386,7 +386,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
     $columnsNeedingConversion = getColumnsNeedingConversion($db, $connectionName, $tableName, $collation);
 
     if (empty($columnsNeedingConversion)) {
-        echoMessage("✓ All columns in $tableName already use correct collation", 'green');
+        echoMessage("✅ All columns in $tableName already use correct collation", 'green');
         return $result;
     }
 
@@ -433,7 +433,7 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                 // Verify the conversion was successful
                 if (verifyColumnConversion($db, $connectionName, $tableName, $columnName, $collation)) {
                     $duration = round(microtime(true) - $startTime, 2);
-                    echoMessage("  ✓ Column $columnName converted and verified in $duration seconds", 'green');
+                    echoMessage("  ✅ Column $columnName converted and verified in $duration seconds", 'green');
                     $result['columnsConverted']++;
                 } else {
                     $errorMsg = "Column $tableName.$columnName conversion appeared to succeed but verification failed";
@@ -587,7 +587,7 @@ function displaySummary(array $results): void
 
     // Final status message
     if (empty($tableErrors) && empty($columnErrors)) {
-        echo PHP_EOL . $colors['bold'] . $colors['green'] . "✓ All operations completed successfully!" . $colors['reset'] . PHP_EOL;
+        echo PHP_EOL . $colors['bold'] . $colors['green'] . "✅ All operations completed successfully!" . $colors['reset'] . PHP_EOL;
     } else {
         echo PHP_EOL . $colors['bold'] . $colors['yellow'] . "⚠ Conversion completed with some errors." . $colors['reset'] . PHP_EOL;
     }
