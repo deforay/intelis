@@ -83,6 +83,7 @@
         "symfony/var-dumper": "^7.1"
     },
     "scripts": {
+        "info": "php bin/info.php",
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
         "collation": "php bin/setup/change-db-collation.php",
