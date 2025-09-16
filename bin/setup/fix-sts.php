@@ -7,7 +7,7 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
-require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/../../bootstrap.php";
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -232,7 +232,7 @@ if ($urlWasEmpty || $urlChanged) {
     echo "=== Refreshing Database Metadata ===" . PHP_EOL;
     echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
 
-    $metadataScriptPath = __DIR__ . "/../app/tasks/remote/sts-metadata-receiver.php";
+    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
 
     if (!file_exists($metadataScriptPath)) {
         echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
@@ -527,7 +527,7 @@ echo "InteLIS Lab ID: " . $labId . PHP_EOL;
 echo "Lab Name: " . $labName . PHP_EOL;
 echo PHP_EOL;
 
-$tokenScriptPath = __DIR__ . "/token.php";
+$tokenScriptPath = BIN_PATH . "/token.php";
 $tokenCommand = "php " . escapeshellarg($tokenScriptPath);
 
 // Add API key if provided
