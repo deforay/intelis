@@ -25,6 +25,21 @@ $commonService = ContainerRegistry::get(CommonService::class);
 $activeModules = SystemService::getActiveModules(onlyTests: true);
 
 
+// Check for force flag (-f or --force)
+$forceRun = in_array('-f', $argv) || in_array('--force', $argv);
+
+if (!$forceRun) {
+    // Check if the script has already been run
+    $db->where('script_name', $scriptName);
+    $executed = $db->getOne('s_run_once_scripts_log');
+
+    if ($executed) {
+        // Script has already been run
+        exit("Script $scriptName has already been executed. Exiting...");
+    }
+}
+
+
 try {
 
     foreach ($activeModules as $module) {
@@ -112,4 +127,13 @@ try {
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),
     ]);
+} finally {
+    // After successful execution, log the script run
+    $data = [
+        'script_name' => $scriptName,
+        'execution_date' => DateUtility::getCurrentDateTime(),
+        'status' => 'executed'
+    ];
+    $db->setQueryOption ('IGNORE')->insert('s_run_once_scripts_log', $data);
 }
+
