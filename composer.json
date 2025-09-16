@@ -85,13 +85,13 @@
     "scripts": {
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
-        "collation": "php bin/change-db-collation.php",
+        "collation": "php bin/setup/change-db-collation.php",
         "db-backup": "php bin/db-backups.php",
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",
-        "privilege-fix": "php bin/update-privileges.php",
-        "audit-tables-fix": "php bin/fix-audit-tables.php",
+        "privilege-fix": "php bin/setup/update-privileges.php",
+        "audit-tables-fix": "php bin/setup/fix-audit-tables.php",
         "archive-audit-tables": "php app/tasks/archive-audit-tables.php",
         "token": "php bin/token.php",
         "fix-sts": "php bin/setup/fix-sts.php",
@@ -104,7 +104,7 @@
         "send-results": "php app/tasks/remote/results-sender.php",
         "receive-requests": "php app/tasks/remote/requests-receiver.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php bin/migrate.php -y && php bin/update-privileges.php && php bin/fix-app-menu.php && php app/tasks/remote/sts-metadata-receiver.php -f && php app/includes/clear-cache.php && php bin/change-db-collation.php",
-        "post-update": "php bin/migrate.php -y && php bin/update-privileges.php && php bin/fix-app-menu.php && php bin/token.php && php app/includes/clear-cache.php && php bin/change-db-collation.php"
+        "post-install": "php bin/migrate.php -y && php bin/setup/update-privileges.php && php bin/setup/fix-app-menu.php && php app/tasks/remote/sts-metadata-receiver.php -f && php app/includes/clear-cache.php && php bin/setup/change-db-collation.php",
+        "post-update": "php bin/migrate.php -y && php bin/setup/update-privileges.php && php bin/setup/fix-app-menu.php && php bin/token.php && php app/includes/clear-cache.php && php bin/setup/change-db-collation.php"
     }
 }
