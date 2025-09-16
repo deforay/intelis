@@ -328,7 +328,7 @@
                             <code style="background: #f1f3f4; padding: 1px 4px; border-radius: 2px; font-size: 11px;">${suggestion.format}</code><br>
                             <small style="color: #666;">${suggestion.description}</small>
                             ${suggestion.example ?
-                    `<div style="color: #28a745; font-size: 10px; margin-top: 2px;">✓ <?= _translate("Example:", true); ?> ${suggestion.example}</div>` : ''
+                    `<div style="color: #28a745; font-size: 10px; margin-top: 2px;">✅ <?= _translate("Example:", true); ?> ${suggestion.example}</div>` : ''
                 }
                             ${isUserFormat ?
                     '<div style="color: #007bff; font-size: 10px; margin-top: 2px;">📝 <?= _translate("Format you entered", true); ?></div>' : ''
