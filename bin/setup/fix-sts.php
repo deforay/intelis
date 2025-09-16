@@ -7,7 +7,7 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
-require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/../../bootstrap.php";
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -22,6 +22,7 @@ $cliMode = php_sapi_name() === 'cli';
 $isLIS = $general->isLISInstance();
 
 if (!$isLIS || !$cliMode) {
+    echo "❗ This script is only for LIS instances and must be run from the command line." . PHP_EOL;
     exit(0);
 }
 
@@ -208,7 +209,7 @@ if ($urlChanged) {
     try {
         $updatedConfig = ['remoteURL' => $newRemoteURL];
         $configService->updateConfig($updatedConfig);
-        echo "✓ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
+        echo "✅ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
     } catch (Exception $e) {
         LoggerUtility::logError(
             "Error updating STS URL: " . $e->getMessage(),
@@ -218,7 +219,7 @@ if ($urlChanged) {
                 'trace' => $e->getTraceAsString(),
             ]
         );
-        echo "✗ Error updating STS URL. Please check logs for details." . PHP_EOL;
+        echo "❌ Error updating STS URL. Please check logs for details." . PHP_EOL;
         exit(1);
     }
 }
@@ -231,10 +232,10 @@ if ($urlWasEmpty || $urlChanged) {
     echo "=== Refreshing Database Metadata ===" . PHP_EOL;
     echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
 
-    $metadataScriptPath = __DIR__ . "/../app/tasks/remote/sts-metadata-receiver.php";
+    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
 
     if (!file_exists($metadataScriptPath)) {
-        echo "✗ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
+        echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
         echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
         echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
         exit(1);
@@ -253,10 +254,10 @@ if ($urlWasEmpty || $urlChanged) {
 
         if ($returnCode === 0) {
             echo PHP_EOL;
-            echo "✓ Metadata refresh completed successfully." . PHP_EOL;
+            echo "✅ Metadata refresh completed successfully." . PHP_EOL;
         } else {
             echo PHP_EOL;
-            echo "✗ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+            echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
             echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
             exit(1);
         }
@@ -301,14 +302,12 @@ if ($needLabSelection) {
     echo PHP_EOL;
     echo "=== Lab Selection ===" . PHP_EOL;
 
-    $testingLabs = $db->rawQuery(
-        "SELECT facility_id, facility_name FROM facility_details 
-         WHERE facility_type = 2 AND status = 'active' 
-         ORDER BY facility_name"
-    );
+    $testingLabs = $db->rawQuery("SELECT facility_id, facility_name FROM facility_details 
+                                    WHERE facility_type = 2 AND status = 'active' 
+                                    ORDER BY facility_name");
 
     if (empty($testingLabs)) {
-        echo "✗ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
+        echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
         exit(1);
     }
 
@@ -422,10 +421,10 @@ if ($needLabSelection) {
                     $selectedLab = $testingLabs[$selectedIndex];
                     break;
                 } else {
-                    echo "Invalid lab number. Please enter a number between 1 and " . $totalLabs . "." . PHP_EOL;
+                    echo "❗ Invalid lab number. Please enter a number between 1 and " . $totalLabs . "." . PHP_EOL;
                 }
             } else {
-                echo "Invalid command." . PHP_EOL;
+                echo "❗ Invalid command." . PHP_EOL;
             }
         } while (true);
         
@@ -458,7 +457,7 @@ if ($needLabSelection) {
                     break;
                 }
             } else {
-                echo "Facility ID '" . $facilityId . "' not found in active labs." . PHP_EOL;
+                echo "❗ Facility ID '" . $facilityId . "' not found in active labs." . PHP_EOL;
                 $retry = readUserInput("Try again? (y/n) [y]: ");
                 if (!empty($retry) && strtolower($retry) === 'n') {
                     break;
@@ -468,27 +467,23 @@ if ($needLabSelection) {
     }
 
     if ($selectedLab === null) {
-        echo "No lab selected. Exiting." . PHP_EOL;
+        echo "❗ No lab selected. Exiting." . PHP_EOL;
         exit(0);
     }
 
     echo PHP_EOL;
     echo "Updating lab configuration..." . PHP_EOL;
-    echo "Selected Lab: [InteLIS Lab ID: " . $selectedLab['facility_id'] . "] " . $selectedLab['facility_name'] . PHP_EOL;
+    echo "ℹ️ Selected Lab: [InteLIS Lab ID: " . $selectedLab['facility_id'] . "] " . $selectedLab['facility_name'] . PHP_EOL;
 
     try {
         $data = ['value' => $selectedLab['facility_id']];
         $db->where('name', 'sc_testing_lab_id');
         $result = $db->update('system_config', $data);
 
-        $data = ['value' => 'vluser'];
-        $db->where('name', 'sc_user_type');
-        $result = $db->update('system_config', $data);
-
         if ($result) {
-            echo "✓ Lab ID updated successfully." . PHP_EOL;
+            echo "✅ Lab ID updated successfully." . PHP_EOL;
         } else {
-            echo "✗ Failed to update lab ID in system configuration." . PHP_EOL;
+            echo "❌ Failed to update lab ID in system configuration." . PHP_EOL;
             exit(1);
         }
     } catch (Exception $e) {
@@ -500,7 +495,7 @@ if ($needLabSelection) {
                 'trace' => $e->getTraceAsString(),
             ]
         );
-        echo "✗ Error updating lab ID. Please check logs for details." . PHP_EOL;
+        echo "❌ Error updating lab ID. Please check logs for details." . PHP_EOL;
         exit(1);
     }
 } else {
@@ -512,7 +507,7 @@ if ($needLabSelection) {
 }
 
 echo PHP_EOL;
-echo "✓ Configuration setup complete!" . PHP_EOL;
+echo "✅ Configuration setup complete!" . PHP_EOL;
 echo PHP_EOL;
 
 // Step 5: Call the original token generation script
@@ -532,7 +527,7 @@ echo "InteLIS Lab ID: " . $labId . PHP_EOL;
 echo "Lab Name: " . $labName . PHP_EOL;
 echo PHP_EOL;
 
-$tokenScriptPath = __DIR__ . "/token.php";
+$tokenScriptPath = BIN_PATH . "/token.php";
 $tokenCommand = "php " . escapeshellarg($tokenScriptPath);
 
 // Add API key if provided
@@ -555,9 +550,9 @@ foreach ($output as $line) {
 
 if ($returnCode === 0) {
     echo PHP_EOL;
-    echo "=== STS Setup and Token Generation Complete ===" . PHP_EOL;
+    echo "✅ STS Setup and Token Generation Complete" . PHP_EOL;
 } else {
     echo PHP_EOL;
-    echo "✗ Token generation failed with return code: " . $returnCode . PHP_EOL;
+    echo "❌ Token generation failed with return code: " . $returnCode . PHP_EOL;
     exit($returnCode);
 }

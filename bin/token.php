@@ -61,7 +61,7 @@ $payload = [
 // Send the request to generate a token
 try {
     $headers = [
-        'X-API-KEY' => $apiKey, // Add your API key header
+        'X-API-KEY' => $apiKey,
         'Content-Type' => 'application/json',
     ];
 

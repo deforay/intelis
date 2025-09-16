@@ -5,7 +5,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 function createAndModifyAuditTable($db, $fromDbName, $toDbName, $formTable, $auditTable)
 {

@@ -714,7 +714,7 @@ sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
 
 # Show success message only if symlink was created successfully
 if [ -L "/usr/local/bin/intelis" ]; then
-    echo "✓ intelis command installed successfully!"
+    echo "✅ intelis command installed successfully!"
     echo "You can now use: intelis interface, intelis token, etc."
 fi
 
