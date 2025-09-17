@@ -87,7 +87,7 @@
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
         "collation": "php bin/setup/change-db-collation.php",
-        "db-backup": "php bin/db-backups.php",
+        "db-backup": "php bin/db-tools.php backup",
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",

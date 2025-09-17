@@ -37,6 +37,7 @@ key.storage
 
 # Node & Composer dependencies
 vendor/
+var/
 **/node_modules/
 
 # Git-related
