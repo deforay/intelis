@@ -904,7 +904,7 @@ else
             [ "$NEW_COMPOSER_JSON_CHECKSUM" = "none" ] || [ "$NEW_COMPOSER_LOCK_CHECKSUM" = "none" ] ||
             [ "$CURRENT_COMPOSER_JSON_CHECKSUM" != "$NEW_COMPOSER_JSON_CHECKSUM" ] ||
             [ "$CURRENT_COMPOSER_LOCK_CHECKSUM" != "$NEW_COMPOSER_LOCK_CHECKSUM" ]; then
-            print warning "Composer files have changed or were missing. Full installation needed."
+            print info "Composer files have changed or were missing. Full installation needed."
             NEED_FULL_INSTALL=true
         else
             print info "Composer files haven't changed. Skipping full installation."

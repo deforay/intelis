@@ -1,8 +1,7 @@
 <?php
 
-//bin/info.php
+//bin/scan.php
 
-use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
@@ -80,7 +79,7 @@ function formatBytes($size, $precision = 2)
 {
     if ($size === 0) return '0 B';
     if ($size === false) return 'N/A';
-    
+
     $units = array('B', 'KB', 'MB', 'GB', 'TB');
     $base = log($size, 1024);
     return round(pow(1024, $base - floor($base)), $precision) . ' ' . $units[floor($base)];
@@ -94,10 +93,10 @@ function getDirSize($directory)
     if (!is_dir($directory)) {
         return false;
     }
-    
+
     $size = 0;
     $iterator = new RecursiveIteratorIterator(new RecursiveDirectoryIterator($directory));
-    
+
     try {
         foreach ($iterator as $file) {
             if ($file->isFile()) {
@@ -107,7 +106,7 @@ function getDirSize($directory)
     } catch (Exception $e) {
         return false;
     }
-    
+
     return $size;
 }
 
@@ -118,19 +117,19 @@ function isServiceRunning($serviceName)
 {
     $output = [];
     $returnCode = 0;
-    
+
     // Try different methods to check service status
     exec("systemctl is-active $serviceName 2>/dev/null", $output, $returnCode);
     if ($returnCode === 0 && trim($output[0] ?? '') === 'active') {
         return true;
     }
-    
+
     // Fallback: check if process is running
     exec("pgrep -x $serviceName 2>/dev/null", $output, $returnCode);
     if ($returnCode === 0) {
         return true;
     }
-    
+
     // Another fallback for MySQL variations
     if ($serviceName === 'mysql') {
         exec("pgrep -x mysqld 2>/dev/null", $output, $returnCode);
@@ -138,7 +137,7 @@ function isServiceRunning($serviceName)
             return true;
         }
     }
-    
+
     return false;
 }
 
@@ -148,7 +147,7 @@ function isServiceRunning($serviceName)
 function getOSInfo()
 {
     $osInfo = [];
-    
+
     // Try to get OS name and version
     if (file_exists('/etc/os-release')) {
         $osRelease = parse_ini_file('/etc/os-release');
@@ -162,7 +161,7 @@ function getOSInfo()
         $osInfo['name'] = php_uname('s') . ' ' . php_uname('r');
         $osInfo['version'] = php_uname('v');
     }
-    
+
     return $osInfo;
 }
 
@@ -175,6 +174,7 @@ echo PHP_EOL;
 // Combined System Overview Table
 $isLIS = $general->isLISInstance();
 $instanceType = $isLIS ? 'LIS' : 'STS';
+$smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 $overviewTable = new Table($output);
 $overviewTable->setHeaderTitle('OVERVIEW');
@@ -195,7 +195,16 @@ $overviewRows = [
         formatDateTime(date('Y-m-d H:i:s')),
         'STS Token',
         $instanceInfo ? maskSensitive($instanceInfo['sts_token']) : 'Not Set'
+    ],
+
+
+    [
+        'SmartConnect URL',
+        $smartConnectURL ?: 'Not Configured',
+        '',
+        ''
     ]
+
 ];
 
 if ($isLIS) {
@@ -257,29 +266,41 @@ $phpVersion = phpversion();
 
 $diagRows = [
     [
-        'OS Name', $osInfo['name'],
-        'Apache', formatBoolean($apacheRunning)
+        'OS Name',
+        $osInfo['name'],
+        'Apache',
+        formatBoolean($apacheRunning)
     ],
     [
-        'PHP Version', $phpVersion,
-        'MySQL/MariaDB', formatBoolean($mysqlRunning)
+        'PHP Version',
+        $phpVersion,
+        'MySQL/MariaDB',
+        formatBoolean($mysqlRunning)
     ],
     [
-        'Memory Limit', $originalMemoryLimit,
-        'Max Exec Time', $originalMaxExecutionTime . 's'
+        'Memory Limit',
+        $originalMemoryLimit,
+        'Max Exec Time',
+        $originalMaxExecutionTime . 's'
     ],
     new TableSeparator(),
     [
-        'Disk Total', formatBytes($diskTotal),
-        'Disk Free', formatBytes($diskFree)
+        'Disk Total',
+        formatBytes($diskTotal),
+        'Disk Free',
+        formatBytes($diskFree)
     ],
     [
-        'Disk Used', $diskUsageDisplay,
-        'Logs Size', formatBytes($logsSize)
+        'Disk Used',
+        $diskUsageDisplay,
+        'Logs Size',
+        formatBytes($logsSize)
     ],
     [
-        'Backups Size', formatBytes($backupsSize),
-        'Root Path', ROOT_PATH
+        'Backups Size',
+        formatBytes($backupsSize),
+        'Root Path',
+        ROOT_PATH
     ]
 ];
 
@@ -398,7 +419,7 @@ if ($isLIS && $instanceInfo) {
         'Requests from STS' => $instanceInfo['last_remote_requests_sync'],
         'MetaData -> SmartConnect' => $instanceInfo['last_remote_reference_data_sync'],
         'Results sent to STS' => $instanceInfo['last_remote_results_sync'],
-        
+
     ];
 
     $syncRows = [];
