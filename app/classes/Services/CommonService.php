@@ -57,7 +57,7 @@ final class CommonService
         });
     }
 
-    public function getRemoteURL()
+    public function getRemoteURL(): ?string
     {
         return $this->fileCache->get('remoteURL', function () {
             $remoteURL = SYSTEM_CONFIG['remoteURL'];
