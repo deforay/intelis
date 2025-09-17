@@ -572,6 +572,9 @@ done
 
 # Validate Apache config and reload to apply PHP INI changes
 if apache2ctl -t; then
+    grep -q '^ServerName localhost$' /etc/apache2/conf-available/servername.conf 2>/dev/null || \
+        { echo 'ServerName localhost' >/etc/apache2/conf-available/servername.conf && a2enconf -q servername; }
+
     systemctl reload apache2 || systemctl restart apache2
 else
     print warning "apache2 config test failed; NOT reloading. Please fix and reload manually."
@@ -982,10 +985,6 @@ sudo -u www-data composer dump-autoload -o
 
 print success "Composer operations completed."
 log_action "Composer operations completed."
-
-grep -q '^ServerName localhost$' /etc/apache2/conf-available/servername.conf 2>/dev/null || \
-    { echo 'ServerName localhost' >/etc/apache2/conf-available/servername.conf && a2enconf -q servername; }
-
 
 apache2ctl -k graceful || systemctl reload apache2
 

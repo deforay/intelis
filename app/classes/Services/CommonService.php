@@ -1320,6 +1320,35 @@ final class CommonService
         return $response;
     }
 
+    /**
+     * Function to check if STS URL is working by hitting the version API
+     */
+    public static function validateStsUrl($url, $labId = null)
+    {
+        // Get VERSION constant or default
+        $version = defined('VERSION') ? VERSION : '1.0';
+
+        // Use current lab ID if available, or a default test value
+        $testLabId = $labId ?: '1';
+
+        $apiUrl = rtrim($url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
+
+        $ch = curl_init();
+        curl_setopt($ch, CURLOPT_URL, $apiUrl);
+        curl_setopt($ch, CURLOPT_TIMEOUT, 5);
+        curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+        curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
+
+        $result = curl_exec($ch);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        curl_close($ch);
+
+        return $httpCode === 200;
+    }
+
     public static function encryptViewQRCode($uniqueId)
     {
         $ciphering = "AES-128-CTR";

@@ -210,11 +210,16 @@ $overviewRows = [
 if ($isLIS) {
     $remoteURL = $general->getRemoteURL();
     $labId = $general->getSystemConfig('sc_testing_lab_id');
+    $isConnected = '❌ Not Connected';
+
+    if (!empty($remoteURL)) {
+        $isConnected = CommonService::validateStsUrl($remoteURL, $labId) ? '✅ Connected' : '❌ Not Connected';
+    }
 
     $overviewRows[] = new TableSeparator();
     $overviewRows[] = [
         'STS URL',
-        $remoteURL ?: 'Not Configured',
+        $remoteURL . ' (' . $isConnected.')' ?: 'Not Configured',
         'InteLIS Lab ID',
         $labId ?: 'Not Configured'
     ];
