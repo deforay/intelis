@@ -45,34 +45,6 @@ function isValidUrl($url) {
 }
 
 /**
- * Function to check if STS URL is working by hitting the version API
- */
-function validateStsUrl($url, $labId = null) {
-    // Get VERSION constant or default
-    $version = defined('VERSION') ? VERSION : '1.0';
-    
-    // Use current lab ID if available, or a default test value
-    $testLabId = $labId ?: '1';
-    
-    $apiUrl = rtrim($url, '/') . "/api/version.php?labId=" . $testLabId . "&version=" . $version;
-    
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $apiUrl);
-    curl_setopt($ch, CURLOPT_TIMEOUT, 5);
-    curl_setopt($ch, CURLOPT_CONNECTTIMEOUT, 3);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-    curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
-    
-    $result = curl_exec($ch);
-    $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-    curl_close($ch);
-    
-    return $httpCode === 200;
-}
-
-/**
  * Function to normalize URL with smart STS validation
  */
 function normalizeUrl($url, $labId = null) {
@@ -81,7 +53,7 @@ function normalizeUrl($url, $labId = null) {
     // If URL already has a protocol, test it as-is first
     if (preg_match('/^https?:\/\//', $url)) {
         $testUrl = rtrim($url, '/');
-        if (validateStsUrl($testUrl, $labId)) {
+        if (CommonService::validateStsUrl($testUrl, $labId)) {
             return $testUrl;
         }
         // If the provided protocol doesn't work, we'll still try the opposite
@@ -92,13 +64,13 @@ function normalizeUrl($url, $labId = null) {
     
     // Try HTTPS first
     $httpsUrl = 'https://' . rtrim($domain, '/');
-    if (validateStsUrl($httpsUrl, $labId)) {
+    if (CommonService::validateStsUrl($httpsUrl, $labId)) {
         return $httpsUrl;
     }
     
     // Fallback to HTTP
     $httpUrl = 'http://' . rtrim($domain, '/');
-    if (validateStsUrl($httpUrl, $labId)) {
+    if (CommonService::validateStsUrl($httpUrl, $labId)) {
         return $httpUrl;
     }
     
@@ -142,7 +114,7 @@ if (empty($currentRemoteURL)) {
         }
 
         // Test if the STS URL actually works
-        if (!validateStsUrl($newRemoteURL, $currentLabId)) {
+        if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
             echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
             continue;
         }
@@ -185,7 +157,7 @@ if (empty($currentRemoteURL)) {
             }
 
             // Test if the STS URL actually works
-            if (!validateStsUrl($newRemoteURL, $currentLabId)) {
+            if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
                 echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
                 continue;
             }
