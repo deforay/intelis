@@ -519,6 +519,23 @@ try {
                                 $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
                                 MiscUtility::dumpToErrorLog($x);
                             }
+
+                            if (!empty($tableData['report_format'])) {
+                                $reportsFileFormats = json_decode($tableData['report_format']);
+                                if (isset($reportsFileFormats) && !empty($reportsFileFormats)) {
+                                    foreach ($reportsFileFormats as $test => $file) {
+                                        if (isset($file) && !empty($file)) {
+                                            $localFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;
+                                            if (!file_exists($localFilePath)) {
+                                                $reportFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+                                                MiscUtility::makeDirectory($reportFolder);
+                                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/labs/' . $tableData['facility_id'] . '/report-template/' . $test . DIRECTORY_SEPARATOR . $file;
+                                                $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
                         }
                     }
                 }
