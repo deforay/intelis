@@ -348,6 +348,6 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
-	$_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
-	header("Location:/facilities/addFacility.php");
+	// $_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
+	header("Location:facilities.php");
 }
