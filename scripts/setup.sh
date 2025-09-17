@@ -397,6 +397,26 @@ else
     log_action "${hostname} entry is already in the hosts file."
 fi
 
+if ! grep -q "127.0.0.1 intelis" /etc/hosts; then
+    print info "Adding intelis to hosts file..."
+    echo "127.0.0.1 intelis" | tee -a /etc/hosts
+    log_action "intelis entry added to hosts file."
+else
+    print info "intelis entry is already in the hosts file."
+    log_action "intelis entry is already in the hosts file."
+fi
+
+
+if ! grep -q "127.0.0.1 vlsm" /etc/hosts; then
+    print info "Adding vlsm to hosts file..."
+    echo "127.0.0.1 vlsm" | tee -a /etc/hosts
+    log_action "vlsm entry added to hosts file."
+else
+    print info "vlsm entry is already in the hosts file."
+    log_action "vlsm entry is already in the hosts file."
+fi
+
+
 # Ask user if they're installing LIS or STS
 read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
 # Default to LIS if empty
@@ -416,6 +436,8 @@ elif [[ "$first_char" == "s" ]]; then
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
+    ServerAlias intelis
+    ServerAlias vlsm
     DocumentRoot ${lis_path}/public
     <Directory ${lis_path}/public>
         AddDefaultCharset UTF-8
