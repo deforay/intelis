@@ -983,6 +983,10 @@ sudo -u www-data composer dump-autoload -o
 print success "Composer operations completed."
 log_action "Composer operations completed."
 
+grep -q '^ServerName localhost$' /etc/apache2/conf-available/servername.conf 2>/dev/null || \
+    { echo 'ServerName localhost' >/etc/apache2/conf-available/servername.conf && a2enconf -q servername; }
+
+
 apache2ctl -k graceful || systemctl reload apache2
 
 # Run the database migrations and other post-update tasks
