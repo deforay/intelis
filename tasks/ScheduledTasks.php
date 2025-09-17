@@ -39,7 +39,7 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
     ->description('Generating sample codes');
 
 // DB Backup
-$schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-backups.php")
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-tools.php backup")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
