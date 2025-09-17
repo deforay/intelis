@@ -219,7 +219,7 @@ if ($isLIS) {
     $overviewRows[] = new TableSeparator();
     $overviewRows[] = [
         'STS URL',
-        $remoteURL . ' (' . $isConnected.')' ?: 'Not Configured',
+        "$remoteURL ($isConnected)" ?: 'Not Configured',
         'InteLIS Lab ID',
         $labId ?: 'Not Configured'
     ];
