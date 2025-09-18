@@ -66,10 +66,10 @@ if (!empty($requestResult)) {
             }
         }
         $pdfTemplatePath = null;
-        if (isset($selectedReportFormats['tb']) && !empty($selectedReportFormats['tb']))
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $selectedReportFormats['tb'];
-        if (isset($selectedReportFormats['default']) && !empty($selectedReportFormats['default']))
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $selectedReportFormats['default'];
+        if (isset($selectedReportFormats['tb']['file']) && !empty($selectedReportFormats['tb']['file']))
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
+        if (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file']))
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
         // create new PDF document
         $pdf = new RwandaTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $pdfTemplatePath);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -95,7 +95,8 @@ if (!empty($requestResult)) {
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $pdf->SetMargins(10, PDF_MARGIN_TOP + 6, 10);
+        $margintop = $selectedReportFormats['tb']['mtop'] ?? $selectedReportFormats['default']['mtop'];
+        $pdf->SetMargins(10, PDF_MARGIN_TOP + $margintop, 10);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
 
