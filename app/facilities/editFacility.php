@@ -46,6 +46,8 @@ $facilityAttributes = json_decode((string) $facilityInfo['facility_attributes'])
 
 
 $facilityReportFormat = (array)json_decode($facilityInfo['report_format']);
+// echo "<pre>";
+// print_r($facilityReportFormat);die;
 $fQuery = "SELECT * FROM facility_type";
 $fResult = $db->rawQuery($fQuery);
 $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 0 AND geo_status='active'");
@@ -742,17 +744,18 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<tr>
 										<th style="width:30%;vertical-align:middle;text-align: center;"><?php echo _translate("Test Type"); ?></th>
 										<th style="width:50%;vertical-align:middle;text-align: center;"><?php echo _translate("Upload File (PDF)"); ?></th>
-										<th style="width:20%;vertical-align:middle;text-align: center;"><?php echo _translate("Action"); ?></th>
+										<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Header Margin"); ?></th>
+										<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Action"); ?></th>
 									</tr>
 								</thead>
 								<tbody id="testTypeFileDetails">
 									<?php if (isset($facilityReportFormat) && !empty($facilityReportFormat)) {
 										$n = 1;
 										foreach ($facilityReportFormat as $test => $file) {
-											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;  ?>
+											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file->file;  ?>
 											<tr>
 												<td>
-													<select class="form-control testTypeFileSelect" name="testTypeFile[<?php echo ($n - 1); ?>]" id="testTypeFile1">
+													<select class="form-control testTypeFileSelect" name="testTypeFile[<?php echo ($n - 1); ?>]" id="testTypeFile<?php echo $n; ?>">
 														<option value=""><?php echo _translate("Select Test Type"); ?></option>
 														<option value="default" <?php echo ($test == 'default') ? 'selected="selected"' : ''; ?>><?php echo _translate("Default format"); ?></option>
 														<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true) { ?>
@@ -779,16 +782,19 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 													</select>
 												</td>
 												<td style="vertical-align:middle;text-align: center;margin-left:20px;">
-													<?php if (isset($file) && !empty($file) && file_exists($filePath)) { ?>
+													<?php if (isset($file) && !empty($file) && (file_exists($filePath) && !is_dir($filePath))) { ?>
 														<div class="m-5">
-															<a href="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file; ?>" class="oldFile btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
-															<a href="javascript:void(0);" class="btn btn-warning oldFile" title="Replace Report Layout" onclick="removeReport();">Replace</a>
-															<a href="javascript:void(0);" class="btn btn-danger oldFile" title="Delete Report Template" onclick="deleteReport();removeReport();"><i class="icon-trash"></i> Remove</a>
+															<a href="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
+															<a href="javascript:void(0);" class="btn btn-warning oldFile<?php echo $n; ?>" title="Replace Report Layout" onclick="removeReport(<?php echo $n; ?>);">Replace</a>
+															<a href="javascript:void(0);" class="btn btn-danger oldFile<?php echo $n; ?>" title="Delete Report Template" onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);"><i class="icon-trash"></i> Remove</a>
 															<input type="hidden" name="deleteTemplate[<?php echo ($n - 1); ?>]" id="deleteTemplate<?php echo $n; ?>" />
-															<input type="hidden" value="<?php echo $file; ?>" name="oldTemplate[<?php echo ($n - 1); ?>]" id="oldTemplate<?php echo $n; ?>" />
+															<input type="hidden" value="<?php echo $file->file; ?>" name="oldTemplate[<?php echo ($n - 1); ?>]" id="oldTemplate<?php echo $n; ?>" />
 														</div>
 													<?php } ?>
-													<input <?php echo (isset($file) && !empty($file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control newFile" name="reportTemplate[]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+													<input <?php echo (isset($file->file) && !empty($file->file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control newFile<?php echo $n; ?>" name="reportTemplate[]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+												</td>
+												<td>
+													<input value="<?php echo $file->mtop; ?>" type="text" class="form-control" name="headerMargin[<?php echo ($n - 1); ?>]" id="headerMargin<?php echo $n; ?>" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
 												</td>
 												<td style="vertical-align:middle;text-align: center;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -805,6 +811,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											</td>
 											<td>
 												<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate1" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+											</td>
+											<td>
+												<input type="text" class="form-control" name="headerMargin[]" id="headerMargin1" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
 											</td>
 											<td style="vertical-align:middle;text-align: center;">
 												<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -1219,6 +1228,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             <td>
                 <input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
             </td>
+			<td>
+				<input type="text" class="form-control" name="headerMargin[]" id="headerMargin${testTypeFileCounter}" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
+			</td>
             <td style="vertical-align:middle;text-align: center;">
                 <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
@@ -1233,6 +1245,8 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		let rowCount = document.getElementById("testTypeFileDetails").rows.length;
 		if (rowCount > 1) {
 			$(el).fadeOut("slow", function() {
+				console.log(el.parentNode);
+				return false;
 				el.parentNode.removeChild(el);
 			});
 		} else {
@@ -1265,9 +1279,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		}
 	}
 
-	function removeReport() {
-		$('.newFile').show();
-		$('.oldFile').hide();
+	function removeReport(row) {
+		$('.newFile' + row).show();
+		$('.oldFile' + row).hide();
 	}
 
 	function deleteReport(row) {

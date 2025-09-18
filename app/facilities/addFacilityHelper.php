@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\ApiService;
+use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -157,13 +158,14 @@ try {
 						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
 						$fileName = "report-template-" . $string . $extension;
 						$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
-						$fileResponse[$row] = $fileName;
-
+						$fileResponse[$test]['file'] = $fileName;
+						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 
 						// Move the uploaded file to the desired location
 						$sanitizedReportTemplate->moveTo($filePath);
 					}
 				}
+				$reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'report_format');
 				$db->where('facility_id', $lastId);
 				$db->update('facility_details', ['report_format' => json_encode($fileResponse)]);
 			}
