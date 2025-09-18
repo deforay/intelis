@@ -5,6 +5,7 @@ use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\JsonUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
@@ -175,8 +176,6 @@ try {
 					MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
 				}
 				foreach ($_POST['testTypeFile'] as $key => $test) {
-					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key]))
-						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
 					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
 					if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
 						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
@@ -185,17 +184,24 @@ try {
 						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
 						$fileName = "report-template-" . $string . $extension;
 						$filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
-						$fileResponse[$test] = $fileName;
-
+						$fileResponse[$test]['file'] = $fileName;
+						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 
 						// Move the uploaded file to the desired location
 						$sanitizedReportTemplate->moveTo($filePath);
 					} else {
-						$fileResponse[$test] = $_POST['oldTemplate'][$key];
+						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
+						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
+					}
+					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key])) {
+						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
+						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
+						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 					}
 				}
+				$reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'report_format');
 				$db->where('facility_id', $facilityId);
-				$db->update('facility_details', ['report_format' => json_encode($fileResponse)]);
+				$db->update('facility_details', ['report_format' => $db->func($reportFormatJson)]);
 			}
 		}
 
@@ -385,6 +391,6 @@ try {
 		'line' => $e->getLine(),
 		'trace' => $e->getTraceAsString(),
 	]);
-	$_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
+	// $_SESSION['alertMsg'] = _translate("Something went wrong please try again.");
 	header("Location:facilities.php");
 }

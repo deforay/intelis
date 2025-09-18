@@ -757,9 +757,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<table class="table table-bordered" id="testTypeFileTable">
 										<thead>
 											<tr>
-												<th style="width:40%;"><?php echo _translate("Test Type"); ?></th>
-												<th style="width:40%;"><?php echo _translate("Upload File (PDF)"); ?></th>
-												<th style="width:20%;"><?php echo _translate("Action"); ?></th>
+												<th style="width:30%;vertical-align:middle;text-align: center;"><?php echo _translate("Test Type"); ?></th>
+												<th style="width:50%;vertical-align:middle;text-align: center;"><?php echo _translate("Upload File (PDF)"); ?></th>
+												<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Header Margin"); ?></th>
+												<th style="width:10%;vertical-align:middle;text-align: center;"><?php echo _translate("Action"); ?></th>
 											</tr>
 										</thead>
 										<tbody id="testTypeFileDetails">
@@ -770,6 +771,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												</td>
 												<td>
 													<input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate1" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+												</td>
+												<td>
+													<input type="text" class="form-control" name="headerMargin[]" id="headerMargin1" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
 												</td>
 												<td style="vertical-align:middle;text-align: center;">
 													<a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
@@ -1133,6 +1137,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             <td>
                 <input type="file" class="form-control" name="reportTemplate[]" id="reportTemplate${testTypeFileCounter}" accept=".pdf" title="<?php echo _translate('Please upload PDF file', true); ?>">
             </td>
+			<td>
+				<input type="text" class="form-control" name="headerMargin[]" id="headerMargin${testTypeFileCounter}" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
+			</td>
             <td style="vertical-align:middle;text-align: center;">
                 <a class="btn btn-xs btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
                 <a class="btn btn-xs btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
