@@ -15,7 +15,6 @@
     "require": {
         "php": "^8.2",
         "ext-bcmath": "*",
-        "ext-pdo_sqlite": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
