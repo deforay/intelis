@@ -193,18 +193,10 @@ $overviewRows = [
     [
         'Current Time',
         formatDateTime(date('Y-m-d H:i:s')),
-        'STS Token',
-        $instanceInfo ? maskSensitive($instanceInfo['sts_token']) : 'Not Set'
-    ],
-
-
-    [
         'SmartConnect URL',
         $smartConnectURL ?: 'Not Configured',
-        '',
-        ''
+        
     ]
-
 ];
 
 if ($isLIS) {
@@ -222,6 +214,12 @@ if ($isLIS) {
         "$remoteURL ($isConnected)" ?: 'Not Configured',
         'InteLIS Lab ID',
         $labId ?: 'Not Configured'
+    ];
+    $overviewRows[] = [
+        'STS Token',
+        $instanceInfo ? maskSensitive($instanceInfo['sts_token']) : 'Not Set',
+        '',
+        ''
     ];
 
     if ($labId) {
