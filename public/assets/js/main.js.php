@@ -711,4 +711,47 @@ $remoteURL = $general->getRemoteURL();
 
         });
     });
+
+
+    const typeLabels = {
+        fs_perms: "Folder Permissions",
+        disk: "Disk Space",
+        mysql: "Database",
+        message: "System Message"
+    };
+    (function() {
+
+        try {
+            const lastId = localStorage.getItem('sseLastId') || 0;
+            const es = new EventSource('/sse/alerts.php?last_id=' + lastId);
+
+            const handle = (alert) => {
+                const typeLabel = typeLabels[alert.type] || alert.type;
+                const msg = `[${typeLabel}] ${alert.message}`;
+
+                switch (alert.level) {
+                    case 'info':
+                        toast.success(msg);
+                        break;
+                    case 'warn':
+                        toast.warn ? toast.warn(msg) : toast.error(msg);
+                        break;
+                    case 'error':
+                    case 'critical':
+                        toast.error(msg);
+                        break;
+                }
+
+                // persist last seen ID
+                localStorage.setItem('sseLastId', alert.id);
+            };
+
+            es.addEventListener('disk', e => handle(JSON.parse(e.data)));
+            es.addEventListener('mysql', e => handle(JSON.parse(e.data)));
+            es.addEventListener('fs_perms', e => handle(JSON.parse(e.data)));
+            es.addEventListener('message', e => handle(JSON.parse(e.data)));
+        } catch (err) {
+            console.error('SSE init failed', err);
+        }
+    })();
 </script>
