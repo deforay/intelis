@@ -53,6 +53,29 @@ Options -Indexes -MultiViews +FollowSymLinks
   </FilesMatch>
 </IfModule>
 
+# --- SSE: disable compression & buffering; set proper cache headers ---
+<IfModule mod_setenvif.c>
+  # mark SSE requests
+  SetEnvIfNoCase Request_URI "^/sse/" IS_SSE=1
+</IfModule>
+
+<IfModule mod_headers.c>
+  # required for intermediaries (Cloudflare/NGINX) and proxies
+  Header set Cache-Control "no-cache, no-transform" env=IS_SSE
+  Header set X-Accel-Buffering "no" env=IS_SSE
+</IfModule>
+
+# mod_deflate: turn off gzip for SSE
+<IfModule mod_deflate.c>
+  SetEnvIfNoCase Request_URI "^/sse/" no-gzip=1
+</IfModule>
+
+# mod_brotli: turn off br for SSE (Apache 2.4.26+)
+<IfModule mod_brotli.c>
+  SetEnvIfNoCase Request_URI "^/sse/" no-brotli=1
+</IfModule>
+
+
 
 # The following rule tells Apache that if the requested filename
 # exists, simply serve it.
@@ -60,6 +83,8 @@ RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
+# Allow direct access to SSE endpoints
+RewriteRule ^sse/ - [L]
 
 # The following rewrites all other queries to index.php.
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$

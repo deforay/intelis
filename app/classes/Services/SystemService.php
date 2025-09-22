@@ -4,12 +4,14 @@ namespace App\Services;
 
 use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
-use App\Utilities\MiscUtility;
 
 final class SystemService
 {
     protected CommonService $commonService;
     private string $defaultLocale = 'en_US';
+    private static ?\PDO $systemAlertSqlite = null;
+    private const SYSTEM_ALERT_SQLITE_FILE = CACHE_PATH . '/system_alerts.sqlite';
+
 
     public function __construct(CommonService $commonService)
     {
@@ -188,5 +190,108 @@ final class SystemService
         }
 
         return $folderPermissions;
+    }
+
+    private static function systemAlertSqlite(): \PDO
+    {
+        if (self::$systemAlertSqlite instanceof \PDO) {
+            return self::$systemAlertSqlite;
+        }
+
+        if (!is_dir(CACHE_PATH)) {
+            @mkdir(CACHE_PATH, 0775, true);
+        }
+
+        $pdo = new \PDO('sqlite:' . self::SYSTEM_ALERT_SQLITE_FILE, null, null, [
+            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+            \PDO::ATTR_TIMEOUT            => 3,
+        ]);
+
+        // robust for concurrent reads/writes
+        $pdo->exec("PRAGMA journal_mode = WAL");
+        $pdo->exec("PRAGMA synchronous = NORMAL");
+        $pdo->exec("PRAGMA busy_timeout = 3000");
+
+        // auto-init schema
+        $pdo->exec("
+        CREATE TABLE IF NOT EXISTS system_alerts (
+          id         INTEGER PRIMARY KEY AUTOINCREMENT,
+          level      TEXT NOT NULL CHECK(level IN ('info','warn','error','critical')),
+          type       TEXT NOT NULL,
+          message    TEXT NOT NULL,
+          meta       TEXT NULL,
+          audience   TEXT NOT NULL DEFAULT 'admin' CHECK(audience IN ('auth','admin')),
+          created_at TEXT NOT NULL DEFAULT (datetime('now'))
+        );
+    ");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_audience_id ON system_alerts(audience, id)");
+        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_type_created ON system_alerts(type, created_at)");
+
+        self::$systemAlertSqlite = $pdo;
+        return $pdo;
+    }
+
+    public static function insertSystemAlert(
+        string $level,
+        string $type,
+        string $message,
+        ?array $meta = null,
+        string $audience = 'admin'
+    ): ?int {
+        try {
+            $pdo = self::systemAlertSqlite(); // ensures DB + schema
+            $stmt = $pdo->prepare(
+                'INSERT INTO system_alerts (level, type, message, meta, audience)
+             VALUES (:level, :type, :message, :meta, :audience)'
+            );
+            $stmt->execute([
+                ':level'    => $level,
+                ':type'     => $type,
+                ':message'  => $message,
+                ':meta'     => $meta ? json_encode($meta, JSON_UNESCAPED_SLASHES) : null,
+                ':audience' => $audience,
+            ]);
+            return (int)$pdo->lastInsertId();
+        } catch (\Throwable $e) {
+            // If SQLite cannot be used, we return null.
+            return null;
+        }
+    }
+
+    public static function systemAlertSqliteMaxId(): int
+    {
+        $pdo = self::systemAlertSqlite();
+        return (int)$pdo->query("SELECT COALESCE(MAX(id),0) FROM system_alerts")->fetchColumn();
+    }
+
+
+    /** Read since id with audience filter (for SSE) */
+    public static function systemAlertSqliteReadSinceId(int $lastId, array $audiences): array
+    {
+        $pdo = self::systemAlertSqlite();
+        $marks = implode(',', array_fill(0, count($audiences), '?'));
+        $sql = "SELECT id, level, type, message, meta, created_at, audience
+                FROM system_alerts
+                    WHERE id > ?
+                    AND audience IN ($marks)
+                    ORDER BY id ASC";
+        $stmt = $pdo->prepare($sql);
+        $params = array_merge([$lastId], $audiences);
+        $stmt->execute($params);
+
+        $rows = [];
+        while ($r = $stmt->fetch(\PDO::FETCH_ASSOC)) {
+            $rows[] = [
+                'id'      => (int)$r['id'],
+                'level'   => $r['level'],
+                'type'    => $r['type'],
+                'message' => $r['message'],
+                'meta'    => isset($r['meta']) ? json_decode($r['meta'], true) : null,
+                'ts'      => $r['created_at'],
+                'audience' => $r['audience'],
+            ];
+        }
+        return $rows;
     }
 }

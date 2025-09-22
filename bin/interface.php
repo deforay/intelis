@@ -409,7 +409,9 @@ try {
 
                 $testedByUserId = $usersService->getOrCreateUser($tester);
 
-                if (empty($vlResult) || $vlResult == '') {
+                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
+
+                if (empty($vlResult) || $vlResult == '' || $autoApprove === false) {
                     $resultStatus = SAMPLE_STATUS\PENDING_APPROVAL;
                 }
 
@@ -505,6 +507,8 @@ try {
                     }
                 }
 
+                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
+                $resultStatus = ($autoApprove === false) ? SAMPLE_STATUS\PENDING_APPROVAL : SAMPLE_STATUS\ACCEPTED;
                 $data = [
                     'lab_id' => $labId,
                     'tested_by' => $result['tested_by'],
@@ -513,7 +517,7 @@ try {
                     'sample_tested_datetime' => $result['result_accepted_date_time'],
                     'result' => $eidResult,
                     'eid_test_platform' => $result['machine_used'],
-                    'result_status' => SAMPLE_STATUS\ACCEPTED,
+                    'result_status' => $resultStatus,
                     'manual_result_entry' => 'no',
                     'result_approved_by' => $approved['eid'] ?? null,
                     'result_reviewed_by' => $reviewed['eid'] ?? null,
@@ -586,6 +590,9 @@ try {
                 }
 
                 $userId = $usersService->getOrCreateUser($result['tested_by']);
+                
+                $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
+                $resultStatus = ($autoApprove === false) ? SAMPLE_STATUS\PENDING_APPROVAL : SAMPLE_STATUS\ACCEPTED;
 
                 $data = [
                     'lab_id' => $labId,
@@ -596,7 +603,7 @@ try {
                     $resultField => $hepatitisResult ?? null,
                     $otherField => $otherFieldResult ?? null,
                     'hepatitis_test_platform' => $result['machine_used'],
-                    'result_status' => SAMPLE_STATUS\ACCEPTED,
+                    'result_status' => $resultStatus,
                     'manual_result_entry' => 'no',
                     'result_approved_by' => $approved['hepatitis'] ?? null,
                     'result_reviewed_by' => $reviewed['hepatitis'] ?? null,
