@@ -66,10 +66,19 @@ if (!empty($requestResult)) {
             }
         }
         $pdfTemplatePath = null;
-        if (isset($selectedReportFormats['tb']['file']) && !empty($selectedReportFormats['tb']['file']))
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
-        if (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file']))
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
+        $margintop = 0;
+        $facilityReportFormat = (array)json_decode($arr['report_format']);
+        if (isset($facilityReportFormat['tb']->file) && !empty($facilityReportFormat['tb']->file)) {
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $facilityReportFormat['tb']->file;
+            $margintop = $selectedReportFormats['tb']->mtop;
+        } else if (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file'])) {
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
+            $margintop = $selectedReportFormats['default']['mtop'];
+        } else {
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" .  DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
+            $margintop = $selectedReportFormats['tb']['mtop'];
+        }
+
         // create new PDF document
         $pdf = new RwandaTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $pdfTemplatePath);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {

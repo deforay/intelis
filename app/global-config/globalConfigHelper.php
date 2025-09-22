@@ -1,5 +1,6 @@
 <?php
 
+use App\Utilities\JsonUtility;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
@@ -19,7 +20,9 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
-
+$sanitizedReportTemplate = null;
+if (isset($uploadedFiles['reportFormat']['report_template']))
+    $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'], ['pdf']);
 $sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
 $sanitizedLogo = _sanitizeFiles($uploadedFiles['logo'], ['png', 'jpg', 'jpeg', 'gif']);
 
@@ -104,9 +107,46 @@ try {
     //         ]);
     //     }
     // }
+    if (isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type'])) {
+        $fileResponse = [];
+        $directories = [UPLOAD_PATH, 'labs', 'report-template'];
+        $currentPath = '';
+        foreach ($directories as $directory) {
+            $currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
+            MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
+        }
+        foreach ($_POST['reportFormat']['test_type'] as $key => $test) {
+            $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'][$key], ['pdf']);
 
+            if (isset($uploadedFiles['reportFormat']['report_template'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
+                $directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+                MiscUtility::makeDirectory($directoryPath, 0777, true);
+                $extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
+                $fileName = "default." . $extension;
+                $filePath = $directoryPath . DIRECTORY_SEPARATOR . $fileName;
+                $fileResponse[$test]['file'] = $fileName;
+                $fileResponse[$test]['mtop'] = $_POST['reportFormat']['header_margin'][$key];
+
+                // Move the uploaded file to the desired location
+                $sanitizedReportTemplate->moveTo($filePath);
+            } else {
+                $fileResponse[$test]['file'] = $_POST['reportFormat']['old_template'][$key];
+                $fileResponse[$test]['mtop'] = $_POST['reportFormat']['header_margin'][$key];
+            }
+            if (isset($_POST['reportFormat']['delete_template'][$key]) && !empty($_POST['reportFormat']['delete_template'][$key])) {
+                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
+                $fileResponse[$test]['file'] = $_POST['reportFormat']['old_template'][$key];
+                $fileResponse[$test]['mtop'] = $_POST['reportFormat']['header_margin'][$key];
+            }
+        }
+        $reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'value');
+        $db->where('name', 'report_format');
+        $db->update('global_config', ['value' => $db->func($reportFormatJson)]);
+        unset($_POST['reportFormat']);
+    }
 
     unset($_SESSION['APP_LOCALE']);
+
 
     foreach ($_POST as $fieldName => $fieldValue) {
         if ($fieldName != 'removedLogoImage') {
@@ -126,22 +166,21 @@ try {
         }
         $barcode = $_POST['bar_code_printing'];
         $message = $_POST['contentFormat'];
-        if($barcode == "zebra-printer"){
+        if ($barcode == "zebra-printer") {
             $content = "let zebraFormat = `$message`;";
-            $fileName="zebra-format.js";
-        }
-        elseif($barcode == "dymo-labelwriter-450"){
+            $fileName = "zebra-format.js";
+        } elseif ($barcode == "dymo-labelwriter-450") {
             $content = "let dymoFormat = `$message`;";
-            $fileName="dymo-format.js";
+            $fileName = "dymo-format.js";
         }
 
-        $path = 'public/uploads'. DIRECTORY_SEPARATOR . 'barcode-formats';
+        $path = 'public/uploads' . DIRECTORY_SEPARATOR . 'barcode-formats';
 
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
 
-        file_put_contents($path.DIRECTORY_SEPARATOR.$fileName, $content);
+        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $content);
     }
 
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';

@@ -152,7 +152,7 @@ try {
 				foreach ($_POST['testTypeFile'] as $key => $test) {
 					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
 					if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $lastId;
 						MiscUtility::makeDirectory($directoryPath, 0777, true);
 						$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
 						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
@@ -196,7 +196,7 @@ try {
 
 		// Upload Report Template
 		if ($sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $lastId . DIRECTORY_SEPARATOR . "report-template";
+			$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $lastId;
 			MiscUtility::makeDirectory($directoryPath, 0777, true);
 			$string = MiscUtility::generateRandomString(12) . ".";
 			$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
