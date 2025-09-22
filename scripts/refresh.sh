@@ -71,10 +71,6 @@ log_action() {
 
 trap 'echo "Error on line $LINENO"; log_action "Error on line $LINENO"; exit 1' ERR
 
-to_absolute_path() {
-    [[ "$1" = /* ]] && echo "$1" || echo "$(pwd)/$1"
-}
-
 is_valid_application_path() {
     [ -f "$1/configs/config.production.php" ] && [ -d "$1/public" ]
 }
