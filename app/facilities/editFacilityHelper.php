@@ -178,7 +178,7 @@ try {
 				foreach ($_POST['testTypeFile'] as $key => $test) {
 					$sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportTemplate'][$key], ['pdf']);
 					if (isset($uploadedFiles['reportTemplate'][$key]) && $sanitizedReportTemplate instanceof UploadedFile && $sanitizedReportTemplate->getError() === UPLOAD_ERR_OK) {
-						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+						$directoryPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityId;
 						MiscUtility::makeDirectory($directoryPath, 0777, true);
 						$string = MiscUtility::generateRandomString(12) . "-" . $test . ".";
 						$extension = MiscUtility::getFileExtension($sanitizedReportTemplate->getClientFilename());
@@ -194,7 +194,7 @@ try {
 						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 					}
 					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key])) {
-						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
+						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test . DIRECTORY_SEPARATOR . $facilityId);
 						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
 						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 					}
