@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9267b21493d3765256921b67efebb8c6",
+    "content-hash": "139a80155f4759722f834e620d8895b4",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -6964,7 +6964,6 @@
     "platform": {
         "php": "^8.2",
         "ext-bcmath": "*",
-        "ext-pdo_sqlite": "*",
         "ext-curl": "*",
         "ext-fileinfo": "*",
         "ext-gd": "*",
