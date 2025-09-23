@@ -40,182 +40,321 @@ $errorInfo ??= [];
   <link rel="stylesheet" href="/assets/css/AdminLTE.min.css">
 
   <style>
-    .content-wrapper small {
-      font-size: 1.4em !important;
-      color: #555;
+    body {
+      background-color: #f4f6f9;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #495057;
+      min-height: 100vh;
     }
 
-    .content-wrapper a {
-      font-size: 0.9em !important;
-      text-decoration: underline;
+    .error-container {
+      min-height: 100vh;
+      display: table;
+      width: 100%;
+      background: #f4f6f9;
+    }
+
+    .error-content {
+      display: table-cell;
+      vertical-align: middle;
+      text-align: center;
+      padding: 10px;
+    }
+
+    .error-card {
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+      padding: 20px 25px;
+      margin: 0 auto;
+      max-width: 700px;
+      position: relative;
+    }
+
+    .logout-btn {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background-color: #dc3545;
+      border: 1px solid #dc3545;
+      color: white;
+      padding: 8px 16px;
+      border-radius: 6px;
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 500;
+      transition: all 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #c82333;
+      border-color: #bd2130;
+      color: white;
+      text-decoration: none;
+      transform: translateY(-1px);
+    }
+
+    .error-icon-wrapper {
+      margin-bottom: 20px;
+    }
+
+    .error-icon {
+      font-size: 48px;
+      color: #dc3545;
+      margin-bottom: 12px;
+      opacity: 0.9;
+    }
+
+    .error-title {
+      font-size: 22px;
+      font-weight: 600;
+      color: #2c3e50;
+      margin-bottom: 15px;
+      line-height: 1.3;
+    }
+
+    .error-code {
+      font-size: 14px;
+      color: #6c757d;
+      margin-bottom: 6px;
+      font-weight: 500;
+    }
+
+    .error-message {
+      font-size: 14px;
+      color: #495057;
+      margin-bottom: 25px;
+      line-height: 1.4;
     }
 
     .error-details {
       background: #f8f9fa;
-      border: 1px solid #dee2e6;
+      border: 1px solid #e9ecef;
       border-radius: 6px;
-      padding: 25px;
-      margin: 25px 0;
+      padding: 20px;
+      margin: 20px 0;
       text-align: left;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
     }
 
-    .error-header {
+    .error-meta {
       display: flex;
       justify-content: space-between;
-      align-items: center;
-      margin-bottom: 20px;
+      align-items: flex-start;
+      margin-bottom: 15px;
       flex-wrap: wrap;
       gap: 15px;
     }
 
-    .error-id-section {
+    .error-id-section,
+    .error-time-section {
       flex: 1;
       min-width: 200px;
-      min-height: 70px;
     }
 
     .error-time-section {
-      flex: 1;
       text-align: right;
-      min-width: 200px;
-      min-height: 70px;
     }
 
     .error-id,
     .error-time {
-      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
-      color:rgb(192, 21, 24);
-      padding: 8px 12px;
+      font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', 'Courier New', monospace;
+      background: #fff;
+      color: #d73527;
+      padding: 6px 10px;
       border-radius: 4px;
       display: inline-block;
-      margin: 5px 0;
-      font-size: 0.95em;
+      font-size: 11px;
       font-weight: 600;
-      border: 1px solid rgb(253, 227, 232);
+      border: 1px solid #f8d7da;
       word-break: break-all;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
     }
 
     .suggested-actions {
-      text-align: left;
-      margin: 25px auto;
-      max-width: 600px;
+      margin: 15px 0;
     }
 
     .suggested-actions h4 {
       color: #495057;
-      margin-bottom: 15px;
-      font-size: 1.1em;
+      margin-bottom: 12px;
+      font-size: 15px;
       font-weight: 600;
+      text-align: center;
     }
 
     .suggested-actions ul {
-      list-style-type: none;
+      list-style: none;
       padding: 0;
+      margin: 0;
     }
 
     .suggested-actions li {
-      padding: 10px 0;
-      border-bottom: 1px solid #e9ecef;
-      font-size: 1em;
-      line-height: 1.4;
+      background: white;
+      border: 1px solid #e9ecef;
+      border-radius: 4px;
+      padding: 10px 15px;
+      margin-bottom: 6px;
+      font-size: 13px;
+      line-height: 1.3;
+      position: relative;
+      padding-left: 35px;
+      transition: all 0.2s ease;
     }
 
-    .suggested-actions li:last-child {
-      border-bottom: none;
+    .suggested-actions li:hover {
+      border-color: #007bff;
+      box-shadow: 0 1px 4px rgba(0, 123, 255, 0.1);
     }
 
     .suggested-actions li:before {
-      content: "→ ";
+      content: "→";
+      position: absolute;
+      left: 12px;
+      top: 50%;
+      transform: translateY(-50%);
       color: #007bff;
       font-weight: bold;
-      margin-right: 8px;
+      font-size: 14px;
+    }
+
+    .suggested-actions li:last-child {
+      margin-bottom: 0;
     }
 
     .button-container {
-      margin-top: 25px;
+      margin-top: 20px;
       text-align: center;
     }
 
-    .retry-button {
+    .action-button {
       background: #007bff;
+      border: 1px solid #007bff;
       color: white;
-      padding: 12px 24px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 8px 8px;
-      text-decoration: none !important;
+      padding: 10px 20px;
+      border-radius: 4px;
+      text-decoration: none;
       display: inline-block;
+      margin: 4px 6px;
       font-weight: 500;
-      transition: all 0.2s ease;
-      box-shadow: 0 2px 4px rgba(0, 123, 255, 0.2);
+      font-size: 13px;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 6px rgba(0, 123, 255, 0.2);
     }
 
-    .retry-button:hover {
+    .action-button:hover {
       background: #0056b3;
+      border-color: #004085;
       color: white;
       text-decoration: none;
-      transform: translateY(-1px);
-      box-shadow: 0 4px 8px rgba(0, 123, 255, 0.3);
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
     }
 
-    .retry-button i {
+    .action-button.btn-secondary {
+      background: #6c757d;
+      border-color: #6c757d;
+      box-shadow: 0 2px 6px rgba(108, 117, 125, 0.2);
+    }
+
+    .action-button.btn-secondary:hover {
+      background: #545b62;
+      border-color: #4e555b;
+      box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3);
+    }
+
+    .action-button i {
       margin-right: 6px;
     }
 
-    /* Enhanced error title styling */
-    .error-title {
-      color: #dc3545;
-      text-align: center;
-      font-size: 6em;
+    .fallback-message {
+      color: #6c757d;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .fallback-link {
+      color: #007bff;
+      text-decoration: underline;
       font-weight: 500;
-      margin-bottom: 20px;
-      text-shadow: 0 2px 4px rgba(220, 53, 69, 0.1);
     }
 
-    .error-code-line {
-      color: #555;
-      font-weight: bold;
-      font-size: 1.4em;
-      margin-bottom: 10px;
+    .fallback-link:hover {
+      color: #0056b3;
+      text-decoration: none;
     }
 
-    .error-message-line {
-      color: #555;
-      font-weight: bold;
-      font-size: 1.4em;
-      margin-bottom: 25px;
+    .footer {
+      background: #2c3e50;
+      color: #bdc3c7;
+      text-align: center;
+      padding: 20px;
+      font-size: 12px;
+      line-height: 1.4;
+      margin-top: 5px;
     }
 
-    /* Responsive adjustments */
+    /* Responsive design */
     @media (max-width: 768px) {
-      .error-header {
-        flex-direction: column;
-        text-align: center;
+      .error-card {
+        margin: 15px;
+        padding: 25px 20px;
+        border-radius: 6px;
       }
 
-      .error-time-section {
-        text-align: center;
+      .logout-btn {
+        position: static;
+        display: block;
+        width: fit-content;
+        margin: 0 auto 20px auto;
       }
 
-      .content-wrapper {
-        padding: 0 25px !important;
+      .error-icon {
+        font-size: 40px;
       }
 
       .error-title {
-        font-size: 4em !important;
+        font-size: 20px;
+      }
+
+      .error-meta {
+        flex-direction: column;
+        gap: 10px;
+      }
+
+      .error-time-section {
+        text-align: left;
       }
 
       .button-container {
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
+        gap: 8px;
       }
 
-      .retry-button {
-        width: 200px;
+      .action-button {
+        width: 180px;
+        margin: 3px 0;
+      }
+
+      .suggested-actions li {
+        padding-left: 30px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .error-card {
+        margin: 10px;
+        padding: 20px 15px;
+      }
+
+      .error-title {
+        font-size: 18px;
+      }
+
+      .error-code,
+      .error-message {
+        font-size: 13px;
       }
     }
   </style>
@@ -223,100 +362,91 @@ $errorInfo ??= [];
 </head>
 
 <body class="<?php echo $skin ?? ''; ?>" id="capture">
-  <div class="wrapper">
-    <div class="content-wrapper" style="margin:0;min-height:700px !important;padding:0 50px;">
-      <section class="">
-        <div class="row">
-          <div class="col-xs-12" style="text-align: center;">
-            <br><br><br><br>
+  <div class="error-container">
+    <div class="error-content">
+      <div class="error-card">
+        
+        <a href="/login/logout.php" class="logout-btn">
+          <i class="fa fa-sign-out"></i> <?= _translate('Logout'); ?>
+        </a>
 
-            <h2 class="error-title">
-              <span class="fa fa-exclamation-triangle"></span>
-              <?= _translate("An error occurred"); ?>
-            </h2>
+        <div class="error-icon-wrapper">
+          <div class="error-icon">
+            <i class="fa fa-exclamation-triangle"></i>
+          </div>
+          <h1 class="error-title"><?= _translate("An error occurred"); ?></h1>
+        </div>
 
-            <h3 class="error-code-line">
-              <?= _translate("Error Code") . " : " . ($httpCode ?? '500') . " - " . $errorReason; ?>
-            </h3>
+        <div class="error-code">
+          <?= _translate("Error Code") . " : " . ($httpCode ?? '500') . " - " . $errorReason; ?>
+        </div>
 
-            <h3 class="error-message-line">
-              <?= htmlspecialchars((string) $errorMessage, ENT_QUOTES, 'UTF-8'); ?>
-            </h3>
+        <div class="error-message">
+          <?= htmlspecialchars((string) $errorMessage, ENT_QUOTES, 'UTF-8'); ?>
+        </div>
 
-            <?php if (!empty($errorInfo)) : ?>
-              <div class="error-details">
+        <?php if (!empty($errorInfo)) : ?>
+          <div class="error-details">
 
-                <div class="error-header">
-                  <?php if (!empty($errorInfo['error_id'])) : ?>
-                    <div class="error-id-section">
-                      <span class="error-id"><?= _translate('Error ID'); ?> : <?= htmlspecialchars($errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?></span>
+            <?php if (!empty($errorInfo['error_id']) || !empty($errorInfo['timestamp'])) : ?>
+              <div class="error-meta">
+                <?php if (!empty($errorInfo['error_id'])) : ?>
+                  <div class="error-id-section">
+                    <div class="error-id">
+                      <?= _translate('Error ID'); ?>: <?= htmlspecialchars($errorInfo['error_id'], ENT_QUOTES, 'UTF-8'); ?>
                     </div>
-                  <?php endif; ?>
-
-                  <?php if (!empty($errorInfo['timestamp'])) : ?>
-                    <div class="error-time-section">
-                      <span class="error-time"><?= _translate('Time'); ?> : <?= DateUtility::humanReadableDateFormat($errorInfo['timestamp'], true); ?></span>
-                    </div>
-                  <?php endif; ?>
-                </div>
-
-                <?php if (!empty($errorInfo['suggested_actions'])) : ?>
-                  <div class="suggested-actions">
-                    <h4><?= _translate('What you can try'); ?>:</h4>
-                    <ul>
-                      <?php foreach ($errorInfo['suggested_actions'] as $action) : ?>
-                        <li><?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?></li>
-                      <?php endforeach; ?>
-                    </ul>
                   </div>
                 <?php endif; ?>
 
-                <div class="button-container">
-                  <?php if (!empty($errorInfo['can_retry']) && $errorInfo['can_retry']) : ?>
-                    <a href="javascript:location.reload();" class="retry-button">
-                      <i class="fa fa-refresh"></i> <?= _translate('Try Again'); ?>
-                    </a>
-                  <?php endif; ?>
-
-                  <a href="<?= $_SESSION['landingPage'] ?? "/"; ?>" class="retry-button">
-                    <i class="fa fa-home"></i> <?= _translate('Go to Dashboard'); ?>
-                  </a>
-                </div>
-
+                <?php if (!empty($errorInfo['timestamp'])) : ?>
+                  <div class="error-time-section">
+                    <div class="error-time">
+                      <?= _translate('Time'); ?>: <?= DateUtility::humanReadableDateFormat($errorInfo['timestamp'], true); ?>
+                    </div>
+                  </div>
+                <?php endif; ?>
               </div>
-            <?php else : ?>
-              <!-- Fallback for when errorInfo is not available -->
-              <small>
-                <?= _translate("Please contact the System Admin for further support."); ?>
-              </small>
-              <br><br>
-              <small>
-                <a href="/"><?= _translate("Go to Dashboard"); ?></a>
-              </small>
             <?php endif; ?>
 
+            <?php if (!empty($errorInfo['suggested_actions'])) : ?>
+              <div class="suggested-actions">
+                <h4><?= _translate('What you can try'); ?></h4>
+                <ul>
+                  <?php foreach ($errorInfo['suggested_actions'] as $action) : ?>
+                    <li><?= htmlspecialchars($action, ENT_QUOTES, 'UTF-8'); ?></li>
+                  <?php endforeach; ?>
+                </ul>
+              </div>
+            <?php endif; ?>
+
+            <div class="button-container">
+              <?php if (!empty($errorInfo['can_retry']) && $errorInfo['can_retry']) : ?>
+                <a href="javascript:location.reload();" class="action-button">
+                  <i class="fa fa-refresh"></i> <?= _translate('Try Again'); ?>
+                </a>
+              <?php endif; ?>
+
+              <a href="<?= $_SESSION['landingPage'] ?? "/"; ?>" class="action-button btn-secondary">
+                <i class="fa fa-home"></i> <?= _translate('Go to Dashboard'); ?>
+              </a>
+            </div>
+
           </div>
-        </div>
-      </section>
+        <?php else : ?>
+          <div class="fallback-message">
+            <p><?= _translate("Please contact the System Admin for further support."); ?></p>
+            <p><a href="/" class="fallback-link"><?= _translate("Go to Dashboard"); ?></a></p>
+          </div>
+        <?php endif; ?>
+
+      </div>
     </div>
   </div>
 
-  <footer class="main-footer" style="margin:0;min-height:100px !important;text-align:center;">
-    <small>
-      <?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC)."); ?>
-    </small>
+  <footer class="footer">
+    <?= _translate("This project is supported by the U.S. President's Emergency Plan for AIDS Relief (PEPFAR) through the U.S. Centers for Disease Control and Prevention (CDC)."); ?>
   </footer>
 
-  <script>
-    // Auto-hide sensitive information after some time (optional security measure)
-    setTimeout(function() {
-      const errorId = document.querySelector('.error-id');
-      if (errorId && window.location.protocol === 'https:') {
-        // Only in production/secure environments
-        // errorId.style.display = 'none';
-      }
-    }, 300000); // 5 minutes
-  </script>
 </body>
 
 </html>
