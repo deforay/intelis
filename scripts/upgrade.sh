@@ -115,6 +115,48 @@ update_configuration() {
     print info "Configuration file updated."
 }
 
+ensure_cache_di_true() {
+    local file="$1"
+    [ -f "$file" ] || { echo "config not found: $file" >&2; return 1; }
+
+    # Ask PHP what the current value is (or if it's missing)
+    local state
+    state=$(php -r "
+        \$c = require '$file';
+        if (!is_array(\$c)) { echo 'ERR'; exit(0); }
+        if (!isset(\$c['system']['cache_di'])) { echo 'MISSING'; exit(0); }
+        echo (\$c['system']['cache_di'] ? 'TRUE' : 'FALSE');
+    " 2>/dev/null)
+
+    case "$state" in
+        TRUE)
+            echo "cache_di already true"
+            ;;
+        FALSE)
+            echo "Setting cache_di=true (was false)"
+            cp "$file" "$file.bak.$(date +%Y%m%d%H%M%S)"
+            # Flip only the specific assignment; tolerate whitespace
+            sed -i -E "s|(\['system'\]\['cache_di'\]\s*=\s*)false\s*;|\1true;|g" "$file"
+            ;;
+        MISSING)
+            echo "Adding cache_di=true (missing)"
+            cp "$file" "$file.bak.$(date +%Y%m%d%H%M%S)"
+            # Insert just before 'return $systemConfig;'. If not found, append.
+            awk -v ins="\$systemConfig['system']['cache_di'] = true;" '
+                BEGIN{done=0}
+                /^\s*return\s+\$systemConfig\s*;/{ if(!done){print ins; done=1} }
+                { print }
+                END{ if(!done) print ins }
+            ' "$file" > "$file.tmp" && mv "$file.tmp" "$file"
+            ;;
+        *)
+            echo "Could not evaluate config via PHP; skipping change" >&2
+            return 2
+            ;;
+    esac
+}
+
+
 # Save the current trap settings
 current_trap=$(trap -p ERR)
 
@@ -858,9 +900,7 @@ else
 fi
 
 # Check if the cache_di setting is set to true
-if grep -q "\['cache_di'\] => false" "${config_file}"; then
-    sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
-fi
+ensure_cache_di_true "${config_file}"
 
 # Run Composer Install as www-data
 print header "Running composer operations"
