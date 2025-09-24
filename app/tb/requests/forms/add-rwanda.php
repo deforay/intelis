@@ -470,10 +470,12 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                 </div>
                                 <div class="row pr-5" style="margin-right: 5px;">
                                     <div class="col-md-6" align="right">
-                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Results"); ?></label>
+                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                     </div>
                                     <div class="col-md-6" style=" padding-right: 3px; ">
-                                        <input type="text" name="finalResult" id="finalResult" class="form-control" placeholder="Enter final result" title="Please enter the final result" />
+                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation">
+                                            <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
+                                        </select>
                                     </div>
                                 </div>
                             </div>

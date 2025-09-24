@@ -40,12 +40,11 @@ if (!empty($requestResult)) {
         LEFT JOIN user_details as revised ON tt.revised_by=revised.user_id 
         LEFT JOIN r_tb_sample_rejection_reasons as reject ON tt.reason_for_sample_rejection=reject.rejection_reason_id 
         where tb_id= " . $result['tb_id'] . " ORDER BY tb_test_id DESC";
-        error_log($tbTestQuery);
+        // error_log($tbTestQuery);
         $tbTestInfo = $db->rawQuery($tbTestQuery);
 
         $facilityQuery = "SELECT * from form_tb as c19 INNER JOIN facility_details as fd ON c19.facility_id=fd.facility_id where tb_id= " . $result['tb_id'] . " GROUP BY fd.facility_id LIMIT 1";
         $facilityInfo = $db->rawQueryOne($facilityQuery);
-        // echo "<pre>";print_r($tbTestInfo);die;
         $patientFname = ($general->crypto('doNothing', $result['patient_name'], $result['patient_id']));
         $patientLname = ($general->crypto('doNothing', $result['patient_surname'], $result['patient_id']));
 
@@ -68,17 +67,16 @@ if (!empty($requestResult)) {
         $pdfTemplatePath = null;
         $margintop = 0;
         $facilityReportFormat = (array)json_decode($arr['report_format']);
-        if (isset($facilityReportFormat['tb']->file) && !empty($facilityReportFormat['tb']->file)) {
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $facilityReportFormat['tb']->file;
-            $margintop = $selectedReportFormats['tb']->mtop;
-        } else if (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file'])) {
-            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
-            $margintop = $selectedReportFormats['default']['mtop'];
-        } else {
+        if (isset($selectedReportFormats['tb']['file']) && !empty($selectedReportFormats['tb']['file']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" .  DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'])) {
             $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" .  DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['tb']['file'];
             $margintop = $selectedReportFormats['tb']['mtop'];
+        } else if (isset($selectedReportFormats['default']['file']) && !empty($selectedReportFormats['default']['file']) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'])) {
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'default' . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $selectedReportFormats['default']['file'];
+            $margintop = $selectedReportFormats['default']['mtop'];
+        } else if (isset($facilityReportFormat['tb']->file) && !empty($facilityReportFormat['tb']->file) && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $facilityReportFormat['tb']->file)) {
+            $pdfTemplatePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . 'tb' . DIRECTORY_SEPARATOR . $facilityReportFormat['tb']->file;
+            $margintop = $selectedReportFormats['tb']->mtop;
         }
-
         // create new PDF document
         $pdf = new RwandaTBResultPDFHelper(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false, $pdfTemplatePath);
         if (file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $result['lab_id'] . DIRECTORY_SEPARATOR . $result['facilityLogo'])) {
@@ -104,7 +102,6 @@ if (!empty($requestResult)) {
         $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
         // set margins
-        $margintop = $selectedReportFormats['tb']['mtop'] ?? $selectedReportFormats['default']['mtop'];
         $pdf->SetMargins(10, PDF_MARGIN_TOP + $margintop, 10);
         $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
         $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
