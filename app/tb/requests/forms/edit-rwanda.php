@@ -633,10 +633,10 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 </div>
                                 <div class="row pr-5" style="margin-right: 5px;">
                                     <div class="col-md-6" align="right">
-                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Results"); ?></label>
+                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                     </div>
                                     <div class="col-md-6" style=" padding-right: 3px; ">
-                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final result">
+                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
                                     </div>
