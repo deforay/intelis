@@ -420,7 +420,9 @@ $dataToSync = array_merge(
 );
 
 $payload['labId'] = $labId;
-
+/* echo "<pre>";
+print_r($dataToSync);
+die; */
 try {
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
 
