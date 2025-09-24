@@ -752,7 +752,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<?php if (isset($facilityReportFormat) && !empty($facilityReportFormat)) {
 										$n = 1;
 										foreach ($facilityReportFormat as $test => $file) {
-											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file->file;  ?>
+											$filePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $facilityInfo['facility_id'] . DIRECTORY_SEPARATOR . $file->file;  ?>
 											<tr>
 												<td>
 													<select class="form-control testTypeFileSelect" name="testTypeFile[<?php echo ($n - 1); ?>]" id="testTypeFile<?php echo $n; ?>">
@@ -784,7 +784,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 												<td style="vertical-align:middle;text-align: center;margin-left:20px;">
 													<?php if (isset($file) && !empty($file) && (file_exists($filePath) && !is_dir($filePath))) { ?>
 														<div class="m-5">
-															<a href="/uploads/labs/<?php echo $facilityInfo['facility_id']; ?>/report-template/<?php echo $test; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
+															<a href="/uploads/labs/report-template/<?php echo $test; ?>/<?php echo $facilityInfo['facility_id']; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
 															<a href="javascript:void(0);" class="btn btn-warning oldFile<?php echo $n; ?>" title="Replace Report Layout" onclick="removeReport(<?php echo $n; ?>);">Replace</a>
 															<a href="javascript:void(0);" class="btn btn-danger oldFile<?php echo $n; ?>" title="Delete Report Template" onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);"><i class="icon-trash"></i> Remove</a>
 															<input type="hidden" name="deleteTemplate[<?php echo ($n - 1); ?>]" id="deleteTemplate<?php echo $n; ?>" />
