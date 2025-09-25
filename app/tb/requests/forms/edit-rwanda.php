@@ -665,7 +665,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 <script type="text/javascript">
     let provinceName = true;
     let facilityName = true;
-    let testCount = 1;
+    let testCount = $('.test-section').length;
 
     // Test result options for each test type
     const testResultOptions = {
@@ -1105,10 +1105,14 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             $('#labId').select2({
                 placeholder: "<?php echo _translate('Select testing lab'); ?>"
             });
-        <?php } ?>
+        <?php }
+        $n = 1;
+        foreach ($tbTestInfo as $key => $test) { ?>
+            // Initialize first test section
+            initializePluginsForSection(document.querySelector('.test-section'), <?php echo $n; ?>);
+        <?php $n += 1;
+        } ?>
 
-        // Initialize first test section
-        initializePluginsForSection(document.querySelector('.test-section'), 1);
 
         // Treatment initiation change handler
         $('#isPatientInitiatedTreatment').on('change', function() {
