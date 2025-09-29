@@ -40,7 +40,7 @@ $patientId = TestsService::getPatientIdColumn($module);
 
 $query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.package_id
 			FROM $testTable as vl
-			LEFT JOIN package_details as pd ON vl.sample_package_id = pd.package_id ";
+			LEFT JOIN specimen_manifests as pd ON vl.sample_package_id = pd.package_id ";
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";

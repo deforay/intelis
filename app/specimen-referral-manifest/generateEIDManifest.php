@@ -37,7 +37,7 @@ if (trim((string) $id) != '') {
 
     $sQuery = "SELECT remote_sample_code,pd.number_of_samples,fd.facility_name as clinic_name,fd.facility_district,child_name,vl.child_dob,vl.child_age,vl.mother_name,sample_collection_date,child_gender,child_id,pd.package_code, l.facility_name as lab_name, u_d.user_name as releaser_name,
                 u_d.phone_number as phone,u_d.email as email,DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
-                from package_details as pd Join form_eid as vl ON vl.sample_package_id=pd.package_id
+                from specimen_manifests as pd Join form_eid as vl ON vl.sample_package_id=pd.package_id
                 Join facility_details as fd ON fd.facility_id=vl.facility_id
                 Join facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
@@ -48,7 +48,7 @@ if (trim((string) $id) != '') {
     $labname = $result[0]['lab_name'] ?? "";
     $showPatientName = $arr['eid_show_participant_name_in_manifest'];
 
-    $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
+    $bQuery = "SELECT * from specimen_manifests as pd where package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
@@ -58,7 +58,7 @@ if (trim((string) $id) != '') {
         $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
-        $db->update('package_details', array(
+        $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 

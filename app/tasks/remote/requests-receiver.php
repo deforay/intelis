@@ -577,7 +577,6 @@ $moduleConfigs = [
             'result_status',
             'data_sync',
             'reason_for_sample_rejection',
-            'sample_registered_at_lab',
             'last_modified_by',
             'last_modified_datetime',
             'lab_technician',

@@ -355,7 +355,6 @@ try {
                 $genericData['last_modified_by'] = $user['user_id'];
             } else {
                 $genericData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
-                $genericData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
                 $genericData['request_created_by'] = $user['user_id'];
             }
             if (isset($data['genericSampleId']) && $data['genericSampleId'] != '' && ($data['isSampleRejected'] == 'no' || $data['isSampleRejected'] == '')) {
