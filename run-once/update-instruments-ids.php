@@ -26,7 +26,7 @@ $scriptName = basename(__FILE__);
 
 // Check for force flag (-f or --force)
 $forceRun = in_array('-f', $argv) || in_array('--force', $argv);
-$scriptSucceeded = false;
+
 if (!$forceRun) {
     // Check if the script has already been run
     $db->where('script_name', $scriptName);
@@ -34,8 +34,7 @@ if (!$forceRun) {
 
     if ($executed) {
         // Script has already been run
-        echo("Script $scriptName has already been executed. Exiting...");
-        exit(0);
+        exit("Script $scriptName has already been executed. Exiting...");
     }
 }
 
@@ -112,7 +111,6 @@ try {
     $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', $data);
 
     echo "$scriptName executed and logged successfully" . PHP_EOL;
-    $scriptSucceeded = true;
 } catch (Throwable $e) {
     LoggerUtility::logError('Manifest hash update script failed', [
         'exception' => $e->getMessage(),
@@ -128,4 +126,8 @@ try {
             'status' => $scriptSucceeded ? 'executed' : 'forced'
         ]);
     }
+}
+
+if (!$scriptSucceeded) {
+    exit(1);
 }
