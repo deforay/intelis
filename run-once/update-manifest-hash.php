@@ -31,7 +31,7 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 $scriptName = basename(__FILE__);
 $forceRun = in_array('-f', $argv ?? [], true) || in_array('--force', $argv ?? [], true);
-
+$scriptSucceeded = false;
 if (!$forceRun) {
     $db->where('script_name', $scriptName);
     $alreadyExecuted = $db->getOne('s_run_once_scripts_log');
@@ -193,8 +193,4 @@ try {
             'status' => $scriptSucceeded ? 'executed' : 'forced'
         ]);
     }
-}
-
-if (!$scriptSucceeded) {
-    exit(1);
 }
