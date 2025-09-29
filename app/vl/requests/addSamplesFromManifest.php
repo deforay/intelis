@@ -49,7 +49,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();">
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest();">
 									<span>
 										<?php echo _translate("Submit"); ?>
 									</span>
@@ -144,6 +144,36 @@ require_once APPLICATION_PATH . '/header.php';
 
 <script type="text/javascript">
 	var oTable = null;
+
+	function verifyManifest(){
+		if ($("#manifestCode").val() != "") {
+			$.blockUI();
+
+			$.post("/app/specimen-referral-manifest/verify-manifest.php", {
+					manifestCode: $("#manifestCode").val(),
+					testType: 'vl'
+				},
+				function(data) {
+					$.unblockUI();
+					data = data.trim();
+					try {
+						if (
+							data == false
+						) {
+							getSamplesForManifest();
+						} else {
+							$('.activateSample').show();
+							$('#sampleId').val(data);
+							loadRequestData();
+						}
+					} catch (e) {
+						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+					}
+				});
+		} else {
+			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+		}
+	}
 
 	function loadRequestData() {
 		$.blockUI();

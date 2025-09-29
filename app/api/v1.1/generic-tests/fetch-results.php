@@ -138,7 +138,6 @@ try {
         vl.lab_technician as labTechnician,
         vl.lab_contact_person as labContactPerson,
         vl.lab_phone_number as labPhoneNumber,
-        vl.sample_registered_at_lab as sampleRegisteredAtLab,
         vl.sample_tested_datetime as sampleTestedDate,
         vl.result,
         vl.result_unit as resultUnit,
@@ -189,7 +188,7 @@ try {
         LEFT JOIN user_details as r_c_b ON r_c_b.user_id=vl.request_created_by
         LEFT JOIN user_details as l_m_b ON l_m_b.user_id=vl.last_modified_by
         LEFT JOIN user_details as s_c_b ON s_c_b.user_id=vl.sample_collected_by
-        LEFT JOIN package_details as p ON p.package_id=vl.sample_package_id
+        LEFT JOIN specimen_manifests as p ON p.package_id=vl.sample_package_id
         LEFT JOIN r_generic_sample_types as rst ON rst.sample_type_id=vl.specimen_type
         LEFT JOIN r_generic_sample_rejection_reasons as rs ON rs.rejection_reason_id=vl.reason_for_sample_rejection
         LEFT JOIN r_funding_sources as r_f_s ON r_f_s.funding_source_id=vl.funding_source

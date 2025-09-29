@@ -48,7 +48,7 @@ if (!empty($id)) {
                         u_d.phone_number as phone,
                         u_d.email as email,
                         pd.request_created_datetime as created_date
-                FROM package_details as pd
+                FROM specimen_manifests as pd
                 LEFT JOIN form_cd4 as vl ON vl.sample_package_id=pd.package_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
@@ -64,11 +64,11 @@ if (!empty($id)) {
 
     $globalConfig = $general->getGlobalConfig();
     $showPatientName = $globalConfig['cd4_show_participant_name_in_manifest'];
-    $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN($id)";
+    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE package_id IN($id)";
     //echo $bQuery;die;
     $bResult = $db->query($bQuery);
     // $db->where('package_id', $id);
-    // $bResult = $db->getOne('package_details', 'package_code');
+    // $bResult = $db->getOne('specimen_manifests', 'package_code');
 
     if (!empty($bResult)) {
 
@@ -77,7 +77,7 @@ if (!empty($id)) {
         $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
-        $db->update('package_details', array(
+        $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 

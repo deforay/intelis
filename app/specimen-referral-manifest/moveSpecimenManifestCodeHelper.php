@@ -36,7 +36,7 @@ try {
         $lastId = $_POST['packageId'];
 
         $db->where('package_code', $packageCode);
-        $previousData = $db->getOne("package_details");
+        $previousData = $db->getOne("specimen_manifests");
         $oldReason = json_decode($previousData['manifest_change_history']);
 
         $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
@@ -53,7 +53,7 @@ try {
         ];
         /* Update Package details table */
         $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
-        $db->update('package_details', array("lab_id" => $_POST['assignLab']));
+        $db->update('specimen_manifests', array("lab_id" => $_POST['assignLab']));
 
         $value = [
             'lab_id' => $_POST['assignLab'],

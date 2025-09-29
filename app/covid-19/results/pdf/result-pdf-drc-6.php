@@ -198,11 +198,7 @@ if (isset($result['sample_received_at_lab_datetime']) && trim((string) $result['
     $expStr = explode(" ", (string) $result['sample_received_at_lab_datetime']);
     $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
     $sampleReceivedTime = $expStr[1];
-} else if (isset($result['sample_registered_at_lab']) && trim((string) $result['sample_registered_at_lab']) != '' && $result['sample_registered_at_lab'] != '0000-00-00 00:00:00') {
-    $expStr = explode(" ", (string) $result['sample_registered_at_lab']);
-    $sampleReceivedDate = DateUtility::humanReadableDateFormat($expStr[0]);
-    $sampleReceivedTime = $expStr[1];
-}
+} 
 
 if (isset($result['sample_tested_datetime']) && trim((string) $result['sample_tested_datetime']) != '' && $result['sample_tested_datetime'] != '0000-00-00 00:00:00') {
     $expStr = explode(" ", (string) $result['sample_tested_datetime']);

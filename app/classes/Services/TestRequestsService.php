@@ -8,12 +8,14 @@ use Throwable;
 use SAMPLE_STATUS;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Utilities\JsonUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
+use App\Services\ApiService;
 
 final class TestRequestsService
 {
@@ -305,6 +307,249 @@ final class TestRequestsService
         $this->db->reset();
         $this->db->where('id', $id);
         return $this->db->update('queue_sample_code_generation', $data);
+    }
+
+    /**
+     * Generate a SHA-256 hash representing the set of sample IDs in a manifest.
+     *  $selectedSamples - Array of sample IDs included in the manifest. If empty, will be fetched based on manifestCode.
+     *  $testType - The type of test (e.g., 'vl', 'eid', 'covid19', etc.)
+     *  $manifestCode - The manifest code associated with the samples. Required if $selectedSamples is empty.
+     */
+    public function getManifestHash($selectedSamples = [], $testType = null, $manifestCode = null)
+    {
+        if (empty($selectedSamples)) {
+            $tableName = TestsService::getTestTableName($testType);
+            $primaryKey = TestsService::getPrimaryColumn($testType);
+            $manifestCode = trim($manifestCode);
+            $this->db->where('sample_package_code', $manifestCode);
+            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+        }
+        $selectedSamples = array_unique($selectedSamples);
+        // Ensure deterministic ordering for hashing (always integer array)
+        sort($selectedSamples, SORT_NUMERIC);
+        return hash('sha256', json_encode($selectedSamples, JSON_UNESCAPED_UNICODE));
+    }
+
+    /**
+     * Retrieve manifest metadata stored on individual test requests for a manifest.
+     * Returns manifest hash, sample counts, and related timestamps if available.
+     */
+    public function getManifestMetadata(string $testType, string $manifestCode): array
+    {
+        $testType = trim($testType);
+        $manifestCode = trim($manifestCode);
+
+        if ($testType === '' || $manifestCode === '') {
+            return [];
+        }
+
+        try {
+            $tableName = TestsService::getTestTableName($testType);
+
+            $sql = <<<SQL
+                SELECT
+                    tr.form_attributes,
+                    tr.last_modified_datetime AS request_last_modified_datetime,
+                    pd.number_of_samples AS package_number_of_samples,
+                    pd.last_modified_datetime AS package_last_modified_datetime
+                FROM {$tableName} AS tr
+                LEFT JOIN specimen_manifests AS pd ON pd.package_id = tr.sample_package_id
+                WHERE tr.sample_package_code = ?
+                ORDER BY tr.last_modified_datetime DESC
+                LIMIT 1
+            SQL;
+
+            $row = $this->db->rawQueryOne($sql, [$manifestCode]);
+
+            if (empty($row)) {
+                return [];
+            }
+
+            $formAttributes = [];
+            if (!empty($row['form_attributes'])) {
+                $decodedAttributes = JsonUtility::decodeJson($row['form_attributes']);
+                if (is_array($decodedAttributes)) {
+                    $formAttributes = $decodedAttributes;
+                }
+            }
+
+            $manifestAttributes = $formAttributes['manifest'] ?? [];
+
+            return [
+                'manifest_hash' => $manifestAttributes['manifest_hash'] ?? null,
+                'number_of_samples' => $manifestAttributes['number_of_samples']
+                    ?? $row['package_number_of_samples'] ?? null,
+                'manifest_last_modified_datetime' => $manifestAttributes['last_modified_datetime']
+                    ?? $row['package_last_modified_datetime'] ?? null,
+                'request_last_modified_datetime' => $row['request_last_modified_datetime'] ?? null,
+                'package_last_modified_datetime' => $row['package_last_modified_datetime'] ?? null,
+            ];
+        } catch (Throwable $e) {
+            LoggerUtility::logError('Error fetching manifest metadata: ' . $e->getMessage(), [
+                'exception' => $e,
+                'test_type' => $testType,
+                'manifest_code' => $manifestCode,
+                'last_db_query' => $this->db->getLastQuery(),
+                'last_db_error' => $this->db->getLastError(),
+            ]);
+
+            return [];
+        }
+    }
+
+    /**
+     * Compare the locally computed manifest hash with the remote STS hash via verify-manifest API.
+     * Returns verification status, http response info, and raw payload for further handling.
+     */
+    public function verifyManifestHashWithRemote(string $manifestCode, string $testType): array
+    {
+        $manifestCode = trim($manifestCode);
+        $testType = trim($testType);
+
+        $result = [
+            'verified' => false,
+            'manifestCode' => $manifestCode,
+            'testType' => $testType,
+            'message' => null,
+        ];
+
+        if ($manifestCode === '' || $testType === '') {
+            $result['message'] = 'Manifest code and test type are required.';
+            return $result;
+        }
+
+        $remoteURL = rtrim((string) $this->commonService->getRemoteURL(), '/');
+        if ($remoteURL === '') {
+            $result['message'] = 'Remote STS URL is not configured.';
+            return $result;
+        }
+
+        try {
+            $tableName = TestsService::getTestTableName($testType);
+            $primaryKey = TestsService::getPrimaryColumn($testType);
+        } catch (Throwable $e) {
+            $result['message'] = 'Invalid test type configuration.';
+            LoggerUtility::logError('Invalid test type for manifest verification: ' . $e->getMessage(), [
+                'manifestCode' => $manifestCode,
+                'testType' => $testType,
+            ]);
+            return $result;
+        }
+
+        $this->db->reset();
+        $this->db->where('sample_package_code', $manifestCode);
+        $sampleRows = $this->db->get($tableName, null, [$primaryKey, 'lab_id']);
+
+        if (empty($sampleRows)) {
+            $result['message'] = 'No samples found locally for this manifest.';
+            return $result;
+        }
+
+        $sampleIds = [];
+        $labId = 0;
+        foreach ($sampleRows as $row) {
+            if (!empty($row[$primaryKey])) {
+                $sampleIds[] = (int) $row[$primaryKey];
+            }
+            if ($labId <= 0 && !empty($row['lab_id'])) {
+                $labId = (int) $row['lab_id'];
+            }
+        }
+
+        $sampleIds = array_values(array_filter($sampleIds));
+        $numberOfSamples = count($sampleIds);
+        $result['numberOfSamples'] = $numberOfSamples;
+
+        if ($labId <= 0) {
+            $result['message'] = 'Manifest lab could not be determined.';
+            return $result;
+        }
+        $result['labId'] = $labId;
+
+        if ($numberOfSamples === 0) {
+            $result['message'] = 'Unable to compute manifest hash because sample list is empty.';
+            return $result;
+        }
+
+        $localHash = $this->getManifestHash($sampleIds, $testType, $manifestCode);
+
+        if ($localHash === '') {
+            $result['message'] = 'Unable to compute local manifest hash.';
+            return $result;
+        }
+
+        $result['localHash'] = $localHash;
+
+        $apiURL = "$remoteURL/remote/v2/verify-manifest.php";
+        $payload = [
+            'testType' => $testType,
+            'labId' => $labId,
+            'manifestCode' => $manifestCode,
+            'manifestHash' => $localHash,
+        ];
+
+        $transactionId = MiscUtility::generateULID();
+
+        /** @var ApiService $apiService */
+        $apiService = ContainerRegistry::get(ApiService::class);
+        $stsToken = $this->commonService->getSTSToken();
+        if (!empty($stsToken)) {
+            $apiService->setBearerToken($stsToken);
+        }
+
+        $httpStatus = null;
+        $responseBody = null;
+
+        try {
+            $apiResponse = $apiService->post($apiURL, $payload, gzip: false, returnWithStatusCode: true);
+
+            if (is_array($apiResponse)) {
+                $httpStatus = $apiResponse['httpStatusCode'] ?? null;
+                $responseBody = $apiResponse['body'] ?? '';
+            } else {
+                $responseBody = $apiResponse;
+            }
+
+            $decodedResponse = null;
+            if (is_string($responseBody) && JsonUtility::isJSON($responseBody)) {
+                $decodedResponse = JsonUtility::decodeJson($responseBody, true);
+            }
+
+            if (is_array($decodedResponse)) {
+                $result['verified'] = (bool) ($decodedResponse['verified'] ?? false);
+                $result['remoteResponse'] = $decodedResponse;
+                if (!$result['verified'] && !empty($decodedResponse['message'])) {
+                    $result['message'] = (string) $decodedResponse['message'];
+                }
+            } else {
+                $result['remoteResponse'] = $responseBody;
+                $result['message'] = $result['message'] ?? 'Unexpected response from verify-manifest endpoint.';
+            }
+
+            $result['httpStatus'] = $httpStatus;
+
+            $this->commonService->addApiTracking(
+                $transactionId,
+                $_SESSION['userId'] ?? 'system',
+                1,
+                'manifest-verify',
+                $testType,
+                $apiURL,
+                $payload,
+                $decodedResponse ?? $responseBody,
+                'json',
+                $labId
+            );
+        } catch (Throwable $e) {
+            $result['message'] = 'Failed to contact remote verify-manifest endpoint.';
+            LoggerUtility::logError('Remote manifest hash verification failed: ' . $e->getMessage(), [
+                'manifestCode' => $manifestCode,
+                'testType' => $testType,
+                'apiURL' => $apiURL,
+            ]);
+        }
+
+        return $result;
     }
 
     public function activateSamplesFromManifest($testType, $manifestCode, $sampleCodeFormat = 'MMYY', $prefix = null)

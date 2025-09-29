@@ -50,7 +50,7 @@ if (trim((string) $id) != '') {
                     u_d.phone_number as phone,
                     u_d.email as email,
                     DATE_FORMAT(pd.request_created_datetime,'%d-%b-%Y') as created_date
-                FROM package_details as pd
+                FROM specimen_manifests as pd
                 JOIN form_covid19 as vl ON vl.sample_package_id=pd.package_id
                 JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 JOIN facility_details as l ON l.facility_id=vl.lab_id
@@ -63,7 +63,7 @@ if (trim((string) $id) != '') {
 
     $arr = $general->getGlobalConfig();
     $showPatientName = $arr['covid19_show_participant_name_in_manifest'];
-    $bQuery = "SELECT * FROM package_details as pd WHERE package_id IN(?)";
+    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE package_id IN(?)";
     $bResult = $db->rawQuery($bQuery, [$id]);
     if (!empty($bResult)) {
 
@@ -72,7 +72,7 @@ if (trim((string) $id) != '') {
         $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
-        $db->update('package_details', array(
+        $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 

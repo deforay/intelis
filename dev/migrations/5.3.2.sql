@@ -4,9 +4,28 @@
 
 UPDATE `system_config` SET `value` = '5.3.2' WHERE `system_config`.`name` = 'sc_version';
 
--- Amit 22-Sep-2024
+-- Amit 22-Sep-2025
 
 INSERT INTO `global_config`
 (`display_name`, `name`, `value`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`)
 VALUES
 ('Auto Approve Interface Results', 'auto_approve_interface_results', 'no', 'interfacing', 'yes', CURRENT_TIMESTAMP, NULL, 'active');
+
+
+-- Amit 25-Sep-2025
+ALTER TABLE `hold_sample_import` CHANGE `sample_received_at_vl_lab_datetime` `sample_received_at_vl_lab_datetime` DATETIME NULL DEFAULT NULL, CHANGE `sample_tested_datetime` `sample_tested_datetime` DATETIME NULL DEFAULT NULL, CHANGE `result_dispatched_datetime` `result_dispatched_datetime` DATETIME NULL DEFAULT NULL, CHANGE `result_reviewed_datetime` `result_reviewed_datetime` DATETIME NULL DEFAULT NULL;
+
+
+ALTER TABLE `form_vl` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_eid` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_covid19` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_tb` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_hepatitis` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_cd4` DROP `sample_registered_at_lab`;
+ALTER TABLE `form_generic` DROP `sample_registered_at_lab`;
+
+-- Amit 28-Sep-2025
+RENAME TABLE `package_details` TO `specimen_manifests`;
+ALTER TABLE `specimen_manifests` ADD `manifest_hash` CHAR(64) DEFAULT NULL AFTER `number_of_samples`;
+ALTER TABLE `specimen_manifests` ADD UNIQUE KEY `uniq_manifest_hash` (`manifest_hash`);
+
