@@ -31,13 +31,12 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 $scriptName = basename(__FILE__);
 $forceRun = in_array('-f', $argv ?? [], true) || in_array('--force', $argv ?? [], true);
-$scriptSucceeded = false;
+
 if (!$forceRun) {
     $db->where('script_name', $scriptName);
     $alreadyExecuted = $db->getOne('s_run_once_scripts_log');
     if (!empty($alreadyExecuted)) {
-        echo("Script $scriptName has already been executed. Use --force to run again.");
-        exit(0);
+        exit(PHP_EOL . "Script $scriptName has already been executed. Use --force to run again." . PHP_EOL);
     }
 }
 
@@ -193,4 +192,8 @@ try {
             'status' => $scriptSucceeded ? 'executed' : 'forced'
         ]);
     }
+}
+
+if (!$scriptSucceeded) {
+    exit(1);
 }
