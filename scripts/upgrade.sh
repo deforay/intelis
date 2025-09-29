@@ -1055,7 +1055,7 @@ if [ -d "${lis_path}/run-once" ]; then
 
     if [ -e "${run_once_scripts[0]}" ]; then
         for script_path in "${run_once_scripts[@]}"; do
-            php "$script_path"
+            php "$script_path" || print warning "Run-once script $script_path exited with status $?"
         done
     else
         print error "No scripts found in the run-once directory."
