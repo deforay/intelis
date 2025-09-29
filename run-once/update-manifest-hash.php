@@ -36,7 +36,8 @@ if (!$forceRun) {
     $db->where('script_name', $scriptName);
     $alreadyExecuted = $db->getOne('s_run_once_scripts_log');
     if (!empty($alreadyExecuted)) {
-        exit(PHP_EOL . "Script $scriptName has already been executed. Use --force to run again." . PHP_EOL);
+        echo("Script $scriptName has already been executed. Use --force to run again.");
+        exit(0);
     }
 }
 
