@@ -15,6 +15,7 @@ use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -27,6 +28,12 @@ $apiService = ContainerRegistry::get(ApiService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+
+
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+
+/** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Slim\Psr7\Request $request */
@@ -101,7 +108,9 @@ try {
     $availableSamples = [];
     $alreadyInManifest = [];
     $addedToManifest = [];
+    $selectedSamplesIds = [];
     $missedSamples = [];
+    $manifestHash = '';
 
     if (isset($rowData) && !empty($rowData)) {
         // Separate samples based on their current manifest status
@@ -127,22 +136,25 @@ try {
             } else {
                 // Sample is available to be added to new manifest
                 $samplesToAdd[] = $row;
+                $selectedSamplesIds[] = $row[$testPrimaryKey];
             }
         }
 
         // Create new manifest only if there are samples to add
         if (!empty($samplesToAdd)) {
+            $manifestHash = $testRequestsService->getManifestHash($selectedSamplesIds);
             $data = [
                 'package_code' => $sampleManifestCode,
                 'module' => $input['testType'],
                 'added_by' => $user['user_id'],
                 'lab_id' => $input['labId'],
                 'number_of_samples' => count($samplesToAdd),
+                'manifest_hash' => $manifestHash,
                 'package_status' => 'pending',
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];
-            $db->insert('package_details', $data);
+            $db->insert('specimen_manifests', $data);
             $lastId = $db->getInsertId();
 
             foreach ($samplesToAdd as $key => $row) {
@@ -197,6 +209,7 @@ try {
             // Add manifestCode only if new manifest was created (maintaining old structure)
             if (!empty($addedToManifest)) {
                 $payload['manifestCode'] = $sampleManifestCode;
+                $payload['manifestHash'] = $manifestHash;
             }
 
         } else {

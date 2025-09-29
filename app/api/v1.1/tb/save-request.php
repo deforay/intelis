@@ -380,7 +380,6 @@ try {
             $tbData['last_modified_by'] = $user['user_id'];
         } else {
             $tbData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
-            $tbData['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
             $tbData['request_created_by'] = $user['user_id'];
         }
 

@@ -276,7 +276,6 @@ try {
 		'rejection_on' => isset($_POST['rejectionDate']) ? DateUtility::isoDateFormat($_POST['rejectionDate']) : null,
 		// 'request_created_by' 								=> $_SESSION['userId'],
 		'request_created_datetime' => DateUtility::getCurrentDateTime(),
-		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
 		// 'last_modified_by' 		=> $_SESSION['userId'],
 		'result_modified'  => 'no',
 		'last_modified_datetime' => DateUtility::getCurrentDateTime()

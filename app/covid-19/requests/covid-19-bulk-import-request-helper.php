@@ -121,7 +121,6 @@ try {
                     'number_of_days_sick'                   => $rowData['AO'],
                     'date_of_symptom_onset'                 => date('Y-m-d', strtotime((string) $rowData['AP'])),
                     'date_of_initial_consultation'          => date('Y-m-d', strtotime((string) $rowData['AQ'])),
-                    'sample_registered_at_lab'              => date('Y-m-d', strtotime((string) $rowData['AR'])),
                     'type_of_test_requested'                => $rowData['AS'],
                     'reason_for_covid19_test'               => $testReason['test_reason_id'] ?? null,
                     'sample_collection_date'                => $sampleCollectionDate,

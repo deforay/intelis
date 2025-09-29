@@ -158,7 +158,7 @@ try {
 		'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
 		'request_created_by' => $_SESSION['userId'],
 		'request_created_datetime' => DateUtility::getCurrentDateTime(),
-		'sample_registered_at_lab' => DateUtility::getCurrentDateTime(),
+		
 		'last_modified_by' => $_SESSION['userId'],
 		'last_modified_datetime' => DateUtility::getCurrentDateTime(),
 		'result_modified'  => 'no',

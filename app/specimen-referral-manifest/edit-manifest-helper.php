@@ -9,6 +9,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 
 // Sanitized values from $request object
@@ -25,63 +26,88 @@ if (empty($_POST['testingLab']) || 0 === (int) $_POST['testingLab']) {
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
+
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
 $tableName = TestsService::getTestTableName($_POST['module']);
 $primaryKey = TestsService::getPrimaryColumn($_POST['module']);
 
-$packageTable = "package_details";
+$packageTable = "specimen_manifests";
 try {
     $db->beginTransaction();
-    $selectedSample = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
-    $uniqueSampleId = array_unique($selectedSample);
-    $numberOfSamples = count($selectedSample);
-    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSample)) {
+    $selectedSamples = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
+    if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "" && !empty($selectedSamples)) {
+
+        // clear out existing samples from this manifest first
+        $currentDateTime = DateUtility::getCurrentDateTime();
+
+        $dataToUpdate = [];
+        $formAttributes['manifest'] = [];
+        $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+        $dataToUpdate['form_attributes'] = $db->func($formAttributes);
+        $dataToUpdate['sample_package_id'] = null;
+        $dataToUpdate['sample_package_code'] = null;
+
 
         $db->where('sample_package_code', $_POST['packageCode']);
-        $db->update($tableName, [
-            'sample_package_id'   => null,
-            'sample_package_code' => null
-        ]);
+        $db->update($tableName, $dataToUpdate);
+
+
+        // now let's update the manifest details
+        $selectedSamples = array_unique($selectedSamples);
+        $manifestHash = $testRequestsService->getManifestHash($selectedSamples);
+        $numberOfSamples = count($selectedSamples);
 
         $lastId = $_POST['packageId'];
 
+        $db->reset();
         $db->where('package_id', $lastId);
         $previousData = $db->getOne($packageTable);
-        $oldReason = json_decode($previousData['manifest_change_history']);
 
-        $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
-        $oldReason[] = $newReason;
+        $existingChangeReasons = JsonUtility::decodeJson($previousData['manifest_change_history']);
+        $newReason = [
+            'reason' => $_POST['reasonForChange'],
+            'changedBy' => $_SESSION['userId'],
+            'date' => DateUtility::getCurrentDateTime()
+        ];
+
+
         $db->where('package_id', $lastId);
         $db->update($packageTable, [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
+            'manifest_hash' => $manifestHash,
             'package_status' => $_POST['packageStatus'],
-            'manifest_change_history' => json_encode($oldReason),
-            'last_modified_datetime' => DateUtility::getCurrentDateTime()
+            'manifest_change_history' => JsonUtility::encodeUtf8Json(array_merge($existingChangeReasons ?? [], $newReason ?? [])),
+            'last_modified_datetime' => $currentDateTime
         ]);
 
         if ($lastId > 0) {
-            //for ($j = 0; $j < count($selectedSample); $j++) {
-                $dataToUpdate = [
-                    'sample_package_id'   => $lastId,
-                    'sample_package_code' => $_POST['packageCode'],
-                    'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-                    'data_sync' => 0
-                ];
+            //for ($j = 0; $j < count($selectedSamples); $j++) {
+            $dataToUpdate = [
+                'sample_package_id'   => $lastId,
+                'sample_package_code' => $_POST['packageCode'],
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0
+            ];
 
-                $formAttributes['manifest'] = [
+            $formAttributes = [
+                'manifest' => [
                     "number_of_samples" => $numberOfSamples,
-                ];
+                    'manifest_hash' => $manifestHash,
+                    'last_modified_datetime' => $currentDateTime
+                ],
+            ];
 
-                $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
-                $dataToUpdate['form_attributes'] = $db->func($formAttributes);
+            $formAttributes = JsonUtility::jsonToSetString(json_encode($formAttributes), 'form_attributes');
+            $dataToUpdate['form_attributes'] = $db->func($formAttributes);
 
-                //$db->where($primaryKey, $uniqueSampleId[$j]);
-                $db->where($primaryKey, $selectedSample, 'IN');
-                $db->update($tableName, $dataToUpdate);
-            //}
+            $db->where($primaryKey, $selectedSamples, 'IN');
+            $db->update($tableName, $dataToUpdate);
+
 
             // In case some records dont have lab_id in the testing table
             // let us update them to the selected lab
@@ -109,7 +135,7 @@ try {
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Throwable $e) {
     $db->rollbackTransaction();
-    LoggerUtility::log('error',  $e->getMessage(),[
+    LoggerUtility::log('error',  $e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),

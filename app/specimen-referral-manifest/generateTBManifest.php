@@ -31,14 +31,14 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
 
 if (trim((string) $id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from package_details as pd Join form_tb as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from specimen_manifests as pd Join form_tb as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
     $result = $db->query($sQuery);
 
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('tb_show_participant_name_in_manifest');
-    $bQuery = "SELECT * from package_details as pd where package_id IN($id)";
+    $bQuery = "SELECT * from specimen_manifests as pd where package_id IN($id)";
 
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
@@ -48,7 +48,7 @@ if (trim((string) $id) != '') {
         $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
-        $db->update('package_details', array(
+        $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 

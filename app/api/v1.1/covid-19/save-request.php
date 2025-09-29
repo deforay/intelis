@@ -477,7 +477,6 @@ try {
             $covid19Data['last_modified_by'] = $user['user_id'];
         } else {
             $covid19Data['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
-            $covid19Data['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
             $covid19Data['request_created_by'] = $user['user_id'];
         }
 

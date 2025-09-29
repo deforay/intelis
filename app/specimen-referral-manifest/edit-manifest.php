@@ -38,7 +38,7 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 $m = $module = $_GET['t'] ?? 'vl';
 
-$pQuery = "SELECT * FROM package_details WHERE package_id = ?";
+$pQuery = "SELECT * FROM specimen_manifests WHERE package_id = ?";
 $pResult = $db->rawQueryOne($pQuery, [$id]);
 
 if ($pResult['package_status'] == 'dispatch') {

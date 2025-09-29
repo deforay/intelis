@@ -42,17 +42,17 @@ $module = $_POST['module'];
 $tableName = TestsService::getTestTableName($module);
 $primaryKey = TestsService::getPrimaryColumn($module);
 
-$sql = "UPDATE package_details
-                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = package_details.package_id and lab_id > 0 limit 1)
-                WHERE package_details.lab_id is null OR package_details.lab_id = 0";
+$sql = "UPDATE specimen_manifests
+                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = specimen_manifests.package_id and lab_id > 0 limit 1)
+                WHERE specimen_manifests.lab_id is null OR specimen_manifests.lab_id = 0";
 
 $db->rawQuery($sql);
 
 // $sql = "UPDATE $tableName
 //         SET lab_id = (SELECT lab_id
-//                         FROM package_details
+//                         FROM specimen_manifests
 //                         WHERE lab_id > 0
-//                         AND package_details.package_code = $tableName.sample_package_code
+//                         AND specimen_manifests.package_code = $tableName.sample_package_code
 //                         LIMIT 1)
 //         WHERE lab_id IS NULL OR lab_id = 0";
 
@@ -114,7 +114,7 @@ $sQuery = "SELECT p.request_created_datetime,
             p.package_code, p.package_status,
             p.module, p.package_id, p.number_of_samples,
             lab.facility_name as labName
-            FROM package_details p
+            FROM specimen_manifests p
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($_SESSION['facilityMap'])) {

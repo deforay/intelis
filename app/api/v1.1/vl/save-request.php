@@ -408,7 +408,7 @@ try {
             $vlFulldata['last_modified_datetime'] = (!empty($data['updatedOn'])) ? DateUtility::isoDateFormat($data['updatedOn'], true) : DateUtility::getCurrentDateTime();
             $vlFulldata['last_modified_by'] = $user['user_id'];
         } else {
-            $vlFulldata['sample_registered_at_lab'] = DateUtility::getCurrentDateTime();
+            $tbData['request_created_datetime'] = DateUtility::isoDateFormat($data['createdOn'] ?? date('Y-m-d'), true);
             $vlFulldata['request_created_by'] = $user['user_id'];
         }
 
