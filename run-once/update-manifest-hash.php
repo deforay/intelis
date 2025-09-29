@@ -51,6 +51,7 @@ try {
 
     // This script applies only on STS instance
     if (!$commonService->isSTSInstance()) {
+        $scriptSucceeded = true;
         throw new SystemException("$scriptName is intended for STS instances only." . PHP_EOL);
     }
 
