@@ -215,6 +215,3 @@ ADD `comments` MEDIUMTEXT NULL DEFAULT NULL AFTER `reason_for_result_change`;
 -- END OF VERSION --
 -- END OF VERSION --
 -- END OF VERSION --
-
--- Thana 19-Sep-2025
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Result PDF Report Format', 'report_format', null, '857sez62l9yovr48dtzc0s3cbn09c6an', 'general', 'yes', '2025-09-19 17:58:53', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
