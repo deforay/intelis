@@ -49,6 +49,7 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 			?>
 			<br>
 			<span class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right">
+				<span class=" text-muted"><?= $general->getLISLabName() ?? _translate('Sample Tracking System'); ?> &nbsp;|</span>
 				<a href="<?= $syncHistory; ?>" class="text-muted">
 					<?= _translate("Last synced at"); ?>
 					<span class="lastSyncDateTime">
