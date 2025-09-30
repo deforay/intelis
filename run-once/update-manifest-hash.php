@@ -36,7 +36,7 @@ if (!$forceRun) {
     $db->where('script_name', $scriptName);
     $alreadyExecuted = $db->getOne('s_run_once_scripts_log');
     if (!empty($alreadyExecuted)) {
-        echo("Script $scriptName has already been executed. Use --force to run again.");
+        echo ("Script $scriptName has already been executed. Use --force to run again.");
         exit(0);
     }
 }
@@ -103,7 +103,9 @@ try {
                 continue;
             }
 
+
             $computedHash = $testRequestsService->getManifestHash($sampleIds, $module, $manifestCode);
+
             if (empty($computedHash)) {
                 continue;
             }

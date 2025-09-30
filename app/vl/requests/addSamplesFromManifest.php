@@ -1,5 +1,7 @@
 <?php
 
+// app/vl/requests/addSamplesFromManifest.php
+
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 
@@ -145,7 +147,7 @@ require_once APPLICATION_PATH . '/header.php';
 <script type="text/javascript">
 	var oTable = null;
 
-	function verifyManifest(){
+	function verifyManifest() {
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
@@ -190,9 +192,9 @@ require_once APPLICATION_PATH . '/header.php';
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			//"bDestroy": true,
-			"bStateSave": true,
-			"bRetrieve": true,
+			"bDestroy": true,
+			"bStateSave": false,
+			"bRetrieve": false,
 			"aoColumns": [{
 					"sClass": "center"
 				},

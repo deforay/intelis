@@ -507,8 +507,8 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
     <!-- /.content -->
 </div>
 <script type="text/javascript">
-    provinceName = true;
-    facilityName = true;
+    let provinceName = true;
+    let facilityName = true;
 
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
         var removeDots = obj.value.replace(/\./g, "");
