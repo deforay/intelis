@@ -38,6 +38,7 @@ try {
     $db->beginTransaction();
     $selectedSamples = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $selectedSamples = array_unique($selectedSamples);
+
     $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
     $numberOfSamples = count($selectedSamples);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {

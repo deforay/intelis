@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest();return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -154,6 +154,37 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
+	function verifyManifest() {
+		if ($("#manifestCode").val() != "") {
+			$.blockUI();
+
+			$.post("/specimen-referral-manifest/verify-manifest.php", {
+					manifestCode: $("#manifestCode").val(),
+					testType: 'geenric-tests'
+				},
+				function(data) {
+					$.unblockUI();
+					data = data.trim();
+					console.log(data);
+					try {
+						if (
+							data == false || data == 0 || data == 'false'
+						) {
+							getSamplesForManifest();
+						} else {
+							$('.activateSample').show();
+							$('#sampleId').val(data);
+							loadRequestData();
+						}
+					} catch (e) {
+						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+					}
+				});
+		} else {
+			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+		}
+	}
+
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
@@ -168,9 +199,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			//"bDestroy": true,
-			"bStateSave": true,
-			"bRetrieve": true,
+			"bDestroy": true,
+			"bStateSave": false,
+			"bRetrieve": false,
 			"aoColumns": [{
 					"sClass": "center"
 				},

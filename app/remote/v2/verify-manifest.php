@@ -3,6 +3,7 @@
 // app/remote/v2/verify-manifest.php
 
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -11,9 +12,9 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\TestRequestsService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -93,7 +94,13 @@ try {
         http_response_code(404);
         $payload['message'] = 'Manifest not found.';
     } else {
-        $currentHash = $testRequestsService->getManifestHash([], $testType, $manifestCode);
+
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $this->db->reset();
+        $this->db->where('sample_package_code', $manifestCode);
+        $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+        $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
         if ($currentHash === '' || $currentHash === null) {
             $currentHash = $manifestRecord['manifest_hash'] ?? '';
         }

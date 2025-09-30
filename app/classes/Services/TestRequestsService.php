@@ -6,16 +6,17 @@ use COUNTRY;
 use DateTime;
 use Throwable;
 use SAMPLE_STATUS;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\ApiService;
 
 final class TestRequestsService
 {
@@ -317,41 +318,41 @@ final class TestRequestsService
      */
     public function getManifestHash($selectedSamples = [], $testType = null, $manifestCode = null)
     {
-        $selectedSamples = is_array($selectedSamples) ? $selectedSamples : [];
 
-        $tableName = TestsService::getTestTableName($testType);
-        $primaryKey = TestsService::getPrimaryColumn($testType);
-        $uniqueIds = [];
+        /** @var FileCacheUtility $fileCache */
+        $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+        $keyHash = hash('sha256', json_encode([
+            'selectedSamples' => $selectedSamples,
+            'testType' => $testType,
+            'manifestCode' => $manifestCode
+        ], JSON_UNESCAPED_UNICODE));
 
-        if ($testType !== null && !empty($selectedSamples)) {
-            $this->db->reset();
-            $this->db->where($primaryKey, $selectedSamples, 'IN');
+        return $fileCache->get($keyHash, function () use ($selectedSamples, $testType, $manifestCode) {
 
-            $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
-        }
-        elseif ($testType !== null && $manifestCode !== null) {
-            $this->db->reset();
-            $this->db->where('sample_package_code', trim((string) $manifestCode));
-            $rows = $this->db->get($tableName, null, ['unique_id']);
+            $selectedSamples = is_array($selectedSamples) ? $selectedSamples : [];
 
-            if (!empty($rows)) {
-                foreach ($rows as $row) {
-                    if (!empty($row['unique_id'])) {
-                        $uniqueIds[] = $row['unique_id'];
-                    }
-                }
+            $tableName = TestsService::getTestTableName($testType);
+            $primaryKey = TestsService::getPrimaryColumn($testType);
+            $uniqueIds = [];
+
+            if ($testType !== null && !empty($selectedSamples)) {
+                $this->db->reset();
+                $this->db->where($primaryKey, $selectedSamples, 'IN');
+                $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
+            } elseif ($testType !== null && $manifestCode !== null) {
+                $this->db->reset();
+                $this->db->where('sample_package_code', trim((string) $manifestCode));
+                $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
             }
-        }
 
-        $uniqueIds = array_values(array_filter(array_unique($uniqueIds)));
+            if (empty($uniqueIds)) {
+                return '';
+            }
 
-        if (empty($uniqueIds)) {
-            return '';
-        }
+            sort($uniqueIds, SORT_STRING);
 
-        sort($uniqueIds, SORT_STRING);
-
-        return hash('sha256', json_encode($uniqueIds, JSON_UNESCAPED_UNICODE));
+            return hash('sha256', json_encode($uniqueIds, JSON_UNESCAPED_UNICODE));
+        });
     }
 
     /**
@@ -448,7 +449,16 @@ final class TestRequestsService
             return $result;
         }
 
-        $localHash = $this->getManifestHash([], $testType, $manifestCode);
+        $selectedSamples = [];
+        if ($testType !== null && $manifestCode !== null) {
+            $tableName = TestsService::getTestTableName($testType);
+            $primaryKey = TestsService::getPrimaryColumn($testType);
+            $this->db->reset();
+            $this->db->where('sample_package_code', trim((string) $manifestCode));
+            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+        }
+
+        $localHash = $this->getManifestHash($selectedSamples, $testType, $manifestCode);
 
         if ($localHash === '') {
             $result['message'] = 'Unable to compute local manifest hash.';
