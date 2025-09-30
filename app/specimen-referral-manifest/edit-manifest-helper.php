@@ -58,7 +58,7 @@ try {
 
         // now let's update the manifest details
         $selectedSamples = array_unique($selectedSamples);
-        $manifestHash = $testRequestsService->getManifestHash($selectedSamples);
+        $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
         $numberOfSamples = count($selectedSamples);
 
         $lastId = $_POST['packageId'];

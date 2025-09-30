@@ -675,12 +675,12 @@ final class CommonService
 
     public function isSTSInstance(): bool
     {
-        return $this->getInstanceType() === 'remoteuser';
+        return ($this->getInstanceType() === 'remoteuser' || $this->getInstanceType() === 'sts');
     }
 
     public function isLISInstance(): bool
     {
-        return $this->getInstanceType() === 'vluser';
+        return ($this->getInstanceType() === 'vluser' || $this->getInstanceType() === 'lis');
     }
 
     public function isStandaloneInstance(): bool

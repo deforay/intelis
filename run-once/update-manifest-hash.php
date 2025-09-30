@@ -103,7 +103,7 @@ try {
                 continue;
             }
 
-            $computedHash = $testRequestsService->getManifestHash($sampleIds);
+            $computedHash = $testRequestsService->getManifestHash($sampleIds, $module, $manifestCode);
             if (empty($computedHash)) {
                 continue;
             }

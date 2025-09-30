@@ -437,7 +437,7 @@ $testingLabs = $facilitiesService->getTestingLabs('vl');
 		});
 
 		var currentLabId = $('#labId').val();
-		<?php if ($general->isLISInstance()) { ?> // vluser
+		<?php if ($general->isLISInstance()) { ?> 
 			if (currentLabId != '') {
 				getFreezers(currentLabId, 'freezerCode'); // Load the freezers for the current lab
 				$('.labField').hide();
