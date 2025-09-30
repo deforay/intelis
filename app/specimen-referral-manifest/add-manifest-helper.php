@@ -49,7 +49,6 @@ try {
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
             'number_of_samples'         => $numberOfSamples,
-            'manifest_hash'             => $manifestHash,
             'package_status'            => 'pending',
             'request_created_datetime'  => $currentDateTime,
             'last_modified_datetime'    => $currentDateTime
@@ -69,7 +68,6 @@ try {
             $formAttributes = [
                 'manifest' => [
                     "number_of_samples" => $numberOfSamples,
-                    'manifest_hash' => $manifestHash,
                     'last_modified_datetime' => $currentDateTime
                 ],
             ];
