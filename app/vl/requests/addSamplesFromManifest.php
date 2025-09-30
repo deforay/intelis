@@ -149,16 +149,17 @@ require_once APPLICATION_PATH . '/header.php';
 		if ($("#manifestCode").val() != "") {
 			$.blockUI();
 
-			$.post("/app/specimen-referral-manifest/verify-manifest.php", {
+			$.post("/specimen-referral-manifest/verify-manifest.php", {
 					manifestCode: $("#manifestCode").val(),
 					testType: 'vl'
 				},
 				function(data) {
 					$.unblockUI();
 					data = data.trim();
+					console.log(data);
 					try {
 						if (
-							data == false
+							data == false || data == 0 || data == 'false'
 						) {
 							getSamplesForManifest();
 						} else {
