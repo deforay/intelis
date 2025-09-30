@@ -1045,8 +1045,8 @@ sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
 
 # Show success message only if symlink was created successfully
 if [ -L "/usr/local/bin/intelis" ]; then
-    echo "✅ intelis command installed successfully!"
-    echo "You can now use: intelis interface, intelis token, etc."
+    print success "✅ intelis command installed successfully!"
+    print info "You can now use: intelis interface, intelis token, etc."
 fi
 
 if [ -d "${lis_path}/run-once" ]; then
@@ -1055,6 +1055,7 @@ if [ -d "${lis_path}/run-once" ]; then
 
     if [ -e "${run_once_scripts[0]}" ]; then
         for script_path in "${run_once_scripts[@]}"; do
+            echo ""
             php "$script_path" || print warning "Run-once script $script_path exited with status $?"
         done
     else
@@ -1063,6 +1064,7 @@ if [ -d "${lis_path}/run-once" ]; then
     fi
 fi
 
+echo ""
 # Ask User to Run 'maintenance' Scripts
 if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     # List the files in maintenance directory
@@ -1093,7 +1095,8 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
             # Check if the selected index is within the range of available files
             if [[ $file_index -ge 0 ]] && [[ $file_index -lt ${#files[@]} ]]; then
                 file="${files[$file_index]}"
-                echo "Running $file..."
+                echo ""
+                print info "Running $file..."
                 sudo -u www-data php "$file"
             else
                 print error "Invalid selection: $i. Please select a number between 1 and ${#files[@]}. Skipping."
@@ -1104,7 +1107,8 @@ fi
 
 # Run the PHP script for remote data sync
 cd "${lis_path}"
-echo "Running remote data sync script. Please wait..."
+echo ""
+print info "Running remote data sync script. Please wait..."
 sudo -u www-data composer metadata-sync &
 pid=$!
 spinner "$pid"
