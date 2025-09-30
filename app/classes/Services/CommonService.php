@@ -692,16 +692,18 @@ final class CommonService
     public function getInstanceName(): ?string
     {
         return $this->fileCache->get('lisLabName', function () {
+            $instanceName = [];
             if ($this->isLISInstance()) {
                 $labId = $this->getSystemConfig('sc_testing_lab_id') ?? null;
                 if (!empty($labId)) {
                     $lab = $this->facilitiesService->getFacilityById($labId);
-                    return ($lab['facility_name'] . ' | ' ?? '') . "InteLIS";
+                    $instanceName[] = $lab['facility_name'];
                 }
-            }elseif($this->isSTSInstance()){
-                return _translate("SAMPLE TRACKING SYSTEM") . " | InteLIS";
+            } elseif ($this->isSTSInstance()) {
+                $instanceName[] = _translate("Sample Tracking System");
             }
-            return null;
+            $instanceName[] = 'InteLIS';
+            return implode(' | ', $instanceName) ?: null;
         });
     }
 
