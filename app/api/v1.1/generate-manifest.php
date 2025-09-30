@@ -149,7 +149,6 @@ try {
                 'added_by' => $user['user_id'],
                 'lab_id' => $input['labId'],
                 'number_of_samples' => count($samplesToAdd),
-                'manifest_hash' => $manifestHash,
                 'package_status' => 'pending',
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
