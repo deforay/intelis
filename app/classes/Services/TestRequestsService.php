@@ -317,17 +317,41 @@ final class TestRequestsService
      */
     public function getManifestHash($selectedSamples = [], $testType = null, $manifestCode = null)
     {
-        if (empty($selectedSamples)) {
-            $tableName = TestsService::getTestTableName($testType);
-            $primaryKey = TestsService::getPrimaryColumn($testType);
-            $manifestCode = trim($manifestCode);
-            $this->db->where('sample_package_code', $manifestCode);
-            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+        $selectedSamples = is_array($selectedSamples) ? $selectedSamples : [];
+
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $uniqueIds = [];
+
+        if ($testType !== null && !empty($selectedSamples)) {
+            $this->db->reset();
+            $this->db->where($primaryKey, $selectedSamples, 'IN');
+
+            $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
         }
-        $selectedSamples = array_unique($selectedSamples);
-        // Ensure deterministic ordering for hashing (always integer array)
-        sort($selectedSamples, SORT_NUMERIC);
-        return hash('sha256', json_encode($selectedSamples, JSON_UNESCAPED_UNICODE));
+        elseif ($testType !== null && $manifestCode !== null) {
+            $this->db->reset();
+            $this->db->where('sample_package_code', trim((string) $manifestCode));
+            $rows = $this->db->get($tableName, null, ['unique_id']);
+
+            if (!empty($rows)) {
+                foreach ($rows as $row) {
+                    if (!empty($row['unique_id'])) {
+                        $uniqueIds[] = $row['unique_id'];
+                    }
+                }
+            }
+        }
+
+        $uniqueIds = array_values(array_filter(array_unique($uniqueIds)));
+
+        if (empty($uniqueIds)) {
+            return '';
+        }
+
+        sort($uniqueIds, SORT_STRING);
+
+        return hash('sha256', json_encode($uniqueIds, JSON_UNESCAPED_UNICODE));
     }
 
     /**
@@ -424,54 +448,7 @@ final class TestRequestsService
             return $result;
         }
 
-        try {
-            $tableName = TestsService::getTestTableName($testType);
-            $primaryKey = TestsService::getPrimaryColumn($testType);
-        } catch (Throwable $e) {
-            $result['message'] = 'Invalid test type configuration.';
-            LoggerUtility::logError('Invalid test type for manifest verification: ' . $e->getMessage(), [
-                'manifestCode' => $manifestCode,
-                'testType' => $testType,
-            ]);
-            return $result;
-        }
-
-        $this->db->reset();
-        $this->db->where('sample_package_code', $manifestCode);
-        $sampleRows = $this->db->get($tableName, null, [$primaryKey, 'lab_id']);
-
-        if (empty($sampleRows)) {
-            $result['message'] = 'No samples found locally for this manifest.';
-            return $result;
-        }
-
-        $sampleIds = [];
-        $labId = 0;
-        foreach ($sampleRows as $row) {
-            if (!empty($row[$primaryKey])) {
-                $sampleIds[] = (int) $row[$primaryKey];
-            }
-            if ($labId <= 0 && !empty($row['lab_id'])) {
-                $labId = (int) $row['lab_id'];
-            }
-        }
-
-        $sampleIds = array_values(array_filter($sampleIds));
-        $numberOfSamples = count($sampleIds);
-        $result['numberOfSamples'] = $numberOfSamples;
-
-        if ($labId <= 0) {
-            $result['message'] = 'Manifest lab could not be determined.';
-            return $result;
-        }
-        $result['labId'] = $labId;
-
-        if ($numberOfSamples === 0) {
-            $result['message'] = 'Unable to compute manifest hash because sample list is empty.';
-            return $result;
-        }
-
-        $localHash = $this->getManifestHash($sampleIds, $testType, $manifestCode);
+        $localHash = $this->getManifestHash([], $testType, $manifestCode);
 
         if ($localHash === '') {
             $result['message'] = 'Unable to compute local manifest hash.';
@@ -479,6 +456,7 @@ final class TestRequestsService
         }
 
         $result['localHash'] = $localHash;
+        $labId = $this->commonService->getSystemConfig('sc_testing_lab_id') ?? null;
 
         $apiURL = "$remoteURL/remote/v2/verify-manifest.php";
         $payload = [

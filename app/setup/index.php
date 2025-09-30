@@ -509,7 +509,7 @@ $testName = TestsService::getTestTypes();
         if (value == 'remoteuser' || value == 'standalone') {
           $('.lis').hide();
           $('.lis-input').removeClass('isRequired');
-        } else if (value == 'vluser') {
+        } else if (value == 'vluser' || value == 'lis') {
           $('.lis').show();
           $('.lis-input').addClass('isRequired');
           getTestingLabs();

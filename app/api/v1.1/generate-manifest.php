@@ -142,7 +142,7 @@ try {
 
         // Create new manifest only if there are samples to add
         if (!empty($samplesToAdd)) {
-            $manifestHash = $testRequestsService->getManifestHash($selectedSamplesIds);
+            $manifestHash = $testRequestsService->getManifestHash($selectedSamplesIds, $input['testType']);
             $data = [
                 'package_code' => $sampleManifestCode,
                 'module' => $input['testType'],
