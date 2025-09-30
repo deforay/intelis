@@ -50,7 +50,7 @@ $general = ContainerRegistry::get(CommonService::class);
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:20%;vertical-align:middle;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest();return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest('covid19');return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -125,7 +125,7 @@ $general = ContainerRegistry::get(CommonService::class);
 							<tbody>
 								<tr>
 									<td colspan="14" class="dataTables_empty" style="text-align:center;">
-										<?php echo _translate("Please enter the manifest code then submit!", true); ?>
+										<?php echo _translate("Please enter a valid Manifest Code to activate", true); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -166,37 +166,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 	remoteSync = true;
-
-	function verifyManifest() {
-		if ($("#manifestCode").val() != "") {
-			$.blockUI();
-
-			$.post("/specimen-referral-manifest/verify-manifest.php", {
-					manifestCode: $("#manifestCode").val(),
-					testType: 'covid19'
-				},
-				function(data) {
-					$.unblockUI();
-					data = data.trim();
-					console.log(data);
-					try {
-						if (
-							data == false || data == 0 || data == 'false'
-						) {
-							getSamplesForManifest();
-						} else {
-							$('.activateSample').show();
-							$('#sampleId').val(data);
-							loadRequestData();
-						}
-					} catch (e) {
-						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
-					}
-				});
-		} else {
-			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
-		}
-	}
 
 	function loadRequestData() {
 		$.blockUI();
@@ -264,40 +233,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		});
 		$.unblockUI();
-	}
-
-	function getSamplesForManifest() {
-		if ($("#manifestCode").val() != "") {
-			$.blockUI();
-
-			$.post("/tasks/remote/requests-receiver.php", {
-					manifestCode: $("#manifestCode").val(),
-					testType: 'covid19'
-				},
-				function(data) {
-					$.unblockUI();
-					let parsed;
-					try {
-						parsed = JSON.parse(data);
-						if (
-							parsed &&
-							typeof parsed === 'object' &&
-							!Array.isArray(parsed) &&
-							Object.keys(parsed).length === 0
-						) {
-							toast.error("<?= _translate("No samples found in the manifest", true); ?>");
-						} else {
-							$('.activateSample').show();
-							$('#sampleId').val(data);
-							loadRequestData();
-						}
-					} catch (e) {
-						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
-					}
-				});
-		} else {
-			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
-		}
 	}
 
 	function activateSamplesFromManifest() {

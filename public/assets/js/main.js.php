@@ -94,6 +94,119 @@ $remoteURL = $general->getRemoteURL();
         StorageHelper.storeInSessionStorage('crosslogin', 'true');
     }
 
+
+    function verifyManifest(testType) {
+        if ($("#manifestCode").val() != "") {
+            $.blockUI();
+            if ($.fn.DataTable.isDataTable("#manifestDataTable")) {
+                $('#manifestDataTable').DataTable().clear().destroy();
+
+                // Restore the translated empty row
+                $("#manifestDataTable tbody").html(`
+        <tr>
+            <td colspan="13" class="dataTables_empty" style="text-align:center;">
+                <?= _translate("Please enter a valid Manifest Code to activate", true); ?>
+            </td>
+        </tr>
+    `);
+            }
+
+
+
+
+            $.post("/specimen-referral-manifest/verify-manifest.php", {
+                    manifestCode: $("#manifestCode").val(),
+                    testType: testType
+                },
+                function(data) {
+                    $.unblockUI();
+                    try {
+                        if (typeof data === 'string') {
+                            data = data.trim();
+                        }
+
+                        if (!data) {
+                            toast.error("<?= _translate("Unable to verify manifest", true); ?>");
+                            return;
+                        }
+
+                        let response = data;
+                        if (typeof data === 'string') {
+                            try {
+                                response = JSON.parse(data);
+                            } catch (parseError) {
+                                // fall back to legacy behaviour
+                            }
+                        }
+
+                        if (typeof response === 'object' && response !== null && response.status) {
+                            if (response.status === 'not-found') {
+                                toast.error("<?= _translate("Manifest not found", true); ?>");
+                                return;
+                            }
+                            if (response.status === 'match') {
+                                $('.activateSample').show();
+                                loadRequestData();
+                                return;
+                            }
+                            if (response.status === 'mismatch') {
+                                getSamplesForManifest();
+                                return;
+                            }
+                        }
+
+                        if (response === 'match') {
+                            $('.activateSample').show();
+                            loadRequestData();
+                        } else if (response === 'not-found') {
+                            toast.error("<?= _translate("Manifest not found", true); ?>");
+                        } else {
+                            syncManifestFromSTS(testType);
+                        }
+                    } catch (e) {
+                        console.error(e);
+                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+                    }
+                });
+        } else {
+            alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+        }
+    }
+
+    function syncManifestFromSTS(testType) {
+        if ($("#manifestCode").val() != "") {
+            $.blockUI();
+
+            $.post("/tasks/remote/requests-receiver.php", {
+                    manifestCode: $("#manifestCode").val(),
+                    testType: testType
+                },
+                function(data) {
+                    $.unblockUI();
+                    let parsed;
+                    try {
+                        parsed = JSON.parse(data);
+                        if (
+                            parsed &&
+                            typeof parsed === 'object' &&
+                            !Array.isArray(parsed) &&
+                            Object.keys(parsed).length === 0
+                        ) {
+                            toast.error("<?= _translate("No samples found in the manifest", true); ?>");
+                        } else {
+                            $('.activateSample').show();
+                            $('#sampleId').val(data);
+                            loadRequestData();
+                        }
+                    } catch (e) {
+                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+                    }
+                });
+        } else {
+            alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+        }
+    }
+
     let remoteSync = false;
     let globalDayjsDateFormat = '<?= $systemService->getDateFormat('dayjs'); ?>';
     let systemTimezone = '<?= $_SESSION['APP_TIMEZONE'] ?? 'UTC'; ?>';
