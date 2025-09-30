@@ -104,9 +104,7 @@ try {
         $db->where('sample_package_code', $manifestCode);
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);
         $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
-        if ($currentHash === '' || $currentHash === null) {
-            $currentHash = $manifestRecord['manifest_hash'] ?? '';
-        }
+        
 
         if ($currentHash !== '') {
             if (hash_equals($currentHash, $providedHash)) {

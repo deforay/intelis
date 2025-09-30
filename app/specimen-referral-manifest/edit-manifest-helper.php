@@ -81,7 +81,6 @@ try {
         $db->update($packageTable, [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
-            'manifest_hash' => $manifestHash,
             'package_status' => $_POST['packageStatus'],
             'manifest_change_history' => JsonUtility::encodeUtf8Json(array_merge($existingChangeReasons ?? [], $newReason ?? [])),
             'last_modified_datetime' => $currentDateTime
@@ -99,7 +98,6 @@ try {
             $formAttributes = [
                 'manifest' => [
                     "number_of_samples" => $numberOfSamples,
-                    'manifest_hash' => $manifestHash,
                     'last_modified_datetime' => $currentDateTime
                 ],
             ];
