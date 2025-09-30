@@ -197,7 +197,7 @@ if ($urlChanged) {
 }
 
 // Step 3: Run metadata refresh if URL was changed or freshly set
-if ($urlWasEmpty || $urlChanged) {
+//if ($urlWasEmpty || $urlChanged) {
     $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
 
     echo PHP_EOL;
@@ -234,7 +234,7 @@ if ($urlWasEmpty || $urlChanged) {
             exit(1);
         }
     }
-}
+//}
 
 // Step 4: Handle Lab Configuration
 echo PHP_EOL;

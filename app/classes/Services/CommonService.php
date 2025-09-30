@@ -687,6 +687,22 @@ final class CommonService
     {
         return $this->getInstanceType() === 'standalone';
     }
+
+
+    public function getLISLabName(): ?string
+    {
+        return $this->fileCache->get('lisLabName', function () {
+            if ($this->isLISInstance()) {
+                $labId = $this->getSystemConfig('sc_testing_lab_id') ?? null;
+                if (!empty($labId)) {
+                    $lab = $this->facilitiesService->getFacilityById($labId);
+                    return $lab['facility_name'] ?? null;
+                }
+            }
+            return null;
+        });
+    }
+
     public function getLastSTSSyncDateTime()
     {
         if ($this->isSTSInstance()) {

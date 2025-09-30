@@ -142,7 +142,7 @@ $testTypeList = SystemService::getActiveModules(true);
 							</div>
 						</div>
 						<?php if ($general->isLISInstance()) { ?>
-							<input type="hidden" value="<?php echo $general->getSystemConfig('sc_testing_lab_id'); ?>" name="testingLab" />
+							<input type="hidden" value="<?= $general->getSystemConfig('sc_testing_lab_id'); ?>" name="testingLab" />
 						<?php } else { ?>
 							<div class="row">
 								<div class="col-md-6">

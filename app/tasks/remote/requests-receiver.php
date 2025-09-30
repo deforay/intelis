@@ -20,6 +20,8 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -58,6 +60,8 @@ function syncTestRequest(
     $localRecord = $testRequestsService->findMatchingLocalRecord($incoming, $tableName, $primaryKeyName);
     $didInsert = false;
     $didUpdate = false;
+    $didFail = false;
+    $failureReason = null;
     $resultRecord = $localRecord;
 
     if (!empty($localRecord)) {
@@ -86,7 +90,7 @@ function syncTestRequest(
             $localRecord['remote_sample_code'] = $incoming['remote_sample_code'];
         }
 
-        // Determine if meaningful change exists (excluding last_modified_datetime and form_attributes)
+        // Determine if meaningful change exists
         $needsUpdate = !MiscUtility::isArrayEqual(
             $updatePayload,
             $localRecord,
@@ -100,9 +104,13 @@ function syncTestRequest(
             }
             $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
             $res = $db->update($tableName, $updatePayload);
-            $didUpdate = ($res === true);
-            if ($didUpdate) {
+
+            if ($res === true) {
+                $didUpdate = true;
                 $resultRecord = array_merge($localRecord, $updatePayload);
+            } else {
+                $didFail = true;
+                $failureReason = 'update_failed: ' . ($db->getLastError() ?: 'unknown error');
             }
         } else {
             $resultRecord = $localRecord;
@@ -124,18 +132,37 @@ function syncTestRequest(
         $incoming['data_sync'] = 0;
 
         $res = $db->insert($tableName, $incoming);
-        if ($res === true) {
+        if ($res === true || $res > 0) {
             $didInsert = true;
             $insertId = $db->getInsertId();
             $resultRecord = [$primaryKeyName => $insertId] + $incoming;
+        } else {
+            $didFail = true;
+            $failureReason = 'insert_failed: ' . ($db->getLastError() ?: 'unknown error');
         }
     }
 
     return [
         'success' => $didInsert || $didUpdate,
         'is_insert' => $didInsert,
+        'is_update' => $didUpdate,
+        'is_failure' => $didFail,
+        'failure_reason' => $failureReason,
         'localRecord' => $resultRecord,
     ];
+}
+
+function outputSyncResults(ConsoleOutput $output, string $module, int $success, int $failures): void
+{
+    if ($success > 0) {
+        $output->writeln("<success>✓ Synced $success " . strtoupper($module) . " record(s)</success>");
+    } else {
+        $output->writeln("Synced $success " . strtoupper($module) . " record(s)");
+    }
+
+    if ($failures > 0) {
+        $output->writeln("<error>✗ Failed to sync $failures " . strtoupper($module) . " record(s)</error>");
+    }
 }
 
 function spinner(int $loopIndex, int $count, string $label = 'Processed', array $spinnerChars = ['.   ', '..  ', '... ', '....']): void
@@ -160,11 +187,21 @@ function clearSpinner(): void
 $forceSyncModule = $manifestCode = null;
 $syncSinceDate = null;
 $isSilent = false;
+// Initialize Symfony Console Output
+$output = new ConsoleOutput();
+// Define custom styles
+$output->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
+$output->getFormatter()->setStyle('error', new OutputFormatterStyle('red'));
+$output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));
+$output->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
+$output->getFormatter()->setStyle('comment', new OutputFormatterStyle('black', 'white'));
+$output->getFormatter()->setStyle('highlight', new OutputFormatterStyle('black', 'yellow'));
+
 if ($cliMode) {
-    require_once __DIR__ . "/../../../bootstrap.php";
-    echo PHP_EOL;
-    echo "=========================" . PHP_EOL;
-    echo "Starting test requests sync" . PHP_EOL;
+
+    $output->writeln('');
+    $output->writeln('=========================');
+    $output->writeln('<info>Starting test requests sync</info>');
 
     $args = array_slice($_SERVER['argv'], 1);
 
@@ -215,7 +252,7 @@ if (!empty($_POST)) {
 }
 
 if ($syncSinceDate !== null) {
-    echo "Filtering requests from: $syncSinceDate" . PHP_EOL;
+    $output->writeln("<comment>Filtering requests from: $syncSinceDate</comment>");
 }
 $transactionId = MiscUtility::generateULID();
 
@@ -295,14 +332,14 @@ foreach ($systemConfig['modules'] as $module => $status) {
             $basePayload,
             gzip: true,
             async: true
-        )->then(function ($response) use (&$responsePayload, $module, $cliMode) {
+        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $output) {
             $responsePayload[$module] = $response->getBody()->getContents();
             if ($cliMode) {
-                echo "Received server response for $module" . PHP_EOL;
+                $output->writeln("<info>Received server response for $module</info>");
             }
-        })->otherwise(function ($reason) use ($module, $cliMode) {
+        })->otherwise(function ($reason) use ($module, $cliMode, $output) {
             if ($cliMode) {
-                echo _sanitizeOutput("STS Request sync for $module failed: $reason") . PHP_EOL;
+                $output->writeln("<error>STS Request sync for $module failed: $reason</error>");
             }
             LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
         });
@@ -314,7 +351,10 @@ Utils::settle($promises)->wait();
 
 $endTime = microtime(true);
 if ($cliMode) {
-    echo "Total download time for STS Requests: " . ($endTime - $startTime) . " seconds" . PHP_EOL;
+    $output->writeln(sprintf(
+        '<comment>Total download time for STS Requests: %.2f seconds</comment>',
+        $endTime - $startTime
+    ));
 }
 
 // Define per-module config
@@ -646,9 +686,8 @@ try {
         $tableName = TestsService::getTestTableName($module);
 
         if ($cliMode) {
-            echo PHP_EOL;
-            echo "=========================" . PHP_EOL;
-            echo "Processing for " . strtoupper($module) . PHP_EOL;
+            $output->writeln('');
+            $output->writeln("<highlight>Processing for " . strtoupper($module) . "...</highlight>");
         }
 
         $options = [
@@ -661,6 +700,7 @@ try {
 
         $loopIndex = 0;
         $successCounter = 0;
+        $failureCounter = 0;
 
         foreach ($parsedData as $key => $remoteData) {
             try {
@@ -678,6 +718,19 @@ try {
                     $testRequestsService
                 );
                 $localRecord = $syncResult['localRecord'];
+
+                if ($syncResult['is_failure']) {
+                    $failureCounter++;
+                    LoggerUtility::logError("Sync operation failed", [
+                        'reason' => $syncResult['failure_reason'],
+                        'unique_id' => $request['unique_id'] ?? null,
+                        'sample_code' => $request['sample_code'] ?? null,
+                        'module' => $module,
+                        'last_db_error' => $db->getLastError()
+                    ]);
+                    $db->rollbackTransaction();
+                    continue; // Skip to next record
+                }
 
                 // Module-specific logic
                 if ($module === 'covid19') {
@@ -796,7 +849,7 @@ try {
         if ($cliMode) {
             clearSpinner();
             echo PHP_EOL;
-            echo "Synced $successCounter " . strtoupper($module) . " record(s)" . PHP_EOL;
+            outputSyncResults($output, $module, $successCounter, $failureCounter);
         }
 
         $general->addApiTracking(

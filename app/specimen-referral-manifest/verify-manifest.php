@@ -20,6 +20,6 @@ $verifyManifest = $testRequestsService->verifyManifestHashWithRemote(
     testType: $_POST['testType'],
 );
 
-return $verifyManifest['verified'] ?? false;
+echo $verifyManifest['verified'] ? 'true' : 'false';
 
 
