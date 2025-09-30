@@ -4,6 +4,7 @@
 use App\Registries\ContainerRegistry;
 use App\Utilities\DateUtility;
 use App\Services\TbService;
+use App\Services\FacilitiesService;
 // Nationality
 $nationalityQry = "SELECT * FROM `r_countries` ORDER BY `iso_name` ASC";
 $nationalityResult = $db->query($nationalityQry);
@@ -36,18 +37,6 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-//check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-    $pdResult = $db->query($pdQuery);
-    $province = "<option value=''> -- Select -- </option>";
-    foreach ($pdResult as $provinceName) {
-        $selected = ($tbInfo['geo_id'] == $provinceName['geo_id']) ? "selected='selected'" : "";
-        $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_id'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
-    }
-}
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
@@ -78,7 +67,6 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 
             <div class="box-body">
                 <form class="form-horizontal" method="post" name="editTbRequestForm" id="editTbRequestForm" autocomplete="off" action="tb-edit-request-helper.php">
-
                     <!-- FACILITY INFORMATION -->
                     <div class="box box-default">
                         <div class="box-body">
@@ -421,7 +409,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                         </td>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="testType<?php echo $n; ?>"><?php echo _translate("Test Type"); ?></label>
-                                                            <select class="form-control test-type-select" name="testResult[testType][]" id="testType<?php echo $n; ?>" title="<?php echo _translate("Please select the test type"); ?>" onchange="$('.reasonForChange<?php echo $n; ?>').show();>
+                                                            <select class="form-control test-type-select" name="testResult[testType][]" id="testType<?php echo $n; ?>" title="<?php echo _translate("Please select the test type"); ?>" onchange="updateTestResults(<?php echo $n; ?>);$('.reasonForChange<?php echo $n; ?>').show();>
                                                                 <option value=""><?php echo _translate("Select test type"); ?></option>
                                                                 <option value=" Smear Microscopy" <?php echo ($test['test_type'] == 'Smear Microscopy') ? 'selected="selected"' : ''; ?>>Smear Microscopy</option>
                                                                 <option value="TB LAM test" <?php echo ($test['test_type'] == 'TB LAM test') ? 'selected="selected"' : ''; ?>>TB LAM test</option>
@@ -552,7 +540,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     </td>
                                                     <td style="width: 50%;">
                                                         <label class="label-control" for="testType1"><?php echo _translate("Test Type"); ?></label>
-                                                        <select class="form-control test-type-select" name="testResult[testType][]" id="testType1" title="<?php echo _translate("Please select the test type"); ?>">
+                                                        <select class="form-control test-type-select" name="testResult[testType][]" id="testType1" title="<?php echo _translate("Please select the test type"); ?>" onchange="updateTestResults(1);">
                                                             <option value=""><?php echo _translate("Select test type"); ?></option>
                                                             <option value="Smear Microscopy">Smear Microscopy</option>
                                                             <option value="TB LAM test">TB LAM test</option>
@@ -630,12 +618,25 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
+                                    <a style="margin: 0px 5px;" onclick="$('.referrelLabSection').toggle();" href="javascript:void(0);" class="btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
                                 </div>
-                                <div class="row pr-5" style="margin-right: 5px;">
-                                    <div class="col-md-6" align="right">
-                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
+                                <div class="row pr-5 referrelLabSection" <?php echo (isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) ? "" : 'style="display: none;"'; ?>>
+                                    <br>
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="referLabId"><?php echo _translate("Referring Lab"); ?></label>
+                                        <select name="referLabId" id="referLabId" class="select2 form-control" title="Please select the referrel lab">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['referred_to_lab_id'], '-- Select referrel lab --'); ?>
+                                        </select>
                                     </div>
-                                    <div class="col-md-6" style=" padding-right: 3px; ">
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="reasonForReferrel"><?php echo _translate("Reason for Referrel"); ?></label>
+                                        <textarea name="reasonForReferrel" id="reasonForReferrel" class="form-control" placeholder="Enter the reason for referrel" title="Please enter the reason for referrel"><?php echo $tbInfo['reason_for_referral'] ?? ''; ?></textarea>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row pr-5">
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
@@ -661,11 +662,10 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         </div>
     </section>
 </div>
-
 <script type="text/javascript">
+    let testCount = $('.test-section').length || 1;
     let provinceName = true;
     let facilityName = true;
-    let testCount = $('.test-section').length;
 
     // Test result options for each test type
     const testResultOptions = {
@@ -720,85 +720,20 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         ]
     };
 
-    // Initialize plugins for a specific section
-    function initializePluginsForSection(section, count) {
-        const $section = $(section);
-
-        // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2').each(function() {
-            const $this = $(this);
-            if (!$this.hasClass('select2-hidden-accessible')) {
-                $this.select2({
-                    placeholder: "Select option",
-                    width: '100%'
-                });
-            }
-        });
-
-        // Initialize date pickers
-        $('.date:not(.hasDatePicker)').each(function() {
-            $(this).datepicker({
-                changeMonth: true,
-                changeYear: true,
-                onSelect: function() {
-                    $(this).change();
-                },
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                maxDate: "Today",
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
-                $('.ui-datepicker-calendar').show();
-            });
-        });
-
-        // Initialize datetime pickers  
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
-            $(this).datetimepicker({
-                changeMonth: true,
-                changeYear: true,
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                timeFormat: "HH:mm",
-                maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                        $('.ui-datepicker-calendar').show();
-                    });
-                },
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
-                $('.ui-datepicker-calendar').show();
-            });
-        });
-
-        // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function() {
-            const $row = $(this).closest('.test-section');
-            if ($(this).val() === 'yes') {
-                $row.find('.rejection-reason-field, .rejection-date-field').show();
-                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
-            } else {
-                $row.find('.rejection-reason-field, .rejection-date-field').hide();
-                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
-            }
-        });
-
-        // Bind test type change event
-        $section.find('.test-type-select').on('change', function() {
-            updateTestResults(count);
-        });
-    }
-
-    // Update test results based on selected test type
+    // Update test results dropdown based on selected test type
     function updateTestResults(rowNumber) {
         const testTypeSelect = document.getElementById(`testType${rowNumber}`);
         const testResultSelect = document.getElementById(`testResult${rowNumber}`);
 
-        if (!testTypeSelect || !testResultSelect) return;
+        if (!testTypeSelect || !testResultSelect) {
+            console.log(`Elements not found for row ${rowNumber}`);
+            return;
+        }
 
         const selectedTestType = testTypeSelect.value;
 
         // Clear existing options
-        testResultSelect.innerHTML = '<option value="">Select Test Result</option>';
+        testResultSelect.innerHTML = '<option value=""><?php echo _translate("Select test result"); ?></option>';
 
         // Populate based on selected test type
         if (selectedTestType && testResultOptions[selectedTestType]) {
@@ -811,6 +746,54 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         }
     }
 
+    // Initialize date pickers for a section
+    function initializeDatePickers(section) {
+        // Regular date picker
+        $(section).find('.date:not(.hasDatepicker)').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            maxDate: "Today",
+            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+        });
+
+        // DateTime picker  
+        $(section).find('.date-time:not(.hasDateTimePicker)').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+        });
+    }
+
+    // Initialize event handlers for a test section
+    function initializeTestSection(section, sectionNumber) {
+        const $section = $(section);
+
+        // Sample rejection change handler
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
+            const $row = $(this).closest('.test-section');
+            if ($(this).val() === 'yes') {
+                $row.find('.rejection-reason-field, .rejection-date-field').show();
+                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
+            } else {
+                $row.find('.rejection-reason-field, .rejection-date-field').hide();
+                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
+            }
+        });
+
+        // Test type change handler - FIXED: Use proper event delegation
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
+            const sectionNum = $(this).closest('.test-section').attr('data-count');
+            updateTestResults(sectionNum);
+        });
+
+        // Initialize date pickers
+        initializeDatePickers(section);
+    }
+
     // Add new test section
     function addTestSection() {
         testCount++;
@@ -818,25 +801,24 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         const firstSection = container.querySelector('.test-section');
         const newSection = firstSection.cloneNode(true);
 
-        // Update data-count attribute
+        // Update section attributes
         newSection.setAttribute('data-count', testCount);
-
-        // Update section header
         newSection.querySelector('.section-number').textContent = testCount;
 
-        // Update all IDs, names and labels
-        updateIdsAndLabels(newSection, testCount);
+        // Update all IDs and names
+        updateElementIds(newSection, testCount);
 
-        // Clear all form values
-        clearFormValues(newSection);
+        // Clear form values
+        clearSectionValues(newSection);
 
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
+        $(newSection).find('.reasonForChange' + (testCount - 1)).hide();
 
         container.appendChild(newSection);
 
-        // Initialize plugins for new section
-        initializePluginsForSection(newSection, testCount);
+        // Initialize the new section
+        initializeTestSection(newSection, testCount);
     }
 
     // Remove test section
@@ -845,117 +827,87 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             const container = document.getElementById('testSections');
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
-                // Destroy Select2 instances before removing
-                $(lastSection).find('select.select2-hidden-accessible').each(function() {
-                    $(this).select2('destroy');
-                });
                 lastSection.remove();
                 testCount--;
             }
         }
     }
 
-    // Update IDs and labels for new section
-    function updateIdsAndLabels(section, count) {
-        // Update all labels with 'for' attribute
-        const labels = section.querySelectorAll('label[for]');
-        labels.forEach(label => {
-            const oldFor = label.getAttribute('for');
+    // Update element IDs and names for new section
+    function updateElementIds(section, count) {
+        // Update labels
+        $(section).find('label[for]').each(function() {
+            const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
-                label.setAttribute('for', newFor);
+                $(this).attr('for', newFor);
             }
         });
-        $(section).find('.hasDatepicker, .hasDateTimePicker').removeClass('hasDatepicker hasDateTimePicker');
-        // Update all input/select IDs and names
-        const formElements = section.querySelectorAll('input[id], select[id]');
-        formElements.forEach(element => {
-            const oldId = element.getAttribute('id');
+
+        // Update form elements
+        $(section).find('input[id], select[id], textarea[id]').each(function() {
+            const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
-                element.setAttribute('id', newId);
+                $(this).attr('id', newId);
 
-                // Update name attribute for array fields
-                if (element.hasAttribute('name')) {
-                    const oldName = element.getAttribute('name');
-                    if (oldName.includes('[]')) {
-                        // Keep array notation as is
-                        element.setAttribute('name', oldName);
-                    }
-                }
-                $(element).find('.hasDatepicker, .hasDateTimePicker').removeClass('hasDatepicker hasDateTimePicker');
-
-                // Clean Select2 attributes
-                if (element.tagName === 'SELECT') {
-                    $(element).removeClass('select2-hidden-accessible')
-                        .removeAttr('data-select2-id tabindex aria-hidden')
-                        .siblings('.select2-container').remove();
-                }
-
+                // Remove datepicker classes to allow re-initialization
+                $(this).removeClass('hasDatepicker hasDateTimePicker');
             }
         });
+
+        // Update reason for change class
+        $(section).find('.reasonForChange1, .reasonForChange2, .reasonForChange3').removeClass().addClass('reasonForChange' + count);
     }
 
-    // Clear form values in section
-    function clearFormValues(section) {
-        const inputs = section.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            if (input.type === 'checkbox' || input.type === 'radio') {
-                input.checked = false;
-            } else if (input.tagName === 'SELECT') {
-                input.selectedIndex = 0;
+    // Clear all values in a section
+    function clearSectionValues(section) {
+        $(section).find('input, select, textarea').each(function() {
+            if (this.type === 'checkbox' || this.type === 'radio') {
+                this.checked = false;
+            } else if (this.tagName === 'SELECT') {
+                this.selectedIndex = 0;
             } else {
-                input.value = '';
+                this.value = '';
             }
         });
     }
 
-    // Utility functions
+    // Other utility functions (keeping existing ones for compatibility)
     function checkNameValidation(tableName, fieldName, obj, fnct, alrt, callback) {
         var removeDots = obj.value.replace(/\./g, "").replace(/\,/g, "").replace(/\s{2,}/g, ' ');
 
         $.post("/includes/checkDuplicate.php", {
-                tableName: tableName,
-                fieldName: fieldName,
-                value: removeDots.trim(),
-                fnct: fnct,
-                format: "html"
-            },
-            function(data) {
-                if (data === '1') {
-                    alert(alrt);
-                    document.getElementById(obj.id).value = "";
-                }
-            });
+            tableName: tableName,
+            fieldName: fieldName,
+            value: removeDots.trim(),
+            fnct: fnct,
+            format: "html"
+        }, function(data) {
+            if (data === '1') {
+                alert(alrt);
+                document.getElementById(obj.id).value = "";
+            }
+        });
     }
 
     function getfacilityDetails(obj) {
         $.blockUI();
         var pName = $("#province").val();
 
-        if (pName != '' && provinceName && facilityName) {
-            facilityName = false;
-        }
-
         if ($.trim(pName) != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    pName: pName,
-                    testType: 'tb'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#facilityId").html(details[0]);
-                        $("#district").html(details[1]);
-                    }
-                });
-            generateSampleCode();
+                pName: pName,
+                testType: 'tb'
+            }, function(data) {
+                if (data != "") {
+                    details = data.split("###");
+                    $("#facilityId").html(details[0]);
+                    $("#district").html(details[1]);
+                }
+            });
         } else if (pName == '') {
-            provinceName = true;
-            facilityName = true;
-            $("#province").html("<?php echo $province; ?>");
             $("#facilityId").html("<?php echo $facility; ?>");
-            $("#facilityId").select2("val", "");
             $("#district").html("<option value=''> -- Select -- </option>");
         }
         $.unblockUI();
@@ -968,16 +920,15 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 
         if (dName != '') {
             $.post("/includes/siteInformationDropdownOptions.php", {
-                    dName: dName,
-                    cliName: cName,
-                    testType: 'tb'
-                },
-                function(data) {
-                    if (data != "") {
-                        details = data.split("###");
-                        $("#facilityId").html(details[0]);
-                    }
-                });
+                dName: dName,
+                cliName: cName,
+                testType: 'tb'
+            }, function(data) {
+                if (data != "") {
+                    details = data.split("###");
+                    $("#facilityId").html(details[0]);
+                }
+            });
         } else {
             $("#facilityId").html("<option value=''> -- Select -- </option>");
         }
@@ -1014,36 +965,6 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         $.unblockUI();
     }
 
-    function setPatientDetails(pDetails) {
-        patientArray = JSON.parse(pDetails);
-        $("#firstName").val(patientArray['firstname']);
-        $("#lastName").val(patientArray['lastname']);
-        $("#patientGender").val(patientArray['gender']);
-        $("#patientAge").val(patientArray['age']);
-        $("#dob").val(patientArray['dob']);
-        $("#patientId").val(patientArray['patient_id']);
-    }
-
-    function generateSampleCode() {
-        var pName = $("#province").val();
-        var sDate = $("#sampleCollectionDate").val();
-        var provinceCode = $("#province").find(":selected").attr("data-code");
-
-        if (pName != '' && sDate != '') {
-            $.post("/tb/requests/generate-sample-code.php", {
-                    sampleCollectionDate: sDate,
-                    provinceCode: provinceCode
-                },
-                function(data) {
-                    var sCodeKey = JSON.parse(data);
-                    $("#sampleCode").val(sCodeKey.sampleCode);
-                    $("#sampleCodeInText").html(sCodeKey.sampleCodeInText);
-                    $("#sampleCodeFormat").val(sCodeKey.sampleCodeFormat);
-                    $("#sampleCodeKey").val(sCodeKey.sampleCodeKey);
-                });
-        }
-    }
-
     function validateNow() {
         if ($('#isResultAuthorized').val() != "yes") {
             $('#authorizedBy,#authorizedOn').removeClass('isRequired');
@@ -1066,24 +987,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         }
     }
 
-    function checkSubReason(obj, show, opUncheck, hide) {
-        $('.reason-checkbox').prop("checked", false);
-        if (opUncheck == "followup-uncheck") {
-            $('#followUp').val("");
-            $("#xPertMTMResult").prop('disabled', false);
-        } else {
-            $("#xPertMTMResult").prop('disabled', true);
-        }
-        $('.' + opUncheck).prop("checked", false);
-        if ($(obj).prop("checked", true)) {
-            $('.' + show).show(300);
-            $('.' + show).removeClass(hide);
-            $('.' + hide).hide(300);
-            $('.' + show).addClass(hide);
-        }
-    }
-
-    // Document ready function
+    // Document ready initialization
     $(document).ready(function() {
         // Initialize Select2 for main form elements
         $("#facilityId, #province, #district").select2({
@@ -1105,14 +1009,19 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             $('#labId').select2({
                 placeholder: "<?php echo _translate('Select testing lab'); ?>"
             });
-        <?php }
-        $n = 1;
-        foreach ($tbTestInfo as $key => $test) { ?>
-            // Initialize first test section
-            initializePluginsForSection(document.querySelector('.test-section'), <?php echo $n; ?>);
-        <?php $n += 1;
-        } ?>
+        <?php } ?>
 
+        // Initialize all existing test sections
+        $('.test-section').each(function(index) {
+            const sectionNumber = $(this).attr('data-count') || (index + 1);
+            initializeTestSection(this, sectionNumber);
+
+            // Initialize test results for existing sections
+            const testTypeSelect = $(this).find('.test-type-select');
+            if (testTypeSelect.length && testTypeSelect.val()) {
+                updateTestResults(sectionNumber);
+            }
+        });
 
         // Treatment initiation change handler
         $('#isPatientInitiatedTreatment').on('change', function() {
@@ -1132,29 +1041,21 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             }
         });
 
-        <?php if (isset($arr['tb_positive_confirmatory_tests_required_by_central_lab']) && $arr['tb_positive_confirmatory_tests_required_by_central_lab'] == 'yes') { ?>
-            $(document).on('change', '.test-result, #result', function(e) {
-                checkPostive();
-            });
-        <?php } ?>
-
         $("#labId").change(function(e) {
             if ($(this).val() != "") {
                 $.post("/tb/requests/get-attributes-data.php", {
-                        id: this.value,
-                    },
-                    function(data) {
-                        if (data != "" && data != false) {
-                            _data = jQuery.parseJSON(data);
-                            $(".platform").hide();
-                            $.each(_data, function(index, value) {
-                                $("." + value).show();
-                            });
-                        }
-                    });
+                    id: this.value,
+                }, function(data) {
+                    if (data != "" && data != false) {
+                        _data = jQuery.parseJSON(data);
+                        $(".platform").hide();
+                        $.each(_data, function(index, value) {
+                            $("." + value).show();
+                        });
+                    }
+                });
             }
         });
-
         getfacilityProvinceDetails($('facilityId'));
     });
 </script>
