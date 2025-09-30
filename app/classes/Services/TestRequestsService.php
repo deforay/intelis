@@ -432,7 +432,7 @@ final class TestRequestsService
         $testType = trim($testType);
 
         $result = [
-            'verified' => false,
+            'status' => null,
             'manifestCode' => $manifestCode,
             'testType' => $testType,
             'message' => null,
@@ -504,14 +504,14 @@ final class TestRequestsService
             }
 
             if (is_array($decodedResponse)) {
-                $result['verified'] = (bool) ($decodedResponse['verified'] ?? false);
+                $result['status'] = $decodedResponse['status'] ?? null;
                 $result['remoteResponse'] = $decodedResponse;
-                if (!$result['verified'] && !empty($decodedResponse['message'])) {
+                if (!empty($decodedResponse['message'])) {
                     $result['message'] = (string) $decodedResponse['message'];
                 }
             } else {
                 $result['remoteResponse'] = $responseBody;
-                $result['message'] = $result['message'] ?? 'Unexpected response from verify-manifest endpoint.';
+                $result['message'] ??= 'Unexpected response from verify-manifest endpoint.';
             }
 
             $result['httpStatus'] = $httpStatus;

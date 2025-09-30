@@ -60,7 +60,9 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
-$payload = ['verified' => false];
+$payload = [
+    'status' => 'not-found',
+];
 
 $labId = (int) ($input['labId'] ?? 0);
 $testType = trim((string)($input['testType'] ?? ''));
@@ -92,22 +94,25 @@ try {
 
     if (empty($manifestRecord)) {
         http_response_code(404);
+        $payload['status'] = 'not-found';
         $payload['message'] = 'Manifest not found.';
     } else {
 
         $tableName = TestsService::getTestTableName($testType);
         $primaryKey = TestsService::getPrimaryColumn($testType);
-        $this->db->reset();
-        $this->db->where('sample_package_code', $manifestCode);
-        $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
+        $db->reset();
+        $db->where('sample_package_code', $manifestCode);
+        $selectedSamples = $db->getValue($tableName, $primaryKey, null);
         $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
         if ($currentHash === '' || $currentHash === null) {
             $currentHash = $manifestRecord['manifest_hash'] ?? '';
         }
 
         if ($currentHash !== '') {
-            $payload['verified'] = hash_equals($currentHash, $providedHash);
-            if ($payload['verified'] === false) {
+            if (hash_equals($currentHash, $providedHash)) {
+                $payload['status'] = 'match';
+            } else {
+                $payload['status'] = 'mismatch';
                 $payload['message'] = 'Manifest hash mismatch.';
             }
         }
@@ -119,7 +124,7 @@ try {
     }
     http_response_code($statusCode);
     $payload = [
-        'verified' => false,
+        'status' => 'error',
         'message' => $exc->getMessage(),
     ];
     LoggerUtility::logError($exc->getMessage(), [
@@ -131,7 +136,7 @@ try {
 } finally {
     $encodedPayload = JsonUtility::encodeUtf8Json($payload ?? []);
     $userId = $user['user_id'] ?? null;
-    $recordsCount = !empty($payload['verified']) ? 1 : 0;
+    $recordsCount = $payload['status'] === 'match' ? 1 : 0;
     $general->addApiTracking($transactionId, $userId, $recordsCount, 'manifest-verify', $testType, $requestUrl, $origJson, $encodedPayload, 'json', $labId);
     echo ApiService::generateJsonResponse($encodedPayload, $request);
 }
