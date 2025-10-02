@@ -24,6 +24,12 @@ if (empty($_POST['manifestCode'])) {
 }
 
 
+// Clear the query count cache for this manifest
+if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+     unset($_SESSION['queryCounters']);
+}
+
+
 /** @var EidService $eidService */
 $eidService = ContainerRegistry::get(EidService::class);
 $eidResults = $eidService->getEidResults();

@@ -58,7 +58,9 @@ try {
 
         // now let's update the manifest details
         $selectedSamples = array_unique($selectedSamples);
-        $manifestHash = $testRequestsService->getManifestHash($selectedSamples);
+
+
+        $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
         $numberOfSamples = count($selectedSamples);
 
         $lastId = $_POST['packageId'];
@@ -79,7 +81,6 @@ try {
         $db->update($packageTable, [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
-            'manifest_hash' => $manifestHash,
             'package_status' => $_POST['packageStatus'],
             'manifest_change_history' => JsonUtility::encodeUtf8Json(array_merge($existingChangeReasons ?? [], $newReason ?? [])),
             'last_modified_datetime' => $currentDateTime
@@ -97,7 +98,6 @@ try {
             $formAttributes = [
                 'manifest' => [
                     "number_of_samples" => $numberOfSamples,
-                    'manifest_hash' => $manifestHash,
                     'last_modified_datetime' => $currentDateTime
                 ],
             ];

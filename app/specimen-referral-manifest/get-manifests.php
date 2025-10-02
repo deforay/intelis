@@ -8,6 +8,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -18,6 +19,9 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+
+/** @var TestRequestsService $testRequestsService */
+$testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
@@ -38,9 +42,9 @@ if (empty($_POST['module'])) {
     exit;
 }
 
-$module = $_POST['module'];
-$tableName = TestsService::getTestTableName($module);
-$primaryKey = TestsService::getPrimaryColumn($module);
+$testType = $_POST['module'];
+$tableName = TestsService::getTestTableName($testType);
+$primaryKey = TestsService::getPrimaryColumn($testType);
 
 $sql = "UPDATE specimen_manifests
                 SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = specimen_manifests.package_id and lab_id > 0 limit 1)
@@ -83,7 +87,7 @@ if (isset($_POST['iSortCol_0'])) {
     $sOrder = substr_replace($sOrder, "", -2);
 }
 $sWhere = [];
-$sWhere[] = "p.module = '$module'";
+$sWhere[] = "p.module = '$testType'";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchArray = explode(" ", (string) $_POST['sSearch']);
     $sWhereSub = "";
@@ -179,12 +183,13 @@ foreach ($rResult as $aRow) {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }
-    if ($module == 'generic-tests') {
+    if ($testType == 'generic-tests') {
         $aRow['module'] = "OTHER LAB TESTS ";
     }
     $row = [];
-
-    $row[] = $aRow['package_code'];
+    $manifestHash = $testRequestsService->getManifestHash([], $testType, $aRow['package_code']);
+    $tooltip = "<span class='top-tooltip' title='Manifest Hash: " . $manifestHash . "'>" . $aRow['package_code'] . "</span>";
+    $row[] = $tooltip;
     $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['labName'];
     $row[] = $aRow['number_of_samples'];

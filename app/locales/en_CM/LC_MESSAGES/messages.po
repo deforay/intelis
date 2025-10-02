@@ -9886,7 +9886,7 @@ msgstr ""
 #: covid-19/requests/addSamplesFromManifest.php:128
 #: generic-tests/requests/add-samples-from-manifest.php:116
 #: vl/requests/addSamplesFromManifest.php:125
-msgid "Please enter the manifest code then submit!"
+msgid "Please enter a valid Manifest Code to activate"
 msgstr ""
 
 #: cd4/requests/add-samples-from-manifest.php:246

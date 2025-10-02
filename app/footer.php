@@ -14,7 +14,7 @@ $remoteURL = $general->getRemoteURL();
 $supportEmail = trim((string) $general->getGlobalConfig('support_email'));
 
 // Sync History
-$syncHistory = (_isAllowed("sync-history.php")) ? "/common/reference/sync-history.php" : "javascript:void(0);";
+//$syncHistory = (_isAllowed("sync-history.php")) ? "/common/reference/sync-history.php" : "javascript:void(0);";
 $syncLatestTime = $general->getLastSTSSyncDateTime();
 $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inline;";
 
@@ -48,14 +48,12 @@ $syncHistoryDisplay = (empty($syncLatestTime)) ? "display:none;" : "display:inli
 			}
 			?>
 			<br>
-			<span class="syncHistoryDiv" style="float:right;font-size:x-small;<?= $syncHistoryDisplay ?>" class="pull-right">
-				<span class=" text-muted"><?= $general->getLISLabName() ?? _translate('Sample Tracking System'); ?> &nbsp;|</span>
-				<a href="<?= $syncHistory; ?>" class="text-muted">
-					<?= _translate("Last synced at"); ?>
-					<span class="lastSyncDateTime">
-						<?= $syncLatestTime; ?>
-					</span>
-				</a>
+			<span class="syncHistoryDiv" style="float:right;font-size:x-small;" class="pull-right">
+				<span class="text-muted"><?= $general->getInstanceName() ?></span>
+				<span class="text-muted" style="<?= $syncHistoryDisplay ?>">
+					| <?= _translate("Last synced at") . ' ' . $syncLatestTime; ?>
+				</span>
+
 			</span>
 		</div>
 	</div>

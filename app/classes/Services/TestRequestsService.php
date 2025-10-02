@@ -6,16 +6,17 @@ use COUNTRY;
 use DateTime;
 use Throwable;
 use SAMPLE_STATUS;
+use App\Services\ApiService;
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Utilities\JsonUtility;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
-use App\Services\ApiService;
 
 final class TestRequestsService
 {
@@ -317,84 +318,41 @@ final class TestRequestsService
      */
     public function getManifestHash($selectedSamples = [], $testType = null, $manifestCode = null)
     {
-        if (empty($selectedSamples)) {
+
+        /** @var FileCacheUtility $fileCache */
+        $fileCache = ContainerRegistry::get(FileCacheUtility::class);
+        $keyHash = hash('sha256', json_encode([
+            'selectedSamples' => $selectedSamples,
+            'testType' => $testType,
+            'manifestCode' => $manifestCode
+        ], JSON_UNESCAPED_UNICODE));
+
+        return $fileCache->get($keyHash, function () use ($selectedSamples, $testType, $manifestCode) {
+
+            $selectedSamples = is_array($selectedSamples) ? $selectedSamples : [];
+
             $tableName = TestsService::getTestTableName($testType);
             $primaryKey = TestsService::getPrimaryColumn($testType);
-            $manifestCode = trim($manifestCode);
-            $this->db->where('sample_package_code', $manifestCode);
-            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
-        }
-        $selectedSamples = array_unique($selectedSamples);
-        // Ensure deterministic ordering for hashing (always integer array)
-        sort($selectedSamples, SORT_NUMERIC);
-        return hash('sha256', json_encode($selectedSamples, JSON_UNESCAPED_UNICODE));
-    }
+            $uniqueIds = [];
 
-    /**
-     * Retrieve manifest metadata stored on individual test requests for a manifest.
-     * Returns manifest hash, sample counts, and related timestamps if available.
-     */
-    public function getManifestMetadata(string $testType, string $manifestCode): array
-    {
-        $testType = trim($testType);
-        $manifestCode = trim($manifestCode);
-
-        if ($testType === '' || $manifestCode === '') {
-            return [];
-        }
-
-        try {
-            $tableName = TestsService::getTestTableName($testType);
-
-            $sql = <<<SQL
-                SELECT
-                    tr.form_attributes,
-                    tr.last_modified_datetime AS request_last_modified_datetime,
-                    pd.number_of_samples AS package_number_of_samples,
-                    pd.last_modified_datetime AS package_last_modified_datetime
-                FROM {$tableName} AS tr
-                LEFT JOIN specimen_manifests AS pd ON pd.package_id = tr.sample_package_id
-                WHERE tr.sample_package_code = ?
-                ORDER BY tr.last_modified_datetime DESC
-                LIMIT 1
-            SQL;
-
-            $row = $this->db->rawQueryOne($sql, [$manifestCode]);
-
-            if (empty($row)) {
-                return [];
+            if ($testType !== null && !empty($selectedSamples)) {
+                $this->db->reset();
+                $this->db->where($primaryKey, $selectedSamples, 'IN');
+                $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
+            } elseif ($testType !== null && $manifestCode !== null) {
+                $this->db->reset();
+                $this->db->where('sample_package_code', trim((string) $manifestCode));
+                $uniqueIds = $this->db->getValue($tableName, 'unique_id', null);
             }
 
-            $formAttributes = [];
-            if (!empty($row['form_attributes'])) {
-                $decodedAttributes = JsonUtility::decodeJson($row['form_attributes']);
-                if (is_array($decodedAttributes)) {
-                    $formAttributes = $decodedAttributes;
-                }
+            if (empty($uniqueIds)) {
+                return '';
             }
 
-            $manifestAttributes = $formAttributes['manifest'] ?? [];
+            sort($uniqueIds, SORT_STRING);
 
-            return [
-                'manifest_hash' => $manifestAttributes['manifest_hash'] ?? null,
-                'number_of_samples' => $manifestAttributes['number_of_samples']
-                    ?? $row['package_number_of_samples'] ?? null,
-                'manifest_last_modified_datetime' => $manifestAttributes['last_modified_datetime']
-                    ?? $row['package_last_modified_datetime'] ?? null,
-                'request_last_modified_datetime' => $row['request_last_modified_datetime'] ?? null,
-                'package_last_modified_datetime' => $row['package_last_modified_datetime'] ?? null,
-            ];
-        } catch (Throwable $e) {
-            LoggerUtility::logError('Error fetching manifest metadata: ' . $e->getMessage(), [
-                'exception' => $e,
-                'test_type' => $testType,
-                'manifest_code' => $manifestCode,
-                'last_db_query' => $this->db->getLastQuery(),
-                'last_db_error' => $this->db->getLastError(),
-            ]);
-
-            return [];
-        }
+            return hash('sha256', json_encode($uniqueIds, JSON_UNESCAPED_UNICODE));
+        });
     }
 
     /**
@@ -407,7 +365,7 @@ final class TestRequestsService
         $testType = trim($testType);
 
         $result = [
-            'verified' => false,
+            'status' => null,
             'manifestCode' => $manifestCode,
             'testType' => $testType,
             'message' => null,
@@ -424,54 +382,16 @@ final class TestRequestsService
             return $result;
         }
 
-        try {
+        $selectedSamples = [];
+        if ($testType !== null && $manifestCode !== null) {
             $tableName = TestsService::getTestTableName($testType);
             $primaryKey = TestsService::getPrimaryColumn($testType);
-        } catch (Throwable $e) {
-            $result['message'] = 'Invalid test type configuration.';
-            LoggerUtility::logError('Invalid test type for manifest verification: ' . $e->getMessage(), [
-                'manifestCode' => $manifestCode,
-                'testType' => $testType,
-            ]);
-            return $result;
+            $this->db->reset();
+            $this->db->where('sample_package_code', trim((string) $manifestCode));
+            $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
         }
 
-        $this->db->reset();
-        $this->db->where('sample_package_code', $manifestCode);
-        $sampleRows = $this->db->get($tableName, null, [$primaryKey, 'lab_id']);
-
-        if (empty($sampleRows)) {
-            $result['message'] = 'No samples found locally for this manifest.';
-            return $result;
-        }
-
-        $sampleIds = [];
-        $labId = 0;
-        foreach ($sampleRows as $row) {
-            if (!empty($row[$primaryKey])) {
-                $sampleIds[] = (int) $row[$primaryKey];
-            }
-            if ($labId <= 0 && !empty($row['lab_id'])) {
-                $labId = (int) $row['lab_id'];
-            }
-        }
-
-        $sampleIds = array_values(array_filter($sampleIds));
-        $numberOfSamples = count($sampleIds);
-        $result['numberOfSamples'] = $numberOfSamples;
-
-        if ($labId <= 0) {
-            $result['message'] = 'Manifest lab could not be determined.';
-            return $result;
-        }
-        $result['labId'] = $labId;
-
-        if ($numberOfSamples === 0) {
-            $result['message'] = 'Unable to compute manifest hash because sample list is empty.';
-            return $result;
-        }
-
-        $localHash = $this->getManifestHash($sampleIds, $testType, $manifestCode);
+        $localHash = $this->getManifestHash($selectedSamples, $testType, $manifestCode);
 
         if ($localHash === '') {
             $result['message'] = 'Unable to compute local manifest hash.';
@@ -479,6 +399,7 @@ final class TestRequestsService
         }
 
         $result['localHash'] = $localHash;
+        $labId = $this->commonService->getSystemConfig('sc_testing_lab_id') ?? null;
 
         $apiURL = "$remoteURL/remote/v2/verify-manifest.php";
         $payload = [
@@ -516,14 +437,14 @@ final class TestRequestsService
             }
 
             if (is_array($decodedResponse)) {
-                $result['verified'] = (bool) ($decodedResponse['verified'] ?? false);
+                $result['status'] = $decodedResponse['status'] ?? null;
                 $result['remoteResponse'] = $decodedResponse;
-                if (!$result['verified'] && !empty($decodedResponse['message'])) {
+                if (!empty($decodedResponse['message'])) {
                     $result['message'] = (string) $decodedResponse['message'];
                 }
             } else {
                 $result['remoteResponse'] = $responseBody;
-                $result['message'] = $result['message'] ?? 'Unexpected response from verify-manifest endpoint.';
+                $result['message'] ??= 'Unexpected response from verify-manifest endpoint.';
             }
 
             $result['httpStatus'] = $httpStatus;

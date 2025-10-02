@@ -6879,7 +6879,7 @@ msgstr ""
 #: covid-19/requests/addSamplesFromManifest.php:111
 #: generic-tests/requests/add-samples-from-manifest.php:107
 #: vl/requests/addSamplesFromManifest.php:119
-msgid "Please enter the manifest code then submit!"
+msgid "Please enter a valid Manifest Code to activate"
 msgstr ""
 
 #: covid-19/requests/addSamplesFromManifest.php:239

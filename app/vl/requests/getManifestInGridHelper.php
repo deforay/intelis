@@ -1,6 +1,13 @@
 <?php
 
+// Force no caching
+header("Cache-Control: no-cache, must-revalidate");
+header("Expires: Sat, 26 Jul 1997 05:00:00 GMT");
+
+
+// /vl/requests/getManifestInGridHelper.php
 use App\Utilities\DateUtility;
+use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -18,6 +25,11 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
+
+// Clear the query count cache for this manifest
+if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+     unset($_SESSION['queryCounters']);
+}
 
 if (empty($_POST['manifestCode'])) {
      throw new SystemException(_translate('Manifest code is required'));
@@ -136,4 +148,10 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['status_name'];
      $output['aaData'][] = $row;
 }
-echo json_encode($output);
+
+
+// Log the actual query being executed
+error_log("Query: " . $sQuery);
+error_log("Result count: " . $resultCount);
+
+echo JsonUtility::encodeUtf8Json($output);
