@@ -328,7 +328,6 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                             </table>
                         </div>
                     </div>
-
                     <?php if (_isAllowed('/tb/results/tb-update-result.php') || $_SESSION['accessType'] != 'collection-site') { ?>
                         <!-- TEST RESULTS INFORMATION -->
                         <div class="box box-primary">
@@ -347,14 +346,14 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         <table class="table" style="width:100%; margin-top: 15px;">
                                             <tr>
                                                 <td style="width: 50%;">
-                                                    <label class="label-control" for="labId1"><?php echo _translate("Testing Lab"); ?><span class="mandatory">*</span></label>
-                                                    <select name="testResult[labId][]" id="labId1" class="isRequired form-control" title="<?php echo _translate("Please select testing laboratory"); ?>">
+                                                    <label class="label-control" for="labId1"><?php echo _translate("Testing Lab"); ?></label>
+                                                    <select name="testResult[labId][]" id="labId1" class="form-control" title="<?php echo _translate("Please select testing laboratory"); ?>">
                                                         <?= $general->generateSelectOptions($testingLabs, null, '-- Select lab --'); ?>
                                                     </select>
                                                 </td>
                                                 <td style="width: 50%;">
-                                                    <label class="label-control" for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?><span class="mandatory">*</span></label>
-                                                    <input type="text" class="date-time isRequired form-control" id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
+                                                    <label class="label-control" for="sampleReceivedDate1"><?php echo _translate("Date specimen received at TB testing site"); ?></label>
+                                                    <input type="text" class="date-time form-control" id="sampleReceivedDate1" name="testResult[sampleReceivedDate][]" placeholder="<?= _translate("Please enter date"); ?>" title="<?php echo _translate("Please enter sample receipt date"); ?>" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -468,12 +467,11 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
                                 </div>
-                                <div class="row pr-5" style="margin-right: 5px;">
-                                    <div class="col-md-6" align="right">
+                                <br>
+                                <div class="row pr-5">
+                                    <div class="col-md-6">
                                         <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                    </div>
-                                    <div class="col-md-6" style=" padding-right: 3px; ">
-                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation">
+                                        <select name="finalResult" id="finalResult" class="form-control" title="Please select the final interpretation">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
                                     </div>
