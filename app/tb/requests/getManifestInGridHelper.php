@@ -26,6 +26,13 @@ if ($general->isSTSInstance()) {
 }
 
 
+
+// Clear the query count cache for this manifest
+if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+     unset($_SESSION['queryCounters']);
+}
+
+
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
 

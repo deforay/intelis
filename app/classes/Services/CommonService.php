@@ -675,12 +675,12 @@ final class CommonService
 
     public function isSTSInstance(): bool
     {
-        return $this->getInstanceType() === 'remoteuser';
+        return ($this->getInstanceType() === 'remoteuser' || $this->getInstanceType() === 'sts');
     }
 
     public function isLISInstance(): bool
     {
-        return $this->getInstanceType() === 'vluser';
+        return ($this->getInstanceType() === 'vluser' || $this->getInstanceType() === 'lis');
     }
 
     public function isStandaloneInstance(): bool
@@ -689,17 +689,21 @@ final class CommonService
     }
 
 
-    public function getLISLabName(): ?string
+    public function getInstanceName(): ?string
     {
         return $this->fileCache->get('lisLabName', function () {
+            $instanceName = [];
             if ($this->isLISInstance()) {
                 $labId = $this->getSystemConfig('sc_testing_lab_id') ?? null;
                 if (!empty($labId)) {
                     $lab = $this->facilitiesService->getFacilityById($labId);
-                    return $lab['facility_name'] ?? null;
+                    $instanceName[] = $lab['facility_name'];
                 }
+            } elseif ($this->isSTSInstance()) {
+                $instanceName[] = _translate("Sample Tracking System");
             }
-            return null;
+            $instanceName[] = 'InteLIS';
+            return implode(' | ', $instanceName) ?: null;
         });
     }
 

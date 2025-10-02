@@ -26,11 +26,10 @@ ALTER TABLE `form_generic` DROP `sample_registered_at_lab`;
 
 -- Amit 28-Sep-2025
 RENAME TABLE `package_details` TO `specimen_manifests`;
-ALTER TABLE `specimen_manifests` ADD `manifest_hash` CHAR(64) DEFAULT NULL AFTER `number_of_samples`;
-ALTER TABLE `specimen_manifests` ADD UNIQUE KEY `uniq_manifest_hash` (`manifest_hash`);
 
 -- Thana 19-Sep-2025
-INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) VALUES ('Result PDF Report Format', 'report_format', null, '857sez62l9yovr48dtzc0s3cbn09c6an', 'general', 'yes', '2025-09-19 17:58:53', '456456amit2w343ersd3456t4yrgdfsew2', 'active');
+INSERT INTO `global_config` (`display_name`, `name`, `value`, `instance_id`, `category`, `remote_sync_needed`, `updated_datetime`, `updated_by`, `status`) 
+VALUES ('Result PDF Report Format', 'report_format', null, null, 'general', 'yes', '2025-09-19 17:58:53', null, 'active');
 
 -- Thana 29-Sep-2025
 ALTER TABLE `form_tb` 

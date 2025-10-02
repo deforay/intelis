@@ -3,6 +3,7 @@
 // app/remote/v2/verify-manifest.php
 
 use App\Services\ApiService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -11,9 +12,9 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
-use App\Services\TestRequestsService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestRequestsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -59,7 +60,9 @@ $requestUrl .= $_SERVER['REQUEST_URI'];
 $authToken = ApiService::extractBearerToken($request);
 $user = $usersService->findUserByApiToken($authToken);
 
-$payload = ['verified' => false];
+$payload = [
+    'status' => 'not-found',
+];
 
 $labId = (int) ($input['labId'] ?? 0);
 $testType = trim((string)($input['testType'] ?? ''));
@@ -91,16 +94,23 @@ try {
 
     if (empty($manifestRecord)) {
         http_response_code(404);
+        $payload['status'] = 'not-found';
         $payload['message'] = 'Manifest not found.';
     } else {
-        $currentHash = $testRequestsService->getManifestHash([], $testType, $manifestCode);
-        if ($currentHash === '' || $currentHash === null) {
-            $currentHash = $manifestRecord['manifest_hash'] ?? '';
-        }
+
+        $tableName = TestsService::getTestTableName($testType);
+        $primaryKey = TestsService::getPrimaryColumn($testType);
+        $db->reset();
+        $db->where('sample_package_code', $manifestCode);
+        $selectedSamples = $db->getValue($tableName, $primaryKey, null);
+        $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
+        
 
         if ($currentHash !== '') {
-            $payload['verified'] = hash_equals($currentHash, $providedHash);
-            if ($payload['verified'] === false) {
+            if (hash_equals($currentHash, $providedHash)) {
+                $payload['status'] = 'match';
+            } else {
+                $payload['status'] = 'mismatch';
                 $payload['message'] = 'Manifest hash mismatch.';
             }
         }
@@ -112,7 +122,7 @@ try {
     }
     http_response_code($statusCode);
     $payload = [
-        'verified' => false,
+        'status' => 'error',
         'message' => $exc->getMessage(),
     ];
     LoggerUtility::logError($exc->getMessage(), [
@@ -124,7 +134,7 @@ try {
 } finally {
     $encodedPayload = JsonUtility::encodeUtf8Json($payload ?? []);
     $userId = $user['user_id'] ?? null;
-    $recordsCount = !empty($payload['verified']) ? 1 : 0;
+    $recordsCount = $payload['status'] === 'match' ? 1 : 0;
     $general->addApiTracking($transactionId, $userId, $recordsCount, 'manifest-verify', $testType, $requestUrl, $origJson, $encodedPayload, 'json', $labId);
     echo ApiService::generateJsonResponse($encodedPayload, $request);
 }

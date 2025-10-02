@@ -14,6 +14,13 @@ $general = ContainerRegistry::get(CommonService::class);
 $sarr = $general->getSystemConfig();
 $gconfig = $general->getGlobalConfig();
 
+
+// Clear the query count cache for this manifest
+if (session_status() === PHP_SESSION_ACTIVE && !empty($_POST['manifestCode'])) {
+     unset($_SESSION['queryCounters']);
+}
+
+
 $tableName = "form_generic";
 $primaryKey = "sample_id";
 

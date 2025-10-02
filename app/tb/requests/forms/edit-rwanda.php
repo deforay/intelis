@@ -666,6 +666,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
     let testCount = $('.test-section').length || 1;
     let provinceName = true;
     let facilityName = true;
+
     // Test result options for each test type
     const testResultOptions = {
         "Smear Microscopy": [
