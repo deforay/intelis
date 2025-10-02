@@ -248,7 +248,7 @@ $globalConfig = $general->getGlobalConfig();
   });
 
   function enableLab() {
-    if ($("#sc_user_type").val() == 'vluser') {
+    if ($("#sc_user_type").val() == 'vluser' || $("#sc_user_type").val() == 'lis') {
       $(".labName").show();
       $("#sc_testing_lab_id").addClass("isRequired").css('pointer-events', '');
     } else {

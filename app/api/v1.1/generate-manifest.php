@@ -29,7 +29,6 @@ $apiService = ContainerRegistry::get(ApiService::class);
 /** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 
-
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
@@ -142,14 +141,14 @@ try {
 
         // Create new manifest only if there are samples to add
         if (!empty($samplesToAdd)) {
-            $manifestHash = $testRequestsService->getManifestHash($selectedSamplesIds);
+
+            $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $input['testType']);
             $data = [
                 'package_code' => $sampleManifestCode,
                 'module' => $input['testType'],
                 'added_by' => $user['user_id'],
                 'lab_id' => $input['labId'],
                 'number_of_samples' => count($samplesToAdd),
-                'manifest_hash' => $manifestHash,
                 'package_status' => 'pending',
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
@@ -211,7 +210,6 @@ try {
                 $payload['manifestCode'] = $sampleManifestCode;
                 $payload['manifestHash'] = $manifestHash;
             }
-
         } else {
             // No samples were processed - maintain old error format
             $payload = [

@@ -39,7 +39,7 @@ require_once APPLICATION_PATH . '/header.php';
 								<input type="hidden" id="sampleId" name="sampleId" />
 							</td>
 							<td style="width:10%;">
-								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="getSamplesForManifest();return false;"><span>
+								<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="verifyManifest('generic-tests');return false;"><span>
 										<?php echo _translate("Submit"); ?>
 									</span></button>
 							</td>
@@ -113,7 +113,7 @@ require_once APPLICATION_PATH . '/header.php';
 							<tbody>
 								<tr>
 									<td colspan="12" class="dataTables_empty" style="text-align:center;">
-										<?php echo _translate("Please enter the manifest code then submit!", true); ?>
+										<?php echo _translate("Please enter a valid Manifest Code to activate", true); ?>
 									</td>
 								</tr>
 							</tbody>
@@ -154,6 +154,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
+	
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
@@ -168,9 +169,9 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			//"bDestroy": true,
-			"bStateSave": true,
-			"bRetrieve": true,
+			"bDestroy": true,
+			"bStateSave": false,
+			"bRetrieve": false,
 			"aoColumns": [{
 					"sClass": "center"
 				},
@@ -229,40 +230,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			}
 		});
 		$.unblockUI();
-	}
-
-	function getSamplesForManifest() {
-		if ($("#manifestCode").val() != "") {
-			$.blockUI();
-
-			$.post("/tasks/remote/requests-receiver.php", {
-					manifestCode: $("#manifestCode").val(),
-					testType: 'generic-tests'
-				},
-				function(data) {
-					$.unblockUI();
-					let parsed;
-					try {
-						parsed = JSON.parse(data);
-						if (
-							parsed &&
-							typeof parsed === 'object' &&
-							!Array.isArray(parsed) &&
-							Object.keys(parsed).length === 0
-						) {
-							toast.error("<?= _translate("No samples found in the manifest", true); ?>");
-						} else {
-							$('.activateSample').show();
-							$('#sampleId').val(data);
-							loadRequestData();
-						}
-					} catch (e) {
-						toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
-					}
-				});
-		} else {
-			alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
-		}
 	}
 
 	function activateSamplesFromManifest() {

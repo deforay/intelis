@@ -38,7 +38,8 @@ try {
     $db->beginTransaction();
     $selectedSamples = MiscUtility::desqid($_POST['selectedSample'], returnArray: true);
     $selectedSamples = array_unique($selectedSamples);
-    $manifestHash = $testRequestsService->getManifestHash($selectedSamples);
+
+    $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $_POST['module'], $_POST['packageCode']);
     $numberOfSamples = count($selectedSamples);
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
@@ -48,7 +49,6 @@ try {
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
             'number_of_samples'         => $numberOfSamples,
-            'manifest_hash'             => $manifestHash,
             'package_status'            => 'pending',
             'request_created_datetime'  => $currentDateTime,
             'last_modified_datetime'    => $currentDateTime
@@ -68,7 +68,6 @@ try {
             $formAttributes = [
                 'manifest' => [
                     "number_of_samples" => $numberOfSamples,
-                    'manifest_hash' => $manifestHash,
                     'last_modified_datetime' => $currentDateTime
                 ],
             ];
