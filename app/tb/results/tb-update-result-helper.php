@@ -204,7 +204,6 @@ try {
         'sample_received_at_lab_datetime' => !empty($_POST['sampleReceivedDate']) ? $_POST['sampleReceivedDate'] : null,
         'is_sample_rejected' => !empty($_POST['isSampleRejected']) ? $_POST['isSampleRejected'] : null,
 
-        'result' => !empty($_POST['result']) ? $_POST['result'] : $_POST['xPertMTMResult'] ?? $_POST['finalResult'],
         'xpert_mtb_result' => !empty($_POST['xPertMTMResult']) ? $_POST['xPertMTMResult'] : null,
         'culture_result' => !empty($_POST['cultureResult']) ? $_POST['cultureResult'] : null,
         'identification_result' => !empty($_POST['identicationResult']) ? $_POST['identicationResult'] : null,
@@ -230,13 +229,22 @@ try {
         'data_sync' => 0,
         'reason_for_sample_rejection' => (isset($_POST['sampleRejectionReason']) && $_POST['isSampleRejected'] == 'yes') ? $_POST['sampleRejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
-        
+
         'last_modified_by' => $_SESSION['userId'],
         'last_modified_datetime' => DateUtility::getCurrentDateTime(),
         'request_created_by' => $_SESSION['userId'],
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId']
     );
-
+    if (isset($_POST['referLabId']) && !empty($_POST['referLabId']) && !isset($_POST['finalResult']) || empty($_POST['finalResult'])) {
+        $labId = !empty($_POST['labId']) ? $_POST['labId'] : $_POST['testResult']['labId'][0];
+        $tbData['referred_by_lab_id'] = $labId;
+        $tbData['referred_to_lab_id'] = (!empty($_POST['referLabId']) && $_POST['referLabId'] != $labId) ? $_POST['referLabId'] : null;
+        $tbData['reason_for_referral'] = !empty($_POST['reasonForReferrel']) ? $_POST['reasonForReferrel'] : null;
+        $tbData['referred_on_datetime'] = DateUtility::getCurrentDateTime();
+        $tbData['referred_by'] = $_SESSION['userId'];
+    } else if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
+        $tbData['result'] = $_POST['finalResult'];
+    }
     $db->where('tb_id', $_POST['tbSampleId']);
     $getPrevResult = $db->getOne('form_tb');
     if ($getPrevResult['result'] != "" && $getPrevResult['result'] != $_POST['result']) {

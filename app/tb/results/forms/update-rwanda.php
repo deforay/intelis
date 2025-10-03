@@ -627,13 +627,35 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
+                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
                                 </div>
-                                <div class="row pr-5" style="margin-right: 5px;">
-                                    <div class="col-md-6" align="right">
-                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Results"); ?></label>
+                                <?php
+                                $referralDisplay = '';
+                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id']))) {
+                                    $referralDisplay = 'style="display:none;"';
+                                }
+                                if ((isset($tbInfo['result']) && !empty($tbInfo['result']))) {
+                                    $referralDisplay = 'style="display:none;"';
+                                }
+                                ?>
+                                <div class="row pr-5 refer-inputs referrelLabSection" <?php echo $referralDisplay; ?>>
+                                    <br>
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="referLabId"><?php echo _translate("Referring Lab"); ?></label>
+                                        <select name="referLabId" id="referLabId" class="select2 form-control" title="Please select the referrel lab">
+                                            <?= $general->generateSelectOptions($testingLabs, $tbInfo['referred_to_lab_id'], '-- Select referrel lab --'); ?>
+                                        </select>
                                     </div>
-                                    <div class="col-md-6" style=" padding-right: 3px; ">
-                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final result">
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="reasonForReferrel"><?php echo _translate("Reason for Referrel"); ?></label>
+                                        <textarea name="reasonForReferrel" id="reasonForReferrel" class="form-control" placeholder="Enter the reason for referrel" title="Please enter the reason for referrel"><?php echo $tbInfo['reason_for_referral'] ?? ''; ?></textarea>
+                                    </div>
+                                </div>
+                                <br>
+                                <div class="row pr-5 fnal-result">
+                                    <div class="col-md-6">
+                                        <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
+                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation" onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
                                     </div>
