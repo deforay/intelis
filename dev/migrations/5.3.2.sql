@@ -24,6 +24,15 @@ ALTER TABLE `form_hepatitis` DROP `sample_registered_at_lab`;
 ALTER TABLE `form_cd4` DROP `sample_registered_at_lab`;
 ALTER TABLE `form_generic` DROP `sample_registered_at_lab`;
 
+
+ALTER TABLE `audit_form_vl` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_eid` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_covid19` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_tb` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_hepatitis` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_cd4` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_generic` DROP `sample_registered_at_lab`;
+
 -- Amit 28-Sep-2025
 RENAME TABLE `package_details` TO `specimen_manifests`;
 
