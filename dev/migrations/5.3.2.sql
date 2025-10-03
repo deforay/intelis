@@ -45,3 +45,12 @@ ADD `referred_to_lab_id` INT NULL DEFAULT NULL AFTER `referred_by_lab_id`,
 ADD `reason_for_referral` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_to_lab_id`, 
 ADD `referred_on_datetime` DATETIME NULL DEFAULT NULL AFTER `reason_for_referral`, 
 ADD `referred_by` VARCHAR(128) NULL DEFAULT NULL AFTER `referred_on_datetime`;
+
+-- Thana 02-Oct-2025
+ALTER TABLE `audit_form_vl` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_eid` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_covid19` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_tb` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_hepatitis` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_cd4` DROP `sample_registered_at_lab`;
+ALTER TABLE `audit_form_generic` DROP `sample_registered_at_lab`;
