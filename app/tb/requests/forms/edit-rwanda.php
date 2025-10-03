@@ -618,9 +618,18 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
-                                    <a style="margin: 0px 5px;" onclick="$('.referrelLabSection').toggle();" href="javascript:void(0);" class="btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
+                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
                                 </div>
-                                <div class="row pr-5 referrelLabSection" <?php echo (isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) ? "" : 'style="display: none;"'; ?>>
+                                <?php
+                                $referralDisplay = '';
+                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id']))) {
+                                    $referralDisplay = 'style="display:none;"';
+                                }
+                                if ((isset($tbInfo['result']) && !empty($tbInfo['result']))) {
+                                    $referralDisplay = 'style="display:none;"';
+                                }
+                                ?>
+                                <div class="row pr-5 refer-inputs referrelLabSection" <?php echo $referralDisplay; ?>>
                                     <br>
                                     <div class="col-md-6">
                                         <label class="label-control" for="referLabId"><?php echo _translate("Referring Lab"); ?></label>
@@ -634,10 +643,10 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                     </div>
                                 </div>
                                 <br>
-                                <div class="row pr-5">
+                                <div class="row pr-5 fnal-result">
                                     <div class="col-md-6">
                                         <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
-                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation">
+                                        <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation" onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">
                                             <?= $general->generateSelectOptions($tbResults, $tbInfo['result'], '-- Select --'); ?>
                                         </select>
                                     </div>

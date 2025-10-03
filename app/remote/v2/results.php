@@ -33,7 +33,6 @@ try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
     $data = $apiService->getJsonFromRequest($request, true);
-
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
     $transactionId = $apiRequestId ?? MiscUtility::generateULID();
 

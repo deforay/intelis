@@ -417,9 +417,7 @@ try {
             'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
-
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
         $result = json_decode($jsonResponse, true);
 
         if (!empty($result)) {

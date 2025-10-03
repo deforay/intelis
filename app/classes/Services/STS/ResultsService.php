@@ -56,7 +56,6 @@ final class ResultsService
 
     public function receiveResults($testType, $jsonResponse, $isSilent = false)
     {
-
         $this->setTestType($testType);
 
         //remove unwanted columns
@@ -71,7 +70,6 @@ final class ResultsService
 
         // Create an array with all column names set to null
         $localDbFieldArray = $this->commonService->getTableFieldsAsArray($this->tableName, $unwantedColumns);
-
 
         $sampleCodes = $facilityIds = [];
         $labId = null;
@@ -91,7 +89,6 @@ final class ResultsService
                     $resultData = $data;
                 }
             }
-
             $counter = 0;
             foreach ($resultData as $key => $dataFromLIS) {
                 try {
@@ -101,7 +98,7 @@ final class ResultsService
                     $this->db->beginTransaction();
                     $id = false;
                     $counter++;
-                    if ($testType == "covid19" || $testType == "generic-tests") {
+                    if ($testType == "covid19" || $testType == "generic-tests" || $testType == "tb") {
                         $originalLISRecord = $dataFromLIS['form_data'] ?? [];
                     } else {
                         $originalLISRecord = $dataFromLIS ?? [];
@@ -205,7 +202,6 @@ final class ResultsService
                     } elseif ($testType == "generic-tests") {
                         // Insert generic_test_results
                         $testsData = $dataFromLIS['data_from_tests'] ?? [];
-
                         $this->db->where('generic_id', $primaryKeyValue);
                         $this->db->delete("generic_test_results");
                         foreach ($testsData as $tRow) {
@@ -219,6 +215,41 @@ final class ResultsService
                                 "updated_datetime" => DateUtility::getCurrentDateTime()
                             ];
                             $this->db->insert("generic_test_results", $customTestData);
+                        }
+                    } elseif ($testType == 'tb') {
+                        /* if (isset($originalLISRecord['referred_to_lab_id']) && $originalLISRecord['referred_to_lab_id'] != $originalLISRecord['lab_id']) {
+                            $this->db->where('tb_id', $primaryKeyValue);
+                            $this->db->update('form_tb', ['lab_id' => $originalLISRecord['referred_to_lab_id']]);
+                        } */
+                        // Insert tb_tests
+                        $testsData = $dataFromLIS['data_from_tests'] ?? [];
+
+                        $this->db->where($this->primaryKeyName, $primaryKeyValue);
+                        $this->db->delete("tb_tests");
+                        foreach ($testsData as $tRow) {
+                            $tbTestData = [
+                                'tb_id' => $primaryKeyValue,
+                                'lab_id' => $tRow['lab_id'] ?? null,
+                                'specimen_type' => $tRow['specimen_type'] ?? null,
+                                'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($tRow['sample_received_at_lab_datetime'] ?? null, true),
+                                'is_sample_rejected' => $tRow['is_sample_rejected'] ?? 'no',
+                                'reason_for_sample_rejection' => $tRow['reason_for_sample_rejection'] ?? null,
+                                'rejection_on' => $tRow['rejection_on'] ?? null,
+                                'test_type' => $tRow['test_type'] ?? null,
+                                'test_result' => $tRow['test_result'] ?? null,
+                                'sample_tested_datetime' => $tRow['sample_tested_datetime'] ?? null,
+                                'tested_by' => $tRow['tested_by'] ?? null,
+                                'result_reviewed_by' => $tRow['result_reviewed_by'] ?? null,
+                                'result_reviewed_datetime' => $tRow['result_reviewed_datetime'] ?? null,
+                                'result_approved_by' => $tRow['result_approved_by'] ?? null,
+                                'result_approved_datetime' => $tRow['result_approved_datetime'] ?? null,
+                                'revised_by' => $tRow['revised_by'] ?? null,
+                                'revised_on' => $tRow['revised_on'] ?? null,
+                                'comments' => $tRow['comments'] ?? null,
+                                'reason_for_result_change' => $tRow['reason_for_result_change'] ?? null,
+                                'updated_datetime' => DateUtility::getCurrentDateTime()
+                            ];
+                            $this->db->insert("tb_tests", $tbTestData);
                         }
                     }
 
