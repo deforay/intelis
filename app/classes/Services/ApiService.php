@@ -81,8 +81,16 @@ final class ApiService
             $this->retryDelay()
         ));
 
-        return new Client(['handler' => $handlerStack]);
+        return new Client([
+            'handler'        => $handlerStack,
+            'connect_timeout' => 10,
+            'read_timeout'   => 120,
+            'timeout'        => 120,
+            'decode_content' => true, // auto-decodes gzip/br when libcurl supports it
+            // 'http_errors'  => false, // enable for no exceptions on 4xx/5xx
+        ]);
     }
+
 
     private function retryDecider()
     {
@@ -115,35 +123,26 @@ final class ApiService
     public function checkConnectivity(string $url): bool
     {
         try {
-            $options = [
-                RequestOptions::HEADERS => [
-                    'X-Request-ID' => MiscUtility::generateULID(),
-                    'X-Timestamp'  => time()
-                ]
+            $headers = [
+                'X-Request-ID' => MiscUtility::generateULID(),
+                'X-Timestamp' => time()
             ];
+            $headers = !empty($this->headers) ? array_merge($headers, $this->headers) : $headers;
+            if (!empty($this->bearerToken)) $headers['Authorization'] = "Bearer $this->bearerToken";
 
-            if (!empty($this->headers)) {
-                $options[RequestOptions::HEADERS] = array_merge($options[RequestOptions::HEADERS], $this->headers);
+            try {
+                $res = $this->client->head($url, [RequestOptions::HEADERS => $headers]);
+                return $res->getStatusCode() === 200;
+            } catch (Throwable $e) {
+                $res = $this->client->get($url, [RequestOptions::HEADERS => $headers]);
+                return $res->getStatusCode() === 200;
             }
-
-            // Add Authorization header if a bearer token is provided
-            if (!empty($this->bearerToken) && $this->bearerToken != '') {
-                $options[RequestOptions::HEADERS]['Authorization'] = "Bearer $this->bearerToken";
-            }
-
-            $response = $this->client->get($url, $options);
-            $statusCode = $response->getStatusCode();
-            return $statusCode === 200;
         } catch (Throwable $e) {
-            LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [
-                'exception' => $e,
-                'file' => $e->getFile(),
-                'line' => $e->getLine(),
-                'stacktrace' => $e->getTraceAsString()
-            ]);
+            LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [ /* … */]);
             return false;
         }
     }
+
 
     public function post($url, $payload, $gzip = false, $returnWithStatusCode = false, $async = false): array|string|null|\GuzzleHttp\Promise\PromiseInterface
     {
@@ -168,11 +167,15 @@ final class ApiService
         try {
             // Ensure payload is JSON-encoded
             $payload = JsonUtility::isJSON($payload) ? $payload : JsonUtility::encodeUtf8Json($payload);
-            if ($gzip) {
+
+            // 1 KB threshold; can tune if needed
+            if ($gzip && strlen($payload) > 1024 && !str_starts_with($payload, "\x1f\x8b")) {
                 $payload = gzencode($payload);
                 $options[RequestOptions::HEADERS]['Content-Encoding'] = 'gzip';
-                $options[RequestOptions::HEADERS]['Accept-Encoding']  = 'gzip, deflate';
             }
+
+            $options[RequestOptions::EXPECT] = false;
+            $options[RequestOptions::HEADERS]['Accept'] = 'application/json';
 
             // Set the request body
             $options[RequestOptions::BODY] = $payload;
@@ -233,9 +236,13 @@ final class ApiService
             $multipartData = [
                 [
                     'name'     => $fileName,
-                    'contents' => $fileContents,
+                    'contents' => $fileContents,                          // gzencoded bytes
                     'filename' => basename($jsonFilePath) . ($gzip ? '.gz' : ''),
-                ]
+                    'headers'  => [
+                        'Content-Type'     => 'application/json',
+                        'Content-Encoding' => $gzip ? 'gzip' : 'identity',
+                    ],
+                ],
             ];
 
             // Add additional parameters to multipart data
@@ -295,42 +302,37 @@ final class ApiService
     public function getJsonFromRequest(ServerRequestInterface $request, bool $decode = false)
     {
         try {
-            // Check the content encoding of the request body
-            $contentEncoding = $request->getHeaderLine('Content-Encoding');
-            $jsonData = (string) ($request->getBody()); // Read the request body
+            $encoding = strtolower(trim($request->getHeaderLine('Content-Encoding')));
+            $body     = (string)$request->getBody(); // reads full stream; OK for your sizes
 
-            // Decompress the request body if it's encoded
-            if ($contentEncoding === 'gzip' || $contentEncoding === 'application/gzip') {
-                $decodedData = gzdecode($jsonData);
-                if ($decodedData === false) {
-                    // Log and handle invalid gzip data
-                    LoggerUtility::log('error', 'Gzip decompression failed, treating as raw JSON');
-                    $decodedData = $jsonData; // Treat it as raw JSON
+            // normalize common tokens
+            if (str_contains($encoding, 'gzip') || str_contains($encoding, 'application/gzip')) {
+                $decoded = @gzdecode($body);
+                if ($decoded !== false) {
+                    $body = $decoded;
+                } else {
+                    LoggerUtility::log('error', 'Gzip decompression failed; treating as raw JSON');
                 }
-                $jsonData = $decodedData;
-            } elseif ($contentEncoding === 'deflate' || $contentEncoding === 'application/deflate') {
-                $decodedData = gzinflate($jsonData);
-                if ($decodedData === false) {
-                    // Log and handle invalid deflate data
-                    LoggerUtility::log('error', 'Deflate decompression failed, treating as raw JSON');
-                    $decodedData = $jsonData; // Treat it as raw JSON
+            } elseif (str_contains($encoding, 'deflate') || str_contains($encoding, 'application/deflate')) {
+                // try both possibilities (zlib-wrapped vs raw)
+                $decoded = @gzuncompress($body);
+                if ($decoded === false) {
+                    $decoded = @gzinflate($body);
                 }
-                $jsonData = $decodedData;
+                if ($decoded !== false) {
+                    $body = $decoded;
+                } else {
+                    LoggerUtility::log('error', 'Deflate decompression failed; treating as raw JSON');
+                }
             }
 
-            // Sanitize the JSON before returning it
-            if ($decode) {
-                // Return as sanitized array
-                return _sanitizeJson($jsonData, true, true);
-            } else {
-                // Return as sanitized JSON string
-                return _sanitizeJson($jsonData);
-            }
+            return $decode ? _sanitizeJson($body, true, true) : _sanitizeJson($body);
         } catch (Throwable $e) {
             $this->logError($e, "Unable to retrieve json");
             return $decode ? [] : '{}';
         }
     }
+
 
     /**
      * Download a file from a given URL and save it to a specified path.
@@ -415,39 +417,18 @@ final class ApiService
     public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request)
     {
         // Ensure payload is a JSON string
-        $jsonPayload = is_array($payload) || is_object($payload) ? JsonUtility::encodeUtf8Json($payload) : $payload;
+        $jsonPayload = is_array($payload) || is_object($payload)
+            ? JsonUtility::encodeUtf8Json($payload)
+            : $payload;
 
-        // Check for json_encode errors
         if (json_last_error() != JSON_ERROR_NONE) {
-            // Handle the error, maybe log it or set an error message
             return null;
         }
-        // Initialize variables for content encoding and payload
-        $compressedPayload = null;
-        $contentEncoding = null;
 
-        // Get 'Accept-Encoding' header to check for supported compression methods
-        $acceptEncoding = strtolower($request->getHeaderLine('Accept-Encoding'));
+        // Let the web server (Apache) do Content-Encoding + Vary: Accept-Encoding
+        header('Content-Type: application/json; charset=utf-8');
 
-        // Gzip or deflate based on client capabilities
-        if (str_contains($acceptEncoding, 'gzip')) {
-            $compressedPayload = gzencode($jsonPayload);
-            $contentEncoding = 'gzip';
-        } elseif (str_contains($acceptEncoding, 'deflate')) {
-            $compressedPayload = gzdeflate($jsonPayload);
-            $contentEncoding = 'deflate';
-        } else {
-            // No compression supported or requested, send plain JSON
-            $compressedPayload = $jsonPayload;
-        }
-
-        // Send headers based on content encoding
-        if ($contentEncoding) {
-            header("Content-Encoding: $contentEncoding");
-            header('Content-Length: ' . mb_strlen($compressedPayload, '8bit'));
-        }
-
-        return $compressedPayload;
+        return $jsonPayload;
     }
 
 

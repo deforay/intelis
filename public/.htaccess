@@ -1,92 +1,73 @@
 RewriteEngine On
-
 Options -Indexes -MultiViews +FollowSymLinks
 
-# Header directives (uncomment if needed)
+# ---------- Security headers (optional) ----------
 # Header always set X-Frame-Options "SAMEORIGIN"
 # Header always edit Set-Cookie ^(.*)$ $1;HttpOnly;Secure
-# Header set X-Content-Type-Options "nosniff"
+# Header always set X-Content-Type-Options "nosniff"
 # Header set Access-Control-Allow-Origin "*"
 
+# ---------- Block sensitive files ----------
 <FilesMatch "\.(perl|py|htaccess|htpasswd|ini|psd|log|sh|lock|phar|yml|md|sql|zip|hgignore|hg|hgtags|DS_Store)$">
-    Require all denied
+  Require all denied
 </FilesMatch>
 
+# ---------- Dynamic compression ----------
 <IfModule mod_headers.c>
-  # Serve brotli compressed CSS files if they exist and the client accepts br.
-  RewriteCond %{HTTP:Accept-encoding} br
-  RewriteCond %{REQUEST_FILENAME}\.br -s
-  RewriteRule ^(.*)\.css $1\.css\.br [QSA]
-
-  # Serve gzip compressed CSS files if they exist and the client accepts gzip.
-  RewriteCond %{HTTP:Accept-encoding} gzip
-  RewriteCond %{REQUEST_FILENAME}\.gz -s
-  RewriteRule ^(.*)\.css $1\.css\.gz [QSA]
-
-  # Serve brotli compressed JS files if they exist and the client accepts br.
-  RewriteCond %{HTTP:Accept-encoding} br
-  RewriteCond %{REQUEST_FILENAME}\.br -s
-  RewriteRule ^(.*)\.js $1\.js\.br [QSA]
-
-  # Serve gzip compressed JS files if they exist and the client accepts gzip.
-  RewriteCond %{HTTP:Accept-encoding} gzip
-  RewriteCond %{REQUEST_FILENAME}\.gz -s
-  RewriteRule ^(.*)\.js $1\.js\.gz [QSA]
-
-  # Serve correct content types, and prevent mod_deflate double gzip.
-  RewriteRule \.css\.gz$ - [T=text/css,E=no-gzip:1]
-  RewriteRule \.js\.gz$ - [T=text/javascript,E=no-gzip:1]
-  RewriteRule \.css\.br$ - [T=text/css,E=no-gzip:1]
-  RewriteRule \.js\.br$ - [T=text/javascript,E=no-gzip:1]
-
-  <FilesMatch "(\.js\.gz|\.css\.gz)$">
-    # Serve correct encoding type.
-    Header set Content-Encoding gzip
-    # Force proxies to cache gzipped & non-gzipped css/js files separately.
-    Header append Vary Accept-Encoding
-  </FilesMatch>
-  <FilesMatch "(\.js\.br|\.css\.br)$">
-    # Serve correct encoding type.
-    Header set Content-Encoding br
-    # Force proxies to cache brotli & non-brotli css/js files separately.
-    Header append Vary Accept-Encoding
-  </FilesMatch>
+  Header always append Vary Accept-Encoding
 </IfModule>
 
-# --- SSE: disable compression & buffering; set proper cache headers ---
-<IfModule mod_setenvif.c>
-  # mark SSE requests
-  SetEnvIfNoCase Request_URI "^/sse/" IS_SSE=1
+<IfModule mod_brotli.c>
+  BrotliCompressionQuality 5
+  BrotliAlterETag On
+  AddOutputFilterByType BROTLI_COMPRESS \
+    application/json text/plain text/html text/css application/javascript
 </IfModule>
 
+<IfModule mod_deflate.c>
+  DeflateCompressionLevel 6
+  AddOutputFilterByType DEFLATE \
+    application/json text/plain text/html text/css application/javascript
+</IfModule>
+
+# ---------- SSE: disable compression & buffering (no <Location>) ----------
+
+# Mark SSE requests via URI prefix
+RewriteRule ^sse/ - [E=IS_SSE:1]
+
+# Tell proxies not to buffer/transform SSE
 <IfModule mod_headers.c>
-  # required for intermediaries (Cloudflare/NGINX) and proxies
   Header set Cache-Control "no-cache, no-transform" env=IS_SSE
   Header set X-Accel-Buffering "no" env=IS_SSE
 </IfModule>
 
-# mod_deflate: turn off gzip for SSE
+# Turn off gzip/brotli for SSE using env flags recognized by filters
 <IfModule mod_deflate.c>
   SetEnvIfNoCase Request_URI "^/sse/" no-gzip=1
 </IfModule>
-
-# mod_brotli: turn off br for SSE (Apache 2.4.26+)
 <IfModule mod_brotli.c>
   SetEnvIfNoCase Request_URI "^/sse/" no-brotli=1
 </IfModule>
 
+# ---------- Ensure PHP doesn't double-compress (mod_php only) ----------
+<IfModule mod_php.c>
+  php_flag zlib.output_compression Off
+</IfModule>
+<IfModule mod_php8.c>
+  php_flag zlib.output_compression Off
+</IfModule>
 
-
-# The following rule tells Apache that if the requested filename
-# exists, simply serve it.
+# ---------- App rewrites ----------
+# Serve existing files/links/dirs directly
 RewriteCond %{REQUEST_FILENAME} -s [OR]
 RewriteCond %{REQUEST_FILENAME} -l [OR]
 RewriteCond %{REQUEST_FILENAME} -d
 RewriteRule ^.*$ - [NC,L]
+
 # Allow direct access to SSE endpoints
 RewriteRule ^sse/ - [L]
 
-# The following rewrites all other queries to index.php.
+# Everything else to index.php
 RewriteCond %{REQUEST_URI}::$1 ^(/.+)(.+)::\2$
 RewriteRule ^(.*) - [E=BASE:%1]
 RewriteRule ^(.*)$ %{ENV:BASE}index.php [NC,L]

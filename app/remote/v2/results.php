@@ -9,10 +9,8 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
 use App\Services\STS\TokensService;
-use App\Services\STS\ResultsService as STSResultsService;
 use App\Registries\ContainerRegistry;
-
-header('Content-Type: application/json');
+use App\Services\STS\ResultsService as STSResultsService;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -32,6 +30,8 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 try {
     /** @var Laminas\Diactoros\ServerRequest $request */
     $request = AppRegistry::get('request');
+
+    // Parse JSON (handles gzip/deflate per your ApiService)
     $data = $apiService->getJsonFromRequest($request, true);
     $apiRequestId  = $apiService->getHeader($request, 'X-Request-ID');
     $transactionId = $apiRequestId ?? MiscUtility::generateULID();
@@ -39,43 +39,70 @@ try {
     $authToken = ApiService::extractBearerToken($request);
 
     $labId = $data['labId'] ?? null;
-
-    $isSilent = (bool) ($data['silent'] ?? false);
+    $isSilent = (bool)($data['silent'] ?? false);
+    $testType = $data['testType'] ?? null;
 
     if (empty($labId)) {
         throw new SystemException('Lab ID is missing in the request', 400);
     }
-
-    $token = $stsTokensService->validateToken($authToken, $labId);
-
-    if ($token === false || empty($token)) {
-        throw new SystemException('Unauthorized Access', 401);
-    }
-
-    $testType = $data['testType'] ?? null;
-
     if (empty($testType)) {
         throw new SystemException('Test Type is missing in the request', 400);
     }
 
-    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data), $isSilent);
+    $token = $stsTokensService->validateToken($authToken, $labId);
+    if (!$token) {
+        throw new SystemException('Unauthorized Access', 401);
+    }
 
-    $payload = JsonUtility::encodeUtf8Json($sampleCodes);
+    // Process and get ACK (array of sample codes)
+    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data), $isSilent) ?? [];
+    $resultCount = is_array($sampleCodes) ? count($sampleCodes) : 0;
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'results', $testType, $_SERVER['REQUEST_URI'], $data, $payload, 'json', $labId);
-    $general->updateResultSyncDateTime($testType, $facilityIds, $labId);
+    // Build success payload (let Apache compress br/gzip)
+    $payload = [
+        'status'       => 'success',
+        'acknowledged' => $sampleCodes,
+        'count'        => $resultCount,
+        'testType'     => $testType,
+        'labId'        => $labId,
+    ];
+
+    // Tracking (guard undefineds)
+    $general->addApiTracking(
+        $transactionId,
+        'vlsm-system',
+        $resultCount,
+        'results',
+        $testType,
+        $_SERVER['REQUEST_URI'] ?? '',
+        JsonUtility::encodeUtf8Json($data),
+        JsonUtility::encodeUtf8Json($payload),
+        'json',
+        $labId
+    );
+
+    // If you have facility IDs to bump sync time for, pass them here.
+    // If not available from receiveResults, skip this (prevents undefined var).
+    if (!empty($data['facilityIds']) && is_array($data['facilityIds'])) {
+        $general->updateResultSyncDateTime($testType, $data['facilityIds'], $labId);
+    }
+
+    echo ApiService::generateJsonResponse($payload, $request);
 } catch (Throwable $e) {
-    $payload = json_encode([]);
+    // Optional user-facing safe message, read by ErrorResponseGenerator in prod
+    $_SESSION['errorDisplayMessage'] = _translate('Unable to process the results');
 
+    // Log with context (guard undefineds)
     LoggerUtility::logError($e->getMessage(), [
-        'lab' => $labId,
-        'transactionId' => $transactionId,
-        'last_db_error' => $db->getLastError(),
-        'last_db_query' => $db->getLastQuery(),
-        'file' => $e->getFile(),
-        'line' => $e->getLine(),
-        'trace' => $e->getTraceAsString(),
+        'lab'           => $labId ?? null,
+        'transactionId' => $transactionId ?? null,
+        'last_db_error' => isset($db) ? $db->getLastError() : null,
+        'last_db_query' => isset($db) ? $db->getLastQuery() : null,
+        'file'          => $e->getFile(),
+        'line'          => $e->getLine(),
+        'trace'         => $e->getTraceAsString(),
     ]);
-}
 
-echo ApiService::generateJsonResponse($payload, $request);
+    // Rethrow so ErrorResponseGenerator returns structured JSON + status
+    throw new SystemException($e->getMessage(), ($e->getCode() ?: 500), $e);
+}
