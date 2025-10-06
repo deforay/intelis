@@ -5,6 +5,7 @@
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
+use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
 require_once __DIR__ . "/../../bootstrap.php";
@@ -26,10 +27,14 @@ if (!$isLIS || !$cliMode) {
     exit(0);
 }
 
+// Clear the file cache
+(ContainerRegistry::get(FileCacheUtility::class))->clear();
+
 /**
  * Function to read user input from command line
  */
-function readUserInput($prompt = '') {
+function readUserInput($prompt = '')
+{
     echo $prompt;
     $handle = fopen("php://stdin", "r");
     $input = trim(fgets($handle));
@@ -40,16 +45,18 @@ function readUserInput($prompt = '') {
 /**
  * Function to validate URL format
  */
-function isValidUrl($url) {
+function isValidUrl($url)
+{
     return filter_var($url, FILTER_VALIDATE_URL) !== false;
 }
 
 /**
  * Function to normalize URL with smart STS validation
  */
-function normalizeUrl($url, $labId = null) {
+function normalizeUrl($url, $labId = null)
+{
     $url = trim($url);
-    
+
     // If URL already has a protocol, test it as-is first
     if (preg_match('/^https?:\/\//', $url)) {
         $testUrl = rtrim($url, '/');
@@ -61,19 +68,19 @@ function normalizeUrl($url, $labId = null) {
     } else {
         $domain = $url;
     }
-    
+
     // Try HTTPS first
     $httpsUrl = 'https://' . rtrim($domain, '/');
     if (CommonService::validateStsUrl($httpsUrl, $labId)) {
         return $httpsUrl;
     }
-    
+
     // Fallback to HTTP
     $httpUrl = 'http://' . rtrim($domain, '/');
     if (CommonService::validateStsUrl($httpUrl, $labId)) {
         return $httpUrl;
     }
-    
+
     // Neither worked, return HTTPS version anyway (let later validation handle the error)
     return $httpsUrl;
 }
@@ -100,7 +107,7 @@ if (empty($currentRemoteURL)) {
 
     do {
         $userInput = readUserInput("STS URL: ");
-        
+
         if (empty(trim($userInput))) {
             echo "STS URL cannot be empty. Please try again." . PHP_EOL;
             continue;
@@ -121,11 +128,9 @@ if (empty($currentRemoteURL)) {
 
         echo "Using: " . $newRemoteURL . PHP_EOL;
         break;
-        
     } while (true);
 
     $urlChanged = true;
-    
 } else {
     echo "Current STS URL: " . $currentRemoteURL . PHP_EOL;
     echo PHP_EOL;
@@ -143,7 +148,7 @@ if (empty($currentRemoteURL)) {
 
         do {
             $userInput = readUserInput("STS URL: ");
-            
+
             if (empty(trim($userInput))) {
                 echo "STS URL cannot be empty. Please try again." . PHP_EOL;
                 continue;
@@ -164,7 +169,6 @@ if (empty($currentRemoteURL)) {
 
             echo "Using: " . $newRemoteURL . PHP_EOL;
             break;
-            
         } while (true);
 
         $urlChanged = true;
@@ -198,42 +202,42 @@ if ($urlChanged) {
 
 // Step 3: Run metadata refresh if URL was changed or freshly set
 //if ($urlWasEmpty || $urlChanged) {
-    $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
+$reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
 
+echo PHP_EOL;
+echo "=== Refreshing Database Metadata ===" . PHP_EOL;
+echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
+
+$metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
+
+if (!file_exists($metadataScriptPath)) {
+    echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
+    echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+    echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
+    exit(1);
+} else {
+    $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+    echo "Executing: " . $metadataCommand . PHP_EOL;
     echo PHP_EOL;
-    echo "=== Refreshing Database Metadata ===" . PHP_EOL;
-    echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
 
-    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
+    $output = [];
+    $returnCode = 0;
+    exec($metadataCommand . " 2>&1", $output, $returnCode);
 
-    if (!file_exists($metadataScriptPath)) {
-        echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
-        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
-        exit(1);
-    } else {
-        $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-        echo "Executing: " . $metadataCommand . PHP_EOL;
-        echo PHP_EOL;
-
-        $output = [];
-        $returnCode = 0;
-        exec($metadataCommand . " 2>&1", $output, $returnCode);
-
-        foreach ($output as $line) {
-            echo $line . PHP_EOL;
-        }
-
-        if ($returnCode === 0) {
-            echo PHP_EOL;
-            echo "✅ Metadata refresh completed successfully." . PHP_EOL;
-        } else {
-            echo PHP_EOL;
-            echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
-            echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-            exit(1);
-        }
+    foreach ($output as $line) {
+        echo $line . PHP_EOL;
     }
+
+    if ($returnCode === 0) {
+        echo PHP_EOL;
+        echo "✅ Metadata refresh completed successfully." . PHP_EOL;
+    } else {
+        echo PHP_EOL;
+        echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        exit(1);
+    }
+}
 //}
 
 // Step 4: Handle Lab Configuration
@@ -352,7 +356,6 @@ if ($needLabSelection) {
                 echo "Invalid selection. Please try again." . PHP_EOL;
             }
         } while (true);
-        
     } elseif ($method === '2') {
         // Browse all labs (paginated)
         $pageSize = 20;
@@ -399,7 +402,6 @@ if ($needLabSelection) {
                 echo "❗ Invalid command." . PHP_EOL;
             }
         } while (true);
-        
     } elseif ($method === '3') {
         // Enter facility ID directly
         do {
@@ -528,3 +530,7 @@ if ($returnCode === 0) {
     echo "❌ Token generation failed with return code: " . $returnCode . PHP_EOL;
     exit($returnCode);
 }
+
+
+// Clear the file cache again -- just in case
+(ContainerRegistry::get(FileCacheUtility::class))->clear();

@@ -107,7 +107,7 @@ try {
         if (isset($_SESSION['instance'])) {
             unset($_SESSION['instance']);
         }
-        // Clear the file and apcu cache
+        // Clear the file cache
         (ContainerRegistry::get(FileCacheUtility::class))->clear();
 
 
