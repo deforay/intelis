@@ -22,11 +22,8 @@ if (!$isCli && isset($_SESSION['instance'])) {
     unset($_SESSION['instance']);
 }
 
-// If run from command line, clear the DI container cache and APCu cache
+// If run from command line, clear the DI container cache\
 if ($isCli) {
-
-
-
     $compiledContainerPath = CACHE_PATH . DIRECTORY_SEPARATOR . 'CompiledContainer.php';
     if (file_exists($compiledContainerPath)) {
         unlink($compiledContainerPath);
@@ -35,5 +32,3 @@ if ($isCli) {
 
 // Clear the file cache and echo the result
 echo (ContainerRegistry::get(FileCacheUtility::class))->clear();
-
-
