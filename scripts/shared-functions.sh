@@ -173,8 +173,19 @@ download_file() {
     log_file=$(mktemp)
 
     # Download with aria2c
-    aria2c -x 5 -s 5 --console-log-level=error --summary-interval=0 \
-        --allow-overwrite=true -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
+    # --no-conf: don't load aria2.conf (prevents cache settings)
+    # --conditional-get=false: always download, ignore cache headers
+    # --remote-time=false: don't preserve remote file timestamps
+    aria2c -x 5 -s 5 \
+        --console-log-level=error \
+        --summary-interval=0 \
+        --allow-overwrite=true \
+        --no-conf \
+        --conditional-get=false \
+        --remote-time=false \
+        -d "$output_dir" \
+        -o "$filename" \
+        "$url" >"$log_file" 2>&1 &
     local download_pid=$!
 
     spinner "$download_pid" "$message"
