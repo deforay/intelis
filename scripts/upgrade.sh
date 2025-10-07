@@ -1105,17 +1105,6 @@ if ask_yes_no "Do you want to run maintenance scripts?" "no"; then
     fi
 fi
 
-# Run the PHP script for remote data sync
-cd "${lis_path}"
-echo ""
-print info "Running remote data sync script. Please wait..."
-sudo -u www-data composer metadata-sync &
-pid=$!
-spinner "$pid"
-wait $pid
-print success "Remote data sync completed."
-log_action "Remote data sync completed."
-
 # The old startup.php file is no longer needed, but if it exists, make sure it is empty
 if [ -f "${lis_path}/startup.php" ]; then
     sudo rm "${lis_path}/startup.php"
@@ -1137,5 +1126,8 @@ chmod +x /usr/local/bin/intelis-refresh
     find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
 
+apache2ctl -k graceful || systemctl reload apache2
+
 print success "LIS update complete."
 log_action "LIS update complete."
+
