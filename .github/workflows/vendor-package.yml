@@ -8,7 +8,6 @@ on:
     paths:
       - 'composer.json'
       - 'composer.lock'
-      - '.github/workflows/vendor-package.yml'
   workflow_dispatch:
     inputs:
       force_build:
@@ -20,13 +19,55 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: vendor-${{ github.ref }}
-  cancel-in-progress: false
-
 jobs:
+  check_changes:
+    name: Check for Composer Changes
+    runs-on: ubuntu-latest
+    outputs:
+      should_build: ${{ steps.check_composer.outputs.should_build }}
+      composer_hash: ${{ steps.composer_hash.outputs.hash }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2
+
+      - name: Check for composer changes
+        id: check_composer
+        run: |
+          if [ "${{ github.event_name }}" == "workflow_dispatch" ]; then
+            echo "Manual trigger detected"
+            if [ "${{ inputs.force_build }}" == "true" ]; then
+              echo "Force build requested"
+              echo "should_build=true" >> $GITHUB_OUTPUT
+            else
+              if git diff --name-only HEAD^ HEAD | grep -qE "composer\.(json|lock)"; then
+                echo "Changes detected in composer files"
+                echo "should_build=true" >> $GITHUB_OUTPUT
+              else
+                echo "No changes detected, but manual trigger allows build"
+                echo "should_build=true" >> $GITHUB_OUTPUT
+              fi
+            fi
+          elif git diff --name-only HEAD^ HEAD | grep -qE "composer\.(json|lock)"; then
+            echo "Changes detected in composer files"
+            echo "should_build=true" >> $GITHUB_OUTPUT
+          else
+            echo "No changes in composer files, skipping build"
+            echo "should_build=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Generate composer hash
+        id: composer_hash
+        run: |
+          HASH=$(cat composer.json composer.lock | sha256sum | cut -d' ' -f1 | cut -c1-8)
+          echo "hash=$HASH" >> $GITHUB_OUTPUT
+          echo "Generated hash: $HASH"
+
   build:
     name: Build Vendor Package
+    needs: check_changes
+    if: needs.check_changes.outputs.should_build == 'true'
     runs-on: ubuntu-latest
     env:
       PHP_VERSION: '8.2'
@@ -68,55 +109,46 @@ jobs:
             --optimize-autoloader \
             --classmap-authoritative
 
-      - name: Verify vendor
-        run: test -f vendor/autoload.php
-
-      - name: Generate composer hash
-        id: composer_hash
-        run: |
-          HASH=$(cat composer.json composer.lock | sha256sum | cut -d' ' -f1 | cut -c1-8)
-          echo "hash=$HASH" >> $GITHUB_OUTPUT
-          echo "Generated hash: $HASH"
-
-      - name: Clean and package vendor
+      - name: Clean vendor directory
         run: |
           echo "Original vendor size:"
           du -sh vendor/
           
-          # Prune unnecessary directories and files
-          find vendor -type d \( \
-            -iname ".git" -o \
-            -iname "tests" -o \
-            -iname "Tests" -o \
-            -iname "test" -o \
-            -iname "docs" -o \
-            -iname "doc" -o \
-            -iname ".github" -o \
-            -iname "examples" -o \
-            -iname "bench*" \
-          \) -prune -exec rm -rf {} + 2>/dev/null || true
-          
-          find vendor -type f \( \
-            -iname "*.md" -o \
-            -iname "phpunit*.xml*" -o \
-            -iname "*.dist" -o \
-            -iname ".gitattributes" -o \
-            -iname ".gitignore" -o \
-            -iname ".travis.yml" \
-          \) -delete 2>/dev/null || true
+          # Remove unnecessary files to reduce size
+          find vendor -type d -name ".git" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "tests" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "Tests" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "test" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "docs" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "doc" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name ".github" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type d -name "examples" -exec rm -rf {} + 2>/dev/null || true
+          find vendor -type f -name "*.md" -delete 2>/dev/null || true
+          find vendor -type f -name ".gitignore" -delete 2>/dev/null || true
+          find vendor -type f -name ".gitattributes" -delete 2>/dev/null || true
+          find vendor -type f -name "phpunit.xml*" -delete 2>/dev/null || true
+          find vendor -type f -name ".travis.yml" -delete 2>/dev/null || true
           
           echo "Cleaned vendor size:"
           du -sh vendor/
+
+      - name: Create vendor package
+        run: |
+          echo "Creating package: ${{ env.PACKAGE_NAME }}"
           
-          # Create package and checksums
           tar -czf "${{ env.PACKAGE_NAME }}" vendor/
+          
+          # Generate checksums
           md5sum "${{ env.PACKAGE_NAME }}" > "${{ env.PACKAGE_NAME }}.md5"
           sha256sum "${{ env.PACKAGE_NAME }}" > "${{ env.PACKAGE_NAME }}.sha256"
           
           echo "Package created successfully"
           ls -lh *.tar.gz
+          echo ""
+          echo "MD5: $(cat ${{ env.PACKAGE_NAME }}.md5)"
+          echo "SHA256: $(cat ${{ env.PACKAGE_NAME }}.sha256)"
           
-          # Store package size for release notes
+          # Store package size for summary
           echo "PACKAGE_SIZE=$(du -h ${{ env.PACKAGE_NAME }} | cut -f1)" >> $GITHUB_ENV
 
       - name: Upload vendor package as artifact
@@ -131,6 +163,7 @@ jobs:
           compression-level: 0
 
       - name: Generate release notes
+        id: release_notes
         run: |
           cat << EOF > release_notes.md
           ## Vendor Package Information
@@ -138,10 +171,9 @@ jobs:
           **Build Date:** $(date -u +"%Y-%m-%d %H:%M:%S UTC")
           **Commit:** \`${{ github.sha }}\`
           **Branch:** \`${{ github.ref_name }}\`
-          **Run:** #${{ github.run_number }}
           **PHP Version:** ${{ env.PHP_VERSION }}
           **Package Size:** ${{ env.PACKAGE_SIZE }}
-          **Composer Hash:** \`${{ steps.composer_hash.outputs.hash }}\`
+          **Composer Hash:** \`${{ needs.check_changes.outputs.composer_hash }}\`
           
           ### Checksums
           
@@ -162,22 +194,31 @@ jobs:
           tar -xzf vendor.tar.gz
           \`\`\`
           
-          ### Recent Changes
+          ### Changes in this build
           
           \`\`\`
-          $(git log -3 --pretty=format:"%h - %s (%an, %ar)" -- composer.json composer.lock)
+          $(git log -1 --pretty=format:"%h - %s (%an, %ar)")
           \`\`\`
           EOF
 
       - name: Create or update release
-        uses: ncipollo/release-action@v1
+        uses: softprops/action-gh-release@v2
         with:
-          tag: vendor-latest
+          tag_name: vendor-latest
           name: Latest Vendor Package
-          bodyFile: release_notes.md
-          artifacts: "vendor.tar.gz,vendor.tar.gz.md5,vendor.tar.gz.sha256"
-          allowUpdates: true
-          replacesArtifacts: true
+          body_path: release_notes.md
+          files: |
+            ${{ env.PACKAGE_NAME }}
+            ${{ env.PACKAGE_NAME }}.md5
+            ${{ env.PACKAGE_NAME }}.sha256
+          draft: false
+          prerelease: false
+
+      - name: Cleanup old releases
+        uses: dev-drprasad/delete-older-releases@v0.3.2
+        with:
+          keep_latest: 5
+          delete_tag_pattern: vendor-
 
       - name: Summary
         run: |
@@ -187,6 +228,6 @@ jobs:
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "**Package:** \`${{ env.PACKAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
           echo "**Size:** ${{ env.PACKAGE_SIZE }}" >> $GITHUB_STEP_SUMMARY
-          echo "**Hash:** \`${{ steps.composer_hash.outputs.hash }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Hash:** \`${{ needs.check_changes.outputs.composer_hash }}\`" >> $GITHUB_STEP_SUMMARY
           echo "" >> $GITHUB_STEP_SUMMARY
           echo "📦 [Download Release](https://github.com/${{ github.repository }}/releases/tag/vendor-latest)" >> $GITHUB_STEP_SUMMARY
