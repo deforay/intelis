@@ -1,4 +1,12 @@
 <?php
+// Server-Sent Events (SSE) stream for system alerts
+// - requires user to be logged in
+// - admin users get both 'admin' and 'auth' alerts, others only 'auth'
+// - uses SQLite backend for alert storage
+// - supports Last-Event-ID header or ?last_id= for resuming
+// - heartbeats every 20s if no events
+// - max connection life ~5min (clients should reconnect as needed)
+
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/../bootstrap.php';
@@ -16,17 +24,33 @@ if (!$isLoggedIn) {
 session_write_close();
 
 // --- SSE headers ---
-header('Content-Type: text/event-stream');
+header('Content-Type: text/event-stream; charset=utf-8');
 header('Cache-Control: no-cache, no-transform');
 header('Connection: keep-alive');
-header('X-Accel-Buffering: no');
+header('X-Accel-Buffering: no'); // disable buffering on nginx, if present
 
 @ini_set('output_buffering', 'off');
 @ini_set('zlib.output_compression', '0');
-while (ob_get_level() > 0) { ob_end_flush(); }
+
+// Drain any active output buffers before starting SSE
+while (ob_get_level() > 0) {
+    @ob_end_flush();
+}
 ob_implicit_flush(true);
 
-// resume id (from Last-Event-ID header or ?last_id=)
+// Helper: safe flush (only ob_flush if a buffer exists)
+$flush_now = static function (): void {
+    if (function_exists('ob_flush') && ob_get_level() > 0) {
+        @ob_flush();
+    }
+    flush();
+};
+
+// Send an initial padding comment to coax proxies/browsers to start streaming
+echo ':' . str_repeat(' ', 2048) . "\n\n";
+$flush_now();
+
+// --- resume id (from Last-Event-ID header or ?last_id=) ---
 $lastId = isset($_SERVER['HTTP_LAST_EVENT_ID'])
     ? (int)$_SERVER['HTTP_LAST_EVENT_ID']
     : (int)($_GET['last_id'] ?? 0);
@@ -44,21 +68,28 @@ try {
 // client reconnect backoff (ms)
 echo "retry: 8000\n\n";
 
-// optional one-time ping for debugging
+// optional one-time ping for debugging/handshake
 echo "event: system\n";
 echo 'data: ' . json_encode(['message' => 'sse connected', 'lastId' => $lastId], JSON_UNESCAPED_SLASHES) . "\n\n";
-flush();
+$flush_now();
 
 // audience
 $audiences = $isAdmin ? ['admin', 'auth'] : ['auth'];
 
+// --- timing / heartbeats ---
 $started   = time();
-$maxLife   = 300; // ~5 min
+$maxLife   = 300; // ~5 min per connection; client should auto-reconnect
 $heartbeat = 20;  // seconds
 $lastBeat  = time();
 
+// Keep this SSE alive; let our loop decide when to end
+@set_time_limit(0);          // unlimited PHP execution time
+ignore_user_abort(false);    // stop if client disconnects
+
 while (true) {
-    if (connection_aborted()) break;
+    if (connection_aborted()) {
+        break;
+    }
 
     $gotAny = false;
 
@@ -84,16 +115,20 @@ while (true) {
 
     if ($gotAny) {
         $lastBeat = time();
-        flush();
+        $flush_now();
     } else {
         if (time() - $lastBeat >= $heartbeat) {
-            echo ": heartbeat " . time() . "\n\n";
+            // comment line = heartbeat (ignored by EventSource but keeps connection warm)
+            echo ': heartbeat ' . time() . "\n\n";
             $lastBeat = time();
-            flush();
+            $flush_now();
         }
         usleep(2_000_000); // 2s
     }
 
-    if ((time() - $started) > $maxLife) break;
+    if ((time() - $started) > $maxLife) {
+        break;
+    }
 }
+
 exit(0);

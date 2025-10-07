@@ -18,10 +18,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-$sarr = $general->getSystemConfig();
+$systemConfig = $general->getSystemConfig();
 
-if ($general->isLISInstance() && !empty($sarr['sc_testing_lab_id'])) {
-	$testingLabs = $facilitiesService->getTestingLabs('covid19', true, false, "facility_id = " . $sarr['sc_testing_lab_id']);
+if ($general->isLISInstance() && !empty($systemConfig['sc_testing_lab_id'])) {
+	$testingLabs = $facilitiesService->getTestingLabs('covid19', true, false, "facility_id = " . $systemConfig['sc_testing_lab_id']);
 } else {
 	$testingLabs = $facilitiesService->getTestingLabs('covid19');
 }
