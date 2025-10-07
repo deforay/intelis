@@ -1,6 +1,6 @@
 <?php
 
-//bin/fix-sts.php
+//bin/setup-sts.php
 
 use App\Services\CommonService;
 use App\Services\ConfigService;
@@ -213,7 +213,7 @@ $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.ph
 if (!file_exists($metadataScriptPath)) {
     echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
     echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-    echo "Or alternatively: ./intelis force-metadata" . PHP_EOL;
+    echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
     exit(1);
 } else {
     $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
@@ -495,41 +495,41 @@ if (isset($selectedLab)) {
     $labName = isset($labDetails) ? $labDetails['facility_name'] : 'Unknown';
 }
 
-echo "=== Proceeding with Token Generation ===" . PHP_EOL;
-echo "Using STS URL: " . $remoteURL . PHP_EOL;
-echo "InteLIS Lab ID: " . $labId . PHP_EOL;
-echo "Lab Name: " . $labName . PHP_EOL;
-echo PHP_EOL;
+// echo "=== Proceeding with Token Generation ===" . PHP_EOL;
+// echo "Using STS URL: " . $remoteURL . PHP_EOL;
+// echo "InteLIS Lab ID: " . $labId . PHP_EOL;
+// echo "Lab Name: " . $labName . PHP_EOL;
+// echo PHP_EOL;
 
-$tokenScriptPath = BIN_PATH . "/token.php";
-$tokenCommand = "php " . escapeshellarg($tokenScriptPath);
+// $tokenScriptPath = BIN_PATH . "/token.php";
+// $tokenCommand = "php " . escapeshellarg($tokenScriptPath);
 
-// Add API key if provided
-if (!empty($apiKey)) {
-    $tokenCommand .= " --key " . escapeshellarg($apiKey);
-}
+// // Add API key if provided
+// if (!empty($apiKey)) {
+//     $tokenCommand .= " --key " . escapeshellarg($apiKey);
+// }
 
-echo "Executing: " . $tokenCommand . PHP_EOL;
-echo PHP_EOL;
+// echo "Executing: " . $tokenCommand . PHP_EOL;
+// echo PHP_EOL;
 
-// Execute the token script and capture output
-$output = [];
-$returnCode = 0;
-exec("$tokenCommand 2>&1", $output, $returnCode);
+// // Execute the token script and capture output
+// $output = [];
+// $returnCode = 0;
+// exec("$tokenCommand 2>&1", $output, $returnCode);
 
-// Display the output from token script
-foreach ($output as $line) {
-    echo $line . PHP_EOL;
-}
+// // Display the output from token script
+// foreach ($output as $line) {
+//     echo $line . PHP_EOL;
+// }
 
-if ($returnCode === 0) {
-    echo PHP_EOL;
-    echo "✅ STS Setup and Token Generation Complete" . PHP_EOL;
-} else {
-    echo PHP_EOL;
-    echo "❌ Token generation failed with return code: " . $returnCode . PHP_EOL;
-    exit($returnCode);
-}
+// if ($returnCode === 0) {
+//     echo PHP_EOL;
+//     echo "✅ STS Setup and Token Generation Complete" . PHP_EOL;
+// } else {
+//     echo PHP_EOL;
+//     echo "❌ Token generation failed with return code: " . $returnCode . PHP_EOL;
+//     exit($returnCode);
+// }
 
 
 // Clear the file cache again -- just in case

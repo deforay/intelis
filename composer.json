@@ -91,21 +91,49 @@
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",
-        "privilege-fix": "php bin/setup/update-privileges.php",
+        "fixes": [
+            "php bin/setup/update-privileges.php",
+            "php bin/setup/fix-app-menu.php"
+        ],
         "audit-tables-fix": "php bin/setup/fix-audit-tables.php",
         "archive-audit-tables": "php app/tasks/archive-audit-tables.php",
         "token": "php bin/token.php",
-        "fix-sts": "php bin/setup/fix-sts.php",
+        "setup-sts": [
+            "php bin/setup/setup-sts.php",
+            "@token"
+        ],
         "system-admin": "php bin/setup/system-admin.php",
         "migrate": "php bin/migrate.php -y",
         "sample-generator": "php bin/sample-code-generator.php",
-        "force-metadata": "php app/tasks/remote/sts-metadata-receiver.php -ft",
-        "metadata-sync": "php app/tasks/remote/sts-metadata-receiver.php && php app/tasks/remote/lab-metadata-sender.php",
-        "remote-sync": "php app/tasks/remote/results-sender.php && php app/tasks/remote/requests-receiver.php && php app/tasks/remote/lab-metadata-sender.php",
+        "reset-metadata": "php app/tasks/remote/sts-metadata-receiver.php -ft",
+        "metadata-sync": [
+            "php app/tasks/remote/sts-metadata-receiver.php",
+            "php app/tasks/remote/lab-metadata-sender.php"
+        ],
+        "sts-sync": [
+            "php app/tasks/remote/sts-metadata-receiver.php",
+            "php app/tasks/remote/results-sender.php",
+            "php app/tasks/remote/requests-receiver.php",
+            "php app/tasks/remote/lab-metadata-sender.php"
+        ],
         "send-results": "php app/tasks/remote/results-sender.php",
         "receive-requests": "php app/tasks/remote/requests-receiver.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "post-install": "php bin/migrate.php -y && php bin/setup/update-privileges.php && php bin/setup/fix-app-menu.php && php app/tasks/remote/sts-metadata-receiver.php -f && php app/includes/clear-cache.php && php bin/setup/change-db-collation.php",
-        "post-update": "php bin/migrate.php -y && php bin/setup/update-privileges.php && php bin/setup/fix-app-menu.php && php bin/token.php && php app/includes/clear-cache.php && php bin/setup/change-db-collation.php"
+        "fix-app-menu": "php bin/setup/fix-app-menu.php",
+        "post-install": [
+            "@migrate",
+            "@fixes",
+            "@setup-sts",
+            "@purge-cache",
+            "@collation"
+        ],
+        "post-update": [
+            "@migrate",
+            "@fixes",
+            "@token",
+            "@purge-cache",
+            "@collation",
+            "@metadata-sync"
+        ]
     }
 }

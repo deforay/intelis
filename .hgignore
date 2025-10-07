@@ -40,13 +40,15 @@ vendor/
 var/
 **/node_modules/
 
-# Git-related
-.git/
+# Git-related (but allow .github directory)
 .gitattributes
 .gitignore
 
 ########## [Regexp Rules] ##########
 syntax: regexp
+
+# Git directory at root only (not .github)
+^\.git/
 
 # Ignore everything except index.php or .htaccess in specific folders
 ^public/uploads/(?!index\.php|\.htaccess).*
