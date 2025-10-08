@@ -48,7 +48,7 @@ handle_database_setup_and_import() {
         log_action "Renaming existing LIS database..."
         local todays_date=$(date +%Y%m%d_%H%M%S)
         local new_db_name="vlsm_${todays_date}"
-        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;"
 
         # Get the list of tables in the original database
         local tables=$(mysql -sse "SHOW TABLES IN vlsm;")
@@ -555,7 +555,7 @@ declare -A mysql_settings=(
     ["sql_mode"]=""
     ["innodb_strict_mode"]="0"
     ["character-set-server"]="utf8mb4"
-    ["collation-server"]="utf8mb4_unicode_ci"
+    ["collation-server"]="utf8mb4_general_ci"
     ["default_authentication_plugin"]="mysql_native_password"
     ["max_connect_errors"]="10000"
 )
