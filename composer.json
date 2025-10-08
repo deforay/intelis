@@ -86,7 +86,7 @@
         "scan": "php bin/scan.php",
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
-        "collation": "php bin/setup/change-db-collation.php",
+        "collation": "php bin/db-tools.php collation",
         "db-backup": "php bin/db-tools.php backup",
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
