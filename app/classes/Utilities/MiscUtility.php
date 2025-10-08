@@ -10,6 +10,8 @@ use Symfony\Component\Uid\Ulid;
 use Symfony\Component\Uid\Uuid;
 use App\Exceptions\SystemException;
 use Symfony\Component\Filesystem\Filesystem;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 final class MiscUtility
 {
@@ -1036,5 +1038,88 @@ final class MiscUtility
     public static function generateErrorId($prefix = 'ERR'): string
     {
         return $prefix . '-' . date('Ymd-His') . '-' . substr(uniqid(), -6);
+    }
+
+    /** Lazily-created global console output */
+    public static function console(): ConsoleOutput
+    {
+        static $out = null;
+        if (!$out) $out = new ConsoleOutput();
+        return $out;
+    }
+
+    /**
+     * Start a reusable spinner/progress bar.
+     * - If $maxSteps is null → indeterminate spinner
+     * - If $maxSteps is int   → determinate progress
+     */
+    public static function spinnerStart(
+        ?int $maxSteps = null,
+        string $message = 'Working…',
+        string $barChar = '█',
+        string $emptyChar = '░',
+        string $progressChar = '█',
+        string $color = 'cyan'
+    ): ProgressBar {
+        $out = self::console();
+        $bar = $maxSteps === null ? new ProgressBar($out) : new ProgressBar($out, $maxSteps);
+
+        $bar->setFormat("%message%\n <fg={$color}>[%bar%]</> %percent:3s%%  %current%/%max%  %elapsed:6s%  %memory:6s%");
+        $bar->setBarCharacter($barChar);
+        $bar->setEmptyBarCharacter($emptyChar);
+        $bar->setProgressCharacter($progressChar);
+
+        if (method_exists($bar, 'setRedrawFrequency')) $bar->setRedrawFrequency(1);
+        if (method_exists($bar, 'minSecondsBetweenRedraws')) {
+            $bar->minSecondsBetweenRedraws(0.0);
+            $bar->maxSecondsBetweenRedraws(0.25);
+        }
+        if (method_exists($bar, 'setOverwrite')) $bar->setOverwrite(true);
+
+        $bar->setMessage($message);
+        $bar->start();
+        $bar->display();
+        return $bar;
+    }
+
+
+
+    /** Update the message (table/column, etc.) without moving progress */
+    public static function spinnerUpdate(ProgressBar $bar, string $table, ?string $column = null, ?int $idx = null, ?int $total = null): void
+    {
+        $t = strlen($table) > 40 ? substr($table, 0, 37) . '…' : $table;
+        if ($column !== null) {
+            $c = strlen($column) > 36 ? substr($column, 0, 33) . '…' : $column;
+            $suffix = ($idx !== null && $total !== null) ? " ($idx/$total)" : "";
+            $bar->setMessage("Converting {$t}  →  {$c}{$suffix}");
+        } else {
+            $bar->setMessage("Converting {$t} …");
+        }
+        $bar->display(); // <-- force repaint now
+    }
+
+
+    /** Advance the bar by a number of steps (default 1) */
+    public static function spinnerAdvance(ProgressBar $bar, int $steps = 1): void
+    {
+        $bar->advance($steps);
+    }
+
+    /**
+     * Temporarily clear the bar, run a printer (echo/log), then restore the bar.
+     * Use this for verbose lines so they don’t fight with the bar.
+     */
+    public static function spinnerPausePrint(ProgressBar $bar, callable $printer): void
+    {
+        $bar->clear();
+        $printer();        // e.g., echo "message\n";
+        $bar->display();   // restore bar to the console
+    }
+
+    /** Finish the bar and print a trailing newline */
+    public static function spinnerFinish(ProgressBar $bar): void
+    {
+        $bar->finish();
+        self::console()->writeln(""); // newline after the bar
     }
 }
