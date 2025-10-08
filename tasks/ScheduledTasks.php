@@ -38,12 +38,29 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/sample-code-generator.php")
     ->preventOverlapping()
     ->description('Generating sample codes');
 
+
+// === DB-TOOLS SCHEDULES ===
+
 // DB Backup
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-tools.php backup")
     ->everySixHours()
     ->timezone($timeZone)
     ->preventOverlapping()
-    ->description('Backing Up Database');
+    ->description('DB Tools: backup of both databases every 6 hours');
+
+// Daily binlog purge
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-tools.php purge-binlogs --days=7")
+    ->cron('5 4 * * *') // 04:05 am daily
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('DB Tools: purge MySQL binary logs older than 7 days');
+
+// Weekly maintenance
+$schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-tools.php maintain --days=7")
+    ->cron('0 3 * * 0') // 03:00 am Sundays
+    ->timezone($timeZone)
+    ->preventOverlapping()
+    ->description('DB Tools: weekly mysqlcheck (repair/optimize/analyze) + binlog purge');
 
 
 // Cleanup Old Files
