@@ -14,6 +14,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Services\SystemService;
 use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
 
@@ -25,7 +26,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$backupFolder = APPLICATION_PATH . '/../backups';
+$backupFolder = APPLICATION_PATH . '/../backups/db';
 if (!is_dir($backupFolder)) {
     MiscUtility::makeDirectory($backupFolder);
 }
@@ -37,33 +38,54 @@ array_shift($arguments); // remove script name
 $command = strtolower($arguments[0] ?? DEFAULT_OPERATION);
 $commandArgs = array_slice($arguments, 1);
 
-$mainConfig = SYSTEM_CONFIG['database'];
+$intelisDbConfig = SYSTEM_CONFIG['database'];
 $interfacingEnabled = SYSTEM_CONFIG['interfacing']['enabled'] ?? false;
-$interfacingConfig = $interfacingEnabled ? SYSTEM_CONFIG['interfacing']['database'] : null;
-validateConfiguration($mainConfig, $interfacingConfig);
+$interfacingDbConfig = $interfacingEnabled ? SYSTEM_CONFIG['interfacing']['database'] : null;
+validateConfiguration($intelisDbConfig, $interfacingDbConfig);
 try {
     switch ($command) {
         case 'backup':
-            handleBackup($backupFolder, $mainConfig, $interfacingConfig, $commandArgs);
+            handleBackup($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'export':
-            handleExport($backupFolder, $mainConfig, $interfacingConfig, $commandArgs);
+            handleExport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'import':
-            handleImport($backupFolder, $mainConfig, $interfacingConfig, $commandArgs);
+            handleImport($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'list':
             handleList($backupFolder);
             exit(0);
         case 'restore':
-            handleRestore($backupFolder, $mainConfig, $interfacingConfig, $commandArgs[0] ?? null);
+            handleRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs[0] ?? null);
+            exit(0);
+        case 'verify':
+            handleVerify($backupFolder, $commandArgs);
+            exit(0);
+        case 'clean':
+            handleClean($backupFolder, $commandArgs);
+            exit(0);
+        case 'size':
+            handleSize($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            exit(0);
+        case 'config-test':
+            handleConfigTest($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'mysqlcheck':
-            handleMysqlCheck($mainConfig, $interfacingConfig, $commandArgs);
+            handleMysqlCheck($intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'purge-binlogs':
         case 'purge-binlog':
-            handlePurgeBinlogs($mainConfig, $interfacingConfig, $commandArgs);
+            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            exit(0);
+        case 'pitr-info':
+            handlePitrInfo($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            exit(0);
+        case 'pitr-restore':
+            handlePitrRestore($backupFolder, $intelisDbConfig, $interfacingDbConfig, $commandArgs);
+            exit(0);
+        case 'maintain':
+            handleMaintain($intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'help':
         case '--help':
@@ -80,6 +102,117 @@ try {
     exit(1);
 }
 
+function getAppTimezone(): string
+{
+    /** @var SystemService $system */
+    $system = ContainerRegistry::get(SystemService::class);
+    try {
+        return $system->getTimezone() ?: 'UTC';
+    } catch (\Throwable $e) {
+        return 'UTC';
+    }
+}
+
+function collectBinlogSnapshot(array $config): array
+{
+    // Works whether GTID is ON or OFF
+    $vars = [
+        "SELECT @@global.gtid_mode AS gtid_mode",
+        "SELECT @@global.enforce_gtid_consistency AS enforce_gtid_consistency",
+        "SELECT @@global.gtid_executed AS gtid_executed",
+        "SHOW VARIABLES LIKE 'log_bin'",
+        "SHOW VARIABLES LIKE 'log_bin_basename'",
+        "SHOW VARIABLES LIKE 'binlog_format'",
+        "SHOW VARIABLES LIKE 'binlog_row_image'",
+        "SHOW VARIABLES LIKE 'binlog_expire_logs_seconds'",
+        "SHOW VARIABLES LIKE 'expire_logs_days'",
+        "SELECT @@server_uuid AS server_uuid",
+    ];
+
+    $out = [
+        'ts_utc' => gmdate('Y-m-d\TH:i:s\Z'),
+        'app_tz' => getAppTimezone(),
+        'server' => [
+            'uuid' => null,
+            'log_bin' => null,
+            'log_bin_basename' => null,
+            'binlog_format' => null,
+            'binlog_row_image' => null,
+            'binlog_expire_logs_seconds' => null,
+            'expire_logs_days' => null,
+            'gtid_mode' => null,
+            'enforce_gtid_consistency' => null,
+            'gtid_executed' => null,
+        ],
+        'master_status' => [
+            'file' => null,
+            'position' => null,
+            'gtid_executed' => null,
+        ],
+    ];
+
+    // Fetch variables
+    foreach ($vars as $sql) {
+        try {
+            $res = runMysqlQuery($config, $sql);
+            $res = trim($res);
+            if ($res === '') continue;
+
+            if (stripos($sql, 'SHOW VARIABLES LIKE') === 0) {
+                // format: Variable_name\tValue
+                foreach (explode("\n", $res) as $line) {
+                    $parts = preg_split('/\s+/', trim($line));
+                    if (count($parts) >= 2) {
+                        $k = strtolower($parts[0]);
+                        $v = $parts[1] ?? null;
+                        if ($k === 'log_bin') $out['server']['log_bin'] = $v;
+                        if ($k === 'log_bin_basename') $out['server']['log_bin_basename'] = $v;
+                        if ($k === 'binlog_format') $out['server']['binlog_format'] = $v;
+                        if ($k === 'binlog_row_image') $out['server']['binlog_row_image'] = $v;
+                        if ($k === 'binlog_expire_logs_seconds') $out['server']['binlog_expire_logs_seconds'] = $v;
+                        if ($k === 'expire_logs_days') $out['server']['expire_logs_days'] = $v;
+                    }
+                }
+            } elseif (stripos($sql, 'SELECT @@server_uuid') === 0) {
+                $out['server']['uuid'] = $res;
+            } elseif (stripos($sql, 'SELECT @@global.gtid_mode') === 0) {
+                $out['server']['gtid_mode'] = $res;
+            } elseif (stripos($sql, 'SELECT @@global.enforce_gtid_consistency') === 0) {
+                $out['server']['enforce_gtid_consistency'] = $res;
+            } elseif (stripos($sql, 'SELECT @@global.gtid_executed') === 0) {
+                $out['server']['gtid_executed'] = $res;
+            }
+        } catch (\Throwable $e) {
+            // non-fatal; leave nulls
+        }
+    }
+
+    // SHOW MASTER STATUS works both with/without GTID; returns File, Position, Binlog_Do_DB, Binlog_Ignore_DB, Executed_Gtid_Set
+    try {
+        $master = runMysqlQuery($config, "SHOW MASTER STATUS");
+        $lines = array_filter(array_map('trim', explode("\n", trim($master))));
+        if (!empty($lines)) {
+            // Expect: File\tPosition\t...\tExecuted_Gtid_Set
+            $parts = preg_split('/\s+/', $lines[0]);
+            // guard
+            if (count($parts) >= 2) {
+                $out['master_status']['file'] = $parts[0] ?? null;
+                $out['master_status']['position'] = isset($parts[1]) ? (int)$parts[1] : null;
+                // try to find a GTID set; it’s often last column or empty
+                $last = end($parts);
+                if ($last && stripos($last, ':') !== false) {
+                    $out['master_status']['gtid_executed'] = $last;
+                }
+            }
+        }
+    } catch (\Throwable $e) {
+        // leave nulls
+    }
+
+    return $out;
+}
+
+
 function printUsage(): void
 {
     $script = basename(__FILE__);
@@ -87,50 +220,54 @@ function printUsage(): void
 Usage: php bin/{$script} [command] [options]
 
 Commands:
-    backup [target]         Create encrypted backup(s) (default: both if interfacing enabled, main otherwise)
+    backup [target]         Create encrypted backup(s) (default: both if interfacing enabled, intelis otherwise)
     export <target> [file]  Export database as plain SQL file
-                           target: main|interfacing
-                           file: optional output filename
     import <target> [file]  Import SQL file to database (supports .sql, .sql.gz, .zip, and .sql.zip)
-                           target: main|interfacing
-                           file: path to file (optional - shows selection if omitted)
     list                    List available backups and SQL files
     restore [file]          Restore encrypted backup; shows selection if no file specified
+    verify [file]           Verify backup integrity without restoring
+    clean <--keep=N | --days=N>
+                           Delete old backups (keep N recent OR keep newer than N days)
+    size [target]           Show database size and table breakdown
     mysqlcheck [target]     Run database maintenance for the selected database(s)
     purge-binlogs [target] [--days=N]
                            Clean up binary logs older than N days (default 7)
+    maintain [target] [--days=N]
+                           Run full maintenance (mysqlcheck + purge binlogs)
     help                    Show this help message
 
 Target options:
-    main                    Main VLSM database (default)
+    intelis                    InteLIS/VLSM database (default)
     interfacing            Interfacing database
     both, all              Both databases (backup/mysqlcheck/purge-binlogs only)
 
 Examples:
-    php bin/{$script} backup main
-    php bin/{$script} export main vlsm_backup.sql
+    php bin/{$script} backup intelis
+    php bin/{$script} verify
+    php bin/{$script} clean --keep=7
+    php bin/{$script} clean --days=30
+    php bin/{$script} export intelis vlsm_backup.sql
     php bin/{$script} import interfacing
-    php bin/{$script} import main backup.sql.zip
     php bin/{$script} restore
-    php bin/{$script} mysqlcheck both
+    php bin/{$script} maintain both
 
 Note: For security, all file operations are restricted to the backups directory.
 USAGE;
 }
 
-function validateConfiguration(array $mainConfig, ?array $interfacingConfig): void
+function validateConfiguration(array $intelisDbConfig, ?array $interfacingDbConfig): void
 {
     $required = ['host', 'username', 'db'];
-    
+
     foreach ($required as $field) {
-        if (empty($mainConfig[$field])) {
-            throw new SystemException("Main database configuration missing: {$field}");
+        if (empty($intelisDbConfig[$field])) {
+            throw new SystemException("InteLIS database configuration missing: {$field}");
         }
     }
-    
-    if ($interfacingConfig) {
+
+    if ($interfacingDbConfig) {
         foreach ($required as $field) {
-            if (empty($interfacingConfig[$field])) {
+            if (empty($interfacingDbConfig[$field])) {
                 throw new SystemException("Interfacing database configuration missing: {$field}");
             }
         }
@@ -141,40 +278,40 @@ function verifyBackupIntegrity(string $zipPath): bool
 {
     $zip = new ZipArchive();
     $result = $zip->open($zipPath, ZipArchive::CHECKCONS);
-    
+
     if ($result !== true) {
         return false;
     }
-    
+
     $zip->close();
     return true;
 }
 
 // Command Handlers
 
-function handleBackup(string $backupFolder, array $mainConfig, ?array $interfacingConfig, array $args): void
+function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
     $targetOption = extractTargetOption($args);
-    $targets = resolveBackupTargets($targetOption, $mainConfig, $interfacingConfig);
+    $targets = resolveBackupTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
         echo "Creating {$target['label']} database backup...\n";
-        $prefix = $target['label'] === 'interfacing' ? 'interfacing' : 'main';
+        $prefix = $target['label'] === 'interfacing' ? 'interfacing' : 'intelis';
         $zip = createBackupArchive($prefix, $target['config'], $backupFolder);
         echo '  Created: ' . basename($zip) . PHP_EOL;
     }
 }
 
-function handleExport(string $backupFolder, array $mainConfig, ?array $interfacingConfig, array $args): void
+function handleExport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
     if (empty($args)) {
-        throw new SystemException('Export target is required. Use: main|interfacing');
+        throw new SystemException('Export target is required. Use: intelis|interfacing');
     }
 
     $targetOption = $args[0];
     $outputFile = $args[1] ?? null;
 
-    $config = resolveTargetConfig($targetOption, $mainConfig, $interfacingConfig);
+    $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
     $label = normalizeTargetLabel($targetOption);
 
     if (!$outputFile) {
@@ -208,16 +345,16 @@ function handleExport(string $backupFolder, array $mainConfig, ?array $interfaci
     }
 }
 
-function handleImport(string $backupFolder, array $mainConfig, ?array $interfacingConfig, array $args): void
+function handleImport(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
     if (count($args) < 1) {
-        throw new SystemException('Import target is required. Use: main|interfacing [file]');
+        throw new SystemException('Import target is required. Use: intelis|interfacing [file]');
     }
 
     $targetOption = $args[0];
     $sourceFile = $args[1] ?? null;
 
-    $config = resolveTargetConfig($targetOption, $mainConfig, $interfacingConfig);
+    $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
     $label = normalizeTargetLabel($targetOption);
 
     // If no file specified, show interactive selection
@@ -296,7 +433,7 @@ function handleList(string $backupFolder): void
     }
 }
 
-function handleRestore(string $backupFolder, array $mainConfig, ?array $interfacingConfig, ?string $requestedFile): void
+function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, ?string $requestedFile): void
 {
     $backups = getSortedBackups($backupFolder);
     if (empty($backups)) {
@@ -334,16 +471,16 @@ function handleRestore(string $backupFolder, array $mainConfig, ?array $interfac
     $targetKey = detectDatabaseKey($basename);
 
     if ($targetKey === 'interfacing') {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The backup targets the interfacing database, but it is not configured.');
         }
-        $targetConfig = $interfacingConfig;
+        $targetConfig = $interfacingDbConfig;
         $targetLabel = 'interfacing';
         $backupPrefix = 'interfacing-pre-restore';
     } else {
-        $targetConfig = $mainConfig;
-        $targetLabel = 'main';
-        $backupPrefix = 'pre-restore-main';
+        $targetConfig = $intelisDbConfig;
+        $targetLabel = 'intelis';
+        $backupPrefix = 'pre-restore-intelis';
     }
 
     echo 'Creating safety backup of current ' . $targetLabel . ' database before restore...' . PHP_EOL;
@@ -361,13 +498,39 @@ function handleRestore(string $backupFolder, array $mainConfig, ?array $interfac
     echo 'Restoring database from ' . $basename . '...' . PHP_EOL;
     importSqlDump($targetConfig, $sqlPath);
 
+    // Suggest PITR command (if we can find matching .meta.json)
+    $metaGuess = preg_replace('/\.sql\.zip$/', '.meta.json', $selectedPath); // same basename
+    if (!is_file($metaGuess)) {
+        // try to find by base name in backups dir
+        $base = basename($selectedPath, '.sql.zip');
+        $alt = dirname($selectedPath) . DIRECTORY_SEPARATOR . $base . '.meta.json';
+        $metaGuess = is_file($alt) ? $alt : null;
+    }
+
     echo 'Restore completed successfully.' . PHP_EOL;
+
+    if ($metaGuess && is_file($metaGuess)) {
+        $suggestTo = gmdate('Y-m-d H:i:s'); // default suggestion: "now" UTC
+        $cmd = sprintf(
+            "php bin/%s pitr-restore --from-meta=\"%s\" --to=\"%s\" --target=%s",
+            basename(__FILE__),
+            $metaGuess,
+            $suggestTo,
+            $targetLabel
+        );
+        echo PHP_EOL;
+        echo "Next step (optional - Point-in-Time Recovery):\n";
+        echo "  $cmd\n";
+        echo "Adjust --to to your desired timestamp (YYYY-MM-DD HH:MM:SS, in UTC or with timezone offset).\n";
+    } else {
+        echo "Note: PITR suggestion unavailable (no .meta.json found for this backup).\n";
+    }
 }
 
-function handleMysqlCheck(array $mainConfig, ?array $interfacingConfig, array $args): void
+function handleMysqlCheck(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
     $targetOption = extractTargetOption($args);
-    $targets = resolveMaintenanceTargets($targetOption, $mainConfig, $interfacingConfig);
+    $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
         echo 'Running database maintenance for ' . $target['label'] . ' database...' . PHP_EOL;
@@ -383,11 +546,11 @@ function handleMysqlCheck(array $mainConfig, ?array $interfacingConfig, array $a
     }
 }
 
-function handlePurgeBinlogs(array $mainConfig, ?array $interfacingConfig, array $args): void
+function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
     $targetOption = extractTargetOption($args);
     $days = extractDaysOption($args, 7);
-    $targets = resolveMaintenanceTargets($targetOption, $mainConfig, $interfacingConfig);
+    $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     $sql = sprintf('PURGE BINARY LOGS BEFORE DATE(NOW() - INTERVAL %d DAY);', $days);
 
@@ -762,12 +925,18 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
         $dsn .= ';port=' . $config['port'];
     }
 
+    // Collect snapshot before dump starts
+    $startSnap = collectBinlogSnapshot($config);
+
     try {
         $dump = new IMysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
         $dump->start($sqlFileName);
     } catch (\Exception $e) {
         throw new SystemException("Failed to create database dump for {$config['db']}: " . $e->getMessage());
     }
+
+    // Collect snapshot immediately after dump completes
+    $endSnap = collectBinlogSnapshot($config);
 
     $zipPath = $sqlFileName . '.zip';
     $zip = new ZipArchive();
@@ -799,6 +968,23 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
 
     $zip->close();
     @unlink($sqlFileName);
+
+    // Write metadata (PITR snapshot)
+    $meta = [
+        'db' => $config['db'],
+        'backup_base' => $baseName, // without extensions
+        'created_utc' => gmdate('Y-m-d\TH:i:s\Z'),
+        'app_tz' => getAppTimezone(),
+        'server' => $endSnap['server'], // includes uuid, binlog settings
+        'snapshot' => [
+            'start' => $startSnap['master_status'],
+            'end'   => $endSnap['master_status'], // we will replay from here
+        ],
+        'note' => $note,
+        'version' => 1,
+    ];
+    $metaPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.meta.json';
+    file_put_contents($metaPath, json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
     return $zipPath;
 }
@@ -1053,7 +1239,7 @@ function importSqlDump(array $config, string $sqlFilePath): void
 }
 
 /**
- * Run MySQL check command using centralized execution
+ * Run MySQL check command - direct execution without executeMysqlCommand wrapper
  */
 function runMysqlCheckCommand(array $config): string
 {
@@ -1061,19 +1247,70 @@ function runMysqlCheckCommand(array $config): string
         throw new SystemException('MySQL maintenance tools are not installed. Please install MySQL client tools.');
     }
 
-    try {
-        // Database name is included in the base command for mysqlcheck
-        return executeMysqlCommand($config, [
-            'mysqlcheck',
-            '--optimize',
-            '--auto-repair',
-            '--analyze',
-            $config['db']
+    // Run one action per invocation (required by mysqlcheck)
+    $steps = [
+        ['label' => 'REPAIR (auto)', 'args' => ['--auto-repair']],  // no-op on InnoDB, safe on MyISAM
+        ['label' => 'OPTIMIZE',       'args' => ['--optimize']],
+        ['label' => 'ANALYZE',        'args' => ['--analyze']],
+    ];
+
+    $combined = [];
+    foreach ($steps as $step) {
+        $command = ['mysqlcheck'];
+
+        // connection
+        $command[] = '--host=' . $config['host'];
+        if (!empty($config['port'])) {
+            $command[] = '--port=' . $config['port'];
+        }
+        $command[] = '--user=' . $config['username'];
+
+        // action
+        foreach ($step['args'] as $a) {
+            $command[] = $a;
+        }
+
+        // database last
+        $command[] = $config['db'];
+
+        $descriptorSpec = [
+            0 => ['pipe', 'r'],
+            1 => ['pipe', 'w'],
+            2 => ['pipe', 'w'],
+        ];
+
+        $env = buildProcessEnv([
+            'MYSQL_PWD' => $config['password'] ?? '',
         ]);
-    } catch (SystemException $e) {
-        throw new SystemException('Database maintenance failed: ' . $e->getMessage());
+
+        $proc = proc_open($command, $descriptorSpec, $pipes, null, $env);
+        if (!is_resource($proc)) {
+            throw new SystemException('Could not run database maintenance. Please verify MySQL tools are installed.');
+        }
+
+        fclose($pipes[0]);
+        $stdout = stream_get_contents($pipes[1]) ?: '';
+        fclose($pipes[1]);
+        $stderr = stream_get_contents($pipes[2]) ?: '';
+        fclose($pipes[2]);
+
+        $exit = proc_close($proc);
+        if ($exit !== 0) {
+            $msg = trim($stderr) !== '' ? trim($stderr) : trim($stdout);
+            throw new SystemException("Database maintenance failed during {$step['label']}: {$msg}");
+        }
+
+        $out = trim($stdout);
+        if ($out !== '') {
+            $combined[] = "[{$step['label']}]\n{$out}";
+        } else {
+            $combined[] = "[{$step['label']}] OK";
+        }
     }
+
+    return implode("\n", $combined);
 }
+
 
 /**
  * Run MySQL query using centralized execution
@@ -1087,18 +1324,18 @@ function runMysqlQuery(array $config, string $sql): string
     try {
         // For queries, we include database in base command unless SQL contains database operations
         $baseCommand = ['mysql'];
-        
+
         // Check if SQL contains database operations (CREATE, DROP, USE)
         $upperSql = strtoupper(trim($sql));
-        $containsDbOperations = str_contains($upperSql, 'CREATE DATABASE') || 
-                               str_contains($upperSql, 'DROP DATABASE') || 
-                               str_contains($upperSql, 'USE ');
-        
+        $containsDbOperations = str_contains($upperSql, 'CREATE DATABASE') ||
+            str_contains($upperSql, 'DROP DATABASE') ||
+            str_contains($upperSql, 'USE ');
+
         // Only add database name if SQL doesn't contain database operations
         if (!$containsDbOperations) {
             $baseCommand[] = $config['db'];
         }
-        
+
         return executeMysqlCommand($config, $baseCommand, null, $sql);
     } catch (SystemException $e) {
         throw new SystemException('Database query failed: ' . $e->getMessage());
@@ -1151,22 +1388,22 @@ function recreateDatabase(array $config): void
 
 // Utility Functions
 
-function resolveTargetConfig(string $targetOption, array $mainConfig, ?array $interfacingConfig): array
+function resolveTargetConfig(string $targetOption, array $intelisDbConfig, ?array $interfacingDbConfig): array
 {
     $normalized = normalizeTargetLabel($targetOption);
 
     if ($normalized === 'interfacing') {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The interfacing database is not configured.');
         }
-        return $interfacingConfig;
+        return $interfacingDbConfig;
     }
 
-    return $mainConfig;
+    return $intelisDbConfig;
 }
 
 /**
- * Standardized target label normalization - only 'main' and 'interfacing'
+ * Standardized target label normalization - only 'intelis' and 'interfacing'
  */
 function normalizeTargetLabel(string $targetOption): string
 {
@@ -1177,22 +1414,22 @@ function normalizeTargetLabel(string $targetOption): string
         return 'interfacing';
     }
 
-    // Everything else maps to 'main' (including 'vlsm', 'primary', 'default')
-    return 'main';
+    // Everything else maps to 'intelis' (including 'vlsm', 'primary', 'default')
+    return 'intelis';
 }
 
-function resolveBackupTargets(?string $targetOption, array $mainConfig, ?array $interfacingConfig): array
+function resolveBackupTargets(?string $targetOption, array $intelisDbConfig, ?array $interfacingDbConfig): array
 {
     if ($targetOption === null) {
-        // Default behavior: both if interfacing enabled, main otherwise
-        if ($interfacingConfig) {
+        // Default behavior: both if interfacing enabled, intelis otherwise
+        if ($interfacingDbConfig) {
             return [
-                ['label' => 'main', 'config' => $mainConfig],
-                ['label' => 'interfacing', 'config' => $interfacingConfig],
+                ['label' => 'intelis', 'config' => $intelisDbConfig],
+                ['label' => 'interfacing', 'config' => $interfacingDbConfig],
             ];
         } else {
             return [
-                ['label' => 'main', 'config' => $mainConfig],
+                ['label' => 'intelis', 'config' => $intelisDbConfig],
             ];
         }
     }
@@ -1200,65 +1437,65 @@ function resolveBackupTargets(?string $targetOption, array $mainConfig, ?array $
     $normalized = strtolower($targetOption);
 
     if (in_array($normalized, ['both', 'all'], true)) {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The interfacing database is not configured; cannot target both databases.');
         }
 
         return [
-            ['label' => 'main', 'config' => $mainConfig],
-            ['label' => 'interfacing', 'config' => $interfacingConfig],
+            ['label' => 'intelis', 'config' => $intelisDbConfig],
+            ['label' => 'interfacing', 'config' => $interfacingDbConfig],
         ];
     }
 
     if (in_array($normalized, ['interfacing', 'interface'], true)) {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The interfacing database is not configured.');
         }
 
         return [
-            ['label' => 'interfacing', 'config' => $interfacingConfig],
+            ['label' => 'interfacing', 'config' => $interfacingDbConfig],
         ];
     }
 
     return [
-        ['label' => 'main', 'config' => $mainConfig],
+        ['label' => 'intelis', 'config' => $intelisDbConfig],
     ];
 }
 
-function resolveMaintenanceTargets(?string $targetOption, array $mainConfig, ?array $interfacingConfig): array
+function resolveMaintenanceTargets(?string $targetOption, array $intelisDbConfig, ?array $interfacingDbConfig): array
 {
-    $normalized = $targetOption ?? 'main';
+    $normalized = $targetOption ?? 'intelis';
 
     if (in_array($normalized, ['both', 'all'], true)) {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The interfacing database is not configured; cannot target both databases.');
         }
 
         return [
-            ['label' => 'main', 'config' => $mainConfig],
-            ['label' => 'interfacing', 'config' => $interfacingConfig],
+            ['label' => 'intelis', 'config' => $intelisDbConfig],
+            ['label' => 'interfacing', 'config' => $interfacingDbConfig],
         ];
     }
 
     if (in_array($normalized, ['interfacing', 'interface'], true)) {
-        if (!$interfacingConfig) {
+        if (!$interfacingDbConfig) {
             throw new SystemException('The interfacing database is not configured.');
         }
 
         return [
-            ['label' => 'interfacing', 'config' => $interfacingConfig],
+            ['label' => 'interfacing', 'config' => $interfacingDbConfig],
         ];
     }
 
     return [
-        ['label' => 'main', 'config' => $mainConfig],
+        ['label' => 'intelis', 'config' => $intelisDbConfig],
     ];
 }
 
 function detectDatabaseKey(string $basename): string
 {
     $tokens = explode('-', strtolower($basename));
-    return in_array('interfacing', $tokens, true) ? 'interfacing' : 'main';
+    return in_array('interfacing', $tokens, true) ? 'interfacing' : 'intelis';
 }
 
 function slugifyForFilename(string $value, int $maxLength = 32): string
@@ -1291,7 +1528,7 @@ function extractTargetOption(array $args): ?string
     foreach ($args as $arg) {
         $candidate = strtolower($arg);
         // Accept legacy names but they'll be normalized
-        if (in_array($candidate, ['main', 'vlsm', 'primary', 'default', 'interfacing', 'interface', 'both', 'all'], true)) {
+        if (in_array($candidate, ['intelis', 'vlsm', 'primary', 'default', 'interfacing', 'interface', 'both', 'all'], true)) {
             return $candidate;
         }
     }
@@ -1394,7 +1631,7 @@ function validateSecureFilePath(string $filePath, string $allowedDirectory): boo
     // Get real, canonical paths
     $realFilePath = realpath($filePath);
     $realAllowedDir = realpath($allowedDirectory);
-    
+
     // If either path doesn't exist or can't be resolved, reject
     if ($realFilePath === false || $realAllowedDir === false) {
         return false;
@@ -1407,7 +1644,7 @@ function validateSecureFilePath(string $filePath, string $allowedDirectory): boo
 
     // Normalize the allowed directory path with trailing separator
     $normalizedAllowedDir = rtrim($realAllowedDir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR;
-    
+
     // Check if file path is within the allowed directory tree
     // This prevents partial matches like /home/user vs /home/user2
     return str_starts_with($realFilePath . DIRECTORY_SEPARATOR, $normalizedAllowedDir);
@@ -1431,7 +1668,7 @@ function resolveImportFileSecure(string $sourceFile, string $backupFolder): ?str
     } else {
         // Look in backup folder only
         $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile;
-        
+
         // Try common extensions if not already present
         $lowerSource = strtolower($sourceFile);
         if (!str_ends_with($lowerSource, '.sql') && !str_ends_with($lowerSource, '.zip') && !str_ends_with($lowerSource, '.gz')) {
@@ -1567,4 +1804,827 @@ function translateErrorMessage(string $technicalMessage): string
 
     // Return original message if no translation found
     return $technicalMessage;
+}
+
+
+/**
+ * Run comprehensive database maintenance
+ * - mysqlcheck (optimize, repair, analyze)
+ * - purge old binary logs
+ */
+function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+{
+    $targetOption = extractTargetOption($args);
+    $days = extractDaysOption($args, 7);
+    $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
+
+    echo "===========================================\n";
+    echo "  DATABASE MAINTENANCE\n";
+    echo "===========================================\n\n";
+
+    foreach ($targets as $target) {
+        echo "Processing {$target['label']} database...\n";
+        echo str_repeat('-', 43) . "\n";
+
+        // Step 1: MySQL Check
+        echo "Step 1/2: Running database optimization and repair...\n";
+
+        try {
+            $output = runMysqlCheckCommand($target['config']);
+            if ($output !== '') {
+                foreach (explode("\n", $output) as $line) {
+                    if ($line !== '') {
+                        echo '  ' . $line . PHP_EOL;
+                    }
+                }
+            }
+            echo "  ✓ Database maintenance completed\n\n";
+        } catch (SystemException $e) {
+            echo "  ✗ Database maintenance failed: " . $e->getMessage() . "\n\n";
+        }
+
+        // Step 2: Purge Binary Logs
+        echo "Step 2/2: Cleaning up old binary logs...\n";
+
+        try {
+            $sql = sprintf('PURGE BINARY LOGS BEFORE DATE(NOW() - INTERVAL %d DAY);', $days);
+            echo sprintf("  Purging logs older than %d day(s)...\n", $days);
+
+            $result = runMysqlQuery($target['config'], $sql);
+            if ($result !== '') {
+                foreach (explode("\n", $result) as $line) {
+                    if ($line !== '') {
+                        echo '  ' . $line . PHP_EOL;
+                    }
+                }
+            }
+            echo "  ✓ Binary log cleanup completed\n\n";
+        } catch (SystemException $e) {
+            echo "  ✗ Binary log cleanup failed: " . $e->getMessage() . "\n\n";
+        }
+
+        if (count($targets) > 1) {
+            echo "\n";
+        }
+    }
+
+    echo "===========================================\n";
+    echo "  MAINTENANCE COMPLETE\n";
+    echo "===========================================\n";
+}
+
+
+/**
+ * Verify backup integrity
+ */
+function handleVerify(string $backupFolder, array $args): void
+{
+    $backupFile = $args[0] ?? null;
+
+    // If no file specified, show interactive selection
+    if ($backupFile === null) {
+        $backups = getSortedBackups($backupFolder);
+        if (empty($backups)) {
+            echo 'No backups found to verify.' . PHP_EOL;
+            return;
+        }
+
+        echo "Select backup to verify:\n";
+        showBackupsWithIndex($backups);
+
+        $selectedPath = promptForBackupSelection($backups);
+        if ($selectedPath === null) {
+            echo 'Verification cancelled.' . PHP_EOL;
+            return;
+        }
+    } else {
+        $selectedPath = resolveBackupFileSecure($backupFile, $backupFolder);
+        if (!$selectedPath) {
+            throw new SystemException("Backup file not found or access denied: {$backupFile}");
+        }
+    }
+
+    $basename = basename($selectedPath);
+    $fileSize = formatFileSize(filesize($selectedPath));
+
+    echo "Verifying backup: {$basename} ({$fileSize})\n";
+    echo str_repeat('-', 50) . "\n";
+
+    // Test 1: File exists and readable
+    echo "✓ File exists and is readable\n";
+
+    // Test 2: ZIP integrity
+    echo "Checking ZIP integrity... ";
+    if (!verifyBackupIntegrity($selectedPath)) {
+        echo "✗ FAILED\n";
+        echo "  Error: ZIP archive is corrupted or invalid\n";
+        exit(1);
+    }
+    echo "✓ PASSED\n";
+
+    // Test 3: Can open and list contents
+    echo "Checking archive contents... ";
+    $zip = new ZipArchive();
+    $status = $zip->open($selectedPath);
+
+    if ($status !== true) {
+        echo "✗ FAILED\n";
+        echo "  Error: Cannot open archive (code: {$status})\n";
+        exit(1);
+    }
+
+    if ($zip->numFiles < 1) {
+        echo "✗ FAILED\n";
+        echo "  Error: Archive is empty\n";
+        $zip->close();
+        exit(1);
+    }
+
+    // Find SQL file
+    $sqlFound = false;
+    for ($i = 0; $i < $zip->numFiles; $i++) {
+        $name = $zip->getNameIndex($i);
+        if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
+            $sqlFound = true;
+            $stat = $zip->statIndex($i);
+            $sqlSize = $stat ? formatFileSize($stat['size']) : 'unknown';
+            echo "✓ PASSED\n";
+            echo "  Found: {$name} ({$sqlSize})\n";
+            break;
+        }
+    }
+
+    if (!$sqlFound) {
+        echo "✗ FAILED\n";
+        echo "  Error: No SQL file found in archive\n";
+        $zip->close();
+        exit(1);
+    }
+
+    $zip->close();
+
+    // Test 4: Password protection check
+    echo "Checking encryption... ";
+    if (isZipPasswordProtected($selectedPath)) {
+        echo "✓ Password protected (AES-256)\n";
+    } else {
+        echo "⚠ WARNING: Archive is not password protected\n";
+    }
+
+    echo str_repeat('-', 50) . "\n";
+    echo "✓ Backup verification PASSED\n";
+    echo "\nBackup is valid and can be restored.\n";
+}
+
+/**
+ * Clean old backups based on retention policy
+ */
+function handleClean(string $backupFolder, array $args): void
+{
+    $keepCount = extractKeepOption($args);
+    $keepDays = extractDaysOption($args, 0);
+
+    if ($keepCount === null && $keepDays === 0) {
+        throw new SystemException('Please specify --keep=N or --days=N for retention policy');
+    }
+
+    $backups = getSortedBackups($backupFolder);
+
+    if (empty($backups)) {
+        echo 'No backups found to clean.' . PHP_EOL;
+        return;
+    }
+
+    echo "Backup cleanup\n";
+    echo str_repeat('-', 50) . "\n";
+    echo "Total backups: " . count($backups) . "\n";
+
+    $toDelete = [];
+
+    if ($keepCount !== null) {
+        // Keep N most recent backups
+        if (count($backups) <= $keepCount) {
+            echo "Retention policy: Keep {$keepCount} most recent\n";
+            echo "Action: Nothing to delete (have " . count($backups) . " backups)\n";
+            return;
+        }
+
+        $toDelete = array_slice($backups, $keepCount);
+        echo "Retention policy: Keep {$keepCount} most recent\n";
+    } elseif ($keepDays > 0) {
+        // Keep backups newer than N days
+        $cutoffTime = time() - ($keepDays * 86400);
+
+        foreach ($backups as $backup) {
+            if ($backup['mtime'] < $cutoffTime) {
+                $toDelete[] = $backup;
+            }
+        }
+
+        echo "Retention policy: Keep backups newer than {$keepDays} day(s)\n";
+
+        if (empty($toDelete)) {
+            echo "Action: Nothing to delete (all backups are within retention period)\n";
+            return;
+        }
+    }
+
+    echo "Backups to delete: " . count($toDelete) . "\n";
+    echo str_repeat('-', 50) . "\n";
+
+    // Show what will be deleted
+    $totalSize = 0;
+    foreach ($toDelete as $backup) {
+        $age = floor((time() - $backup['mtime']) / 86400);
+        $size = $backup['size'];
+        $totalSize += $size;
+        echo sprintf(
+            "  %s (%s, %d days old)\n",
+            $backup['basename'],
+            formatFileSize($size),
+            $age
+        );
+    }
+
+    echo str_repeat('-', 50) . "\n";
+    echo "Total space to free: " . formatFileSize($totalSize) . "\n\n";
+
+    // Confirm deletion
+    echo "Proceed with deletion? (y/N): ";
+    $input = trim(fgets(STDIN) ?: '');
+
+    if (strtolower($input) !== 'y') {
+        echo "Cleanup cancelled.\n";
+        return;
+    }
+
+    // Delete files
+    $deleted = 0;
+    $failed = 0;
+
+    foreach ($toDelete as $backup) {
+        if (@unlink($backup['path'])) {
+            $deleted++;
+            echo "✓ Deleted: " . $backup['basename'] . "\n";
+        } else {
+            $failed++;
+            echo "✗ Failed to delete: " . $backup['basename'] . "\n";
+        }
+    }
+
+    echo str_repeat('-', 50) . "\n";
+    echo "Cleanup complete: {$deleted} deleted, {$failed} failed\n";
+
+    if ($deleted > 0) {
+        echo "Freed: " . formatFileSize($totalSize) . "\n";
+    }
+}
+
+/**
+ * Extract --keep option from arguments
+ */
+function extractKeepOption(array $args): ?int
+{
+    foreach ($args as $arg) {
+        if (preg_match('/^--keep=(\d+)$/', $arg, $matches)) {
+            $value = (int) $matches[1];
+            if ($value < 1) {
+                throw new SystemException('Keep value must be greater than zero.');
+            }
+            return $value;
+        }
+    }
+
+    return null;
+}
+
+
+/**
+ * Show database size information
+ */
+function handleSize(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+{
+    $targetOption = extractTargetOption($args);
+    $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
+
+    foreach ($targets as $target) {
+        echo "===========================================\n";
+        echo "  DATABASE SIZE: {$target['label']}\n";
+        echo "===========================================\n\n";
+
+        try {
+            $sizeInfo = getDatabaseSize($target['config']);
+
+            // Overall database size
+            echo "Total database size: " . formatFileSize($sizeInfo['total_size']) . "\n";
+            echo "Total tables: " . $sizeInfo['table_count'] . "\n\n";
+
+            if (!empty($sizeInfo['tables'])) {
+                echo "Top tables by size:\n";
+                echo str_repeat('-', 80) . "\n";
+                echo sprintf("%-40s %12s %12s %12s\n", "Table", "Data", "Index", "Total");
+                echo str_repeat('-', 80) . "\n";
+
+                // Show top 20 tables
+                $tablesToShow = array_slice($sizeInfo['tables'], 0, 20);
+
+                foreach ($tablesToShow as $table) {
+                    echo sprintf(
+                        "%-40s %12s %12s %12s\n",
+                        $table['name'],
+                        formatFileSize($table['data_size']),
+                        formatFileSize($table['index_size']),
+                        formatFileSize($table['total_size'])
+                    );
+                }
+
+                if (count($sizeInfo['tables']) > 20) {
+                    $remaining = count($sizeInfo['tables']) - 20;
+                    echo str_repeat('-', 80) . "\n";
+                    echo "... and {$remaining} more table(s)\n";
+                }
+            }
+
+            echo "\n";
+        } catch (SystemException $e) {
+            echo "✗ Failed to get size information: " . $e->getMessage() . "\n\n";
+        }
+    }
+}
+
+/**
+ * Get database size information
+ */
+function getDatabaseSize(array $config): array
+{
+    $sql = "
+        SELECT 
+            TABLE_NAME as name,
+            DATA_LENGTH as data_size,
+            INDEX_LENGTH as index_size,
+            DATA_LENGTH + INDEX_LENGTH as total_size
+        FROM information_schema.TABLES
+        WHERE TABLE_SCHEMA = '{$config['db']}'
+        ORDER BY total_size DESC
+    ";
+
+    if (!commandExists('mysql')) {
+        throw new SystemException('MySQL tools are not installed or not in your system PATH.');
+    }
+
+    try {
+        $output = executeMysqlCommand(
+            $config,
+            ['mysql', '--skip-column-names'],
+            null,
+            $sql
+        );
+
+        $tables = [];
+        $totalSize = 0;
+
+        $lines = explode("\n", trim($output));
+        foreach ($lines as $line) {
+            if (trim($line) === '') continue;
+
+            $parts = preg_split('/\s+/', $line);
+            if (count($parts) >= 4) {
+                $dataSize = (int) $parts[1];
+                $indexSize = (int) $parts[2];
+                $tableTotal = (int) $parts[3];
+
+                $tables[] = [
+                    'name' => $parts[0],
+                    'data_size' => $dataSize,
+                    'index_size' => $indexSize,
+                    'total_size' => $tableTotal,
+                ];
+
+                $totalSize += $tableTotal;
+            }
+        }
+
+        return [
+            'total_size' => $totalSize,
+            'table_count' => count($tables),
+            'tables' => $tables,
+        ];
+    } catch (SystemException $e) {
+        throw new SystemException('Failed to retrieve database size: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Test database configuration and connectivity
+ */
+function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+{
+    $targetOption = extractTargetOption($args);
+    $targets = resolveMaintenanceTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
+
+    echo "===========================================\n";
+    echo "  DATABASE CONFIGURATION TEST\n";
+    echo "===========================================\n\n";
+
+    $allPassed = true;
+
+    foreach ($targets as $target) {
+        echo "Testing {$target['label']} database...\n";
+        echo str_repeat('-', 50) . "\n";
+
+        $config = $target['config'];
+
+        // Test 1: Configuration completeness
+        echo "1. Configuration completeness... ";
+        $required = ['host', 'username', 'db'];
+        $missing = [];
+        foreach ($required as $field) {
+            if (empty($config[$field])) {
+                $missing[] = $field;
+            }
+        }
+
+        if (!empty($missing)) {
+            echo "✗ FAILED\n";
+            echo "   Missing: " . implode(', ', $missing) . "\n";
+            $allPassed = false;
+        } else {
+            echo "✓ PASSED\n";
+        }
+
+        // Test 2: MySQL client tools
+        echo "2. MySQL client tools... ";
+        if (!commandExists('mysql')) {
+            echo "✗ FAILED\n";
+            echo "   mysql command not found in PATH\n";
+            $allPassed = false;
+        } else {
+            echo "✓ PASSED\n";
+        }
+
+        if (!commandExists('mysqlcheck')) {
+            echo "   ⚠ WARNING: mysqlcheck not found (maintenance commands unavailable)\n";
+        }
+
+        // Test 3: Database connectivity
+        echo "3. Database connectivity... ";
+        try {
+            $result = testDatabaseConnection($config);
+            echo "✓ PASSED\n";
+            echo "   Connected to: {$config['host']}:{$config['port']}\n";
+            echo "   Database: {$config['db']}\n";
+            echo "   MySQL version: {$result['version']}\n";
+        } catch (SystemException $e) {
+            echo "✗ FAILED\n";
+            echo "   " . $e->getMessage() . "\n";
+            $allPassed = false;
+        }
+
+        // Test 4: Database permissions
+        echo "4. Database permissions... ";
+        try {
+            testDatabasePermissions($config);
+            echo "✓ PASSED\n";
+        } catch (SystemException $e) {
+            echo "✗ FAILED\n";
+            echo "   " . $e->getMessage() . "\n";
+            $allPassed = false;
+        }
+
+        // Test 5: Backup folder
+        echo "5. Backup folder access... ";
+        if (!is_dir($backupFolder)) {
+            echo "✗ FAILED\n";
+            echo "   Directory does not exist: {$backupFolder}\n";
+            $allPassed = false;
+        } elseif (!is_writable($backupFolder)) {
+            echo "✗ FAILED\n";
+            echo "   Directory is not writable: {$backupFolder}\n";
+            $allPassed = false;
+        } else {
+            echo "✓ PASSED\n";
+            $freeSpace = disk_free_space($backupFolder);
+            if ($freeSpace !== false) {
+                echo "   Free space: " . formatFileSize($freeSpace) . "\n";
+
+                // Warn if less than 1GB free
+                if ($freeSpace < 1073741824) {
+                    echo "   ⚠ WARNING: Low disk space (< 1GB remaining)\n";
+                }
+            }
+        }
+
+        // Test 6: Character set
+        echo "6. Character set configuration... ";
+        $charset = $config['charset'] ?? 'utf8mb4';
+        if ($charset === 'utf8mb4') {
+            echo "✓ PASSED\n";
+            echo "   Using: {$charset}\n";
+        } else {
+            echo "⚠ WARNING\n";
+            echo "   Using: {$charset} (utf8mb4 recommended)\n";
+        }
+
+        echo "\n";
+    }
+
+    echo "===========================================\n";
+    if ($allPassed) {
+        echo "  ✓ ALL TESTS PASSED\n";
+    } else {
+        echo "  ✗ SOME TESTS FAILED\n";
+    }
+    echo "===========================================\n";
+
+    exit($allPassed ? 0 : 1);
+}
+
+/**
+ * Test database connection
+ */
+function testDatabaseConnection(array $config): array
+{
+    $sql = "SELECT VERSION() as version;";
+
+    try {
+        $output = executeMysqlCommand(
+            $config,
+            ['mysql', $config['db'], '--skip-column-names'],
+            null,
+            $sql
+        );
+
+        return [
+            'version' => trim($output) ?: 'Unknown',
+        ];
+    } catch (SystemException $e) {
+        throw new SystemException('Cannot connect to database: ' . $e->getMessage());
+    }
+}
+
+/**
+ * Test database permissions
+ */
+function testDatabasePermissions(array $config): void
+{
+    // Test basic SELECT
+    $sql = "SELECT 1;";
+
+    try {
+        executeMysqlCommand(
+            $config,
+            ['mysql', $config['db'], '--skip-column-names'],
+            null,
+            $sql
+        );
+    } catch (SystemException $e) {
+        throw new SystemException('SELECT permission denied');
+    }
+
+    // Test if we can list tables
+    $sql = "SHOW TABLES;";
+
+    try {
+        executeMysqlCommand(
+            $config,
+            ['mysql', $config['db'], '--skip-column-names'],
+            null,
+            $sql
+        );
+    } catch (SystemException $e) {
+        throw new SystemException('Cannot list tables');
+    }
+}
+
+function parseArgs(array $args): array
+{
+    $out = [];
+    foreach ($args as $a) {
+        if (preg_match('/^--([^=]+)=(.*)$/', $a, $m)) {
+            $out[$m[1]] = $m[2];
+        }
+    }
+    return $out;
+}
+
+function getBinlogList(array $config): array
+{
+    // SHOW BINARY LOGS returns Log_name and File_size; we only need names
+    $res = runMysqlQuery($config, "SHOW BINARY LOGS");
+    $files = [];
+    foreach (explode("\n", trim($res)) as $line) {
+        $parts = preg_split('/\s+/', trim($line));
+        if (!empty($parts[0])) $files[] = $parts[0];
+    }
+    return $files;
+}
+
+function runPipeline(array $producer, array $consumer, array $env = []): int
+{
+    $descriptors = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
+    $env = buildProcessEnv($env);
+
+    // Start producer
+    $proc1 = proc_open($producer, $descriptors, $pipes1, null, $env);
+    if (!is_resource($proc1)) {
+        throw new SystemException('Failed to start mysqlbinlog process.');
+    }
+
+    // Start consumer
+    $descriptors2 = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
+    $proc2 = proc_open($consumer, $descriptors2, $pipes2, null, $env);
+    if (!is_resource($proc2)) {
+        proc_close($proc1);
+        throw new SystemException('Failed to start mysql (consumer) process.');
+    }
+
+    // Pipe producer stdout -> consumer stdin
+    stream_set_blocking($pipes1[1], true);
+    stream_set_blocking($pipes2[0], true);
+
+    while (!feof($pipes1[1])) {
+        $buf = fread($pipes1[1], 8192);
+        if ($buf === false) break;
+        fwrite($pipes2[0], $buf);
+    }
+
+    fclose($pipes1[1]);
+    fclose($pipes1[0]);
+    fclose($pipes1[2]);
+    fclose($pipes2[0]);
+
+    $out = stream_get_contents($pipes2[1]) ?: '';
+    $err = stream_get_contents($pipes2[2]) ?: '';
+    fclose($pipes2[1]);
+    fclose($pipes2[2]);
+
+    $code1 = proc_close($proc1);
+    $code2 = proc_close($proc2);
+
+    if ($code1 !== 0 || $code2 !== 0) {
+        $msg = trim($err) !== '' ? $err : $out;
+        throw new SystemException("PITR pipeline failed: {$msg}");
+    }
+    return 0;
+}
+
+function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+{
+    $targetOption = extractTargetOption($args) ?? 'intelis';
+    $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
+    $label  = normalizeTargetLabel($targetOption);
+
+    echo "PITR readiness for {$label}\n";
+    echo str_repeat('-', 50) . "\n";
+
+    $snap = collectBinlogSnapshot($config);
+    if (strtoupper((string)$snap['server']['log_bin']) !== 'ON' && $snap['server']['log_bin'] !== '1') {
+        echo "✗ Binary logging is OFF. Enable log_bin to use PITR.\n";
+        return;
+    }
+    echo "✓ Binary logging: ON\n";
+    echo "  Server UUID: " . ($snap['server']['uuid'] ?? 'unknown') . "\n";
+    echo "  Binlog base: " . ($snap['server']['log_bin_basename'] ?? 'unknown') . "\n";
+    echo "  GTID mode:   " . ($snap['server']['gtid_mode'] ?? 'OFF') . "\n";
+
+    $binlogs = getBinlogList($config);
+    if (empty($binlogs)) {
+        echo "✗ No binary logs listed by server.\n";
+        return;
+    }
+    echo "  Binlogs on server: " . count($binlogs) . " (e.g., {$binlogs[0]})\n";
+
+    // Find most recent backup meta for this DB
+    $pattern = $backupFolder . DIRECTORY_SEPARATOR . ($label === 'interfacing' ? 'interfacing' : 'intelis') . "-*.meta.json";
+    $candidates = glob($pattern) ?: [];
+    usort($candidates, static fn($a, $b) => filemtime($b) <=> filemtime($a));
+
+    if (empty($candidates)) {
+        echo "\nNo .meta.json found. Run a new backup to enable PITR suggestions.\n";
+        return;
+    }
+
+    $metaPath = $candidates[0];
+    $meta = json_decode(file_get_contents($metaPath), true);
+    $fromFile = $meta['snapshot']['end']['file'] ?? null;
+    $fromPos  = $meta['snapshot']['end']['position'] ?? null;
+
+    echo "\nLatest backup snapshot:\n";
+    echo "  Meta:    " . basename($metaPath) . "\n";
+    echo "  From:    file={$fromFile} pos={$fromPos}\n";
+
+    // Sample command
+    $suggestTo = gmdate('Y-m-d H:i:s');
+    $cmd = sprintf(
+        "php bin/%s pitr-restore --from-meta=\"%s\" --to=\"%s\" --target=%s",
+        basename(__FILE__),
+        $metaPath,
+        $suggestTo,
+        $label
+    );
+    echo "\nSample PITR command:\n  {$cmd}\n";
+}
+
+function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
+{
+    $opts = parseArgs($args);
+    $metaFile = $opts['from-meta'] ?? null;
+    $to = $opts['to'] ?? null;
+    $targetOption = $opts['target'] ?? 'intelis';
+
+    if (!$metaFile || !$to) {
+        throw new SystemException('Usage: pitr-restore --from-meta=<file.meta.json> --to="YYYY-MM-DD HH:MM:SS" [--target=intelis|interfacing]');
+    }
+
+    if (!is_file($metaFile)) {
+        // allow relative from backup folder
+        $candidate = $backupFolder . DIRECTORY_SEPARATOR . $metaFile;
+        if (!is_file($candidate)) {
+            throw new SystemException("Meta file not found: {$metaFile}");
+        }
+        $metaFile = realpath($candidate);
+    }
+
+    $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
+    $label  = normalizeTargetLabel($targetOption);
+
+    $meta = json_decode(file_get_contents($metaFile), true);
+    if (!$meta || empty($meta['snapshot']['end']['file'])) {
+        throw new SystemException('Invalid or incomplete meta file (missing snapshot.end).');
+    }
+
+    // Starting point
+    $startFile = $meta['snapshot']['end']['file'];
+    $startPos  = (int)($meta['snapshot']['end']['position'] ?? 4);
+    $gtidMode  = strtoupper((string)($meta['server']['gtid_mode'] ?? 'OFF')) === 'ON';
+    $executed  = $meta['snapshot']['end']['gtid_executed'] ?? ($meta['server']['gtid_executed'] ?? '');
+
+    echo "PITR replay for {$label}\n";
+    echo str_repeat('-', 50) . "\n";
+    echo "From snapshot: file={$startFile} pos={$startPos}\n";
+    echo "To timestamp:  {$to}\n";
+    echo "GTID mode:     " . ($gtidMode ? 'ON' : 'OFF') . "\n\n";
+
+    // Build mysqlbinlog args (remote read; avoids local FS access to binlog dir)
+    $binlogs = getBinlogList($config);
+    if (empty($binlogs)) {
+        throw new SystemException('No binlogs available on the server.');
+    }
+
+    // Include files from $startFile onwards
+    $selected = [];
+    $include = false;
+    foreach ($binlogs as $f) {
+        if ($f === $startFile) $include = true;
+        if ($include) $selected[] = $f;
+    }
+    if (empty($selected)) {
+        throw new SystemException("Start binlog {$startFile} not found on server. Retention may have purged it.");
+    }
+
+    // Producer: mysqlbinlog ...
+    $producer = [
+        'mysqlbinlog',
+        '--read-from-remote-server',
+        '--host=' . $config['host']
+    ];
+    if (!empty($config['port'])) $producer[] = '--port=' . $config['port'];
+    $producer[] = '--user=' . $config['username'];
+    $producer[] = '--stop-datetime=' . $to;
+
+    if ($gtidMode && !empty($executed)) {
+        $producer[] = '--exclude-gtids=' . $executed;
+    } else {
+        $producer[] = '--start-position=' . max(4, $startPos);
+    }
+
+    foreach ($selected as $f) $producer[] = $f;
+
+    // Consumer: mysql (apply to target DB)
+    $consumer = [
+        'mysql',
+        '--host=' . $config['host']
+    ];
+    if (!empty($config['port'])) $consumer[] = '--port=' . $config['port'];
+    $consumer[] = '--user=' . $config['username'];
+    // no --database : binlog has USE statements
+
+    echo "Replaying " . count($selected) . " binlog file(s)...\n";
+    echo "  Starting at " . ($gtidMode ? 'GTID-exclude set' : "pos {$startPos}") . "\n";
+    echo "  This may take a while. Do not interrupt.\n\n";
+
+    // Use env for password (avoid printing it)
+    $env = ['MYSQL_PWD' => $config['password'] ?? ''];
+
+    runPipeline($producer, $consumer, $env);
+
+    echo "✓ PITR replay completed up to {$to}.\n";
 }

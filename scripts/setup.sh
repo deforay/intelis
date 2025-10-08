@@ -683,6 +683,8 @@ fi
 # Set ACLs
 set_permissions "${lis_path}" "quick"
 
+php bin/db-tools.php config-test
+
 print header "Running database migrations and other post-install tasks"
 cd "${lis_path}"
 sudo -u www-data composer post-install &

@@ -1028,6 +1028,8 @@ log_action "Composer operations completed."
 
 apache2ctl -k graceful || systemctl reload apache2
 
+php "${lis_path}/bin/db-tools.php" config-test
+
 # Run the database migrations and other post-update tasks
 print header "Running database migrations and other post-update tasks"
 sudo -u www-data composer post-update &

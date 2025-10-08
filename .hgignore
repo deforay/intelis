@@ -53,10 +53,20 @@ syntax: regexp
 # Ignore everything except index.php or .htaccess in specific folders
 ^public/uploads/(?!index\.php|\.htaccess).*
 ^public/temporary/(?!index\.php|\.htaccess).*
-^cache/(?!\.htaccess).*
+
+# Cache - ignore contents but allow .htaccess and .hgkeep
+^cache/(?!\.htaccess|\.hgkeep).*
+
+# Logs - ignore contents but allow .hgkeep
+^logs/(?!\.hgkeep).*
+
 ^docker/mysql/data/(?!\.htaccess).*
 ^interop/dhis2/examples/(?!index\.php).*
-^backups/(?!index\.php).*
+
+# Backups - ignore contents but allow .hgkeep
+^backups/db/(?!\.hgkeep).*
+^backups/config/(?!\.hgkeep).*
+^backups/(?!db/|config/|index\.php).*
 ^backup/(?!index\.php).*
 
 # DDEV-specific
