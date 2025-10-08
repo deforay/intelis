@@ -16,9 +16,11 @@ if (php_sapi_name() !== 'cli') {
 
 require_once(__DIR__ . '/../../bootstrap.php');
 
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 // Parse command line arguments
 $options = getopt('dbtsv', ['dry-run', 'batch-size:', 'table:', 'skip-columns', 'verbose']);
@@ -54,67 +56,23 @@ $colors = [
  * @param string|null $color
  * @param bool $alwaysShow
  */
-function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false)
+function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false, ?\Symfony\Component\Console\Helper\ProgressBar $bar = null)
 {
     global $verbose, $colors;
-
     if (!$verbose && !$alwaysShow) return;
 
-    if ($color && isset($colors[$color])) {
-        echo $colors[$color] . $message . $colors['reset'] . PHP_EOL;
+    $printer = function () use ($message, $color, $colors) {
+        if ($color && isset($colors[$color])) {
+            echo $colors[$color] . $message . $colors['reset'] . PHP_EOL;
+        } else {
+            echo $message . PHP_EOL;
+        }
+    };
+
+    if ($bar) {
+        MiscUtility::spinnerPausePrint($bar, $printer);
     } else {
-        echo $message . PHP_EOL;
-    }
-}
-
-/**
- * Custom progress bar that shows the current table name
- *
- * @param int $current Current position
- * @param int $total Total items
- * @param string $tableName Current table name
- * @param int $size Progress bar size
- */
-function customProgressBar(int $current, int $total, string $tableName, int $size = 30): void
-{
-    static $startTime;
-
-    // Initialize the timer on the first call
-    if (!isset($startTime)) {
-        $startTime = time();
-    }
-
-    // Calculate elapsed time
-    $elapsed = time() - $startTime;
-
-    // Calculate progress percentage
-    $progress = ($current / $total);
-    $barLength = (int) floor($progress * $size);
-
-    // Generate the progress bar
-    $progressBar = str_repeat('=', $barLength) . str_repeat(' ', $size - $barLength);
-
-    // Truncate table name if too long
-    $displayName = (strlen($tableName) > 20) ? substr($tableName, 0, 17) . '...' : $tableName;
-
-    // Output the progress bar with current table name
-    printf(
-        "\r[%s] %3d%% (%d/%d) - %s - %d sec elapsed",
-        $progressBar,
-        $progress * 100,
-        $current,
-        $total,
-        $displayName,
-        $elapsed
-    );
-
-    // Flush output for real-time updates
-    fflush(STDOUT);
-
-    // Print a newline and reset the timer when done
-    if ($current === $total) {
-        echo PHP_EOL;
-        $startTime = null; // Reset timer for reuse
+        $printer();
     }
 }
 
@@ -311,7 +269,7 @@ function verifyColumnConversion(DatabaseService $db, string $connectionName, str
  * @param bool $skipColumnConversion
  * @return array Results [success, error, skipped counts, etc.]
  */
-function convertTableAndColumns(DatabaseService $db, string $connectionName, string $tableName, bool $dryRun = false, bool $skipColumnConversion = false): array
+function convertTableAndColumns(DatabaseService $db, string $connectionName, string $tableName, bool $dryRun = false, bool $skipColumnConversion = false, ?ProgressBar $bar = null): array
 {
     global $tableErrors, $columnErrors, $successfulTables, $skippedTables, $verbose;
 
@@ -398,12 +356,6 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
             $currentColumn = $index + 1;
             $columnName = $column['COLUMN_NAME'];
 
-            // Show column progress for tables with multiple columns
-            if ($totalColumns > 1) {
-                printf("\r  Column %d/%d: %s", $currentColumn, $totalColumns, $columnName);
-                fflush(STDOUT);
-            }
-
             try {
                 // Show indexes that might be affected in verbose mode
                 if ($verbose) {
@@ -417,7 +369,11 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                     }
                 }
 
-                echoMessage("  ⚙ Converting column: $columnName (current collation: {$column['COLLATION_NAME']})", 'cyan');
+                if ($bar) {
+                    MiscUtility::spinnerUpdate($bar, $tableName, $columnName, $currentColumn, $totalColumns);
+                }
+                echoMessage("  ⚙ Converting column: $columnName (current: {$column['COLLATION_NAME']})", 'cyan', false, $bar);
+
 
                 // Build complete column definition preserving all properties
                 $columnDefinition = buildColumnDefinition($column, $collation);
@@ -461,11 +417,6 @@ function convertTableAndColumns(DatabaseService $db, string $connectionName, str
                 $result['columnErrors'][] = $errorMsg;
                 $columnErrors[] = "$tableName.$columnName: " . $e->getMessage();
             }
-        }
-
-        // Add a newline after column progress completes
-        if ($totalColumns > 1) {
-            echo PHP_EOL;
         }
     } else {
         foreach ($columnsNeedingConversion as $column) {
@@ -518,25 +469,25 @@ function fetchTables(DatabaseService $db, string $schema, string $connectionName
  * @param int $batchSize
  * @param callable $processFunction
  */
-function processBatches(array $tables, int $batchSize, callable $processFunction, $verbose = true): array
+function processBatches(array $tables, int $batchSize, callable $processFunction, bool $verbose = true, ?ProgressBar $bar = null): array
 {
     $totalTables = count($tables);
     $batches = ceil($totalTables / $batchSize);
     $results = [];
 
-    echoMessage("Processing $totalTables tables in $batches batches of up to $batchSize tables each", 'bold', true);
+
+    echoMessage("Processing $totalTables tables in $batches batches of up to $batchSize tables each", 'bold', false, $bar);
+
 
     for ($i = 0; $i < $totalTables; $i += $batchSize) {
         $batchTables = array_slice($tables, $i, $batchSize);
 
         foreach ($batchTables as $index => $tableData) {
             $currentPosition = $i + $index + 1;
-            // Show overall progress using custom progress bar with table name
-            customProgressBar($currentPosition, $totalTables, $tableData['table']);
 
+            MiscUtility::spinnerUpdate($bar, $tableData['table']);
             if ($verbose) {
-                echo PHP_EOL; // Add a line break for verbose output
-                echoMessage("Processing table $currentPosition of $totalTables: {$tableData['table']}", 'bold', true);
+                echoMessage("Processing table $currentPosition of $totalTables: {$tableData['table']}", 'bold', false, $bar);
             }
 
             $results[] = $processFunction($tableData, $currentPosition, $totalTables);
@@ -544,7 +495,7 @@ function processBatches(array $tables, int $batchSize, callable $processFunction
 
         // Force garbage collection between batches
         if ($batches > 1) {
-            echoMessage("Cleaning up memory between batches...", null);
+            echoMessage("Cleaning up memory between batches...", null, $verbose, $bar);
             gc_collect_cycles();
         }
     }
@@ -586,7 +537,7 @@ function displaySummary(array $results): void
 
     // Final status message
     if (empty($tableErrors) && empty($columnErrors)) {
-        echo PHP_EOL . $colors['bold'] . $colors['green'] . "✅ All operations completed successfully!" . $colors['reset'] . PHP_EOL;
+        echo PHP_EOL . $colors['bold'] . $colors['green'] . "✅ Collation check & conversion completed successfully!" . $colors['reset'] . PHP_EOL;
     } else {
         echo PHP_EOL . $colors['bold'] . $colors['yellow'] . "⚠ Conversion completed with some errors." . $colors['reset'] . PHP_EOL;
     }
@@ -635,15 +586,39 @@ try {
     }
 
     $totalTables = count($allTables);
-    echoMessage("Starting conversion process for $totalTables tables...", 'bold', true);
+    echo PHP_EOL;
+    echoMessage("Starting collation conversion process for $totalTables tables...", 'bold', true);
 
     // Start timer
     $scriptStartTime = microtime(true);
+    $bar = MiscUtility::spinnerStart($totalTables, 'Preparing…');
 
     // Process tables in batches and collect results
-    $results = processBatches($allTables, $batchSize, function ($tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion) {
-        return convertTableAndColumns($db, $tableData['connection'], $tableData['table'], $dryRun, $skipColumnConversion);
-    });
+    $results = processBatches(
+        $allTables,
+        $batchSize,
+        function ($tableData, $current, $total) use ($db, $dryRun, $skipColumnConversion, $verbose,  $bar) {
+            $table = $tableData['table'];
+
+            // show the table on the spinner
+            MiscUtility::spinnerUpdate($bar, $table);
+
+            if ($verbose) {
+                // optional verbose line without breaking the bar
+                echoMessage("Processing table $current of $total: {$table}", 'bold', false, $bar);
+            }
+
+            $res = convertTableAndColumns($db, $tableData['connection'], $table, $dryRun, $skipColumnConversion, $bar);
+
+            // one tick per table
+            MiscUtility::spinnerAdvance($bar);
+            return $res;
+        },
+        $verbose,
+        $bar
+    );
+
+    MiscUtility::spinnerFinish($bar);
 
     $totalDuration = microtime(true) - $scriptStartTime;
 
