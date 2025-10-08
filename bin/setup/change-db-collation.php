@@ -618,6 +618,7 @@ try {
         $bar
     );
 
+    MiscUtility::spinnerUpdate($bar, '', null, $totalTables, $totalTables);
     MiscUtility::spinnerFinish($bar);
 
     $totalDuration = microtime(true) - $scriptStartTime;
