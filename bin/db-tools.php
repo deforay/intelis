@@ -9,6 +9,25 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . '/../bootstrap.php';
 
+@set_time_limit(0);
+@ignore_user_abort(true);
+@ini_set('memory_limit', '-1');
+
+// Flush output as we print
+@ini_set('output_buffering', 'off');
+@ini_set('zlib.output_compression', '0');
+if (function_exists('ob_get_level')) {
+    while (ob_get_level() > 0) {
+        @ob_end_flush();
+    }
+}
+@ob_implicit_flush(true);
+
+// Optional: better signal handling if available
+if (function_exists('pcntl_async_signals')) {
+    pcntl_async_signals(true);
+}
+
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
@@ -17,6 +36,9 @@ use App\Exceptions\SystemException;
 use App\Services\SystemService;
 use Ifsnop\Mysqldump as IMysqldump;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\ProgressBar;
+
 
 const DEFAULT_OPERATION = 'backup';
 
@@ -87,6 +109,10 @@ try {
         case 'maintain':
             handleMaintain($intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
+        case 'collation':
+            $cmd = sprintf('%s %s/setup/change-db-collation.php', PHP_BINARY, BIN_PATH);
+            passthru($cmd);
+            break;
         case 'help':
         case '--help':
         case '-h':
@@ -101,6 +127,30 @@ try {
     handleUserFriendlyError($e);
     exit(1);
 }
+
+function console(): ConsoleOutput
+{
+    static $out = null;
+    if (!$out) $out = new ConsoleOutput();
+    return $out;
+}
+
+/** Indeterminate spinner that we can advance from hooks */
+function startSpinner(?string $label = null): ProgressBar
+{
+    $out = console();
+    $bar = new ProgressBar($out);
+    // Symfony has a "spinner" style by setting max steps = 0 and custom format
+    $bar->setFormat("%message%\n [%bar%] %elapsed:6s%  %memory:6s%");
+    $bar->setBarCharacter("<fg=green>●</>");
+    $bar->setEmptyBarCharacter(" ");
+    $bar->setProgressCharacter("<fg=green>●</>");
+    if ($label) $bar->setMessage($label);
+    // Use unknown steps (indeterminate)
+    $bar->start();
+    return $bar;
+}
+
 
 function getAppTimezone(): string
 {
@@ -227,13 +277,14 @@ Commands:
     restore [file]          Restore encrypted backup; shows selection if no file specified
     verify [file]           Verify backup integrity without restoring
     clean <--keep=N | --days=N>
-                           Delete old backups (keep N recent OR keep newer than N days)
+                            Delete old backups (keep N recent OR keep newer than N days)
     size [target]           Show database size and table breakdown
     mysqlcheck [target]     Run database maintenance for the selected database(s)
     purge-binlogs [target] [--days=N]
-                           Clean up binary logs older than N days (default 7)
+                            Clean up binary logs older than N days (default 7)
     maintain [target] [--days=N]
-                           Run full maintenance (mysqlcheck + purge binlogs)
+                            Run full maintenance (mysqlcheck + purge binlogs)
+    collation               Launch DB collation conversion utility
     help                    Show this help message
 
 Target options:
@@ -295,10 +346,16 @@ function handleBackup(string $backupFolder, array $intelisDbConfig, ?array $inte
     $targets = resolveBackupTargets($targetOption, $intelisDbConfig, $interfacingDbConfig);
 
     foreach ($targets as $target) {
-        echo "Creating {$target['label']} database backup...\n";
-        $prefix = $target['label'] === 'interfacing' ? 'interfacing' : 'intelis';
-        $zip = createBackupArchive($prefix, $target['config'], $backupFolder);
-        echo '  Created: ' . basename($zip) . PHP_EOL;
+        echo PHP_EOL . "Creating {$target['label']} database backup...this can take a while on large dataset" . PHP_EOL;
+        $t0 = microtime(true);
+        $zip = createBackupArchive(
+            $prefix = $target['label'] === 'interfacing' ? 'interfacing' : 'intelis',
+            $target['config'],
+            $backupFolder
+        );
+        $secs = max(0.0, microtime(true) - $t0);
+        $size = formatFileSize(@filesize($zip) ?: 0);
+        echo PHP_EOL . "Created: " . basename($zip) . "  ({$size}, " . number_format($secs, 1) . "s)\n" . PHP_EOL;
     }
 }
 
@@ -925,23 +982,66 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
         $dsn .= ';port=' . $config['port'];
     }
 
-    // Collect snapshot before dump starts
+    // Snapshot BEFORE dump (so we know where to start if we PITR later)
     $startSnap = collectBinlogSnapshot($config);
+
+    $tblCount = (int)trim(runMysqlQuery(
+        $config,
+        "SELECT COUNT(*) FROM information_schema.TABLES WHERE TABLE_SCHEMA = '{$config['db']}'"
+    )) ?: null;
+
+    $spinner = MiscUtility::spinnerStart($tblCount ?: null, "Dumping database `{$config['db']}` … this can take a while on large datasets");
 
     try {
         $dump = new IMysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
+
+        // If the mysqldump lib exposes an info hook, use it to print live status
+        if (method_exists($dump, 'setInfoHook')) {
+            $lastTick = 0;
+            $dump->setInfoHook(function (string $msg) use ($spinner, &$lastTick) {
+                // Typical messages include "Dumping table `xxx`"
+                $msg = trim($msg);
+                if ($msg !== '') {
+                    $spinner->setMessage($msg);
+                }
+                // keep UI alive even if messages are sparse
+                $now = microtime(true);
+                if ($now - $lastTick >= 0.1) { // advance ~10 times/sec
+                    MiscUtility::spinnerAdvance($spinner);
+                    $lastTick = $now;
+                }
+            });
+        }
+
+        // Start the actual dump (blocking)
         $dump->start($sqlFileName);
-    } catch (\Exception $e) {
+
+        // After dump completes
+        $spinner->setMessage("Compressing & encrypting dump …");
+        MiscUtility::spinnerAdvance($spinner);
+    } catch (\Throwable $e) {
+        // Always finish the spinner before erroring out
+        if (isset($spinner)) {
+            MiscUtility::spinnerFinish($spinner);
+        }
+        // Clean partial dump if present
+        if (is_file($sqlFileName)) {
+            @unlink($sqlFileName);
+        }
         throw new SystemException("Failed to create database dump for {$config['db']}: " . $e->getMessage());
     }
 
-    // Collect snapshot immediately after dump completes
+    // Snapshot AFTER dump (the "bookmark" we’ll replay FROM)
     $endSnap = collectBinlogSnapshot($config);
 
+    // Zip + encrypt
     $zipPath = $sqlFileName . '.zip';
     $zip = new ZipArchive();
     $zipStatus = $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
     if ($zipStatus !== true) {
+        if (isset($spinner)) {
+            $spinner->finish();
+        }
         @unlink($sqlFileName);
         throw new SystemException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
     }
@@ -949,6 +1049,9 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $zipPassword = ($config['password'] ?? '') . $randomString;
     if (!$zip->setPassword($zipPassword)) {
         $zip->close();
+        if (isset($spinner)) {
+            $spinner->finish();
+        }
         @unlink($sqlFileName);
         throw new SystemException('Failed to set password for backup archive');
     }
@@ -956,12 +1059,18 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $baseNameSql = basename($sqlFileName);
     if (!$zip->addFile($sqlFileName, $baseNameSql)) {
         $zip->close();
+        if (isset($spinner)) {
+            $spinner->finish();
+        }
         @unlink($sqlFileName);
         throw new SystemException(sprintf('Failed to add SQL file to archive: %s', $sqlFileName));
     }
 
     if (!$zip->setEncryptionName($baseNameSql, ZipArchive::EM_AES_256)) {
         $zip->close();
+        if (isset($spinner)) {
+            $spinner->finish();
+        }
         @unlink($sqlFileName);
         throw new SystemException(sprintf('Failed to encrypt file in archive: %s', $baseNameSql));
     }
@@ -969,25 +1078,29 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $zip->close();
     @unlink($sqlFileName);
 
-    // Write metadata (PITR snapshot)
+    // Write PITR metadata
     $meta = [
-        'db' => $config['db'],
-        'backup_base' => $baseName, // without extensions
+        'db'          => $config['db'],
+        'backup_base' => $baseName,
         'created_utc' => gmdate('Y-m-d\TH:i:s\Z'),
-        'app_tz' => getAppTimezone(),
-        'server' => $endSnap['server'], // includes uuid, binlog settings
-        'snapshot' => [
+        'app_tz'      => getAppTimezone(),
+        'server'      => $endSnap['server'],
+        'snapshot'    => [
             'start' => $startSnap['master_status'],
-            'end'   => $endSnap['master_status'], // we will replay from here
+            'end'   => $endSnap['master_status'],
         ],
-        'note' => $note,
-        'version' => 1,
+        'note'        => $note,
+        'version'     => 1,
     ];
     $metaPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.meta.json';
     file_put_contents($metaPath, json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
+    // Done
+    $spinner->finish();
+    //$spinner->clear();
     return $zipPath;
 }
+
 
 // File Operations and Listing Functions
 
@@ -1838,9 +1951,9 @@ function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, arr
                     }
                 }
             }
-            echo "  ✓ Database maintenance completed\n\n";
+            echo "  ✅ Database maintenance completed\n\n";
         } catch (SystemException $e) {
-            echo "  ✗ Database maintenance failed: " . $e->getMessage() . "\n\n";
+            echo "  ❌ Database maintenance failed: " . $e->getMessage() . "\n\n";
         }
 
         // Step 2: Purge Binary Logs
@@ -1858,9 +1971,9 @@ function handleMaintain(array $intelisDbConfig, ?array $interfacingDbConfig, arr
                     }
                 }
             }
-            echo "  ✓ Binary log cleanup completed\n\n";
+            echo "  ✅ Binary log cleanup completed\n\n";
         } catch (SystemException $e) {
-            echo "  ✗ Binary log cleanup failed: " . $e->getMessage() . "\n\n";
+            echo "  ❌ Binary log cleanup failed: " . $e->getMessage() . "\n\n";
         }
 
         if (count($targets) > 1) {
@@ -1911,16 +2024,16 @@ function handleVerify(string $backupFolder, array $args): void
     echo str_repeat('-', 50) . "\n";
 
     // Test 1: File exists and readable
-    echo "✓ File exists and is readable\n";
+    echo "✅ File exists and is readable\n";
 
     // Test 2: ZIP integrity
     echo "Checking ZIP integrity... ";
     if (!verifyBackupIntegrity($selectedPath)) {
-        echo "✗ FAILED\n";
+        echo "❌ FAILED\n";
         echo "  Error: ZIP archive is corrupted or invalid\n";
         exit(1);
     }
-    echo "✓ PASSED\n";
+    echo "✅ PASSED\n";
 
     // Test 3: Can open and list contents
     echo "Checking archive contents... ";
@@ -1928,13 +2041,13 @@ function handleVerify(string $backupFolder, array $args): void
     $status = $zip->open($selectedPath);
 
     if ($status !== true) {
-        echo "✗ FAILED\n";
+        echo "❌ FAILED\n";
         echo "  Error: Cannot open archive (code: {$status})\n";
         exit(1);
     }
 
     if ($zip->numFiles < 1) {
-        echo "✗ FAILED\n";
+        echo "❌ FAILED\n";
         echo "  Error: Archive is empty\n";
         $zip->close();
         exit(1);
@@ -1948,14 +2061,14 @@ function handleVerify(string $backupFolder, array $args): void
             $sqlFound = true;
             $stat = $zip->statIndex($i);
             $sqlSize = $stat ? formatFileSize($stat['size']) : 'unknown';
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
             echo "  Found: {$name} ({$sqlSize})\n";
             break;
         }
     }
 
     if (!$sqlFound) {
-        echo "✗ FAILED\n";
+        echo "❌ FAILED\n";
         echo "  Error: No SQL file found in archive\n";
         $zip->close();
         exit(1);
@@ -1966,13 +2079,13 @@ function handleVerify(string $backupFolder, array $args): void
     // Test 4: Password protection check
     echo "Checking encryption... ";
     if (isZipPasswordProtected($selectedPath)) {
-        echo "✓ Password protected (AES-256)\n";
+        echo "✅ Password protected (AES-256)\n";
     } else {
         echo "⚠ WARNING: Archive is not password protected\n";
     }
 
     echo str_repeat('-', 50) . "\n";
-    echo "✓ Backup verification PASSED\n";
+    echo "✅ Backup verification PASSED\n";
     echo "\nBackup is valid and can be restored.\n";
 }
 
@@ -2065,10 +2178,10 @@ function handleClean(string $backupFolder, array $args): void
     foreach ($toDelete as $backup) {
         if (@unlink($backup['path'])) {
             $deleted++;
-            echo "✓ Deleted: " . $backup['basename'] . "\n";
+            echo "✅ Deleted: " . $backup['basename'] . "\n";
         } else {
             $failed++;
-            echo "✗ Failed to delete: " . $backup['basename'] . "\n";
+            echo "❌ Failed to delete: " . $backup['basename'] . "\n";
         }
     }
 
@@ -2147,7 +2260,7 @@ function handleSize(array $intelisDbConfig, ?array $interfacingDbConfig, array $
 
             echo "\n";
         } catch (SystemException $e) {
-            echo "✗ Failed to get size information: " . $e->getMessage() . "\n\n";
+            echo "❌ Failed to get size information: " . $e->getMessage() . "\n\n";
         }
     }
 }
@@ -2245,21 +2358,21 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
         }
 
         if (!empty($missing)) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   Missing: " . implode(', ', $missing) . "\n";
             $allPassed = false;
         } else {
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
         }
 
         // Test 2: MySQL client tools
         echo "2. MySQL client tools... ";
         if (!commandExists('mysql')) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   mysql command not found in PATH\n";
             $allPassed = false;
         } else {
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
         }
 
         if (!commandExists('mysqlcheck')) {
@@ -2270,12 +2383,12 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
         echo "3. Database connectivity... ";
         try {
             $result = testDatabaseConnection($config);
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
             echo "   Connected to: {$config['host']}:{$config['port']}\n";
             echo "   Database: {$config['db']}\n";
             echo "   MySQL version: {$result['version']}\n";
         } catch (SystemException $e) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   " . $e->getMessage() . "\n";
             $allPassed = false;
         }
@@ -2284,9 +2397,9 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
         echo "4. Database permissions... ";
         try {
             testDatabasePermissions($config);
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
         } catch (SystemException $e) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   " . $e->getMessage() . "\n";
             $allPassed = false;
         }
@@ -2294,15 +2407,15 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
         // Test 5: Backup folder
         echo "5. Backup folder access... ";
         if (!is_dir($backupFolder)) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   Directory does not exist: {$backupFolder}\n";
             $allPassed = false;
         } elseif (!is_writable($backupFolder)) {
-            echo "✗ FAILED\n";
+            echo "❌ FAILED\n";
             echo "   Directory is not writable: {$backupFolder}\n";
             $allPassed = false;
         } else {
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
             $freeSpace = disk_free_space($backupFolder);
             if ($freeSpace !== false) {
                 echo "   Free space: " . formatFileSize($freeSpace) . "\n";
@@ -2318,7 +2431,7 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
         echo "6. Character set configuration... ";
         $charset = $config['charset'] ?? 'utf8mb4';
         if ($charset === 'utf8mb4') {
-            echo "✓ PASSED\n";
+            echo "✅ PASSED\n";
             echo "   Using: {$charset}\n";
         } else {
             echo "⚠ WARNING\n";
@@ -2330,9 +2443,9 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
 
     echo "===========================================\n";
     if ($allPassed) {
-        echo "  ✓ ALL TESTS PASSED\n";
+        echo "  ✅ ALL TESTS PASSED\n";
     } else {
-        echo "  ✗ SOME TESTS FAILED\n";
+        echo "  ❌ SOME TESTS FAILED\n";
     }
     echo "===========================================\n";
 
@@ -2487,17 +2600,17 @@ function handlePitrInfo(string $backupFolder, array $intelisDbConfig, ?array $in
 
     $snap = collectBinlogSnapshot($config);
     if (strtoupper((string)$snap['server']['log_bin']) !== 'ON' && $snap['server']['log_bin'] !== '1') {
-        echo "✗ Binary logging is OFF. Enable log_bin to use PITR.\n";
+        echo "❌ Binary logging is OFF. Enable log_bin to use PITR.\n";
         return;
     }
-    echo "✓ Binary logging: ON\n";
+    echo "✅ Binary logging: ON\n";
     echo "  Server UUID: " . ($snap['server']['uuid'] ?? 'unknown') . "\n";
     echo "  Binlog base: " . ($snap['server']['log_bin_basename'] ?? 'unknown') . "\n";
     echo "  GTID mode:   " . ($snap['server']['gtid_mode'] ?? 'OFF') . "\n";
 
     $binlogs = getBinlogList($config);
     if (empty($binlogs)) {
-        echo "✗ No binary logs listed by server.\n";
+        echo "❌ No binary logs listed by server.\n";
         return;
     }
     echo "  Binlogs on server: " . count($binlogs) . " (e.g., {$binlogs[0]})\n";
@@ -2626,5 +2739,5 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
 
     runPipeline($producer, $consumer, $env);
 
-    echo "✓ PITR replay completed up to {$to}.\n";
+    echo "✅ PITR replay completed up to {$to}.\n";
 }
