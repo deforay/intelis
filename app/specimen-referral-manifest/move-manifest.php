@@ -356,7 +356,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             tags: true
         });
 
-        $('.search').deforayDualBox({
+        $('.search').multiSelect({
             selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
             selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
             afterInit: function(ms) {

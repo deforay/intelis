@@ -159,25 +159,11 @@ require_once APPLICATION_PATH . '/header.php';
 			fireSearch: function(value) {
 				return value.length > 2;
 			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
+			autoSelectNext: true,
+			keepRenderingSort: true
 		});
 
 	});
-
-	function updateCounts($left, $right) {
-		let selectedCount = $right.find('option').length;
-		$("#unselectedCount").html($left.find('option').length);
-		$("#selectedCount").html(selectedCount);
-
-	}
 
 	function validateNow() {
 

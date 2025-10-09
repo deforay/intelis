@@ -367,15 +367,8 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                fireSearch: function(value) {
                     return value.length > 2;
                },
-               startUp: function($left, $right) {
-                    updateCounts($left, $right);
-               },
-               afterMoveToRight: function($left, $right, $options) {
-                    updateCounts($left, $right);
-               },
-               afterMoveToLeft: function($left, $right, $options) {
-                    updateCounts($left, $right);
-               }
+               autoSelectNext: true,
+               keepRenderingSort: true
           });
 
 
@@ -452,13 +445,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
      function hideAdvanceSearch() {
           $('#advanceFilter').toggle();
-     }
-
-     function updateCounts($left, $right) {
-          let selectedCount = $right.find('option').length;
-          $("#unselectedCount").html($left.find('option').length);
-          $("#selectedCount").html(selectedCount);
-
      }
 
      function getFacilitiesToMap() {

@@ -160,21 +160,12 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
             },
-            startUp: function($left, $right) {
-                updateCounts($left, $right);
+            fireSearch: function(value) {
+                return value.length > 2;
             },
-            afterMoveToRight: function($left, $right, $options) {
-                updateCounts($left, $right);
-            },
-            afterMoveToLeft: function($left, $right, $options) {
-                updateCounts($left, $right);
-            }
+            autoSelectNext: true,
+            keepRenderingSort: true
         });
-    }
-
-    function updateCounts($left, $right) {
-        $("#unselectedCount").html($left.find('option').length);
-        $("#selectedCount").html($right.find('option').length);
     }
 
     function validateForm() {
