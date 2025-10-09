@@ -84,10 +84,14 @@
     },
     "scripts": {
         "scan": "php bin/scan.php",
+        "httpd-graceful": "php bin/httpd-graceful.php",
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
         "collation": "php bin/db-tools.php collation",
-        "db-backup": "php bin/db-tools.php backup",
+        "backup": [
+            "php bin/backup-configs.php",
+            "php bin/db-tools.php backup"
+        ],
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",
@@ -125,7 +129,8 @@
             "@fixes",
             "@setup-sts",
             "@purge-cache",
-            "@collation"
+            "@collation",
+            "@httpd-graceful"
         ],
         "post-update": [
             "@migrate",
@@ -133,7 +138,8 @@
             "@token",
             "@purge-cache",
             "@collation",
-            "@metadata-sync"
+            "@metadata-sync",
+            "@httpd-graceful"
         ]
     }
 }
