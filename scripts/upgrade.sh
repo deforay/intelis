@@ -1128,7 +1128,7 @@ chmod +x /usr/local/bin/intelis-refresh
     find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
 
-apache2ctl -k graceful || systemctl reload apache2
+apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
 
 print success "LIS update complete."
 log_action "LIS update complete."

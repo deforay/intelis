@@ -142,7 +142,7 @@ require_once APPLICATION_PATH . '/header.php';
 	</section>
 	<!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
@@ -151,7 +151,7 @@ require_once APPLICATION_PATH . '/header.php';
 			$("#testType").val(testType);
 			selectedTestType();
 		}
-		$('#search').multiselect({
+		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
@@ -159,25 +159,11 @@ require_once APPLICATION_PATH . '/header.php';
 			fireSearch: function(value) {
 				return value.length > 2;
 			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
+			autoSelectNext: true,
+			keepRenderingSort: true
 		});
 
 	});
-
-	function updateCounts($left, $right) {
-		let selectedCount = $right.find('option').length;
-		$("#unselectedCount").html($left.find('option').length);
-		$("#selectedCount").html(selectedCount);
-
-	}
 
 	function validateNow() {
 

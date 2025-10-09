@@ -49,6 +49,8 @@ defined('ROOT_PATH')
     || define('ROOT_PATH', realpath(dirname(__FILE__)));
 
 define('WEB_ROOT', ROOT_PATH . '/public');
+define('CONFIG_PATH', ROOT_PATH . '/configs');
+define('BACKUP_PATH', ROOT_PATH . '/backups');
 define('CACHE_PATH', ROOT_PATH . '/cache');
 define('LOG_PATH', ROOT_PATH . '/logs');
 define('APPLICATION_PATH', ROOT_PATH . '/app');
@@ -79,8 +81,10 @@ defined('SYSTEM_CONFIG') ||
 
 $debugMode = !empty(SYSTEM_CONFIG['system']['debug_mode'] ?? false);
 
-define('LOG_LEVEL',
-        (APPLICATION_ENV === 'development' || $debugMode === true) ? 'DEBUG' : 'INFO');
+define(
+    'LOG_LEVEL',
+    (APPLICATION_ENV === 'development' || $debugMode === true) ? 'DEBUG' : 'INFO'
+);
 
 
 

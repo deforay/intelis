@@ -961,7 +961,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 </section>
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/datalist-css.min.js?v=<?= filemtime(WEB_ROOT . "/assets/js/datalist-css.min.js") ?>"></script>
 <script>
 	let provinceName = true;
@@ -1242,8 +1242,7 @@ if (isset($arr['generic_min_patient_id_length']) && $arr['generic_min_patient_id
 					format: "html"
 				},
 				function(data) {
-					if (data != 0) {
-					}
+					if (data != 0) {}
 				});
 			$.unblockUI();
 		}

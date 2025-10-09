@@ -63,6 +63,14 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/db-tools.php maintain --days=7")
     ->description('DB Tools: weekly mysqlcheck (repair/optimize/analyze) + binlog purge');
 
 
+// Weekly config backup    
+$schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
+    ->weeklyOn(0, '03:00') // Sundays 3:00 AM
+    ->description('Weekly config backup')
+    ->preventOverlapping()
+    ->timezone($timeZone);
+
+
 // Cleanup Old Files
 $schedule->run(PHP_BINARY . " " . BIN_PATH . "/cleanup.php")
     ->cron('45 0 * * *')

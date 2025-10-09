@@ -162,12 +162,12 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 	<!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
 
-		$('#search').multiselect({
+		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
@@ -175,15 +175,8 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 			fireSearch: function(value) {
 				return value.length > 2;
 			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
+			autoSelectNext: true,
+			keepRenderingSort: true
 		});
 
 		$("#instruments").multipleSelect({
@@ -193,14 +186,6 @@ $instrumentsDropdown = $general->generateSelectOptions($activeInstruments, null)
 
 
 	});
-
-
-	function updateCounts($left, $right) {
-		let selectedCount = $right.find('option').length;
-		$("#unselectedCount").html($left.find('option').length);
-		$("#selectedCount").html(selectedCount);
-
-	}
 
 
 	function validateNow() {
