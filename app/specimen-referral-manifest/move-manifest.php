@@ -246,18 +246,18 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                                 </select>
                             </div>
                         </div>
-                            <div class="form-group">
-								<label for="reasonForChange" class="col-lg-4 control-label">
-									<?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
-								</label>
-								<div class="col-lg-4" style="margin-left:3%;">
-									<textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
-								</div>
-							</div>
+                        <div class="form-group">
+                            <label for="reasonForChange" class="col-lg-4 control-label">
+                                <?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
+                            </label>
+                            <div class="col-lg-4" style="margin-left:3%;">
+                                <textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
+                            </div>
+                        </div>
                     </div>
-                  
+
                     <br>
-                   
+
                     <div class="row" id="sampleDetails">
                         <div class="col-md-9 col-md-offset-1">
                             <div class="form-group">
@@ -356,7 +356,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             tags: true
         });
 
-        $('.search').multiSelect({
+        $('.search').deforayDualBox({
             selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
             selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
             afterInit: function(ms) {

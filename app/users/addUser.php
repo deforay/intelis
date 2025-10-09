@@ -339,7 +339,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
      </section>
      <!-- /.content -->
 </div>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
@@ -359,7 +359,7 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           <?php if ($general->isSTSInstance()) { ?>
                getFacilitiesToMap();
           <?php } ?>
-          $('#search').multiselect({
+          $('#search').deforayDualBox({
                search: {
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                     right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',

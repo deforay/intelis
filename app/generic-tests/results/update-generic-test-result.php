@@ -922,7 +922,7 @@ $reasonForChange = $reasonForChangeArr[1];
 </div>
 
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script>
 	let provinceName = true;
 	let facilityName = true;
@@ -1197,8 +1197,7 @@ $reasonForChange = $reasonForChangeArr[1];
 					format: "html"
 				},
 				function(data) {
-					if (data != 0) {
-					}
+					if (data != 0) {}
 				});
 			$.unblockUI();
 		}
