@@ -164,13 +164,13 @@ $selectedInstruments = json_decode((string) $resultInfo[0]['available_for_instru
 	<!-- /.content -->
 </div>
 <script type="text/javascript" src="/assets/js/jquery.multiselect.js"></script>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 
 <script type="text/javascript">
 	$(document).ready(function() {
 
-		$('#search').multiselect({
+		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',

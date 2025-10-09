@@ -231,7 +231,7 @@ if (isset($_POST['batchId'])) {
 
     $(document).ready(function() {
 
-        $('#search').multiselect({
+        $('#search').deforayDualBox({
             search: {
                 left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
                 right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',

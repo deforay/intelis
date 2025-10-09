@@ -325,7 +325,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 						<input type="hidden" name="batchedSamples" id="batchedSamples" />
 						<input type="hidden" name="positions" id="positions" value="<?php echo $batchInfo[0]['position_type']; ?>" />
 						<a id="batchSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;"><?php echo _translate("Submit"); ?></a>
-						<a href="batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
+						<a href="/batch/batches.php?type=<?php echo $testType; ?>" class="btn btn-default"> <?php echo _translate("Cancel"); ?></a>
 					</div>
 					<!-- /.box-footer -->
 				</form>
@@ -337,7 +337,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	<!-- /.content -->
 </div>
 
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>

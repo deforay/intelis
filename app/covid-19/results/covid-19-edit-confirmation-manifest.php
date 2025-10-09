@@ -170,9 +170,9 @@ $result = $db->rawQuery($query, [$id]);
     }
   }
 
-  //$("#auditRndNo").multiselect({height: 100,minWidth: 150});
+  //$("#auditRndNo").deforayDualBox({height: 100,minWidth: 150});
   $(document).ready(function() {
-    $('.search').multiSelect({
+    $('.search').deforayDualBox({
       selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
       selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
       afterInit: function(ms) {
