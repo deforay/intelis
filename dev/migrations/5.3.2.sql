@@ -63,3 +63,21 @@ ALTER TABLE `audit_form_tb` DROP `sample_registered_at_lab`;
 ALTER TABLE `audit_form_hepatitis` DROP `sample_registered_at_lab`;
 ALTER TABLE `audit_form_cd4` DROP `sample_registered_at_lab`;
 ALTER TABLE `audit_form_generic` DROP `sample_registered_at_lab`;
+
+-- Thana 06-Oct-2025
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES 
+(NULL, 'tb-results', '/tb/results/tb-referral-list.php', NULL, 'TB Referral Lab', '2', 'always'),
+(NULL, 'tb-results', '/tb/results/add-tb-referral.php', NULL, 'Add TB Referral Lab', '2', 'always');
+INSERT INTO `s_app_menu` (`id`, `module`, `sub_module`, `is_header`, `display_text`, `link`, `inner_pages`, `show_mode`, `icon`, `has_children`, `additional_class_names`, `parent_id`, `display_order`, `status`, `updated_datetime`) VALUES (NULL, 'tb', NULL, 'no', 'TB Referral Lab', '/tb/results/tb-referral-list.php', NULL, 'always', 'fa-solid fa-caret-right', 'no', 'allMenu tbFailedResultsMenu', '82', '164', 'active', CURRENT_TIMESTAMP);
+
+-- Thana 10-Oct-2025
+CREATE TABLE `tb_referral_history` (
+  `history_id` int NOT NULL AUTO_INCREMENT,
+  `tb_id` int DEFAULT NULL,
+  `from_lab_id` int NOT NULL,
+  `to_lab_id` int NOT NULL,
+  `reason_for_referral` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `referred_on_datetime` datetime NOT NULL,
+  `referred_by` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  PRIMARY KEY (`history_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
