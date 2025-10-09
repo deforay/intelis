@@ -38,14 +38,33 @@ function formatDateTime($datetime)
     }
     return DateUtility::humanReadableDateFormat($datetime, true);
 }
+/**
+ * Normalize truthy/falsey config values to bool.
+ * Accepts: true/false, 1/0, "1"/"0", "true"/"false", "on"/"off", "yes"/"no", "".
+ */
+function asBool(mixed $v): bool
+{
+    if (is_bool($v)) return $v;
+    if (is_int($v))  return $v !== 0;
+    $s = strtolower(trim((string)$v));
+    if ($s === '' || $s === '0' || $s === 'false' || $s === 'off' || $s === 'no') return false;
+    return true;
+}
 
 /**
- * Function to format boolean values with symbols
+ * Show the REAL value as the label ([ON]/[OFF]),
+ * but color it green/red depending on whether the value is considered “good”.
+ * If $goodWhenFalse = true → OFF is green; otherwise ON is green.
  */
-function formatBoolean($value)
+function formatStatus(mixed $value, bool $goodWhenFalse = false): string
 {
-    return $value ? '<fg=green>[ON]</>' : '<fg=red>[OFF]</>';
+    $b = asBool($value);
+    $label = $b ? '[ON]' : '[OFF]';
+    $isGood = $goodWhenFalse ? !$b : $b;
+    $color = $isGood ? 'green' : 'red';
+    return "<fg={$color}>{$label}</>";
 }
+
 
 /**
  * Function to format boolean values as simple symbol
@@ -195,7 +214,7 @@ $overviewRows = [
         formatDateTime(date('Y-m-d H:i:s')),
         'SmartConnect URL',
         $smartConnectURL ?: 'Not Configured',
-        
+
     ]
 ];
 
@@ -272,13 +291,13 @@ $diagRows = [
         'OS Name',
         $osInfo['name'],
         'Apache',
-        formatBoolean($apacheRunning)
+        formatStatus($apacheRunning)
     ],
     [
         'PHP Version',
         $phpVersion,
         'MySQL/MariaDB',
-        formatBoolean($mysqlRunning)
+        formatStatus($mysqlRunning)
     ],
     [
         'Memory Limit',
@@ -326,19 +345,20 @@ $configTable->setRows([
         'Host',
         $dbConfig['host'] ?? 'Not Set',
         'Debug Mode',
-        formatBoolean($systemSettings['debug_mode'] ?? false)
+        // false is good here → invert
+        formatStatus((bool)($systemSettings['debug_mode'] ?? false), true)
     ],
     [
         'Port',
         $dbConfig['port'] ?? 'Not Set',
         'Cache DI',
-        formatBoolean($systemSettings['cache_di'] ?? false)
+        formatStatus($systemSettings['cache_di'] ?? false)
     ],
     [
         'Database',
         $dbConfig['db'] ?? 'Not Set',
         'Interfacing',
-        formatBoolean($interfacingEnabled)
+        formatStatus($interfacingEnabled)
     ],
     [
         'Username',

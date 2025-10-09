@@ -42,9 +42,10 @@ if ($module == 'vl') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM specimen_manifests as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.package_code ";
 } elseif ($module == 'tb') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM specimen_manifests as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
-} if ($module == 'cd4') {
+}
+if ($module == 'cd4') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.cd4_id FROM specimen_manifests as p INNER JOIN form_cd4 as vl ON vl.sample_package_code = p.package_code ";
-}elseif ($module == 'generic-tests') {
+} elseif ($module == 'generic-tests') {
 	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM specimen_manifests as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.package_code ";
 }
 $where = [];
