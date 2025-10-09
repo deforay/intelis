@@ -84,7 +84,6 @@
     },
     "scripts": {
         "scan": "php bin/scan.php",
-        "httpd-graceful": "php bin/httpd-graceful.php",
         "cleanup": "php bin/cleanup.php 30",
         "version": "php bin/build/generate-version.php",
         "collation": "php bin/db-tools.php collation",
@@ -129,8 +128,7 @@
             "@fixes",
             "@setup-sts",
             "@purge-cache",
-            "@collation",
-            "@httpd-graceful"
+            "@collation"
         ],
         "post-update": [
             "@migrate",
@@ -138,8 +136,7 @@
             "@token",
             "@purge-cache",
             "@collation",
-            "@metadata-sync",
-            "@httpd-graceful"
+            "@metadata-sync"
         ]
     }
 }
