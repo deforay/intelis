@@ -86,7 +86,7 @@ $result = $db->rawQuery($query);
 $key = (string) $general->getGlobalConfig('key');
 
 ?>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
@@ -129,7 +129,7 @@ $key = (string) $general->getGlobalConfig('key');
 <script>
 	$(document).ready(function() {
 
-		$('#search').multiselect({
+		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',

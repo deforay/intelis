@@ -347,7 +347,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 			});
 		$('#sampleCollectionDate').val("");
 
-		$('.search').multiSelect({
+		$('.search').deforayDualBox({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			afterInit: function(ms) {
