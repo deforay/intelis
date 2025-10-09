@@ -137,15 +137,13 @@ $key = (string) $general->getGlobalConfig('key');
 			fireSearch: function(value) {
 				return value.length > 2;
 			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
+			autoSelectNext: true,
+			keepRenderingSort: true
+		});
+
+		// Automatically called after init and each move
+		$('#search').on('dualbox:updateCounts', function(e, $left, $right) {
+			updateCounts($left, $right);
 		});
 
 		$('#select-all-samplecode').click(function() {

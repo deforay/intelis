@@ -38,7 +38,7 @@ $result = $db->rawQuery($query);
 </div>
 <script>
     $(document).ready(function() {
-        $('.search').deforayDualBox({
+        $('.search').multiSelect({
             selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
             selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
             selectableFooter: "<div style='background-color: #367FA9;color: white;padding:5px;text-align: center;' class='custom-header' id='unselectableCount'>Available samples(<?php echo count($result); ?>)</div>",

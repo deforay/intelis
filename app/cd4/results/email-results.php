@@ -391,7 +391,7 @@ $batchResult = $db->rawQuery($batchQuery);
 			});
 		$('#sampleCollectionDate').val("");
 
-		$('.search').deforayDualBox({
+		$('.search').multiSelect({
 			selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID"); ?>">',
 			selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID"); ?>">',
 			afterInit: function(ms) {

@@ -323,7 +323,7 @@ if ($module == 'generic-tests') {
 			tags: true
 		});
 
-		$('.search').deforayDualBox({
+		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			afterInit: function(ms) {
