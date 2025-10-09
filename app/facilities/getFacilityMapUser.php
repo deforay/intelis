@@ -61,11 +61,6 @@ $uResult = $usersService->getActiveUsers();
     </div>
 </div>
 <script type="text/javascript">
-    function updateCounts($left, $right) {
-        let selectedCount = $right.find('option').length;
-        $("#unselectedCount").html($left.find('option').length);
-        $("#selectedCount").html(selectedCount);
-    }
     $(document).ready(function() {
 
         $('#search').deforayDualBox({
@@ -76,15 +71,8 @@ $uResult = $usersService->getActiveUsers();
             fireSearch: function(value) {
                 return value.length > 2;
             },
-            startUp: function($left, $right) {
-                updateCounts($left, $right);
-            },
-            afterMoveToRight: function($left, $right, $options) {
-                updateCounts($left, $right);
-            },
-            afterMoveToLeft: function($left, $right, $options) {
-                updateCounts($left, $right);
-            }
+            autoSelectNext: true,
+            keepRenderingSort: true
         });
 
     });

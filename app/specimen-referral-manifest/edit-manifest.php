@@ -293,7 +293,6 @@ if ($module == 'generic-tests') {
 		}
 	}
 
-	//$("#auditRndNo").deforayDualBox({height: 100,minWidth: 150});
 	$(document).ready(function() {
 		$('#daterange').val('');
 		$('#daterange').daterangepicker({
@@ -338,7 +337,7 @@ if ($module == 'generic-tests') {
 		});
 
 
-		$('.search').deforayDualBox({
+		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Sample ID'>",
 			afterInit: function(ms) {

@@ -141,7 +141,7 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
 	$(document).ready(function() {
-		$('.search').deforayDualBox({
+		$('.search').multiSelect({
 			selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _translate("Enter Field Name", true); ?>'>",
 			selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='<?php echo _translate("Enter Field Name", true); ?>'>",
 			afterInit: function(ms) {

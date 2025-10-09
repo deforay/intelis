@@ -416,21 +416,15 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
           $('#search').deforayDualBox({
                search: {
                     left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                    right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />'
                },
                fireSearch: function(value) {
                     return value.length > 2;
                },
-               startUp: function($left, $right) {
-                    updateCounts($left, $right);
-               },
-               afterMoveToRight: function($left, $right, $options) {
-                    updateCounts($left, $right);
-               },
-               afterMoveToLeft: function($left, $right, $options) {
-                    updateCounts($left, $right);
-               }
+               autoSelectNext: true,
+               keepRenderingSort: true
           });
+
           $("#showFilter").click(function() {
                $("#showFilter").hide();
                $("#facilityFilter,#hideFilter").fadeIn();
@@ -503,13 +497,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
      function hideAdvanceSearch() {
           $('#advanceFilter').toggle();
-     }
-
-     function updateCounts($left, $right) {
-          let selectedCount = $right.find('option').length;
-          $("#unselectedCount").html($left.find('option').length);
-          $("#selectedCount").html(selectedCount);
-
      }
 
      function getFacilitiesToMap() {
