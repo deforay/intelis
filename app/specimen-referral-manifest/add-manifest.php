@@ -137,14 +137,14 @@ if ($module == 'generic-tests') {
 			<div class="box-header with-border">
 				<div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> <?= _translate("indicates required fields"); ?> &nbsp;</div>
 			</div>
-				<!-- form start -->
+			<!-- form start -->
 			<form class="form-horizontal" method="post" name="addManifestForm" id="addManifestForm" autocomplete="off" action="add-manifest-helper.php">
 
 				<!-- /.box-header -->
 				<div class="box-body">
 					<?php
 					if ($module == 'generic-tests') {
-						?>
+					?>
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
@@ -161,101 +161,101 @@ if ($module == 'generic-tests') {
 							</div>
 						</div>
 					<?php } ?>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
-										<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span class="mandatory">*</span> :</label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
-											<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-										</select>
-									</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+									<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
 								</div>
 							</div>
 						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="operator" class="col-lg-4 control-label"><?php echo _translate("Operator/Technician"); ?> </label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
-											<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
-										</select>
-									</div>
-								</div>
-							</div>
 
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="facility" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Point"); ?></label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
-											<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
-										</select>
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample Type"); ?></label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
-											<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
-										</select>
-									</div>
-								</div>
-							</div>
-
-							<div class="col-md-6">
-								<div class="form-group">
-									<label for="daterange" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Date Range"); ?></label>
-									<div class="col-lg-7" style="margin-left:3%;">
-										<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
-									</div>
-								</div>
-							</div>
-						</div>
-						<div class="row">
-							<div class="col-md-12 text-center">
-								<div class="form-group">
-									<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSamplesForManifest();return false;"><?= _translate("Search"); ?> </a>
-									<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> <?= _translate("Clear"); ?></a>
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="packageCode" class="col-lg-4 control-label">Testing Lab <span class="mandatory">*</span> :</label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+										<?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+									</select>
 								</div>
 							</div>
 						</div>
 					</div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="operator" class="col-lg-4 control-label"><?php echo _translate("Operator/Technician"); ?> </label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control select2" id="operator" name="operator" title="Choose one Operator/Technician">
+										<?= $general->generateSelectOptions($usersList, null, '-- Select --'); ?>
+									</select>
+								</div>
+							</div>
+						</div>
 
-					<br>
-					<div class="row" id="sampleDetails">
-
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="facility" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Point"); ?></label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control select2" id="facility" name="facility" title="Choose one sample collection point">
+										<?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
+									</select>
+								</div>
+							</div>
+						</div>
 					</div>
-					<div class="row" id="alertText" style="font-size:18px;"></div>
+					<div class="row">
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="sampleType" class="col-lg-4 control-label"><?php echo _translate("Sample Type"); ?></label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<select class="form-control select2" id="sampleType" name="sampleType" title="Choose Sample Type">
+										<?= $general->generateSelectOptions($sampleTypes, null, '-- Select --'); ?>
+									</select>
+								</div>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-group">
+								<label for="daterange" class="col-lg-4 control-label"><?php echo _translate("Sample Collection Date Range"); ?></label>
+								<div class="col-lg-7" style="margin-left:3%;">
+									<input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Sample Collection Date Range'); ?>" title="Choose one sample collection date range">
+								</div>
+							</div>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-md-12 text-center">
+							<div class="form-group">
+								<a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getSamplesForManifest();return false;"><?= _translate("Search"); ?> </a>
+								<a href="javascript:void(0);" class="btn btn-default" onclick="document.location.href = document.location"> <?= _translate("Clear"); ?></a>
+							</div>
+						</div>
+					</div>
 				</div>
-				<!-- /.box-body -->
-				<div class="box-footer">
-					<input type="hidden" name="selectedSample" id="selectedSample" />
-					<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
-					<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?> </a>
-					<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> <?= _translate(text: "Cancel"); ?></a>
+
+				<br>
+				<div class="row" id="sampleDetails">
+
 				</div>
-				<!-- /.box-footer -->
-			</form>
+				<div class="row" id="alertText" style="font-size:18px;"></div>
 		</div>
-		<!-- /.row -->
-	</section>
-	<!-- /.content -->
+		<!-- /.box-body -->
+		<div class="box-footer">
+			<input type="hidden" name="selectedSample" id="selectedSample" />
+			<input type="hidden" name="type" id="type" value="<?php echo $_GET['type']; ?>" />
+			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled><?= _translate("Save"); ?> </a>
+			<a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> <?= _translate(text: "Cancel"); ?></a>
+		</div>
+		<!-- /.box-footer -->
+		</form>
+</div>
+<!-- /.row -->
+</section>
+<!-- /.content -->
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
@@ -422,7 +422,7 @@ if ($module == 'generic-tests') {
 	}
 
 	function getSamplesForManifest() {
-		if($("#module").val() == 'generic-tests' && $("#testType").val() == ""){
+		if ($("#module").val() == 'generic-tests' && $("#testType").val() == "") {
 			alert('Please select the Test type');
 			return false;
 		}

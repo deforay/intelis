@@ -203,62 +203,41 @@ if (isset($_POST['batchId'])) {
 <?php } ?>
 
 <script>
+    $(document).ready(function() {
+
+        $('#search').deforayDualBox({
+            search: {
+                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
+                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />'
+            },
+            fireSearch: function(value) {
+                return value.length > 2;
+            },
+            autoSelectNext: true,
+            keepRenderingSort: true
+        });
+
+        $('#search').on('dualbox:updateCounts', function(e, $left, $right) {
+            updateCounts($left, $right);
+        });
+    });
+
     function updateCounts($left, $right) {
         let selectedCount = $right.find('option').length;
         $("#unselectedCount").html($left.find('option').length);
         $("#selectedCount").html(selectedCount);
+
         if (selectedCount > 0) {
             $('.selectSamples').hide();
         } else {
             $('.selectSamples').show();
         }
+
         let alertText = selectedCount > 0 ?
-            "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " + selectedCount + '/' + noOfSamples :
+            "<?php echo _translate('Number of samples selected out of maximum number of samples allowed for the selected platform'); ?> : " +
+            selectedCount + '/' + noOfSamples :
             "<?php echo _translate('Maximum number of samples allowed for the selected platform'); ?> : " + noOfSamples;
+
         $('#alertText').html(alertText);
     }
-
-    function postMoveSelectNextItem($options, $leftOrRight) {
-        let idx = $options.eq($options.length - 1).index() + 1;
-        let optlen = $leftOrRight.find('option').length - 2;
-        $leftOrRight.focus();
-        if (idx < optlen) {
-            $leftOrRight.find('option:eq(' + idx + ')').prop('selected', 'selected');
-        } else {
-            $leftOrRight.find('option:eq(' + optlen + ')').prop('selected', 'selected');
-        }
-    }
-
-    $(document).ready(function() {
-
-        $('#search').multiselect({
-            search: {
-                left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-                right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
-            },
-            fireSearch: function(value) {
-                return value.length > 2;
-            },
-            startUp: function($left, $right) {
-                updateCounts($left, $right);
-            },
-            beforeMoveToRight: function($left, $right, $options) {
-                postMoveSelectNextItem($options, $left);
-                return true;
-            },
-            beforeMoveToLeft: function($left, $right, $options) {
-                postMoveSelectNextItem($options, $right);
-                return true;
-            },
-            afterMoveToRight: function($left, $right, $options) {
-                updateCounts($left, $right);
-            },
-            afterMoveToLeft: function($left, $right, $options) {
-                updateCounts($left, $right);
-            },
-            keepRenderingSort: true
-
-        });
-
-    });
 </script>

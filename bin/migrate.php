@@ -106,7 +106,6 @@ function _apply_add_primary_key(DatabaseService $db, string $table, string $cols
     return MIG_SKIPPED;
 }
 
-
 function assert_no_errno(DatabaseService $db, string $sql): void
 {
     $errno = $db->getLastErrno();
@@ -146,7 +145,6 @@ function parse_cols_list(string $list): array
         return strtolower($c);
     }, $parts);
 }
-
 
 /** Add column only if absent (portable across MySQL 5.x/8.x). */
 function add_column_if_missing(DatabaseService $db, string $table, string $column, string $ddl): int
@@ -293,7 +291,6 @@ function handle_idempotent_ddl(DatabaseService $db, string $query): int
     return MIG_NOT_HANDLED;
 }
 
-
 /* ---------------------- End helpers ---------------------- */
 
 $db->where('name', 'sc_version');
@@ -311,10 +308,10 @@ $autoContinueOnError = isset($options['y']);
 $quietMode = isset($options['q']);
 $showProgress = !$quietMode;
 
-
 if ($quietMode) {
     error_reporting(0);
 }
+
 $totalMigrations = 0;
 $totalQueries = 0;
 $skippedQueries = $successfulQueries = 0;
@@ -324,7 +321,9 @@ foreach ($versions as $version) {
     $file = APPLICATION_PATH . '/../dev/migrations/' . $version . '.sql';
 
     if (version_compare($version, $currentVersion, '>=')) {
-        echo "Migrating to version $version...\n";
+        if (!$quietMode) {
+            echo "Migrating to version $version...\n";
+        }
         $totalMigrations++;
 
         // Parse and pre-build statements, filtering out empties, so we know the total
@@ -341,9 +340,17 @@ foreach ($versions as $version) {
         $versionTotal = count($builtStatements);
         $processedForVersion = 0;
 
-        // Kick off the bar at 0 if we’re showing progress
+        // New spinner/progress bar
+        $bar = null;
         if ($showProgress && $versionTotal > 0) {
-            MiscUtility::progressBar(0, $versionTotal);
+            $bar = MiscUtility::spinnerStart(
+                $versionTotal,
+                "Migrating $version …",
+                '█',
+                '░',
+                '█',
+                'cyan'
+            );
         }
 
         $db->beginTransaction();
@@ -358,45 +365,52 @@ foreach ($versions as $version) {
                     $status = handle_idempotent_ddl($db, $query);
                     if ($status === MIG_SKIPPED) {
                         $skippedQueries++;
-                        continue;
-                    }
-                    if ($status === MIG_EXECUTED) {
+                    } elseif ($status === MIG_EXECUTED) {
                         $successfulQueries++;
-                        continue;
-                    }
-
-                    $db->rawQuery($query);
-
-                    $errno = $db->getLastErrno();
-                    if ($errno > 0) {
-                        if (in_array($errno, [1060, 1061, 1068, 1091], true)) {
-                            if (!$quietMode && getenv('MIG_VERBOSE')) {
-                                $msg = "Benign idempotence (errno=$errno): {$db->getLastError()}\n{$db->getLastQuery()}\n";
-                                echo $msg;
-                                if ($canLog) LoggerUtility::log('info', $msg);
-                            }
-                            $skippedQueries++;
-                            //$successfulQueries++;
-                        } else {
-                            $totalErrors++;
-                            $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
-                            if (!$quietMode) {
-                                echo $msg;
-                                if ($canLog) LoggerUtility::log('error', $msg);
-                            }
-                            if (!$autoContinueOnError) {
-                                echo "Do you want to continue? (y/n): ";
-                                $handle = fopen("php://stdin", "r");
-                                $response = trim(fgets($handle));
-                                fclose($handle);
-                                if (strtolower($response) !== 'y') {
-                                    $aborted = true;               // mark abort
-                                    throw new RuntimeException("Migration aborted by user.");
+                    } else {
+                        $db->rawQuery($query);
+                        $errno = $db->getLastErrno();
+                        if ($errno > 0) {
+                            if (in_array($errno, [1060, 1061, 1068, 1091], true)) {
+                                if (!$quietMode && getenv('MIG_VERBOSE')) {
+                                    if ($bar) {
+                                        MiscUtility::spinnerPausePrint($bar, function () use ($db) {
+                                            echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                        });
+                                    } else {
+                                        echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                    }
+                                }
+                                $skippedQueries++;
+                            } else {
+                                $totalErrors++;
+                                $msg = "Error executing query ({$errno}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                if (!$quietMode) {
+                                    if ($bar) {
+                                        MiscUtility::spinnerPausePrint($bar, fn() => print $msg);
+                                    } else {
+                                        echo $msg;
+                                    }
+                                    if ($canLog) LoggerUtility::log('error', $msg);
+                                }
+                                if (!$autoContinueOnError) {
+                                    if ($bar) {
+                                        MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
+                                    } else {
+                                        echo "Do you want to continue? (y/n): ";
+                                    }
+                                    $handle = fopen("php://stdin", "r");
+                                    $response = trim(fgets($handle));
+                                    fclose($handle);
+                                    if (strtolower($response) !== 'y') {
+                                        $aborted = true;
+                                        throw new RuntimeException("Migration aborted by user.");
+                                    }
                                 }
                             }
+                        } else {
+                            $successfulQueries++;
                         }
-                    } else {
-                        $successfulQueries++;
                     }
                 } catch (Throwable $e) {
                     $msgStr  = $e->getMessage() ?? '';
@@ -410,43 +424,64 @@ foreach ($versions as $version) {
 
                     if ($isBenign) {
                         if (!$quietMode && getenv('MIG_VERBOSE')) {
-                            $msg = "Benign idempotence (exception):\n{$sqlInMsg}\n{$msgStr}\n";
-                            echo $msg;
-                            if ($canLog) LoggerUtility::log('info', $msg);
+                            $toPrint = "Benign idempotence (exception):\n{$sqlInMsg}\n{$msgStr}\n";
+                            if ($bar) {
+                                MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
+                            } else {
+                                echo $toPrint;
+                            }
+                            if ($canLog) LoggerUtility::log('info', $toPrint);
                         }
                         $skippedQueries++;
-                        //$successfulQueries++;
                     } else {
                         $totalErrors++;
                         if (!$quietMode) {
-                            echo "An error occurred during migration. Please check the logs for details.\n";
-                            $msg = "Exception while executing:\n{$sqlInMsg}\n{$msgStr}\n";
-                            if ($canLog) LoggerUtility::log('error', $msg);
+                            $toPrint = "";
+                            if ($bar) {
+                                MiscUtility::spinnerPausePrint($bar, fn() => print $toPrint);
+                            } else {
+                                echo $toPrint;
+                            }
+                            if ($canLog) LoggerUtility::log('error', $toPrint);
                         }
                         if (!$autoContinueOnError) {
-                            echo "Do you want to continue? (y/n): ";
+                            if ($bar) {
+                                MiscUtility::spinnerPausePrint($bar, fn() => print "Do you want to continue? (y/n): ");
+                            } else {
+                                echo "Do you want to continue? (y/n): ";
+                            }
                             $handle = fopen("php://stdin", "r");
                             $response = trim(fgets($handle));
                             fclose($handle);
                             if (strtolower($response) !== 'y') {
-                                $aborted = true;               // mark abort
+                                $aborted = true;
                                 throw new RuntimeException("Migration aborted by user.");
                             }
                         }
                     }
                 } finally {
                     $processedForVersion++;
-                    if ($showProgress && $versionTotal > 0) {
-                        MiscUtility::progressBar($processedForVersion, $versionTotal);
+                    if ($bar) {
+                        // Update message with step info and advance
+                        MiscUtility::spinnerUpdate($bar, "v{$version}", null, $processedForVersion, $versionTotal);
+                        MiscUtility::spinnerAdvance($bar, 1);
                     }
                 }
             }
 
-            echo "Migration to version $version completed.\n";
+            if (!$quietMode) {
+                if ($bar) {
+                    MiscUtility::spinnerFinish($bar);
+                }
+                echo "Migration to version $version completed.\n";
+            }
         } finally {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
             if ($aborted) {
                 $db->rollbackTransaction();
+                if ($bar) {
+                    MiscUtility::spinnerFinish($bar);
+                }
                 exit("Migration aborted by user.\n");
             }
 
@@ -460,6 +495,7 @@ foreach ($versions as $version) {
 
     gc_collect_cycles();
 }
+
 if (!$quietMode) {
     echo "\n=======================================\n";
     echo "Migration summary:\n";
@@ -467,6 +503,6 @@ if (!$quietMode) {
     echo "  Queries executed     : $totalQueries\n";
     echo "  Successful queries   : $successfulQueries\n";
     echo "  Skipped queries      : $skippedQueries\n";
-    echo "  Errors logged        : $totalErrors\n";
+    echo "  Potential Errors logged        : $totalErrors\n";
     echo "=======================================\n\n";
 }

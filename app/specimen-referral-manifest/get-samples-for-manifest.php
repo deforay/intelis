@@ -86,7 +86,7 @@ $result = $db->rawQuery($query);
 $key = (string) $general->getGlobalConfig('key');
 
 ?>
-<script type="text/javascript" src="/assets/js/multiselect.min.js"></script>
+
 <script type="text/javascript" src="/assets/js/jasny-bootstrap.js"></script>
 <div class="col-md-5">
 	<select name="sampleCode[]" id="search" class="form-control" size="8" multiple="multiple">
@@ -129,7 +129,7 @@ $key = (string) $general->getGlobalConfig('key');
 <script>
 	$(document).ready(function() {
 
-		$('#search').multiselect({
+		$('#search').deforayDualBox({
 			search: {
 				left: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
 				right: '<input type="text" name="q" class="form-control" placeholder="<?php echo _translate("Search"); ?>..." />',
@@ -137,15 +137,13 @@ $key = (string) $general->getGlobalConfig('key');
 			fireSearch: function(value) {
 				return value.length > 2;
 			},
-			startUp: function($left, $right) {
-				updateCounts($left, $right);
-			},
-			afterMoveToRight: function($left, $right, $options) {
-				updateCounts($left, $right);
-			},
-			afterMoveToLeft: function($left, $right, $options) {
-				updateCounts($left, $right);
-			}
+			autoSelectNext: true,
+			keepRenderingSort: true
+		});
+
+		// Automatically called after init and each move
+		$('#search').on('dualbox:updateCounts', function(e, $left, $right) {
+			updateCounts($left, $right);
 		});
 
 		$('#select-all-samplecode').click(function() {
