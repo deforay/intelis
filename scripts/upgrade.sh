@@ -1041,15 +1041,23 @@ print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
 # Make the intelis script executable
-chmod +x "${lis_path}/intelis" 2>/dev/null
-sudo rm /usr/local/bin/intelis 2>/dev/null || true
-sudo ln -s "${lis_path}/intelis" /usr/local/bin/intelis 2>/dev/null
+# Remove any old symlinks
+sudo rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
 
-# Show success message only if symlink was created successfully
-if [ -L "/usr/local/bin/intelis" ]; then
+# Make sure the actual script is executable for all users
+chmod +x "${lis_path}/intelis" 2>/dev/null || true
+
+# Create a symlink in /usr/bin (exec-enabled path)
+sudo ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null
+
+# Confirm installation
+if [ -L "/usr/bin/intelis" ]; then
     print success "✅ intelis command installed successfully!"
-    print info "You can now use: intelis interface, intelis token, etc."
+    print info "You can now use: intelis backup, intelis interface, intelis token, etc."
+else
+    print error "❌ Failed to create intelis symlink."
 fi
+
 
 if [ -d "${lis_path}/run-once" ]; then
     # Check if there are any PHP scripts in the run-once directory
