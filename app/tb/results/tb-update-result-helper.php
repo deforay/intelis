@@ -7,10 +7,6 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
 
-
-
-
-
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
@@ -275,6 +271,7 @@ try {
                             'test_type' => $testResult['testType'][$key] ?? null,
                             'test_result' => $testResult['testResult'][$key] ?? null,
                             'sample_tested_datetime' => DateUtility::isoDateFormat($testResult['sampleTestedDateTime'][$key] ?? null, true),
+                            'tested_by' => $testResult['testedBy'][$key] ?? null,
                             'result_reviewed_by' => $testResult['reviewedBy'][$key] ?? null,
                             'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
                             'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
