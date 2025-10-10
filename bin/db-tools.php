@@ -128,6 +128,238 @@ try {
     exit(1);
 }
 
+function isGpgGzFile(string $path): bool
+{
+    return str_ends_with(strtolower($path), '.sql.gz.gpg');
+}
+
+function getTempDir(string $backupFolder): string
+{
+    $tempDir = $backupFolder . DIRECTORY_SEPARATOR . '.tmp';
+    if (!is_dir($tempDir)) {
+        MiscUtility::makeDirectory($tempDir);
+    }
+    return $tempDir;
+}
+
+/**
+ * Compress a .sql to .sql.gz using pigz (parallel gzip).
+ */
+function compressWithPigz(string $sqlPath, string $gzPath): bool
+{
+    if (!is_file($sqlPath)) return false;
+    if (!commandExists('pigz')) {
+        throw new SystemException('pigz not found. Please install pigz or adjust PATH.');
+    }
+
+    // pigz -c input.sql > output.sql.gz
+    $cmd = ['pigz', '-c', $sqlPath];
+
+    // NOTE:
+    //  - stdout (fd 1) is redirected directly to the output file
+    //  - stderr (fd 2) is a pipe we can read for error messages
+    $descriptors = [
+        0 => ['pipe', 'r'],            // stdin (unused)
+        1 => ['file', $gzPath, 'wb'],  // stdout -> file
+        2 => ['pipe', 'w'],            // stderr -> pipe
+    ];
+
+    $proc = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
+    if (!is_resource($proc)) {
+        throw new SystemException('Failed to start pigz process.');
+    }
+
+    // We don't send anything to stdin
+    if (isset($pipes[0]) && is_resource($pipes[0])) {
+        fclose($pipes[0]);
+    }
+
+    // Read stderr (if any) for useful error messages
+    $stderr = '';
+    if (isset($pipes[2]) && is_resource($pipes[2])) {
+        $stderr = stream_get_contents($pipes[2]) ?: '';
+        fclose($pipes[2]);
+    }
+
+    $exit = proc_close($proc);
+
+    if ($exit !== 0) {
+        @unlink($gzPath);
+        $msg = trim($stderr) ?: 'pigz exited with a non-zero status.';
+        throw new SystemException("Failed to compress SQL with pigz: {$msg}");
+    }
+
+    return is_file($gzPath) && filesize($gzPath) > 0;
+}
+
+
+/**
+ * Encrypt a .gz to .gz.gpg (symmetric AES-256).
+ */
+function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bool
+{
+    if (!is_file($gzPath)) return false;
+    if (!commandExists('gpg')) {
+        throw new SystemException('gpg not found. Please install GnuPG or adjust PATH.');
+    }
+
+    $cmd = [
+        'gpg',
+        '--batch',
+        '--yes',
+        '--pinentry-mode',
+        'loopback',
+        '--passphrase',
+        $passphrase,
+        '--symmetric',
+        '--cipher-algo',
+        'AES256',
+        '--output',
+        $gpgPath,
+        $gzPath
+    ];
+
+    $descriptors = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
+
+    $proc = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
+    if (!is_resource($proc)) {
+        throw new SystemException('Failed to start gpg process.');
+    }
+
+    fclose($pipes[0]);
+    $stdout = stream_get_contents($pipes[1]) ?: '';
+    $stderr = stream_get_contents($pipes[2]) ?: '';
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $exit = proc_close($proc);
+
+    if ($exit !== 0) {
+        @unlink($gpgPath);
+        $msg = trim($stderr) ?: trim($stdout) ?: 'Unknown GPG error';
+        throw new SystemException("GPG encryption failed: {$msg}");
+    }
+
+    return is_file($gpgPath) && filesize($gpgPath) > 0;
+}
+
+/**
+ * Decrypt *.sql.gz.gpg and output a temp *.sql file.
+ */
+function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backupFolder): string
+{
+    if (!is_file($gpgPath)) {
+        throw new SystemException('Backup file not found for GPG decrypt.');
+    }
+    if (!commandExists('gpg')) {
+        throw new SystemException('gpg not found. Please install GnuPG or adjust PATH.');
+    }
+    if (!commandExists('gunzip')) {
+        throw new SystemException('gunzip not found. Please install gzip or adjust PATH.');
+    }
+
+    $tempDir = getTempDir($backupFolder);
+    $base    = basename($gpgPath, '.gpg');          // *.sql.gz
+    $outSql  = $tempDir . DIRECTORY_SEPARATOR . basename($base, '.gz'); // *.sql
+
+    // gpg -d | gunzip > out.sql
+    $gpgCmd = [
+        'gpg',
+        '--batch',
+        '--yes',
+        '--pinentry-mode',
+        'loopback',
+        '--passphrase',
+        $passphrase,
+        '--decrypt',
+        $gpgPath
+    ];
+
+    $descriptors = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'], // gpg stdout -> we'll pipe to gunzip
+        2 => ['pipe', 'w'],
+    ];
+    $procGpg = proc_open($gpgCmd, $descriptors, $pipesGpg, null, buildProcessEnv());
+    if (!is_resource($procGpg)) {
+        throw new SystemException('Failed to start gpg decrypt process.');
+    }
+
+    $gunzipCmd = ['gunzip', '-c'];
+    $desc2 = [
+        0 => ['pipe', 'r'],
+        1 => ['file', $outSql, 'wb'],
+        2 => ['pipe', 'w'],
+    ];
+    $procGunzip = proc_open($gunzipCmd, $desc2, $pipesGz, null, buildProcessEnv());
+    if (!is_resource($procGunzip)) {
+        proc_close($procGpg);
+        throw new SystemException('Failed to start gunzip process.');
+    }
+
+    // pipe: gpg stdout -> gunzip stdin
+    stream_set_blocking($pipesGpg[1], true);
+    stream_set_blocking($pipesGz[0], true);
+    while (!feof($pipesGpg[1])) {
+        $buf = fread($pipesGpg[1], 8192);
+        if ($buf === false) break;
+        fwrite($pipesGz[0], $buf);
+    }
+
+    fclose($pipesGpg[1]);
+    fclose($pipesGpg[0]);
+    fclose($pipesGpg[2] ?? null);
+    fclose($pipesGz[0]);
+    fclose($pipesGz[2] ?? null);
+
+    $exitGpg    = proc_close($procGpg);
+    $exitGunzip = proc_close($procGunzip);
+
+    if ($exitGpg !== 0 || $exitGunzip !== 0 || !is_file($outSql) || filesize($outSql) === 0) {
+        @unlink($outSql);
+        throw new SystemException('Failed to decrypt/decompress GPG backup (wrong passphrase or corrupted file).');
+    }
+
+    return $outSql;
+}
+
+/**
+ * Quick structural check that file is a readable GPG container (no passphrase needed).
+ */
+function verifyGpgStructure(string $gpgPath): bool
+{
+    if (!commandExists('gpg')) return false;
+    $cmd = ['gpg', '--batch', '--list-packets', $gpgPath];
+
+    $desc = [
+        0 => ['pipe', 'r'],
+        1 => ['pipe', 'w'],
+        2 => ['pipe', 'w'],
+    ];
+    $proc = proc_open($cmd, $desc, $pipes, null, buildProcessEnv());
+    if (!is_resource($proc)) return false;
+
+    fclose($pipes[0]);
+    $out = stream_get_contents($pipes[1]) ?: '';
+    $err = stream_get_contents($pipes[2]) ?: '';
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+    $exit = proc_close($proc);
+
+    // Many gpg 2.4 builds emit non-zero exit even for readable packets.
+    $text = strtolower($out . "\n" . $err);
+    return (
+        str_contains($text, 'encrypted data packet') ||
+        str_contains($text, 'symkey enc packet') ||
+        str_contains($text, 'aes256')
+    );
+}
+
+
+
 function console(): ConsoleOutput
 {
     static $out = null;
@@ -422,37 +654,45 @@ function handleImport(string $backupFolder, array $intelisDbConfig, ?array $inte
             return;
         }
     } else {
-        // Resolve file path with security validation
         $sqlPath = resolveImportFileSecure($sourceFile, $backupFolder);
         if (!$sqlPath) {
             throw new SystemException("Import file not found or access denied: {$sourceFile}");
         }
     }
 
-    $fileExtension = strtolower(pathinfo($sqlPath, PATHINFO_EXTENSION));
-    $isZipFile = in_array($fileExtension, ['zip', 'gz'], true);
-
     echo "Creating safety backup of current {$label} database before import...\n";
     $note = 'pre-import-' . date('His');
-    $preImportZip = createBackupArchive($label . '-backup', $config, $backupFolder, $note);
-    echo '  Created: ' . basename($preImportZip) . PHP_EOL;
+    $preImport = createBackupArchive($label . '-backup', $config, $backupFolder, $note);
+    echo '  Created: ' . basename($preImport) . PHP_EOL;
 
-    if ($fileExtension === 'gz') {
+    $lower = strtolower($sqlPath);
+    if (isGpgGzFile($lower)) {
+        echo "Decrypting & decompressing GPG backup...\n";
+        $derived = ($config['password'] ?? '') . extractRandomTokenFromBackup($sqlPath);
+        try {
+            $extractedSqlPath = decryptGpgToTempSql($sqlPath, $derived, $backupFolder);
+        } catch (SystemException $e) {
+            echo "  Built-in password mechanism failed.\n";
+            $userPassword = promptForPassword();
+            if ($userPassword === null) throw $e;
+            echo "  Trying with user-provided password...\n";
+            $extractedSqlPath = decryptGpgToTempSql($sqlPath, $userPassword, $backupFolder);
+        }
+        TempFileRegistry::register($extractedSqlPath);
+    } elseif (str_ends_with($lower, '.gz')) {
         echo "Processing gzipped SQL file...\n";
         $extractedSqlPath = extractGzipFile($sqlPath, $backupFolder);
         TempFileRegistry::register($extractedSqlPath);
-    } elseif ($isZipFile) {
+    } elseif (str_ends_with($lower, '.zip')) {
         $isPasswordProtected = isZipPasswordProtected($sqlPath);
-
         if ($isPasswordProtected) {
-            echo "Processing password-protected archive...\n";
+            echo "Processing password-protected ZIP...\n";
             $extractedSqlPath = extractSqlFromBackupWithFallback($sqlPath, $config['password'] ?? '', $backupFolder);
-            TempFileRegistry::register($extractedSqlPath);
         } else {
-            echo "Processing unprotected archive...\n";
+            echo "Processing unprotected ZIP...\n";
             $extractedSqlPath = extractUnprotectedZip($sqlPath, $backupFolder);
-            TempFileRegistry::register($extractedSqlPath);
         }
+        TempFileRegistry::register($extractedSqlPath);
     } else {
         echo "Processing SQL file...\n";
         $extractedSqlPath = $sqlPath;
@@ -464,7 +704,6 @@ function handleImport(string $backupFolder, array $intelisDbConfig, ?array $inte
     echo "Importing data to {$label} database...\n";
     importSqlDump($config, $extractedSqlPath);
 
-    // Cleanup is handled by TempFileRegistry shutdown function
     echo "Import completed successfully.\n";
 }
 
@@ -499,7 +738,6 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
     }
 
     $selectedPath = null;
-
     if ($requestedFile) {
         $selectedPath = resolveBackupFileSecure($requestedFile, $backupFolder);
         if (!$selectedPath) {
@@ -514,13 +752,29 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         }
     }
 
-    // Integrity check
-    if (!verifyBackupIntegrity($selectedPath)) {
-        echo "Warning: Backup file may be corrupted. Continue anyway? (y/N): ";
-        $input = trim(fgets(STDIN) ?: '');
-        if (strtolower($input) !== 'y') {
-            echo 'Restore cancelled due to integrity check failure.' . PHP_EOL;
-            return;
+    // Basic integrity check
+    $ok = true;
+    $lower = strtolower($selectedPath);
+    if (str_ends_with($lower, '.sql.zip')) {
+        $ok = verifyBackupIntegrity($selectedPath);
+        if (!$ok) {
+            echo "Warning: Backup file may be corrupted. Continue anyway? (y/N): ";
+            $input = trim(fgets(STDIN) ?: '');
+            if (strtolower($input) !== 'y') {
+                echo 'Restore cancelled due to integrity check failure.' . PHP_EOL;
+                return;
+            }
+        }
+    } elseif (isGpgGzFile($lower)) {
+        // Structural check only; we can't fully test without passphrase
+        $ok = verifyGpgStructure($selectedPath);
+        if (!$ok) {
+            echo "Warning: GPG structure check failed. Continue anyway? (y/N): ";
+            $input = trim(fgets(STDIN) ?: '');
+            if (strtolower($input) !== 'y') {
+                echo 'Restore cancelled due to integrity check failure.' . PHP_EOL;
+                return;
+            }
         }
     }
 
@@ -542,12 +796,26 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
 
     echo 'Creating safety backup of current ' . $targetLabel . ' database before restore...' . PHP_EOL;
     $note = 'restoreof-' . slugifyForFilename($basename, 32);
-    $preRestoreZip = createBackupArchive($backupPrefix, $targetConfig, $backupFolder, $note);
-    echo '  Created: ' . basename($preRestoreZip) . PHP_EOL;
+    $preRestorePath = createBackupArchive($backupPrefix, $targetConfig, $backupFolder, $note);
+    echo '  Created: ' . basename($preRestorePath) . PHP_EOL;
 
     echo 'Decrypting and extracting backup...' . PHP_EOL;
-    $sqlPath = extractSqlFromBackupWithFallback($selectedPath, $targetConfig['password'] ?? '', $backupFolder);
-    TempFileRegistry::register($sqlPath);
+    if (isGpgGzFile($lower)) {
+        $derived = ($targetConfig['password'] ?? '') . extractRandomTokenFromBackup($selectedPath);
+        try {
+            $sqlPath = decryptGpgToTempSql($selectedPath, $derived, $backupFolder);
+        } catch (SystemException $e) {
+            echo "  Built-in password mechanism failed.\n";
+            $userPassword = promptForPassword();
+            if ($userPassword === null) throw $e;
+            echo "  Trying with user-provided password...\n";
+            $sqlPath = decryptGpgToTempSql($selectedPath, $userPassword, $backupFolder);
+        }
+        TempFileRegistry::register($sqlPath);
+    } else {
+        $sqlPath = extractSqlFromBackupWithFallback($selectedPath, $targetConfig['password'] ?? '', $backupFolder);
+        TempFileRegistry::register($sqlPath);
+    }
 
     echo 'Resetting ' . $targetLabel . ' database...' . PHP_EOL;
     recreateDatabase($targetConfig);
@@ -555,11 +823,10 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
     echo 'Restoring database from ' . $basename . '...' . PHP_EOL;
     importSqlDump($targetConfig, $sqlPath);
 
-    // Suggest PITR command (if we can find matching .meta.json)
-    $metaGuess = preg_replace('/\.sql\.zip$/', '.meta.json', $selectedPath); // same basename
+    // PITR suggestion (unchanged)
+    $metaGuess = preg_replace('/\.(sql\.gz\.gpg|sql\.zip)$/', '.meta.json', $selectedPath);
     if (!is_file($metaGuess)) {
-        // try to find by base name in backups dir
-        $base = basename($selectedPath, '.sql.zip');
+        $base = preg_replace('/\.(sql\.gz\.gpg|sql\.zip)$/', '', basename($selectedPath));
         $alt = dirname($selectedPath) . DIRECTORY_SEPARATOR . $base . '.meta.json';
         $metaGuess = is_file($alt) ? $alt : null;
     }
@@ -567,7 +834,7 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
     echo 'Restore completed successfully.' . PHP_EOL;
 
     if ($metaGuess && is_file($metaGuess)) {
-        $suggestTo = gmdate('Y-m-d H:i:s'); // default suggestion: "now" UTC
+        $suggestTo = gmdate('Y-m-d H:i:s');
         $cmd = sprintf(
             "php bin/%s pitr-restore --from-meta=\"%s\" --to=\"%s\" --target=%s",
             basename(__FILE__),
@@ -583,6 +850,7 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         echo "Note: PITR suggestion unavailable (no .meta.json found for this backup).\n";
     }
 }
+
 
 function handleMysqlCheck(array $intelisDbConfig, ?array $interfacingDbConfig, array $args): void
 {
@@ -945,14 +1213,15 @@ function extractSqlFromBackup(string $zipPath, string $dbPassword, string $backu
     return $sqlPath;
 }
 
-function extractRandomTokenFromBackup(string $zipPath): string
+function extractRandomTokenFromBackup(string $path): string
 {
-    $name = basename($zipPath);
-    if (str_ends_with($name, '.zip')) {
-        $name = substr($name, 0, -4);
-    }
-    if (str_ends_with($name, '.sql')) {
-        $name = substr($name, 0, -4);
+    $name = basename($path);
+
+    foreach (['.sql.gz.gpg', '.sql.zip', '.sql.gz', '.zip', '.sql'] as $suffix) {
+        if (str_ends_with($name, $suffix)) {
+            $name = substr($name, 0, -strlen($suffix));
+            break;
+        }
     }
 
     $parts = explode('-', $name);
@@ -965,6 +1234,7 @@ function extractRandomTokenFromBackup(string $zipPath): string
     return $token;
 }
 
+
 function createBackupArchive(string $prefix, array $config, string $backupFolder, ?string $note = null): string
 {
     $randomString = MiscUtility::generateRandomString(12);
@@ -974,15 +1244,17 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     }
     $parts[] = $randomString;
 
-    $baseName = implode('-', array_filter($parts));
-    $sqlFileName = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.sql';
+    $baseName   = implode('-', array_filter($parts));
+    $sqlPath    = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.sql';
+    $gzPath     = $sqlPath . '.gz';
+    $gpgPath    = $sqlPath . '.gz.gpg';
 
     $dsn = sprintf('mysql:host=%s;dbname=%s', $config['host'], $config['db']);
     if (!empty($config['port'])) {
         $dsn .= ';port=' . $config['port'];
     }
 
-    // Snapshot BEFORE dump (so we know where to start if we PITR later)
+    // Snapshot BEFORE dump (for PITR)
     $startSnap = collectBinlogSnapshot($config);
 
     $tblCount = (int)trim(runMysqlQuery(
@@ -993,92 +1265,57 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $spinner = MiscUtility::spinnerStart($tblCount ?: null, "Dumping database `{$config['db']}` … this can take a while on large datasets");
 
     try {
-        $dump = new IMysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
+        $dump = new Ifsnop\Mysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
 
-        // If the mysqldump lib exposes an info hook, use it to print live status
         if (method_exists($dump, 'setInfoHook')) {
             $lastTick = 0;
             $dump->setInfoHook(function (string $msg) use ($spinner, &$lastTick) {
-                // Typical messages include "Dumping table `xxx`"
                 $msg = trim($msg);
-                if ($msg !== '') {
-                    $spinner->setMessage($msg);
-                }
-                // keep UI alive even if messages are sparse
+                if ($msg !== '') $spinner->setMessage($msg);
                 $now = microtime(true);
-                if ($now - $lastTick >= 0.1) { // advance ~10 times/sec
+                if ($now - $lastTick >= 0.1) {
                     MiscUtility::spinnerAdvance($spinner);
                     $lastTick = $now;
                 }
             });
         }
 
-        // Start the actual dump (blocking)
-        $dump->start($sqlFileName);
+        // Write plain SQL first
+        $dump->start($sqlPath);
 
-        // After dump completes
-        $spinner->setMessage("Compressing & encrypting dump …");
+        // Compress (pigz) and Encrypt (gpg)
+        $spinner->setMessage("Compressing with pigz …");
         MiscUtility::spinnerAdvance($spinner);
+        $gzMade = compressWithPigz($sqlPath, $gzPath);
+
+        if (!$gzMade) {
+            @unlink($sqlPath);
+            throw new SystemException('Failed to compress SQL with pigz.');
+        }
+        @unlink($sqlPath);
+
+        $spinner->setMessage("Encrypting with GPG (AES-256) …");
+        MiscUtility::spinnerAdvance($spinner);
+
+        $passphrase = ($config['password'] ?? '') . $randomString;
+        $gpgMade = encryptWithGpg($gzPath, $gpgPath, $passphrase);
+        if (!$gpgMade) {
+            @unlink($gzPath);
+            throw new SystemException('GPG encryption failed.');
+        }
+        @unlink($gzPath);
     } catch (\Throwable $e) {
-        // Always finish the spinner before erroring out
-        if (isset($spinner)) {
-            MiscUtility::spinnerFinish($spinner);
-        }
-        // Clean partial dump if present
-        if (is_file($sqlFileName)) {
-            @unlink($sqlFileName);
-        }
+        if (isset($spinner)) MiscUtility::spinnerFinish($spinner);
+        @unlink($sqlPath);
+        @unlink($gzPath);
+        @unlink($gpgPath);
         throw new SystemException("Failed to create database dump for {$config['db']}: " . $e->getMessage());
     }
 
-    // Snapshot AFTER dump (the "bookmark" we’ll replay FROM)
+    // Snapshot AFTER dump (for PITR)
     $endSnap = collectBinlogSnapshot($config);
 
-    // Zip + encrypt
-    $zipPath = $sqlFileName . '.zip';
-    $zip = new ZipArchive();
-    $zipStatus = $zip->open($zipPath, ZipArchive::CREATE | ZipArchive::OVERWRITE);
-    if ($zipStatus !== true) {
-        if (isset($spinner)) {
-            $spinner->finish();
-        }
-        @unlink($sqlFileName);
-        throw new SystemException(sprintf('Failed to create zip archive. (Status code: %s)', $zipStatus));
-    }
-
-    $zipPassword = ($config['password'] ?? '') . $randomString;
-    if (!$zip->setPassword($zipPassword)) {
-        $zip->close();
-        if (isset($spinner)) {
-            $spinner->finish();
-        }
-        @unlink($sqlFileName);
-        throw new SystemException('Failed to set password for backup archive');
-    }
-
-    $baseNameSql = basename($sqlFileName);
-    if (!$zip->addFile($sqlFileName, $baseNameSql)) {
-        $zip->close();
-        if (isset($spinner)) {
-            $spinner->finish();
-        }
-        @unlink($sqlFileName);
-        throw new SystemException(sprintf('Failed to add SQL file to archive: %s', $sqlFileName));
-    }
-
-    if (!$zip->setEncryptionName($baseNameSql, ZipArchive::EM_AES_256)) {
-        $zip->close();
-        if (isset($spinner)) {
-            $spinner->finish();
-        }
-        @unlink($sqlFileName);
-        throw new SystemException(sprintf('Failed to encrypt file in archive: %s', $baseNameSql));
-    }
-
-    $zip->close();
-    @unlink($sqlFileName);
-
-    // Write PITR metadata
+    // Write PITR metadata (same format as before)
     $meta = [
         'db'          => $config['db'],
         'backup_base' => $baseName,
@@ -1095,11 +1332,10 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
     $metaPath = $backupFolder . DIRECTORY_SEPARATOR . $baseName . '.meta.json';
     file_put_contents($metaPath, json_encode($meta, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-    // Done
     $spinner->finish();
-    //$spinner->clear();
-    return $zipPath;
+    return $gpgPath; // now returns *.sql.gz.gpg
 }
+
 
 
 // File Operations and Listing Functions
@@ -1148,23 +1384,31 @@ function extractGzipFile(string $gzPath, string $backupFolder): string
 
 function getSortedBackups(string $backupFolder): array
 {
-    $pattern = $backupFolder . DIRECTORY_SEPARATOR . '*.sql.zip';
-    $files = glob($pattern) ?: [];
+    $patterns = [
+        $backupFolder . DIRECTORY_SEPARATOR . '*.sql.zip',
+        $backupFolder . DIRECTORY_SEPARATOR . '*.sql.gz.gpg',
+    ];
+
+    $files = [];
+    foreach ($patterns as $pattern) {
+        $matches = glob($pattern) ?: [];
+        $files = array_merge($files, $matches);
+    }
 
     $backups = [];
     foreach ($files as $file) {
         $backups[] = [
-            'path' => $file,
+            'path'     => $file,
             'basename' => basename($file),
-            'mtime' => @filemtime($file) ?: 0,
-            'size' => @filesize($file) ?: 0,
+            'mtime'    => @filemtime($file) ?: 0,
+            'size'     => @filesize($file) ?: 0,
         ];
     }
 
     usort($backups, static fn($a, $b) => $b['mtime'] <=> $a['mtime']);
-
     return $backups;
 }
+
 
 function getSortedSqlFiles(string $backupFolder): array
 {
@@ -1769,39 +2013,35 @@ function validateSecureFilePath(string $filePath, string $allowedDirectory): boo
 function resolveImportFileSecure(string $sourceFile, string $backupFolder): ?string
 {
     $sourceFile = trim($sourceFile);
-    if ($sourceFile === '') {
-        return null;
-    }
+    if ($sourceFile === '') return null;
 
     $candidates = [];
 
-    // If it contains a directory separator, treat as absolute/relative path
     if (str_contains($sourceFile, DIRECTORY_SEPARATOR)) {
         $candidates[] = $sourceFile;
     } else {
-        // Look in backup folder only
         $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile;
 
-        // Try common extensions if not already present
-        $lowerSource = strtolower($sourceFile);
-        if (!str_ends_with($lowerSource, '.sql') && !str_ends_with($lowerSource, '.zip') && !str_ends_with($lowerSource, '.gz')) {
+        $lower = strtolower($sourceFile);
+        $hasExt = preg_match('/\.(sql(\.gz(\.gpg)?)?|zip)$/', $lower);
+
+        if (!$hasExt) {
             $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.sql';
+            $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.sql.gz';
+            $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.sql.gz.gpg';
             $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.zip';
             $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.sql.zip';
-            $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $sourceFile . '.sql.gz';
         }
     }
 
-    // Try to find the file with security validation
     foreach ($candidates as $candidate) {
         if (is_file($candidate) && validateSecureFilePath($candidate, $backupFolder)) {
-            // Only call realpath once, at the end
             return realpath($candidate);
         }
     }
-
     return null;
 }
+
 
 /**
  * Securely resolves backup file path with validation
@@ -1809,9 +2049,7 @@ function resolveImportFileSecure(string $sourceFile, string $backupFolder): ?str
 function resolveBackupFileSecure(string $requested, string $backupFolder): ?string
 {
     $requested = trim($requested);
-    if ($requested === '') {
-        return null;
-    }
+    if ($requested === '') return null;
 
     $candidates = [];
 
@@ -1819,23 +2057,21 @@ function resolveBackupFileSecure(string $requested, string $backupFolder): ?stri
         $candidates[] = $requested;
     } else {
         $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $requested;
-        if (!str_ends_with($requested, '.zip')) {
-            $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $requested . '.zip';
-        }
-        if (!str_ends_with($requested, '.sql.zip')) {
+
+        if (!preg_match('/\.(sql\.gz\.gpg|sql\.zip)$/i', $requested)) {
+            $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $requested . '.sql.gz.gpg';
             $candidates[] = $backupFolder . DIRECTORY_SEPARATOR . $requested . '.sql.zip';
         }
     }
 
     foreach ($candidates as $candidate) {
         if (is_file($candidate) && validateSecureFilePath($candidate, $backupFolder)) {
-            // Only call realpath once, at the end
             return realpath($candidate);
         }
     }
-
     return null;
 }
+
 
 /**
  * Global cleanup registry for temporary files
@@ -1994,17 +2230,14 @@ function handleVerify(string $backupFolder, array $args): void
 {
     $backupFile = $args[0] ?? null;
 
-    // If no file specified, show interactive selection
     if ($backupFile === null) {
         $backups = getSortedBackups($backupFolder);
         if (empty($backups)) {
             echo 'No backups found to verify.' . PHP_EOL;
             return;
         }
-
         echo "Select backup to verify:\n";
         showBackupsWithIndex($backups);
-
         $selectedPath = promptForBackupSelection($backups);
         if ($selectedPath === null) {
             echo 'Verification cancelled.' . PHP_EOL;
@@ -2019,75 +2252,73 @@ function handleVerify(string $backupFolder, array $args): void
 
     $basename = basename($selectedPath);
     $fileSize = formatFileSize(filesize($selectedPath));
+    $lower = strtolower($selectedPath);
 
     echo "Verifying backup: {$basename} ({$fileSize})\n";
     echo str_repeat('-', 50) . "\n";
-
-    // Test 1: File exists and readable
     echo "✅ File exists and is readable\n";
 
-    // Test 2: ZIP integrity
-    echo "Checking ZIP integrity... ";
-    if (!verifyBackupIntegrity($selectedPath)) {
-        echo "❌ FAILED\n";
-        echo "  Error: ZIP archive is corrupted or invalid\n";
-        exit(1);
-    }
-    echo "✅ PASSED\n";
-
-    // Test 3: Can open and list contents
-    echo "Checking archive contents... ";
-    $zip = new ZipArchive();
-    $status = $zip->open($selectedPath);
-
-    if ($status !== true) {
-        echo "❌ FAILED\n";
-        echo "  Error: Cannot open archive (code: {$status})\n";
-        exit(1);
-    }
-
-    if ($zip->numFiles < 1) {
-        echo "❌ FAILED\n";
-        echo "  Error: Archive is empty\n";
-        $zip->close();
-        exit(1);
-    }
-
-    // Find SQL file
-    $sqlFound = false;
-    for ($i = 0; $i < $zip->numFiles; $i++) {
-        $name = $zip->getNameIndex($i);
-        if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
-            $sqlFound = true;
-            $stat = $zip->statIndex($i);
-            $sqlSize = $stat ? formatFileSize($stat['size']) : 'unknown';
-            echo "✅ PASSED\n";
-            echo "  Found: {$name} ({$sqlSize})\n";
-            break;
+    if (str_ends_with($lower, '.sql.zip')) {
+        echo "Checking ZIP integrity... ";
+        if (!verifyBackupIntegrity($selectedPath)) {
+            echo "❌ FAILED\n";
+            echo "  Error: ZIP archive is corrupted or invalid\n";
+            exit(1);
         }
-    }
+        echo "✅ PASSED\n";
 
-    if (!$sqlFound) {
-        echo "❌ FAILED\n";
-        echo "  Error: No SQL file found in archive\n";
+        echo "Checking archive contents... ";
+        $zip = new ZipArchive();
+        $status = $zip->open($selectedPath);
+        if ($status !== true) {
+            echo "❌ FAILED\n";
+            echo "  Error: Cannot open archive (code: {$status})\n";
+            exit(1);
+        }
+        $sqlFound = false;
+        for ($i = 0; $i < $zip->numFiles; $i++) {
+            $name = $zip->getNameIndex($i);
+            if ($name !== false && str_ends_with(strtolower($name), '.sql')) {
+                $sqlFound = true;
+                $stat = $zip->statIndex($i);
+                $sqlSize = $stat ? formatFileSize($stat['size']) : 'unknown';
+                echo "✅ PASSED\n";
+                echo "  Found: {$name} ({$sqlSize})\n";
+                break;
+            }
+        }
+        if (!$sqlFound) {
+            echo "❌ FAILED\n";
+            echo "  Error: No SQL file found in archive\n";
+            $zip->close();
+            exit(1);
+        }
         $zip->close();
-        exit(1);
-    }
 
-    $zip->close();
-
-    // Test 4: Password protection check
-    echo "Checking encryption... ";
-    if (isZipPasswordProtected($selectedPath)) {
-        echo "✅ Password protected (AES-256)\n";
+        echo "Checking encryption... ";
+        echo isZipPasswordProtected($selectedPath)
+            ? "✅ Password protected (AES-256)\n"
+            : "⚠ WARNING: Archive is not password protected\n";
+    } elseif (isGpgGzFile($lower)) {
+        echo "Checking GPG structure... ";
+        if (!verifyGpgStructure($selectedPath)) {
+            echo "❌ FAILED\n";
+            echo "  Error: GPG packet structure unreadable\n";
+            exit(1);
+        }
+        echo "✅ PASSED\n";
+        echo "Encryption: ✅ GPG symmetric (AES-256 expected)\n";
+        echo "Inner compression: gzip (not verified without passphrase)\n";
     } else {
-        echo "⚠ WARNING: Archive is not password protected\n";
+        echo "❌ Unsupported file type for verification\n";
+        exit(1);
     }
 
     echo str_repeat('-', 50) . "\n";
     echo "✅ Backup verification PASSED\n";
     echo "\nBackup is valid and can be restored.\n";
 }
+
 
 /**
  * Clean old backups based on retention policy
