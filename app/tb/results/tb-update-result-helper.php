@@ -279,6 +279,10 @@ try {
                             'result_reviewed_datetime' => DateUtility::isoDateFormat($testResult['reviewedOn'][$key] ?? null, true),
                             'result_approved_by' => $testResult['approvedBy'][$key] ?? null,
                             'result_approved_datetime' => DateUtility::isoDateFormat($testResult['approvedOn'][$key] ?? null, true),
+                            'revised_by' => $testResult['revisedBy'][$key] ?? null,
+                            'revised_on' => DateUtility::isoDateFormat($testResult['revisedOn'][$key] ?? null, true),
+                            'comments' => $testResult['comments'][$key] ?? null,
+                            'reason_for_result_change' => $testResult['comments'][$key] ?? null,
                             'updated_datetime' => DateUtility::getCurrentDateTime()
                         ]
                     );
