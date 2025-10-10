@@ -738,6 +738,8 @@ sudo rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
 # Make sure the actual script is executable for all users
 chmod +x "${lis_path}/intelis" 2>/dev/null || true
 
+setfacl -m u:root:rwx,u:$USER:rwx,u:www-data:rwx "${lis_path}/intelis" 2>/dev/null || true
+
 # Create a symlink in /usr/bin (exec-enabled path)
 sudo ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null
 
