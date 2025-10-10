@@ -143,6 +143,58 @@ function getTempDir(string $backupFolder): string
 }
 
 /**
+ * Best-effort detection of available CPU threads.
+ * Respects containers (nproc), macOS (sysctl), Windows env, with sane fallbacks.
+ * Allows override via env PIGZ_THREADS.
+ */
+function getAvailableCpuThreads(): int
+{
+    // Env override first (lets you tune in prod quickly)
+    $override = getenv('PIGZ_THREADS');
+    if (is_numeric($override) && (int)$override > 0) {
+        return max(1, (int)$override);
+    }
+
+    // 1) Linux / containers: nproc (respects cpuset/cgroup)
+    $threads = null;
+    $out = @shell_exec('nproc 2>/dev/null');
+    if (is_string($out) && ($n = (int)trim($out)) > 0) {
+        $threads = $n;
+    }
+
+    // 2) POSIX fallback
+    if ($threads === null) {
+        $out = @shell_exec('getconf _NPROCESSORS_ONLN 2>/dev/null');
+        if (is_string($out) && ($n = (int)trim($out)) > 0) {
+            $threads = $n;
+        }
+    }
+
+    // 3) macOS
+    if ($threads === null) {
+        $out = @shell_exec('sysctl -n hw.logicalcpu 2>/dev/null');
+        if (is_string($out) && ($n = (int)trim($out)) > 0) {
+            $threads = $n;
+        }
+    }
+
+    // 4) Windows
+    if ($threads === null) {
+        $n = (int)(getenv('NUMBER_OF_PROCESSORS') ?: 0);
+        if ($n > 0) $threads = $n;
+    }
+
+    // 5) last resort
+    if ($threads === null || $threads < 1) {
+        $threads = 1;
+    }
+
+    // Optional: cap to something reasonable if you like
+    return max(1, $threads);
+}
+
+
+/**
  * Compress a .sql to .sql.gz using pigz (parallel gzip).
  */
 function compressWithPigz(string $sqlPath, string $gzPath): bool
@@ -152,16 +204,15 @@ function compressWithPigz(string $sqlPath, string $gzPath): bool
         throw new SystemException('pigz not found. Please install pigz or adjust PATH.');
     }
 
-    // pigz -c input.sql > output.sql.gz
-    $cmd = ['pigz', '-c', $sqlPath];
+    $threads = getAvailableCpuThreads();
 
-    // NOTE:
-    //  - stdout (fd 1) is redirected directly to the output file
-    //  - stderr (fd 2) is a pipe we can read for error messages
+    // pigz -p <threads> -c input.sql > output.sql.gz
+    $cmd = ['pigz', '-p', (string)$threads, '-c', $sqlPath];
+
     $descriptors = [
-        0 => ['pipe', 'r'],            // stdin (unused)
-        1 => ['file', $gzPath, 'wb'],  // stdout -> file
-        2 => ['pipe', 'w'],            // stderr -> pipe
+        0 => ['pipe', 'r'],
+        1 => ['file', $gzPath, 'wb'],
+        2 => ['pipe', 'w'],
     ];
 
     $proc = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
@@ -169,12 +220,8 @@ function compressWithPigz(string $sqlPath, string $gzPath): bool
         throw new SystemException('Failed to start pigz process.');
     }
 
-    // We don't send anything to stdin
-    if (isset($pipes[0]) && is_resource($pipes[0])) {
-        fclose($pipes[0]);
-    }
+    if (isset($pipes[0]) && is_resource($pipes[0])) fclose($pipes[0]);
 
-    // Read stderr (if any) for useful error messages
     $stderr = '';
     if (isset($pipes[2]) && is_resource($pipes[2])) {
         $stderr = stream_get_contents($pipes[2]) ?: '';
@@ -191,6 +238,7 @@ function compressWithPigz(string $sqlPath, string $gzPath): bool
 
     return is_file($gzPath) && filesize($gzPath) > 0;
 }
+
 
 
 /**
