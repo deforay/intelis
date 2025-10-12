@@ -431,6 +431,60 @@ final class MiscUtility
         fclose($handle);
         return $filename;
     }
+
+    /**
+     * Generate CSV file by streaming data directly to disk
+     * Memory-efficient for large datasets
+     * 
+     * @param array $headings Column headers
+     * @param iterable $dataGenerator Generator or iterator that yields rows
+     * @param string $filename Full path to output file
+     * @param string $delimiter CSV delimiter (default: ',')
+     * @param string $enclosure CSV enclosure (default: '"')
+     * @param callable|null $rowTransformer Optional callback to transform each row before writing
+     * @return string The filename
+     */
+    public static function generateCsvStream(
+        array $headings,
+        iterable $dataGenerator,
+        string $filename,
+        string $delimiter = ',',
+        string $enclosure = '"',
+        ?callable $rowTransformer = null
+    ): string {
+        $handle = fopen($filename, 'w');
+
+        if ($handle === false) {
+            throw new \RuntimeException("Unable to open file: $filename");
+        }
+
+        // Write UTF-8 BOM
+        fwrite($handle, "\xEF\xBB\xBF");
+
+        // Write headings
+        if (!empty($headings)) {
+            fputcsv($handle, $headings, $delimiter, $enclosure);
+        }
+
+        // Stream data rows
+        $rowCount = 0;
+        foreach ($dataGenerator as $data) {
+            // Transform row if callback provided
+            $row = $rowTransformer ? $rowTransformer($data, $rowCount) : $data;
+
+            fputcsv($handle, $row, $delimiter, $enclosure);
+            $rowCount++;
+
+            // Periodic garbage collection for very large datasets
+            if ($rowCount % 1000 === 0) {
+                gc_collect_cycles();
+            }
+        }
+
+        fclose($handle);
+
+        return $filename;
+    }
     public static function getGenderFromString(?string $gender)
     {
         return match (strtolower($gender)) {
