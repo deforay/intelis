@@ -848,7 +848,7 @@ if ($formId == COUNTRY\CAMEROON) {
 		var withAlphaNum = null;
 		$.blockUI();
 		oTable.fnDraw();
-		$.post('export-vl-results.php', {
+		$.post('/vl/program-management/export-vl-results.php', {
 				Sample_Collection_Date: $("#sampleCollectionDate").val(),
 				Batch_Code: $("#batchCode  option:selected").text(),
 				Sample_Type: $("#sampleType  option:selected").text(),
