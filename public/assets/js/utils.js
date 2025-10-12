@@ -625,4 +625,133 @@ class Utilities {
     static sleep(ms) {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
+
+    // Add this to your Utilities class
+
+    // ========================================
+    // UI/FILTER UTILITIES
+    // ========================================
+
+    /**
+     * Highlight filled filter inputs in a container
+     * @param {string} containerSelector - CSS selector for the filter container (e.g., '#filterDiv')
+     * @param {object} options - Configuration options
+     * @returns {object} API object with refresh() and destroy() methods
+     */
+    static initFilterHighlighter(containerSelector, options = {}) {
+        const defaults = {
+            highlightClass: 'filter-filled',
+            checkOnLoad: true,
+            debounceDelay: 100
+        };
+
+        const settings = { ...defaults, ...options };
+
+        // Main function to check and highlight filled inputs
+        function highlightFilledFilters() {
+            const $container = $(containerSelector);
+
+            if ($container.length === 0) {
+                console.warn(`Container '${containerSelector}' not found`);
+                return;
+            }
+
+            // Check all input fields (text, date, etc.)
+            $container.find('input[type="text"], input[type="date"]').each(function () {
+                if ($(this).val() && $(this).val().trim() !== '') {
+                    $(this).addClass(settings.highlightClass);
+                } else {
+                    $(this).removeClass(settings.highlightClass);
+                }
+            });
+
+            // Check all select dropdowns
+            $container.find('select').each(function () {
+                const val = $(this).val();
+                const isEmpty = !val || val === '' || val === null ||
+                    (Array.isArray(val) && val.length === 0) ||
+                    (typeof val === 'string' && val.includes('-- Select --'));
+
+                if (!isEmpty) {
+                    $(this).addClass(settings.highlightClass);
+
+                    // For Select2, also highlight the container
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).next('.select2-container')
+                            .find('.select2-selection')
+                            .addClass(settings.highlightClass);
+                    }
+                } else {
+                    $(this).removeClass(settings.highlightClass);
+
+                    // For Select2
+                    if ($(this).hasClass('select2-hidden-accessible')) {
+                        $(this).next('.select2-container')
+                            .find('.select2-selection')
+                            .removeClass(settings.highlightClass);
+                    }
+                }
+            });
+
+            // Check checkboxes
+            $container.find('input[type="checkbox"]').each(function () {
+                if ($(this).is(':checked')) {
+                    $(this).parent().addClass(settings.highlightClass);
+                } else {
+                    $(this).parent().removeClass(settings.highlightClass);
+                }
+            });
+
+            // Check radio buttons
+            $container.find('input[type="radio"]:checked').each(function () {
+                $(this).parent().addClass(settings.highlightClass);
+            });
+        }
+
+        // Use the existing debounce utility
+        const debouncedHighlight = Utilities.debounce(
+            highlightFilledFilters,
+            settings.debounceDelay
+        );
+
+        // Run on page load if enabled
+        if (settings.checkOnLoad) {
+            highlightFilledFilters();
+        }
+
+        // Monitor changes
+        $(containerSelector).on('change keyup', 'input, select', function () {
+            debouncedHighlight();
+        });
+
+        // Special handling for Select2 changes
+        $(containerSelector).on(
+            'select2:select select2:unselect select2:clear',
+            'select.select2-element, .select2-hidden-accessible',
+            function () {
+                highlightFilledFilters();
+            }
+        );
+
+        // For daterangepicker
+        $(containerSelector).on(
+            'apply.daterangepicker cancel.daterangepicker',
+            '.daterangefield',
+            function () {
+                highlightFilledFilters();
+            }
+        );
+
+        // Return public API
+        return {
+            refresh: highlightFilledFilters,
+            destroy: function () {
+                $(containerSelector).off('change keyup', 'input, select');
+                $(containerSelector).off('select2:select select2:unselect select2:clear');
+                $(containerSelector).off('apply.daterangepicker cancel.daterangepicker');
+                $(containerSelector + ' .' + settings.highlightClass).removeClass(settings.highlightClass);
+                $(containerSelector).find('.select2-selection.' + settings.highlightClass).removeClass(settings.highlightClass);
+            }
+        };
+    }
 }

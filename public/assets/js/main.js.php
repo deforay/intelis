@@ -25,7 +25,6 @@
 <script type="text/javascript" src="/assets/js/dataTables.buttons.min.js"></script>
 <script type="text/javascript" src="/assets/js/jszip.min.js"></script>
 <script type="text/javascript" src="/assets/js/buttons.html5.min.js"></script>
-<script type="text/javascript" src="/assets/js/utils.js"></script>
 <script type="text/javascript" src="/assets/js/storage.js"></script>
 <script type="text/javascript" src="/assets/js/deforay-dualbox.min.js"></script>
 

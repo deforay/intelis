@@ -113,6 +113,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 	<script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
 	<script type="text/javascript" src="/assets/js/deforayModal.js?v=<?= filemtime(WEB_ROOT . "/assets/js/deforayModal.js") ?>"></script>
 	<script type="text/javascript" src="/assets/js/jquery.fastconfirm.js"></script>
+	<script type="text/javascript" src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
 </head>
 <style>
 	.topBar {
