@@ -197,3 +197,26 @@ form table tr td>label,
     border: 1px solid #eee;
     padding: 10px;
 }
+
+
+/* Highlight filled filters - Subtle version */
+.filter-filled {
+    background-color: #fffbf0 !important;
+    border: 1px solid #ffd966 !important;
+    box-shadow: 0 0 3px rgba(255, 193, 7, 0.2);
+    transition: all 0.2s ease-in-out;
+}
+
+/* For Select2 elements */
+.select2-container--default .select2-selection--single.filter-filled,
+.select2-container--default .select2-selection--multiple.filter-filled {
+    background-color: #fffbf0 !important;
+    border: 1px solid #ffd966 !important;
+}
+
+/* Add smooth transition */
+input,
+select,
+.select2-selection {
+    transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
+}

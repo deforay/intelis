@@ -79,14 +79,15 @@ if ($formId == COUNTRY\CAMEROON) {
 	<section class="content">
 		<div class="row">
 			<div class="col-xs-12">
-				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+				<div class="box">
+					<table id="filterDiv" aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
+
 							<td><strong>
-									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
+									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:
@@ -150,11 +151,12 @@ if ($formId == COUNTRY\CAMEROON) {
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
+
 							<td><strong>
-									<?php echo _translate("Sample Test Date"); ?>&nbsp;:
+									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Viral Load Suppression"); ?> &nbsp;:
@@ -547,6 +549,10 @@ if ($formId == COUNTRY\CAMEROON) {
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
+
+		// Initialize filter highlighter
+		Utilities.initFilterHighlighter('#filterDiv');
+
 		$("#batchCode").autocomplete({
 			source: function(request, response) {
 				// Fetch data
