@@ -630,7 +630,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         </tr>
                                         <tr>
                                             <th scope="row"><?= _translate('Approved On'); ?></th>
-                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="<?= _translate('Approved on'); ?>" title="Please enter the Approved on" /></td>
+                                            <td><input type="text" value="<?php echo $eidInfo['result_approved_datetime']; ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="<?= _translate('Approved on'); ?>" title="Please enter the approved on date" /></td>
                                             <th scope="row"><?= _translate('Approved By'); ?></th>
                                             <td>
                                                 <select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">

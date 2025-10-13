@@ -445,19 +445,19 @@ $disable = "disabled = 'disabled'";
 												</div>
 											</div>
 											<div class="col-md-4">
-                                                                 <label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
-                                                                                <option value="">--Select--</option>
-                                                                                <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
-                                                                                <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
-                                                                                <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
-                                                                                <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                       </div>
+												<label for="baselineInitiationLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+												<div class="col-lg-7">
+													<div class="col-lg-7">
+														<select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+															<option value="">--Select--</option>
+															<option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+															<option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+															<option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+															<option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+														</select>
+													</div>
+												</div>
+											</div>
 										</div>
 										<div class="row">
 											<div class="col-md-6">
@@ -476,7 +476,6 @@ $disable = "disabled = 'disabled'";
 																$cd4Value = $cd4QueryInfo['last_cd4_result'];
 																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
 																$cragResult = $cd4QueryInfo['last_cd4_crag_result'];
-
 															} else {
 																$checked = '';
 																$display = 'none';
@@ -504,19 +503,19 @@ $disable = "disabled = 'disabled'";
 												</div>
 											</div>
 											<div class="col-md-4">
-                                                <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
-                                                <div class="col-lg-7">
-                                                    <div class="col-lg-7">
-                                                        <select class="form-control viralTestData" id="assessmentAHDLastCrAgResult" name="assessmentAHDLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
-                                                            <option value="">--Select--</option>
-                                                            <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
-                                                            <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
-                                                            <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
-                                                            <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
-                                                        </select>
-                                                     </div>
-                                                </div>
-                                            </div>
+												<label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+												<div class="col-lg-7">
+													<div class="col-lg-7">
+														<select class="form-control viralTestData" id="assessmentAHDLastCrAgResult" name="assessmentAHDLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+															<option value="">--Select--</option>
+															<option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+															<option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+															<option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+															<option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+														</select>
+													</div>
+												</div>
+											</div>
 										</div>
 										<div class="row">
 											<div class="col-md-8">
@@ -535,7 +534,6 @@ $disable = "disabled = 'disabled'";
 																$cd4Value = $cd4QueryInfo['last_cd4_result'];
 																$cd4ValuePercentage = $cd4QueryInfo['last_cd4_result_percentage'];
 																$cragResult = $cd4QueryInfo['last_cd4_crag_result'];
-
 															} else {
 																$checked = '';
 																$display = 'none';
@@ -563,19 +561,19 @@ $disable = "disabled = 'disabled'";
 												</div>
 											</div>
 											<div class="col-md-4">
-                                                            <label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
-                                                                 <div class="col-lg-7">
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
-                                                                               <option value="">--Select--</option>
-                                                                               <option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
-                                                                               <option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
-                                                                               <option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
-                                                                               <option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
-                                                                           </select>
-                                                                      </div>
-                                                                 </div>
-                                                       </div>
+												<label for="assessmentAHDLastCd4Result" class="col-lg-5 control-label">CrAg Result</label>
+												<div class="col-lg-7">
+													<div class="col-lg-7">
+														<select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;" <?php echo $disable; ?>>
+															<option value="">--Select--</option>
+															<option <?= ($cragResult == 'positive') ? 'selected="selected"' : ''; ?> value="positive">Positive</option>
+															<option <?= ($cragResult == 'negative') ? 'selected="selected"' : ''; ?> value="negative">Negative</option>
+															<option <?= ($cragResult == 'intermediate') ? 'selected="selected"' : ''; ?> value="intermediate">Indeterminate</option>
+															<option <?= ($cragResult == 'testNotDone') ? 'selected="selected"' : ''; ?> value="testNotDone">Test not done</option>
+														</select>
+													</div>
+												</div>
+											</div>
 										</div>
 
 										<?php if (isset(SYSTEM_CONFIG['recency']['vlsync']) && SYSTEM_CONFIG['recency']['vlsync']) { ?>
@@ -736,7 +734,7 @@ $disable = "disabled = 'disabled'";
 												<div class="col-md-6 cd4Result">
 													<label class="col-lg-5 control-label" for="cd4Result">Sample Results (CD4 count -Absolute value)<span class="mandatory">*</span> </label>
 													<div class="col-lg-7 resultInputContainer">
-														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control isRequired" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" onchange="getCrAgResults(this.value);"  />
+														<input value="<?= $cd4QueryInfo['cd4_result']; ?>" class="form-control isRequired" id="cd4Result" name="cd4Result" placeholder="CD4 Result" title="Please enter CD4 result" style="width:100%;" onchange="getCrAgResults(this.value);" />
 													</div>
 												</div>
 												<div class="col-md-6 cd4Result">
@@ -747,24 +745,24 @@ $disable = "disabled = 'disabled'";
 												</div>
 											</div>
 											<div class="row crAgResults" style="display:none;">
-                                                                 <div class="col-md-6 cd4Result">
-																 <label class="col-lg-5 control-label" for="cd4Result">CrAg test Result (If CD4 Count <= 200)</label>
-																 <div class="col-lg-7">
-                                                                           <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
-                                                                                <option value="">--Select--</option>
-																				<option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
-                                                                                <option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
-                                                                                <option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
-                                                                                <option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
-																			</select>
-                                                                      </div>
-                                                                 </div>
-                                                       </div>
+												<div class="col-md-6 cd4Result">
+													<label class="col-lg-5 control-label" for="cd4Result">CrAg test Result (If CD4 Count <= 200)</label>
+															<div class="col-lg-7">
+																<select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+																	<option value="">--Select--</option>
+																	<option value="positive" <?php echo ($cd4QueryInfo['crag_test_results'] == "positive") ? 'selected="selected"' : ''; ?>>Positive</option>
+																	<option value="negative" <?php echo ($cd4QueryInfo['crag_test_results'] == "negative") ? 'selected="selected"' : ''; ?>>Negative</option>
+																	<option value="intermediate" <?php echo ($cd4QueryInfo['crag_test_results'] == "intermediate") ? 'selected="selected"' : ''; ?>>Indeterminate</option>
+																	<option value="testNotDone" <?php echo ($cd4QueryInfo['crag_test_results'] == "testNotDone") ? 'selected="selected"' : ''; ?>>Test not done</option>
+																</select>
+															</div>
+												</div>
+											</div>
 											<div class="row">
 												<div class="col-md-6">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On <span class="mandatory">*</span></label>
 													<div class="col-lg-7">
-														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control isRequired" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
+														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control isRequired" placeholder="Approved on" title="Please enter the approved on date" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
 													</div>
 												</div>
 												<div class="col-md-6">
@@ -954,13 +952,11 @@ $disable = "disabled = 'disabled'";
 		}
 	}
 
-	function getCrAgResults(cd4Count)
-     {
-          if(cd4Count <= 200){
-               $(".crAgResults").show();
-          }
-          else{
-               $(".crAgResults").hide();
-          }
-     }
+	function getCrAgResults(cd4Count) {
+		if (cd4Count <= 200) {
+			$(".crAgResults").show();
+		} else {
+			$(".crAgResults").hide();
+		}
+	}
 </script>

@@ -455,7 +455,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 												</select>
 											</td>
 											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
-											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
+											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" /></td>
 										</tr>
 
 									</table>

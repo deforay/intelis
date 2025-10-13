@@ -545,7 +545,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['fac
                                                 </select>
                                             </td>
                                             <th scope="row">Approved On</th>
-                                            <td><input type="text" value="<?php echo $covid19Info['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control isRequired" placeholder="Approved on" title="Please enter the Approved on" /></td>
+                                            <td><input type="text" value="<?php echo $covid19Info['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="dateTime disabled-field form-control isRequired" placeholder="Approved on" title="Please enter the approved on date" /></td>
                                         </tr>
                                         <tr>
                                             <th scope="row">Is Result Authorized ?</th>

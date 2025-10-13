@@ -731,7 +731,7 @@ $disable = "disabled = 'disabled'";
 												<div class="col-md-4">
 													<label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
 													<div class="col-lg-7">
-														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
+														<input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the approved on date" />
 													</div>
 												</div>
 											</div>

@@ -699,6 +699,13 @@ $remoteURL = $general->getRemoteURL();
 
     $(document).ready(function() {
 
+
+
+        if ($(".pageFilters").length > 0) {
+            // Initialize filter highlighter
+            Utilities.initFilterHighlighter('.pageFilters');
+        }
+
         // Run the scheduler with the defined scripts and intervals
         //runScheduledScripts(scriptsToRun);
         existingPatientId = "";

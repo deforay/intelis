@@ -80,7 +80,7 @@ foreach ($rejectionTypeResult as $type) {
 					<div class="box-body">
 						<div class="widget">
 							<div class="widget-content">
-								<div class="bs-example bs-example-tabs">
+								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
 										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>
@@ -91,7 +91,7 @@ foreach ($rejectionTypeResult as $type) {
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -200,7 +200,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _translate("Sample Test Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -306,7 +306,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -402,7 +402,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
@@ -460,7 +460,7 @@ foreach ($rejectionTypeResult as $type) {
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 14%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
@@ -506,7 +506,7 @@ foreach ($rejectionTypeResult as $type) {
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Child ID"); ?>&nbsp;:

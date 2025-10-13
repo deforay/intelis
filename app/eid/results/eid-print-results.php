@@ -62,14 +62,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                     <div class="box-body">
                         <div class="widget">
                             <div class="widget-content">
-                                <div class="bs-example bs-example-tabs">
+                                <div class="bs bs-tabs">
                                     <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                                         <li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _translate("Results not yet Printed"); ?> </a></li>
                                         <li><a href="#printedData" data-toggle="tab" class="printedData"><?php echo _translate("Results already Printed"); ?> </a></li>
                                     </ul>
                                     <div id="myTabContent" class="tab-content">
                                         <div class="tab-pane fade in active" id="notPrintedData">
-                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
@@ -238,7 +238,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                             <input type="hidden" name="totalSamplesList" id="totalSamplesList" />
                                         </div>
                                         <div class="tab-pane fade" id="printedData">
-                                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
@@ -585,10 +585,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
     function loadVlRequestData() {
         $.blockUI();
         <?php if ($formId == COUNTRY\CAMEROON) { ?>
-			sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
-		<?php } else { ?>
-			sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
-		<?php } ?>
+            sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
+        <?php } else { ?>
+            sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
+        <?php } ?>
         oTable = $('#vlRequestDataTables').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
@@ -742,10 +742,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
     function loadPrintedVlRequestData() {
         $.blockUI();
         <?php if ($formId == COUNTRY\CAMEROON) { ?>
-			sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
-		<?php } else { ?>
-			sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
-		<?php } ?>
+            sort = '<?= (!$general->isStandaloneInstance()) ? 14 : 13; ?>';
+        <?php } else { ?>
+            sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
+        <?php } ?>
         opTable = $('#printedVlRequestDataTable').dataTable({
             "oLanguage": {
                 "sLengthMenu": "_MENU_ records per page"
@@ -925,11 +925,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                 } else {
                     $.unblockUI();
                     if (oTable) {
-						oTable.fnDraw();
-					}
-					if (opTable) {
-						opTable.fnDraw();
-					}
+                        oTable.fnDraw();
+                    }
+                    if (opTable) {
+                        opTable.fnDraw();
+                    }
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });
@@ -992,11 +992,11 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                         $("#printedResult").css('display', 'none');
                     }
                     if (oTable) {
-						oTable.fnDraw();
-					}
-					if (opTable) {
-						opTable.fnDraw();
-					}
+                        oTable.fnDraw();
+                    }
+                    if (opTable) {
+                        opTable.fnDraw();
+                    }
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });

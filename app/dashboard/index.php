@@ -67,7 +67,7 @@ require_once APPLICATION_PATH . '/header.php';
 <div class="content-wrapper">
 	<!-- Content Header (Page header) -->
 	<section class="content-header">
-		<div class="bs-example bs-example-tabs">
+		<div class="bs bs-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 				<?php if (isset(SYSTEM_CONFIG['modules']['vl']) && SYSTEM_CONFIG['modules']['vl'] === true && array_intersect($_SESSION['modules'], array('vl'))) { ?>
 					<li class="active"><a href="#vlDashboard" data-name="vl" data-toggle="tab" onclick="generateDashboard('vl');">
@@ -733,7 +733,7 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#eidNoOfSampleCount").html(data);
 					}
 				});
-		}else if (requestType == 'cd4') {
+		} else if (requestType == 'cd4') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
 					type: 'cd4'
@@ -743,7 +743,7 @@ require_once APPLICATION_PATH . '/header.php';
 						$("#cd4NoOfSampleCount").html(data);
 					}
 				});
-		}else if (requestType == 'hepatitis') {
+		} else if (requestType == 'hepatitis') {
 			currentXHR = $.post("/dashboard/getSampleCount.php", {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'

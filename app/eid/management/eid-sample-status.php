@@ -56,7 +56,7 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 							<td>
@@ -110,7 +110,7 @@ $batResult = $db->rawQuery($batQuery);
 					<div class="box-body">
 						<button class="btn btn-success pull-right" type="button" onclick="eidExportTAT()"><em class="fa-solid fa-cloud-arrow-down"></em> <?php echo _translate("Export to excel"); ?></button>
 						<table aria-describedby="table" id="eidRequestDataTable" class="table table-bordered table-striped" aria-hidden="true">
-						<thead>
+							<thead>
 								<tr>
 									<th>
 										<?php echo _translate("Sample ID"); ?>
@@ -163,10 +163,6 @@ $batResult = $db->rawQuery($batQuery);
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
-<script src="/assets/js/highcharts-exporting.js"></script>
-<script src="/assets/js/highcharts-offline-exporting.js"></script>
-<script src="/assets/js/highcharts-accessibility.js"></script>
 <script>
 	let searchExecuted = false;
 	$(function() {

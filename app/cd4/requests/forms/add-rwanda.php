@@ -172,7 +172,7 @@ $sFormat = '';
                                                   </div>
                                              </div>
 
-                                           <!----  <div class="col-xs-3 col-md-3">
+                                             <!----  <div class="col-xs-3 col-md-3">
                                                   <div class="">
                                                        <label for="facilityCode">Implementing Partner </label>
                                                        <select class="form-control" name="implementingPartner" id="implementingPartner" title="<?= _translate("Please choose implementing partner"); ?>" style="width:100%;">
@@ -261,7 +261,7 @@ $sFormat = '';
                                                        <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" id="genderFemale" name="gender" value="female" title="Please select sex">Female
                                                        </label>&nbsp;&nbsp;
-                                                      <!-- <label class="radio-inline" style="margin-left:0px;">
+                                                       <!-- <label class="radio-inline" style="margin-left:0px;">
                                                             <input type="radio" class="" id="genderUnreported" name="gender" value="unreported" title="Please choose sex">Unreported
                                                        </label>-->
                                                   </div>
@@ -451,10 +451,10 @@ $sFormat = '';
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control viralTestData" id="baselineInitiationLastCrAgResult" name="baselineInitiationLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
                                                                                 <option value="">--Select--</option>
-                                                                               <option value="positive">Positive</option>
-                                                                               <option value="negative">Negative</option>
-                                                                               <option value="intermediate">Indeterminate</option>
-                                                                               <option value="testNotDone">Test not done</option>
+                                                                                <option value="positive">Positive</option>
+                                                                                <option value="negative">Negative</option>
+                                                                                <option value="intermediate">Indeterminate</option>
+                                                                                <option value="testNotDone">Test not done</option>
                                                                            </select>
                                                                       </div>
                                                                  </div>
@@ -492,10 +492,10 @@ $sFormat = '';
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control viralTestData" id="assessmentAHDLastCrAgResult" name="assessmentAHDLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
                                                                                 <option value="">--Select--</option>
-                                                                               <option value="positive">Positive</option>
-                                                                               <option value="negative">Negative</option>
-                                                                               <option value="intermediate">Indeterminate</option>
-                                                                               <option value="testNotDone">Test not done</option>
+                                                                                <option value="positive">Positive</option>
+                                                                                <option value="negative">Negative</option>
+                                                                                <option value="intermediate">Indeterminate</option>
+                                                                                <option value="testNotDone">Test not done</option>
                                                                            </select>
                                                                       </div>
                                                                  </div>
@@ -533,12 +533,12 @@ $sFormat = '';
                                                                       <div class="col-lg-7">
                                                                            <select class="form-control viralTestData" id="treatmentCoinfectionLastCrAgResult" name="treatmentCoinfectionLastCrAgResult" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
                                                                                 <option value="">--Select--</option>
-                                                                               <option value="positive">Positive</option>
-                                                                               <option value="negative">Negative</option>
-                                                                               <option value="intermediate">Indeterminate</option>
-                                                                               <option value="testNotDone">Test not done</option>
+                                                                                <option value="positive">Positive</option>
+                                                                                <option value="negative">Negative</option>
+                                                                                <option value="intermediate">Indeterminate</option>
+                                                                                <option value="testNotDone">Test not done</option>
                                                                            </select>
-                                                                 </div>
+                                                                      </div>
                                                                  </div>
                                                             </div>
                                                        </div>
@@ -702,15 +702,15 @@ $sFormat = '';
                                                             <div class="row crAgResults" style="display:none;">
                                                                  <div class="col-md-6 cd4Result">
                                                                       <label class="col-lg-5 control-label" for="cd4Result">CrAg test Result (If CD4 Count <= 200)</label>
-                                                                      <div class="col-lg-7">
-                                                                           <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
-                                                                                <option value="">--Select--</option>
-                                                                               <option value="positive">Positive</option>
-                                                                               <option value="negative">Negative</option>
-                                                                               <option value="intermediate">Indeterminate</option>
-                                                                               <option value="testNotDone">Test not done</option>
-                                                                           </select>
-                                                                      </div>
+                                                                                <div class="col-lg-7">
+                                                                                     <select class="form-control" id="crAgResults" name="crAgResults" placeholder="CrAg Test Results" title="Please select CrAg Test results" style="width:100%;">
+                                                                                          <option value="">--Select--</option>
+                                                                                          <option value="positive">Positive</option>
+                                                                                          <option value="negative">Negative</option>
+                                                                                          <option value="intermediate">Indeterminate</option>
+                                                                                          <option value="testNotDone">Test not done</option>
+                                                                                     </select>
+                                                                                </div>
                                                                  </div>
                                                             </div>
 
@@ -719,7 +719,7 @@ $sFormat = '';
                                                                  <div class="col-md-6">
                                                                       <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                       <div class="col-lg-7">
-                                                                           <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
+                                                                           <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" />
                                                                       </div>
                                                                  </div>
                                                                  <div class="col-md-6">
@@ -877,7 +877,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           // BARCODESTUFF START
           <?php
           if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                              $sampleCode = htmlspecialchars($_GET['s']);
+               $sampleCode = htmlspecialchars($_GET['s']);
                $facilityCode = htmlspecialchars($_GET['f']);
                $patientID = htmlspecialchars($_GET['p']);
                echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
@@ -1032,14 +1032,13 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           ($.trim(fContactPerson) != '') ? $(".facilityContactPerson").html(fContactPerson): $(".facilityContactPerson").html('');
      }
 
-     function showArtSection(isPatientArt){
-          if(isPatientArt == "yes"){
+     function showArtSection(isPatientArt) {
+          if (isPatientArt == "yes") {
                $(".ARTSection").show();
                $("#arvAdherence").addClass('isRequired');
                $("#artRegimen").addClass('isRequired');
                $("#regimenInitiatedOn").addClass('isRequired');
-          }
-          else{
+          } else {
                $(".ARTSection").hide();
                $("#arvAdherence").removeClass('isRequired');
                $("#artRegimen").removeClass('isRequired');
@@ -1047,12 +1046,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
           }
      }
 
-     function getCrAgResults(cd4Count)
-     {
-          if(cd4Count <= 200){
+     function getCrAgResults(cd4Count) {
+          if (cd4Count <= 200) {
                $(".crAgResults").show();
-          }
-          else{
+          } else {
                $(".crAgResults").hide();
           }
      }

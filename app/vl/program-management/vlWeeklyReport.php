@@ -1,4 +1,5 @@
 <?php
+
 use App\Registries\ContainerRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -56,7 +57,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
           <div class="box-body">
             <div class="widget">
               <div class="widget-content">
-                <div class="bs-example bs-example-tabs">
+                <div class="bs bs-tabs">
                   <ul id="myTab" class="nav nav-tabs">
                     <li class="active"><a href="#labReport" data-toggle="tab">
                         <?php echo _translate("VL Lab Weekly Report"); ?>
@@ -67,7 +68,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                   </ul>
                   <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="labReport">
-                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
+                      <table aria-describedby="table" class="table valign-mid pageFilters" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:90%;">
                         <tr>
                           <th scope="row" style="width:15%"><strong>
                               <?php echo _translate("Sample Test Date Range"); ?>&nbsp;:
@@ -195,7 +196,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
                       </table>
                     </div>
                     <div class="tab-pane fade" id="femaleReport">
-                      <table aria-describedby="table" class="table valign-mid" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
+                      <table aria-describedby="table" class="table valign-mid pageFilters" cellpadding="1" cellspacing="3" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                           <th scope="row" style="width:13%"><strong>
                               <?php echo _translate("Sample Test Date Range"); ?>&nbsp;:

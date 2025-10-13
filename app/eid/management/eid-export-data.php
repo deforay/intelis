@@ -77,12 +77,14 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
+
+							<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
+
 							<td><strong><?php echo _translate("Sample Received at Lab Date"); ?>&nbsp;:</strong></td>
 							<td>
 								<input type="text" id="sampleReceivedDate" name="sampleReceivedDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Received Date'); ?>" style="width:220px;background:#fff;" />
@@ -129,11 +131,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									<?= $testingLabsDropdown; ?>
 								</select>
 							</td>
-							<th scope="row"><?php echo _translate("Sample Test Date"); ?></th>
+							<th scope="row"><?php echo _translate("Sample Collection Date"); ?></th>
 							<td>
-								<input type="text" id="sampleTestDate" name="sampleTestDate" class="form-control" placeholder="<?php echo _translate('Select Sample Test Date'); ?>" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 							</td>
-
 						</tr>
 						<tr>
 							<th scope="row"><?php echo _translate("Result"); ?> </th>

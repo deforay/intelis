@@ -535,11 +535,11 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                             </div>
 
                                                             <div class="row">
-                                                            <div class="col-md-8">
-                                                                 <div class="form-group">
-                                                                      <div class="col-lg-12">
-                                                                           <label class="radio-inline">
-                                                                           <?php
+                                                                 <div class="col-md-8">
+                                                                      <div class="form-group">
+                                                                           <div class="col-lg-12">
+                                                                                <label class="radio-inline">
+                                                                                     <?php
                                                                                      $checked = '';
                                                                                      $display = '';
                                                                                      $vlValue = '';
@@ -554,14 +554,14 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                                           $display = 'none';
                                                                                      }
                                                                                      ?>
-                                                                                <input type="radio" class="" id="confirmRecencyTesting" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('confirmRecencyTesting');">
-                                                                                <strong> Confirmation Test for Recency </strong>
-                                                                           </label>
+                                                                                     <input type="radio" class="" id="confirmRecencyTesting" name="reasonForVLTesting" value="recency" title="Please check viral load indication testing type" <?php echo $checked; ?> onclick="showTesting('confirmRecencyTesting');">
+                                                                                     <strong> Confirmation Test for Recency </strong>
+                                                                                </label>
+                                                                           </div>
                                                                       </div>
                                                                  </div>
                                                             </div>
-                                                       </div>
-                                                       <!-- <div class="row confirmRecencyTesting hideTestData well" style="display: <?php echo $display; ?>;">
+                                                            <!-- <div class="row confirmRecencyTesting hideTestData well" style="display: <?php echo $display; ?>;">
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label">Date of Last VL Test</label>
                                                                  <div class="col-lg-7">
@@ -740,7 +740,7 @@ if (isset($vlQueryInfo['reason_for_result_changes']) && $vlQueryInfo['reason_for
                                                                       <div class="col-md-4">
                                                                            <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the Approved on" />
+                                                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" title="Please enter the approved on date" />
                                                                            </div>
                                                                       </div>
                                                                  </div>

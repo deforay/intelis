@@ -16316,7 +16316,8 @@ msgstr ""
 #: eid/requests/forms/add-cameroon.php:592
 #: eid/results/forms/update-cameroon-result.php:599
 #: vl/requests/forms/add-cameroon.php:631
-msgid "Please enter the Approved on"
+#: tb/requests/forms/add-rwanda.php:563
+msgid "Please enter the approved on date"
 msgstr ""
 
 #: eid/requests/forms/add-cameroon.php:895
@@ -23892,9 +23893,6 @@ msgstr ""
 msgid "Please enter sample tested"
 msgstr ""
 
-#: tb/requests/forms/add-rwanda.php:563
-msgid "Please enter the approved on"
-msgstr ""
 
 #: tb/requests/forms/add-rwanda.php:927
 msgid "Select "

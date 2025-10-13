@@ -65,7 +65,7 @@ $batResult = $db->rawQuery($batQuery);
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box" id="filterDiv">
-					<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -77,7 +77,7 @@ $batResult = $db->rawQuery($batQuery);
 									<?php echo _translate("Batch Code"); ?>&nbsp;:
 								</strong></td>
 							<td>
-								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>" >
+								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
 									</option>

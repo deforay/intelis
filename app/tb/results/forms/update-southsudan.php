@@ -491,7 +491,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</select>
 											</td>
 											<th scope="row"><label class="label-control" for="approvedOn">Approved on <span class="mandatory">*</span></label></th>
-											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control isRequired" placeholder="Approved on" title="Please enter the approved on" /></td>
+											<td><input type="text" value="<?php echo $tbInfo['result_approved_datetime']; ?>" name="approvedOn" id="approvedOn" class="date-time form-control isRequired" placeholder="Approved on" title="Please enter the approved on date" /></td>
 										</tr>
 										<tr>
 											<th scope="row"><label class="label-control" for="testedBy">Tested By <span class="mandatory">*</span></label></th>
