@@ -1,3 +1,4 @@
+#!/usr/bin/env php
 <?php
 
 //bin/setup-sts.php
@@ -5,6 +6,7 @@
 use App\Services\CommonService;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
+use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
@@ -18,6 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var ConfigService $configService */
 $configService = ContainerRegistry::get(ConfigService::class);
+
+/** @var DatabaseService $db */
+$db = ContainerRegistry::get(DatabaseService::class);
+
 
 $cliMode = php_sapi_name() === 'cli';
 $isLIS = $general->isLISInstance();
@@ -105,6 +111,8 @@ echo "=== STS Configuration Setup ===" . PHP_EOL . PHP_EOL;
 $currentRemoteURL = rtrim($general->getRemoteURL(), '/');
 $urlWasEmpty = empty($currentRemoteURL);
 $urlChanged = false;
+$newRemoteURL = $currentRemoteURL;
+
 
 // Get current lab ID for URL validation
 $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
