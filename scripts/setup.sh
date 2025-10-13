@@ -637,44 +637,47 @@ fi
 chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
 restart_service mysql
 
+ Only prompt for Remote STS URL for LIS nodes
+if $is_lis; then
+    # Prompt for Remote STS URL
+    while true; do
+        read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
 
-# Prompt for Remote STS URL
-while true; do
-    read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
-    log_action "Remote STS URL entered: $remote_sts_url"
+        log_action "Remote STS URL entered: $remote_sts_url"
 
-    if [ -z "$remote_sts_url" ]; then
-        echo "No STS URL provided. Skipping validation."
-        log_action "No STS URL provided. Skipping validation."
-        break
-    fi
-
-    echo "Validating the provided STS URL..."
-    response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
-
-    if [ "$response_code" -eq 200 ]; then
-        print success "STS URL validation successful."
-        log_action "STS URL validation successful."
-
-        # Define desired_sts_url
-        desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
-
-        config_file="${lis_path}/configs/config.production.php"
-
-        # Check if the desired configuration already exists in the file
-        if ! grep -qF "$desired_sts_url" "${config_file}"; then
-            # The desired configuration does not exist, so update the file
-            sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
-            print info "Remote STS URL updated in the configuration file."
-        else
-            print info "Remote STS URL is already set as desired in the configuration file."
+        if [ -z "$remote_sts_url" ]; then
+            echo "No STS URL provided. Skipping validation."
+            log_action "No STS URL provided. Skipping validation."
+            break
         fi
-        break
-    else
-        print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
-        log_action "STS URL validation failed with response code $response_code."
-    fi
-done
+
+        echo "Validating the provided STS URL..."
+        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
+
+        if [ "$response_code" -eq 200 ]; then
+            print success "STS URL validation successful."
+            log_action "STS URL validation successful."
+
+            # Define desired_sts_url
+            desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
+
+            config_file="${lis_path}/configs/config.production.php"
+
+            # Check if the desired configuration already exists in the file
+            if ! grep -qF "$desired_sts_url" "${config_file}"; then
+                # The desired configuration does not exist, so update the file
+                sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
+                print info "Remote STS URL updated in the configuration file."
+            else
+                print info "Remote STS URL is already set as desired in the configuration file."
+            fi
+            break
+        else
+            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
+            log_action "STS URL validation failed with response code $response_code."
+        fi
+    done
+fi
 
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"

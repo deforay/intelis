@@ -31,15 +31,23 @@ if (!$isLIS || !$cliMode) {
 (ContainerRegistry::get(FileCacheUtility::class))->clear();
 
 /**
- * Function to read user input from command line
+ * Function to read user input from command line.
+ * Returns null on EOF/non-interactive.
  */
 function readUserInput($prompt = '')
 {
     echo $prompt;
-    $handle = fopen("php://stdin", "r");
-    $input = trim(fgets($handle));
-    fclose($handle);
-    return $input;
+    $h = fopen('php://stdin', 'r');
+    if ($h === false) {
+        return null;
+    }
+    $line = fgets($h);
+    fclose($h);
+    if ($line === false) {
+        // EOF or not a TTY
+        return null;
+    }
+    return trim($line);
 }
 
 /**
@@ -90,8 +98,8 @@ $options = getopt('k', ['key:']);
 $apiKey = $options['key'] ?? null;
 
 // Interactive mode - handle STS and Lab setup
-echo "=== STS Configuration Setup ===" . PHP_EOL;
-echo PHP_EOL;
+echo "=== STS Configuration Setup ===" . PHP_EOL . PHP_EOL;
+
 
 // Step 1: Handle STS URL
 $currentRemoteURL = rtrim($general->getRemoteURL(), '/');
@@ -101,144 +109,142 @@ $urlChanged = false;
 // Get current lab ID for URL validation
 $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
 
+// If no current URL, allow skipping with Enter or on EOF
 if (empty($currentRemoteURL)) {
     echo "No STS URL is currently configured." . PHP_EOL;
-    echo "Please enter the STS URL:" . PHP_EOL;
+    echo "Press Enter to skip (you can set it later from Admin > System Config)." . PHP_EOL;
+
+    $attempts = 0;
+    $newRemoteURL = ''; // default to “skipped”
 
     do {
+        $attempts++;
         $userInput = readUserInput("STS URL: ");
 
-        if (empty(trim($userInput))) {
-            echo "STS URL cannot be empty. Please try again." . PHP_EOL;
-            continue;
+        // Non-interactive / EOF or user pressed Enter -> skip
+        if ($userInput === null || $userInput === '') {
+            echo "Skipping STS URL setup for now." . PHP_EOL;
+            $newRemoteURL = '';
+            break;
         }
 
         $newRemoteURL = normalizeUrl($userInput, $currentLabId);
 
         if (!isValidUrl($newRemoteURL)) {
-            echo "Unable to create a valid URL. Please try again." . PHP_EOL;
+            echo "Unable to create a valid URL. Please try again or press Enter to skip." . PHP_EOL;
             continue;
         }
 
-        // Test if the STS URL actually works
         if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
-            echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
+            echo "Cannot connect to STS at this URL. Try again or press Enter to skip." . PHP_EOL;
             continue;
         }
 
         echo "Using: " . $newRemoteURL . PHP_EOL;
+        $urlChanged = true;
         break;
-    } while (true);
-
-    $urlChanged = true;
+    } while ($attempts < 5);
 } else {
-    echo "Current STS URL: " . $currentRemoteURL . PHP_EOL;
-    echo PHP_EOL;
+    echo "Current STS URL: " . $currentRemoteURL . PHP_EOL . PHP_EOL;
 
-    $confirmUrl = readUserInput("Is this STS URL correct? (y/n) [y]: ");
-    $confirmUrl = strtolower(trim($confirmUrl));
-
-    if (empty($confirmUrl)) {
+    $confirmUrl = strtolower((string)readUserInput("Is this STS URL correct? (y/n) [y]: "));
+    if ($confirmUrl === '' || $confirmUrl === null) {
         $confirmUrl = 'y';
     }
 
     if ($confirmUrl !== 'y' && $confirmUrl !== 'yes') {
-        echo PHP_EOL;
-        echo "Please enter the correct STS URL:" . PHP_EOL;
+        echo PHP_EOL . "Press Enter to skip (you can set it later)." . PHP_EOL;
 
+        $attempts = 0;
         do {
+            $attempts++;
             $userInput = readUserInput("STS URL: ");
 
-            if (empty(trim($userInput))) {
-                echo "STS URL cannot be empty. Please try again." . PHP_EOL;
-                continue;
+            if ($userInput === null || $userInput === '') {
+                echo "Skipping STS URL change; keeping the previous value." . PHP_EOL;
+                $newRemoteURL = $currentRemoteURL;
+                break;
             }
 
             $newRemoteURL = normalizeUrl($userInput, $currentLabId);
 
             if (!isValidUrl($newRemoteURL)) {
-                echo "Unable to create a valid URL. Please try again." . PHP_EOL;
+                echo "Unable to create a valid URL. Try again or press Enter to skip." . PHP_EOL;
                 continue;
             }
 
-            // Test if the STS URL actually works
             if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
-                echo "Cannot connect to STS server at this URL. Please verify the URL is correct." . PHP_EOL;
+                echo "Cannot connect to STS at this URL. Try again or press Enter to skip." . PHP_EOL;
                 continue;
             }
 
             echo "Using: " . $newRemoteURL . PHP_EOL;
+            $urlChanged = ($newRemoteURL !== $currentRemoteURL);
             break;
-        } while (true);
-
-        $urlChanged = true;
+        } while ($attempts < 5);
     } else {
         $newRemoteURL = $currentRemoteURL;
     }
 }
 
-// Step 2: Update STS URL if changed
-if ($urlChanged) {
-    echo PHP_EOL;
-    echo "Updating STS URL in configuration..." . PHP_EOL;
-
+// Step 2: only update if we actually changed AND not skipped
+if ($urlChanged && $newRemoteURL !== '') {
+    echo PHP_EOL . "Updating STS URL in configuration..." . PHP_EOL;
     try {
-        $updatedConfig = ['remoteURL' => $newRemoteURL];
-        $configService->updateConfig($updatedConfig);
+        $configService->updateConfig(['remoteURL' => $newRemoteURL]);
         echo "✅ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
     } catch (Exception $e) {
-        LoggerUtility::logError(
-            "Error updating STS URL: " . $e->getMessage(),
-            [
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'trace' => $e->getTraceAsString(),
-            ]
-        );
+        LoggerUtility::logError("Error updating STS URL: " . $e->getMessage(), [
+            'line' => $e->getLine(),
+            'file' => $e->getFile(),
+            'trace' => $e->getTraceAsString(),
+        ]);
         echo "❌ Error updating STS URL. Please check logs for details." . PHP_EOL;
         exit(1);
     }
 }
 
-// Step 3: Run metadata refresh if URL was changed or freshly set
-//if ($urlWasEmpty || $urlChanged) {
-$reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
+// Step 3: Only refresh metadata if we have a non-empty URL and it changed/was newly set
+if ($newRemoteURL !== '' && ($urlWasEmpty || $urlChanged)) {
+    $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
 
-echo PHP_EOL;
-echo "=== Refreshing Database Metadata ===" . PHP_EOL;
-echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
-
-$metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
-
-if (!file_exists($metadataScriptPath)) {
-    echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
-    echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-    echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
-    exit(1);
-} else {
-    $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-    echo "Executing: " . $metadataCommand . PHP_EOL;
     echo PHP_EOL;
+    echo "=== Refreshing Database Metadata ===" . PHP_EOL;
+    echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
 
-    $output = [];
-    $returnCode = 0;
-    exec($metadataCommand . " 2>&1", $output, $returnCode);
+    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
 
-    foreach ($output as $line) {
-        echo $line . PHP_EOL;
-    }
-
-    if ($returnCode === 0) {
-        echo PHP_EOL;
-        echo "✅ Metadata refresh completed successfully." . PHP_EOL;
-    } else {
-        echo PHP_EOL;
-        echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+    if (!file_exists($metadataScriptPath)) {
+        echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
         echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
         exit(1);
+    } else {
+        $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+        echo "Executing: " . $metadataCommand . PHP_EOL;
+        echo PHP_EOL;
+
+        $output = [];
+        $returnCode = 0;
+        exec($metadataCommand . " 2>&1", $output, $returnCode);
+
+        foreach ($output as $line) {
+            echo $line . PHP_EOL;
+        }
+
+        if ($returnCode === 0) {
+            echo PHP_EOL;
+            echo "✅ Metadata refresh completed successfully." . PHP_EOL;
+        } else {
+            echo PHP_EOL;
+            echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+            echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+            exit(1);
+        }
     }
+} else {
+    echo PHP_EOL . "Skipping metadata refresh (no STS URL set/changed)." . PHP_EOL;
 }
-//}
 
 // Step 4: Handle Lab Configuration
 echo PHP_EOL;
