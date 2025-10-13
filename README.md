@@ -1,7 +1,7 @@
 # InteLIS
 
 > **Integrated Laboratory Information & Sample Tracking System**
->  Simple, open-source LIS to manage and track samples for HIV, EID, TB, Hepatitis, and COVID-19.
+> Simple, open-source LIS to manage and track samples for HIV VL, EID, TB, Hepatitis, COVID-19, CD4 and other priority diseases.
 
 ![PHP](https://img.shields.io/badge/PHP-8.2+-blue)
  ![Ubuntu](https://img.shields.io/badge/Ubuntu-22.04%2B-orange)
@@ -10,7 +10,7 @@
 
 InteLIS (formerly **VLSM**) digitizes laboratory workflows — from sample collection to result dispatch — for national and sub-national health programs.
 
-It’s lightweight, self-hostable, and works both online and offline.
+It's lightweight, self-hostable, and works both online and offline.
 
 ------
 
@@ -45,7 +45,7 @@ This license allows **non-commercial use** — including public or private labor
 
 > For commercial licensing inquiries, contact [support@deforay.com](mailto:support@deforay.com)
 
-See the full license text in [LICENSE.md](https://chatgpt.com/c/LICENSE.md).
+See the full license text in [LICENSE.md](LICENSE.md).
 
 ------
 
@@ -77,6 +77,7 @@ When prompted, enter:
 
 - MySQL password
 - STS URL
+- Hostname (optional, default is `intelis`)
 
 After the script completes:
 
@@ -86,7 +87,7 @@ After the script completes:
    sudo gedit /var/www/intelis/configs/config.production.php
    ```
 
-2. Continue with [Complete the Setup](#✅-complete-the-setup).
+2. Continue with [Complete the Setup](#-complete-the-setup).
 
 ------
 
@@ -110,7 +111,7 @@ composer post-install
 #### Step 3 — Set up the database
 
 1. Create a blank database called `intelis`.
-2. Import `init.sql` into it (e.g., via phpMyAdmin or MySQL CLI).
+2. Import `init.sql` from the `sql` folder into it (e.g., via phpMyAdmin or MySQL CLI).
 
 #### Step 4 — Configure the application
 
@@ -191,9 +192,11 @@ Add this line:
 **Applies to both automated and manual installations.**
 
 1. Visit the application in your browser:
-   - **Manual:** http://intelis.example.org/
-   - **Automated:** http://intelis/
+   - **Manual:** Use the hostname you configured (e.g., http://intelis.example.org/)
+   - **Automated:** Use the hostname you chose during setup (default: http://intelis/)
+
 2. Register and set up the admin user.
+
 3. Log in and configure under **Admin → System Settings**:
    - Sample Types
    - Reasons for Testing
