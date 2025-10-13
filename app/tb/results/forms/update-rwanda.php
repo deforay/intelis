@@ -65,7 +65,6 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             <li class="active"><?php echo _translate("Update Result"); ?></li>
         </ol>
     </section>
-
     <!-- Main content -->
     <section class="content">
         <div class="box box-default">
@@ -684,7 +683,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
 <script type="text/javascript">
     let provinceName = true;
     let facilityName = true;
-    let testCount = 1;
+    let testCount = $('.test-section').length || 1;
 
     // Test result options for each test type
     const testResultOptions = {
@@ -739,85 +738,20 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         ]
     };
 
-    // Initialize plugins for a specific section
-    function initializePluginsForSection(section, count) {
-        const $section = $(section);
-
-        // Initialize Select2 for dropdowns
-        $section.find('.resultSelect2').each(function() {
-            const $this = $(this);
-            if (!$this.hasClass('select2-hidden-accessible')) {
-                $this.select2({
-                    placeholder: "Select option",
-                    width: '100%'
-                });
-            }
-        });
-
-        // Initialize date pickers
-        $('.date:not(.hasDatePicker)').each(function() {
-            $(this).datepicker({
-                changeMonth: true,
-                changeYear: true,
-                onSelect: function() {
-                    $(this).change();
-                },
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                maxDate: "Today",
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
-                $('.ui-datepicker-calendar').show();
-            });
-        });
-
-        // Initialize datetime pickers  
-        $('.dateTime:not(.hasDateTimePicker), .date-time:not(.hasDateTimePicker)').each(function() {
-            $(this).datetimepicker({
-                changeMonth: true,
-                changeYear: true,
-                dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
-                timeFormat: "HH:mm",
-                maxDate: "Today",
-                onChangeMonthYear: function(year, month, widget) {
-                    setTimeout(function() {
-                        $('.ui-datepicker-calendar').show();
-                    });
-                },
-                yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
-            }).click(function() {
-                $('.ui-datepicker-calendar').show();
-            });
-        });
-
-        // Bind sample rejection change event
-        $section.find('.sample-rejection-select').off('change').on('change', function() {
-            const $row = $(this).closest('.test-section');
-            if ($(this).val() === 'yes') {
-                $row.find('.rejection-reason-field, .rejection-date-field').show();
-                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
-            } else {
-                $row.find('.rejection-reason-field, .rejection-date-field').hide();
-                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
-            }
-        });
-
-        // Bind test type change event
-        $section.find('.test-type-select').on('change', function() {
-            updateTestResults(count);
-        });
-    }
-
-    // Update test results based on selected test type
+    // Update test results dropdown based on selected test type
     function updateTestResults(rowNumber) {
         const testTypeSelect = document.getElementById(`testType${rowNumber}`);
         const testResultSelect = document.getElementById(`testResult${rowNumber}`);
 
-        if (!testTypeSelect || !testResultSelect) return;
+        if (!testTypeSelect || !testResultSelect) {
+            console.log(`Elements not found for row ${rowNumber}`);
+            return;
+        }
 
         const selectedTestType = testTypeSelect.value;
 
         // Clear existing options
-        testResultSelect.innerHTML = '<option value="">Select Test Result</option>';
+        testResultSelect.innerHTML = '<option value=""><?php echo _translate("Select test result"); ?></option>';
 
         // Populate based on selected test type
         if (selectedTestType && testResultOptions[selectedTestType]) {
@@ -830,6 +764,54 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         }
     }
 
+    // Initialize date pickers for a section
+    function initializeDatePickers(section) {
+        // Regular date picker
+        $(section).find('.date:not(.hasDatepicker)').datepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            maxDate: "Today",
+            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+        });
+
+        // DateTime picker  
+        $(section).find('.date-time:not(.hasDateTimePicker)').datetimepicker({
+            changeMonth: true,
+            changeYear: true,
+            dateFormat: '<?= $_SESSION['jsDateFieldFormat'] ?? 'dd-M-yy'; ?>',
+            timeFormat: "HH:mm",
+            maxDate: "Today",
+            yearRange: <?= DateUtility::getYearMinus(100); ?> + ":" + "<?= date('Y') ?>"
+        });
+    }
+
+    // Initialize event handlers for a test section
+    function initializeTestSection(section, sectionNumber) {
+        const $section = $(section);
+
+        // Sample rejection change handler
+        $section.find('.sample-rejection-select').off('change.testSection').on('change.testSection', function() {
+            const $row = $(this).closest('.test-section');
+            if ($(this).val() === 'yes') {
+                $row.find('.rejection-reason-field, .rejection-date-field').show();
+                $row.find('.rejection-reason-select, .rejection-date').addClass('isRequired');
+            } else {
+                $row.find('.rejection-reason-field, .rejection-date-field').hide();
+                $row.find('.rejection-reason-select, .rejection-date').removeClass('isRequired').val('');
+            }
+        });
+
+        // Test type change handler - FIXED: Use proper event delegation
+        $section.find('.test-type-select').off('change.testSection').on('change.testSection', function() {
+            const sectionNum = $(this).closest('.test-section').attr('data-count');
+            updateTestResults(sectionNum);
+        });
+
+        // Initialize date pickers
+        initializeDatePickers(section);
+    }
+
     // Add new test section
     function addTestSection() {
         testCount++;
@@ -837,25 +819,24 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
         const firstSection = container.querySelector('.test-section');
         const newSection = firstSection.cloneNode(true);
 
-        // Update data-count attribute
+        // Update section attributes
         newSection.setAttribute('data-count', testCount);
-
-        // Update section header
         newSection.querySelector('.section-number').textContent = testCount;
 
-        // Update all IDs, names and labels
-        updateIdsAndLabels(newSection, testCount);
+        // Update all IDs and names
+        updateElementIds(newSection, testCount);
 
-        // Clear all form values
-        clearFormValues(newSection);
+        // Clear form values
+        clearSectionValues(newSection);
 
         // Hide conditional fields
         $(newSection).find('.rejection-reason-field, .rejection-date-field').hide();
+        $(newSection).find('.reasonForChange' + (testCount - 1)).hide();
 
         container.appendChild(newSection);
 
-        // Initialize plugins for new section
-        initializePluginsForSection(newSection, testCount);
+        // Initialize the new section
+        initializeTestSection(newSection, testCount);
     }
 
     // Remove test section
@@ -864,67 +845,48 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             const container = document.getElementById('testSections');
             const lastSection = container.querySelector('.test-section:last-child');
             if (lastSection) {
-                // Destroy Select2 instances before removing
-                $(lastSection).find('select.select2-hidden-accessible').each(function() {
-                    $(this).select2('destroy');
-                });
                 lastSection.remove();
                 testCount--;
             }
         }
     }
 
-    // Update IDs and labels for new section
-    function updateIdsAndLabels(section, count) {
-        // Update all labels with 'for' attribute
-        const labels = section.querySelectorAll('label[for]');
-        labels.forEach(label => {
-            const oldFor = label.getAttribute('for');
+    // Update element IDs and names for new section
+    function updateElementIds(section, count) {
+        // Update labels
+        $(section).find('label[for]').each(function() {
+            const oldFor = $(this).attr('for');
             if (oldFor && /\d+$/.test(oldFor)) {
                 const newFor = oldFor.replace(/\d+$/, count);
-                label.setAttribute('for', newFor);
+                $(this).attr('for', newFor);
             }
         });
-        $(section).find('.hasDatepicker, .hasDateTimePicker').removeClass('hasDatepicker hasDateTimePicker');
-        // Update all input/select IDs and names
-        const formElements = section.querySelectorAll('input[id], select[id]');
-        formElements.forEach(element => {
-            const oldId = element.getAttribute('id');
+
+        // Update form elements
+        $(section).find('input[id], select[id], textarea[id]').each(function() {
+            const oldId = $(this).attr('id');
             if (oldId && /\d+$/.test(oldId)) {
                 const newId = oldId.replace(/\d+$/, count);
-                element.setAttribute('id', newId);
+                $(this).attr('id', newId);
 
-                // Update name attribute for array fields
-                if (element.hasAttribute('name')) {
-                    const oldName = element.getAttribute('name');
-                    if (oldName.includes('[]')) {
-                        // Keep array notation as is
-                        element.setAttribute('name', oldName);
-                    }
-                }
-                $(element).find('.hasDatepicker, .hasDateTimePicker').removeClass('hasDatepicker hasDateTimePicker');
-
-                // Clean Select2 attributes
-                if (element.tagName === 'SELECT') {
-                    $(element).removeClass('select2-hidden-accessible')
-                        .removeAttr('data-select2-id tabindex aria-hidden')
-                        .siblings('.select2-container').remove();
-                }
-
+                // Remove datepicker classes to allow re-initialization
+                $(this).removeClass('hasDatepicker hasDateTimePicker');
             }
         });
+
+        // Update reason for change class
+        $(section).find('.reasonForChange1, .reasonForChange2, .reasonForChange3').removeClass().addClass('reasonForChange' + count);
     }
 
-    // Clear form values in section
-    function clearFormValues(section) {
-        const inputs = section.querySelectorAll('input, select, textarea');
-        inputs.forEach(input => {
-            if (input.type === 'checkbox' || input.type === 'radio') {
-                input.checked = false;
-            } else if (input.tagName === 'SELECT') {
-                input.selectedIndex = 0;
+    // Clear all values in a section
+    function clearSectionValues(section) {
+        $(section).find('input, select, textarea').each(function() {
+            if (this.type === 'checkbox' || this.type === 'radio') {
+                this.checked = false;
+            } else if (this.tagName === 'SELECT') {
+                this.selectedIndex = 0;
             } else {
-                input.value = '';
+                this.value = '';
             }
         });
     }
@@ -1126,8 +1088,17 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
             });
         <?php } ?>
 
-        // Initialize first test section
-        initializePluginsForSection(document.querySelector('.test-section'), 1);
+        // Initialize all existing test sections
+        $('.test-section').each(function(index) {
+            const sectionNumber = $(this).attr('data-count') || (index + 1);
+            initializeTestSection(this, sectionNumber);
+
+            // Initialize test results for existing sections
+            const testTypeSelect = $(this).find('.test-type-select');
+            if (testTypeSelect.length && testTypeSelect.val()) {
+                updateTestResults(sectionNumber);
+            }
+        });
 
         // Treatment initiation change handler
         $('#isPatientInitiatedTreatment').on('change', function() {
