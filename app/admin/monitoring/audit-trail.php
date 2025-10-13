@@ -150,14 +150,16 @@ try {
 
         /* Enhanced diff styling */
         .diff-cell {
-            background-color:rgb(255, 220, 164);
+            background-color: rgb(255, 220, 164);
             transition: background-color 0.3s;
         }
+
         .diff-old {
             text-decoration: line-through;
             color: #d32f2f;
             padding-right: 5px;
         }
+
         .diff-new {
             font-weight: bold;
             color: #388e3c;
@@ -170,11 +172,13 @@ try {
             margin: 0 auto;
             padding: 20px 0;
         }
+
         .timeline-item {
             display: flex;
             margin-bottom: 20px;
             position: relative;
         }
+
         .timeline-item::before {
             content: '';
             position: absolute;
@@ -185,9 +189,11 @@ try {
             background-color: #ddd;
             z-index: 0;
         }
+
         .timeline-item:last-child::before {
             display: none;
         }
+
         .timeline-marker {
             width: 40px;
             height: 40px;
@@ -200,34 +206,41 @@ try {
             z-index: 1;
             flex-shrink: 0;
         }
+
         .timeline-content {
             background-color: #f9f9f9;
             border-radius: 4px;
             padding: 15px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
             flex-grow: 1;
         }
+
         .timeline-content h4 {
             margin-top: 0;
             color: #333;
         }
+
         .timeline-changes {
             margin-top: 10px;
         }
+
         .change-item {
             margin-bottom: 5px;
             padding: 5px;
             background-color: #f5f5f5;
             border-radius: 3px;
         }
+
         .change-field {
             font-weight: bold;
         }
+
         .change-old {
             color: #d32f2f;
             text-decoration: line-through;
             margin-right: 5px;
         }
+
         .change-new {
             color: #388e3c;
             font-weight: bold;
@@ -240,9 +253,11 @@ try {
             padding: 15px;
             border-radius: 4px;
         }
+
         .comparison-table {
             margin-top: 20px;
         }
+
         .diff-row {
             background-color: #fff3e0;
         }
@@ -256,13 +271,16 @@ try {
         .change-summary {
             margin-top: 20px;
         }
+
         .panel-title {
             font-size: 14px;
         }
+
         .old-value {
             color: #d32f2f;
             background-color: #ffebee;
         }
+
         .new-value {
             color: #388e3c;
             background-color: #e8f5e9;
@@ -288,7 +306,7 @@ try {
                 <div class="col-xs-12">
                     <div class="box">
                         <form name="form1" action="audit-trail.php" method="post" id="searchForm" autocomplete="off">
-                            <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                 <tr>
                                     <td><strong><?php echo _translate("Test Type"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
                                     <td>
@@ -356,7 +374,7 @@ try {
                                                     $i = 0;
                                                     foreach ($resultColumn as $col) {
                                                         $selected = "";
-                                                        if(!empty($_POST['hiddenColumns']) && in_array($i, explode(",", $_POST['hiddenColumns']))){
+                                                        if (!empty($_POST['hiddenColumns']) && in_array($i, explode(",", $_POST['hiddenColumns']))) {
                                                             $selected = "selected";
                                                         }
                                                         echo "<option value='$i' $selected>{$col['COLUMN_NAME']}</option>";
@@ -451,73 +469,71 @@ try {
                                                     $date = $post['dt_datetime'];
                                                     $revision = $post['revision'];
 
-                                                    $icon = $action == 'insert' ? 'fa fa-plus-circle' :
-                                                           ($action == 'update' ? 'fa fa-edit' : 'fa fa-trash');
+                                                    $icon = $action == 'insert' ? 'fa fa-plus-circle' : ($action == 'update' ? 'fa fa-edit' : 'fa fa-trash');
 
-                                                    $color = $action == 'insert' ? 'success' :
-                                                            ($action == 'update' ? 'warning' : 'danger');
+                                                    $color = $action == 'insert' ? 'success' : ($action == 'update' ? 'warning' : 'danger');
                                                 ?>
-                                                <div class="timeline-item">
-                                                    <div class="timeline-marker bg-<?= $color ?>">
-                                                        <i class="<?= $icon ?>"></i>
-                                                    </div>
-													<div class="timeline-content">
-                                                        <h4><?= ucfirst($action) ?> - Revision <?= $revision ?></h4>
-                                                        <p><i class="fa fa-calendar"></i> <?= date('F j, Y, g:i a', strtotime($date)) ?></p>
-                                                        <div class="timeline-changes">
-                                                            <?php
-                                                            // Show what changed in this revision
-                                                            if ($i > 0) {
-                                                                $prevPost = $posts[$i-1];
-                                                                $changeCount = 0;
+                                                    <div class="timeline-item">
+                                                        <div class="timeline-marker bg-<?= $color ?>">
+                                                            <i class="<?= $icon ?>"></i>
+                                                        </div>
+                                                        <div class="timeline-content">
+                                                            <h4><?= ucfirst($action) ?> - Revision <?= $revision ?></h4>
+                                                            <p><i class="fa fa-calendar"></i> <?= date('F j, Y, g:i a', strtotime($date)) ?></p>
+                                                            <div class="timeline-changes">
+                                                                <?php
+                                                                // Show what changed in this revision
+                                                                if ($i > 0) {
+                                                                    $prevPost = $posts[$i - 1];
+                                                                    $changeCount = 0;
 
-                                                                foreach ($colArr as $colName) {
-                                                                    if ($colName != 'action' && $colName != 'revision' && $colName != 'dt_datetime') {
-                                                                        $oldValue = $prevPost[$colName] ?? '';
-                                                                        $newValue = $post[$colName] ?? '';
+                                                                    foreach ($colArr as $colName) {
+                                                                        if ($colName != 'action' && $colName != 'revision' && $colName != 'dt_datetime') {
+                                                                            $oldValue = $prevPost[$colName] ?? '';
+                                                                            $newValue = $post[$colName] ?? '';
 
-                                                                        if ($oldValue !== $newValue) {
-                                                                            $changeCount++;
+                                                                            if ($oldValue !== $newValue) {
+                                                                                $changeCount++;
 
-                                                                            // Format user IDs to names
-                                                                            if (in_array($colName, $usernameFields)) {
-                                                                                if (!empty($oldValue) && !isset($userCache[$oldValue])) {
-                                                                                    $user = $usersService->getUserByID($oldValue, ['user_name']);
-                                                                                    $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
+                                                                                // Format user IDs to names
+                                                                                if (in_array($colName, $usernameFields)) {
+                                                                                    if (!empty($oldValue) && !isset($userCache[$oldValue])) {
+                                                                                        $user = $usersService->getUserByID($oldValue, ['user_name']);
+                                                                                        $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
+                                                                                    }
+                                                                                    if (!empty($newValue) && !isset($userCache[$newValue])) {
+                                                                                        $user = $usersService->getUserByID($newValue, ['user_name']);
+                                                                                        $userCache[$newValue] = $user['user_name'] ?? $newValue;
+                                                                                    }
+                                                                                    $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
+                                                                                    $newValue = !empty($newValue) ? $userCache[$newValue] : '';
                                                                                 }
-                                                                                if (!empty($newValue) && !isset($userCache[$newValue])) {
-                                                                                    $user = $usersService->getUserByID($newValue, ['user_name']);
-                                                                                    $userCache[$newValue] = $user['user_name'] ?? $newValue;
-                                                                                }
-                                                                                $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
-                                                                                $newValue = !empty($newValue) ? $userCache[$newValue] : '';
+
+                                                                                echo "<div class='change-item'>";
+                                                                                echo "<span class='change-field'>{$colName}:</span> ";
+                                                                                echo "<span class='change-old'>" . htmlspecialchars($oldValue) . "</span> → ";
+                                                                                echo "<span class='change-new'>" . htmlspecialchars($newValue) . "</span>";
+                                                                                echo "</div>";
                                                                             }
-
-                                                                            echo "<div class='change-item'>";
-                                                                            echo "<span class='change-field'>{$colName}:</span> ";
-                                                                            echo "<span class='change-old'>" . htmlspecialchars($oldValue) . "</span> → ";
-                                                                            echo "<span class='change-new'>" . htmlspecialchars($newValue) . "</span>";
-                                                                            echo "</div>";
                                                                         }
                                                                     }
-                                                                }
 
-                                                                if ($changeCount === 0) {
-                                                                    echo "<div class='change-item'>No fields were changed in this revision.</div>";
+                                                                    if ($changeCount === 0) {
+                                                                        echo "<div class='change-item'>No fields were changed in this revision.</div>";
+                                                                    }
+                                                                } else {
+                                                                    echo "<div class='change-item'>Initial record creation</div>";
                                                                 }
-                                                            } else {
-                                                                echo "<div class='change-item'>Initial record creation</div>";
-                                                            }
-                                                            ?>
-                                                        </div>
-                                                        <!-- Snapshot Export Button -->
-                                                        <div class="mt-3">
-                                                            <button class="btn btn-xs btn-info snapshot-btn" data-revision="<?= $revision ?>">
-                                                                <i class="fa fa-download"></i> Export Snapshot at Rev <?= $revision ?>
-                                                            </button>
+                                                                ?>
+                                                            </div>
+                                                            <!-- Snapshot Export Button -->
+                                                            <div class="mt-3">
+                                                                <button class="btn btn-xs btn-info snapshot-btn" data-revision="<?= $revision ?>">
+                                                                    <i class="fa fa-download"></i> Export Snapshot at Rev <?= $revision ?>
+                                                                </button>
+                                                            </div>
                                                         </div>
                                                     </div>
-                                                </div>
                                                 <?php } ?>
                                             </div>
                                         </div>
@@ -561,7 +577,7 @@ try {
                                                         }
 
                                                         if (!empty($changes)) {
-                                                            ?>
+                                                    ?>
                                                             <div class="panel panel-default">
                                                                 <div class="panel-heading">
                                                                     <h4 class="panel-title">
@@ -583,18 +599,18 @@ try {
                                                                             </thead>
                                                                             <tbody>
                                                                                 <?php foreach ($changes as $field => $change): ?>
-                                                                                <tr>
-                                                                                    <td><?= $field ?></td>
-                                                                                    <td class="old-value"><?= htmlspecialchars($change['from']) ?></td>
-                                                                                    <td class="new-value"><?= htmlspecialchars($change['to']) ?></td>
-                                                                                </tr>
+                                                                                    <tr>
+                                                                                        <td><?= $field ?></td>
+                                                                                        <td class="old-value"><?= htmlspecialchars($change['from']) ?></td>
+                                                                                        <td class="new-value"><?= htmlspecialchars($change['to']) ?></td>
+                                                                                    </tr>
                                                                                 <?php endforeach; ?>
                                                                             </tbody>
                                                                         </table>
                                                                     </div>
                                                                 </div>
                                                             </div>
-                                                            <?php
+                                                    <?php
                                                         }
                                                     }
                                                     ?>
@@ -611,11 +627,11 @@ try {
                                                             <label for="versionFrom">From Version:</label>
                                                             <select id="versionFrom" class="form-control">
                                                                 <?php foreach ($posts as $post): ?>
-                                                                <option value="<?= $post['revision'] ?>">
-                                                                    Revision <?= $post['revision'] ?>
-                                                                    (<?= ucfirst($post['action']) ?> -
-                                                                    <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
-                                                                </option>
+                                                                    <option value="<?= $post['revision'] ?>">
+                                                                        Revision <?= $post['revision'] ?>
+                                                                        (<?= ucfirst($post['action']) ?> -
+                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
+                                                                    </option>
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </div>
@@ -628,11 +644,11 @@ try {
                                                                 foreach ($posts as $i => $post):
                                                                     $selected = ($i === count($posts) - 1) ? 'selected' : '';
                                                                 ?>
-                                                                <option value="<?= $post['revision'] ?>" <?= $selected ?>>
-                                                                    Revision <?= $post['revision'] ?>
-                                                                    (<?= ucfirst($post['action']) ?> -
-                                                                    <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
-                                                                </option>
+                                                                    <option value="<?= $post['revision'] ?>" <?= $selected ?>>
+                                                                        Revision <?= $post['revision'] ?>
+                                                                        (<?= ucfirst($post['action']) ?> -
+                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
+                                                                    </option>
                                                                 <?php endforeach; ?>
                                                             </select>
                                                         </div>
@@ -716,7 +732,7 @@ try {
             // Initialize selectize
             $("#auditColumn").selectize({
                 plugins: ["restore_on_backspace", "remove_button", "clear_button"],
-                onClear: function(){
+                onClear: function() {
                     document.getElementById('searchForm').submit();
                 }
             });
@@ -866,7 +882,9 @@ try {
                 csvContent += row;
 
                 // Create download link
-                const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+                const blob = new Blob([csvContent], {
+                    type: 'text/csv;charset=utf-8;'
+                });
                 const url = URL.createObjectURL(blob);
                 const link = document.createElement('a');
                 link.setAttribute('href', url);
