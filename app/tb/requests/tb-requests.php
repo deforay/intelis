@@ -70,7 +70,7 @@ $batResult = $db->rawQuery($batQuery);
 $sourceOfRequests = $general->getSourcesOfTestRequests('form_tb', asNameValuePair: true);
 $srcOfReqList = [];
 foreach ($sourceOfRequests as $value => $displayText) {
-	$srcOfReqList[$value] = $displayText;
+    $srcOfReqList[$value] = $displayText;
 }
 ?>
 <style>
@@ -114,7 +114,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
         <div class="row">
             <div class="col-xs-12">
                 <div class="box">
-                    <table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+                    <table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
                         <tr>
                             <td><strong><?php echo _translate("Sample Collection Date"); ?> :</strong></td>
                             <td>
@@ -420,10 +420,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                           $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
-               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
+            $sampleCode = htmlspecialchars($_GET['s']);
+            $facilityCode = htmlspecialchars($_GET['f']);
+            $patientID = htmlspecialchars($_GET['p']);
+            echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
         }
         ?>
         $("#facilityName").select2({

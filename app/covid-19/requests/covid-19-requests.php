@@ -127,7 +127,7 @@ foreach ($sourceOfRequests as $value => $displayText) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+					<table aria-describedby="table" id="advanceFilter" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?> :
