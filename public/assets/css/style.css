@@ -224,3 +224,43 @@ select,
 .select2-selection {
     transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;
 }
+
+/* No reflow: draw a halo on a pseudo-element */
+.daterangepicker .drp-selected {
+    position: relative;
+    /* anchor the overlay */
+    display: inline-block;
+    /* stabilize width/height */
+}
+
+.daterangepicker .drp-selected::after {
+    content: "";
+    position: absolute;
+    inset: -3px;
+    /* slightly outside without shifting layout */
+    padding: 0.8em;
+    box-shadow: 0 0 0 2px rgba(255, 244, 179);
+    background: rgba(255, 244, 179, 0.8);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .4s ease;
+}
+
+.daterangepicker .drp-selected.drp-changed::after {
+    opacity: 1;
+    animation: drpPulse .9s ease;
+}
+
+@keyframes drpPulse {
+    0% {
+        opacity: 0;
+    }
+
+    25% {
+        opacity: 1;
+    }
+
+    100% {
+        opacity: 0;
+    }
+}

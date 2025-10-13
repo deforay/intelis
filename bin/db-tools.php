@@ -29,7 +29,6 @@ if (function_exists('pcntl_async_signals')) {
 }
 
 use App\Utilities\MiscUtility;
-use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
@@ -44,9 +43,6 @@ const DEFAULT_OPERATION = 'backup';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
-/** @var CommonService $general */
-$general = ContainerRegistry::get(CommonService::class);
 
 $backupFolder = APPLICATION_PATH . '/../backups/db';
 if (!is_dir($backupFolder)) {
@@ -568,9 +564,12 @@ Commands:
     help                    Show this help message
 
 Target options:
-    intelis                    InteLIS/VLSM database (default)
-    interfacing            Interfacing database
-    both, all              Both databases (backup/mysqlcheck/purge-binlogs only)
+    intelis                 InteLIS/VLSM database (default)
+    interfacing             Interfacing database
+    both, all               Both databases (backup/mysqlcheck/purge-binlogs only)
+
+Options:
+    --skip-safety-backup    Skip creating safety backup before restore/import (faster but risky)
 
 Examples:
     php bin/{$script} backup intelis
@@ -580,6 +579,8 @@ Examples:
     php bin/{$script} export intelis vlsm_backup.sql
     php bin/{$script} import interfacing
     php bin/{$script} restore
+    php bin/{$script} restore --skip-safety-backup
+    php bin/{$script} import intelis mydata.sql --skip-safety-backup
     php bin/{$script} maintain both
 
 Note: For security, all file operations are restricted to the backups directory.
@@ -694,6 +695,10 @@ function handleImport(string $backupFolder, array $intelisDbConfig, ?array $inte
     $config = resolveTargetConfig($targetOption, $intelisDbConfig, $interfacingDbConfig);
     $label = normalizeTargetLabel($targetOption);
 
+    // Check for --skip-safety-backup flag
+    global $argv;
+    $skipSafetyBackup = in_array('--skip-safety-backup', $argv ?? [], true);
+
     // If no file specified, show interactive selection
     if ($sourceFile === null) {
         $sqlPath = promptForImportFileSelection($backupFolder);
@@ -708,10 +713,16 @@ function handleImport(string $backupFolder, array $intelisDbConfig, ?array $inte
         }
     }
 
-    echo "Creating safety backup of current {$label} database before import...\n";
-    $note = 'pre-import-' . date('His');
-    $preImport = createBackupArchive($label . '-backup', $config, $backupFolder, $note);
-    echo '  Created: ' . basename($preImport) . PHP_EOL;
+    // Create safety backup unless skipped
+    if (!$skipSafetyBackup) {
+        echo "Creating safety backup of current {$label} database before import...\n";
+        $note = 'pre-import-' . date('His');
+        $preImport = createBackupArchive($label . '-backup', $config, $backupFolder, $note);
+        echo '  Created: ' . basename($preImport) . PHP_EOL;
+    } else {
+        echo "⚠ Skipping safety backup (--skip-safety-backup flag used)\n";
+        echo "  WARNING: No backup will be created before import!\n";
+    }
 
     $lower = strtolower($sqlPath);
     if (isGpgGzFile($lower)) {
@@ -785,6 +796,10 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         return;
     }
 
+    // Check for --skip-safety-backup flag
+    global $argv;
+    $skipSafetyBackup = in_array('--skip-safety-backup', $argv ?? [], true);
+
     $selectedPath = null;
     if ($requestedFile) {
         $selectedPath = resolveBackupFileSecure($requestedFile, $backupFolder);
@@ -842,10 +857,16 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         $backupPrefix = 'pre-restore-intelis';
     }
 
-    echo 'Creating safety backup of current ' . $targetLabel . ' database before restore...' . PHP_EOL;
-    $note = 'restoreof-' . slugifyForFilename($basename, 32);
-    $preRestorePath = createBackupArchive($backupPrefix, $targetConfig, $backupFolder, $note);
-    echo '  Created: ' . basename($preRestorePath) . PHP_EOL;
+    // Create safety backup unless skipped
+    if (!$skipSafetyBackup) {
+        echo 'Creating safety backup of current ' . $targetLabel . ' database before restore...' . PHP_EOL;
+        $note = 'restoreof-' . slugifyForFilename($basename, 32);
+        $preRestorePath = createBackupArchive($backupPrefix, $targetConfig, $backupFolder, $note);
+        echo '  Created: ' . basename($preRestorePath) . PHP_EOL;
+    } else {
+        echo '⚠ Skipping safety backup (--skip-safety-backup flag used)' . PHP_EOL;
+        echo '  WARNING: No backup will be created before restore!' . PHP_EOL;
+    }
 
     echo 'Decrypting and extracting backup...' . PHP_EOL;
     if (isGpgGzFile($lower)) {
@@ -1579,8 +1600,20 @@ function executeMysqlCommand(array $config, array $baseCommand, ?string $inputDa
 
             $fileSize = filesize($inputData);
             $bytesRead = 0;
-            $lastProgress = 0;
 
+            // Use ProgressBar for files larger than 1MB
+            $progressBar = null;
+            if ($fileSize > 1048576) {
+                $out = console();
+                $progressBar = new ProgressBar($out, 100); // 100 steps for percentage
+                $progressBar->setFormat(" Importing SQL … %current%/%max%  [%bar%]  %elapsed:6s%  %memory:6s%");
+                $progressBar->setBarCharacter("<fg=green>█</>");
+                $progressBar->setEmptyBarCharacter("░");
+                $progressBar->setProgressCharacter("<fg=green>█</>");
+                $progressBar->start();
+            }
+
+            $lastPercent = 0;
             while (!feof($source)) {
                 $chunk = fread($source, 8192);
                 if ($chunk === false) break;
@@ -1588,15 +1621,21 @@ function executeMysqlCommand(array $config, array $baseCommand, ?string $inputDa
                 fwrite($pipes[0], $chunk);
                 $bytesRead += strlen($chunk);
 
-                // Show progress every 10% for files larger than 1MB
-                if ($fileSize > 1048576 && $fileSize > 0) {
-                    $progress = intval(($bytesRead / $fileSize) * 100);
-                    if ($progress >= $lastProgress + 10) {
-                        echo "  Progress: {$progress}%\n";
-                        $lastProgress = $progress;
+                // Update progress bar based on percentage
+                if ($progressBar !== null && $fileSize > 0) {
+                    $percent = intval(($bytesRead / $fileSize) * 100);
+                    if ($percent > $lastPercent) {
+                        $progressBar->setProgress($percent);
+                        $lastPercent = $percent;
                     }
                 }
             }
+
+            if ($progressBar !== null) {
+                $progressBar->finish();
+                echo "\n";
+            }
+
             fclose($source);
         } else {
             // Input is raw data
@@ -1636,9 +1675,82 @@ function importSqlDump(array $config, string $sqlFilePath): void
     }
 
     try {
+        // Apply bulk import optimizations
+        echo "  Optimizing settings for fast import...\n";
+
+        // Try to disable binary logging first (requires SUPER or BINLOG_ADMIN privilege)
+        $sqlLogBinDisabled = false;
+        try {
+            runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=0;');
+            $sqlLogBinDisabled = true;
+            echo "  - Binary logging disabled (won't generate binlog during restore)\n";
+        } catch (\Throwable $e) {
+            // SQL_LOG_BIN requires SUPER/BINLOG_ADMIN privilege - continue without it
+            echo "  - Binary logging still active (requires SUPER privilege to disable)\n";
+        }
+
+        // Apply other optimizations
+        $optimizations = [
+            'SET FOREIGN_KEY_CHECKS=0',
+            'SET UNIQUE_CHECKS=0',
+            'SET AUTOCOMMIT=0',
+        ];
+
+        foreach ($optimizations as $sql) {
+            runMysqlQuery($config, $sql . ';');
+        }
+
+        echo "  - Foreign key checks: disabled\n";
+        echo "  - Unique checks: disabled\n";
+        echo "  - Autocommit: disabled\n";
+
         // Pass database name in base command for import
         executeMysqlCommand($config, ['mysql', $config['db']], $sqlFilePath);
+
+        // Commit any pending transactions
+        echo "  Committing transactions...\n";
+        runMysqlQuery($config, 'COMMIT;');
+
+        // Restore normal settings
+        echo "  Restoring normal database settings...\n";
+        runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
+        runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
+        runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
+
+        if ($sqlLogBinDisabled) {
+            try {
+                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
+                echo "  - Binary logging re-enabled\n";
+            } catch (\Throwable $e) {
+                // Ignore errors re-enabling SQL_LOG_BIN
+            }
+        }
     } catch (SystemException $e) {
+        // Attempt to restore settings even if import fails
+        echo "  Import failed, attempting to restore database settings...\n";
+        try {
+            runMysqlQuery($config, 'COMMIT;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
+        } catch (\Throwable $ignored) {
+        }
+        if ($sqlLogBinDisabled) {
+            try {
+                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
+            } catch (\Throwable $ignored) {
+            }
+        }
+
         throw new SystemException('Database import failed: ' . $e->getMessage());
     }
 }
@@ -1776,8 +1888,10 @@ function recreateDatabase(array $config): void
         $clauses .= ' COLLATE ' . $collation;
     }
 
+    // Disable foreign key checks globally before dropping database
+    // This prevents "Cannot drop table referenced by a foreign key constraint" errors
     $sql = sprintf(
-        'DROP DATABASE IF EXISTS %1$s; CREATE DATABASE %1$s%2$s;',
+        'SET FOREIGN_KEY_CHECKS=0; DROP DATABASE IF EXISTS %1$s; CREATE DATABASE %1$s%2$s; SET FOREIGN_KEY_CHECKS=1;',
         $sanitizedDb,
         $clauses
     );
@@ -3013,10 +3127,82 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
     echo "  Starting at " . ($gtidMode ? 'GTID-exclude set' : "pos {$startPos}") . "\n";
     echo "  This may take a while. Do not interrupt.\n\n";
 
+    // Optimize settings before PITR replay
+    echo "Optimizing settings for PITR replay...\n";
+
+    $sqlLogBinDisabled = false;
+    try {
+        runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=0;');
+        $sqlLogBinDisabled = true;
+        echo "  - Binary logging disabled (won't generate binlog during replay)\n";
+    } catch (\Throwable $e) {
+        echo "  - Binary logging still active (requires SUPER privilege to disable)\n";
+    }
+
+    try {
+        runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=0;');
+        runMysqlQuery($config, 'SET UNIQUE_CHECKS=0;');
+        runMysqlQuery($config, 'SET AUTOCOMMIT=0;');
+        echo "  - Foreign key checks: disabled\n";
+        echo "  - Unique checks: disabled\n";
+        echo "  - Autocommit: disabled\n";
+    } catch (\Throwable $e) {
+        echo "  Warning: Could not set optimization flags: " . $e->getMessage() . "\n";
+    }
+
+    echo "\n";
+
     // Use env for password (avoid printing it)
     $env = ['MYSQL_PWD' => $config['password'] ?? ''];
 
-    runPipeline($producer, $consumer, $env);
+    try {
+        runPipeline($producer, $consumer, $env);
 
-    echo "✅ PITR replay completed up to {$to}.\n";
+        // Commit and restore settings
+        echo "\nCommitting transactions...\n";
+        runMysqlQuery($config, 'COMMIT;');
+
+        echo "Restoring normal database settings...\n";
+        runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
+        runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
+        runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
+
+        if ($sqlLogBinDisabled) {
+            try {
+                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
+                echo "  - Binary logging re-enabled\n";
+            } catch (\Throwable $e) {
+                // Ignore errors re-enabling SQL_LOG_BIN
+            }
+        }
+
+        echo "\n✅ PITR replay completed up to {$to}.\n";
+    } catch (\Throwable $e) {
+        // Attempt to restore settings even on failure
+        echo "\nPITR replay failed, attempting to restore database settings...\n";
+        try {
+            runMysqlQuery($config, 'COMMIT;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET FOREIGN_KEY_CHECKS=1;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET UNIQUE_CHECKS=1;');
+        } catch (\Throwable $ignored) {
+        }
+        try {
+            runMysqlQuery($config, 'SET AUTOCOMMIT=1;');
+        } catch (\Throwable $ignored) {
+        }
+        if ($sqlLogBinDisabled) {
+            try {
+                runMysqlQuery($config, 'SET SESSION SQL_LOG_BIN=1;');
+            } catch (\Throwable $ignored) {
+            }
+        }
+
+        throw $e;
+    }
 }
