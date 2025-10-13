@@ -43,9 +43,20 @@ print() {
 # Install required packages
 install_packages() {
     local required_pkgs=(aria2 wget lsb-release bc pigz gpg)
+    # Map package names to their actual command names
+    declare -A pkg_to_cmd=(
+        ["aria2"]="aria2c"
+        ["wget"]="wget"
+        ["lsb-release"]="lsb_release"
+        ["bc"]="bc"
+        ["pigz"]="pigz"
+        ["gpg"]="gpg"
+    )
+    
     local missing_pkgs=()
     for pkg in "${required_pkgs[@]}"; do
-        if ! command -v "$pkg" &>/dev/null; then
+        local cmd="${pkg_to_cmd[$pkg]}"
+        if ! command -v "$cmd" &>/dev/null; then
             missing_pkgs+=("$pkg")
         fi
     done
@@ -53,16 +64,17 @@ install_packages() {
     if [ "${#missing_pkgs[@]}" -gt 0 ]; then
         apt-get update
         apt-get install -y "${missing_pkgs[@]}"
-        # Re-check all required packages
+        
+        # Re-check all required packages with correct command names
         for pkg in "${required_pkgs[@]}"; do
-            if ! command -v "$pkg" &>/dev/null; then
-                print error "Failed to install required package: $pkg. Exiting."
+            local cmd="${pkg_to_cmd[$pkg]}"
+            if ! command -v "$cmd" &>/dev/null; then
+                print error "Failed to install required package: $pkg (command: $cmd). Exiting."
                 exit 1
             fi
         done
     fi
 }
-
 prepare_system() {
     install_packages
     check_ubuntu_version "20.04"
