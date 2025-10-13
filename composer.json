@@ -42,6 +42,7 @@
         "monolog/monolog": "^3.9",
         "nesbot/carbon": "^3.10",
         "nikic/iter": "^2.4",
+        "openspout/openspout": "^4.28",
         "php-di/php-di": "^7.1",
         "phpmailer/phpmailer": "^6.10",
         "phpmyadmin/sql-parser": "^5.11",
