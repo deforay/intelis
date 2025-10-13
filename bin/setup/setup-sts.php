@@ -204,47 +204,46 @@ if ($urlChanged && $newRemoteURL !== '') {
     }
 }
 
-// Step 3: Only refresh metadata if we have a non-empty URL and it changed/was newly set
-if ($newRemoteURL !== '' && ($urlWasEmpty || $urlChanged)) {
-    $reason = $urlWasEmpty ? "STS URL was freshly set" : "STS URL was changed";
+// Step 3: Always refresh metadata on LIS nodes
+// Decide which URL is currently effective (new or existing)
+$effectiveRemoteURL = isset($newRemoteURL) && $newRemoteURL !== '' ? $newRemoteURL : rtrim((string)$general->getRemoteURL(), '/');
 
-    echo PHP_EOL;
-    echo "=== Refreshing Database Metadata ===" . PHP_EOL;
-    echo "Running metadata refresh script (" . $reason . ")..." . PHP_EOL;
+echo PHP_EOL;
+echo "=== Refreshing Database Metadata ===" . PHP_EOL;
 
+if (empty($effectiveRemoteURL)) {
+    echo "⚠️ No STS URL configured; skipping metadata refresh." . PHP_EOL;
+    echo "   Login as System Admin → System Config, then run:" . PHP_EOL;
+    echo "   composer setup-sts" . PHP_EOL;
+} else {
     $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
-
     if (!file_exists($metadataScriptPath)) {
         echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
         echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
         echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
         exit(1);
-    } else {
-        $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-        echo "Executing: " . $metadataCommand . PHP_EOL;
-        echo PHP_EOL;
-
-        $output = [];
-        $returnCode = 0;
-        exec($metadataCommand . " 2>&1", $output, $returnCode);
-
-        foreach ($output as $line) {
-            echo $line . PHP_EOL;
-        }
-
-        if ($returnCode === 0) {
-            echo PHP_EOL;
-            echo "✅ Metadata refresh completed successfully." . PHP_EOL;
-        } else {
-            echo PHP_EOL;
-            echo "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
-            echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-            exit(1);
-        }
     }
-} else {
-    echo PHP_EOL . "Skipping metadata refresh (no STS URL set/changed)." . PHP_EOL;
+
+    $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+    echo "Executing: " . $metadataCommand . PHP_EOL . PHP_EOL;
+
+    $output = [];
+    $returnCode = 0;
+    exec($metadataCommand . " 2>&1", $output, $returnCode);
+
+    foreach ($output as $line) {
+        echo $line . PHP_EOL;
+    }
+
+    if ($returnCode === 0) {
+        echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
+    } else {
+        echo PHP_EOL . "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        exit(1);
+    }
 }
+
 
 // Step 4: Handle Lab Configuration
 echo PHP_EOL;
