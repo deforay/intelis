@@ -42,13 +42,24 @@ print() {
 
 # Install required packages
 install_packages() {
-    if ! command -v aria2c &>/dev/null; then
-        apt-get update
-        apt-get install -y aria2 wget lsb-release bc pigz gpg
-        if ! command -v aria2c &>/dev/null; then
-            print error "Failed to install required packages. Exiting."
-            exit 1
+    local required_pkgs=(aria2 wget lsb-release bc pigz gpg)
+    local missing_pkgs=()
+    for pkg in "${required_pkgs[@]}"; do
+        if ! command -v "$pkg" &>/dev/null; then
+            missing_pkgs+=("$pkg")
         fi
+    done
+
+    if [ "${#missing_pkgs[@]}" -gt 0 ]; then
+        apt-get update
+        apt-get install -y "${missing_pkgs[@]}"
+        # Re-check all required packages
+        for pkg in "${required_pkgs[@]}"; do
+            if ! command -v "$pkg" &>/dev/null; then
+                print error "Failed to install required package: $pkg. Exiting."
+                exit 1
+            fi
+        done
     fi
 }
 
