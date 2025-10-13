@@ -198,11 +198,12 @@ form table tr td>label,
     padding: 10px;
 }
 
-
-/* Highlight filled filters - Subtle version */
+/* Highlight filled filters - Subtle with accent */
 .filter-filled {
     background-color: #fffbf0 !important;
     border: 1px solid #ffd966 !important;
+    border-left: 3px solid #ffc107 !important;
+    /* Slightly thicker for better visibility */
     box-shadow: 0 0 3px rgba(255, 193, 7, 0.2);
     transition: all 0.2s ease-in-out;
 }
@@ -212,10 +213,13 @@ form table tr td>label,
 .select2-container--default .select2-selection--multiple.filter-filled {
     background-color: #fffbf0 !important;
     border: 1px solid #ffd966 !important;
+    border-left: 3px solid #ffc107 !important;
+    box-shadow: 0 0 3px rgba(255, 193, 7, 0.2);
+    /* Added shadow here too for consistency */
 }
 
 /* Add smooth transition */
-input,
+input:not([type="checkbox"]):not([type="radio"]),
 select,
 .select2-selection {
     transition: background-color 0.2s ease-in-out, border 0.2s ease-in-out;

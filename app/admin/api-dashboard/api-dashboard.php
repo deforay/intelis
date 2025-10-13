@@ -232,7 +232,7 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="box-header">
                         <h3 class="box-title"><?= _translate('Filters'); ?></h3>
                     </div>
-                    <table class="table" style="margin-left:1%;margin-top:20px;width:98%;">
+                    <table class="table pageFilters" style="margin-left:1%;margin-top:20px;width:98%;">
                         <tr>
                             <td><strong><?= _translate('Test Request Date Range'); ?>&nbsp;:</strong></td>
                             <td>
