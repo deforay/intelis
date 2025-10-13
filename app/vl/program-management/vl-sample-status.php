@@ -67,16 +67,16 @@ $batResult = $db->rawQuery($batQuery);
 				<div class="box" id="filterDiv">
 					<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
-							<td><strong>
+							<th style="width:15%;"><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
-								</strong></td>
-							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="background:#fff;" />
+								</strong></th>
+							<td style="width:35%;">
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" />
 							</td>
-							<td>&nbsp;<strong>
+							<th style="width:15%;"><strong>
 									<?php echo _translate("Batch Code"); ?>&nbsp;:
-								</strong></td>
-							<td>
+								</strong></th>
+							<td style="width:35%;">
 								<select class="form-control" id="batchCode" name="batchCode" title="<?php echo _translate('Please select batch code'); ?>">
 									<option value="">
 										<?php echo _translate("-- Select --"); ?>
@@ -88,9 +88,9 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td>&nbsp;<strong>
+							<th>&nbsp;<strong>
 									<?php echo _translate("Sample Type"); ?>&nbsp;:
-								</strong></td>
+								</strong></th>
 							<td>
 								<select class="form-control" id="sampleType" name="sampleType" title="<?php echo _translate('Please select sample type'); ?>">
 									<option value="">
@@ -102,9 +102,9 @@ $batResult = $db->rawQuery($batQuery);
 									<?php } ?>
 								</select>
 							</td>
-							<td>&nbsp;<strong>
+							<th>&nbsp;<strong>
 									<?php echo _translate("Testing Lab"); ?> &nbsp;:
-								</strong></td>
+								</strong></th>
 							<td>
 								<select class="form-control" id="labName" name="labName" title="<?php echo _translate('Please select facility name'); ?>">
 									<?= $testingLabsDropdown; ?>

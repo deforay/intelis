@@ -23,9 +23,115 @@ use JsonMachine\JsonDecoder\ExtJsonDecoder;
 use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
+
+
+/**
+ * Display help/usage information
+ */
+function showHelp(): void
+{
+    $output = new ConsoleOutput();
+    $output->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
+    $output->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
+    $output->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
+    $output->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
+    $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
+
+    $output->writeln('');
+    $output->writeln('<title>                                                    </title>');
+    $output->writeln('<title>  VLSM Remote Test Requests Sync - Help & Usage   </title>');
+    $output->writeln('<title>                                                    </title>');
+    $output->writeln('');
+
+    $output->writeln('<header>DESCRIPTION:</header>');
+    $output->writeln('  Synchronizes test requests from the remote STS server to the local database.');
+    $output->writeln('  Supports multiple test types: VL, EID, COVID-19, Hepatitis, TB, CD4, and Generic Tests.');
+    $output->writeln('');
+
+    $output->writeln('<header>USAGE:</header>');
+    $output->writeln('  <info>php requests-receiver.php [OPTIONS]</info>');
+    $output->writeln('');
+
+    $output->writeln('<header>OPTIONS:</header>');
+    $output->writeln('  <success>-t <module></success>');
+    $output->writeln('      Force sync for specific test module');
+    $output->writeln('      Valid modules: vl, eid, covid19, hepatitis, tb, cd4, generic-tests');
+    $output->writeln('      Example: <comment>-t vl</comment>');
+    $output->writeln('');
+
+    $output->writeln('  <success>-m <manifest_code></success>');
+    $output->writeln('      Sync requests for a specific manifest/package code');
+    $output->writeln('      Must be used with -t option');
+    $output->writeln('      Example: <comment>-m PKG123456</comment>');
+    $output->writeln('');
+
+    $output->writeln('  <success><date></success>');
+    $output->writeln('      Sync requests from a specific date (format: YYYY-MM-DD)');
+    $output->writeln('      Example: <comment>2025-01-01</comment>');
+    $output->writeln('');
+
+    $output->writeln('  <success><days></success>');
+    $output->writeln('      Sync requests from N days ago (numeric value)');
+    $output->writeln('      Example: <comment>7</comment> (syncs last 7 days)');
+    $output->writeln('');
+
+    $output->writeln('  <success>silent</success>');
+    $output->writeln('      Run in silent mode (no last_modified_datetime updates)');
+    $output->writeln('');
+
+    $output->writeln('  <success>-h, --help, help</success>');
+    $output->writeln('      Display this help message');
+    $output->writeln('');
+
+    $output->writeln('<header>EXAMPLES:</header>');
+    $output->writeln('  <comment># Sync all pending requests</comment>');
+    $output->writeln('  <info>php requests-receiver.php</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Sync only VL requests</comment>');
+    $output->writeln('  <info>php requests-receiver.php -t vl</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Sync VL requests for a specific manifest</comment>');
+    $output->writeln('  <info>php requests-receiver.php -t vl -m PKG123456</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Sync requests from last 7 days</comment>');
+    $output->writeln('  <info>php requests-receiver.php 7</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Sync requests since specific date</comment>');
+    $output->writeln('  <info>php requests-receiver.php 2025-01-01</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Sync COVID-19 requests from last 3 days in silent mode</comment>');
+    $output->writeln('  <info>php requests-receiver.php -t covid19 3 silent</info>');
+    $output->writeln('');
+
+    $output->writeln('<header>NOTES:</header>');
+    $output->writeln('  • The script requires an active internet connection to the STS server');
+    $output->writeln('  • Lab ID must be configured in System Config');
+    $output->writeln('  • Progress indicators show during sync operations');
+    $output->writeln('  • All operations are logged for troubleshooting');
+    $output->writeln('  • By default, only unsynced requests (data_sync = 0) are processed');
+    $output->writeln('');
+
+    exit(0);
+}
+
+
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
+
+// Check for help flag early
+if ($cliMode) {
+    $args = array_slice($_SERVER['argv'], 1);
+    if (in_array('-h', $args) || in_array('--help', $args) || in_array('help', $args)) {
+        showHelp();
+    }
+}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

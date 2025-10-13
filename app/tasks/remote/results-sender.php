@@ -12,6 +12,7 @@ set_time_limit(0);
 ini_set('max_execution_time', 300000);
 
 //this file gets the data from the local database and updates the remote database
+use App\Services\TbService;
 use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
@@ -21,7 +22,122 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
-use App\Services\TbService;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
+
+
+/**
+ * Display help/usage information
+ */
+function showHelp(): void
+{
+    $output = new ConsoleOutput();
+    $output->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
+    $output->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
+    $output->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
+    $output->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
+    $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
+
+    $output->writeln('');
+    $output->writeln('<title>                                                  </title>');
+    $output->writeln('<title>  VLSM Remote Results Sender - Help & Usage     </title>');
+    $output->writeln('<title>                                                  </title>');
+    $output->writeln('');
+
+    $output->writeln('<header>DESCRIPTION:</header>');
+    $output->writeln('  Sends test results from the local database to the remote STS server.');
+    $output->writeln('  Supports multiple test types: VL, EID, COVID-19, Hepatitis, TB, CD4, and Generic Tests.');
+    $output->writeln('');
+
+    $output->writeln('<header>USAGE:</header>');
+    $output->writeln('  <info>php results-sender.php [OPTIONS] [MODULE] [DATE|DAYS]</info>');
+    $output->writeln('');
+
+    $output->writeln('<header>OPTIONS:</header>');
+    $output->writeln('  <success><module></success>');
+    $output->writeln('      Force sync for specific test module');
+    $output->writeln('      Valid modules: vl, eid, covid19, hepatitis, tb, cd4, generic-tests');
+    $output->writeln('      Example: <comment>vl</comment>');
+    $output->writeln('');
+
+    $output->writeln('  <success><date></success>');
+    $output->writeln('      Send results modified since a specific date (format: YYYY-MM-DD)');
+    $output->writeln('      Example: <comment>2025-01-01</comment>');
+    $output->writeln('');
+
+    $output->writeln('  <success><days></success>');
+    $output->writeln('      Send results modified in the last N days (numeric value)');
+    $output->writeln('      Example: <comment>7</comment> (sends results from last 7 days)');
+    $output->writeln('');
+
+    $output->writeln('  <success>silent</success>');
+    $output->writeln('      Run in silent mode (suppresses certain notifications)');
+    $output->writeln('');
+
+    $output->writeln('  <success>-h, --help, help</success>');
+    $output->writeln('      Display this help message');
+    $output->writeln('');
+
+    $output->writeln('<header>EXAMPLES:</header>');
+    $output->writeln('  <comment># Send all pending results (data_sync = 0)</comment>');
+    $output->writeln('  <info>php results-sender.php</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send only VL results</comment>');
+    $output->writeln('  <info>php results-sender.php vl</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send results modified in last 7 days</comment>');
+    $output->writeln('  <info>php results-sender.php 7</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send results modified since specific date</comment>');
+    $output->writeln('  <info>php results-sender.php 2025-01-01</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send COVID-19 results from last 3 days</comment>');
+    $output->writeln('  <info>php results-sender.php covid19 3</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send EID results in silent mode</comment>');
+    $output->writeln('  <info>php results-sender.php eid silent</info>');
+    $output->writeln('');
+
+    $output->writeln('  <comment># Send Hepatitis results from specific date in silent mode</comment>');
+    $output->writeln('  <info>php results-sender.php hepatitis 2025-01-01 silent</info>');
+    $output->writeln('');
+
+    $output->writeln('<header>NOTES:</header>');
+    $output->writeln('  • The script requires an active internet connection to the STS server');
+    $output->writeln('  • Lab ID must be configured in System Config');
+    $output->writeln('  • Only results with result_status != RECEIVED_AT_CLINIC are sent');
+    $output->writeln('  • Results must have a valid sample_code to be sent');
+    $output->writeln('  • By default, only unsynced results (data_sync = 0) are sent');
+    $output->writeln('  • When specifying a date/days, the data_sync flag is ignored');
+    $output->writeln('  • All operations are logged and tracked for audit purposes');
+    $output->writeln('');
+
+    $output->writeln('<header>RESULT STATUS:</header>');
+    $output->writeln('  After successful sync:');
+    $output->writeln('    • data_sync is set to 1');
+    $output->writeln('    • result_sent_to_source is set to "sent"');
+    $output->writeln('    • last_remote_results_sync timestamp is updated');
+    $output->writeln('');
+
+    exit(0);
+}
+
+// Check for help flag early
+if ($cliMode) {
+    $args = array_slice($_SERVER['argv'], 1);
+    if (in_array('-h', $args) || in_array('--help', $args) || in_array('help', $args)) {
+        showHelp();
+    }
+
+    echo "=========================" . PHP_EOL;
+    echo "Starting results sending" . PHP_EOL;
+}
+
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
