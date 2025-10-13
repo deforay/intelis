@@ -39,50 +39,139 @@ log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
 
-handle_database_setup_and_import() {
-    db_exists=$(mysql -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = 'vlsm';")
-    db_not_empty=$(mysql -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = 'vlsm';")
+# --- DB strategy resolution: env/flag/prompt ---
+resolve_db_strategy() {
+    local strategy="$1"        # from flag (optional)
+    local env_strategy="${INTELIS_DB_STRATEGY:-}"
+    local resolved=""
 
-    if [ "$db_exists" -eq 1 ] && [ "$db_not_empty" -gt 0 ]; then
-        echo "Renaming existing LIS database..."
-        log_action "Renaming existing LIS database..."
-        local todays_date=$(date +%Y%m%d_%H%M%S)
-        local new_db_name="vlsm_${todays_date}"
-        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
-
-        # Get the list of tables in the original database
-        local tables=$(mysql -sse "SHOW TABLES IN vlsm;")
-
-        # Rename tables
-        for table in $tables; do
-            mysql -e "RENAME TABLE vlsm.$table TO ${new_db_name}.$table;"
-        done
-
-        echo "Copying triggers..."
-        log_action "Copying triggers..."
-        local triggers=$(mysql -sse "SHOW TRIGGERS IN vlsm;")
-        for trigger_name in $triggers; do
-            local trigger_sql=$(mysql -sse "SHOW CREATE TRIGGER vlsm.$trigger_name\G" | sed -n 's/.*SQL: \(.*\)/\1/p')
-            mysql -D ${new_db_name} -e "$trigger_sql"
-        done
-
-        echo "All tables and triggers moved to ${new_db_name}."
-        log_action "All tables and triggers moved to ${new_db_name}."
+    # explicit CLI flag wins
+    if [[ -n "$strategy" ]]; then
+        resolved="$strategy"
+    elif [[ -n "$env_strategy" ]]; then
+        resolved="$env_strategy"
     fi
 
-    mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    # normalize
+    case "$resolved" in
+        drop|DROP)   resolved="drop"   ;;
+        rename|RENAME) resolved="rename" ;;
+        use|USE|keep|KEEP) resolved="use" ;;
+        "") resolved="" ;;
+        *)  echo "Unknown db strategy: $resolved"; resolved="";;
+    esac
+
+    echo "$resolved"
+}
+
+prompt_db_strategy() {
+    echo
+    echo "Existing 'vlsm' database detected. Choose what to do:"
+    echo "  1) DROP existing database and create new"
+    echo "  2) RENAME existing database and create new (default)"
+    echo "  3) USE existing database as-is and continue"
+    read -p "Enter choice [1/2/3, default 2]: " choice
+    case "${choice:-2}" in
+        1) echo "drop"   ;;
+        2) echo "rename" ;;
+        3) echo "use"    ;;
+        *) echo "rename" ;;
+    esac
+}
+
+
+handle_database_setup_and_import() {
+    local sql_file="${1:-${lis_path}/sql/init.sql}"
+
+    # Detect DB status
+    local db_exists db_not_empty
+    db_exists=$(mysql -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name='vlsm';")
+    db_not_empty=$(mysql -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='vlsm';")
+
+    # Helper: rename + reset vlsm
+    perform_backup_rename() {
+        echo "Renaming existing 'vlsm' database to a timestamped backup..."
+        log_action "Renaming existing 'vlsm' database to backup..."
+        local ts new_db_name
+        ts=$(date +%Y%m%d_%H%M%S)
+        new_db_name="vlsm_${ts}"
+        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+
+        # Move base tables (triggers attached to tables move with them)
+        while read -r tbl; do
+            [[ -z "$tbl" ]] && continue
+            mysql -e "RENAME TABLE vlsm.\`$tbl\` TO ${new_db_name}.\`$tbl\`;"
+        done < <(mysql -Nse "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema='vlsm' AND TABLE_TYPE='BASE TABLE';")
+
+        # Recreate views in backup DB (strip DEFINER to avoid perms issues)
+        while read -r view; do
+            [[ -z "$view" ]] && continue
+            local def
+            def=$(mysql -Nse "SHOW CREATE VIEW vlsm.\`$view\`\G" | sed -n 's/^ *Create View: \(.*\)$/\1/p')
+            if [[ -n "$def" ]]; then
+                def="$(echo "$def" | sed -E 's/DEFINER=`[^`]+`@`[^`]+` //')"
+                mysql -D "${new_db_name}" -e "$def"
+            fi
+        done < <(mysql -Nse "SELECT TABLE_NAME FROM information_schema.views WHERE table_schema='vlsm';")
+
+        echo "Backup complete: ${new_db_name}"
+
+        # Drop original schema to avoid leftover objects/routines/etc and recreate fresh
+        mysql -e "DROP DATABASE vlsm;"
+        mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    }
+
+    local strategy
+    strategy="$(resolve_db_strategy "$DB_STRATEGY_FLAG")"
+
+    if [[ "$db_exists" -eq 1 && "$db_not_empty" -gt 0 && -z "$strategy" ]]; then
+        strategy="$(prompt_db_strategy)"
+    fi
+
+    if [[ "$db_exists" -eq 1 && "$db_not_empty" -gt 0 ]]; then
+        case "$strategy" in
+            drop)
+                echo "Dropping existing 'vlsm' database..."
+                log_action "Dropping existing 'vlsm' database..."
+                mysql -e "DROP DATABASE IF EXISTS vlsm;"
+                mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+                ;;
+            rename)
+                perform_backup_rename
+                ;;
+            use)
+                echo "Using existing 'vlsm' database as-is. Skipping schema import."
+                log_action "Using existing vlsm database; skipping import."
+                mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+                [[ -f "${lis_path}/sql/interface-init.sql" ]] && mysql interfacing < "${lis_path}/sql/interface-init.sql" 2>/dev/null || true
+                return 0
+                ;;
+            *)
+                echo "No valid db strategy supplied; defaulting to RENAME."
+                perform_backup_rename
+                ;;
+        esac
+    else
+        # Ensure DBs exist if we got here with empty/non-existent db
+        mysql -e "CREATE DATABASE IF NOT EXISTS vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+    fi
+
     mysql -e "CREATE DATABASE IF NOT EXISTS interfacing CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-    local sql_file="${1:-${lis_path}/sql/init.sql}"
+    echo "Importing base schema into 'vlsm' from: ${sql_file}"
     if [[ "$sql_file" == *".gz" ]]; then
         gunzip -c "$sql_file" | mysql vlsm
     elif [[ "$sql_file" == *".zip" ]]; then
         unzip -p "$sql_file" | mysql vlsm
     else
-        mysql vlsm <"$sql_file"
+        mysql vlsm < "$sql_file"
     fi
-    mysql vlsm <"${lis_path}/sql/audit-triggers.sql"
-    mysql interfacing <"${lis_path}/sql/interface-init.sql"
+
+    [[ -f "${lis_path}/sql/audit-triggers.sql"   ]] && mysql vlsm        < "${lis_path}/sql/audit-triggers.sql"
+    [[ -f "${lis_path}/sql/interface-init.sql"   ]] && mysql interfacing  < "${lis_path}/sql/interface-init.sql"
+
+    echo "Database setup/import completed."
+    log_action "Database setup/import completed (strategy: ${strategy:-create})."
 }
 
 
@@ -110,18 +199,29 @@ eval "$current_trap"
 
 # Initialize variable for database file path
 intelis_sql_file=""
+DB_STRATEGY_FLAG=""
 
-# Parse command-line arguments for --database or --db flag
-for arg in "$@"; do
-    case $arg in
-    --database=* | --db=*)
-        intelis_sql_file="${arg#*=}"
-        shift # Remove --database or --db argument from processing
+while [[ $# -gt 0 ]]; do
+    case "$1" in
+        --database=*|--db=*)
+        intelis_sql_file="${1#*=}"
+        shift
         ;;
-    --database | --db)
+        --database|--db)
         intelis_sql_file="$2"
-        shift # Remove --database or --db argument
-        shift # Remove its associated value
+        shift 2
+        ;;
+        --db-strategy=*)
+        DB_STRATEGY_FLAG="${1#*=}"
+        shift
+        ;;
+        --db-strategy)
+        DB_STRATEGY_FLAG="$2"
+        shift 2
+        ;;
+        *)
+        # unrecognized -> keep or discard; here we just shift
+        shift
         ;;
     esac
 done
@@ -424,15 +524,19 @@ installation_type="${installation_type:-LIS}"
 # Convert to lowercase first character for case-insensitive comparison
 first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
 
+is_lis=false
+is_sts=false
 if [[ "$first_char" == "l" ]]; then
     echo "Installing InteLIS as the default host..."
     log_action "Installing InteLIS as the default host..."
+    is_lis=true
     apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
     cp "$apache_vhost_file" "${apache_vhost_file}.bak"
     configure_vhost "$apache_vhost_file"
 elif [[ "$first_char" == "s" ]]; then
     echo "Installing InteLIS alongside other apps..."
     log_action "Installing InteLIS alongside other apps..."
+    is_sts=true
     vhost_file="/etc/apache2/sites-available/${hostname}.conf"
     echo "<VirtualHost *:80>
     ServerName ${hostname}
@@ -547,7 +651,7 @@ else
 fi
 
 
-config_file="/etc/mysql/mysql.conf.d/mysqld.cnf"
+mysql_cnf="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 
 # --- define what we want ---
@@ -564,7 +668,7 @@ changes_needed=false
 
 # --- dry-run check first ---
 for setting in "${!mysql_settings[@]}"; do
-    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+    if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$mysql_cnf"; then
         changes_needed=true
         break
     fi
@@ -572,22 +676,22 @@ done
 
 if [ "$changes_needed" = true ]; then
     print info "Changes needed. Backing up and updating MySQL config..."
-    cp "$config_file" "${config_file}.bak.${backup_timestamp}"
+    cp "$mysql_cnf" "${mysql_cnf}.bak.${backup_timestamp}"
 
     for setting in "${!mysql_settings[@]}"; do
-        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$config_file"; then
+        if ! grep -qE "^[[:space:]]*$setting[[:space:]]*=[[:space:]]*${mysql_settings[$setting]}" "$mysql_cnf"; then
             # Comment existing wrong setting if found
-            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$config_file"; then
-                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$config_file"
+            if grep -qE "^[[:space:]]*$setting[[:space:]]*=" "$mysql_cnf"; then
+                sed -i "/^[[:space:]]*$setting[[:space:]]*=.*/s/^/#/" "$mysql_cnf"
             fi
-            echo "$setting = ${mysql_settings[$setting]}" >>"$config_file"
+            echo "$setting = ${mysql_settings[$setting]}" >>"$mysql_cnf"
         fi
     done
 
     print info "Restarting MySQL service to apply changes..."
     restart_service mysql || {
         print error "Failed to restart MySQL. Restoring backup and exiting..."
-        mv "${config_file}.bak.${backup_timestamp}" "$config_file"
+        mv "${mysql_cnf}.bak.${backup_timestamp}" "$mysql_cnf"
         restart_service mysql
         exit 1
     }
@@ -599,7 +703,7 @@ else
 fi
 
 # --- Always clean up old .bak files ---
-find "$(dirname "$config_file")" -maxdepth 1 -type f -name "$(basename "$config_file").bak.*" -exec rm -f {} \;
+find "$(dirname "$mysql_cnf")" -maxdepth 1 -type f -name "$(basename "$mysql_cnf").bak.*" -exec rm -f {} \;
 print info "Removed all MySQL backup files matching *.bak.*"
 
 
@@ -634,10 +738,10 @@ else
     log_action "SET PERSIST sql_mode failed: $persist_result"
 fi
 
-chmod 644 /etc/mysql/mysql.conf.d/mysqld.cnf
+chmod 644 "$mysql_cnf"
 restart_service mysql
 
- Only prompt for Remote STS URL for LIS nodes
+# Only prompt for Remote STS URL for LIS nodes
 if $is_lis; then
     # Prompt for Remote STS URL
     while true; do
