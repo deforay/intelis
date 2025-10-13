@@ -65,12 +65,16 @@ resolve_db_strategy() {
 }
 
 prompt_db_strategy() {
-    echo
-    echo "Existing 'vlsm' database detected. Choose what to do:"
-    echo "  1) DROP existing database and create new"
-    echo "  2) RENAME existing database and create new (default)"
-    echo "  3) USE existing database as-is and continue"
-    read -p "Enter choice [1/2/3, default 2]: " choice
+    local tty="/dev/tty"
+    {
+        echo
+        echo "Existing InteLIS database detected. Choose what to do:"
+        echo "  1) DROP   – delete current database and create a fresh one"
+        echo "  2) RENAME – back up to vlsm_YYYYMMDD_HHMMSS and create fresh (default)"
+        echo "  3) USE    – keep existing 'vlsm' as-is and skip import"
+    } >"$tty"
+
+    read -r -p "Enter choice [1=DROP, 2=RENAME(default), 3=USE]: " choice <"$tty"
     case "${choice:-2}" in
         1) echo "drop"   ;;
         2) echo "rename" ;;
@@ -78,6 +82,10 @@ prompt_db_strategy() {
         *) echo "rename" ;;
     esac
 }
+
+
+
+mysql_exec() { mysql -e "$*"; }
 
 
 handle_database_setup_and_import() {
@@ -90,51 +98,55 @@ handle_database_setup_and_import() {
 
     # Helper: rename + reset vlsm
     perform_backup_rename() {
-        echo "Renaming existing 'vlsm' database to a timestamped backup..."
-        log_action "Renaming existing 'vlsm' database to backup..."
-        local ts new_db_name
-        ts=$(date +%Y%m%d_%H%M%S)
+        echo "Backing up and resetting 'vlsm'..."
+        log_action "Renaming existing 'vlsm' database to backup and recreating..."
+        ts="$(date +%Y%m%d_%H%M%S)"
         new_db_name="vlsm_${ts}"
-        mysql -e "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        mysql_exec "CREATE DATABASE ${new_db_name} CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
 
-        # Move base tables (triggers attached to tables move with them)
-        while read -r tbl; do
-            [[ -z "$tbl" ]] && continue
-            mysql -e "RENAME TABLE vlsm.\`$tbl\` TO ${new_db_name}.\`$tbl\`;"
-        done < <(mysql -Nse "SELECT TABLE_NAME FROM information_schema.tables WHERE table_schema='vlsm' AND TABLE_TYPE='BASE TABLE';")
+        # Collect all base tables
+        mapfile -t _tables < <(mysql -Nse "SELECT TABLE_NAME FROM information_schema.tables
+                                        WHERE table_schema='vlsm' AND TABLE_TYPE='BASE TABLE';")
 
-        # Recreate views in backup DB (strip DEFINER to avoid perms issues)
+        if ((${#_tables[@]})); then
+            # Build one atomic RENAME TABLE statement: RENAME TABLE vlsm.`t1` TO vlsm_ts.`t1`, ...
+            rename_sql="RENAME TABLE "
+            sep=""
+            for t in "${_tables[@]}"; do
+                rename_sql+="${sep}vlsm.\`${t}\` TO ${new_db_name}.\`${t}\`"
+                sep=", "
+            done
+            mysql_exec "SET FOREIGN_KEY_CHECKS=0; ${rename_sql}; SET FOREIGN_KEY_CHECKS=1;"
+        fi
+
+        # Recreate views in backup (strip DEFINER)
         while read -r view; do
             [[ -z "$view" ]] && continue
-            local def
-            def=$(mysql -Nse "SHOW CREATE VIEW vlsm.\`$view\`\G" | sed -n 's/^ *Create View: \(.*\)$/\1/p')
-            if [[ -n "$def" ]]; then
-                def="$(echo "$def" | sed -E 's/DEFINER=`[^`]+`@`[^`]+` //')"
-                mysql -D "${new_db_name}" -e "$def"
-            fi
+            def=$(mysql -Nse "SHOW CREATE VIEW vlsm.\`${view}\`\G" | sed -n 's/^ *Create View: \(.*\)$/\1/p' | sed -E 's/DEFINER=`[^`]+`@`[^`]+` //')
+            [[ -n "$def" ]] && mysql -D "${new_db_name}" -e "$def"
         done < <(mysql -Nse "SELECT TABLE_NAME FROM information_schema.views WHERE table_schema='vlsm';")
 
+        # Remove the now-empty schema and recreate fresh to avoid leftover routines/events
+        mysql_exec "DROP DATABASE vlsm;"
+        mysql_exec "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
         echo "Backup complete: ${new_db_name}"
-
-        # Drop original schema to avoid leftover objects/routines/etc and recreate fresh
-        mysql -e "DROP DATABASE vlsm;"
-        mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+        
     }
 
     local strategy
     strategy="$(resolve_db_strategy "$DB_STRATEGY_FLAG")"
-
-    if [[ "$db_exists" -eq 1 && "$db_not_empty" -gt 0 && -z "$strategy" ]]; then
-        strategy="$(prompt_db_strategy)"
+    if [[ -z "$strategy" && "$db_exists" -eq 1 && "$db_not_empty" -gt 0 ]]; then
+    strategy="$(prompt_db_strategy)"
     fi
+    echo "→ Selected strategy: ${strategy:-rename}"
 
     if [[ "$db_exists" -eq 1 && "$db_not_empty" -gt 0 ]]; then
         case "$strategy" in
             drop)
                 echo "Dropping existing 'vlsm' database..."
                 log_action "Dropping existing 'vlsm' database..."
-                mysql -e "DROP DATABASE IF EXISTS vlsm;"
-                mysql -e "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+                mysql_exec "SET FOREIGN_KEY_CHECKS=0; DROP DATABASE IF EXISTS vlsm; SET FOREIGN_KEY_CHECKS=1;"
+                mysql_exec "CREATE DATABASE vlsm CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
                 ;;
             rename)
                 perform_backup_rename
