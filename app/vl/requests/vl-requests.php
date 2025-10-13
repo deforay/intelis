@@ -136,7 +136,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table aria-describedby="table" id="advanceFilter" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
+					<table aria-describedby="table" id="advancedFilters" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width: 98%;margin-bottom: 0px;display: none;">
 						<tr>
 							<td><strong>
 									<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -477,7 +477,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
 										<?= _translate('Reset'); ?>
 									</span></button>
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advanceFilter','filter');"><span>
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="hideAdvanceSearch('advancedFilters','filter');"><span>
 										<?php echo _translate("Hide Advanced Search Options"); ?>
 									</span></button>
 							</td>
@@ -542,7 +542,7 @@ $sampleColumnToSort = ($general->isSTSInstance()) ? 1 : 0;
 										<?php echo _translate("EMR/FHIR - GET TESTS"); ?>
 									</a>
 								<?php } ?>
-								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advanceFilter');"><span>
+								&nbsp;<button class="btn btn-primary btn-sm pull-right" style="margin-right:5px;" onclick="hideAdvanceSearch('filter','advancedFilters');"><span>
 										<?php echo _translate("Show Advanced Search Options"); ?>
 									</span></button>
 							</td>
@@ -756,16 +756,12 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	let selectedTests = [];
 	let selectedTestsId = [];
 	let oTable = null;
-	// let xhrRequests = [];
-
-	// $(window).on('beforeunload', function() {
-	// 	for (var i = 0; i < xhrRequests.length; i++) {
-	// 		xhrRequests[i].abort();
-	// 	}
-	// 	xhrRequests = []; // Clear the array
-	// });
 
 	$(document).ready(function() {
+
+		// Initialize filter highlighter
+		Utilities.initFilterHighlighter('#advancedFilters');
+
 		$("#batchCode").autocomplete({
 			source: function(request, response) {
 				// Fetch data
@@ -859,7 +855,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				$("#iCol" + colNo + "-sort").hide();
 			}
 		}
-		$("#advanceFilter input, #advanceFilter select").on("change", function() {
+		$("#advancedFilters input, #advancedFilters select").on("change", function() {
 			searchExecuted = false;
 		});
 	});

@@ -44,7 +44,7 @@ print() {
 install_packages() {
     if ! command -v aria2c &>/dev/null; then
         apt-get update
-        apt-get install -y aria2 wget lsb-release bc
+        apt-get install -y aria2 wget lsb-release bc pigz gpg
         if ! command -v aria2c &>/dev/null; then
             print error "Failed to install required packages. Exiting."
             exit 1
