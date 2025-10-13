@@ -96,7 +96,7 @@ $state = $geolocationService->getProvinces("yes");
 		background: #f1f7ff;
 	}
 
-	.bs-example-tabs .nav>li>a {
+	.bs-tabs .nav>li>a {
 		position: relative;
 		display: block;
 		padding: 10px 7px;
@@ -134,7 +134,7 @@ $state = $geolocationService->getProvinces("yes");
 					<div class="box-body">
 						<div class="widget">
 							<div class="widget-content">
-								<div class="bs-example bs-example-tabs">
+								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("High Viral Load"); ?><br><?php echo _translate("Report"); ?></a></li>
 										<li><a href="#highVlVirologicFailureReport" data-toggle="tab"><?php echo _translate("High VL and Virologic Failure"); ?><br><?php echo _translate("Report"); ?></a></li>
@@ -146,7 +146,7 @@ $state = $geolocationService->getProvinces("yes");
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="highViralLoadReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
@@ -362,7 +362,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="highVlVirologicFailureReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
@@ -473,7 +473,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleRjtReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Test Date"); ?>&nbsp;:
@@ -698,7 +698,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="notAvailReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -897,7 +897,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="incompleteFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -1027,7 +1027,7 @@ $state = $geolocationService->getProvinces("yes");
 											</table>
 										</div>
 										<div class="tab-pane fade" id="sampleTestingReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Province/State"); ?>&nbsp;:
@@ -1076,7 +1076,7 @@ $state = $geolocationService->getProvinces("yes");
 											</figure>
 										</div>
 										<div class="tab-pane fade" id="patientTestHistoryFormReport">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;padding: 3%;">
 												<tr>
 													<td style="width: 10%;"><strong>
 															<?php echo _translate("Patient ID"); ?>&nbsp;:

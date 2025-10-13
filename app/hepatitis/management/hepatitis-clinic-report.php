@@ -81,7 +81,7 @@ $state = $geolocationService->getProvinces("yes");
 					<div class="box-body">
 						<div class="widget">
 							<div class="widget-content">
-								<div class="bs-example bs-example-tabs">
+								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs">
 										<li class="active"><a href="#highViralLoadReport" data-toggle="tab"><?php echo _translate("Positivity Report"); ?></a></li>
 										<li><a href="#sampleRjtReport" data-toggle="tab"><?php echo _translate("Sample Rejection Report"); ?></a></li>

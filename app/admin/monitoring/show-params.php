@@ -22,7 +22,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 
 $id = isset($_GET['id']) && !empty($_GET['id']) ? MiscUtility::desqid((string) $_GET['id']) : null;
 
-if($id === null) {
+if ($id === null) {
     http_response_code(400);
     throw new SystemException('Invalid request', 400);
 }
@@ -47,7 +47,7 @@ $userResponse = MiscUtility::getDataFromZippedFile($folder . DIRECTORY_SEPARATOR
 <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <section class="content-header">
-        <div class="bs-example bs-example-tabs">
+        <div class="bs bs-tabs">
 
 
             <div class="tab">

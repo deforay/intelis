@@ -538,109 +538,115 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 														</tr>
 													</thead>
 													<tbody>
-															<tr>
-																<td class="text-center">Xpert MTB Result</td>
-																<td>
+														<tr>
+															<td class="text-center">Xpert MTB Result</td>
+															<td>
 																<select class="form-control" name="xPertMTMResult" id="xPertMTMResult" title="Please select the Xpert MTM Result">
 																	<?= $general->generateSelectOptions($tbXPertResults, null, '-- Select --'); ?>
 																</select>
-																</td>
-																<td>
-																<input type="text" name="xpertDateOfResult" id="xpertDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-															</tr>
-															<tr>
-																<td class="text-center">TB LAM Result</td>
-																<td>
-																	<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
-																		<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																<input type="text" name="tbLamDateOfResult" id="tbLamDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-
 															</td>
-															</tr>
-															<tr>
-																<td class="text-center">Culture Result (LG & MGIT)</td>
-																<td>
-																	<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
-																		<?= $general->generateSelectOptions($tbCultureResults, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																<input type="text" name="cultureDateOfResult" id="cultureDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-
+															<td>
+																<input type="text" name="xpertDateOfResult" id="xpertDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
 															</td>
-															</tr>
-															<tr>
-																<td class="text-center">Identification Result (Rapid Test)</td>
-																<td>
-																	<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
-																		<?= $general->generateSelectOptions($tbIdentificationResults, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																<input type="text" name="identificationDateOfResult" id="identificationDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-
+														</tr>
+														<tr>
+															<td class="text-center">TB LAM Result</td>
+															<td>
+																<select class="form-control" name="result" id="result" title="Please select the TB LAM result">
+																	<?= $general->generateSelectOptions($tbLamResults, null, '-- Select --'); ?>
+																</select>
 															</td>
-															</tr>
-															<tr>
-																<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
-																<td>
-																	<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
-																		<?= $general->generateSelectOptions($tbdrugMGITResults, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																<input type="text" name="drugMGITDateOfResult" id="drugMGITDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-
+															<td>
+																<input type="text" name="tbLamDateOfResult" id="tbLamDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
 															</td>
-															</tr>
-															<tr>
-																<td class="text-center">Drug Susceptibility Results (LPA - 1st & 2nd Line)</td>
-																<td>
-																	<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
-																		<?= $general->generateSelectOptions($tbdrugLPAResults, null, '-- Select --'); ?>
-																	</select>
-																</td>
-																<td>
-																<input type="text" name="drugLPADateOfResult" id="drugLPADateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />																</td>
-
-															</td>
-															</tr>
-													</tbody>
-												</table>
 
 											</td>
 										</tr>
-
 										<tr>
-											<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
+											<td class="text-center">Culture Result (LG & MGIT)</td>
 											<td>
-												<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
-													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												<select class="form-control" name="cultureResult" id="cultureResult" title="Please select the Culture Result">
+													<?= $general->generateSelectOptions($tbCultureResults, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></th>
-											<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+											<td>
+												<input type="text" name="cultureDateOfResult" id="cultureDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
+											</td>
+
+											</td>
 										</tr>
 										<tr>
-											<th scope="row"><label class="label-control" for="approvedBy">Approved By</label></th>
+											<td class="text-center">Identification Result (Rapid Test)</td>
 											<td>
-												<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
-													<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+												<select class="form-control" name="identicationResult" id="identicationResult" title="Please select the Identification result">
+													<?= $general->generateSelectOptions($tbIdentificationResults, null, '-- Select --'); ?>
 												</select>
 											</td>
-											<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
-											<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
-										</tr>
-										<tr>
-											<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
-
 											<td>
-												<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"></textarea>
+												<input type="text" name="identificationDateOfResult" id="identificationDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
+											</td>
+
 											</td>
 										</tr>
+										<tr>
+											<td class="text-center">Drug Susceptibility Results (MGIT - 1st Line)</td>
+											<td>
+												<select class="form-control" name="drugMGITResult" id="drugMGITResult" title="Please select the Xpert MTM Result">
+													<?= $general->generateSelectOptions($tbdrugMGITResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<td>
+												<input type="text" name="drugMGITDateOfResult" id="drugMGITDateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
+											</td>
+
+											</td>
+										</tr>
+										<tr>
+											<td class="text-center">Drug Susceptibility Results (LPA - 1st & 2nd Line)</td>
+											<td>
+												<select class="form-control" name="drugLPAResult" id="drugLPAResult" title="Please select the Drug LPA result">
+													<?= $general->generateSelectOptions($tbdrugLPAResults, null, '-- Select --'); ?>
+												</select>
+											</td>
+											<td>
+												<input type="text" name="drugLPADateOfResult" id="drugLPADateOfResult" class="dateTime form-control" placeholder="Date Of Result" title="Please enter the Date Of Result" />
+											</td>
+
+											</td>
+										</tr>
+										</tbody>
+									</table>
+
+									</td>
+									</tr>
+
+									<tr>
+										<th scope="row"><label class="label-control" for="reviewedBy">Reviewed By</label></th>
+										<td>
+											<select name="reviewedBy" id="reviewedBy" class="select2 form-control" title="Please choose reviewed by" style="width: 100%;">
+												<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+											</select>
+										</td>
+										<th scope="row"><label class="label-control" for="reviewedOn">Reviewed on</label></th>
+										<td><input type="text" name="reviewedOn" id="reviewedOn" class="dateTime disabled-field form-control" placeholder="Reviewed on" title="Please enter the Reviewed on" /></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="label-control" for="approvedBy">Approved By</label></th>
+										<td>
+											<select name="approvedBy" id="approvedBy" class="select2 form-control" title="Please choose approved by" style="width: 100%;">
+												<?= $general->generateSelectOptions($userInfo, null, '-- Select --'); ?>
+											</select>
+										</td>
+										<th scope="row"><label class="label-control" for="approvedOn">Approved on</label></th>
+										<td><input type="text" name="approvedOn" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" /></td>
+									</tr>
+									<tr>
+										<th scope="row"><label class="label-control" for="labComments">Lab Comments</label></th>
+
+										<td>
+											<textarea class="form-control labSection" name="labComments" id="labComments" placeholder="Lab comments"></textarea>
+										</td>
+									</tr>
 									</table>
 								</div>
 							</div>

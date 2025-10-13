@@ -71,7 +71,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 					<div class="box-body">
 						<div class="widget">
 							<div class="widget-content">
-								<div class="bs-example bs-example-tabs">
+								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 										<li class="active"><a href="#notPrintedData" id="notPrintedDataTabHeading" data-toggle="tab" onclick="loadUnPrintedData();">
 												<?php echo _translate("Results not yet Printed"); ?>
@@ -82,7 +82,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 									</ul>
 									<div id="myTabContent" class="tab-content">
 										<div class="tab-pane fade in active" id="notPrintedData">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -339,7 +339,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 											<input type="hidden" name="totalSamplesList" id="totalSamplesList" />
 										</div>
 										<div class="tab-pane fade" id="printedData">
-											<table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+											<table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 												<tr>
 													<td><strong>
 															<?php echo _translate("Sample Collection Date"); ?>&nbsp;:
@@ -629,7 +629,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 			}
 
 			$(activeTab + 'TabHeading').trigger('click');
-		}else{
+		} else {
 			loadUnPrintedData();
 		}
 

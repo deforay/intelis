@@ -80,7 +80,7 @@ if ($formId == COUNTRY\CAMEROON) {
 		<div class="row">
 			<div class="col-xs-12">
 				<div class="box">
-					<table id="filterDiv" aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
+					<table id="filterDiv" aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
 						<tr>
 
 							<td><strong>
@@ -549,9 +549,6 @@ if ($formId == COUNTRY\CAMEROON) {
 	var selectedTestsId = [];
 	var oTable = null;
 	$(document).ready(function() {
-
-		// Initialize filter highlighter
-		Utilities.initFilterHighlighter('#filterDiv');
 
 		$("#batchCode").autocomplete({
 			source: function(request, response) {

@@ -811,7 +811,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                             <div class="col-md-6">
                                                                  <label class="col-lg-5 control-label" for="approvedOnDateTime">Approved On </label>
                                                                  <div class="col-lg-7">
-                                                                      <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
+                                                                      <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" value="<?php echo $cd4QueryInfo['result_approved_datetime']; ?>" />
                                                                  </div>
                                                             </div>
                                                             <div class="col-md-6">

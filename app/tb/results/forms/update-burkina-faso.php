@@ -529,7 +529,7 @@ if (isset($tbInfo['lab_id']) && $tbInfo['lab_id'] > 0) {
 												</select>
 											</td>
 											<th scope="row" class="th-label"><label class="label-control" for="approvedOn"><?= _translate("Approved on"); ?></label></th>
-											<td class="td-input"><input type="text" name="approvedOn" value="<?php echo $tbInfo['result_approved_datetime']; ?>" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" /></td>
+											<td class="td-input"><input type="text" name="approvedOn" value="<?php echo $tbInfo['result_approved_datetime']; ?>" id="approvedOn" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" /></td>
 										</tr>
 
 									</table>

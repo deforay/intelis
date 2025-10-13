@@ -53,7 +53,7 @@ $state = $geolocationService->getProvinces("yes");
                     <div class="box-body">
                         <div class="widget">
                             <div class="widget-content">
-                                <div class="bs-example bs-example-tabs">
+                                <div class="bs bs-tabs">
                                     <ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
                                         <li class="active"><a href="#notPrintedData" data-toggle="tab"><?php echo _translate("Results not yet Printed"); ?> </a></li>
                                         <li><a href="#printedData" data-toggle="tab" class="printedDataTab"><?php echo _translate("Results already Printed"); ?> </a></li>
@@ -927,11 +927,11 @@ $state = $geolocationService->getProvinces("yes");
                         $("#printedResult").css('display', 'none');
                     }
                     if (oTable) {
-						oTable.fnDraw();
-					}
-					if (opTable) {
-						opTable.fnDraw();
-					}
+                        oTable.fnDraw();
+                    }
+                    if (opTable) {
+                        opTable.fnDraw();
+                    }
                     window.open('/download.php?f=' + data, '_blank');
                 }
             });

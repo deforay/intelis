@@ -444,7 +444,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                 </td>
                                                 <td style="width: 50%;">
                                                     <label class="label-control" for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
-                                                    <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on"); ?>" />
+                                                    <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                 </td>
                                             </tr>
                                             <tr>
@@ -456,7 +456,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                                 </td>
                                                 <td style="width: 50%;">
                                                     <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
-                                                    <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                    <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on date"); ?>" title="<?php echo _translate("Please enter the revised on date"); ?>" />
                                                 </td>
                                             </tr>
                                         </table>

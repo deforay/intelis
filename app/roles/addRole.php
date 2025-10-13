@@ -282,7 +282,7 @@ $rInfo = $db->query($resourcesQuery);
 								</div>
 							</div>
 							<br>
-							<div class="bs-example bs-example-tabs">
+							<div class="bs bs-tabs">
 								<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 									<?php
 									$a = 0;
