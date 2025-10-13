@@ -406,7 +406,7 @@ foreach ($rejectionTypeResult as $type) {
 												<tr>
 													<td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
 													<td>
-														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+														<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Sample Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
 													</td>
 													<td>&nbsp;<strong><?php echo _translate("Fields"); ?>&nbsp;:</strong></td>
 													<td>

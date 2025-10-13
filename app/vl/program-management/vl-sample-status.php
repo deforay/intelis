@@ -126,10 +126,9 @@ $batResult = $db->rawQuery($batQuery);
 							</td>
 						</tr>
 						<tr>
-							<td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),reloadTATData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
-								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>
-										<?= _translate('Reset'); ?>
-									</span></button>
+							<td colspan="4">
+								&nbsp;<input type="button" id="searchBtn" onclick="searchResultData(),reloadTATData();" value="<?= _translate('Search'); ?>" class="btn btn-success btn-sm">
+								&nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
 							</td>
 						</tr>
 
@@ -204,6 +203,10 @@ $batResult = $db->rawQuery($batQuery);
 
 <script>
 	let searchExecuted = false;
+	let currentRequest = null;
+	let isTableLoading = false;
+	let currentTableRequest = null; // Track the DataTable AJAX request
+
 	$(function() {
 		$("#labName").select2({
 			placeholder: "<?php echo _translate("Select Testing Lab"); ?>"
@@ -240,50 +243,138 @@ $batResult = $db->rawQuery($batQuery);
 			startDate = start.format('YYYY-MM-DD');
 			endDate = end.format('YYYY-MM-DD');
 		});
-		searchResultData();
+
 		loadTATData();
 		$('#sampleReceivedDateAtLab, #sampleTestedDate').val("");
+		searchResultData();
+
 		$("#filterDiv input, #filterDiv select").on("change", function() {
 			searchExecuted = false;
 		});
 	});
 
 	function searchResultData() {
+		// Cancel any existing request
+		if (currentRequest) {
+			currentRequest.abort();
+		}
+
 		searchExecuted = true;
-		$.blockUI();
-		$.post("/vl/program-management/getSampleStatus.php", {
+
+		var $searchBtn = $('#searchBtn');
+		$searchBtn.prop('disabled', true)
+			.val('Searching...');
+
+		$("#pieChartDiv").html(
+			'<div class="col-xs-12">' +
+			'<div class="box">' +
+			'<div class="box-body text-center" style="padding: 50px;">' +
+			'<i class="fa fa-spinner fa-spin fa-3x text-primary"></i>' +
+			'<p class="text-muted" style="margin-top: 15px;">Loading chart data, please wait...</p>' +
+			'<button class="btn btn-warning btn-sm" style="margin-top: 10px;" onclick="cancelSearch()">' +
+			'<i class="fa fa-times"></i> Cancel</button>' +
+			'</div>' +
+			'</div>' +
+			'</div>'
+		);
+
+		currentRequest = $.post("/vl/program-management/getSampleStatus.php", {
 				sampleCollectionDate: $("#sampleCollectionDate").val(),
 				sampleReceivedDateAtLab: $("#sampleReceivedDateAtLab").val(),
 				sampleTestedDate: $("#sampleTestedDate").val(),
 				batchCode: $("#batchCode").val(),
 				labName: $("#labName").val(),
 				sampleType: $("#sampleType").val()
-			},
-			function(data) {
+			})
+			.done(function(data) {
 				if (data != '') {
 					$("#pieChartDiv").html(data);
+				} else {
+					$("#pieChartDiv").html(
+						'<div class="col-xs-12">' +
+						'<div class="box">' +
+						'<div class="box-body">' +
+						'<div class="alert alert-info">' +
+						'<i class="fa fa-info-circle"></i> No data found for the selected filters.' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'</div>'
+					);
 				}
+			})
+			.fail(function(xhr, status, error) {
+				if (status !== 'abort') {
+					$("#pieChartDiv").html(
+						'<div class="col-xs-12">' +
+						'<div class="box">' +
+						'<div class="box-body">' +
+						'<div class="alert alert-danger">' +
+						'<i class="fa fa-exclamation-triangle"></i> Error loading data. Please try again.' +
+						'</div>' +
+						'</div>' +
+						'</div>' +
+						'</div>'
+					);
+				}
+			})
+			.always(function() {
+				// Only re-enable button if table is also done loading
+				if (!isTableLoading) {
+					$searchBtn.prop('disabled', false)
+						.val('<?= _translate("Search"); ?>');
+				}
+				currentRequest = null;
 			});
-		$.unblockUI();
+	}
+
+	function cancelSearch() {
+		// Cancel the pie chart request
+		if (currentRequest) {
+			currentRequest.abort();
+			currentRequest = null;
+		}
+
+		// Cancel the DataTable AJAX request
+		if (currentTableRequest) {
+			currentTableRequest.abort();
+			currentTableRequest = null;
+		}
+
+		// Reset loading flag
+		isTableLoading = false;
+
+		// Show cancelled message
+		$("#pieChartDiv").html(
+			'<div class="col-xs-12">' +
+			'<div class="box">' +
+			'<div class="box-body text-center text-muted" style="padding: 30px;">' +
+			'<i class="fa fa-ban"></i> Search cancelled.' +
+			'</div>' +
+			'</div>' +
+			'</div>'
+		);
+
+		// Re-enable the search button
+		$('#searchBtn').prop('disabled', false)
+			.val('<?= _translate("Search"); ?>');
 	}
 
 	function reloadTATData() {
-		$.blockUI();
+		isTableLoading = true;
 		oTable.fnDraw();
-		$.unblockUI();
 	}
 
 	function loadTATData() {
-		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ records per page",
+				"sProcessing": '<div style="padding: 20px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><br/>Loading data...</div>'
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			//"bStateSave" : true,
 			"iDisplayLength": 10,
 			"bRetrieve": true,
 			"aoColumns": [{
@@ -315,7 +406,7 @@ $batResult = $db->rawQuery($batQuery);
 				},
 				{
 					"sClass": "center"
-				},
+				}
 			],
 			"aaSorting": [
 				[3, "desc"],
@@ -349,16 +440,48 @@ $batResult = $db->rawQuery($batQuery);
 					"name": "sampleTestedDate",
 					"value": $("#sampleTestedDate").val()
 				});
-				$.ajax({
+
+				// Store the current request so it can be cancelled
+				isTableLoading = true;
+				currentTableRequest = $.ajax({
 					"dataType": 'json',
 					"type": "POST",
 					"url": sSource,
 					"data": aoData,
-					"success": fnCallback
+					"success": function(json) {
+						fnCallback(json);
+						isTableLoading = false;
+						currentTableRequest = null;
+
+						// Re-enable button if chart is also done
+						if (!currentRequest) {
+							$('#searchBtn').prop('disabled', false)
+								.val('<?= _translate("Search"); ?>');
+						}
+					},
+					"error": function(xhr, error, thrown) {
+						// Don't show error if request was aborted (cancelled)
+						if (error !== 'abort') {
+							console.error('DataTable error:', error);
+							$('#vlRequestDataTable tbody').html(
+								'<tr><td colspan="10" class="text-center text-danger">' +
+								'<i class="fa fa-exclamation-triangle"></i> Error loading data. Please try again.' +
+								'</td></tr>'
+							);
+						}
+
+						isTableLoading = false;
+						currentTableRequest = null;
+
+						// Re-enable button
+						if (!currentRequest) {
+							$('#searchBtn').prop('disabled', false)
+								.val('<?= _translate("Search"); ?>');
+						}
+					}
 				});
 			}
 		});
-		$.unblockUI();
 	}
 
 	function exportInexcel() {
@@ -384,7 +507,6 @@ $batResult = $db->rawQuery($batQuery);
 					window.open('/download.php?f=' + data, '_blank');
 				}
 			});
-
 	}
 </script>
 <?php

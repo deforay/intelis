@@ -1,13 +1,16 @@
 <?php
 
-use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
 
 $title = _translate("EID | Sample Rejection Report");
 
 require_once APPLICATION_PATH . '/header.php';
 
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -45,7 +48,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
             <tr>
               <td><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:220px;background:#fff;" />
               </td>
               <td>&nbsp;<strong><?php echo _translate("Lab"); ?> &nbsp;:</strong></td>
               <td>
@@ -89,7 +92,6 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, null, "-- S
 </div>
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script src="/assets/js/highcharts.js"></script>
 <script>
   $(function() {
     $("#labName").select2({

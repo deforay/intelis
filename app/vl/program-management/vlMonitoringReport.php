@@ -189,7 +189,7 @@ $state = $geolocationService->getProvinces("yes");
 								</strong>
 							</td>
 							<td>
-								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+								<input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
 							</td>
 							<td><strong>
 									<?php echo _translate("Region/Province/State"); ?>&nbsp;:
