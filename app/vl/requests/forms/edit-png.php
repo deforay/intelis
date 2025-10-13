@@ -752,7 +752,7 @@ if (isset($vlQueryInfo['clinic_date']) && trim((string) $vlQueryInfo['clinic_dat
 										<td style="width:14%;" class="labels"><label for="approvedOnDateTime"> Approved
 												On </label></td>
 										<td style="width:14%;">
-											<input type="text" name="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on" />
+											<input type="text" name="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" id="approvedOnDateTime" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" />
 										</td>
 									</tr>
 									<tr>

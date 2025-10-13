@@ -70,7 +70,7 @@ $testingLabsDropdown = $general->generateSelectOptions($testingLabs, $labId, "--
 					<div class="box-body">
 						<div class="widget">
 							<div class="widget-content">
-								<div class="bs-example bs-example-tabs">
+								<div class="bs bs-tabs">
 									<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 										<li class="active"><a href="#notPrintedData" data-toggle="tab">
 												<?php echo _translate("Freezer/Storage Report"); ?>

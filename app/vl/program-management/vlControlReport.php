@@ -47,9 +47,9 @@ $sResult = $db->rawQuery($sQuery);
       <div class="col-xs-12">
         <div class="box">
           <div class="box-header with-border">
-            <a href="upload-vl-control.php" class="btn btn-primary pull-right" > <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
+            <a href="upload-vl-control.php" class="btn btn-primary pull-right"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Bulk Upload"); ?></a>
           </div>
-          <table aria-describedby="table" class="table" aria-hidden="true" style="margin-left:1%;width:80%;">
+          <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;width:80%;">
             <tr>
               <td><strong>
                   <?php echo _translate("Sample Tested Date"); ?>&nbsp;
@@ -98,10 +98,7 @@ $sResult = $db->rawQuery($sQuery);
 </div>
 <script type="text/javascript" src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
-<script type="text/javascript" src="/assets/js/highcharts.js"></script>
-<script type="text/javascript" src="/assets/js/highcharts-exporting.js"></script>
-<script type="text/javascript" src="/assets/js/highcharts-offline-exporting.js"></script>
-<script type="text/javascript" src="/assets/js/highcharts-accessibility.js"></script>
+
 <script type="text/javascript">
   var startDate = "";
   var endDate = "";

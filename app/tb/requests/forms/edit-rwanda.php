@@ -465,7 +465,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                         </td>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="approvedOn<?php echo $n; ?>"><?php echo _translate("Approved on"); ?></label>
-                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>" name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on"); ?>" />
+                                                            <input type="text" value="<?php echo DateUtility::humanReadableDateFormat($test['result_approved_datetime'], true); ?>" name="testResult[approvedOn][]" id="approvedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr>
@@ -477,7 +477,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                         </td>
                                                         <td style="width: 50%;">
                                                             <label class="label-control" for="revisedOn<?php echo $n; ?>"><?php echo _translate("Revised on"); ?></label>
-                                                            <input value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" type="text" name="testResult[revisedOn][]" id="revisedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                            <input value="<?php echo DateUtility::humanReadableDateFormat($test['revised_on'], true); ?>" type="text" name="testResult[revisedOn][]" id="revisedOn<?php echo $n; ?>" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on date"); ?>" title="<?php echo _translate("Please enter the revised on date"); ?>" />
                                                         </td>
                                                     </tr>
                                                     <tr style="display: none;" class="reasonForChange<?php echo $n; ?>">
@@ -595,7 +595,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     </td>
                                                     <td style="width: 50%;">
                                                         <label class="label-control" for="approvedOn1"><?php echo _translate("Approved on"); ?></label>
-                                                        <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on"); ?>" />
+                                                        <input type="text" name="testResult[approvedOn][]" id="approvedOn1" class="date-time form-control" placeholder="<?php echo _translate("Approved on"); ?>" title="<?php echo _translate("Please enter the approved on date"); ?>" />
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -607,7 +607,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                                     </td>
                                                     <td style="width: 50%;">
                                                         <label class="label-control" for="revisedOn1"><?php echo _translate("Revised on"); ?></label>
-                                                        <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on"); ?>" title="<?php echo _translate("Please enter the revised on"); ?>" />
+                                                        <input type="text" name="testResult[revisedOn][]" id="revisedOn1" class="date-time form-control" placeholder="<?php echo _translate("Enter the revised on date"); ?>" title="<?php echo _translate("Please enter the revised on date"); ?>" />
                                                     </td>
                                                 </tr>
                                             </table>

@@ -435,7 +435,7 @@ $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(","
                                             </select>
                                         </td>
                                         <th scope="row">Approved On</th>
-                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the Approved on" /></td>
+                                        <td><input type="text" value="<?php echo DateUtility::humanReadableDateFormat($eidInfo['result_approved_datetime']); ?>" name="approvedOnDateTime" id="approvedOnDateTime" class="dateTime disabled-field form-control" placeholder="Approved on" title="Please enter the approved on date" /></td>
                                     </tr>
                                     <tr class="change-reason">
                                         <th scope="row" class="change-reason" style="display: none;">Reason for Changing <span class="mandatory">*</span></th>

@@ -9860,7 +9860,7 @@ msgid "Approved on"
 msgstr ""
 
 #: eid/requests/forms/add-cameroon.php:568
-msgid "Please enter the Approved on"
+msgid "Please enter the approved on date"
 msgstr ""
 
 #: eid/requests/forms/add-cameroon.php:569

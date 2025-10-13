@@ -695,7 +695,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                                       <div class="col-md-6">
                                                                            <label class="col-lg-5 control-label" for="approvedOnDateTime"><?= _translate('Approved On'); ?> </label>
                                                                            <div class="col-lg-7">
-                                                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approved on" title="Please enter the Approved on" />
+                                                                                <input type="text" name="approvedOnDateTime" id="approvedOnDateTime" value="<?php echo $vlQueryInfo['result_approved_datetime']; ?>" class="dateTime form-control" placeholder="Approved on" title="Please enter the approved on date" />
                                                                            </div>
                                                                       </div>
                                                                       <div class="col-md-6">
