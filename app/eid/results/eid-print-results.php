@@ -73,7 +73,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
-                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
+                                                        <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
@@ -242,7 +242,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
                                                 <tr>
                                                     <td style="width:10%;"><strong><?php echo _translate("Sample Collection Date"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">
-                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
+                                                        <input type="text" id="printSampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="<?php echo _translate('Select Collection Date'); ?>" readonly style="width:100%;background:#fff;" />
                                                     </td>
                                                     <td style="width:10%;"><strong><?php echo _translate("Province/State"); ?>&nbsp;:</strong></td>
                                                     <td style="width:20%;">

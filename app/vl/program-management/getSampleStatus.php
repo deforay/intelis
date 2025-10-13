@@ -46,18 +46,14 @@ $suppression = "VL Suppression";
 
 $tsQuery = "SELECT * FROM `r_sample_status` ORDER BY `status_id`";
 $tsResult = $db->rawQuery($tsQuery);
-// $sampleStatusArray = [];
-// foreach($tsResult as $tsRow){
-//     $sampleStatusArray = $tsRow['status_name'];
-// }
 
 $sampleStatusColors = [];
 
 $sampleStatusColors[1] = "#dda41b"; // HOLD
 $sampleStatusColors[2] = "#9a1c64"; // LOST
-$sampleStatusColors[3] = "grey"; // Sample Reordered
+$sampleStatusColors[3] = "#c5c5c5ff"; // Sample Reordered
 $sampleStatusColors[4] = "#d8424d"; // Rejected
-$sampleStatusColors[5] = "black"; // Invalid
+$sampleStatusColors[5] = "#000000"; // Invalid
 $sampleStatusColors[6] = "#e2d44b"; // Sample Received at lab
 $sampleStatusColors[7] = "#639e11"; // Accepted
 $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
@@ -76,8 +72,8 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,
                 status_id,
                 status_name
             FROM $table as vl
-            JOIN r_sample_status as ts ON ts.status_id=vl.result_status
-            JOIN facility_details as f ON vl.lab_id=f.facility_id
+            LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+            LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
 $sWhere = [];

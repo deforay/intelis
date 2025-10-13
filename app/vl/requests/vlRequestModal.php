@@ -47,7 +47,7 @@ $batResult = $db->rawQuery($batQuery);
             <tr>
               <td><strong>Sample Collection Date&nbsp;:</strong></td>
               <td>
-                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
+                <input type="text" id="sampleCollectionDate" name="sampleCollectionDate" class="form-control daterangefield" placeholder="Select Collection Date" readonly style="width:220px;background:#fff;" />
               </td>
               <td>&nbsp;<strong>Batch Code&nbsp;:</strong></td>
               <td>
