@@ -59,14 +59,17 @@ $lastId = isset($_SERVER['HTTP_LAST_EVENT_ID'])
 try {
     $maxId = SystemService::systemAlertSqliteMaxId();
     if ($lastId > $maxId) {
-        $lastId = 0; // reset so client can catch up
+        // DO NOT replay from 0; jump to the tip to avoid blasting history
+        $lastId = (int)$maxId;
     }
 } catch (\Throwable $ignore) {
     // if maxId lookup fails, continue anyway
 }
 
-// client reconnect backoff (ms)
-echo "retry: 8000\n\n";
+
+// Backoff on reconnects (client will honor this)
+echo "retry: 15000\n\n"; // 15s
+
 
 // optional one-time ping for debugging/handshake
 echo "event: system\n";
@@ -79,8 +82,14 @@ $audiences = $isAdmin ? ['admin', 'auth'] : ['auth'];
 // --- timing / heartbeats ---
 $started   = time();
 $maxLife   = 300; // ~5 min per connection; client should auto-reconnect
-$heartbeat = 20;  // seconds
+$heartbeat = 60;  // seconds
 $lastBeat  = time();
+
+// throttle limits to prevent runaway usage
+$EVENT_LIMIT_PER_CONN = 500;        // max events this connection may send
+$BYTE_LIMIT_PER_CONN  = 512 * 1024; // ~512 KB per connection
+$eventsSent = 0;
+$bytesSent  = 0;
 
 // Keep this SSE alive; let our loop decide when to end
 @set_time_limit(0);          // unlimited PHP execution time
@@ -95,36 +104,57 @@ while (true) {
 
     try {
         $rows = SystemService::systemAlertSqliteReadSinceId($lastId, $audiences);
-        foreach ($rows as $r) {
-            $json = json_encode($r, JSON_UNESCAPED_SLASHES);
 
-            // named event (type-based listener)
-            echo "id: {$r['id']}\n";
-            echo "event: {$r['type']}\n";
-            echo "data: {$json}\n\n";
+        if (count($rows) > 200) {
+            $rows = array_slice($rows, 0, 200);
+        }
 
-            $lastId = (int)$r['id'];
+        if (!empty($rows)) {
             $gotAny = true;
         }
+
+        foreach ($rows as $r) {
+            $payload = [
+                'id'      => (int)$r['id'],
+                'type'    => (string)$r['type'],
+                'level'   => (string)($r['level'] ?? 'info'),
+                'message' => (string)$r['message'],
+            ];
+            $json  = json_encode($payload, JSON_UNESCAPED_SLASHES);
+            $frame = "id: {$payload['id']}\n"
+                . "event: {$payload['type']}\n"
+                . "data: {$json}\n\n";
+
+            echo $frame;
+            $lastId = $payload['id'];
+            $eventsSent++;
+            $bytesSent += strlen($frame);
+
+            if ($eventsSent >= $EVENT_LIMIT_PER_CONN || $bytesSent >= $BYTE_LIMIT_PER_CONN) {
+                $flush_now();
+                break;
+            }
+        }
     } catch (\Throwable $e) {
-        // if SQLite read fails, emit a diagnostic event and continue heartbeating
         echo "event: system\n";
         echo 'data: ' . json_encode(['message' => 'alerts store unavailable'], JSON_UNESCAPED_SLASHES) . "\n\n";
         $gotAny = true;
     }
 
+
     if ($gotAny) {
         $lastBeat = time();
         $flush_now();
+        usleep(200000); // 200ms pacing under load (optional)
     } else {
         if (time() - $lastBeat >= $heartbeat) {
-            // comment line = heartbeat (ignored by EventSource but keeps connection warm)
-            echo ': heartbeat ' . time() . "\n\n";
+            echo ":\n\n";
             $lastBeat = time();
             $flush_now();
         }
-        usleep(2_000_000); // 2s
+        usleep(2_000_000);
     }
+
 
     if ((time() - $started) > $maxLife) {
         break;
