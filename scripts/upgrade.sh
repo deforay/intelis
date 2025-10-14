@@ -631,12 +631,18 @@ update_php_ini() {
 }
 
 # Ensure opcache is present & enabled for mod_php
-if ! php -m | grep -qi '^opcache$'; then
-    print info "Installing/enabling OPcache for PHP ${desired_php_version} (mod_php)..."
+# --- Ensure OPcache is present; skip install if already enabled ---
+if php -m | grep -qi '^opcache$'; then
+    print success "OPcache already enabled for PHP ${desired_php_version}; skipping install/enable."
+else
+    print info "Installing/enabling OPcache for PHP ${desired_php_version}…"
     apt-get update -y
     apt-get install -y "php${desired_php_version}-opcache" || true
-    phpenmod -v "${desired_php_version}" -s ALL opcache 2>/dev/null || phpenmod opcache 2>/dev/null || true
+    # Enable for all SAPIs we care about (apache2/cli/fpm if present)
+    phpenmod -v "${desired_php_version}" -s ALL opcache 2>/dev/null \
+      || phpenmod opcache 2>/dev/null || true
 fi
+
 
 
 # Apply changes to PHP configuration files
