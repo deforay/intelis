@@ -39,27 +39,27 @@
   str = $(location).attr('pathname');
   splitsUrl = str.substr(str.lastIndexOf('/') + 1);
   if (splitsUrl == 'index.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".systemConfigmenu").addClass('active');
   } else if (splitsUrl == 'instanceIndex.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".instanceOverviewMenu").addClass('active');
   } else if (splitsUrl == 'api-stats.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".apiStatsMenu").addClass('active');
   } else if (splitsUrl == 'userLoginIndex.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".userLoginMenu").addClass('active');
   } else if (splitsUrl == 'log-files.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".logFileMenu").addClass('active');
   } else if (splitsUrl == 'reset-password.php') {
-    $(".manage").addClass('active');
+    $(".treeview").addClass('active');
     $(".allMenu").removeClass('active');
     $(".resetPasswordMenu").addClass('active');
   } else {

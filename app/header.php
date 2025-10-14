@@ -1,5 +1,5 @@
 <?php
-
+// header.php
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\AppMenuService;
@@ -181,9 +181,9 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 
 			<nav class="navbar" style="position:fixed;top:10;left:0;right:0;">
 				<!-- Sidebar toggle button-->
-				<button class="sidebar-toggle" data-toggle="offcanvas" onKeyDown="if(event.key === 'Enter' || event.key === ' ') { this.click(); }">
+				<a href="#" class="sidebar-toggle" data-toggle="push-menu" role="button">
 					<span class="sr-only">Toggle navigation</span>
-				</button>
+				</a>
 
 				<ul class="nav navbar-nav">
 					<li>
@@ -206,7 +206,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 						<?php if (!empty(SYSTEM_CONFIG['recency']['crosslogin']) && SYSTEM_CONFIG['recency']['crosslogin'] === true && !empty(SYSTEM_CONFIG['recency']['url'])) {
 						?>
 							<li class="user-menu">
-								<a onclick="setCrossLogin();" href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>" class="btn btn-link"><span class="fa-solid fa-arrow-up-right-from-square"></span>
+								<a onclick="setCrossLogin();" href="<?= rtrim((string) SYSTEM_CONFIG['recency']['url'], "/") . '/login?u=' . base64_encode((string) $_SESSION['loginId']) . '&t=' . ($_SESSION['crossLoginPass']) . '&name=' . base64_encode((string) $_SESSION['userName']); ?>" class="btn btn-link"><i class="fa-solid fa-arrow-up-right-from-square"></i>
 									<?= _translate('Recency'); ?>
 								</a>
 							</li>
@@ -214,11 +214,11 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 
 						<li class="dropdown user user-menu">
 							<a href="#" class="dropdown-toggle" data-toggle="dropdown">
-								<span class="fa-solid fa-hospital-user"></span>
+								<i class="fa-solid fa-hospital-user"></i>
 								<span class="hidden-xs">
 									<?= $_SESSION['userName'] ?? ''; ?>
 								</span>
-								<span class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></span>
+								<i class="fa-solid fa-circle is-remote-server-reachable" style="font-size:1em;display:none;"></i>
 							</a>
 							<ul class="dropdown-menu">
 								<?php
@@ -253,7 +253,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 						</div>
 					</div>
 				<?php } ?>
-				<ul class="sidebar-menu">
+				<ul class="sidebar-menu" data-widget="tree">
 					<?php
 					foreach ($_SESSION['menuItems'] as $menu) {
 						if ($menu['has_children'] == 'yes' && empty($menu['children'])) {
@@ -261,7 +261,7 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 							// Continue to next menu. We dont need this one
 							continue;
 						}
-						$classNames = $menu['additional_class_names'] . ($menu['has_children'] == "yes" ? ' treeview manage' : '');
+						$classNames = trim($menu['additional_class_names'] ?? '' . ($menu['has_children'] == "yes" ? ' treeview' : ''));
 
 						if ($menu['is_header'] == 'yes') {
 							echo '<li class="header">' . $menu['display_text'];
@@ -269,17 +269,19 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 					?>
 
 							<li class="<?= $classNames; ?>">
-								<a href="<?= $menu['link'] ?>">
-									<span class="<?= $menu['icon'] ?>"></span> <span>
-										<?= _translate($menu['display_text']); ?>
-									</span>
-
-									<?php if ($menu['has_children'] == 'yes') { ?>
+								<?php
+								$href = ($menu['has_children'] === 'yes') ? '#' : $menu['link'];
+								?>
+								<a href="<?= $href ?>">
+									<i class="<?= $menu['icon'] ?>"></i>
+									<span><?= _translate($menu['display_text']); ?></span>
+									<?php if ($menu['has_children'] === 'yes') { ?>
 										<span class="pull-right-container">
-											<span class="fa-solid fa-angle-left pull-right"></span>
+											<i class="fa fa-angle-left pull-right"></i>
 										</span>
 									<?php } ?>
 								</a>
+
 							<?php } ?>
 							<?php if ($menu['has_children'] == "yes") {
 								if ($menu['is_header'] == 'no') { ?>
@@ -299,21 +301,21 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 										$innerPages = "data-inner-pages='$dataInnerPages'";
 									}
 									?>
-
-										<li class="sub-menu-li <?= $subMenu['additional_class_names'] ?> ">
-											<a href="<?= $subMenu['link']; ?>" <?= $innerPages; ?>>
-												<span class="<?= $subMenu['icon'] ?>"></span>
+										<li class="<?= $subMenuHasChildren ? 'treeview' : ''; ?>">
+											<?php $subHref = $subMenuHasChildren ? '#' : $subMenu['link']; ?>
+											<a href="<?= $subHref; ?>" <?= $innerPages; ?>>
+												<i class="<?= $subMenu['icon'] ?>"></i>&nbsp;
 												<span>
 													<?= _translate($subMenu['display_text']); ?>
 												</span>
 												<?php if ($subMenuHasChildren) { ?>
 													<span class="pull-right-container">
-														<span class="fa-solid fa-angle-left pull-right"></span>
+														<i class="fa-solid fa-angle-left pull-right"></i>
 													</span>
 												<?php } ?>
 											</a>
 											<?php if ($subMenuHasChildren) { ?>
-												<ul class="sub-menu-li-ul treeview-menu">
+												<ul class="treeview-menu">
 													<?php
 													foreach ($subMenu['children'] as $childMenu) {
 														$innerPages = '';
@@ -323,12 +325,10 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 															$innerPages = "data-inner-pages='$dataInnerPages'";
 														}
 													?>
-														<li class="sub-menu-li-ul-li <?= $childMenu['additional_class_names'] ?>">
-															<a class="menu-item" href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
-																<span class="<?= $childMenu['icon'] ?>"></span>
-																<span class="inner-menu-item-text">
-																	<?= _translate($childMenu['display_text']); ?>
-																</span>
+														<li class="<?= $childMenu['additional_class_names'] ?>">
+															<a href="<?= $childMenu['link'] ?>" <?= $innerPages; ?>>
+																<i class="<?= $childMenu['icon'] ?>"></i>
+																<?= _translate($childMenu['display_text']); ?>
 															</a>
 														</li>
 													<?php
