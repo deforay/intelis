@@ -54,19 +54,11 @@ try {
         throw new SystemException('Unauthorized Access', 401);
     }
 
-    // Process and get ACK (array of sample codes)
-    $sampleCodes = $stsResultsService->receiveResults($testType, json_encode($data), $isSilent) ?? [];
-    $resultCount = is_array($sampleCodes) ? count($sampleCodes) : 0;
+    $dataInJsonFormat = JsonUtility::encodeUtf8Json($data);
 
-    // Build success payload (let Apache compress br/gzip)
-    $payload = [
-        'status'       => 'success',
-        'acknowledged' => $sampleCodes,
-        'count'        => $resultCount,
-        'testType'     => $testType,
-        'labId'        => $labId,
-    ];
-
+    // Process and get array of sample codes
+    $payload = $stsResultsService->receiveResults($testType, $dataInJsonFormat, $isSilent) ?? [];
+    $resultCount = count($payload['results'] ?? []);
     // Tracking (guard undefineds)
     $general->addApiTracking(
         $transactionId,
@@ -75,7 +67,7 @@ try {
         'results',
         $testType,
         $_SERVER['REQUEST_URI'] ?? '',
-        JsonUtility::encodeUtf8Json($data),
+        $dataInJsonFormat,
         JsonUtility::encodeUtf8Json($payload),
         'json',
         $labId
