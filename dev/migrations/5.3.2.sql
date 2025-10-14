@@ -81,3 +81,8 @@ CREATE TABLE `tb_referral_history` (
   `referred_by` varchar(128) COLLATE utf8mb4_general_ci DEFAULT NULL,
   PRIMARY KEY (`history_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+-- Amit 14-Oct-2025
+UPDATE `s_app_menu`
+SET `additional_class_names` = TRIM(REPLACE(`additional_class_names`, 'treeview', ''))
+WHERE `additional_class_names` LIKE '%treeview%';

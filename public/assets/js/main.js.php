@@ -754,10 +754,23 @@ $remoteURL = $general->getRemoteURL();
         if (currentMenuItem.length) {
             currentMenuItem.parent().addClass('active');
             let treeview = currentMenuItem.parents('li.treeview').addClass('active')[0];
-            let offset = treeview ? treeview.offsetTop : 0;
-            if (offset > 200) {
-                $('.main-sidebar').scrollTop(offset);
+            // currentMenuItem[0].scrollIntoView({
+            //     block: 'nearest',
+            //     inline: 'nearest'
+            // });
+
+            const el = currentMenuItem[0];
+            const container = document.querySelector('.main-sidebar');
+
+            if (el && container) {
+                const elRect = el.getBoundingClientRect();
+                const containerRect = container.getBoundingClientRect();
+                const offset = (elRect.top - containerRect.top) - (containerRect.height / 2) + (elRect.height / 2);
+
+                container.scrollTop += offset;
             }
+
+
         }
 
         // Phone number validation

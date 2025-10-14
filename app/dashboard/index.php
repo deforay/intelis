@@ -504,28 +504,44 @@ require_once APPLICATION_PATH . '/header.php';
 	let currentRequestType = null;
 	let sampleCountsDatatableCounter = 0;
 	let samplePieChartCounter = 0;
-
 	let currentRequests = [];
+	let isGeneratingDashboard = false;
 
+	// Function to abort all current requests
+	function abortAllRequests() {
+		currentRequests.forEach(xhr => {
+			if (xhr && xhr.readyState !== 4) {
+				xhr.abort();
+			}
+		});
+		currentRequests = [];
+		isGeneratingDashboard = false;
+		$.unblockUI();
+	}
 
 	$(function() {
+		// Abort requests on page unload
+		$(window).on('beforeunload', abortAllRequests);
 
-
-		$(window).on('beforeunload', function() {
-			// Abort all ongoing AJAX requests
-			currentRequests.forEach(xhr => {
-				if (xhr && xhr.readyState !== 4) {
-					xhr.abort();
-				}
-			});
-			currentRequests = []; // Clear the array
+		// Allow navigation away even while dashboard is loading
+		$(document).on('click', 'a:not([data-toggle])', function(e) {
+			// If user clicks a link while dashboard is generating, abort and allow navigation
+			if (isGeneratingDashboard && !$(this).hasClass('searchBtn')) {
+				abortAllRequests();
+				// Allow the link to proceed
+			}
 		});
 
+		// Handle sidebar menu clicks during loading
+		$('.sidebar-menu').on('click', 'a', function(e) {
+			if (isGeneratingDashboard) {
+				abortAllRequests();
+			}
+		});
 
 		$(".searchVlRequestDataDiv").html('<div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2" style="cursor:pointer;"><span class="dashloader"></span> </div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 " style="cursor:pointer;"> <span class="dashloader"></span></div> </div> <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 "> <div class="dashboard-stat2 bluebox" style="cursor:pointer;"> <span class="dashloader"></span></div> </div>');
 		$("#myTab li:first-child").addClass("active");
 		$("#myTabContent div:first-child").addClass("active");
-		// $("#myTabContent div:first-child table.searchTable .searchBtn").trigger("click");
 
 		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 				locale: {
@@ -558,34 +574,69 @@ require_once APPLICATION_PATH . '/header.php';
 				startDate = start.format('YYYY-MM-DD');
 				endDate = end.format('YYYY-MM-DD');
 			});
-		$("#myTab li:first-child > a").trigger("click");
+
+		// Load first tab immediately but make it non-blocking
+		// Use setTimeout with 0ms to break out of the synchronous execution chain
+		setTimeout(function() {
+			$("#myTab li:first-child > a").trigger("click");
+		}, 0);
 	});
 
 	function generateDashboard(requestType) {
+		// Prevent multiple simultaneous generations of the SAME dashboard
+		if (isGeneratingDashboard && currentRequestType === requestType) {
+			console.log('Dashboard generation already in progress for ' + requestType);
+			return;
+		}
+
+		// If switching to a different dashboard, abort previous requests
+		if (isGeneratingDashboard && currentRequestType !== requestType) {
+			abortAllRequests();
+		}
+
+		isGeneratingDashboard = true;
 		currentRequestType = requestType;
 		sampleCountsDatatableCounter = 0;
 		samplePieChartCounter = 0;
 
-		$.when(fetchSampleResultData(currentRequestType))
+		// Fetch the first data asynchronously using jQuery's .done() and .fail() instead of .then() and .catch()
+		fetchSampleResultData(currentRequestType)
 			.done(function() {
-				$.unblockUI();
-				$(window).scroll();
+				// Small delay to allow DOM to update and remain responsive
+				setTimeout(function() {
+					$.unblockUI();
+					// Trigger scroll to check viewport immediately
+					$(window).trigger('scroll');
+					isGeneratingDashboard = false;
+				}, 0);
+			})
+			.fail(function(error) {
+				// Handle abort or other errors
+				if (error.statusText !== 'abort') {
+					console.error('Dashboard generation error:', error);
+				}
+				isGeneratingDashboard = false;
 			});
 
+		// Lazy load charts when they come into viewport
+		// Remove any existing scroll handlers first to prevent duplicates
+		$(window).off('resize.dashboard scroll.dashboard');
 
-
-
-		$(window).on('resize scroll', function() {
-
+		$(window).on('resize.dashboard scroll.dashboard', function() {
 			if (sampleCountsDatatableCounter == 0) {
 				if ($("." + currentRequestType + " .sampleCountsDatatableDiv").isInViewport()) {
 					sampleCountsDatatableCounter++;
-					// $.blockUI();
+
+					// Load charts in parallel using $.when
 					$.when(
 						getSampleCountsForDashboard(currentRequestType),
+						getSamplesOverview(currentRequestType)
 					).done(function() {
-						getSamplesOverview(currentRequestType);
-					}).done(function() {
+						$.unblockUI();
+					}).fail(function(error) {
+						if (error.statusText !== 'abort') {
+							console.error('Chart loading error:', error);
+						}
 						$.unblockUI();
 					});
 				}
@@ -593,290 +644,505 @@ require_once APPLICATION_PATH . '/header.php';
 		});
 
 		<?php if (!empty($arr['vl_monthly_target']) && $arr['vl_monthly_target'] == 'yes') { ?>
-			if (requestType == 'vl') {
-				getVlMonthlyTargetsReport();
-				getVlSuppressionTargetReport();
-			} else if (requestType == 'eid') {
-				getEidMonthlyTargetsReport();
-			} else if (requestType == 'covid19') {
-				getCovid19MonthlyTargetsReport();
-			} else if (requestType == 'hepatitis') {
-				getHepatitisMonthlyTargetsReport();
-			} else if (requestType == 'tb') {
-				getTbMonthlyTargetsReport();
-			} else if (requestType == 'cd4') {
-				getCd4MonthlyTargetsReport();
-			}
+			// Load target reports asynchronously in the background
+			// These shouldn't block anything
+			setTimeout(function() {
+				if (requestType == 'vl') {
+					getVlMonthlyTargetsReport();
+					getVlSuppressionTargetReport();
+				} else if (requestType == 'eid') {
+					getEidMonthlyTargetsReport();
+				} else if (requestType == 'covid19') {
+					getCovid19MonthlyTargetsReport();
+				} else if (requestType == 'hepatitis') {
+					getHepatitisMonthlyTargetsReport();
+				} else if (requestType == 'tb') {
+					getTbMonthlyTargetsReport();
+				} else if (requestType == 'cd4') {
+					getCd4MonthlyTargetsReport();
+				}
+			}, 50);
 		<?php } ?>
-
 	}
 
 	function fetchSampleResultData(requestType) {
-		//$.blockUI();
+		let xhr;
 		if (requestType == 'vl') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#vlSampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching VL sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'recency') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#recencySampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching recency sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'eid') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#eidSampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching EID sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'covid19') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					type: 'covid19'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#covid19SampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching COVID-19 sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'hepatitis') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#hepatitisSampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching hepatitis sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'tb') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					type: 'tb'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#tbSampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching TB sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'cd4') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
 					type: 'cd4'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#cd4SampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching CD4 sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'generic-tests') {
-			currentXHR = $.post("/dashboard/getSampleResult.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleResult.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					type: 'generic-tests'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#genericTestsSampleResultDetails").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching generic tests sample result data:', textStatus, errorThrown);
+					}
+				}
+			});
 		}
 
-		// Track the current request
-		currentRequests.push(currentXHR);
-
-		return currentXHR;
-
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getSampleCountsForDashboard(requestType) {
+		let xhr;
 		if (requestType == 'vl') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					type: 'vl'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#vlNoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching VL sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'recency') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					type: 'recency'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#recencyNoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching recency sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'eid') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					type: 'eid'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#eidNoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching EID sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'cd4') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
 					type: 'cd4'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#cd4NoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching CD4 sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'hepatitis') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#hepatitisSampleCollectionDate").val(),
 					type: 'hepatitis'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#hepatitisNoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching hepatitis sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'generic-tests') {
-			currentXHR = $.post("/dashboard/getSampleCount.php", {
+			xhr = $.ajax({
+				url: "/dashboard/getSampleCount.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					type: 'generic-tests'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if (data != '') {
 						$("#genericTestsNoOfSampleCount").html(data);
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching generic tests sample counts:', textStatus, errorThrown);
+					}
+				}
+			});
 		}
-		// Track the current request
-		currentRequests.push(currentXHR);
 
-		return currentXHR;
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getSamplesOverview(requestType) {
+		let xhr;
 		if (requestType == 'vl') {
-			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
+			xhr = $.ajax({
+				url: "/vl/program-management/getSampleStatus.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#vlSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'vl'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#vlPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching VL samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'recency') {
-			currentXHR = $.post("/vl/program-management/getSampleStatus.php", {
+			xhr = $.ajax({
+				url: "/vl/program-management/getSampleStatus.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#recencySampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'recency'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#recencyPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching recency samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'eid') {
-			currentXHR = $.post("/eid/management/getSampleStatus.php", {
+			xhr = $.ajax({
+				url: "/eid/management/getSampleStatus.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#eidSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'eid'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#eidPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching EID samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'covid19') {
-			currentXHR = $.post("/covid-19/management/getSampleStatus.php", {
+			xhr = $.ajax({
+				url: "/covid-19/management/getSampleStatus.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#covid19SampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'covid19'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#covid19PieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching COVID-19 samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'tb') {
-			currentXHR = $.post("/tb/management/getSampleStatus.php", {
+			xhr = $.ajax({
+				url: "/tb/management/getSampleStatus.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#tbSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'tb'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#tbPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching TB samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'cd4') {
-			currentXHR = $.post("/cd4/management/get-sample-status.php", {
+			xhr = $.ajax({
+				url: "/cd4/management/get-sample-status.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#cd4SampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'cd4'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#cd4PieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching CD4 samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		} else if (requestType == 'generic-tests') {
-			currentXHR = $.post("/generic-tests/program-management/get-sample-status.php", {
+			xhr = $.ajax({
+				url: "/generic-tests/program-management/get-sample-status.php",
+				type: 'POST',
+				data: {
 					sampleCollectionDate: $("#genericTestsSampleCollectionDate").val(),
 					batchCode: '',
 					facilityName: '',
 					sampleType: '',
 					type: 'generic-tests'
 				},
-				function(data) {
+				async: true,
+				success: function(data) {
 					if ($.trim(data) != '') {
 						$("#genericTestsPieChartDiv").html(data);
 						$(".labAverageTatDiv").css("display", "none");
 					}
-				});
+				},
+				error: function(jqXHR, textStatus, errorThrown) {
+					if (textStatus !== 'abort') {
+						console.error('Error fetching generic tests samples overview:', textStatus, errorThrown);
+					}
+				}
+			});
 		}
-		// Track the current request
-		currentRequests.push(currentXHR);
-		return currentXHR;
+
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function resetSampleResultData(requestType) {
-		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#recencySampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
+		// Abort any in-progress requests
+		abortAllRequests();
+
+		// Reset date picker
+		$('#vlSampleCollectionDate,#eidSampleCollectionDate,#covid19SampleCollectionDate,#recencySampleCollectionDate,#hepatitisSampleCollectionDate,#tbSampleCollectionDate,#cd4SampleCollectionDate,#genericTestsSampleCollectionDate').daterangepicker({
 			locale: {
 				cancelLabel: "<?= _translate("Clear", true); ?>",
 				format: 'DD-MMM-YYYY',
@@ -906,68 +1172,78 @@ require_once APPLICATION_PATH . '/header.php';
 			startDate = start.format('YYYY-MM-DD');
 			endDate = end.format('YYYY-MM-DD');
 		});
+
 		generateDashboard(requestType);
 	}
 
 	function getEidMonthlyTargetsReport() {
-		// $.blockUI();
-
-		$.post("/eid/management/getEidMonthlyThresholdReport.php", {
+		let xhr = $.ajax({
+			url: "/eid/management/getEidMonthlyThresholdReport.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= _translate("EID testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj['aaData'].length + ' <?= _translate("EID testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/eid/management/eidTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contEid").html(div);
 				}
-
-
-
-			});
-		$.unblockUI();
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching EID monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getVlMonthlyTargetsReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/vl/program-management/getVlMonthlyThresholdReport.php", {
+		let xhr = $.ajax({
+			url: "/vl/program-management/getVlMonthlyThresholdReport.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span>' + data['aaData'].length + ' <?= _translate("VL testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span>' + dataObj['aaData'].length + ' <?= _translate("VL testing lab(s) did not meet the monthly test target", true); ?>. </span><a href="/vl/program-management/vlTestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#cont").html(div);
 				}
-
-
-
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching VL monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getVlSuppressionTargetReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/vl/program-management/getSuppressedTargetReport.php", {
+		let xhr = $.ajax({
+			url: "/vl/program-management/getSuppressedTargetReport.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				// console.log(data)
+			async: true,
+			success: function(data) {
 				if (data == 1) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
@@ -975,112 +1251,131 @@ require_once APPLICATION_PATH . '/header.php';
 							</div>';
 					$("#contVl").html(div);
 				}
-
-
-
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching VL suppression targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getCovid19MonthlyTargetsReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/covid-19/management/getCovid19MonthlyThresholdReport.php", {
+		let xhr = $.ajax({
+			url: "/covid-19/management/getCovid19MonthlyThresholdReport.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 							<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-							<span >' + data['aaData'].length + ' <?= _translate("Covid-19 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
+							<span >' + dataObj['aaData'].length + ' <?= _translate("Covid-19 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/covid-19/management/covid19TestingTargetReport.php" target="_blank"> <?= _translate("more"); ?> </a>\
 							</div>';
 					$("#contCovid").html(div);
 				}
-
-
-
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching COVID-19 monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getHepatitisMonthlyTargetsReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/hepatitis/management/get-hepatitis-monthly-threshold-report.php", {
+		let xhr = $.ajax({
+			url: "/hepatitis/management/get-hepatitis-monthly-threshold-report.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= _translate("Hepatitis testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj['aaData'].length + ' <?= _translate("Hepatitis testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching Hepatitis monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getTbMonthlyTargetsReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/tb/management/get-tb-monthly-threshold-report.php", {
+		let xhr = $.ajax({
+			url: "/tb/management/get-tb-monthly-threshold-report.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#tbSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj['aaData'].length + ' <?= _translate("TB testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
-
-
-
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching TB monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 
 	function getCd4MonthlyTargetsReport() {
-		// $.blockUI();
-
-		let currentXHR = $.post("/cd4/management/get-cd4-monthly-threshold-report.php", {
+		let xhr = $.ajax({
+			url: "/cd4/management/get-cd4-monthly-threshold-report.php",
+			type: 'POST',
+			data: {
 				targetType: '1',
 				sampleTestDate: $("#vlSampleCollectionDate").val(),
 			},
-			function(data) {
-				var data = JSON.parse(data);
-				// console.log(data['aaData'].length);
-				if (data['aaData'].length > 0) {
+			async: true,
+			success: function(data) {
+				var dataObj = JSON.parse(data);
+				if (dataObj['aaData'].length > 0) {
 					var div = '<div class="alert alert-danger alert-dismissible" role="alert" style="background-color: #ff909f !important">\
 				<button type="button" class="close" data-dismiss="alert" aria-label="Close" style="text-indent: 0px"><span aria-hidden="true" style="font-size: larger;font-weight: bolder;color: #000000;">&times;</span></button>\
-				<span >' + data['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
+				<span >' + dataObj['aaData'].length + ' <?= _translate("CD4 testing lab(s) did not meet the monthly test target", true); ?>.  </span><a href="/hepatitis/management/hepatitis-testing-target-report.php" target="_blank"> <?= _translate("more"); ?> </a>\
 				</div>';
 					$("#contCovid").html(div);
 				}
-
-			});
-		$.unblockUI();
-		// Track the current request
-		currentRequests.push(currentXHR);
+			},
+			error: function(jqXHR, textStatus, errorThrown) {
+				if (textStatus !== 'abort') {
+					console.error('Error fetching CD4 monthly targets:', textStatus, errorThrown);
+				}
+			}
+		});
+		currentRequests.push(xhr);
+		return xhr;
 	}
 </script>
 <?php

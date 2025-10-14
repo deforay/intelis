@@ -16,6 +16,7 @@ $primaryKey = "result_id";
 
 
 $aColumns = ['result', 'status'];
+$orderColumns = ['', 'result', 'status', ''];
 
 /* Indexed column (used for fast and accurate table cardinality) */
 $sIndexColumn = $primaryKey;
@@ -29,7 +30,6 @@ if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
 }
 
 
-
 $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
 $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
@@ -40,13 +40,14 @@ if (!empty($columnSearch) && $columnSearch != '') {
 
 $sQuery = "SELECT r.*, GROUP_CONCAT(i.machine_name SEPARATOR ', ') AS machine_names
             FROM r_vl_results r
-            LEFT JOIN instruments i ON JSON_CONTAINS(r.available_for_instruments, JSON_QUOTE(i.instrument_id))
-            GROUP BY r.result_id;";
+            LEFT JOIN instruments i ON JSON_CONTAINS(r.available_for_instruments, JSON_QUOTE(i.instrument_id))";
 
 
 if (!empty($sWhere)) {
     $sQuery = $sQuery . ' WHERE ' . implode(" AND ", $sWhere);
 }
+
+$sQuery = $sQuery . ' GROUP BY r.result_id';
 
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);

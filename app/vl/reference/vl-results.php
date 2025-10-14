@@ -79,8 +79,8 @@ require_once APPLICATION_PATH . '/header.php';
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
-			"bStateSave": true,
-			"bRetrieve": true,
+			"bStateSave": false,
+			"bRetrieve": false,
 			"aoColumns": [{
 					"sClass": "center dt-control",
 					"bSortable": false
@@ -101,11 +101,11 @@ require_once APPLICATION_PATH . '/header.php';
 				}
 			],
 			"aaSorting": [
-				[2, "asc"]
+				[1, "asc"]
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-vl-results-helper.php",
+			"sAjaxSource": "/vl/reference/get-vl-results-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
