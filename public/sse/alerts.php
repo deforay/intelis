@@ -72,9 +72,15 @@ echo "retry: 15000\n\n"; // 15s
 
 
 // optional one-time ping for debugging/handshake
-echo "event: system\n";
-echo 'data: ' . json_encode(['message' => 'sse connected', 'lastId' => $lastId], JSON_UNESCAPED_SLASHES) . "\n\n";
-$flush_now();
+$debug = isset($_GET['debug']) && $_GET['debug'] === '1';
+$firstConnect = ($lastId === 0);
+
+if ($debug && $firstConnect) {
+    echo "event: system\n";
+    echo 'data: {"message":"sse connected","lastId":' . $lastId . "}\n\n";
+    $flush_now();
+}
+
 
 // audience
 $audiences = $isAdmin ? ['admin', 'auth'] : ['auth'];
@@ -95,23 +101,26 @@ $bytesSent  = 0;
 @set_time_limit(0);          // unlimited PHP execution time
 ignore_user_abort(false);    // stop if client disconnects
 
+$unavailableNotified = false;
+$errorBackoffSec = 5;           // first backoff
+$maxErrorBackoffSec = 60;       // cap backoff
+
 while (true) {
-    if (connection_aborted()) {
-        break;
-    }
+    if (connection_aborted()) break;
 
     $gotAny = false;
 
     try {
         $rows = SystemService::systemAlertSqliteReadSinceId($lastId, $audiences);
 
-        if (count($rows) > 200) {
-            $rows = array_slice($rows, 0, 200);
+        // recovery: if we were in error mode, reset flags
+        if ($unavailableNotified) {
+            $unavailableNotified = false;
+            $errorBackoffSec = 5;
         }
 
-        if (!empty($rows)) {
-            $gotAny = true;
-        }
+        if (count($rows) > 200) $rows = array_slice($rows, 0, 200);
+        if (!empty($rows)) $gotAny = true;
 
         foreach ($rows as $r) {
             $payload = [
@@ -121,44 +130,51 @@ while (true) {
                 'message' => (string)$r['message'],
             ];
             $json  = json_encode($payload, JSON_UNESCAPED_SLASHES);
-            $frame = "id: {$payload['id']}\n"
-                . "event: {$payload['type']}\n"
-                . "data: {$json}\n\n";
+            echo "id: {$payload['id']}\n";
+            echo "event: {$payload['type']}\n";
+            echo "data: {$json}\n\n";
 
-            echo $frame;
             $lastId = $payload['id'];
             $eventsSent++;
-            $bytesSent += strlen($frame);
-
+            $bytesSent += strlen($json) + 32;
             if ($eventsSent >= $EVENT_LIMIT_PER_CONN || $bytesSent >= $BYTE_LIMIT_PER_CONN) {
                 $flush_now();
                 break;
             }
         }
     } catch (\Throwable $e) {
-        echo "event: system\n";
-        echo 'data: ' . json_encode(['message' => 'alerts store unavailable'], JSON_UNESCAPED_SLASHES) . "\n\n";
-        $gotAny = true;
+        if (!$unavailableNotified) {
+            echo "event: system\n";
+            echo 'data: {"message":"alerts store unavailable"}' . "\n\n";  // send ONCE
+            $unavailableNotified = true;
+            $lastBeat = time();   // reset heartbeat timer so we don't immediately spam
+            $flush_now();
+        }
+        // Back off while unhealthy, send only tiny heartbeats
+        sleep($errorBackoffSec);
+        if ($errorBackoffSec < $maxErrorBackoffSec) {
+            $errorBackoffSec = min($maxErrorBackoffSec, $errorBackoffSec * 2);
+        }
+        // Send a heartbeat to keep the pipe warm
+        echo ":\n\n";
+        $flush_now();
+        continue;
     }
-
 
     if ($gotAny) {
         $lastBeat = time();
         $flush_now();
-        usleep(200000); // 200ms pacing under load (optional)
+        usleep(200000); // ok to pace under load
     } else {
         if (time() - $lastBeat >= $heartbeat) {
-            echo ":\n\n";
+            echo ":\n\n";          // comment heartbeat (tiny)
             $lastBeat = time();
             $flush_now();
         }
         usleep(2_000_000);
     }
 
-
-    if ((time() - $started) > $maxLife) {
-        break;
-    }
+    if ((time() - $started) > $maxLife) break;
 }
 
 exit(0);

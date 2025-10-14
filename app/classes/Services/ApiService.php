@@ -414,22 +414,32 @@ final class ApiService
         }
     }
 
-    public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request)
+    public static function generateJsonResponse(mixed $payload, ServerRequestInterface $request): string
     {
-        // Ensure payload is a JSON string
-        $jsonPayload = is_array($payload) || is_object($payload)
-            ? JsonUtility::encodeUtf8Json($payload)
-            : $payload;
+        // Always go through JsonUtility so UTF-8 normalization and validation apply
+        $jsonPayload = JsonUtility::encodeUtf8Json($payload);
 
-        if (json_last_error() != JSON_ERROR_NONE) {
-            return null;
+        if ($jsonPayload === null) {
+            // We failed to encode or validate JSON on the server side -> 500
+            http_response_code(500);
+            LoggerUtility::log('error', 'JSON encoding failed in generateJsonResponse');
+            $jsonPayload = '{"error":"JSON encoding failed"}';
         }
 
-        // Let the web server (Apache) do Content-Encoding + Vary: Accept-Encoding
-        header('Content-Type: application/json; charset=utf-8');
+        // Propagate request id for tracing
+        $reqId = $request->getHeaderLine('X-Request-ID');
+        if ($reqId !== '') {
+            header("X-Request-ID: $reqId");
+        }
 
-        return $jsonPayload;
+        header('Content-Type: application/json; charset=utf-8');
+        header('Cache-Control: no-store');
+
+        return $jsonPayload; // caller echoes
     }
+
+
+
 
 
     /**

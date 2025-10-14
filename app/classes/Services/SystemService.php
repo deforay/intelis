@@ -4,6 +4,7 @@ namespace App\Services;
 
 use Gettext\Loader\MoLoader;
 use App\Services\CommonService;
+use App\Utilities\LoggerUtility;
 
 final class SystemService
 {
@@ -201,36 +202,60 @@ final class SystemService
         if (!is_dir(CACHE_PATH)) {
             @mkdir(CACHE_PATH, 0775, true);
         }
+        if (!is_writable(CACHE_PATH)) {
+            LoggerUtility::logError('CACHE_PATH not writable', ['path' => CACHE_PATH]);
+            throw new \RuntimeException('CACHE_PATH not writable: ' . CACHE_PATH);
+        }
 
-        $pdo = new \PDO('sqlite:' . self::SYSTEM_ALERT_SQLITE_FILE, null, null, [
-            \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-            \PDO::ATTR_TIMEOUT            => 3,
-        ]);
+        // Ensure driver present (clearer error than PDO)
+        if (!in_array('sqlite', \PDO::getAvailableDrivers(), true)) {
+            LoggerUtility::logError('pdo_sqlite driver not available');
+            throw new \RuntimeException('pdo_sqlite driver not available');
+        }
 
-        // robust for concurrent reads/writes
-        $pdo->exec("PRAGMA journal_mode = WAL");
-        $pdo->exec("PRAGMA synchronous = NORMAL");
-        $pdo->exec("PRAGMA busy_timeout = 3000");
+        $dbFile = self::SYSTEM_ALERT_SQLITE_FILE;
+        try {
+            $pdo = new \PDO('sqlite:' . $dbFile, null, null, [
+                \PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+                \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+                \PDO::ATTR_TIMEOUT            => 3,
+            ]);
 
-        // auto-init schema
-        $pdo->exec("
-        CREATE TABLE IF NOT EXISTS system_alerts (
-          id         INTEGER PRIMARY KEY AUTOINCREMENT,
-          level      TEXT NOT NULL CHECK(level IN ('info','warn','error','critical')),
-          type       TEXT NOT NULL,
-          message    TEXT NOT NULL,
-          meta       TEXT NULL,
-          audience   TEXT NOT NULL DEFAULT 'admin' CHECK(audience IN ('auth','admin')),
-          created_at TEXT NOT NULL DEFAULT (datetime('now'))
-        );
-    ");
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_audience_id ON system_alerts(audience, id)");
-        $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_type_created ON system_alerts(type, created_at)");
+            // If we just created it, set perms so web user can RW
+            if (!file_exists($dbFile)) {
+                // touching first will create via PDO anyway; still set perms
+                @chmod($dbFile, 0664);
+            }
 
-        self::$systemAlertSqlite = $pdo;
-        return $pdo;
+            $pdo->exec("PRAGMA journal_mode = WAL");
+            $pdo->exec("PRAGMA synchronous = NORMAL");
+            $pdo->exec("PRAGMA busy_timeout = 3000");
+
+            $pdo->exec("
+            CREATE TABLE IF NOT EXISTS system_alerts (
+              id         INTEGER PRIMARY KEY AUTOINCREMENT,
+              level      TEXT NOT NULL CHECK(level IN ('info','warn','error','critical')),
+              type       TEXT NOT NULL,
+              message    TEXT NOT NULL,
+              meta       TEXT NULL,
+              audience   TEXT NOT NULL DEFAULT 'admin' CHECK(audience IN ('auth','admin')),
+              created_at TEXT NOT NULL DEFAULT (datetime('now'))
+            );
+        ");
+            $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_audience_id ON system_alerts(audience, id)");
+            $pdo->exec("CREATE INDEX IF NOT EXISTS idx_system_alerts_type_created ON system_alerts(type, created_at)");
+
+            self::$systemAlertSqlite = $pdo;
+            return $pdo;
+        } catch (\Throwable $e) {
+            \App\Utilities\LoggerUtility::logError('SQLite init failed: ' . $e->getMessage(), [
+                'path' => $dbFile,
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
+
 
     public static function insertSystemAlert(
         string $level,

@@ -985,47 +985,84 @@ final class MiscUtility
      * @param array|string|null $input
      * @return array|string|null
      */
-    public static function toUtf8(array|string|null $input): array|string|null
-    {
+    /**
+     * Recursively convert input to valid UTF-8 and (optionally) remove invisible characters.
+     *
+     * @param array|string|object|int|float|bool|null $input
+     * @param bool $trim                Trim leading/trailing whitespace for strings
+     * @param bool $stripInvisible      Remove zero-width, NBSP, and control chars (except \t\r\n)
+     */
+    public static function toUtf8(
+        array|string|object|int|float|bool|null $input,
+        bool $trim = false,
+        bool $stripInvisible = true
+    ): array|string|object|int|float|bool|null {
         if (is_array($input)) {
-            return array_map([self::class, 'toUtf8'], $input);
+            foreach ($input as $k => $v) {
+                $input[$k] = self::toUtf8($v, $trim, $stripInvisible);
+            }
+            return $input;
         }
 
-        if (is_string($input)) {
-            // Normalize encoding
-            $input = trim($input);
-            if (!mb_check_encoding($input, 'UTF-8')) {
-                $encoding = mb_detect_encoding($input, mb_detect_order(), true);
-                if ($encoding === false) {
-                    foreach (['UTF-16', 'Windows-1252', 'ISO-8859-1', 'UTF-8'] as $fallback) {
-                        if (mb_check_encoding($input, $fallback)) {
-                            $encoding = $fallback;
-                            break;
-                        }
-                    }
+        if (is_object($input)) {
+            foreach (get_object_vars($input) as $prop => $val) {
+                $input->{$prop} = self::toUtf8($val, $trim, $stripInvisible);
+            }
+            return $input;
+        }
 
-                    if ($encoding === false) {
-                        $encoding = 'UTF-8';
+        if (!is_string($input)) {
+            return $input;
+        }
+
+        $s = $trim ? trim($input) : $input;
+
+        if (function_exists('mb_check_encoding') && !mb_check_encoding($s, 'UTF-8')) {
+            $order = function_exists('mb_detect_order') ? (mb_detect_order() ?: ['UTF-8', 'Windows-1252', 'ISO-8859-1', 'UTF-16']) : ['UTF-8', 'Windows-1252', 'ISO-8859-1', 'UTF-16'];
+            $enc = function_exists('mb_detect_encoding') ? mb_detect_encoding($s, $order, true) : false;
+            if ($enc === false) {
+                foreach (['UTF-16', 'Windows-1252', 'ISO-8859-1', 'UTF-8'] as $fallback) {
+                    if (mb_check_encoding($s, $fallback)) {
+                        $enc = $fallback;
+                        break;
                     }
                 }
-                $input = mb_convert_encoding($input, 'UTF-8', $encoding);
+                $enc = $enc ?: 'UTF-8';
             }
-
-            // Normalize Unicode (NFC form)
-            if (class_exists('Normalizer')) {
-                $input = Normalizer::normalize($input, Normalizer::FORM_C);
-            }
-
-            // Remove basic BOM, ZWSP, NBSP
-            $input = preg_replace(
-                '/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u',
-                '',
-                $input
-            );
+            $s = mb_convert_encoding($s, 'UTF-8', $enc);
         }
 
-        return $input;
+        // Strip raw UTF-8 BOM bytes
+        if (strncmp($s, "\xEF\xBB\xBF", 3) === 0) {
+            $s = substr($s, 3);
+        }
+
+        // Normalize Unicode NFC if intl is available
+        if (class_exists('Normalizer')) {
+            $norm = Normalizer::normalize($s, Normalizer::FORM_C);
+            if ($norm !== false) {
+                $s = $norm;
+            }
+        }
+
+        if ($stripInvisible) {
+            // Remove zero-width & NBSP
+            $clean = preg_replace('/[\x{200B}-\x{200D}\x{FEFF}\x{00A0}]/u', '', $s);
+            if ($clean !== null) {
+                $s = $clean;
+            }
+
+            // Remove other control chars except TAB/CR/LF
+            $cleanCtl = preg_replace('/[^\P{C}\t\r\n]/u', '', $s);
+            if ($cleanCtl !== null) {
+                $s = $cleanCtl;
+            }
+        }
+
+        return $s;
     }
+
+
 
 
     public static function cleanString($string)

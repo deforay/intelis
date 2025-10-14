@@ -54,7 +54,7 @@ final class ResultsService
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
-    public function receiveResults($testType, $jsonResponse, $isSilent = false)
+    public function receiveResults($testType, $jsonResponse, $isSilent = false): array
     {
         $this->setTestType($testType);
 
