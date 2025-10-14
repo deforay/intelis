@@ -206,6 +206,35 @@ class Utilities {
         return wrapper;
     }
 
+
+
+    // 13. TOKEN BUCKET (drop when over limit)
+    static tokenBucketDrop(capacity = 8, refillPerSec = 1) {
+        let tokens = capacity;
+        let last = Date.now();
+        return function consume() {
+            const now = Date.now();
+            const elapsedSec = (now - last) / 1000;
+            last = now;
+            tokens = Math.min(capacity, tokens + elapsedSec * refillPerSec);
+            if (tokens < 1) return false;
+            tokens -= 1;
+            return true;
+        };
+    }
+
+    // 14. DEDUPE WINDOW for keyed events
+    static dedupeKeyed(windowMs = 5000) {
+        const seen = new Map();
+        return function isDuplicate(key) {
+            const now = Date.now();
+            const last = seen.get(key) || 0;
+            if (now - last < windowMs) return true;
+            seen.set(key, now);
+            return false;
+        };
+    }
+
     // ========================================
     // VALIDATION UTILITIES
     // ========================================
@@ -626,7 +655,6 @@ class Utilities {
         return new Promise(resolve => setTimeout(resolve, ms));
     }
 
-    // Add this to your Utilities class
 
     // ========================================
     // UI/FILTER UTILITIES
@@ -754,4 +782,5 @@ class Utilities {
             }
         };
     }
+
 }
