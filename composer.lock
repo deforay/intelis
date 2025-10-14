@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5a352ae8e49031e76667e2a2a35cdfb4",
+    "content-hash": "41274bdcca56f7906e5c6f03b17a6e33",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -7062,6 +7062,7 @@
         "ext-gd": "*",
         "ext-gettext": "*",
         "ext-intl": "*",
+        "ext-mbstring": "*",
         "ext-json": "*",
         "ext-openssl": "*",
         "ext-pdo": "*",
