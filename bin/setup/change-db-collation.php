@@ -56,7 +56,7 @@ $colors = [
  * @param string|null $color
  * @param bool $alwaysShow
  */
-function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false, ?\Symfony\Component\Console\Helper\ProgressBar $bar = null)
+function echoMessage(string $message, ?string $color = null, bool $alwaysShow = false, ?ProgressBar $bar = null)
 {
     global $verbose, $colors;
     if (!$verbose && !$alwaysShow) return;

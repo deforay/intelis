@@ -8,6 +8,7 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 
 require_once __DIR__ . "/../../bootstrap.php";
@@ -123,7 +124,7 @@ if (empty($currentRemoteURL)) {
     echo "Press Enter to skip (you can set it later from Admin > System Config)." . PHP_EOL;
 
     $attempts = 0;
-    $newRemoteURL = ''; // default to “skipped”
+    $newRemoteURL = ''; // default to "skipped"
 
     do {
         $attempts++;
@@ -235,12 +236,42 @@ if (empty($effectiveRemoteURL)) {
     $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
     echo "Executing: " . $metadataCommand . PHP_EOL . PHP_EOL;
 
+    // Start progress indication for metadata refresh
+    $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
+
     $output = [];
     $returnCode = 0;
-    exec($metadataCommand . " 2>&1", $output, $returnCode);
 
-    foreach ($output as $line) {
-        echo $line . PHP_EOL;
+    // Use popen for real-time output with progress bar
+    $handle = popen($metadataCommand . " 2>&1", 'r');
+    if ($handle) {
+        while (!feof($handle)) {
+            $line = fgets($handle);
+            if ($line !== false) {
+                $output[] = trim($line);
+                // Optionally show important messages during execution
+                if (stripos($line, 'error') !== false || stripos($line, 'warning') !== false) {
+                    MiscUtility::spinnerPausePrint($bar, function () use ($line) {
+                        echo trim($line) . PHP_EOL;
+                    });
+                }
+            }
+        }
+        $returnCode = pclose($handle);
+    } else {
+        // Fallback to exec if popen fails
+        exec($metadataCommand . " 2>&1", $output, $returnCode);
+    }
+
+    MiscUtility::spinnerAdvance($bar, 1);
+    MiscUtility::spinnerFinish($bar);
+
+    // Show full output after completion if there were errors
+    if ($returnCode !== 0) {
+        echo PHP_EOL . "Full output:" . PHP_EOL;
+        foreach ($output as $line) {
+            echo $line . PHP_EOL;
+        }
     }
 
     if ($returnCode === 0) {
@@ -291,9 +322,15 @@ if ($needLabSelection) {
     echo PHP_EOL;
     echo "=== Lab Selection ===" . PHP_EOL;
 
+    // Add progress bar for fetching labs
+    $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…', '█', '░', '█', 'cyan');
+
     $testingLabs = $db->rawQuery("SELECT facility_id, facility_name FROM facility_details 
                                     WHERE facility_type = 2 AND status = 'active' 
                                     ORDER BY facility_name");
+
+    MiscUtility::spinnerAdvance($labFetchBar, 1);
+    MiscUtility::spinnerFinish($labFetchBar);
 
     if (empty($testingLabs)) {
         echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
@@ -507,42 +544,6 @@ if (isset($selectedLab)) {
     $labId = $currentLabId;
     $labName = isset($labDetails) ? $labDetails['facility_name'] : 'Unknown';
 }
-
-// echo "=== Proceeding with Token Generation ===" . PHP_EOL;
-// echo "Using STS URL: " . $remoteURL . PHP_EOL;
-// echo "InteLIS Lab ID: " . $labId . PHP_EOL;
-// echo "Lab Name: " . $labName . PHP_EOL;
-// echo PHP_EOL;
-
-// $tokenScriptPath = BIN_PATH . "/token.php";
-// $tokenCommand = "php " . escapeshellarg($tokenScriptPath);
-
-// // Add API key if provided
-// if (!empty($apiKey)) {
-//     $tokenCommand .= " --key " . escapeshellarg($apiKey);
-// }
-
-// echo "Executing: " . $tokenCommand . PHP_EOL;
-// echo PHP_EOL;
-
-// // Execute the token script and capture output
-// $output = [];
-// $returnCode = 0;
-// exec("$tokenCommand 2>&1", $output, $returnCode);
-
-// // Display the output from token script
-// foreach ($output as $line) {
-//     echo $line . PHP_EOL;
-// }
-
-// if ($returnCode === 0) {
-//     echo PHP_EOL;
-//     echo "✅ STS Setup and Token Generation Complete" . PHP_EOL;
-// } else {
-//     echo PHP_EOL;
-//     echo "❌ Token generation failed with return code: " . $returnCode . PHP_EOL;
-//     exit($returnCode);
-// }
 
 
 // Clear the file cache again -- just in case

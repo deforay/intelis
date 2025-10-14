@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+// bin/migrate.php
+
 // only run from command line
 if (php_sapi_name() !== 'cli') {
     exit(0);
