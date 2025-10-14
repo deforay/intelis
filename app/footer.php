@@ -1,5 +1,5 @@
 <?php
-
+// footer.php
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
