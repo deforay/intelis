@@ -45,7 +45,7 @@ try {
     foreach ($activeModules as $module) {
         $db->beginTransaction();
         $tableName = TestsService::getTestTableName($module);
-        $primaryKey = TestsService::getPrimaryColumn($input['testType']);
+        $primaryKey = TestsService::getPrimaryColumn($module);
 
         $sampleResult = $db->rawQuery("SELECT * FROM $tableName WHERE system_patient_code IS NULL LIMIT 100");
 
@@ -134,6 +134,5 @@ try {
         'execution_date' => DateUtility::getCurrentDateTime(),
         'status' => 'executed'
     ];
-    $db->setQueryOption ('IGNORE')->insert('s_run_once_scripts_log', $data);
+    $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', $data);
 }
-
