@@ -144,7 +144,7 @@ try {
     }
     //echo $sWhere;
     $sQuery = $sQuery . ' ' . $sWhere;
-    //echo $sQuery; die;
+
     $sQuery = $sQuery . ' GROUP BY vl.covid19_id';
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -155,7 +155,7 @@ try {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
-    // echo $sQuery;die;
+
     $rResult = $db->rawQuery($sQuery);
 
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

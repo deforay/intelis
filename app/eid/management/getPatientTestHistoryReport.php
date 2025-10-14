@@ -109,7 +109,7 @@ try {
     }
 
     //$sQuery = $sQuery . ' GROUP BY vl.eid_id';
-    //echo $sQuery; die;
+
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -164,8 +164,6 @@ try {
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);
-
-
 } catch (Exception $exc) {
     LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

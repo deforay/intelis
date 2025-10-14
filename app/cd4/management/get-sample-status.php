@@ -75,7 +75,7 @@ if (!empty($sWhere)) {
     $tQuery .= " where " . implode(" AND ", $sWhere);
 }
 $tQuery .= " GROUP BY vl.result_status ORDER BY status_id";
-// echo $tQuery;die;
+
 $tResult = $db->rawQuery($tQuery);
 
 $vlSuppressionQuery = "SELECT   COUNT(cd4_id) as total,

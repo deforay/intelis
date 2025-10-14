@@ -30,7 +30,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
     $start_date = '';
     $end_date = '';
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
+
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -61,7 +61,7 @@ if (!empty($_POST['sampleCollectionDate'])) {
 
     $vlQuery = $vlQuery . ' where ' . implode(' AND ', $sWhere) . " group by vl.reason_for_sample_rejection,vl.lab_id,vl.facility_id";
     $_SESSION['rejectedSamples'] = $vlQuery;
-   // echo $vlQuery; die;
+    // echo $vlQuery; die;
 
     $tableResult = $db->rawQuery($vlQuery);
 

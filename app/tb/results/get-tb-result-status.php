@@ -100,12 +100,12 @@ try {
 
     $sQuery = "SELECT vl.*,b.batch_code,f.facility_name FROM form_tb as vl LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-    //echo $sQuery;die;
+
     $start_date = '';
     $end_date = '';
     if (!empty($_POST['sampleCollectionDate'])) {
         $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-        //print_r($s_c_date);die;
+
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
             $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
         }
@@ -148,7 +148,7 @@ try {
     }
     $sQuery = $sQuery . $sWhere;
 
-    //echo $sQuery;die;
+
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -223,7 +223,6 @@ try {
     }
 
     echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),
