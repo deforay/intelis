@@ -630,19 +630,48 @@ update_php_ini() {
     fi
 }
 
-# Ensure opcache is present & enabled for mod_php
-# --- Ensure OPcache is present; skip install if already enabled ---
-if php -m | grep -qi '^opcache$'; then
-    print success "OPcache already enabled for PHP ${desired_php_version}; skipping install/enable."
-else
-    print info "Installing/enabling OPcache for PHP ${desired_php_version}…"
-    apt-get update -y
-    apt-get install -y "php${desired_php_version}-opcache" || true
-    # Enable for all SAPIs we care about (apache2/cli/fpm if present)
-    phpenmod -v "${desired_php_version}" -s ALL opcache 2>/dev/null \
-      || phpenmod opcache 2>/dev/null || true
-fi
+# --- Ensure OPcache is installed and enabled for Apache (don’t rely on php -m) ---
+ensure_opcache() {
+  local ver="${desired_php_version:-8.2}"
+  local pkg="php${ver}-opcache"
+  local apache_ini_glob="/etc/php/${ver}/apache2/conf.d/*opcache.ini"
+  local installed enabled
 
+  # Is the package installed?
+  if dpkg-query -W -f='${Status}\n' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+    installed=true
+  else
+    installed=false
+  fi
+
+  # Is it enabled for Apache (conf.d link/file exists)?
+  if ls $apache_ini_glob >/dev/null 2>&1; then
+    enabled=true
+  else
+    enabled=false
+  fi
+
+  if $installed && $enabled; then
+    print success "OPcache already installed and enabled for PHP ${ver} (Apache); skipping."
+    return 0
+  fi
+
+  if ! $installed; then
+    print info "Installing OPcache for PHP ${ver}…"
+    apt-get update -y
+    apt-get install -y "$pkg" || true
+  fi
+
+  if ! $enabled; then
+    print info "Enabling OPcache for PHP ${ver} (Apache)…"
+    phpenmod -v "$ver" -s apache2 opcache 2>/dev/null || phpenmod opcache 2>/dev/null || true
+  fi
+
+  print success "OPcache is ready for PHP ${ver} (Apache)."
+}
+
+# Call it here (replaces your previous OPcache block)
+ensure_opcache
 
 
 # Apply changes to PHP configuration files
@@ -694,13 +723,11 @@ if [ "$skip_ubuntu_updates" = false ]; then
     print info "Configuring any partially installed packages..."
     export DEBIAN_FRONTEND=noninteractive
     dpkg --configure -a
-fi
 
-# Clean up
-export DEBIAN_FRONTEND=noninteractive
-apt-get -y autoremove
+    # Clean up
+    export DEBIAN_FRONTEND=noninteractive
+    apt-get -y autoremove
 
-if [ "$skip_ubuntu_updates" = false ]; then
     print info "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh pigz gnupg
 fi
