@@ -154,7 +154,7 @@ try {
 		$_SESSION['hepatitisTatData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);
 		$sQuery = $sQuery . ' AND ' . $sWhere;
 	}
-	//echo $sQuery; die();
+
 	if (!empty($sOrder) && $sOrder !== '') {
 		$_SESSION['hepatitisTatData']['sOrder'] = $sOrder = preg_replace('/\s+/', ' ', $sOrder);
 		$sQuery = $sQuery . " ORDER BY " . $sOrder;
