@@ -178,7 +178,7 @@ try {
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
-    // echo $sQuery;die;
+
     $rResult = $db->rawQuery($sQuery);
     /* Data set length after filtering */
 
@@ -241,8 +241,6 @@ try {
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);
-
-
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),

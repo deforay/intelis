@@ -33,8 +33,8 @@ try {
      $tableName = "form_tb";
      $primaryKey = "tb_id";
 
-     $aColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
-     $orderColumns = array('vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name');
+     $aColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'CONCAT(COALESCE(vl.patient_name,""), COALESCE(vl.patient_surname,""))', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
+     $orderColumns = ['vl.sample_code', 'vl.remote_sample_code', 'b.batch_code', 'vl.patient_id', 'vl.patient_name', 'f.facility_name', 'vl.result', 'ts.status_name', 'funding_source_name', 'i_partner_name'];
      $sampleCode = 'sample_code';
      if ($general->isSTSInstance()) {
           $sampleCode = 'remote_sample_code';
@@ -54,9 +54,7 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-     * Ordering
-     */
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {
@@ -98,10 +96,7 @@ try {
 
 
 
-     /*
-               * SQL queries
-               * Get data to display
-               */
+
      $sQuery = "SELECT
                vl.tb_id,
                vl.sample_code,
@@ -240,26 +235,23 @@ try {
           $sWhere[] = " vl.facility_id IN (" . $_SESSION['facilityMap'] . ")   ";
      }
      $sQuery = $sQuery . ' WHERE result_status is NOT NULL AND' . implode(" AND ", $sWhere);
-     echo $sQuery;
-     die();
+
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
-          $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
+          $sQuery = "$sQuery ORDER BY $sOrder";
      }
 
      $_SESSION['tbResultQuery'] = $sQuery;
 
      if (isset($sLimit) && isset($sOffset)) {
-          $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+          $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
      }
 
      [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
      $_SESSION['tbResultQueryCount'] = $resultCount;
 
-     /*
-               * Output
-               */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $resultCount,

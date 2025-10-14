@@ -104,7 +104,7 @@ try {
     }
 
     //$sQuery = $sQuery . ' GROUP BY vl.vl_sample_id';
-    //echo $sQuery; die;
+
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -162,7 +162,6 @@ try {
         $output['aaData'][] = $row;
     }
     echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
     LoggerUtility::logError($e->getMessage(), [
         'trace' => $e->getTraceAsString(),

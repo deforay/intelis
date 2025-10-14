@@ -55,9 +55,7 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-     * Ordering
-     */
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {
@@ -95,10 +93,7 @@ try {
 
 
 
-     /*
-               * SQL queries
-               * Get data to display
-               */
+
      $sQuery = "SELECT vl.*,
                     rtr.test_reason_name,
                     b.batch_code,
@@ -223,7 +218,7 @@ try {
           $sWhere = ' where ' . implode(" AND ", $sWhere);
      }
      $sQuery = $sQuery . ' ' . $sWhere;
-     //echo $sQuery;die;
+
 
 
      if (!empty($sOrder) && $sOrder !== '') {

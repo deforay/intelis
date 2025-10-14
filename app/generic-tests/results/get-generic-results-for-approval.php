@@ -95,7 +95,7 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS *, vl.last_modified_datetime FROM form_gen
           LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id
           LEFT JOIN r_implementation_partners as imp ON imp.i_partner_id=vl.implementing_partner";
 
-//echo $sQuery;die;
+
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
      $sWhere[] =  '  b.batch_code LIKE "%' . $_POST['batchCode'] . '%"';

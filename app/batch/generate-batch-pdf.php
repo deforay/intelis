@@ -272,7 +272,7 @@ if (!empty($id)) {
                         $tbl .= '</tr>';
                         $tbl .= '</table>';
                     } else {
-                        //  echo $bResult['control_names']; die;
+
                         $controlNamesArr = json_decode((string) $bResult['control_names'], true);
                         if (!empty($controlNamesArr) && array_key_exists($jsonToArray[$alphaNumeric[$j]], $controlNamesArr) && $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]] != "") {
                             $label = $controlNamesArr[$jsonToArray[$alphaNumeric[$j]]];

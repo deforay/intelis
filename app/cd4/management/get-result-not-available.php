@@ -105,7 +105,7 @@ try {
 
     if (isset($_POST['noResultSampleTestDate']) && trim((string) $_POST['noResultSampleTestDate']) != '') {
         $s_c_date = explode("to", (string) $_POST['noResultSampleTestDate']);
-        //print_r($s_c_date);die;
+
         if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
             $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
         }
@@ -161,7 +161,6 @@ try {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
     }
 
-    // echo $sQuery;die;
     $rResult = $db->rawQuery($sQuery);
     $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
     $iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];

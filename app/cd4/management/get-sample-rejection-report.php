@@ -90,7 +90,7 @@ if (isset($_POST['rjtBatchCode']) && trim((string) $_POST['rjtBatchCode']) != ''
 
 if (isset($_POST['rjtSampleTestDate']) && trim((string) $_POST['rjtSampleTestDate']) != '') {
     $s_c_date = explode("to", (string) $_POST['rjtSampleTestDate']);
-    //print_r($s_c_date);die;
+
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -148,7 +148,7 @@ if (isset($sLimit) && isset($sOffset)) {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-// echo $sQuery;die;
+
 $rResult = $db->rawQuery($sQuery);
 
 $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

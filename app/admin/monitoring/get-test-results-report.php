@@ -164,7 +164,7 @@ try {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
         $sQuery = $sQuery . " ORDER BY " . $sOrder;
     }
-    //echo $sQuery; die;
+
 
     if (isset($sLimit) && isset($sOffset)) {
         $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;

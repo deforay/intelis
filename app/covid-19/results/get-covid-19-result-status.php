@@ -93,12 +93,12 @@ $sQuery = "SELECT SQL_CALC_FOUND_ROWS vl.*,b.batch_code,f.facility_name FROM for
             LEFT JOIN r_sample_status as ts ON ts.status_id=vl.result_status
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
-//echo $sQuery;die;
+
 $start_date = '';
 $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
     $s_c_date = explode("to", (string) $_POST['sampleCollectionDate']);
-    //print_r($s_c_date);die;
+
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
