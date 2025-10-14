@@ -4,14 +4,16 @@
 // - admin users get both 'admin' and 'auth' alerts, others only 'auth'
 // - uses SQLite backend for alert storage
 // - supports Last-Event-ID header or ?last_id= for resuming
-// - heartbeats every 20s if no events
+// - optional heartbeats via ?hb=SECONDS (0 disables; default 0)
 // - max connection life ~5min (clients should reconnect as needed)
+// - wire stays silent unless there are real events (or explicit heartbeats)
 
 declare(strict_types=1);
 
 require_once dirname(__DIR__) . '/../bootstrap.php';
 
 use App\Services\SystemService;
+use App\Utilities\LoggerUtility;
 
 // --- auth / audience ---
 $isLoggedIn = !empty($_SESSION['userId'] ?? null);
@@ -62,33 +64,33 @@ try {
         // DO NOT replay from 0; jump to the tip to avoid blasting history
         $lastId = (int)$maxId;
     }
-} catch (\Throwable $ignore) {
-    // if maxId lookup fails, continue anyway
+} catch (\Throwable $e) {
+    // Log once during bootstrap; don't emit to SSE
+    LoggerUtility::log('error', 'SSE init failed to read maxId: ' . $e->getMessage(), [
+        'file' => $e->getFile(),
+        'line' => $e->getLine(),
+    ]);
 }
-
 
 // Backoff on reconnects (client will honor this)
 echo "retry: 15000\n\n"; // 15s
 
-
-// optional one-time ping for debugging/handshake
+// optional one-time ping for debugging only (?debug=1)
 $debug = isset($_GET['debug']) && $_GET['debug'] === '1';
 $firstConnect = ($lastId === 0);
-
 if ($debug && $firstConnect) {
     echo "event: system\n";
     echo 'data: {"message":"sse connected","lastId":' . $lastId . "}\n\n";
     $flush_now();
 }
 
-
 // audience
 $audiences = $isAdmin ? ['admin', 'auth'] : ['auth'];
 
 // --- timing / heartbeats ---
 $started   = time();
-$maxLife   = 300; // ~5 min per connection; client should auto-reconnect
-$heartbeat = 60;  // seconds
+$maxLife   = 300;                          // ~5 min per connection
+$heartbeat = (int)($_GET['hb'] ?? 0);      // 0 = no heartbeats unless requested
 $lastBeat  = time();
 
 // throttle limits to prevent runaway usage
@@ -101,26 +103,28 @@ $bytesSent  = 0;
 @set_time_limit(0);          // unlimited PHP execution time
 ignore_user_abort(false);    // stop if client disconnects
 
-$unavailableNotified = false;
-$errorBackoffSec = 5;           // first backoff
-$maxErrorBackoffSec = 60;       // cap backoff
+$errorBackoffSec    = 5;     // first backoff
+$maxErrorBackoffSec = 60;    // cap backoff
 
 while (true) {
-    if (connection_aborted()) break;
+    if (connection_aborted()) {
+        LoggerUtility::log('info', 'SSE client disconnected', ['lastId' => $lastId]);
+        break;
+    }
 
     $gotAny = false;
 
     try {
         $rows = SystemService::systemAlertSqliteReadSinceId($lastId, $audiences);
 
-        // recovery: if we were in error mode, reset flags
-        if ($unavailableNotified) {
-            $unavailableNotified = false;
-            $errorBackoffSec = 5;
+        // soft-cap batch size
+        if (count($rows) > 200) {
+            $rows = array_slice($rows, 0, 200);
         }
 
-        if (count($rows) > 200) $rows = array_slice($rows, 0, 200);
-        if (!empty($rows)) $gotAny = true;
+        if (!empty($rows)) {
+            $gotAny = true;
+        }
 
         foreach ($rows as $r) {
             $payload = [
@@ -130,51 +134,64 @@ while (true) {
                 'message' => (string)$r['message'],
             ];
             $json  = json_encode($payload, JSON_UNESCAPED_SLASHES);
+
             echo "id: {$payload['id']}\n";
             echo "event: {$payload['type']}\n";
             echo "data: {$json}\n\n";
 
             $lastId = $payload['id'];
             $eventsSent++;
-            $bytesSent += strlen($json) + 32;
+            $bytesSent += strlen($json) + 32; // rough framing overhead
+
             if ($eventsSent >= $EVENT_LIMIT_PER_CONN || $bytesSent >= $BYTE_LIMIT_PER_CONN) {
+                LoggerUtility::log('info', 'SSE connection limit hit', [
+                    'eventsSent' => $eventsSent,
+                    'bytesSent'  => $bytesSent,
+                ]);
                 $flush_now();
                 break;
             }
         }
+
+        // reset error backoff after a successful cycle
+        $errorBackoffSec = 5;
     } catch (\Throwable $e) {
-        if (!$unavailableNotified) {
-            echo "event: system\n";
-            echo 'data: {"message":"alerts store unavailable"}' . "\n\n";  // send ONCE
-            $unavailableNotified = true;
-            $lastBeat = time();   // reset heartbeat timer so we don't immediately spam
-            $flush_now();
-        }
-        // Back off while unhealthy, send only tiny heartbeats
+        // log, back off silently (no SSE noise)
+        LoggerUtility::log('error', 'SSE alerts read failed: ' . $e->getMessage(), [
+            'lastId'     => $lastId,
+            'backoffSec' => $errorBackoffSec,
+            'file'       => $e->getFile(),
+            'line'       => $e->getLine(),
+        ]);
+
         sleep($errorBackoffSec);
         if ($errorBackoffSec < $maxErrorBackoffSec) {
             $errorBackoffSec = min($maxErrorBackoffSec, $errorBackoffSec * 2);
         }
-        // Send a heartbeat to keep the pipe warm
-        echo ":\n\n";
-        $flush_now();
         continue;
     }
 
     if ($gotAny) {
         $lastBeat = time();
         $flush_now();
-        usleep(200000); // ok to pace under load
+        usleep(200_000); // 200ms pacing under load (optional)
     } else {
-        if (time() - $lastBeat >= $heartbeat) {
-            echo ":\n\n";          // comment heartbeat (tiny)
+        if ($heartbeat > 0 && (time() - $lastBeat) >= $heartbeat) {
+            echo ":\n\n";   // tiny comment heartbeat
             $lastBeat = time();
             $flush_now();
         }
-        usleep(2_000_000);
+        usleep(2_000_000); // 2s idle sleep
     }
 
-    if ((time() - $started) > $maxLife) break;
+    if ((time() - $started) > $maxLife) {
+        LoggerUtility::log('info', 'SSE connection ended (maxLife reached)', [
+            'eventsSent' => $eventsSent,
+            'bytesSent'  => $bytesSent,
+            'lastId'     => $lastId,
+        ]);
+        break;
+    }
 }
 
 exit(0);
