@@ -143,7 +143,7 @@ try {
      }
 
      $sQuery = $sQuery . $sWhere;
-     // echo $sQuery;die;
+
      $_SESSION['vlIncompleteForm'] = $sQuery;
      if (!empty($sOrder) && $sOrder !== '') {
           $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -153,7 +153,7 @@ try {
      if (isset($sLimit) && isset($sOffset)) {
           $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
      }
-     // echo $sQuery;die;
+
      $rResult = $db->rawQuery($sQuery);
 
      $aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");

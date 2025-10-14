@@ -97,7 +97,6 @@ if (isset($_POST['hvlBatchCode']) && trim((string) $_POST['hvlBatchCode']) != ''
 
 if (isset($_POST['hvlSampleTestDate']) && trim((string) $_POST['hvlSampleTestDate']) != '') {
     $s_c_date = explode("to", (string) $_POST['hvlSampleTestDate']);
-    //print_r($s_c_date);die;
     if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
         $start_date = DateUtility::isoDateFormat(trim($s_c_date[0]));
     }
@@ -141,7 +140,7 @@ if (!empty($sWhere)) {
     $sWhere = "";
 }
 $sQuery = $sQuery . $sWhere;
-//echo $sQuery; die;
+
 $sQuery = $sQuery . ' group by vl.cd4_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);

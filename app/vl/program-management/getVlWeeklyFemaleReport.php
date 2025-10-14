@@ -174,7 +174,7 @@ $_SESSION['vlStatisticsFemaleQuery'] = $sQuery;
 if (isset($sLimit) && isset($sOffset)) {
   $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-//echo $sQuery;die;
+
 $sResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */
 

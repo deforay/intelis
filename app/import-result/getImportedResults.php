@@ -151,7 +151,7 @@ if (!empty($sWhere)) {
     $whereCondition = "WHERE " . implode(" AND ", $sWhere);
 }
 $sQuery = "$sQuery $whereCondition ORDER BY temp_sample_id ASC";
-//echo $sQuery;die;
+
 if (isset($sLimit) && isset($sOffset)) {
     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }

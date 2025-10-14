@@ -202,7 +202,7 @@ try {
      if (!empty($sWhere)) {
           $sQuery = $sQuery . ' WHERE' . implode(" AND ", $sWhere);
      }
-     //echo $sQuery; die;
+
      $_SESSION['cd4ResultQuery'] = $sQuery;
 
      if (!empty($sOrder) && $sOrder !== '') {

@@ -59,9 +59,7 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-     * Ordering
-     */
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {
@@ -103,10 +101,7 @@ try {
 
 
 
-     /*
-               * SQL queries
-               * Get data to display
-               */
+
      $sQuery = "SELECT SQL_CALC_FOUND_ROWS
                          vl.*,
                          b.batch_code,
@@ -267,9 +262,7 @@ try {
 
      $_SESSION['eidExportResultQueryCount'] = $iTotal;
 
-     /*
-               * Output
-               */
+
      $output = array(
           "sEcho" => (int) $_POST['sEcho'],
           "iTotalRecords" => $iTotal,
@@ -313,8 +306,6 @@ try {
      }
 
      echo JsonUtility::encodeUtf8Json($output);
-
-
 } catch (Exception $exc) {
      LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

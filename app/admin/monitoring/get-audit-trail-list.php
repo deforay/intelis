@@ -40,9 +40,7 @@ try {
           $sLimit = $_POST['iDisplayLength'];
      }
 
-     /*
-     * Ordering
-     */
+
 
      $sOrder = "";
      if (isset($_POST['iSortCol_0'])) {

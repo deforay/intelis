@@ -88,7 +88,7 @@ $start_date = '';
 $end_date = '';
 if (!empty($_POST['sampleCollectionDate'])) {
      $s_c_date = explode(" to ", (string) $_POST['sampleCollectionDate']);
-     //print_r($s_c_date);die;
+
      if (isset($s_c_date[0]) && trim($s_c_date[0]) != "") {
           $start_date = trim($s_c_date[0]) . "-01";
      }
@@ -163,7 +163,7 @@ if ($_POST['targetType'] == 1) {
 } else if ($_POST['targetType'] == 2) {
      $sQuery = $sQuery . ' HAVING tl.monthly_target < SUM(CASE WHEN (sample_collection_date IS NOT NULL) THEN 1 ELSE 0 END) ';
 }
-// echo $sQuery;die;
+
 $_SESSION['vlMonitoringThresholdReportQuery'] = $sQuery;
 $rResult = $db->rawQuery($sQuery);
 /* Data set length after filtering */

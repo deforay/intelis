@@ -127,7 +127,7 @@ if (!empty($sWhere)) {
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
-//echo $sQuery;die;
+
 $_SESSION['vlIncompleteForm'] = $sQuery;
 if (!empty($sOrder) && $sOrder !== '') {
      $sOrder = preg_replace('/\s+/', ' ', $sOrder);
