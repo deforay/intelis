@@ -141,7 +141,7 @@ try {
      } else {
           $sWhere = "";
      }
-     //echo $sQuery; die();
+
      $sQuery = $sQuery . $sWhere;
      // echo $sQuery;die;
      $_SESSION['vlIncompleteForm'] = $sQuery;

@@ -13,13 +13,13 @@ use DCarbone\PHPFHIRGenerated\R4\PHPFHIRResponseParser;
 
 $interopConfig = [];
 if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
-	$interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
+    $interopConfig = require_once(APPLICATION_PATH . '/../configs/config.interop.php');
 }
 
 
-if(empty($interopConfig)){
+if (empty($interopConfig)) {
     echo "Interop config not found";
-    die();
+    exit(0);
 }
 
 

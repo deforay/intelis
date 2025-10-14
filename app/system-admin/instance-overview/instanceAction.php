@@ -99,4 +99,3 @@ if (($_POST['action'] == 'edit') && !empty($_POST['id'])) {
 
     echo json_encode($returnData);
 }
-die();

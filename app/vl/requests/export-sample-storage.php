@@ -30,7 +30,7 @@ $no = 1;
 
 $key = (string) $general->getGlobalConfig('key');
 $resultSet = $db->rawQueryGenerator($_SESSION['sampleStorageQuery']);
-//echo '<pre>'; print_r($resultSet); die();
+
 foreach ($resultSet as $aRow) {
 	$row = [];
 

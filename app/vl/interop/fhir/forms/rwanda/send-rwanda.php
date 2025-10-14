@@ -21,7 +21,7 @@ if (file_exists(APPLICATION_PATH . '/../configs/config.interop.php')) {
 
 if (empty($interopConfig)) {
     echo "Interop config not found";
-    die();
+    exit(0);
 }
 
 
