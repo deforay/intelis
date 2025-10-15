@@ -71,7 +71,7 @@ if (isset($_POST['last_remote_reference_data_sync']) && trim((string) $_POST['la
 
 if (($_POST['action'] == 'edit') && !empty($_POST['id'])) {
     //update data
-    $userData = array(
+    $userData = [
         'instance_facility_name' => $instanceName,
         'instance_facility_code' => $instanceCode,
         'vl_last_dash_sync' => $_POST['vl_last_dash_sync'],
@@ -80,22 +80,18 @@ if (($_POST['action'] == 'edit') && !empty($_POST['id'])) {
         'last_remote_requests_sync' => $_POST['last_remote_requests_sync'],
         'last_remote_results_sync' => $_POST['last_remote_results_sync'],
         'last_remote_reference_data_sync' => $_POST['last_remote_reference_data_sync']
-    );
-    $condition = $db->where('vlsm_instance_id', $_POST['id']);
-    $update = $db->update($tblName, $userData, $condition);
-    if ($update) {
-        $returnData = array(
-            'status' => 'ok',
-            'msg' => _translate("Instance data has been updated successfully."),
-            'data' => $userData
-        );
-    } else {
-        $returnData = array(
-            'status' => 'error',
-            'msg' => _translate("Some problem occurred, please try again."),
-            'data' => ''
-        );
-    }
+    ];
+    $db->where('vlsm_instance_id', $_POST['id']);
+    $update = $db->update($tblName, $userData);
+    $returnData = ($update) ? [
+        'status' => 'ok',
+        'msg' => _translate("Instance data has been updated successfully."),
+        'data' => $userData
+    ] : [
+        'status' => 'error',
+        'msg' => _translate("Some problem occurred, please try again."),
+        'data' => ''
+    ];
 
     echo json_encode($returnData);
 }

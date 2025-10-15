@@ -74,7 +74,7 @@ if (isset($_SESSION['hepatitisMonitoringThresholdReportQuery']) && trim((string)
             $res[$aRow['facility_id']][$aRow['monthrange']] = $row;
         }
     }
-    // print_r($res);die;
+
     //get current quarter total samples tested
 
     $excel = new Spreadsheet();

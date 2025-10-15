@@ -846,87 +846,87 @@ $remoteURL = $general->getRemoteURL();
     });
 
 
-    (function() {
-        try {
-            const typeLabels = {
-                fs_perms: "Folder Permissions",
-                disk: "Disk Space",
-                mysql: "Database",
-                message: "System Message",
-                system: "System"
-            };
+    // (function() {
+    //     try {
+    //         const typeLabels = {
+    //             fs_perms: "Folder Permissions",
+    //             disk: "Disk Space",
+    //             mysql: "Database",
+    //             message: "System Message",
+    //             system: "System"
+    //         };
 
-            // Singleton guard
-            if (window._alertsES && window._alertsES.readyState !== 2) return;
+    //         // Singleton guard
+    //         if (window._alertsES && window._alertsES.readyState !== 2) return;
 
-            const lastId = localStorage.getItem('sseLastId') || 0;
-            const es = new EventSource('/sse/alerts.php?last_id=' + encodeURIComponent(lastId));
-            window._alertsES = es;
+    //         const lastId = localStorage.getItem('sseLastId') || 0;
+    //         const es = new EventSource('/sse/alerts.php?last_id=' + encodeURIComponent(lastId));
+    //         window._alertsES = es;
 
-            // ---- use Utilities helpers ----
-            const allowToast = Utilities.tokenBucketDrop(8, 1); // ~8 toasts burst, refills 1/sec
-            const isDup = Utilities.dedupeKeyed(5000); // dedupe same key within 5s
+    //         // ---- use Utilities helpers ----
+    //         const allowToast = Utilities.tokenBucketDrop(8, 1); // ~8 toasts burst, refills 1/sec
+    //         const isDup = Utilities.dedupeKeyed(5000); // dedupe same key within 5s
 
-            function notify(alert) {
-                const typeLabel = typeLabels[alert.type] || alert.type || 'message';
-                const msg = `[${typeLabel}] ${alert.message}`;
-                const key = `${alert.type}|${alert.level}|${alert.message}`;
+    //         function notify(alert) {
+    //             const typeLabel = typeLabels[alert.type] || alert.type || 'message';
+    //             const msg = `[${typeLabel}] ${alert.message}`;
+    //             const key = `${alert.type}|${alert.level}|${alert.message}`;
 
-                if (isDup(key) || !allowToast()) return;
+    //             if (isDup(key) || !allowToast()) return;
 
-                if (alert.level === 'info') {
-                    toast?.success ? toast.success(msg) : console.log(msg);
-                } else if (alert.level === 'warn') {
-                    (toast?.warn ? toast.warn(msg) : toast?.error ? toast.error(msg) : console.warn(msg));
-                } else {
-                    toast?.error ? toast.error(msg) : console.error(msg);
-                }
-            }
+    //             if (alert.level === 'info') {
+    //                 toast?.success ? toast.success(msg) : console.log(msg);
+    //             } else if (alert.level === 'warn') {
+    //                 (toast?.warn ? toast.warn(msg) : toast?.error ? toast.error(msg) : console.warn(msg));
+    //             } else {
+    //                 toast?.error ? toast.error(msg) : console.error(msg);
+    //             }
+    //         }
 
-            const handle = (e) => {
-                try {
-                    const alert = JSON.parse(e.data);
-                    notify(alert);
-                    if (alert.id != null) localStorage.setItem('sseLastId', String(alert.id));
-                } catch (_) {
-                    /* ignore bad frames */
-                }
-            };
+    //         const handle = (e) => {
+    //             try {
+    //                 const alert = JSON.parse(e.data);
+    //                 notify(alert);
+    //                 if (alert.id != null) localStorage.setItem('sseLastId', String(alert.id));
+    //             } catch (_) {
+    //                 /* ignore bad frames */
+    //             }
+    //         };
 
-            es.addEventListener('disk', handle);
-            es.addEventListener('mysql', handle);
-            es.addEventListener('fs_perms', handle);
-            es.addEventListener('message', handle);
-            es.addEventListener('system', () => {
-                /* optional */
-            });
+    //         es.addEventListener('disk', handle);
+    //         es.addEventListener('mysql', handle);
+    //         es.addEventListener('fs_perms', handle);
+    //         es.addEventListener('message', handle);
+    //         es.addEventListener('system', () => {
+    //             /* optional */
+    //         });
 
-            // status (optional)
-            es.onopen = () => {
-                const el = document.querySelector('.sse-status');
-                if (el) {
-                    el.textContent = 'Connected';
-                    el.style.color = '#4dbc3c';
-                }
-            };
-            es.onerror = () => {
-                const el = document.querySelector('.sse-status');
-                if (el) {
-                    el.textContent = 'Reconnecting…';
-                    el.style.color = 'orange';
-                }
-            };
+    //         // status (optional)
+    //         es.onopen = () => {
+    //             const el = document.querySelector('.sse-status');
+    //             if (el) {
+    //                 el.textContent = 'Connected';
+    //                 el.style.color = '#4dbc3c';
+    //             }
+    //         };
+    //         es.onerror = () => {
+    //             const el = document.querySelector('.sse-status');
+    //             if (el) {
+    //                 el.textContent = 'Reconnecting…';
+    //                 el.style.color = 'orange';
+    //             }
+    //         };
 
-            // clean up for all browsers
-            const closeES = () => {
-                try {
-                    es.close();
-                } catch (_) {}
-            };
-            window.addEventListener('beforeunload', closeES);
-            window.addEventListener('pagehide', closeES);
-        } catch (err) {
-            console.error('SSE init failed', err);
-        }
-    })();
+    //         // clean up for all browsers
+    //         const closeES = () => {
+    //             try {
+    //                 es.close();
+    //             } catch (_) {}
+    //         };
+    //         window.addEventListener('beforeunload', closeES);
+    //         window.addEventListener('pagehide', closeES);
+    //     } catch (err) {
+    //         console.error('SSE init failed', err);
+    //     }
+    // })();
 </script>
