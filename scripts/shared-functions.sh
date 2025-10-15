@@ -42,7 +42,7 @@ print() {
 
 # Install required packages
 install_packages() {
-    local required_pkgs=(aria2 wget lsb-release bc pigz gpg)
+    local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd dialog whiptail)
     # Map package names to their actual command names
     declare -A pkg_to_cmd=(
         ["aria2"]="aria2c"
@@ -51,7 +51,10 @@ install_packages() {
         ["bc"]="bc"
         ["pigz"]="pigz"
         ["gpg"]="gpg"
+        ["fzf"]="fzf"
         ["zstd"]="zstd"
+        ["dialog"]="dialog"
+        ["whiptail"]="whiptail"
     )
     
     local missing_pkgs=()
