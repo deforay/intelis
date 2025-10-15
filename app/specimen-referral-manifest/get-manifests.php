@@ -167,7 +167,7 @@ foreach ($rResult as $aRow) {
     $printManifestPdfText = _translate("Print Manifest PDF");
 
     $printBarcode = <<<BARCODEBUTTON
-    <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}', 'pk1');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
+    <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
         <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
     </a>
     BARCODEBUTTON;

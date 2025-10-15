@@ -151,6 +151,25 @@ final class MiscUtility
     //dump the contents of a variable to the error log in a readable format
     public static function dumpToErrorLog($object = null, $useVarDump = true): void
     {
+        // Get caller information - fetch 3 frames to show 2 layers
+        $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
+
+        // First caller (immediate caller)
+        $caller1 = $backtrace[0];
+        $callerFile1 = basename($caller1['file'] ?? 'unknown');
+        $callerLine1 = $caller1['line'] ?? 'unknown';
+
+        // Second caller (caller of the caller)
+        $caller2 = $backtrace[1] ?? null;
+        $callerFile2 = $caller2 ? basename($caller2['file'] ?? 'unknown') : null;
+        $callerLine2 = $caller2 ? ($caller2['line'] ?? 'unknown') : null;
+
+        // Build caller info with 2 layers
+        $callerInfo = "[{$callerFile1}:{$callerLine1}]";
+        if ($caller2) {
+            $callerInfo .= " <- [{$callerFile2}:{$callerLine2}]";
+        }
+
         ob_start();
         if ($useVarDump) {
             var_dump($object);
@@ -162,12 +181,11 @@ final class MiscUtility
             $output = ob_get_clean();
         }
 
-        // Additional context
-        $output = "[{" . DateUtility::getCurrentDateTime() . "}]:::DUMP:::$output";
+        // Additional context with caller info
+        $output = "[{" . DateUtility::getCurrentDateTime() . "}]{$callerInfo}:::DUMP:::$output";
 
         LoggerUtility::logInfo($output);
     }
-
     /**
      * Checks if the array contains any null or empty string values.
      *

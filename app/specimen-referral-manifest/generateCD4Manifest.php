@@ -24,9 +24,6 @@ $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
 $id = base64_decode((string) $_POST['id']);
-if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
-    $id = $_POST['ids'];
-}
 
 if (!empty($id)) {
 
@@ -64,24 +61,23 @@ if (!empty($id)) {
 
     $globalConfig = $general->getGlobalConfig();
     $showPatientName = $globalConfig['cd4_show_participant_name_in_manifest'];
-    $bQuery = "SELECT * FROM specimen_manifests as pd WHERE package_id IN($id)";
-    //echo $bQuery;die;
-    $bResult = $db->query($bQuery);
-    // $db->where('package_id', $id);
-    // $bResult = $db->getOne('specimen_manifests', 'package_code');
+
+
+    $db->where('package_id', $id);
+    $bResult = $db->getOne('specimen_manifests');
 
     if (!empty($bResult)) {
 
-        $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
+        $oldPrintData = json_decode($bResult['manifest_print_history']);
 
-        $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
         $db->where('package_id', $id);
         $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 
-        $reasonHistory = json_decode($bResult[0]['manifest_change_history']);
+        $reasonHistory = json_decode($bResult['manifest_change_history']);
 
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('CLUSTERS OF DIFFERENTIATION 4 Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -259,14 +255,14 @@ if (!empty($id)) {
         $tbl .= '</tr>';
         $tbl .= '</table><br><br>';
 
-        if(!empty($reasonHistory) && count($reasonHistory) > 0){
+        if (!empty($reasonHistory) && count($reasonHistory) > 0) {
             $tbl .= 'Manifest Change History';
             $tbl .= '<br><br><table nobr="true" style="width:100%;" border="1" cellpadding="2"><tr nobr="true">';
             $tbl .= '<th>Reason for Changes</th>';
             $tbl .= '<th>Changed By </th>';
             $tbl .= '<th>Changed On</th>';
             $tbl .= '</tr>';
-            foreach($reasonHistory as $change){
+            foreach ($reasonHistory as $change) {
                 $userResult = $usersService->findUserByUserId($change->changedBy);
                 $userName = $userResult['user_name'];
                 $tbl .= '<tr nobr="true">';
@@ -280,7 +276,7 @@ if (!empty($id)) {
 
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
-        $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
+        $filename = trim((string) $bResult['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
 
         $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
         $filename = MiscUtility::cleanFileName($filename);

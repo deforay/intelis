@@ -69,7 +69,6 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 									<td colspan="6" class="dataTables_empty">Loading data from server</td>
 								</tr>
 							</tbody>
-							<input type="hidden" name="checkedPackages" id="checkedPackages" />
 						</table>
 					</div>
 					<!-- /.box-body -->
@@ -152,8 +151,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 		$.unblockUI();
 	});
 
-	function generateManifestPDF(pId, frmSrc) {
-		var ids = $("#checkedPackages").val();
+	function generateManifestPDF(pId) {
 		var module = '<?= $_GET['t']; ?>';
 		if (module == 'vl') {
 			manifestFileName = "generateVLManifest.php";
@@ -172,9 +170,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 		}
 		//alert(manifestFileName);
 		$.post(manifestFileName, {
-				id: pId,
-				ids: ids,
-				frmSrc: frmSrc
+				id: pId
 			},
 			function(data) {
 				if (data == "" || data == null || data == undefined) {
@@ -184,26 +180,6 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 				}
 
 			});
-	}
-
-	selectedPackages = [];
-
-	function checkPackage(obj) {
-		if ($(obj).is(':checked')) {
-			selectedPackages.push(obj.value);
-		} else {
-			selectedPackages.splice($.inArray(obj.value, selectedPackages), 1);
-		}
-		$("#checkedPackages").val(selectedPackages.join());
-		if (selectedPackages.length == 0) {
-			$('#checkPackageData').prop('checked', false);
-		}
-		$('.selectedRows').html(selectedPackages.length + ' Row(s) Selected');
-		if (selectedPackages.length > 0) {
-			$('.printBarcode').show();
-		} else {
-			$('.printBarcode').hide();
-		}
 	}
 </script>
 <?php

@@ -51,6 +51,7 @@ install_packages() {
         ["bc"]="bc"
         ["pigz"]="pigz"
         ["gpg"]="gpg"
+        ["zstd"]="zstd"
     )
     
     local missing_pkgs=()
