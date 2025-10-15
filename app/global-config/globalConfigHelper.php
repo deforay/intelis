@@ -21,7 +21,7 @@ $_POST = _sanitizeInput($request->getParsedBody());
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
 $sanitizedInstanceLogo = $sanitizedLogo = $sanitizedReportTemplate = null;
-if (isset($_FILES['reportFormat']['report_template']) && isset($uploadedFiles['reportFormat']['report_template']))
+if (isset($_FILES['reportFormat']['name']) && isset($uploadedFiles['reportFormat']['report_template']))
     $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'], ['pdf']);
 if (isset($_FILES['instanceLogo']) && isset($uploadedFiles['instanceLogo']))
     $sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
@@ -109,13 +109,20 @@ try {
     //         ]);
     //     }
     // }
-    if (isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type']) && isset($_FILES['reportFormat']['test_type'])) {
+    if ((isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type'])) ||
+        (isset($_POST['reportFormat']['old_template']) && !empty($_POST['reportFormat']['old_template']))
+        || isset($_FILES['reportFormat']['name'])
+    ) {
         $fileResponse = [];
         $directories = [UPLOAD_PATH, 'labs', 'report-template'];
         $currentPath = '';
         foreach ($directories as $directory) {
             $currentPath = $currentPath === '' ? $directory : $currentPath . DIRECTORY_SEPARATOR . $directory;
             MiscUtility::makeDirectory($currentPath, 0777); // will just skip if exists
+        }
+        if (isset($_POST['reportFormat']['deleteTemplate']) && !empty($_POST['reportFormat']['deleteTemplate'])) {
+            foreach (explode(',', $_POST['reportFormat']['deleteTemplate']) as $testToRemove)
+                MiscUtility::removeDirectory(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $testToRemove);
         }
         foreach ($_POST['reportFormat']['test_type'] as $key => $test) {
             $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'][$key], ['pdf']);
@@ -135,15 +142,9 @@ try {
                 $fileResponse[$test]['file'] = $_POST['reportFormat']['old_template'][$key];
                 $fileResponse[$test]['mtop'] = $_POST['reportFormat']['header_margin'][$key];
             }
-            if (isset($_POST['reportFormat']['delete_template'][$key]) && !empty($_POST['reportFormat']['delete_template'][$key])) {
-                unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test);
-                $fileResponse[$test]['file'] = $_POST['reportFormat']['old_template'][$key];
-                $fileResponse[$test]['mtop'] = $_POST['reportFormat']['header_margin'][$key];
-            }
         }
-        $reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'value');
-        $updateData = ['value' => $db->func($reportFormatJson)];
-
+        // $reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'value');
+        $updateData = ['value' => json_encode($fileResponse)];
         $db->where('name', 'report_format');
         $db->update('global_config', $updateData);
     }
