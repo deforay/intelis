@@ -10,6 +10,16 @@ if ($isCli === false) {
     exit(0);
 }
 
+// Handle Ctrl+C gracefully (if pcntl extension is available)
+if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
+    pcntl_async_signals(true);
+    pcntl_signal(SIGINT, function () {
+        echo PHP_EOL . PHP_EOL;
+        echo "⚠️  Interface sync cancelled by user." . PHP_EOL;
+        exit(130); // Standard exit code for SIGINT
+    });
+}
+
 require_once __DIR__ . "/../bootstrap.php";
 
 declare(ticks=1);
@@ -590,7 +600,7 @@ try {
                 }
 
                 $userId = $usersService->getOrCreateUser($result['tested_by']);
-                
+
                 $autoApprove = $general->getGlobalConfig('auto_approve_interface_results') === 'yes' ?? false;
                 $resultStatus = ($autoApprove === false) ? SAMPLE_STATUS\PENDING_APPROVAL : SAMPLE_STATUS\ACCEPTED;
 
