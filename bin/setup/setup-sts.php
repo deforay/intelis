@@ -4,16 +4,17 @@
 
 declare(strict_types=1);
 
+use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\ConfigService;
+use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
-use App\Utilities\LoggerUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Input\ArgvInput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 
 $cliMode = php_sapi_name() === 'cli';
@@ -33,8 +34,14 @@ try {
     set_time_limit(0);
 
     $input = new ArgvInput();
-    $output = new ConsoleOutput();
-    $io = new SymfonyStyle($input, $output);
+    $consoleOutput = new ConsoleOutput();
+    $consoleOutput->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
+    $consoleOutput->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
+    $consoleOutput->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
+    $consoleOutput->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
+    $consoleOutput->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
+
+    $io = new SymfonyStyle($input, $consoleOutput);
 
     $io->title('STS Configuration Setup');
 
@@ -319,7 +326,7 @@ try {
         }
         $returnCode = pclose($handle);
     } else {
-        exec($metadataCommand . " 2>&1", $output, $returnCode);
+        exec("$metadataCommand 2>&1", $output, $returnCode);
     }
 
     MiscUtility::spinnerAdvance($bar, 1);
@@ -328,17 +335,14 @@ try {
     if ($returnCode !== 0) {
         echo PHP_EOL . "Full output:" . PHP_EOL;
         foreach ($output as $l) echo $l . PHP_EOL;
-        echo PHP_EOL . "❌ Metadata refresh failed with return code: $returnCode" . PHP_EOL;
-        echo "Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        $io->text([
+            "❌ <error>Metadata refresh failed with return code: $returnCode</error>",
+            '<info>Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft</info>',
+        ]);
         throw new RuntimeException("Metadata refresh failed");
     }
-    echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
 
-    // ---- Step 3: Lab Configuration (fzf only) ------------------------------
-    $io->section('Lab Configuration');
-
-    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
-    $needLabSelection = false;
+    $io->text("✅ <success>Metadata refresh completed successfully.</success>");
 
     // ---- Step 3: Lab Configuration ------------------------------------------
     $io->section('Lab Configuration');
@@ -348,11 +352,11 @@ try {
 
     if ($currentLabId > 0) {
         $labDetails = $db->rawQueryOne(
-            "SELECT facility_name 
-         FROM facility_details 
-         WHERE facility_id = ? 
-           AND facility_type = 2 
-           AND status = 'active'",
+            "SELECT facility_name
+            FROM facility_details
+            WHERE facility_id = ?
+            AND facility_type = 2
+            AND status = 'active'",
             [$currentLabId]
         );
 
@@ -392,7 +396,7 @@ try {
             $io->note("Only one lab found, auto-selecting: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}");
         } else {
             $io->text([
-                'You can now pick your lab using fzf:',
+                'Please select your lab:',
                 '• Type to search by name',
                 '• Use ↑/↓ to move',
                 '• Press Enter to confirm',
@@ -428,83 +432,15 @@ try {
         }
     } else {
         $selectedLab = $db->rawQueryOne(
-            "SELECT facility_id, facility_name 
-         FROM facility_details 
-         WHERE facility_id = ? 
-           AND facility_type = 2 
-           AND status = 'active'",
+            "SELECT facility_id, facility_name
+            FROM facility_details 
+            WHERE facility_id = ?
+            AND facility_type = 2
+            AND status = 'active'",
             [$currentLabId]
         );
         if ($selectedLab) {
             $io->text("Keeping lab: <info>[ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}</info>");
-        }
-    }
-
-
-    // Fetch once and reuse
-    $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…', '█', '░', '█', 'cyan');
-    $testingLabs = fetchActiveLabs($db);
-    MiscUtility::spinnerAdvance($labFetchBar, 1);
-    MiscUtility::spinnerFinish($labFetchBar);
-
-    if (empty($testingLabs)) {
-        echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
-        throw new RuntimeException("No active labs found");
-    }
-
-    if ($needLabSelection) {
-        echo PHP_EOL . "=== Lab Selection  ===" . PHP_EOL;
-        maybeInstallFzf();
-
-        // If only one lab, auto-select
-        if (count($testingLabs) === 1) {
-            $selectedLab = $testingLabs[0];
-            echo "Only one lab found, auto-selecting: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
-        } else {
-            $io->section('Lab Selection');
-            $io->text([
-                'You can now pick your lab using fzf:',
-                '• Type to search by name',
-                '• Use ↑/↓ to move',
-                '• Press Enter to confirm',
-            ]);
-
-            $selectedLab = pickLabViaFzf($testingLabs);
-            if ($selectedLab === null) {
-                echo PHP_EOL . "❌ No lab selected. Setup cancelled." . PHP_EOL;
-                exit(0);
-            }
-        }
-
-        echo PHP_EOL . "ℹ️ Selected Lab: [InteLIS Lab ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
-        echo "Updating lab configuration…" . PHP_EOL;
-
-        try {
-            $db->where('name', 'sc_testing_lab_id');
-            $ok = $db->update('system_config', ['value' => $selectedLab['facility_id']]);
-            if ($ok) {
-                echo "✅ Lab ID updated successfully." . PHP_EOL;
-            } else {
-                echo "❌ Failed to update lab ID in system configuration." . PHP_EOL;
-                throw new RuntimeException("Failed to update lab ID");
-            }
-        } catch (Throwable $e) {
-            LoggerUtility::logError("Error updating lab ID: " . $e->getMessage(), [
-                'line' => $e->getLine(),
-                'file' => $e->getFile(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            echo "❌ Error updating lab ID. Check logs." . PHP_EOL;
-            throw $e;
-        }
-    } else {
-        // Show the resolved lab
-        $selectedLab = $db->rawQueryOne(
-            "SELECT facility_id, facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
-            [$currentLabId]
-        );
-        if ($selectedLab) {
-            echo "Keeping lab: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
         }
     }
 
@@ -515,12 +451,12 @@ try {
 
     exit(0);
 } catch (Throwable $e) {
-    echo PHP_EOL . "❌ Setup failed: " . $e->getMessage() . PHP_EOL . PHP_EOL;
+    $io->error("❌ Setup failed: " . $e->getMessage());
     LoggerUtility::logError("STS setup failure: " . $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString(),
     ]);
-    echo "Please check logs for details." . PHP_EOL;
+    $io->info("<info>Please check logs for details.</info>");
     exit(1);
 }
