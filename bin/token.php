@@ -9,6 +9,10 @@ use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
 
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+
 require_once __DIR__ . "/../bootstrap.php";
 
 ini_set('memory_limit', -1);
@@ -28,6 +32,11 @@ if (!$isLIS || !$cliMode) {
     exit(0);
 }
 
+
+$input = new ArgvInput();
+$output = new ConsoleOutput();
+$io = new SymfonyStyle($input, $output);
+
 // Set the URL for the token generation endpoint
 $remoteURL = rtrim($general->getRemoteURL(), '/');
 
@@ -46,7 +55,7 @@ if (empty($apiKey)) {
     $apiKey = ConfigService::generateAPIKeyForSTS($remoteURL);
 }
 if (!$cliMode) {
-    echo "Usage: php bin/token.php --key <API_KEY>" . PHP_EOL;
+    $io->info("Usage: php bin/token.php --key <API_KEY>");
     exit(1);
 }
 
@@ -75,12 +84,12 @@ try {
 
         // Handle the response
         if (!empty($response['status']) && $response['status'] === 'success') {
-            echo "Token generated: {$response['token']}" . PHP_EOL;
+            $io->success("Token generated: {$response['token']}");
             //echo "STS Token for this lab is {$response['token']}" . PHP_EOL;
             $data['sts_token'] = $response['token'];
             $db->update('s_vlsm_instance', $data);
         } else {
-            echo "Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error') . PHP_EOL;
+            $io->error("Failed to generate token. Error: " . (implode(" | ", $response['error']) ?? 'Unknown error'));
         }
     }
 } catch (Throwable $e) {
@@ -92,5 +101,5 @@ try {
             'trace' => $e->getTraceAsString(),
         ]
     );
-    echo "Error in token generation. Please check logs for details" . PHP_EOL;
+    $io->error("Error in token generation. Please check logs for details");
 }
