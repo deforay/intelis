@@ -2,7 +2,7 @@
 
 require_once dirname(__DIR__) . '/../bootstrap.php';
 
-// api/index.php
+// public/api/index.php
 
 use Slim\Factory\AppFactory;
 use App\Registries\AppRegistry;
