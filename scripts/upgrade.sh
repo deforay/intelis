@@ -725,8 +725,8 @@ if [ "$skip_ubuntu_updates" = false ]; then
     dpkg --configure -a
 
     # Clean up
-    export DEBIAN_FRONTEND=noninteractive
     apt-get -y autoremove
+    apt-get -y autoclean
 
     print info "Installing basic packages..."
     apt-get install -y build-essential software-properties-common gnupg apt-transport-https ca-certificates lsb-release wget vim zip unzip curl acl snapd rsync git gdebi net-tools sed mawk magic-wormhole openssh-server libsodium-dev mosh pigz gnupg

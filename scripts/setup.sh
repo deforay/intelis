@@ -876,7 +876,6 @@ if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
 fi
 
 # Set proper permissions
-# Set proper permissions
 download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
 chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
