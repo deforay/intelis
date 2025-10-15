@@ -1,581 +1,526 @@
 #!/usr/bin/env php
 <?php
+// bin/setup-sts.php
 
-//bin/setup-sts.php
+declare(strict_types=1);
 
 use App\Services\CommonService;
 use App\Services\ConfigService;
-use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Utilities\FileCacheUtility;
+use App\Utilities\LoggerUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 
-$isCli = php_sapi_name() === 'cli';
 
-// Handle Ctrl+C gracefully (if pcntl extension is available)
-if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
+$cliMode = php_sapi_name() === 'cli';
+
+// --- graceful Ctrl+C (if pcntl available)
+if (function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
     pcntl_async_signals(true);
     pcntl_signal(SIGINT, function () {
-        echo PHP_EOL . PHP_EOL;
-        echo "⚠️  Setup cancelled by user." . PHP_EOL;
-        exit(130); // Standard exit code for SIGINT
+        echo PHP_EOL . "⚠️  Setup cancelled by user." . PHP_EOL;
+        exit(130);
     });
 }
+
 try {
     require_once __DIR__ . "/../../bootstrap.php";
-
-    ini_set('memory_limit', -1);
+    ini_set('memory_limit', '-1');
     set_time_limit(0);
+
+    $input = new ArgvInput();
+    $output = new ConsoleOutput();
+    $io = new SymfonyStyle($input, $output);
+
+    $io->title('STS Configuration Setup');
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
-
     /** @var ConfigService $configService */
     $configService = ContainerRegistry::get(ConfigService::class);
-
     /** @var DatabaseService $db */
     $db = ContainerRegistry::get(DatabaseService::class);
 
-
-
     $isLIS = $general->isLISInstance();
-
-    if (!$isLIS || !$isCli) {
+    if (!$isLIS || !$cliMode) {
         echo "❗ This script is only for LIS instances and must be run from the command line." . PHP_EOL;
         exit(0);
     }
 
-    // Clear the file cache
-    (ContainerRegistry::get(FileCacheUtility::class))->clear();
-
+    // ---- helpers -----------------------------------------------------------
     /**
-     * Function to read user input from command line.
-     * Returns null on EOF/non-interactive.
+     * Read user input from CLI. Returns null on EOF.
      */
-    function readUserInput($prompt = '')
+    function readUserInput(string $prompt = ''): ?string
     {
         echo $prompt;
         $h = fopen('php://stdin', 'r');
-        if ($h === false) {
-            return null;
-        }
+        if ($h === false) return null;
         $line = fgets($h);
         fclose($h);
-        if ($line === false) {
-            // EOF or not a TTY
-            return null;
-        }
+        if ($line === false) return null;
         return trim($line);
     }
 
-    /**
-     * Function to validate URL format
-     */
-    function isValidUrl($url)
+    function isValidUrl(string $url): bool
     {
         return filter_var($url, FILTER_VALIDATE_URL) !== false;
     }
 
+    function hasCmd(string $cmd): bool
+    {
+        return trim((string) shell_exec('command -v ' . escapeshellarg($cmd) . ' 2>/dev/null || true')) !== '';
+    }
+
     /**
-     * Function to normalize URL with smart STS validation
+     * Try https, then http for STS; verify via CommonService::validateStsUrl().
      */
-    function normalizeUrl($url, $labId = null)
+    function normalizeUrl(string $url, ?int $labId = null): string
     {
         $url = trim($url);
+        if ($url === '') return $url;
 
-        // If URL already has a protocol, test it as-is first
-        if (preg_match('/^https?:\/\//', $url)) {
+        // If full URL given, test as-is first, then flip scheme
+        if (preg_match('/^https?:\/\//i', $url)) {
             $testUrl = rtrim($url, '/');
-            if (CommonService::validateStsUrl($testUrl, $labId)) {
-                return $testUrl;
-            }
-            // If the provided protocol doesn't work, we'll still try the opposite
-            $domain = preg_replace('/^https?:\/\//', '', $url);
+            if (CommonService::validateStsUrl($testUrl, $labId)) return $testUrl;
+            $domain = preg_replace('/^https?:\/\//i', '', $url);
         } else {
             $domain = $url;
         }
 
-        // Try HTTPS first
-        $httpsUrl = 'https://' . rtrim($domain, '/');
-        if (CommonService::validateStsUrl($httpsUrl, $labId)) {
-            return $httpsUrl;
-        }
+        $https = 'https://' . rtrim($domain, '/');
+        if (CommonService::validateStsUrl($https, $labId)) return $https;
 
-        // Fallback to HTTP
-        $httpUrl = 'http://' . rtrim($domain, '/');
-        if (CommonService::validateStsUrl($httpUrl, $labId)) {
-            return $httpUrl;
-        }
+        $http = 'http://' . rtrim($domain, '/');
+        if (CommonService::validateStsUrl($http, $labId)) return $http;
 
-        // Neither worked, return HTTPS version anyway (let later validation handle the error)
-        return $httpsUrl;
+        // default to https (later validation may still fail)
+        return $https;
     }
 
-    // Parse CLI arguments
+    /**
+     * Attempt apt-get install of fzf if missing (only if root).
+     */
+    function maybeInstallFzf(): void
+    {
+        if (hasCmd('fzf')) return;
+        $isRoot = function_exists('posix_geteuid') ? (posix_geteuid() === 0) : false;
+        $hasApt = hasCmd('apt-get');
+
+        if (!$isRoot || !$hasApt) {
+            echo "❌ fzf not found. Please install:\n   sudo apt-get update && sudo apt-get install -y fzf\n";
+            exit(1);
+        }
+        $ans = strtolower((string) (readUserInput("fzf not found. Install now? (y/N): ") ?? ''));
+        if ($ans !== 'y' && $ans !== 'yes') {
+            echo "❌ fzf required. Aborting." . PHP_EOL;
+            exit(1);
+        }
+        system('apt-get update -y && apt-get install -y fzf', $rc);
+        if ($rc !== 0 || !hasCmd('fzf')) {
+            echo "❌ Failed to install fzf." . PHP_EOL;
+            exit(1);
+        }
+        echo "✅ fzf installed." . PHP_EOL;
+    }
+
+    /**
+     * Fetch active testing labs and sanitize names.
+     * @return array<int,array{facility_id:int|string,facility_name:string}>
+     */
+    function fetchActiveLabs(DatabaseService $db): array
+    {
+        $labs = $db->rawQuery("
+            SELECT facility_id, facility_name
+            FROM facility_details
+            WHERE facility_type = 2 AND status = 'active'
+            ORDER BY facility_name
+        ");
+        foreach ($labs as &$l) {
+            $name = str_replace(["\r", "\n", "\t"], ' ', (string) $l['facility_name']);
+            $name = preg_replace('/\s+/', ' ', $name);
+            $l['facility_name'] = trim($name);
+        }
+        unset($l);
+        return $labs;
+    }
+
+    /**
+     * fzf-based picker; returns selected lab or null.
+     * @param array<int,array{facility_id:int|string,facility_name:string}> $labs
+     */
+    function pickLabViaFzf(array $labs): ?array
+    {
+        $tmp = tempnam(sys_get_temp_dir(), 'labs_');
+        $lines = array_map(fn($l) => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
+        file_put_contents($tmp, implode(PHP_EOL, $lines));
+
+        $cmd = 'cat ' . escapeshellarg($tmp)
+            . ' | fzf --ansi --height=80% --reverse --border --cycle '
+            . ' --prompt="Select lab > " '
+            . ' --header="Type to filter • ↑/↓ to move • Enter to select" '
+            . ' --with-nth=2 --delimiter="\t" 2>/dev/null';
+
+        $out = trim((string) shell_exec($cmd));
+        @unlink($tmp);
+
+        if ($out === '' || strpos($out, "\t") === false) return null;
+        [$id, $name] = explode("\t", $out, 2);
+        return ['facility_id' => trim($id), 'facility_name' => trim($name)];
+    }
+    // ------------------------------------------------------------------------
+
+    // Clear file cache
+    (ContainerRegistry::get(FileCacheUtility::class))->clear();
+
+    // Parse CLI options (kept for future use)
     $options = getopt('k', ['key:']);
     $apiKey = $options['key'] ?? null;
 
-    // Interactive mode - handle STS and Lab setup
     echo "=== STS Configuration Setup ===" . PHP_EOL . PHP_EOL;
 
-
-    // Step 1: Handle STS URL
-    $currentRemoteURL = rtrim($general->getRemoteURL(), '/');
-    $urlWasEmpty = empty($currentRemoteURL);
+    // ---- Step 1: STS URL ---------------------------------------------------
+    $currentRemoteURL = rtrim((string) $general->getRemoteURL(), '/');
     $urlChanged = false;
     $newRemoteURL = $currentRemoteURL;
+    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
 
-
-    // Get current lab ID for URL validation
-    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
-
-    // If no current URL, allow skipping with Enter or on EOF
-    if (empty($currentRemoteURL)) {
-        echo "No STS URL is currently configured." . PHP_EOL;
-        echo "Press Enter to skip (you can set it later from Admin > System Config)." . PHP_EOL;
+    if ($currentRemoteURL === '') {
+        $io->warning('No STS URL is currently configured.');
+        $io->note('Press Enter to skip (you can set it later from Admin → System Config).');
 
         $attempts = 0;
-        $newRemoteURL = ''; // default to "skipped"
-
         do {
             $attempts++;
-            $userInput = readUserInput("STS URL: ");
-
-            // Non-interactive / EOF or user pressed Enter -> skip
+            $userInput = $io->ask('Enter STS URL (or press Enter to skip)');
             if ($userInput === null || $userInput === '') {
-                echo "Skipping STS URL setup for now." . PHP_EOL;
+                $io->text('Skipping STS URL setup for now.');
                 $newRemoteURL = '';
                 break;
             }
 
-            $newRemoteURL = normalizeUrl($userInput, $currentLabId);
-
-            if (!isValidUrl($newRemoteURL)) {
-                echo "Unable to create a valid URL. Please try again or press Enter to skip." . PHP_EOL;
+            $candidate = normalizeUrl($userInput, $currentLabId);
+            if (!isValidUrl($candidate)) {
+                $io->warning('Invalid URL. Try again or press Enter to skip.');
+                continue;
+            }
+            if (!CommonService::validateStsUrl($candidate, $currentLabId)) {
+                $io->error('Cannot connect to STS at this URL. Try again or press Enter to skip.');
                 continue;
             }
 
-            if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
-                echo "Cannot connect to STS at this URL. Try again or press Enter to skip." . PHP_EOL;
-                continue;
-            }
-
-            echo "Using: " . $newRemoteURL . PHP_EOL;
+            $newRemoteURL = $candidate;
             $urlChanged = true;
+            $io->text("Using: <info>$newRemoteURL</info>");
             break;
         } while ($attempts < 5);
     } else {
-        echo "Current STS URL: " . $currentRemoteURL . PHP_EOL . PHP_EOL;
+        $io->section('Current Configuration');
+        $io->text("Current STS URL: <info>$currentRemoteURL</info>");
 
-        $confirmUrl = strtolower((string)readUserInput("Is this STS URL correct? (y/n) [y]: "));
-        if ($confirmUrl === '' || $confirmUrl === null) {
-            $confirmUrl = 'y';
-        }
+        // confirm() returns bool — use it directly
+        $ok = $io->confirm('Is this STS URL correct?', true);
 
-        if ($confirmUrl !== 'y' && $confirmUrl !== 'yes') {
-            echo PHP_EOL . "Press Enter to skip (you can set it later)." . PHP_EOL;
-
+        if ($ok) {
+            // Keep as-is; do NOT ask again
+            $newRemoteURL = $currentRemoteURL;
+        } else {
+            $io->note('Press Enter to skip (you can set it later).');
             $attempts = 0;
             do {
                 $attempts++;
-                $userInput = readUserInput("STS URL: ");
-
+                $userInput = $io->ask('Enter new STS URL (or press Enter to skip)', '');
                 if ($userInput === null || $userInput === '') {
-                    echo "Skipping STS URL change; keeping the previous value." . PHP_EOL;
+                    $io->text('Skipping change; keeping the previous value.');
                     $newRemoteURL = $currentRemoteURL;
                     break;
                 }
 
-                $newRemoteURL = normalizeUrl($userInput, $currentLabId);
-
-                if (!isValidUrl($newRemoteURL)) {
-                    echo "Unable to create a valid URL. Try again or press Enter to skip." . PHP_EOL;
+                $candidate = normalizeUrl($userInput, $currentLabId);
+                if (!isValidUrl($candidate)) {
+                    $io->warning('Invalid URL. Try again or press Enter to skip.');
+                    continue;
+                }
+                if (!CommonService::validateStsUrl($candidate, $currentLabId)) {
+                    $io->error('Cannot connect to STS at this URL. Try again or press Enter to skip.');
                     continue;
                 }
 
-                if (!CommonService::validateStsUrl($newRemoteURL, $currentLabId)) {
-                    echo "Cannot connect to STS at this URL. Try again or press Enter to skip." . PHP_EOL;
-                    continue;
-                }
-
-                echo "Using: " . $newRemoteURL . PHP_EOL;
+                $newRemoteURL = $candidate;
                 $urlChanged = ($newRemoteURL !== $currentRemoteURL);
+                $io->text("Using: <info>$newRemoteURL</info>");
                 break;
             } while ($attempts < 5);
-        } else {
-            $newRemoteURL = $currentRemoteURL;
         }
     }
 
-    // Step 2: only update if we actually changed AND not skipped
     if ($urlChanged && $newRemoteURL !== '') {
-        echo PHP_EOL . "Updating STS URL in configuration..." . PHP_EOL;
+        $io->text('Updating STS URL in configuration…');
         try {
             $configService->updateConfig(['remoteURL' => $newRemoteURL]);
-            echo "✅ STS URL updated successfully to: " . $newRemoteURL . PHP_EOL;
-        } catch (Exception $e) {
+            $io->success('STS URL updated successfully to: ' . $newRemoteURL);
+        } catch (Throwable $e) {
             LoggerUtility::logError("Error updating STS URL: " . $e->getMessage(), [
                 'line' => $e->getLine(),
                 'file' => $e->getFile(),
                 'trace' => $e->getTraceAsString(),
             ]);
-            echo "❌ Error updating STS URL. Please check logs for details." . PHP_EOL;
+            $io->error('Error updating STS URL. Check logs.');
             throw $e;
         }
     }
 
-    // Step 3: Always refresh metadata on LIS nodes
-    // Decide which URL is currently effective (new or existing)
-    $effectiveRemoteURL = isset($newRemoteURL) && $newRemoteURL !== '' ? $newRemoteURL : rtrim((string)$general->getRemoteURL(), '/');
-
-    if (empty($effectiveRemoteURL)) {
-        echo PHP_EOL;
-        echo "⚠️ No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL;
-        echo "   Login as System Admin → System Config, then run:" . PHP_EOL;
-        echo "   composer setup-sts" . PHP_EOL;
-        echo PHP_EOL;
-        echo "✅ Setup complete. Please configure STS URL before proceeding." . PHP_EOL;
+    // ---- Step 2: Refresh Metadata -----------------------------------------
+    $effectiveRemoteURL = $newRemoteURL !== '' ? $newRemoteURL : rtrim((string) $general->getRemoteURL(), '/');
+    if ($effectiveRemoteURL === '') {
+        echo PHP_EOL
+            . "⚠️  No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL
+            . "   Login as System Admin → System Config, then run: composer setup-sts" . PHP_EOL
+            . PHP_EOL . "✅ Setup complete. Configure STS URL before proceeding." . PHP_EOL;
         exit(0);
     }
 
-    echo PHP_EOL;
-    echo "=== Refreshing Database Metadata ===" . PHP_EOL;
+    $io->section('Refreshing Database Metadata');
+    $io->text('Executing metadata sync…');
 
     $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
     if (!file_exists($metadataScriptPath)) {
-        echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
-        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
-        throw new Exception("Metadata script missing");
+        echo "❌ Metadata script not found at: $metadataScriptPath" . PHP_EOL;
+        echo "Run: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        echo "Or:  ./intelis reset-metadata" . PHP_EOL;
+        throw new RuntimeException("Metadata script missing");
     }
 
     $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-    echo "Executing: " . $metadataCommand . PHP_EOL . PHP_EOL;
+    echo "Executing: $metadataCommand" . PHP_EOL . PHP_EOL;
 
-    // Start progress indication for metadata refresh
     $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
-
     $output = [];
     $returnCode = 0;
 
-    // Use popen for real-time output with progress bar
     $handle = popen($metadataCommand . " 2>&1", 'r');
     if ($handle) {
         while (!feof($handle)) {
             $line = fgets($handle);
             if ($line !== false) {
-                $output[] = trim($line);
-                // Optionally show important messages during execution
-                if (stripos($line, 'error') !== false || stripos($line, 'warning') !== false) {
-                    MiscUtility::spinnerPausePrint($bar, function () use ($line) {
-                        echo trim($line) . PHP_EOL;
+                $trim = trim($line);
+                $output[] = $trim;
+                if (stripos($trim, 'error') !== false || stripos($trim, 'warning') !== false) {
+                    MiscUtility::spinnerPausePrint($bar, function () use ($trim) {
+                        echo $trim . PHP_EOL;
                     });
                 }
             }
         }
         $returnCode = pclose($handle);
     } else {
-        // Fallback to exec if popen fails
         exec($metadataCommand . " 2>&1", $output, $returnCode);
     }
 
     MiscUtility::spinnerAdvance($bar, 1);
     MiscUtility::spinnerFinish($bar);
 
-    // Show full output after completion if there were errors
     if ($returnCode !== 0) {
         echo PHP_EOL . "Full output:" . PHP_EOL;
-        foreach ($output as $line) {
-            echo $line . PHP_EOL;
-        }
+        foreach ($output as $l) echo $l . PHP_EOL;
+        echo PHP_EOL . "❌ Metadata refresh failed with return code: $returnCode" . PHP_EOL;
+        echo "Run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+        throw new RuntimeException("Metadata refresh failed");
     }
+    echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
 
-    if ($returnCode === 0) {
-        echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
-    } else {
-        echo PHP_EOL . "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
-        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        throw new Exception("Metadata refresh failed");
-    }
+    // ---- Step 3: Lab Configuration (fzf only) ------------------------------
+    $io->section('Lab Configuration');
 
+    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
+    $needLabSelection = false;
 
+    // ---- Step 3: Lab Configuration ------------------------------------------
+    $io->section('Lab Configuration');
 
-    // Step 4: Handle Lab Configuration
-    echo PHP_EOL;
-    echo "=== Lab Configuration ===" . PHP_EOL;
+    $currentLabId = (int) ($general->getSystemConfig('sc_testing_lab_id') ?? 0);
+    $needLabSelection = false;
 
-    $currentLabId = $general->getSystemConfig('sc_testing_lab_id');
-
-    if (empty($currentLabId)) {
-        echo "No lab is currently configured." . PHP_EOL;
-        $needLabSelection = true;
-    } else {
+    if ($currentLabId > 0) {
         $labDetails = $db->rawQueryOne(
-            "SELECT facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
+            "SELECT facility_name 
+         FROM facility_details 
+         WHERE facility_id = ? 
+           AND facility_type = 2 
+           AND status = 'active'",
             [$currentLabId]
         );
 
         if ($labDetails) {
-            echo "Current InteLIS Lab ID: " . $currentLabId . PHP_EOL;
-            echo "Lab Name: " . $labDetails['facility_name'] . PHP_EOL;
-            echo PHP_EOL;
+            $io->text([
+                "Current InteLIS Lab ID: <info>$currentLabId</info>",
+                "Lab Name: <info>{$labDetails['facility_name']}</info>",
+            ]);
 
-            $confirmLab = readUserInput("Is this the correct lab? (y/n) [y]: ");
-            $confirmLab = strtolower(trim($confirmLab));
-
-            if (empty($confirmLab)) {
-                $confirmLab = 'y';
-            }
-
-            $needLabSelection = ($confirmLab !== 'y' && $confirmLab !== 'yes');
+            $ok = $io->confirm('Is this the correct lab?', true);
+            $needLabSelection = !$ok;
         } else {
-            echo "Current lab ID (" . $currentLabId . ") not found in active facilities." . PHP_EOL;
+            $io->warning("Current lab ID ($currentLabId) not found in active facilities.");
             $needLabSelection = true;
         }
+    } else {
+        $io->warning('No lab is currently configured.');
+        $needLabSelection = true;
     }
 
     if ($needLabSelection) {
-        echo PHP_EOL;
-        echo "=== Lab Selection ===" . PHP_EOL;
+        $io->section('Selecting Lab');
+        maybeInstallFzf();
 
-        // Add progress bar for fetching labs
         $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…', '█', '░', '█', 'cyan');
-
-        $testingLabs = $db->rawQuery("SELECT facility_id, facility_name FROM facility_details 
-                                    WHERE facility_type = 2 AND status = 'active' 
-                                    ORDER BY facility_name");
-
+        $testingLabs = fetchActiveLabs($db);
         MiscUtility::spinnerAdvance($labFetchBar, 1);
         MiscUtility::spinnerFinish($labFetchBar);
 
         if (empty($testingLabs)) {
-            echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
-            throw new Exception("No active labs found");
+            $io->error('No active testing labs found. Please ensure facilities are properly configured.');
+            throw new RuntimeException('No active labs found');
         }
 
-        echo "Found " . count($testingLabs) . " available labs." . PHP_EOL;
-        echo PHP_EOL;
-        echo "Choose selection method:" . PHP_EOL;
-        echo "1. Search by name" . PHP_EOL;
-        echo "2. Browse all labs" . PHP_EOL;
-        echo "3. Enter facility ID directly" . PHP_EOL;
-        echo PHP_EOL;
+        if (count($testingLabs) === 1) {
+            $selectedLab = $testingLabs[0];
+            $io->note("Only one lab found, auto-selecting: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}");
+        } else {
+            $io->text([
+                'You can now pick your lab using fzf:',
+                '• Type to search by name',
+                '• Use ↑/↓ to move',
+                '• Press Enter to confirm',
+            ]);
 
-        $method = readUserInput("Select method (1-3) [1]: ");
-        $method = trim($method);
-        if (empty($method)) $method = '1';
-
-        $selectedLab = null;
-
-        if ($method === '1') {
-            // Search by name
-            do {
-                echo PHP_EOL;
-                $searchTerm = readUserInput("Enter lab name (or part of name) to search: ");
-                $searchTerm = trim($searchTerm);
-
-                if (empty($searchTerm)) {
-                    echo "Search term cannot be empty." . PHP_EOL;
-                    continue;
-                }
-
-                $filteredLabs = array_filter($testingLabs, function ($lab) use ($searchTerm) {
-                    return stripos($lab['facility_name'], $searchTerm) !== false;
-                });
-
-                if (empty($filteredLabs)) {
-                    echo "No labs found matching '" . $searchTerm . "'. Try a different search term." . PHP_EOL;
-                    continue;
-                }
-
-                echo PHP_EOL;
-                echo "Found " . count($filteredLabs) . " matching lab(s):" . PHP_EOL;
-                $filteredLabs = array_values($filteredLabs); // Reindex
-
-                foreach ($filteredLabs as $index => $lab) {
-                    echo ($index + 1) . ". [ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
-                }
-
-                echo PHP_EOL;
-
-                if (count($filteredLabs) === 1) {
-                    $confirm = readUserInput("Select this lab? (y/n) [y]: ");
-                    if (empty($confirm) || strtolower($confirm) === 'y') {
-                        $selectedLab = $filteredLabs[0];
-                        break;
-                    }
-                } else {
-                    $selection = readUserInput("Select lab number (1-" . count($filteredLabs) . ") or 's' to search again: ");
-                    $selection = trim($selection);
-
-                    if (strtolower($selection) === 's') {
-                        continue; // Search again
-                    }
-
-                    if (is_numeric($selection)) {
-                        $selectedIndex = (int)$selection - 1;
-                        if ($selectedIndex >= 0 && $selectedIndex < count($filteredLabs)) {
-                            $selectedLab = $filteredLabs[$selectedIndex];
-                            break;
-                        }
-                    }
-                    echo "Invalid selection. Please try again." . PHP_EOL;
-                }
-            } while (true);
-        } elseif ($method === '2') {
-            // Browse all labs (paginated)
-            $pageSize = 20;
-            $totalLabs = count($testingLabs);
-            $currentPage = 0;
-
-            do {
-                $startIndex = $currentPage * $pageSize;
-                $endIndex = min($startIndex + $pageSize, $totalLabs);
-
-                echo PHP_EOL;
-                echo "=== Labs " . ($startIndex + 1) . "-" . $endIndex . " of " . $totalLabs . " ===" . PHP_EOL;
-
-                for ($i = $startIndex; $i < $endIndex; $i++) {
-                    $lab = $testingLabs[$i];
-                    echo ($i + 1) . ". [ID: " . $lab['facility_id'] . "] " . $lab['facility_name'] . PHP_EOL;
-                }
-
-                echo PHP_EOL;
-                echo "Commands: [number] = select lab, [n] = next page, [p] = previous page, [s] = search, [q] = quit" . PHP_EOL;
-
-                $input = readUserInput("Enter choice: ");
-                $input = trim(strtolower($input));
-
-                if ($input === 'n' && $endIndex < $totalLabs) {
-                    $currentPage++;
-                } elseif ($input === 'p' && $currentPage > 0) {
-                    $currentPage--;
-                } elseif ($input === 's') {
-                    $method = '1'; // Switch to search mode
-                    break;
-                } elseif ($input === 'q') {
-                    echo "Lab selection cancelled." . PHP_EOL;
-                    exit(0);
-                } elseif (is_numeric($input)) {
-                    $selectedIndex = (int)$input - 1;
-                    if ($selectedIndex >= 0 && $selectedIndex < $totalLabs) {
-                        $selectedLab = $testingLabs[$selectedIndex];
-                        break;
-                    } else {
-                        echo "❗ Invalid lab number. Please enter a number between 1 and " . $totalLabs . "." . PHP_EOL;
-                    }
-                } else {
-                    echo "❗ Invalid command." . PHP_EOL;
-                }
-            } while (true);
-        } elseif ($method === '3') {
-            // Enter facility ID directly
-            do {
-                echo PHP_EOL;
-                $facilityId = readUserInput("Enter facility ID: ");
-                $facilityId = trim($facilityId);
-
-                if (empty($facilityId)) {
-                    echo "Facility ID cannot be empty." . PHP_EOL;
-                    continue;
-                }
-
-                // Find lab by ID
-                $foundLab = null;
-                foreach ($testingLabs as $lab) {
-                    if ($lab['facility_id'] == $facilityId) {
-                        $foundLab = $lab;
-                        break;
-                    }
-                }
-
-                if ($foundLab) {
-                    echo "Found: [ID: " . $foundLab['facility_id'] . "] " . $foundLab['facility_name'] . PHP_EOL;
-                    $confirm = readUserInput("Select this lab? (y/n) [y]: ");
-                    if (empty($confirm) || strtolower($confirm) === 'y') {
-                        $selectedLab = $foundLab;
-                        break;
-                    }
-                } else {
-                    echo "❗ Facility ID '" . $facilityId . "' not found in active labs." . PHP_EOL;
-                    $retry = readUserInput("Try again? (y/n) [y]: ");
-                    if (!empty($retry) && strtolower($retry) === 'n') {
-                        break;
-                    }
-                }
-            } while (true);
+            $selectedLab = pickLabViaFzf($testingLabs);
+            if ($selectedLab === null) {
+                $io->error('No lab selected. Setup cancelled.');
+                exit(0);
+            }
         }
 
-        if ($selectedLab === null) {
-            echo "❗ No lab selected. Exiting." . PHP_EOL;
-            exit(0);
-        }
-
-        echo PHP_EOL;
-        echo "Updating lab configuration..." . PHP_EOL;
-        echo "ℹ️ Selected Lab: [InteLIS Lab ID: " . $selectedLab['facility_id'] . "] " . $selectedLab['facility_name'] . PHP_EOL;
+        $io->text("Selected Lab: <info>[InteLIS Lab ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}</info>");
+        $io->text('Updating lab configuration…');
 
         try {
-            $data = ['value' => $selectedLab['facility_id']];
             $db->where('name', 'sc_testing_lab_id');
-            $result = $db->update('system_config', $data);
+            $ok = $db->update('system_config', ['value' => $selectedLab['facility_id']]);
+            if ($ok) {
+                $io->success('Lab ID updated successfully.');
+            } else {
+                $io->error('Failed to update lab ID in system configuration.');
+                throw new RuntimeException('Failed to update lab ID');
+            }
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Error updating lab ID: " . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            $io->error('Error updating lab ID. Check logs.');
+            throw $e;
+        }
+    } else {
+        $selectedLab = $db->rawQueryOne(
+            "SELECT facility_id, facility_name 
+         FROM facility_details 
+         WHERE facility_id = ? 
+           AND facility_type = 2 
+           AND status = 'active'",
+            [$currentLabId]
+        );
+        if ($selectedLab) {
+            $io->text("Keeping lab: <info>[ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}</info>");
+        }
+    }
 
-            if ($result) {
+
+    // Fetch once and reuse
+    $labFetchBar = MiscUtility::spinnerStart(1, 'Fetching available labs…', '█', '░', '█', 'cyan');
+    $testingLabs = fetchActiveLabs($db);
+    MiscUtility::spinnerAdvance($labFetchBar, 1);
+    MiscUtility::spinnerFinish($labFetchBar);
+
+    if (empty($testingLabs)) {
+        echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
+        throw new RuntimeException("No active labs found");
+    }
+
+    if ($needLabSelection) {
+        echo PHP_EOL . "=== Lab Selection  ===" . PHP_EOL;
+        maybeInstallFzf();
+
+        // If only one lab, auto-select
+        if (count($testingLabs) === 1) {
+            $selectedLab = $testingLabs[0];
+            echo "Only one lab found, auto-selecting: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
+        } else {
+            $io->section('Lab Selection');
+            $io->text([
+                'You can now pick your lab using fzf:',
+                '• Type to search by name',
+                '• Use ↑/↓ to move',
+                '• Press Enter to confirm',
+            ]);
+
+            $selectedLab = pickLabViaFzf($testingLabs);
+            if ($selectedLab === null) {
+                echo PHP_EOL . "❌ No lab selected. Setup cancelled." . PHP_EOL;
+                exit(0);
+            }
+        }
+
+        echo PHP_EOL . "ℹ️ Selected Lab: [InteLIS Lab ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
+        echo "Updating lab configuration…" . PHP_EOL;
+
+        try {
+            $db->where('name', 'sc_testing_lab_id');
+            $ok = $db->update('system_config', ['value' => $selectedLab['facility_id']]);
+            if ($ok) {
                 echo "✅ Lab ID updated successfully." . PHP_EOL;
             } else {
                 echo "❌ Failed to update lab ID in system configuration." . PHP_EOL;
-                throw new Exception("Failed to update lab ID");
+                throw new RuntimeException("Failed to update lab ID");
             }
-        } catch (Exception $e) {
-            LoggerUtility::logError(
-                "Error updating lab ID: " . $e->getMessage(),
-                [
-                    'line' => $e->getLine(),
-                    'file' => $e->getFile(),
-                    'trace' => $e->getTraceAsString(),
-                ]
-            );
-            echo "❌ Error updating lab ID. Please check logs for details." . PHP_EOL;
-            throw new Exception("Error updating lab ID: " . $e->getMessage());
+        } catch (Throwable $e) {
+            LoggerUtility::logError("Error updating lab ID: " . $e->getMessage(), [
+                'line' => $e->getLine(),
+                'file' => $e->getFile(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            echo "❌ Error updating lab ID. Check logs." . PHP_EOL;
+            throw $e;
         }
     } else {
-        // Use existing lab ID and get details for display
+        // Show the resolved lab
         $selectedLab = $db->rawQueryOne(
             "SELECT facility_id, facility_name FROM facility_details WHERE facility_id = ? AND facility_type = 2 AND status = 'active'",
             [$currentLabId]
         );
+        if ($selectedLab) {
+            echo "Keeping lab: [ID: {$selectedLab['facility_id']}] {$selectedLab['facility_name']}" . PHP_EOL;
+        }
     }
 
-    // Clear the file cache again -- just in case
+    // Final cache clear
     (ContainerRegistry::get(FileCacheUtility::class))->clear();
-    echo PHP_EOL;
-    echo "✅ STS setup complete!" . PHP_EOL;
+
+    $io->success('STS setup complete!');
+
     exit(0);
-} catch (Exception $e) {
-    echo PHP_EOL;
-    echo "❌ Setup failed: " . $e->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-
-    LoggerUtility::logError("STS setup script failed: " . $e->getMessage(), [
-        'line' => $e->getLine(),
-        'file' => $e->getFile(),
-        'trace' => $e->getTraceAsString(),
-    ]);
-
-    echo "   Please check logs for details or contact support." . PHP_EOL;
-    exit(1);
 } catch (Throwable $e) {
-    echo PHP_EOL;
-    echo "❌ Critical error: " . $e->getMessage() . PHP_EOL;
-    echo PHP_EOL;
-
-    LoggerUtility::logError("STS setup critical error: " . $e->getMessage(), [
+    echo PHP_EOL . "❌ Setup failed: " . $e->getMessage() . PHP_EOL . PHP_EOL;
+    LoggerUtility::logError("STS setup failure: " . $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString(),
     ]);
-
-    echo "   Please check logs for details or contact support." . PHP_EOL;
+    echo "Please check logs for details." . PHP_EOL;
     exit(1);
 }
