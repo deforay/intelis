@@ -463,21 +463,20 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 																	<td style="vertical-align:middle;text-align: center;margin-left:20px;">
 																		<?php if (isset($file) && !empty($file) && (file_exists($filePath) && !is_dir($filePath))) { ?>
 																			<div class="m-5">
-																				<a href="/uploads/labs/report-template/<?php echo $test; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> readPage btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
+																				<a href="/uploads/labs/report-template/<?php echo $test; ?>/<?php echo $file->file; ?>" class="oldFile<?php echo $n; ?> btn btn-sm btn-primary" title="View / Expend Current File" target="_blank" style="margin-left: -35px; "><i class="fa fa-eye"></i> View</a>
 																				<a href="javascript:void(0);" class="btn readPage btn-warning oldFile<?php echo $n; ?>" title="Replace Report Layout" onclick="removeReport(<?php echo $n; ?>);">Replace</a>
 																				<a href="javascript:void(0);" class="btn readPage btn-danger oldFile<?php echo $n; ?>" title="Delete Report Template" onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);"><i class="icon-trash"></i> Remove</a>
-																				<input type="hidden" name="reportFormat[delete_template][<?php echo ($n - 1); ?>]" id="deleteTemplate<?php echo $n; ?>" />
 																				<input type="hidden" value="<?php echo $file->file; ?>" name="reportFormat[old_template][<?php echo ($n - 1); ?>]" id="oldTemplate<?php echo $n; ?>" />
 																			</div>
 																		<?php } ?>
-																		<input <?php echo (isset($file->file) && !empty($file->file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control readPage newFile<?php echo $n; ?>" name="reportFormat[report_template][]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
+																		<input <?php echo (isset($file->file) && !empty($file->file) && file_exists($filePath)) ? 'style="display:none;"' : ''; ?> type="file" class="form-control readPage newFile<?php echo $n; ?>" name="reportFormat[report_template][<?php echo ($n - 1); ?>]" id="reportTemplate<?php echo $n; ?>" accept=".pdf" title="<?php echo _translate('Please upload PDF file'); ?>">
 																	</td>
 																	<td>
 																		<input value="<?php echo $file->mtop; ?>" type="text" class="form-control" name="reportFormat[header_margin][<?php echo ($n - 1); ?>]" id="headerMargin<?php echo $n; ?>" placeholder="<?php echo _translate('Top margin'); ?>" title="<?php echo _translate('Please enter the header margin'); ?>">
 																	</td>
 																	<td style="vertical-align:middle;text-align: center;">
 																		<a class="btn btn-xs readPage btn-primary" href="javascript:void(0);" onclick="addTestTypeFileRow();"><em class="fa-solid fa-plus"></em></a>&nbsp;
-																		<a class="btn btn-xs readPage btn-default" href="javascript:void(0);" onclick="removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
+																		<a class="btn btn-xs readPage btn-default" href="javascript:void(0);" onclick="deleteReport(<?php echo $n; ?>);removeReport(<?php echo $n; ?>);removeTestTypeFileRow(this.parentNode.parentNode);"><em class="fa-solid fa-minus"></em></a>
 																	</td>
 																</tr>
 															<?php $n += 1;
@@ -521,6 +520,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 																</td>
 															</tr>
 														<?php } ?>
+														<input type="hidden" name="reportFormat[deleteTemplate]" id="deleteTemplate" />
 													</tbody>
 												</table>
 											</div>
@@ -1471,6 +1471,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 <script src="/assets/js/jquery.multi-select.js"></script>
 <script src="/assets/js/jquery.quicksearch.js"></script>
 <script type="text/javascript">
+	let deleteTemplate = [];
 	$(document).ready(function() {
 
 		showBarcodeFormatMessage($("#bar_code_printing").val());
@@ -1542,6 +1543,9 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 	});
 
 	function validateNow() {
+		if (deleteTemplate) {
+			$('#deleteTemplate').val(deleteTemplate.join(','));
+		}
 		flag = deforayValidator.init({
 			formId: 'editGlobalConfigForm'
 		});
@@ -1948,7 +1952,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 
 	function deleteReport(row) {
 		if (confirm("Are you sure want to remove the template? once deleted can't be undone!")) {
-			$('#deleteTemplate' + row).val('yes');
+			deleteTemplate.push($('#testTypeFile' + row).val());
 		}
 	}
 </script>
