@@ -504,7 +504,7 @@ if [ "$need_sqlite_fix" = true ]; then
         print success "SQLite extensions are installed and enabled."
     else
         print error "Failed to install/enable SQLite extensions for PHP ${desired_php_version}."
-        exit 1
+        #exit 1
     fi
 
     # Reload Apache so mod_php picks up the module
