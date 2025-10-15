@@ -20,11 +20,13 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 // Get the uploaded files from the request object
 $uploadedFiles = $request->getUploadedFiles();
-$sanitizedReportTemplate = null;
-if (isset($uploadedFiles['reportFormat']['report_template']))
+$sanitizedInstanceLogo = $sanitizedLogo = $sanitizedReportTemplate = null;
+if (isset($_FILES['reportFormat']['report_template']) && isset($uploadedFiles['reportFormat']['report_template']))
     $sanitizedReportTemplate = _sanitizeFiles($uploadedFiles['reportFormat']['report_template'], ['pdf']);
-$sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
-$sanitizedLogo = _sanitizeFiles($uploadedFiles['logo'], ['png', 'jpg', 'jpeg', 'gif']);
+if (isset($_FILES['instanceLogo']) && isset($uploadedFiles['instanceLogo']))
+    $sanitizedInstanceLogo = _sanitizeFiles($uploadedFiles['instanceLogo'], ['png', 'jpg', 'jpeg', 'gif']);
+if (isset($_FILES['logo']) && empty($_FILES['logo']) && isset($uploadedFiles['logo']) && !empty($uploadedFiles['logo']))
+    $sanitizedLogo = _sanitizeFiles($uploadedFiles['logo'], ['png', 'jpg', 'jpeg', 'gif']);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -107,7 +109,7 @@ try {
     //         ]);
     //     }
     // }
-    if (isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type'])) {
+    if (isset($_POST['reportFormat']['test_type']) && !empty($_POST['reportFormat']['test_type']) && isset($_FILES['reportFormat']['test_type'])) {
         $fileResponse = [];
         $directories = [UPLOAD_PATH, 'labs', 'report-template'];
         $currentPath = '';
@@ -140,14 +142,14 @@ try {
             }
         }
         $reportFormatJson = JsonUtility::jsonToSetString(json_encode($fileResponse), 'value');
+        $updateData = ['value' => $db->func($reportFormatJson)];
+
         $db->where('name', 'report_format');
-        $db->update('global_config', ['value' => $db->func($reportFormatJson)]);
-        unset($_POST['reportFormat']);
+        $db->update('global_config', $updateData);
     }
 
+    unset($_POST['reportFormat']);
     unset($_SESSION['APP_LOCALE']);
-
-
     foreach ($_POST as $fieldName => $fieldValue) {
         if ($fieldName != 'removedLogoImage') {
             if ($fieldName == 'r_mandatory_fields') {
@@ -165,7 +167,7 @@ try {
             }
         }
         $barcode = $_POST['bar_code_printing'];
-        $message = $_POST['contentFormat'];
+        $message = $_POST['contentFormat'] ?? null;
         if ($barcode == "zebra-printer") {
             $content = "let zebraFormat = `$message`;";
             $fileName = "zebra-format.js";
@@ -179,8 +181,8 @@ try {
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
-
-        file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $content);
+        if (isset($fileName) && !empty($fileName))
+            file_put_contents($path . DIRECTORY_SEPARATOR . $fileName, $content);
     }
 
     $dateFormat = $_POST['gui_date_format'] ?? 'd-M-Y';
