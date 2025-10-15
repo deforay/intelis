@@ -83,10 +83,10 @@ final class CommonService
         });
     }
 
-    public function getIntelisSyncAPIKey()
+    public function getIntelisSyncAPIKey(): string
     {
         return $this->fileCache->get('sts-api-key', function () {
-            $stsKey = SYSTEM_CONFIG['sts']['api_key'];
+            $stsKey = SYSTEM_CONFIG['sts']['api_key'] ?? '';
             if ($stsKey == '' || empty($stsKey)) {
                 /** @var ConfigService $configService */
                 $configService = ContainerRegistry::get(ConfigService::class);

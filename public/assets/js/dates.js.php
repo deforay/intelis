@@ -2,6 +2,12 @@
 
 //require_once(__DIR__."/../../../bootstrap.php");
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 ?>
 <script type="text/javascript">
     // Extend dayjs with the customParseFormat plugin if available
@@ -119,7 +125,7 @@ use App\Utilities\DateUtility;
                 $('#sampleReceivedDate').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleDispatchedDate').datetimepicker('option', 'minDate', selectedDate);
                 $('#sampleDispatchedDate').datetimepicker('option', 'maxDate', "+7d");
-                if ('<?= $_SESSION['formId']; ?>' != 2) {
+                if ('<?= $_SESSION['formId'] ?? $general->getGlobalConfig('vl_form'); ?>' != 2) {
                     checkSampleDispatchDate();
                 }
             });

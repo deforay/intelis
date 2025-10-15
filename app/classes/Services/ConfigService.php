@@ -127,6 +127,7 @@ final class ConfigService
 
         // Remove any trailing slashes
         $domain = rtrim($domain, '/');
+        MiscUtility::dumpToErrorLog("Generating API key for domain: $domain");
         return MiscUtility::generateUUIDv5($domain);
     }
 }
