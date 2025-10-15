@@ -148,13 +148,13 @@ spinner() {
         done
     fi
 
-    wait "$pid"; last_status=$?
+    wait "$pid" 2>/dev/null; last_status=$?
 
     if (( is_tty )); then
         if (( last_status == 0 )); then
-            printf "\r\033[K${green}✅${reset} %s\n" "$message"
+            printf "\r\033[K%b✅%b %s\n" "${green}" "${reset}" "$message"
         else
-            printf "\r\033[K${red}❌${reset} %s (failed with status %d)\n" "$message" "$last_status"
+            printf "\r\033[K%b❌%b %s (exit code: %d)\n" "${red}" "${reset}" "$message" "$last_status"
         fi
     else
         if (( last_status == 0 )); then
