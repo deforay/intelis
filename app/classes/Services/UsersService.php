@@ -271,13 +271,13 @@ final class UsersService
         return $user;
     }
 
-    public function findUserByUserId(?string $userId = null): ?array
+    public function findUserByUserId(?string $userId = null, $specificColumns = '*'): ?array
     {
         if (!empty($userId)) {
             $this->db->where('u.user_id', $userId);
             $this->db->where('u.status', 'active');
             $this->db->join("roles r", "u.role_id=r.role_id", "INNER");
-            $return = $this->db->getOne("$this->table as u");
+            $return = $this->db->getOne("$this->table as u", $specificColumns);
         } else {
             $return = null;
         }
