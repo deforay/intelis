@@ -193,6 +193,29 @@ final class SystemService
         return $folderPermissions;
     }
 
+    public static function isAlertStoreAvailable(bool $log = false, int $logEverySec = 600): bool
+    {
+        static $lastLogAt = 0;
+
+        try {
+            // Try to init/connect; will also auto-create file/schema.
+            self::systemAlertSqlite();
+            return true;
+        } catch (\Throwable $e) {
+            if ($log) {
+                $now = time();
+                if ($now - $lastLogAt >= $logEverySec) {
+                    LoggerUtility::log('warning', 'Alerts store unavailable: ' . $e->getMessage(), [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                    ]);
+                    $lastLogAt = $now;
+                }
+            }
+            return false;
+        }
+    }
+
     private static function systemAlertSqlite(): \PDO
     {
         if (self::$systemAlertSqlite instanceof \PDO) {
@@ -320,3 +343,4 @@ final class SystemService
         return $rows;
     }
 }
+
