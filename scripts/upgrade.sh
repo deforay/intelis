@@ -478,40 +478,40 @@ fi
 
 php_version="${desired_php_version}"
 
-# --- Ensure SQLite extensions (pdo_sqlite + sqlite3) are present ---
-need_sqlite_fix=false
-php -m | grep -qi '^pdo_sqlite$' || need_sqlite_fix=true
-php -m | grep -qi '^sqlite3$'    || need_sqlite_fix=true
+# # --- Ensure SQLite extensions (pdo_sqlite + sqlite3) are present ---
+# need_sqlite_fix=false
+# php -m | grep -qi '^pdo_sqlite$' || need_sqlite_fix=true
+# php -m | grep -qi '^sqlite3$'    || need_sqlite_fix=true
 
-if [ "$need_sqlite_fix" = true ]; then
-    print info "SQLite PHP extensions missing. Installing for PHP ${desired_php_version}..."
+# if [ "$need_sqlite_fix" = true ]; then
+#     print info "SQLite PHP extensions missing. Installing for PHP ${desired_php_version}..."
 
-    # First try your switcher (it installs the common extensions for that PHP)
-    if command -v switch-php >/dev/null 2>&1; then
-        switch-php "${desired_php_version}" || true
-    fi
+#     # First try your switcher (it installs the common extensions for that PHP)
+#     if command -v switch-php >/dev/null 2>&1; then
+#         switch-php "${desired_php_version}" || true
+#     fi
 
-    # Re-check; if still missing, install the distro package that provides both
-    php -m | grep -qi '^pdo_sqlite$' && php -m | grep -qi '^sqlite3$' || {
-        apt-get update -y
-        apt-get install -y "php${desired_php_version}-sqlite3" || apt-get install -y php-sqlite3
-        # Enable for all SAPIs we care about
-        phpenmod -v "${desired_php_version}" -s ALL sqlite3 2>/dev/null || phpenmod sqlite3 2>/dev/null || true
-    }
+#     # Re-check; if still missing, install the distro package that provides both
+#     php -m | grep -qi '^pdo_sqlite$' && php -m | grep -qi '^sqlite3$' || {
+#         apt-get update -y
+#         apt-get install -y "php${desired_php_version}-sqlite3" || apt-get install -y php-sqlite3
+#         # Enable for all SAPIs we care about
+#         phpenmod -v "${desired_php_version}" -s ALL sqlite3 2>/dev/null || phpenmod sqlite3 2>/dev/null || true
+#     }
 
-    # Final verification
-    if php -m | grep -qi '^pdo_sqlite$' && php -m | grep -qi '^sqlite3$'; then
-        print success "SQLite extensions are installed and enabled."
-    else
-        print error "Failed to install/enable SQLite extensions for PHP ${desired_php_version}."
-        #exit 1
-    fi
+#     # Final verification
+#     if php -m | grep -qi '^pdo_sqlite$' && php -m | grep -qi '^sqlite3$'; then
+#         print success "SQLite extensions are installed and enabled."
+#     else
+#         print error "Failed to install/enable SQLite extensions for PHP ${desired_php_version}."
+#         #exit 1
+#     fi
 
-    # Reload Apache so mod_php picks up the module
-    apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
-    else
-    print success "SQLite extensions already present."
-fi
+#     # Reload Apache so mod_php picks up the module
+#     apache2ctl -k graceful || systemctl reload apache2 || systemctl restart apache2
+#     else
+#     print success "SQLite extensions already present."
+# fi
 
 
 # Modify php.ini as needed
