@@ -155,20 +155,11 @@ final class MiscUtility
         $backtrace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 3);
 
         // First caller (immediate caller)
-        $caller1 = $backtrace[0];
-        $callerFile1 = basename($caller1['file'] ?? 'unknown');
-        $callerLine1 = $caller1['line'] ?? 'unknown';
+        $caller = $backtrace[0];
+        $callerFile = basename($caller['file'] ?? 'unknown');
+        $callerLine = $caller['line'] ?? 'unknown';
 
-        // Second caller (caller of the caller)
-        $caller2 = $backtrace[1] ?? null;
-        $callerFile2 = $caller2 ? basename($caller2['file'] ?? 'unknown') : null;
-        $callerLine2 = $caller2 ? ($caller2['line'] ?? 'unknown') : null;
-
-        // Build caller info with 2 layers
-        $callerInfo = "[{$callerFile1}:{$callerLine1}]";
-        if ($caller2) {
-            $callerInfo .= " <- [{$callerFile2}:{$callerLine2}]";
-        }
+        $callerInfo = "[{$callerFile}:{$callerLine}]";
 
         ob_start();
         if ($useVarDump) {
