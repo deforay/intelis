@@ -11,6 +11,17 @@ use App\Utilities\FileCacheUtility;
 use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 
+$isCli = php_sapi_name() === 'cli';
+
+// Handle Ctrl+C gracefully (if pcntl extension is available)
+if ($isCli && function_exists('pcntl_signal') && function_exists('pcntl_async_signals')) {
+    pcntl_async_signals(true);
+    pcntl_signal(SIGINT, function () {
+        echo PHP_EOL . PHP_EOL;
+        echo "⚠️  Setup cancelled by user." . PHP_EOL;
+        exit(130); // Standard exit code for SIGINT
+    });
+}
 try {
     require_once __DIR__ . "/../../bootstrap.php";
 
@@ -27,10 +38,10 @@ try {
     $db = ContainerRegistry::get(DatabaseService::class);
 
 
-    $cliMode = php_sapi_name() === 'cli';
+
     $isLIS = $general->isLISInstance();
 
-    if (!$isLIS || !$cliMode) {
+    if (!$isLIS || !$isCli) {
         echo "❗ This script is only for LIS instances and must be run from the command line." . PHP_EOL;
         exit(0);
     }
@@ -210,7 +221,7 @@ try {
                 'trace' => $e->getTraceAsString(),
             ]);
             echo "❌ Error updating STS URL. Please check logs for details." . PHP_EOL;
-            exit(1);
+            throw $e;
         }
     }
 
@@ -236,7 +247,7 @@ try {
         echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
         echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
         echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
-        exit(1);
+        throw new Exception("Metadata script missing");
     }
 
     $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
@@ -285,7 +296,7 @@ try {
     } else {
         echo PHP_EOL . "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
         echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        exit(1);
+        throw new Exception("Metadata refresh failed");
     }
 
 
@@ -340,7 +351,7 @@ try {
 
         if (empty($testingLabs)) {
             echo "❌ No active testing labs found. Please ensure facilities are properly configured." . PHP_EOL;
-            exit(1);
+            throw new Exception("No active labs found");
         }
 
         echo "Found " . count($testingLabs) . " available labs." . PHP_EOL;
@@ -514,7 +525,7 @@ try {
                 echo "✅ Lab ID updated successfully." . PHP_EOL;
             } else {
                 echo "❌ Failed to update lab ID in system configuration." . PHP_EOL;
-                exit(1);
+                throw new Exception("Failed to update lab ID");
             }
         } catch (Exception $e) {
             LoggerUtility::logError(
@@ -526,7 +537,7 @@ try {
                 ]
             );
             echo "❌ Error updating lab ID. Please check logs for details." . PHP_EOL;
-            exit(1);
+            throw new Exception("Error updating lab ID: " . $e->getMessage());
         }
     } else {
         // Use existing lab ID and get details for display
@@ -543,11 +554,10 @@ try {
     exit(0);
 } catch (Exception $e) {
     echo PHP_EOL;
-    echo "❌ An unexpected error occurred during setup:" . PHP_EOL;
-    echo "   " . $e->getMessage() . PHP_EOL;
+    echo "❌ Setup failed: " . $e->getMessage() . PHP_EOL;
     echo PHP_EOL;
 
-    LoggerUtility::logError("Setup script failed: " . $e->getMessage(), [
+    LoggerUtility::logError("STS setup script failed: " . $e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile(),
         'trace' => $e->getTraceAsString(),
@@ -556,22 +566,15 @@ try {
     echo "   Please check logs for details or contact support." . PHP_EOL;
     exit(1);
 } catch (Throwable $e) {
-    // Catch any PHP errors (like TypeError, ParseError, etc.)
     echo PHP_EOL;
-    echo "❌ A critical error occurred:" . PHP_EOL;
-    echo "   " . $e->getMessage() . PHP_EOL;
+    echo "❌ Critical error: " . $e->getMessage() . PHP_EOL;
     echo PHP_EOL;
 
-    try {
-        LoggerUtility::logError("Setup script critical error: " . $e->getMessage(), [
-            'line' => $e->getLine(),
-            'file' => $e->getFile(),
-            'trace' => $e->getTraceAsString(),
-        ]);
-    } catch (Throwable $logError) {
-        // If logging fails, at least we tried
-        error_log("Failed to log error: " . $logError->getMessage());
-    }
+    LoggerUtility::logError("STS setup critical error: " . $e->getMessage(), [
+        'line' => $e->getLine(),
+        'file' => $e->getFile(),
+        'trace' => $e->getTraceAsString(),
+    ]);
 
     echo "   Please check logs for details or contact support." . PHP_EOL;
     exit(1);
