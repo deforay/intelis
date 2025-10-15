@@ -217,71 +217,76 @@ if ($urlChanged && $newRemoteURL !== '') {
 // Decide which URL is currently effective (new or existing)
 $effectiveRemoteURL = isset($newRemoteURL) && $newRemoteURL !== '' ? $newRemoteURL : rtrim((string)$general->getRemoteURL(), '/');
 
+if (empty($effectiveRemoteURL)) {
+    echo PHP_EOL;
+    echo "⚠️ No STS URL configured; skipping metadata refresh and lab configuration." . PHP_EOL;
+    echo "   Login as System Admin → System Config, then run:" . PHP_EOL;
+    echo "   composer setup-sts" . PHP_EOL;
+    echo PHP_EOL;
+    echo "✅ Setup complete. Please configure STS URL before proceeding." . PHP_EOL;
+    exit(0);
+}
+
 echo PHP_EOL;
 echo "=== Refreshing Database Metadata ===" . PHP_EOL;
 
-if (empty($effectiveRemoteURL)) {
-    echo "⚠️ No STS URL configured; skipping metadata refresh." . PHP_EOL;
-    echo "   Login as System Admin → System Config, then run:" . PHP_EOL;
-    echo "   composer setup-sts" . PHP_EOL;
-} else {
-    $metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
-    if (!file_exists($metadataScriptPath)) {
-        echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
-        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
-        exit(1);
-    }
+$metadataScriptPath = APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php";
+if (!file_exists($metadataScriptPath)) {
+    echo "❌ Metadata script not found at: " . $metadataScriptPath . PHP_EOL;
+    echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+    echo "Or alternatively: ./intelis reset-metadata" . PHP_EOL;
+    exit(1);
+}
 
-    $metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
-    echo "Executing: " . $metadataCommand . PHP_EOL . PHP_EOL;
+$metadataCommand = "php " . escapeshellarg($metadataScriptPath) . " -ft";
+echo "Executing: " . $metadataCommand . PHP_EOL . PHP_EOL;
 
-    // Start progress indication for metadata refresh
-    $bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
+// Start progress indication for metadata refresh
+$bar = MiscUtility::spinnerStart(1, 'Refreshing metadata…', '█', '░', '█', 'cyan');
 
-    $output = [];
-    $returnCode = 0;
+$output = [];
+$returnCode = 0;
 
-    // Use popen for real-time output with progress bar
-    $handle = popen($metadataCommand . " 2>&1", 'r');
-    if ($handle) {
-        while (!feof($handle)) {
-            $line = fgets($handle);
-            if ($line !== false) {
-                $output[] = trim($line);
-                // Optionally show important messages during execution
-                if (stripos($line, 'error') !== false || stripos($line, 'warning') !== false) {
-                    MiscUtility::spinnerPausePrint($bar, function () use ($line) {
-                        echo trim($line) . PHP_EOL;
-                    });
-                }
+// Use popen for real-time output with progress bar
+$handle = popen($metadataCommand . " 2>&1", 'r');
+if ($handle) {
+    while (!feof($handle)) {
+        $line = fgets($handle);
+        if ($line !== false) {
+            $output[] = trim($line);
+            // Optionally show important messages during execution
+            if (stripos($line, 'error') !== false || stripos($line, 'warning') !== false) {
+                MiscUtility::spinnerPausePrint($bar, function () use ($line) {
+                    echo trim($line) . PHP_EOL;
+                });
             }
         }
-        $returnCode = pclose($handle);
-    } else {
-        // Fallback to exec if popen fails
-        exec($metadataCommand . " 2>&1", $output, $returnCode);
     }
+    $returnCode = pclose($handle);
+} else {
+    // Fallback to exec if popen fails
+    exec($metadataCommand . " 2>&1", $output, $returnCode);
+}
 
-    MiscUtility::spinnerAdvance($bar, 1);
-    MiscUtility::spinnerFinish($bar);
+MiscUtility::spinnerAdvance($bar, 1);
+MiscUtility::spinnerFinish($bar);
 
-    // Show full output after completion if there were errors
-    if ($returnCode !== 0) {
-        echo PHP_EOL . "Full output:" . PHP_EOL;
-        foreach ($output as $line) {
-            echo $line . PHP_EOL;
-        }
-    }
-
-    if ($returnCode === 0) {
-        echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
-    } else {
-        echo PHP_EOL . "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
-        echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
-        exit(1);
+// Show full output after completion if there were errors
+if ($returnCode !== 0) {
+    echo PHP_EOL . "Full output:" . PHP_EOL;
+    foreach ($output as $line) {
+        echo $line . PHP_EOL;
     }
 }
+
+if ($returnCode === 0) {
+    echo PHP_EOL . "✅ Metadata refresh completed successfully." . PHP_EOL;
+} else {
+    echo PHP_EOL . "❌ Metadata refresh failed with return code: " . $returnCode . PHP_EOL;
+    echo "Please run manually: php app/tasks/remote/sts-metadata-receiver.php -ft" . PHP_EOL;
+    exit(1);
+}
+
 
 
 // Step 4: Handle Lab Configuration
