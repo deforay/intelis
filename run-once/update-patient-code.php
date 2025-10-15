@@ -35,7 +35,8 @@ if (!$forceRun) {
 
     if ($executed) {
         // Script has already been run
-        exit("Script $scriptName has already been executed. Exiting...");
+        echo "Script $scriptName has already been executed. Exiting...";
+        exit(0);
     }
 }
 
