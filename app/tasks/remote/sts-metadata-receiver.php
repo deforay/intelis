@@ -420,12 +420,9 @@ $dataToSync = array_merge(
 );
 
 $payload['labId'] = $labId;
-/* echo "<pre>";
-print_r($dataToSync);
-die; */
+
 try {
     $jsonResponse = $apiService->post($url, $payload, gzip: true);
-
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
         if ($cliMode) {
@@ -439,7 +436,6 @@ try {
         $db->rawQuery("SET FOREIGN_KEY_CHECKS = 0;"); // Disable foreign key checks
 
         foreach ($parsedData as $dataType => $dataValues) {
-
             if (empty($dataType) || $dataType === '' || empty($dataToSync[$dataType]['tableName']) || $dataToSync[$dataType]['tableName'] == '' || empty($dataValues)) {
                 continue;
             }
@@ -511,38 +507,36 @@ try {
                             $facilityAttributes = !empty($tableData['facility_attributes']) ? json_decode($tableData['facility_attributes'], true) : [];
 
                             if (!empty($facilityAttributes['report_template'])) {
-                                $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template";
+                                $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $tableData['facility_id'];
                                 MiscUtility::makeDirectory($labDataFolder);
 
-                                $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/{$tableData['facility_id']}/report-template/{$facilityAttributes['report_template']}";
-                                MiscUtility::dumpToErrorLog($remoteFileUrl);
+                                $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/report-template/{$tableData['facility_id']}/{$facilityAttributes['report_template']}";
+                                _logdump($remoteFileUrl);
                                 $localFilePath = $labDataFolder . "/" . $facilityAttributes['report_template'];
-                                MiscUtility::dumpToErrorLog($localFilePath);
+                                _logdump($localFilePath);
                                 $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                                MiscUtility::dumpToErrorLog($x);
-                            }
-
-                            if (!empty($tableData['report_format'])) {
-                                $reportsFileFormats = json_decode($tableData['report_format']);
-                                if (isset($reportsFileFormats) && !empty($reportsFileFormats)) {
-                                    foreach ($reportsFileFormats as $test => $file) {
-                                        if (isset($file) && !empty($file)) {
-                                            $localFilePath = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test . DIRECTORY_SEPARATOR . $file;
-                                            if (!file_exists($localFilePath)) {
-                                                $reportFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . $tableData['facility_id'] . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
-                                                MiscUtility::makeDirectory($reportFolder);
-                                                $remoteFileUrl = $general->getRemoteURL() . '/uploads/labs/' . $tableData['facility_id'] . '/report-template/' . $test . DIRECTORY_SEPARATOR . $file;
-                                                $apiService->downloadFile($remoteFileUrl, $localFilePath);
-                                            }
-                                        }
-                                    }
-                                }
+                                _logdump($x);
                             }
                         }
                     }
                 }
+                // Global config report template sync
+                if ($dataType === 'globalConfig') {
+                    $reportFormat = !empty($tableData['value']) ? json_decode($tableData['value'], true) : [];
+                    if (!empty($reportFormat) && $tableData['name'] = 'report_format') {
+                        foreach ($reportFormat as $test => $row) {
+                            $labDataFolder = UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR . $test;
+                            MiscUtility::makeDirectory($labDataFolder);
 
-                // addtional data handling for specific tables
+                            $remoteFileUrl = $general->getRemoteURL() . "/uploads/labs/report-template/{$test}/{$row['file']}";
+                            _logdump($remoteFileUrl);
+                            $localFilePath = $labDataFolder . "/" . $row['file'];
+                            _logdump($localFilePath);
+                            $x = $apiService->downloadFile($remoteFileUrl, $localFilePath);
+                            _logdump($x);
+                        }
+                    }
+                }
                 if ($dataType === 'labReportSignatories') {
                     foreach ($dataValues as $key => $sign) {
 
