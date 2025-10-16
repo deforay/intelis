@@ -5,6 +5,7 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -58,6 +59,8 @@ $sampleStatusColors[6] = "#e2d44b"; // Sample Received at lab
 $sampleStatusColors[7] = "#639e11"; // Accepted
 $sampleStatusColors[8] = "#7f22e8"; // Sent to Lab
 $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
+$sampleStatusColors[10] = "#f0ad4e"; // NO_RESULT
+$sampleStatusColors[11] = "#20c997"; // CANCELLED
 
 //date
 [$start_date, $end_date] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
@@ -66,7 +69,7 @@ $sampleStatusColors[9] = "#4BC0D9"; // Sample Registered at Health Center
 
 [$testedStartDate, $testedEndDate] = DateUtility::convertDateRange($_POST['sampleTestedDate'] ?? '');
 
-
+$sWhere = [];
 $tQuery = "SELECT COUNT(vl_sample_id) as total,
                 result_status,
                 status_id,
@@ -76,7 +79,7 @@ $tQuery = "SELECT COUNT(vl_sample_id) as total,
             LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 //filter
-$sWhere = [];
+
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }
@@ -119,17 +122,16 @@ $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
                 END)) AS lowVL
 
         FROM $table as vl
-
-        JOIN facility_details as f ON vl.lab_id=f.facility_id
-
+        LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
         LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
 
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }
 
+
 $sWhere[] = $recencyWhere;
-$sWhere[] = " (vl.result_status = 7) ";
+$sWhere[] = " vl.result_status IS NOT NULL AND vl.result_status = 7 ";
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -151,13 +153,17 @@ if (!empty($sWhere)) {
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 
+
+$sWhere = [];
 /** Get results that are not blank */
 $sampleResultQuery = "SELECT
             SUM(CASE WHEN vl.result REGEXP '^-?[0-9]+$' THEN 1 ELSE 0 END) AS numberValue,
             SUM(CASE WHEN vl.result like 'TND' OR vl.result like 'Target Not Detected' OR vl.result like 'Below Detection Level' OR vl.result like 'HIV-1 Not Detected' THEN 1 ELSE 0 END) AS charValue
             FROM $table as vl
-            JOIN facility_details as f ON vl.lab_id=f.facility_id
+            LEFT JOIN facility_details as f ON vl.lab_id=f.facility_id
             LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id ";
+
+
 
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
@@ -177,6 +183,7 @@ if (!empty($_POST['labName'])) {
 if (!empty($sWhere)) {
     $sampleResultQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
+
 $sampleResultQueryResult = $db->rawQueryOne($sampleResultQuery);
 
 //get LAB TAT
@@ -190,6 +197,7 @@ if (isset($_POST['sampleTestedDate']) && trim((string) $_POST['sampleTestedDate'
     $tatStartDate = $date->format('Y-m-d');
 }
 
+$sWhere = [];
 $tatSampleQuery = "SELECT
     COUNT(DISTINCT vl.unique_id) AS totalSamples,
     COUNT(DISTINCT CASE WHEN vl.sample_collection_date BETWEEN '$tatStartDate' AND '$tatEndDate' THEN vl.unique_id END) AS numberCollected,
@@ -206,7 +214,7 @@ $tatSampleQuery = "SELECT
     ROUND(AVG(GREATEST(TIMESTAMPDIFF(DAY, vl.result_printed_on_lis_datetime, vl.result_printed_on_sts_datetime), 0)), 2) AS AvgTestedPrintedFirstTime
 
     FROM `$table` AS vl
-    INNER JOIN facility_details AS f ON vl.lab_id = f.facility_id
+    LEFT JOIN facility_details AS f ON vl.lab_id = f.facility_id
     LEFT JOIN r_vl_sample_type AS s ON s.sample_id = vl.specimen_type
 
     WHERE
@@ -216,7 +224,7 @@ $tatSampleQuery = "SELECT
 
 
 
-$sWhere = [];
+
 if (!empty($whereCondition)) {
     $sWhere[] = $whereCondition;
 }

@@ -495,3 +495,8 @@ function _invalidateFileCacheByTags($tags)
     $tags = is_array($tags) ? $tags : [$tags];
     $fileCache->invalidateTags($tags);
 }
+
+function _logdump($data, $useVardump = true)
+{
+    MiscUtility::dumpToErrorLog($data, $useVardump);
+}

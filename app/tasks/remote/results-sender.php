@@ -138,10 +138,10 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
 
     // Detect nested form_data rows (['form_data' => [...]]) vs flat rows
     $first = reset($selectedRows);
-    $hasFormData = is_array($first) && array_key_exists('form_data', $first);
+    $hasNestedFormData = is_array($first) && array_key_exists('form_data', $first);
 
     // Collect distinct package codes
-    $codes = $hasFormData
+    $codes = $hasNestedFormData
         ? array_column(array_column($selectedRows, 'form_data'), 'sample_package_code')
         : array_column($selectedRows, 'sample_package_code');
 
@@ -150,7 +150,7 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
         return [];
     }
 
-    // Single fetch; manifests are few, many samples point to the same code
+    // fetch manifests data matching these manifest codes
     $db->reset();
     $db->where('manifest_type', 'referral');
     $db->where('module', $testType);
