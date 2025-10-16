@@ -127,6 +127,58 @@ function showHelp(): void
     exit(0);
 }
 
+/**
+ * Build payload of referral manifests associated with given test results
+ *
+ * @param DatabaseService $db
+ * @param string $testType
+ * @param array|null $selectedRows
+ * @return array
+ */
+function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?array $selectedRows): array
+{
+    if (empty($selectedRows)) {
+        return [];
+    }
+
+    // flatten to get all possible sample_package_code values
+    $codes = [];
+
+    // TB module uses nested ['form_data']
+    if (isset(reset($selectedRows)['form_data'])) {
+        $codes = array_column(array_column($selectedRows, 'form_data'), 'sample_package_code');
+    } else {
+        $codes = array_column($selectedRows, 'sample_package_code');
+    }
+
+    // clean + unique
+    $codes = array_values(array_unique(array_filter($codes, fn($v) => !empty($v))));
+
+    if (empty($codes)) {
+        return [];
+    }
+
+    // fetch manifests in chunks to avoid huge IN clauses
+    $results = [];
+    $chunkSize = 1000;
+    for ($i = 0; $i < count($codes); $i += $chunkSize) {
+        $chunk = array_slice($codes, $i, $chunkSize);
+
+        $db->reset();
+        $db->where('manifest_type', 'referral');
+        $db->where('test_type', $testType);
+        $db->where('manifest_code', $chunk, 'IN');
+
+        $rows = $db->get('specimen_manifests');
+        if ($rows) {
+            $results = array_merge($results, $rows);
+        }
+    }
+
+    return $results;
+}
+
+
 // Check for help flag early
 if ($cliMode) {
     $args = array_slice($_SERVER['argv'], 1);
@@ -526,13 +578,16 @@ try {
             $tbTestResultData[$r['unique_id']]['data_from_tests'] = $tbService->getTbTestsByFormId($r['tb_id']);
         }
 
+        $manifests = buildReferralManifestsPayload($db, 'tb', $tbTestResultData);
         $payload = [
             "labId" => $labId,
             "results" => $tbTestResultData,
             "testType" => "tb",
+            'manifests' => $manifests,
             'timestamp' => DateUtility::getCurrentTimestamp(),
             "instanceId" => $general->getInstanceId()
         ];
+
         $jsonResponse = $apiService->post($url, $payload, gzip: true);
         $result = json_decode($jsonResponse, true);
 

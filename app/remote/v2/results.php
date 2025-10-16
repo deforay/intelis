@@ -56,10 +56,22 @@ try {
 
     $dataInJsonFormat = JsonUtility::encodeUtf8Json($data);
 
+
+
+    // Manifests if any
+    $manifestsStats = ['inserted' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
+    if (!empty($data['manifests']) && is_array($data['manifests'])) {
+        // Process manifests for this module (TB for now; later others will reuse the same call)
+        $manifestsStats = $stsResultsService->receiveReferralManifests($testType, $data['manifests']);
+        $payload['manifests'] = $manifestsStats;
+    }
+
+
     // Process and get array of sample codes
     $payload = $stsResultsService->receiveResults($testType, $dataInJsonFormat, $isSilent) ?? [];
     $resultCount = count($payload['results'] ?? []);
-    // Tracking (guard undefineds)
+
+    // Tracking
     $general->addApiTracking(
         $transactionId,
         'vlsm-system',
