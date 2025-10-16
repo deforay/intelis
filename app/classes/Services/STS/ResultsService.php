@@ -18,6 +18,7 @@ use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use App\Utilities\QueryLoggerUtility;
 use App\Abstracts\AbstractTestService;
+use App\Exceptions\SystemException;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
 
 final class ResultsService
@@ -53,6 +54,112 @@ final class ResultsService
 
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
+
+    /**
+     * Upsert referral manifests into specimen_manifests.
+     *
+     * Rules:
+     * - Only process rows with `manifest_type = 'referral'`
+     * - Force/ensure `test_type = $testType`
+     * - Keyed by `manifest_code` (required). If missing → skip + log.
+     * - If row exists and values are unchanged (except timestamps) → skip.
+     * - Uses only columns present in the local table (guards extra fields).
+     *
+     * @param string $testType
+     * @param array<int,array<string,mixed>> $manifests
+     * @return array{inserted:int,updated:int,skipped:int,errors:int}
+     */
+    public function receiveReferralManifests(string $testType, array $manifests): array
+    {
+        $stats = ['inserted' => 0, 'updated' => 0, 'skipped' => 0, 'errors' => 0];
+
+        if (empty($manifests)) {
+            return $stats;
+        }
+
+        // Columns we never accept from remote for safety
+        $unwantedColumns = [
+            'manifest_id',            // PK
+        ];
+
+        // Allow only known columns for specimen_manifests
+        $localFields = $this->commonService->getTableFieldsAsArray('specimen_manifests', $unwantedColumns);
+
+        foreach ($manifests as $idx => $row) {
+            try {
+                if (empty($row) || !is_array($row)) {
+                    $stats['skipped']++;
+                    continue;
+                }
+
+                // We only accept referral manifests here
+                if (isset($row['manifest_type']) && $row['manifest_type'] !== 'referral') {
+                    $stats['skipped']++;
+                    continue;
+                }
+
+                // manifest_code is required
+                $manifestCode = $row['manifest_code'] ?? null;
+                if (empty($manifestCode)) {
+                    $stats['skipped']++;
+                    LoggerUtility::logWarning("receiveReferralManifests skip: missing manifest_code at index $idx");
+                    continue;
+                }
+
+                // Normalize/force important fields
+                $row = MiscUtility::arrayEmptyStringsToNull($row);
+                $row['manifest_type'] = 'referral';
+                $row['test_type']     = $testType; // enforce consistency with the envelope
+
+                // If remote didn't set last_modified_datetime, set now (keeps audit/logical order sane)
+                $row['last_modified_datetime'] = $row['last_modified_datetime'] ?? DateUtility::getCurrentDateTime();
+
+                // Keep only columns present locally
+                $incoming = MiscUtility::updateMatchingKeysOnly($localFields, $row);
+
+                // Find existing by manifest_code
+                $this->db->reset();
+                $this->db->where('manifest_code', $manifestCode);
+                $existing = $this->db->getOne('specimen_manifests');
+
+                // Compare ignoring commonly changing timestamps we set locally
+                $compareIgnore = ['last_modified_datetime'];
+                if (!empty($existing)) {
+                    $same = MiscUtility::isArrayEqual($incoming, $existing, $compareIgnore);
+                    if ($same) {
+                        $stats['skipped']++;
+                        continue;
+                    }
+
+                    // UPDATE
+                    $this->db->reset();
+                    $this->db->where('manifest_code', $manifestCode);
+                    if ($this->db->update('specimen_manifests', $incoming) === false) {
+                        throw new SystemException('Failed to update specimen_manifests for ' . $manifestCode);
+                    }
+                    $stats['updated']++;
+                } else {
+                    // INSERT
+                    if ($this->db->insert('specimen_manifests', $incoming) === false) {
+                        throw new SystemException('Failed to insert specimen_manifests for ' . $manifestCode);
+                    }
+                    $stats['inserted']++;
+                }
+            } catch (Throwable $e) {
+                $stats['errors']++;
+                LoggerUtility::logError('receiveReferralManifests error: ' . $e->getMessage(), [
+                    'test_type'     => $testType,
+                    'manifest_code' => $row['manifest_code'] ?? null,
+                    'trace'         => $e->getTraceAsString(),
+                    'last_db_error' => $this->db->getLastError(),
+                    'last_db_query' => $this->db->getLastQuery(),
+                ]);
+            }
+        }
+
+        return $stats;
+    }
+
 
     public function receiveResults($testType, $jsonResponse, $isSilent = false): array
     {
