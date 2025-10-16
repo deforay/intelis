@@ -17,7 +17,7 @@ $storageService = ContainerRegistry::get(StorageService::class);
 
 $arr = $general->getGlobalConfig();
 
-//check remote user
+// check if STS
 if ($general->isSTSInstance()) {
 
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {
@@ -64,8 +64,7 @@ $femaleSectionDisplay = (trim((string) $vlQueryInfo['patient_gender']) == "" || 
 $trimsterDisplay = (trim((string) $vlQueryInfo['is_patient_pregnant']) == "" || trim((string) $vlQueryInfo['is_patient_pregnant']) == "no") ? 'none' : 'block';
 
 $formAttributes = json_decode($vlQueryInfo['form_attributes']);
-if(is_object($formAttributes->storage))
-{
+if (is_object($formAttributes->storage)) {
 	$formAttributes->storage = json_encode($formAttributes->storage);
 }
 $storageObj = json_decode($formAttributes->storage);
@@ -996,16 +995,15 @@ $storageInfo = $storageService->getLabStorage();
 
 	$('#serialNo').on('change', function() {
 		artDateVisibility = '<?php echo $duVisibility; ?>';
-		if($(this).val() != ""){
+		if ($(this).val() != "") {
 			$("#reasonForVLTesting").removeClass("isRequired");
 			$("#artRegimen").removeClass("isRequired");
 			$("#dateOfArtInitiation").removeClass("isRequired");
 			$("#viralLoadNo").removeClass("isRequired");
-		}
-		else{
+		} else {
 			$("#reasonForVLTesting").addClass("isRequired");
 			$("#artRegimen").addClass("isRequired");
-			if(artDateVisibility == 'visible'){
+			if (artDateVisibility == 'visible') {
 				$("#dateOfArtInitiation").addClass("isRequired");
 			}
 			$("#viralLoadNo").addClass("isRequired");

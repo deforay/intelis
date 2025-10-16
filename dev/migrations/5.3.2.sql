@@ -86,3 +86,10 @@ CREATE TABLE `tb_referral_history` (
 UPDATE `s_app_menu`
 SET `additional_class_names` = TRIM(REPLACE(`additional_class_names`, 'treeview', ''))
 WHERE `additional_class_names` LIKE '%treeview%';
+
+
+-- Amit 16-Oct-2025
+ALTER TABLE specimen_manifests
+  CHANGE COLUMN package_id manifest_id INT NOT NULL AUTO_INCREMENT,
+  CHANGE COLUMN package_code manifest_code VARCHAR(255),
+  CHANGE COLUMN package_status manifest_status VARCHAR(255);

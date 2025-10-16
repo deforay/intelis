@@ -237,7 +237,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = "maxlength=" . $maxLength;
 	}
 }
-//check remote user
+// check if STS
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($general->isSTSInstance()) {
 	$sampleCode = 'remote_sample_code';

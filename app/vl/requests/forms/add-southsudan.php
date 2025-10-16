@@ -27,7 +27,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
           $maxLength = "maxlength=" . $maxLength;
      }
 }
-//check remote user
+// check if STS
 $rKey = '';
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
      $sampleCodeKey = 'remote_sample_code_key';
@@ -370,7 +370,7 @@ $sFormat = '';
                                                             <input type="text" class="form-control dateTime" id="sampleReceivedAtHubOn" name="sampleReceivedAtHubOn" placeholder="Sample Received at HUB Date" title="Please select sample received at Hub date" />
                                                        </div>
                                                   </div>
-                                                  
+
                                                   <div class="col-xs-3 col-md-3">
                                                        <div class="form-group">
                                                             <label for="sampleReceivedDate">Date Sample Received at Testing Lab <span class="mandatory">*</span></label>

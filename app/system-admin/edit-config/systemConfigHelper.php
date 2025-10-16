@@ -69,7 +69,7 @@ try {
         'database.port' => (isset($_POST['dbPort']) && !empty($_POST['dbPort'])) ? $_POST['dbPort'] : 3306,
     ];
     $stsKey = SYSTEM_CONFIG['sts']['api_key'];
-    if ($stsKey == '' || empty($stsKey)  && trim($_POST['sc_user_type']) == 'remoteuser') {
+    if ($stsKey == '' || empty($stsKey)  && trim($_POST['sc_user_type']) == 'stsmode') {
         $updatedConfig['sts.api_key'] = $configService->generateAPIKeyForSTS();
     }
 

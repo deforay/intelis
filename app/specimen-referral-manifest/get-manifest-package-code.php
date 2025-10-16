@@ -33,20 +33,20 @@ if ($general->isSTSInstance()) {
 $module = (!empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
 $query = "";
 if ($module == 'vl') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM specimen_manifests as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM specimen_manifests as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.manifest_code ";
 } elseif ($module == 'eid') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.eid_id FROM specimen_manifests as p INNER JOIN form_eid as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.eid_id FROM specimen_manifests as p INNER JOIN form_eid as vl ON vl.sample_package_code = p.manifest_code ";
 } elseif ($module == 'covid19') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM specimen_manifests as p INNER JOIN form_covid19 as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM specimen_manifests as p INNER JOIN form_covid19 as vl ON vl.sample_package_code = p.manifest_code ";
 } elseif ($module == 'hepatitis') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM specimen_manifests as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM specimen_manifests as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.manifest_code ";
 } elseif ($module == 'tb') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM specimen_manifests as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM specimen_manifests as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.manifest_code ";
 }
 if ($module == 'cd4') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.cd4_id FROM specimen_manifests as p INNER JOIN form_cd4 as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.cd4_id FROM specimen_manifests as p INNER JOIN form_cd4 as vl ON vl.sample_package_code = p.manifest_code ";
 } elseif ($module == 'generic-tests') {
-	$query .= "SELECT p.package_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM specimen_manifests as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.package_code ";
+	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM specimen_manifests as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.manifest_code ";
 }
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is not null OR vl.sample_package_id !='') AND (remote_sample = 'yes') ";
@@ -81,7 +81,7 @@ if (!empty($_POST['genericTestType'])) {
 if (!empty($where)) {
 	$query .= " where " . implode(" AND ", $where);
 }
-$query .= " GROUP BY p.package_code ORDER BY vl.request_created_datetime ASC";
+$query .= " GROUP BY p.manifest_code ORDER BY vl.request_created_datetime ASC";
 //die($query);
 $result = $db->rawQuery($query);
 
@@ -95,7 +95,7 @@ $result = $db->rawQuery($query);
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
 					<?php foreach ($result as $sample) { ?>
-						<option value="'<?php echo $sample['package_code']; ?>'"><?php echo ($sample["package_code"]); ?></option>
+						<option value="'<?php echo $sample['manifest_code']; ?>'"><?php echo ($sample["manifest_code"]); ?></option>
 					<?php } ?>
 				</select>
 			</div>

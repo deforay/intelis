@@ -49,7 +49,7 @@ $globalConfig = $general->getGlobalConfig();
       <!-- /.box-header -->
       <div class="box-body">
         <!-- form start -->
-        <form class="form-horizontal" method='post' name='editSystemConfigForm' id='editSystemConfigForm' enctype="multipart/form-data" autocomplete="off" action="systemConfigHelper.php">
+        <form class="form-horizontal" method='post' name='editSystemConfigForm' id='editSystemConfigForm' enctype="multipart/form-data" autocomplete="off" action="/system-admin/edit-config/systemConfigHelper.php">
           <div class="box-body">
             <div class="panel panel-default">
               <div class="panel-heading">
@@ -113,8 +113,8 @@ $globalConfig = $general->getGlobalConfig();
                         <select class="form-control select2" id="sc_user_type" name="sc_user_type" placeholder="<?php echo _translate('Instance Type'); ?>" title="<?php echo _translate('Please choose instance type'); ?>" onchange="enableLab();">
                           <option value=""><?php echo _translate("-- Select --"); ?></option>
                           <option value="standalone" <?php echo $general->isStandaloneInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Standalone"); ?></option>
-                          <option value="vluser" <?php echo $general->isLISInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Lab Instance"); ?></option>
-                          <option value="remoteuser" <?php echo $general->isSTSInstance() ? "selected='selected'" : "" ?>><?php echo _translate("Remote Instance"); ?></option>
+                          <option value="lismode" <?php echo $general->isLISInstance() ? "selected='selected'" : "" ?>><?php echo _translate("LIS - LAB INFORMATION SYSTEM"); ?></option>
+                          <option value="stsmode" <?php echo $general->isSTSInstance() ? "selected='selected'" : "" ?>><?php echo _translate("STS - SAMPLE TRACKING SYSTEM"); ?></option>
                         </select>
                       </div>
                     </div>
@@ -248,7 +248,7 @@ $globalConfig = $general->getGlobalConfig();
   });
 
   function enableLab() {
-    if ($("#sc_user_type").val() == 'vluser' || $("#sc_user_type").val() == 'lis') {
+    if ($("#sc_user_type").val() == 'lismode') {
       $(".labName").show();
       $("#sc_testing_lab_id").addClass("isRequired").css('pointer-events', '');
     } else {

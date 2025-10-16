@@ -35,7 +35,7 @@ try {
 
         $lastId = $_POST['packageId'];
 
-        $db->where('package_code', $packageCode);
+        $db->where('manifest_code', $packageCode);
         $previousData = $db->getOne("specimen_manifests");
         $oldReason = json_decode($previousData['manifest_change_history']);
 
@@ -52,7 +52,7 @@ try {
             'data_sync' => 0
         ];
         /* Update Package details table */
-        $db->where('package_code IN(' . implode(",", $_POST['packageCode']) . ')');
+        $db->where('manifest_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update('specimen_manifests', array("lab_id" => $_POST['assignLab']));
 
         $value = [

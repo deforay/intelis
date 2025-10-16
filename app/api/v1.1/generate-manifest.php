@@ -144,12 +144,12 @@ try {
 
             $manifestHash = $testRequestsService->getManifestHash($selectedSamples, $input['testType']);
             $data = [
-                'package_code' => $sampleManifestCode,
+                'manifest_code' => $sampleManifestCode,
                 'module' => $input['testType'],
                 'added_by' => $user['user_id'],
                 'lab_id' => $input['labId'],
                 'number_of_samples' => count($samplesToAdd),
-                'package_status' => 'pending',
+                'manifest_status' => 'pending',
                 'request_created_datetime' => DateUtility::getCurrentDateTime(),
                 'last_modified_datetime' => DateUtility::getCurrentDateTime()
             ];

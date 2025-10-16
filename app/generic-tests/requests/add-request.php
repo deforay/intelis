@@ -96,7 +96,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
           $maxLength = "maxlength=" . $maxLength;
      }
 }
-//check remote user
+// check if STS
 $rKey = '';
 $pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($_SESSION['accessType'] == 'collection-site') {
