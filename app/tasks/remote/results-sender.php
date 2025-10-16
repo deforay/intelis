@@ -202,7 +202,7 @@ if ($cliMode) {
 
 // Web fallback
 $forceSyncModule = $forceSyncModule ? strtolower(trim($forceSyncModule)) : null;
-$sampleCode = $sampleCode ?? ($_GET['sampleCode'] ?? null);
+$sampleCode ??= $_GET['sampleCode'] ?? null;
 
 // If module is forced, override modules config
 if (!empty($forceSyncModule)) {
