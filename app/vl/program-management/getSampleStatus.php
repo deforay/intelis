@@ -5,7 +5,6 @@ use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -33,7 +32,7 @@ if (isset($_POST['type']) && trim((string) $_POST['type']) == 'recency') {
     $samplesResultview = "recencySampleResultView";
     $labAverageTat = "recencyLabAverageTat";
 } else {
-    $recencyWhere = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
+    $recencyWhere = " IFNULL(reason_for_vl_testing, 0) != 9999 ";
     $sampleStatusOverviewContainer = "vlSampleStatusOverviewContainer";
     $samplesVlOverview = "vlSmplesVlOverview";
     $samplesResultview = "vlSampleResultView";
@@ -113,11 +112,11 @@ $tResult = $db->rawQuery($tQuery);
 $sWhere = [];
 $vlSuppressionQuery = "SELECT COUNT(vl_sample_id) as total,
         SUM(CASE
-                WHEN (LOWER(vl.vl_result_category) like 'not suppressed') THEN 1
+                WHEN (IFNULL(vl.vl_result_category, '') like 'not suppressed') THEN 1
                     ELSE 0
                 END) AS highVL,
         (SUM(CASE
-                WHEN (LOWER(vl.vl_result_category) like 'suppressed') THEN 1
+                WHEN (IFNULL(vl.vl_result_category, '') like 'suppressed') THEN 1
                     ELSE 0
                 END)) AS lowVL
 
@@ -131,7 +130,7 @@ if (!empty($whereCondition)) {
 
 
 $sWhere[] = $recencyWhere;
-$sWhere[] = " vl.result_status IS NOT NULL AND vl.result_status = 7 ";
+$sWhere[] = " IFNULL(vl.result_status, 0) = 7 ";
 if (isset($_POST['batchCode']) && trim((string) $_POST['batchCode']) != '') {
     $sWhere[] = ' b.batch_code = "' . $_POST['batchCode'] . '"';
 }
@@ -150,6 +149,8 @@ if (!empty($_POST['labName'])) {
 if (!empty($sWhere)) {
     $vlSuppressionQuery .= " WHERE " . implode(" AND ", $sWhere);
 }
+
+
 $vlSuppressionResult = $db->rawQueryOne($vlSuppressionQuery);
 
 
