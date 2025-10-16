@@ -38,9 +38,9 @@ $testTable = TestsService::getTestTableName($module);
 $testPrimaryKey = TestsService::getPrimaryColumn($module);
 $patientId = TestsService::getPatientIdColumn($module);
 
-$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.package_id
+$query = "SELECT vl.sample_code,vl.remote_sample_code,vl.$testPrimaryKey,vl.$patientId,vl.sample_package_id,vl.is_encrypted,pd.manifest_id
 			FROM $testTable as vl
-			LEFT JOIN specimen_manifests as pd ON vl.sample_package_id = pd.package_id ";
+			LEFT JOIN specimen_manifests as pd ON vl.sample_package_id = pd.manifest_id ";
 
 $where = [];
 $where[] = " (vl.remote_sample_code IS NOT NULL) ";
@@ -95,7 +95,7 @@ $key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {
-				if ((!isset($sample['sample_package_id']) || !isset($sample['package_id'])) || ($sample['sample_package_id'] != $sample['package_id'])) { ?>
+				if ((!isset($sample['sample_package_id']) || !isset($sample['manifest_id'])) || ($sample['sample_package_id'] != $sample['manifest_id'])) { ?>
 					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
 		<?php }
 			}
@@ -118,7 +118,7 @@ $key = (string) $general->getGlobalConfig('key');
 				$sample[$patientId] = $general->crypto('decrypt', $sample[$patientId], $key);
 			}
 			if (!empty($sample[$sampleCode])) {
-				if (isset($sample['package_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['package_id']) { ?>
+				if (isset($sample['manifest_id']) && isset($sample['sample_package_id']) && $sample['sample_package_id'] == $sample['manifest_id']) { ?>
 					<option value="<?php echo $sample[$testPrimaryKey]; ?>"><?= $sample[$sampleCode] . ' - ' . $sample[$patientId]; ?></option>
 		<?php }
 			}

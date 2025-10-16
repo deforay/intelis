@@ -47,7 +47,7 @@ $tableName = TestsService::getTestTableName($testType);
 $primaryKey = TestsService::getPrimaryColumn($testType);
 
 $sql = "UPDATE specimen_manifests
-                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = specimen_manifests.package_id and lab_id > 0 limit 1)
+                SET lab_id = (SELECT lab_id FROM $tableName WHERE $tableName.sample_package_id = specimen_manifests.manifest_id and lab_id > 0 limit 1)
                 WHERE specimen_manifests.lab_id is null OR specimen_manifests.lab_id = 0";
 
 $db->rawQuery($sql);
@@ -56,7 +56,7 @@ $db->rawQuery($sql);
 //         SET lab_id = (SELECT lab_id
 //                         FROM specimen_manifests
 //                         WHERE lab_id > 0
-//                         AND specimen_manifests.package_code = $tableName.sample_package_code
+//                         AND specimen_manifests.manifest_code = $tableName.sample_package_code
 //                         LIMIT 1)
 //         WHERE lab_id IS NULL OR lab_id = 0";
 
@@ -65,8 +65,8 @@ $db->rawQuery($sql);
 
 $vlForm = (int) $general->getGlobalConfig('vl_form');
 
-$aColumns = array('p.package_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
-$orderColumns = array('p.package_id', 'p.module', 'facility_name', 'p.package_code', 'p.package_id', 'p.request_created_datetime');
+$aColumns = array('p.manifest_code', 'p.module', 'facility_name', "DATE_FORMAT(p.request_created_datetime,'%d-%b-%Y %H:%i:%s')");
+$orderColumns = array('p.manifest_id', 'p.module', 'facility_name', 'p.manifest_code', 'p.manifest_id', 'p.request_created_datetime');
 
 $sOffset = $sLimit = null;
 if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -115,14 +115,14 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 $sQuery = "SELECT p.request_created_datetime,
-            p.package_code, p.package_status,
-            p.module, p.package_id, p.number_of_samples,
+            p.manifest_code, p.manifest_status,
+            p.module, p.manifest_id, p.number_of_samples,
             lab.facility_name as labName
             FROM specimen_manifests p
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($_SESSION['facilityMap'])) {
-    $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.package_id ";
+    $sQuery .= " INNER JOIN $tableName t on t.sample_package_id = p.manifest_id ";
     $sWhere[] = " t.facility_id IN(" . $_SESSION['facilityMap'] . ") ";
 }
 
@@ -133,7 +133,7 @@ if (!empty($sWhere)) {
 }
 
 $sQuery = $sQuery . ' ' . $sWhere;
-$sQuery = $sQuery . ' GROUP BY p.package_id';
+$sQuery = $sQuery . ' GROUP BY p.manifest_id';
 if (!empty($sOrder) && $sOrder !== '') {
     $sOrder = preg_replace('/\s+/', ' ', $sOrder);
     $sQuery = $sQuery . ' ORDER BY ' . $sOrder;
@@ -162,8 +162,8 @@ if (_isAllowed($editUrl)) {
 
 foreach ($rResult as $aRow) {
 
-    $packageId = base64_encode($aRow['package_id']);
-    //$packageCode = ($aRow['package_code']);
+    $packageId = base64_encode($aRow['manifest_id']);
+    //$packageCode = ($aRow['manifest_code']);
     $printManifestPdfText = _translate("Print Manifest PDF");
 
     $printBarcode = <<<BARCODEBUTTON
@@ -174,12 +174,12 @@ foreach ($rResult as $aRow) {
 
     $editBtn = '';
     if ($editAllowed) {
-        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['package_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
+        $editBtn = '<a href="' . $editUrl . '&id=' . base64_encode((string) $aRow['manifest_id']) . '" class="btn btn-primary btn-xs" ' . $disable . ' style="margin-right: 2px;' . $pointerEvent . '" title="Edit"><em class="fa-solid fa-pen-to-square"></em> Edit</em></a>';
     }
 
     $disable = '';
     $pointerEvent = '';
-    if ($aRow['package_status'] == 'dispatch') {
+    if ($aRow['manifest_status'] == 'dispatch') {
         $pointerEvent = "pointer-events:none;";
         $disable = "disabled";
     }
@@ -187,8 +187,8 @@ foreach ($rResult as $aRow) {
         $aRow['module'] = "OTHER LAB TESTS ";
     }
     $row = [];
-    $manifestHash = $testRequestsService->getManifestHash([], $testType, $aRow['package_code']);
-    $tooltip = "<span class='top-tooltip' title='Manifest Hash: " . $manifestHash . "'>" . $aRow['package_code'] . "</span>";
+    $manifestHash = $testRequestsService->getManifestHash([], $testType, $aRow['manifest_code']);
+    $tooltip = "<span class='top-tooltip' title='Manifest Hash: " . $manifestHash . "'>" . $aRow['manifest_code'] . "</span>";
     $row[] = $tooltip;
     $row[] = strtoupper((string) $aRow['module']);
     $row[] = $aRow['labName'];

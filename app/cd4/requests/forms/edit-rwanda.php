@@ -23,7 +23,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
           $maxLength = "maxlength=" . $maxLength;
      }
 }
-//check remote user
+// check if STS
 if ($general->isSTSInstance()) {
      $sampleCode = 'remote_sample_code';
      if (!empty($cd4QueryInfo['remote_sample']) && $cd4QueryInfo['remote_sample'] == 'yes') {

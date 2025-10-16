@@ -55,7 +55,7 @@ try {
 	$tableName = "facility_details";
 	$facilityId = base64_decode((string) $_POST['facilityId']);
 	$provinceTable = "geographical_divisions";
-	$vlUserFacilityMapTable = "user_facility_map";
+	$userFacilityMapTable = "user_facility_map";
 	$testingLabsTable = "testing_labs";
 	$healthFacilityTable = "health_facilities";
 	$signTableName = "lab_report_signatories";
@@ -207,7 +207,7 @@ try {
 
 		// Mapping facility with users
 		$db->where('facility_id', $facilityId);
-		$delId = $db->delete($vlUserFacilityMapTable);
+		$delId = $db->delete($userFacilityMapTable);
 		if ($facilityId > 0 && trim((string) $_POST['selectedUser']) != '') {
 			$selectedUser = explode(",", (string) $_POST['selectedUser']);
 			if (!empty($_POST['selectedUser'])) {
@@ -216,7 +216,7 @@ try {
 						'user_id' => $selectedUser[$j],
 						'facility_id' => $facilityId,
 					);
-					$db->insert($vlUserFacilityMapTable, $uData);
+					$db->insert($userFacilityMapTable, $uData);
 				}
 			}
 		}

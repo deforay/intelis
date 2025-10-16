@@ -37,7 +37,7 @@ if ($globalConfig['sample_code'] == 'auto' || $globalConfig['sample_code'] == 'a
           $maxLength = "maxlength=" . $maxLength;
      }
 }
-//check remote user
+// check if STS
 $rKey = '';
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
      $sampleCodeKey = 'remote_sample_code_key';

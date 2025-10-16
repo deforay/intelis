@@ -333,8 +333,8 @@ $testName = TestsService::getTestTypes();
                     <span class="input-group-addon"><em class="fa-solid fa-circle-nodes"></em></span>
                     <select name="instanceType" id="instanceType" title="Please select the user type" class="form-control" onchange="changeLabType(this.value);" style=" background: aliceblue; ">
                       <option value=""><?= _translate("-- Select Instance Type --"); ?></option>
-                      <option value="vluser" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
-                      <option value=" remoteuser"><?= _translate("Sample Tracking System(STS)"); ?></option>
+                      <option value="lismode" selected="selected"><?= _translate("LIS with Remote Ordering Enabled"); ?></option>
+                      <option value="stsmode"><?= _translate("Sample Tracking System(STS)"); ?></option>
                       <option value="standalone"><?= _translate("Standalone (no Remote Ordering)"); ?></option>
                     </select>
                   </div>
@@ -506,10 +506,10 @@ $testName = TestsService::getTestTypes();
         if (value == '') {
           return false;
         }
-        if (value == 'remoteuser' || value == 'standalone') {
+        if (value == 'stsmode' || value == 'standalone') {
           $('.lis').hide();
           $('.lis-input').removeClass('isRequired');
-        } else if (value == 'vluser' || value == 'lis') {
+        } else if (value == 'lismode') {
           $('.lis').show();
           $('.lis-input').addClass('isRequired');
           getTestingLabs();
@@ -523,7 +523,7 @@ $testName = TestsService::getTestTypes();
 
       function getTestingLabs() {
 
-        if ($('#instanceType').val() == 'vluser' && $('#remoteURL').val() != "") {
+        if ($('#instanceType').val() == 'lismode' && $('#remoteURL').val() != "") {
           $.blockUI();
           $.post("/tasks/remote/sts-metadata-receiver.php", {
               remoteURL: $('#remoteURL').val()

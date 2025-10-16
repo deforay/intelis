@@ -13,7 +13,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-//check remote user
+// check if STS
 $rKey = '';
 if ($general->isSTSInstance()) {
 	$sampleCodeKey = 'remote_sample_code_key';

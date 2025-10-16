@@ -26,9 +26,9 @@ if (!empty($_POST['batchOrManifestCodeValue'])) {
         $condition = "";
 
         $query = "SELECT vl.sample_code,vl.patient_art_no  FROM form_vl as vl
-                    LEFT JOIN specimen_manifests as pd ON vl.sample_package_code = pd.package_code
+                    LEFT JOIN specimen_manifests as pd ON vl.sample_package_code = pd.manifest_code
                     LEFT JOIN batch_details as b ON b.batch_id = vl.sample_batch_id
-                    WHERE pd.package_code = '{$_POST['batchOrManifestCodeValue']}'
+                    WHERE pd.manifest_code = '{$_POST['batchOrManifestCodeValue']}'
                             OR b.batch_code = '{$_POST['batchOrManifestCodeValue']}'";
 
         $sampleResult = $db->rawQuery($query);
