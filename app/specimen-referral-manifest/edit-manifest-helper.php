@@ -69,22 +69,28 @@ try {
         $db->where('manifest_id', $lastId);
         $previousData = $db->getOne($packageTable);
 
-        $existingChangeReasons = JsonUtility::decodeJson($previousData['manifest_change_history']);
-        $newReason = [
+//echo "<pre>"; print_r($previousData); die;
+        $existingChangeReasons = json_decode($previousData['manifest_change_history'], true);
+               // echo "<pre>"; print_r($existingChangeReasons); die;
+
+
+        $existingChangeReasons[] = [
             'reason' => $_POST['reasonForChange'],
             'changedBy' => $_SESSION['userId'],
             'date' => DateUtility::getCurrentDateTime()
         ];
 
-
-        $db->where('manifest_id', $lastId);
-        $db->update($packageTable, [
+        $pData = [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
             'manifest_status' => $_POST['packageStatus'],
-            'manifest_change_history' => JsonUtility::encodeUtf8Json(array_merge($existingChangeReasons ?? [], $newReason ?? [])),
+            'manifest_change_history' => json_encode($existingChangeReasons),
             'last_modified_datetime' => $currentDateTime
-        ]);
+        ];
+
+
+        $db->where('manifest_id', $lastId);
+        $db->update($packageTable, $pData);
 
         if ($lastId > 0) {
             //for ($j = 0; $j < count($selectedSamples); $j++) {

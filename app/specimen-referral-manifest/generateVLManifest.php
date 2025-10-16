@@ -77,7 +77,7 @@ if (!empty($id)) {
             'manifest_print_history' => json_encode($oldPrintData)
         ));
 
-        $reasonHistory = JsonUtility::decodeJson($bResult['manifest_change_history']);
+        $reasonHistory = json_decode($bResult['manifest_change_history']);
 
         // create new PDF document
         $pdf = new ManifestPdfHelper(_translate('Viral Load Sample Referral Manifest'), PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
@@ -262,15 +262,15 @@ if (!empty($id)) {
             $tbl .= '<th>' . _translate('Changed By') . '</th>';
             $tbl .= '<th>' . _translate('Changed On') . '</th>';
             $tbl .= '</tr>';
-            //foreach ($reasonHistory as $change) {
-            $userResult = $usersService->findUserByUserId($reasonHistory['changedBy']);
-            $userName = $userResult['user_name'];
-            $tbl .= '<tr nobr="true">';
-            $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $reasonHistory['reason'] . '</td>';
-            $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $userName . '</td>';
-            $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . DateUtility::humanReadableDateFormat($reasonHistory['date']) . '</td>';
-            $tbl .= '</tr>';
-            //}
+            foreach ($reasonHistory as $change) {
+                $userResult = $usersService->findUserByUserId($change->changedBy);
+                $userName = $userResult['user_name'];
+                $tbl .= '<tr nobr="true">';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $change->reason . '</td>';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . $userName . '</td>';
+                $tbl .= '<td align="left" style="vertical-align:middle;font-size:11px;width:33.33%;">' . DateUtility::humanReadableDateFormat($change->date) . '</td>';
+                $tbl .= '</tr>';
+            }
             $tbl .= '</table>';
         }
 
