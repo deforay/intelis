@@ -29,7 +29,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
           $maxLength = "maxlength=" . $maxLength;
      }
 }
-//check remote user
+// check if STS
 $rKey = '';
 
 if ($general->isSTSInstance()) {

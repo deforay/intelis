@@ -66,7 +66,7 @@ try {
         $lastId = $_POST['packageId'];
 
         $db->reset();
-        $db->where('package_id', $lastId);
+        $db->where('manifest_id', $lastId);
         $previousData = $db->getOne($packageTable);
 
         $existingChangeReasons = JsonUtility::decodeJson($previousData['manifest_change_history']);
@@ -77,11 +77,11 @@ try {
         ];
 
 
-        $db->where('package_id', $lastId);
+        $db->where('manifest_id', $lastId);
         $db->update($packageTable, [
             'lab_id' => $_POST['testingLab'],
             'number_of_samples' => $numberOfSamples,
-            'package_status' => $_POST['packageStatus'],
+            'manifest_status' => $_POST['packageStatus'],
             'manifest_change_history' => JsonUtility::encodeUtf8Json(array_merge($existingChangeReasons ?? [], $newReason ?? [])),
             'last_modified_datetime' => $currentDateTime
         ]);

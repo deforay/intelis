@@ -31,23 +31,23 @@ if (isset($_POST['frmSrc']) && trim((string) $_POST['frmSrc']) == 'pk2') {
 
 if (trim((string) $id) != '') {
 
-    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.package_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.package_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.package_id IN($id)";
+    $sQuery = "SELECT remote_sample_code,fd.facility_name as clinic_name,fd.facility_district,TRIM(CONCAT(COALESCE(vl.patient_name, ''), ' ', COALESCE(vl.patient_surname, ''))) as `patient_fullname`,patient_dob,patient_age,sample_collection_date,patient_gender,patient_id,pd.manifest_code, l.facility_name as lab_name from specimen_manifests as pd Join form_hepatitis as vl ON vl.sample_package_id=pd.manifest_id Join facility_details as fd ON fd.facility_id=vl.facility_id Join facility_details as l ON l.facility_id=vl.lab_id where pd.manifest_id IN($id)";
     $result = $db->query($sQuery);
 
 
     $labname = $result[0]['lab_name'] ?? "";
 
     $showPatientName = $general->getGlobalConfig('hepatitis_show_participant_name_in_manifest');
-    $bQuery = "SELECT * from specimen_manifests as pd where package_id IN($id)";
+    $bQuery = "SELECT * from specimen_manifests as pd where manifest_id IN($id)";
 
     $bResult = $db->query($bQuery);
     if (!empty($bResult)) {
 
         $oldPrintData = json_decode($bResult[0]['manifest_print_history']);
 
-        $newPrintData = array('printedBy' => $_SESSION['userId'],'date' => DateUtility::getCurrentDateTime());
+        $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
-        $db->where('package_id', $id);
+        $db->where('manifest_id', $id);
         $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
@@ -93,8 +93,8 @@ if (trim((string) $id) != '') {
         $pdf->setPageOrientation('L');
         // add a page
         $pdf->AddPage();
-        $tbl = '<span style="font-size:1.7em;"> ' . $result[0]['package_code'];
-        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
+        $tbl = '<span style="font-size:1.7em;"> ' . $result[0]['manifest_code'];
+        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['manifest_code']) . '">';
         $tbl .=  '</span><br>';
 
         if (!empty($result)) {
@@ -167,14 +167,14 @@ if (trim((string) $id) != '') {
         $tbl .= '</tr>';
         $tbl .= '</table><br><br>';
 
-        if(!empty($reasonHistory) && count($reasonHistory) > 0){
+        if (!empty($reasonHistory) && count($reasonHistory) > 0) {
             $tbl .= 'Manifest Change History';
             $tbl .= '<br><br><table nobr="true" style="width:100%;" border="1" cellpadding="2"><tr nobr="true">';
             $tbl .= '<th>Reason for Changes</th>';
             $tbl .= '<th>Changed By </th>';
             $tbl .= '<th>Changed On</th>';
             $tbl .= '</tr>';
-            foreach($reasonHistory as $change){
+            foreach ($reasonHistory as $change) {
                 $userResult = $usersService->findUserByUserId($change->changedBy);
                 $userName = $userResult['user_name'];
                 $tbl .= '<tr nobr="true">';
@@ -187,7 +187,7 @@ if (trim((string) $id) != '') {
         $tbl .= '</table>';
         //$tbl.='<br/><br/><strong style="text-align:left;">Printed On:  </strong>'.date('d/m/Y H:i:s');
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
-        $filename = trim((string) $bResult[0]['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
+        $filename = trim((string) $bResult[0]['manifest_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
 
         $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
         $filename = MiscUtility::cleanFileName($filename);

@@ -29,7 +29,7 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric') {
 		$maxLength = "maxlength=$maxLength";
 	}
 }
-//check remote user
+// check if STS
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
 	$sampleCode = 'remote_sample_code';
 	if (!empty($vlQueryInfo['remote_sample']) && $vlQueryInfo['remote_sample'] == 'yes') {

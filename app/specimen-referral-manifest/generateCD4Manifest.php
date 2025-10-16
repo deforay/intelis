@@ -39,19 +39,19 @@ if (!empty($id)) {
                         sample_name,
                         sample_collection_date,
                         patient_gender,
-                        patient_art_no,pd.package_code,
+                        patient_art_no,pd.manifest_code,
                         l.facility_name as lab_name,
                         u_d.user_name as releaser_name,
                         u_d.phone_number as phone,
                         u_d.email as email,
                         pd.request_created_datetime as created_date
                 FROM specimen_manifests as pd
-                LEFT JOIN form_cd4 as vl ON vl.sample_package_id=pd.package_id
+                LEFT JOIN form_cd4 as vl ON vl.sample_package_id=pd.manifest_id
                 LEFT JOIN facility_details as fd ON fd.facility_id=vl.facility_id
                 LEFT JOIN facility_details as l ON l.facility_id=vl.lab_id
                 LEFT JOIN r_cd4_sample_types as st ON st.sample_id=vl.specimen_type
                 LEFT JOIN user_details as u_d ON u_d.user_id=pd.added_by
-                WHERE pd.package_id IN($id)";
+                WHERE pd.manifest_id IN($id)";
 
     $result = $db->query($sQuery);
 
@@ -63,7 +63,7 @@ if (!empty($id)) {
     $showPatientName = $globalConfig['cd4_show_participant_name_in_manifest'];
 
 
-    $db->where('package_id', $id);
+    $db->where('manifest_id', $id);
     $bResult = $db->getOne('specimen_manifests');
 
     if (!empty($bResult)) {
@@ -72,7 +72,7 @@ if (!empty($id)) {
 
         $newPrintData = array('printedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime());
         $oldPrintData[] = $newPrintData;
-        $db->where('package_id', $id);
+        $db->where('manifest_id', $id);
         $db->update('specimen_manifests', array(
             'manifest_print_history' => json_encode($oldPrintData)
         ));
@@ -192,8 +192,8 @@ if (!empty($id)) {
         }
 
 
-        $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['package_code'];
-        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['package_code']) . '">';
+        $tbl = '<p></p><span style="font-size:1.7em;"> ' . $result[0]['manifest_code'];
+        $tbl .= '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img style="width:200px;height:30px;" src="' . $general->getBarcodeImageContent($result[0]['manifest_code']) . '">';
         $tbl .=  '</span><br>';
 
         if (!empty($result)) {
@@ -276,7 +276,7 @@ if (!empty($id)) {
 
         $pdf->writeHTMLCell('', '', 11, $pdf->getY(), $tbl, 0, 1, 0, true, 'C');
 
-        $filename = trim((string) $bResult['package_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
+        $filename = trim((string) $bResult['manifest_code']) . '-' . date('Ymd') . '-' . MiscUtility::generateRandomString(6) . '-Manifest.pdf';
 
         $manifestsPath = MiscUtility::buildSafePath(TEMP_PATH, ["sample-manifests"]);
         $filename = MiscUtility::cleanFileName($filename);

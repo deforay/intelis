@@ -44,12 +44,12 @@ try {
     if (isset($_POST['packageCode']) && trim((string) $_POST['packageCode']) != "") {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
-            'package_code'              => $_POST['packageCode'],
+            'manifest_code'              => $_POST['packageCode'],
             'module'                    => $_POST['module'],
             'added_by'                  => $_SESSION['userId'],
             'lab_id'                    => $_POST['testingLab'],
             'number_of_samples'         => $numberOfSamples,
-            'package_status'            => 'pending',
+            'manifest_status'            => 'pending',
             'request_created_datetime'  => $currentDateTime,
             'last_modified_datetime'    => $currentDateTime
         ];

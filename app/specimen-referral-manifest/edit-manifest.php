@@ -38,10 +38,10 @@ $_GET = _sanitizeInput($request->getQueryParams());
 $id = isset($_GET['id']) ? base64_decode((string) $_GET['id']) : null;
 $m = $module = $_GET['t'] ?? 'vl';
 
-$pQuery = "SELECT * FROM specimen_manifests WHERE package_id = ?";
+$pQuery = "SELECT * FROM specimen_manifests WHERE manifest_id = ?";
 $pResult = $db->rawQueryOne($pQuery, [$id]);
 
-if ($pResult['package_status'] == 'dispatch') {
+if ($pResult['manifest_status'] == 'dispatch') {
 	header("Location:/specimen-referral-manifest/view-manifests.php?t=" . $module);
 }
 
@@ -53,7 +53,7 @@ $testTypeResult = null;
 if ($module == 'generic-tests') {
 
 	$testQuery = "SELECT * FROM form_generic WHERE sample_package_id = ?";
-	$testType = $db->rawQueryOne($testQuery, [$pResult['package_id']]);
+	$testType = $db->rawQueryOne($testQuery, [$pResult['manifest_id']]);
 
 
 	$testTypeQuery = "SELECT * FROM r_test_types
@@ -137,7 +137,7 @@ if ($module == 'generic-tests') {
 							<div class="form-group">
 								<label for="packageCode" class="col-lg-4 control-label">Manifest Code <span class="mandatory">*</span></label>
 								<div class="col-lg-7" style="margin-left:3%;">
-									<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper((string) $pResult['package_code']); ?>" />
+									<input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper((string) $pResult['manifest_code']); ?>" />
 								</div>
 							</div>
 						</div>
@@ -160,9 +160,9 @@ if ($module == 'generic-tests') {
 								<div class="col-lg-7" style="margin-left:3%;">
 									<select class="form-control isRequired" name="packageStatus" id="packageStatus" title="Please select manifest status" readonly="readonly">
 										<option value="">-- Select --</option>
-										<option value="pending" <?php echo ($pResult['package_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
-										<option value="dispatch" <?php echo ($pResult['package_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
-										<option value="received" <?php echo ($pResult['package_status'] == 'received') ? "selected='selected'" : ''; ?>>Received</option>
+										<option value="pending" <?php echo ($pResult['manifest_status'] == 'pending') ? "selected='selected'" : ''; ?>>Pending</option>
+										<option value="dispatch" <?php echo ($pResult['manifest_status'] == 'dispatch') ? "selected='selected'" : ''; ?>>Dispatch</option>
+										<option value="received" <?php echo ($pResult['manifest_status'] == 'received') ? "selected='selected'" : ''; ?>>Received</option>
 									</select>
 								</div>
 							</div>
@@ -251,7 +251,7 @@ if ($module == 'generic-tests') {
 		<!-- /.box-body -->
 		<div class="box-footer">
 			<input type="hidden" name="selectedSample" id="selectedSample" />
-			<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['package_id']; ?>" />
+			<input type="hidden" name="packageId" id="packageId" value="<?php echo $pResult['manifest_id']; ?>" />
 			<input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
 			<a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" onclick="validateNow();return false;">Submit</a>
 			<a href="/specimen-referral-manifest/view-manifests.php" class="btn btn-default"> Cancel</a>

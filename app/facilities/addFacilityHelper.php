@@ -34,7 +34,7 @@ $stsTokensService = ContainerRegistry::get(TokensService::class);
 /* For reference we define the table names */
 $facilityTable = "facility_details";
 $provinceTable = "geographical_divisions";
-$vlUserFacilityMapTable = "user_facility_map";
+$userFacilityMapTable = "user_facility_map";
 $testingLabsTable = "testing_labs";
 $healthFacilityTable = "health_facilities";
 
@@ -271,7 +271,7 @@ try {
 					'user_id' => $selectedUser[$j],
 					'facility_id' => $lastId,
 				];
-				$db->insert($vlUserFacilityMapTable, $uData);
+				$db->insert($userFacilityMapTable, $uData);
 			}
 		}
 		if ($lastId > 0 && !empty($_POST['testData'])) {

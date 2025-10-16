@@ -87,7 +87,7 @@ try {
         throw new SystemException('Unauthorized Access. Token missing or invalid.', 401);
     }
 
-    $db->where('package_code', $manifestCode);
+    $db->where('manifest_code', $manifestCode);
     $db->where('module', $testType);
     $db->where('lab_id', $labId);
     $manifestRecord = $db->getOne('specimen_manifests');
@@ -104,7 +104,7 @@ try {
         $db->where('sample_package_code', $manifestCode);
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);
         $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
-        
+
 
         if ($currentHash !== '') {
             if (hash_equals($currentHash, $providedHash)) {
