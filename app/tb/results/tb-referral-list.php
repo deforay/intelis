@@ -41,7 +41,7 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
         <div class="box box-default">
             <div class="box-header with-border">
                 <a href="/tb/results/add-tb-referral.php" class="btn btn-primary pull-right">
-                    <em class="fa-solid fa-plus"></em> <?php echo _translate("Add New Referral"); ?>
+                    <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer Samples"); ?>
                 </a>
             </div>
 
@@ -79,13 +79,14 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
                 <table aria-describedby="referral-list-table" id="referralDataTable" class="table table-bordered table-striped">
                     <thead>
                         <tr>
-                            <th scope="col" style="width: 3%;">
+                            <!-- <th scope="col" style="width: 3%;">
                                 <input type="checkbox" id="selectAll" />
-                            </th>
+                            </th> -->
                             <th scope="col"><?php echo _translate("Referral Manifest Code"); ?></th>
                             <th scope="col"><?php echo _translate("No of Samples"); ?></th>
                             <th scope="col"><?php echo _translate("Referred To Lab"); ?></th>
                             <th scope="col"><?php echo _translate("Referral Date"); ?></th>
+                            <th scope="col"><?php echo _translate("Reason for Referral"); ?></th>
                             <th scope="col"><?php echo _translate("Action"); ?></th>
                         </tr>
                     </thead>
@@ -125,27 +126,27 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
             "bStateSave": true,
             "bRetrieve": true,
             "aoColumns": [{
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
+                    "sClass": "center"
+                },
+                {
                     "sClass": "center",
                     "bSortable": false
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
-                },
-                {
-                    "sClass": "center"
                 }
             ],
             "aaSorting": [
-                [5, "desc"]
+                [3, "desc"]
             ],
             "bProcessing": true,
             "bServerSide": true,

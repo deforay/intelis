@@ -84,6 +84,7 @@ try {
             'data_sync' => 0,
             'referred_by_lab_id' => $userFacilityId,
             'referred_to_lab_id' => $referralLabId,
+            'reason_for_referral' => $_POST['referralReason'],
             'last_modified_by' => $userId,
             'last_modified_datetime' => $currentDateTime
         ];
