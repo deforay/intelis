@@ -24,6 +24,11 @@ $id = base64_decode($_GET['id']);
 $codeId = base64_decode($_GET['code']);
 $db->where('manifest_id', $codeId);
 $sampleManifestResult = $db->getOne('specimen_manifests');
+
+$db->where('sample_package_id', $codeId);
+$db->where('reason_for_referral != ""');
+$db->where('reason_for_referral IS NOT NULL');
+$tbResult = $db->getOne('form_tb');
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRandomString(4));
@@ -49,7 +54,6 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
             <li class="active"><?php echo _translate("Referral Labs"); ?></li>
         </ol>
     </section>
-
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
@@ -71,6 +75,12 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                                 <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo $sampleManifestResult['manifest_code']; ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                             </div>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
+                        <div class="col-md-6">
+                            <label for="referralReason" class="control-label"> <?php echo _translate("Reason for Referral"); ?> <span class="mandatory">*</span></label>
+                            <textarea type="text" class="form-control isRequired" id="referralReason" name="referralReason" placeholder="Enter referral reason" title="Please enter reerral reason"><?php echo $tbResult['reason_for_referral']; ?></textarea>
                         </div>
                     </div>
                     <div class="row" style="margin-top: 30px;">

@@ -70,6 +70,12 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                         </div>
                     </div>
                     <div class="row" style="margin-top: 30px;">
+                        <div class="col-md-6">
+                            <label for="referralReason" class="control-label"> <?php echo _translate("Reason for Referral"); ?> <span class="mandatory">*</span></label>
+                            <textarea type="text" class="form-control isRequired" id="referralReason" name="referralReason" placeholder="Enter referral reason" title="Please enter reerral reason"></textarea>
+                        </div>
+                    </div>
+                    <div class="row" style="margin-top: 30px;">
                         <div class="col-md-12">
                             <button type="button" class="btn btn-primary btn-sm" onclick="loadSamples();">
                                 <em class="fa-solid fa-search"></em> <?php echo _translate("Load Available Samples"); ?>
