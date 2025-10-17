@@ -7,7 +7,7 @@ use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-
+use App\Utilities\MiscUtility;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -71,7 +71,7 @@ try {
           $sWhere[] = $columnSearch;
      }
 
-     $sWhere[] = " (IFNULL(reason_for_vl_testing, 0)  != 9999 or reason_for_vl_testing is null) ";
+     $sWhere[] = " IFNULL(reason_for_vl_testing, 0)  != 9999 ";
 
      $sQuery = "SELECT vl.vl_sample_id,
                vl.sample_code,
@@ -179,9 +179,9 @@ try {
      /* Viral load filter */
      if (isset($_POST['vLoad']) && trim((string) $_POST['vLoad']) != '') {
           if ($_POST['vLoad'] === 'suppressed') {
-               $sWhere[] =   " vl.vl_result_category like 'suppressed' AND vl.vl_result_category is NOT NULL ";
+               $sWhere[] = " IFNULL(vl.vl_result_category, '') like 'suppressed' ";
           } else {
-               $sWhere[] =   "  vl.vl_result_category like 'not suppressed' AND vl.vl_result_category is NOT NULL ";
+               $sWhere[] = " IFNULL(vl.vl_result_category, '') like 'not suppressed' ";
           }
      }
 
@@ -199,7 +199,7 @@ try {
      }
      /* Sample status filter */
      if (isset($_POST['status']) && !empty($_POST['status'])) {
-          $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status = ' . $_POST['status'] . ')';
+          $sWhere[] = '  (IFNULL(vl.result_status, 0) = ' . $_POST['status'] . ')';
      }
      /* Show only recorded sample filter */
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) == 'yes') {
