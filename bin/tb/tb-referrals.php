@@ -60,16 +60,8 @@ try {
                 ];
 
                 $db->insert('tb_referral_history', $historyData);
-
-                // LoggerUtility::logInfo("Updated TB ID: {$tbId}, Lab ID changed from {$oldLabId} to {$newLabId}");
-            } else {
-                // LoggerUtility::logError("Failed to update TB ID: {$tbId}. Error: " . $db->getLastError());
             }
         }
-
-        // LoggerUtility::logInfo("Lab ID update process completed successfully. Total records updated: " . count($samplesToUpdate));
-    } else {
-        // LoggerUtility::logInfo("No samples found where lab_id != referred_to_lab_id");
     }
 } catch (Exception $e) {
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . ($db->getLastError() ?? 'N/A'));

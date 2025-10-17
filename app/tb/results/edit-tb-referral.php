@@ -8,7 +8,7 @@ use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
 
 $testType = 'tb';
-$title = "TB | Add Referral";
+$title = "TB | Edit Referral";
 require_once APPLICATION_PATH . '/header.php';
 
 /** @var DatabaseService $db */
@@ -20,6 +20,10 @@ $general = ContainerRegistry::get(CommonService::class);
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
+$id = base64_decode($_GET['id']);
+$codeId = base64_decode($_GET['code']);
+$db->where('manifest_id', $codeId);
+$sampleManifestResult = $db->getOne('specimen_manifests');
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
 $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRandomString(4));
@@ -49,7 +53,6 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
-
                 <div class="box-body" style="margin-top:20px;">
                     <div class="row">
                         <div class="form-group col-md-6">
@@ -57,14 +60,15 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                                 <label for="referralLabId" class="control-label"> <?php echo _translate("Referral Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select referral Laboratory"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    <?= $general->generateSelectOptions($testingLabs, $id, '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="packageCode" class="control-label"> <?php echo _translate("Referral Manifest Code"); ?> <span class="mandatory">*</span></label>
-                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo strtoupper(htmlspecialchars($sampleManifestCode)); ?>" />
+                                <input type="hidden" id="manifestId" name="manifestId" value="<?php echo $sampleManifestResult['manifest_id']; ?>" />
+                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo $sampleManifestResult['manifest_code']; ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                             </div>
                         </div>
@@ -77,7 +81,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                         </div>
                     </div>
 
-                    <div class="row sampleSelectionArea" style="margin-top: 20px; display: none;">
+                    <div class="row sampleSelectionArea" style="margin-top: 20px;">
                         <div class="col-md-5">
                             <label><?php echo _translate("Available Samples"); ?></label>
                             <select name="availableSamples" id="search" class="form-control" size="10" multiple="multiple">
@@ -133,6 +137,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
             width: '100%',
             placeholder: "<?php echo _translate("Select Referral Lab"); ?>"
         });
+        loadSamples();
     });
 
     function loadSamples() {
@@ -147,12 +152,22 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
 
         $.post("/tb/results/get-referral-samples.php", {
             type: 'tb',
+            labId: '<?php echo $id; ?>',
+            packageCode: '<?php echo $codeId; ?>',
             referralLabId: referralLabId
         }, function(data) {
             if (data && data.trim() !== "") {
                 $("#search").html(data);
                 $(".sampleSelectionArea").show();
+
+                // Move pre-selected items to the right box BEFORE initializing the plugin
+                $("#search option[selected='selected']").each(function() {
+                    $(this).prop('selected', false).removeAttr('selected');
+                    $("#search_to").append($(this));
+                });
+
                 initializeMultiselect();
+                updateCounters();
             } else {
                 alert("<?php echo _translate("No samples available for referral"); ?>");
             }
@@ -170,8 +185,18 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                 return value.length > 2;
             },
             autoSelectNext: true,
-            keepRenderingSort: true
+            keepRenderingSort: true,
+            moveCallback: function() {
+                updateCounters();
+            }
         });
+    }
+
+    function updateCounters() {
+        const unselectedCount = $("#search option").length;
+        const selectedCount = $("#search_to option").length;
+        $("#unselectedCount").text(unselectedCount);
+        $("#selectedCount").text(selectedCount);
     }
 
     function validateForm() {
@@ -187,6 +212,9 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
             alert("<?php echo _translate("Please select at least one sample"); ?>");
             return false;
         }
+
+        // Select all options in the right box before submitting
+        $("#search_to option").prop('selected', true);
 
         $.blockUI();
         return true;
