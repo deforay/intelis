@@ -20,104 +20,68 @@ use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
 use Symfony\Component\Console\Output\ConsoleOutput;
-use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
 
 /**
  * Display help/usage information
  */
-function showHelp(): void
+/**
+ * Display help/usage information (SymfonyStyle)
+ */
+function showHelp(SymfonyStyle $io): void
 {
-    $output = new ConsoleOutput();
-    $output->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
-    $output->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
-    $output->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
-    $output->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
-    $output->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
+    $io->title('InteLIS / VLSM — Remote Test Requests Sync');
 
-    $output->writeln('');
-    $output->writeln('<title>                                                    </title>');
-    $output->writeln('<title>  VLSM Remote Test Requests Sync - Help & Usage   </title>');
-    $output->writeln('<title>                                                    </title>');
-    $output->writeln('');
+    $io->section('Description');
+    $io->text([
+        'Synchronizes test requests from the remote STS server to the local database.',
+        'Supports modules: VL, EID, COVID-19, Hepatitis, TB, CD4, and Generic Tests.',
+    ]);
 
-    $output->writeln('<header>DESCRIPTION:</header>');
-    $output->writeln('  Synchronizes test requests from the remote STS server to the local database.');
-    $output->writeln('  Supports multiple test types: VL, EID, COVID-19, Hepatitis, TB, CD4, and Generic Tests.');
-    $output->writeln('');
+    $io->section('Usage');
+    $io->text('php requests-receiver.php [OPTIONS] [<date>|<days>] [silent]');
 
-    $output->writeln('<header>USAGE:</header>');
-    $output->writeln('  <info>php requests-receiver.php [OPTIONS]</info>');
-    $output->writeln('');
+    $io->section('Options');
+    $io->definitionList(
+        ['-t <module>' => 'Force sync for a specific test module. Valid: vl, eid, covid19, hepatitis, tb, cd4, generic-tests'],
+        ['-m <manifest_code>' => 'Sync only a specific manifest/package (use with -t).'],
+        ['-h, --help, help' => 'Show this help and exit.']
+    );
 
-    $output->writeln('<header>OPTIONS:</header>');
-    $output->writeln('  <success>-t <module></success>');
-    $output->writeln('      Force sync for specific test module');
-    $output->writeln('      Valid modules: vl, eid, covid19, hepatitis, tb, cd4, generic-tests');
-    $output->writeln('      Example: <comment>-t vl</comment>');
-    $output->writeln('');
+    $io->section('Positionals');
+    $io->definitionList(
+        ['<date>' => 'Sync since a specific date (YYYY-MM-DD). Example: 2025-01-01'],
+        ['<days>' => 'Sync since N days ago (number). Example: 7'],
+        ['silent' => 'Run without updating last_modified_datetime (quiet on timestamps).']
+    );
 
-    $output->writeln('  <success>-m <manifest_code></success>');
-    $output->writeln('      Sync requests for a specific manifest/package code');
-    $output->writeln('      Must be used with -t option');
-    $output->writeln('      Example: <comment>-m PKG123456</comment>');
-    $output->writeln('');
+    $io->section('Examples');
+    $io->listing([
+        'php requests-receiver.php',
+        'php requests-receiver.php -t vl',
+        'php requests-receiver.php -t vl -m PKG123456',
+        'php requests-receiver.php 7',
+        'php requests-receiver.php 2025-01-01',
+        'php requests-receiver.php -t covid19 3 silent',
+    ]);
 
-    $output->writeln('  <success><date></success>');
-    $output->writeln('      Sync requests from a specific date (format: YYYY-MM-DD)');
-    $output->writeln('      Example: <comment>2025-01-01</comment>');
-    $output->writeln('');
-
-    $output->writeln('  <success><days></success>');
-    $output->writeln('      Sync requests from N days ago (numeric value)');
-    $output->writeln('      Example: <comment>7</comment> (syncs last 7 days)');
-    $output->writeln('');
-
-    $output->writeln('  <success>silent</success>');
-    $output->writeln('      Run in silent mode (no last_modified_datetime updates)');
-    $output->writeln('');
-
-    $output->writeln('  <success>-h, --help, help</success>');
-    $output->writeln('      Display this help message');
-    $output->writeln('');
-
-    $output->writeln('<header>EXAMPLES:</header>');
-    $output->writeln('  <comment># Sync all pending requests</comment>');
-    $output->writeln('  <info>php requests-receiver.php</info>');
-    $output->writeln('');
-
-    $output->writeln('  <comment># Sync only VL requests</comment>');
-    $output->writeln('  <info>php requests-receiver.php -t vl</info>');
-    $output->writeln('');
-
-    $output->writeln('  <comment># Sync VL requests for a specific manifest</comment>');
-    $output->writeln('  <info>php requests-receiver.php -t vl -m PKG123456</info>');
-    $output->writeln('');
-
-    $output->writeln('  <comment># Sync requests from last 7 days</comment>');
-    $output->writeln('  <info>php requests-receiver.php 7</info>');
-    $output->writeln('');
-
-    $output->writeln('  <comment># Sync requests since specific date</comment>');
-    $output->writeln('  <info>php requests-receiver.php 2025-01-01</info>');
-    $output->writeln('');
-
-    $output->writeln('  <comment># Sync COVID-19 requests from last 3 days in silent mode</comment>');
-    $output->writeln('  <info>php requests-receiver.php -t covid19 3 silent</info>');
-    $output->writeln('');
-
-    $output->writeln('<header>NOTES:</header>');
-    $output->writeln('  • The script requires an active internet connection to the STS server');
-    $output->writeln('  • Lab ID must be configured in System Config');
-    $output->writeln('  • Progress indicators show during sync operations');
-    $output->writeln('  • All operations are logged for troubleshooting');
-    $output->writeln('  • By default, only unsynced requests (data_sync = 0) are processed');
-    $output->writeln('');
+    $io->section('Notes');
+    $io->note([
+        'Requires internet connectivity to the STS server.',
+        'Lab ID must be configured in System Config.',
+        'Progress indicators show during sync operations.',
+        'All operations are logged.',
+        'By default, only unsynced requests (data_sync = 0) are processed.',
+    ]);
 
     exit(0);
 }
+
 
 
 ini_set('memory_limit', -1);
@@ -128,7 +92,7 @@ ini_set('max_execution_time', 300000);
 if ($cliMode) {
     $args = array_slice($_SERVER['argv'], 1);
     if (in_array('-h', $args) || in_array('--help', $args) || in_array('help', $args)) {
-        showHelp();
+        showHelp($io);
     }
 }
 
@@ -258,16 +222,16 @@ function syncTestRequest(
     ];
 }
 
-function outputSyncResults(ConsoleOutput $output, string $module, int $success, int $failures): void
+function outputSyncResults(SymfonyStyle $io, string $module, int $success, int $failures): void
 {
     if ($success > 0) {
-        $output->writeln("<success>✓ Synced $success " . strtoupper($module) . " record(s)</success>");
+        $io->success("Synced $success " . strtoupper($module) . " record(s)");
     } else {
-        $output->writeln("Synced $success " . strtoupper($module) . " record(s)");
+        $io->success("Synced $success " . strtoupper($module) . " record(s)");
     }
 
     if ($failures > 0) {
-        $output->writeln("<error>✗ Failed to sync $failures " . strtoupper($module) . " record(s)</error>");
+        $io->error("Failed to sync $failures " . strtoupper($module) . " record(s)");
     }
 }
 
@@ -293,21 +257,9 @@ function clearSpinner(): void
 $forceSyncModule = $manifestCode = null;
 $syncSinceDate = null;
 $isSilent = false;
-// Initialize Symfony Console Output
-$output = new ConsoleOutput();
-// Define custom styles
-$output->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
-$output->getFormatter()->setStyle('error', new OutputFormatterStyle('red'));
-$output->getFormatter()->setStyle('warning', new OutputFormatterStyle('yellow'));
-$output->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
-$output->getFormatter()->setStyle('comment', new OutputFormatterStyle('black', 'white'));
-$output->getFormatter()->setStyle('highlight', new OutputFormatterStyle('black', 'yellow'));
-
 if ($cliMode) {
 
-    $output->writeln('');
-    $output->writeln('=========================');
-    $output->writeln('<info>Starting test requests sync</info>');
+    $io->section('Starting test requests sync');
 
     $args = array_slice($_SERVER['argv'], 1);
 
@@ -358,7 +310,7 @@ if (!empty($_POST)) {
 }
 
 if ($syncSinceDate !== null) {
-    $output->writeln("<comment>Filtering requests from: $syncSinceDate</comment>");
+    $io->info("Filtering requests from: $syncSinceDate");
 }
 $transactionId = MiscUtility::generateULID();
 
@@ -388,7 +340,7 @@ if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&vers
 
 if (empty($labId)) {
     if ($cliMode) {
-        echo "No Lab ID set in System Config";
+        $io->error("No Lab ID set in System Config");
     }
     LoggerUtility::logError("No Lab ID set in System Config", [
         'line' => __LINE__,
@@ -438,14 +390,14 @@ foreach ($systemConfig['modules'] as $module => $status) {
             $basePayload,
             gzip: true,
             async: true
-        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $output) {
+        )->then(function ($response) use (&$responsePayload, $module, $cliMode, $io) {
             $responsePayload[$module] = $response->getBody()->getContents();
             if ($cliMode) {
-                $output->writeln("<info>Received server response for $module</info>");
+                $io->info("Received server response for $module");
             }
-        })->otherwise(function ($reason) use ($module, $cliMode, $output) {
+        })->otherwise(function ($reason) use ($module, $cliMode, $io) {
             if ($cliMode) {
-                $output->writeln("<error>STS Request sync for $module failed: $reason</error>");
+                $io->error("STS Request sync for $module failed: $reason");
             }
             LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . "STS Request sync for $module failed: " . $reason);
         });
@@ -457,10 +409,7 @@ Utils::settle($promises)->wait();
 
 $endTime = microtime(true);
 if ($cliMode) {
-    $output->writeln(sprintf(
-        '<comment>Total download time for STS Requests: %.2f seconds</comment>',
-        $endTime - $startTime
-    ));
+    $io->comment("Total download time for STS Requests: " . sprintf('%.2f', $endTime - $startTime) . " seconds");
 }
 
 // Define per-module config
@@ -792,8 +741,7 @@ try {
         $tableName = TestsService::getTestTableName($module);
 
         if ($cliMode) {
-            $output->writeln('');
-            $output->writeln("<highlight>Processing for " . strtoupper($module) . "...</highlight>");
+            $io->section("Processing for " . strtoupper($module) . "...");
         }
 
         $options = [
@@ -955,7 +903,7 @@ try {
         if ($cliMode) {
             clearSpinner();
             echo PHP_EOL;
-            outputSyncResults($output, $module, $successCounter, $failureCounter);
+            outputSyncResults($io, $module, $successCounter, $failureCounter);
         }
 
         $general->addApiTracking(
@@ -979,9 +927,7 @@ try {
         $tableName = TestsService::getTestTableName($module);
 
         if ($cliMode) {
-            echo PHP_EOL;
-            echo "=========================" . PHP_EOL;
-            echo "Processing for Custom Tests" . PHP_EOL;
+            $io->section("Processing for CUSTOM TESTS...");
         }
 
         $options = [
@@ -1201,8 +1147,7 @@ try {
 
         if ($cliMode) {
             clearSpinner();
-            echo PHP_EOL;
-            echo "Synced $successCounter Custom Tests record(s)" . PHP_EOL;
+            $io->success("Synced $successCounter Custom Tests record(s)");
         }
 
         $general->addApiTracking(

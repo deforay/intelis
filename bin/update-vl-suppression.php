@@ -40,10 +40,11 @@ $startTime = microtime(true);
 
 try {
     // First, fix any ACCEPTED results that have blank/null result values
-    // Set status based on whether sample_received_at_lab_datetime is set
+    // Set status based on whether sample_code is created or not
+    // if sample_code is set, it means sample has been registered at lab
     $fixInvalidSql = "UPDATE form_vl
                         SET result_status = CASE 
-                            WHEN sample_received_at_lab_datetime IS NOT NULL THEN ?
+                            WHEN sample_code IS NOT NULL THEN ?
                             ELSE ?
                         END,
                         data_sync = 0 
