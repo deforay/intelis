@@ -28,10 +28,15 @@ use App\Utilities\LoggerUtility;
 use PhpMyAdmin\SqlParser\Parser;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
 ini_set('max_execution_time', 300000);
+
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -40,7 +45,8 @@ $currentMajorVersion = $general->getAppVersion();
 
 // Ensure the script only runs for VLSM APP VERSION >= 4.4.3
 if (version_compare($currentMajorVersion, '4.4.3', '<')) {
-    exit("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars($currentMajorVersion) . "\n");
+    $io->error("This script requires VERSION 4.4.3 or higher. Current version: " . htmlspecialchars($currentMajorVersion));
+    exit(1);
 }
 
 // Define the logs directory path
@@ -56,9 +62,9 @@ $canLog = false;
 // Check if the directory exists
 if (!file_exists($logsDir)) {
     if (!MiscUtility::makeDirectory($logsDir)) {
-        echo "Failed to create directory: $logsDir\n";
+        $io->error("Failed to create directory: $logsDir");
     } else {
-        echo "Directory created: $logsDir\n";
+        $io->success("Directory created: $logsDir");
         $canLog = file_exists($logsDir) && is_writable($logsDir);
     }
 } else {
@@ -70,7 +76,8 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 // Check if connection was successful
 if ($db->isConnected() === false) {
-    exit("Database connection failed. Please check your database settings\n");
+    $io->error("Database connection failed. Please check your database settings");
+    exit(1);
 }
 
 /* ---------------------- Local helpers (idempotent DDL) ---------------------- */
@@ -85,7 +92,7 @@ function current_db(DatabaseService $db): string
 }
 
 /** Common handler for both ADD PRIMARY KEY syntaxes. */
-function _apply_add_primary_key(DatabaseService $db, string $table, string $colsList, string $originalSql): int
+function _apply_add_primary_key(DatabaseService $db, SymfonyStyle $io, string $table, string $colsList, string $originalSql): int
 {
     $wantedCols = parse_cols_list($colsList);
     $haveCols   = table_primary_key($db, $table);
@@ -112,10 +119,10 @@ function _apply_add_primary_key(DatabaseService $db, string $table, string $cols
     }
 
     if (getenv('MIG_VERBOSE')) {
-        echo "NOTE: Skipping PK change on {$table} (have: "
+        $io->comment("NOTE: Skipping PK change on {$table} (have: "
             . implode(',', $haveCols) . " want: "
             . implode(',', $wantedCols)
-            . "). Set MIG_REPLACE_PK=1 to force.\n";
+            . "). Set MIG_REPLACE_PK=1 to force.");
     }
     return MIG_SKIPPED;
 }
@@ -242,7 +249,7 @@ function drop_index_if_exists(DatabaseService $db, string $table, string $index)
  * Route known DDL patterns through idempotent helpers.
  * Returns true if handled (do not execute again), false to execute raw.
  */
-function handle_idempotent_ddl(DatabaseService $db, string $query): int
+function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $query): int
 {
     $q = trim($query);
     $q = preg_replace('/NULL\s*AFTER/i', 'NULL AFTER', $q);
@@ -294,12 +301,12 @@ function handle_idempotent_ddl(DatabaseService $db, string $query): int
 
     // ALTER TABLE ... ADD PRIMARY KEY [USING BTREE] (...) [USING BTREE]
     if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
-        return _apply_add_primary_key($db, $m[1], $m[2], $q);
+        return _apply_add_primary_key($db, $io, $m[1], $m[2], $q);
     }
 
     // ALTER TABLE ... ADD CONSTRAINT `name` PRIMARY KEY [USING BTREE] (...) [USING BTREE]
     if (preg_match('/^alter\s+table\s+`?([^`]+)`?\s+add\s+constraint\s+`?([^`]+)`?\s+primary\s+key\s*(?:using\s+btree)?\s*\((.+?)\)\s*(?:using\s+btree)?\s*;?$/is', $q, $m)) {
-        return _apply_add_primary_key($db, $m[1], $m[3], $q);
+        return _apply_add_primary_key($db, $io, $m[1], $m[3], $q);
     }
 
     return MIG_NOT_HANDLED;
@@ -336,7 +343,7 @@ foreach ($versions as $version) {
 
     if (version_compare($version, $currentVersion, '>=')) {
         if (!$quietMode) {
-            echo "Migrating to version $version...\n";
+            $io->section("Migrating to version $version");
         }
         $totalMigrations++;
 
@@ -376,7 +383,7 @@ foreach ($versions as $version) {
                 try {
                     $totalQueries++;
 
-                    $status = handle_idempotent_ddl($db, $query);
+                    $status = handle_idempotent_ddl($db, $io, $query);
                     if ($status === MIG_SKIPPED) {
                         $skippedQueries++;
                     } elseif ($status === MIG_EXECUTED) {
@@ -392,7 +399,7 @@ foreach ($versions as $version) {
                                             echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
                                         });
                                     } else {
-                                        echo "Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n";
+                                        $io->comment("Benign idempotence (errno={$db->getLastErrno()}): {$db->getLastError()}\n{$db->getLastQuery()}\n");
                                     }
                                 }
                                 $skippedQueries++;
@@ -403,7 +410,7 @@ foreach ($versions as $version) {
                                     if ($bar) {
                                         MiscUtility::spinnerPausePrint($bar, fn() => print $msg);
                                     } else {
-                                        echo $msg;
+                                        $io->error($msg);
                                     }
                                     if ($canLog) LoggerUtility::log('error', $msg);
                                 }
@@ -487,7 +494,8 @@ foreach ($versions as $version) {
                 if ($bar) {
                     MiscUtility::spinnerFinish($bar);
                 }
-                echo "Migration to version $version completed.\n";
+                $io->newLine();
+                $io->success("Migration to version $version completed.");
             }
         } finally {
             $db->rawQuery("SET FOREIGN_KEY_CHECKS = 1;");
@@ -511,12 +519,14 @@ foreach ($versions as $version) {
 }
 
 if (!$quietMode) {
-    echo "\n=======================================\n";
-    echo "Migration summary:\n";
-    echo "  Migrations attempted : $totalMigrations\n";
-    echo "  Queries executed     : $totalQueries\n";
-    echo "  Successful queries   : $successfulQueries\n";
-    echo "  Skipped queries      : $skippedQueries\n";
-    echo "  Potential Errors logged        : $totalErrors\n";
-    echo "=======================================\n\n";
+    $io->table(
+        ['Migration summary', ''],
+        [
+            ['Migrations attempted', $totalMigrations],
+            ['Queries executed', $totalQueries],
+            ['Successful queries', $successfulQueries],
+            ['Skipped queries', $skippedQueries],
+            ['Potential Errors logged', $totalErrors],
+        ]
+    );
 }

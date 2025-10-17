@@ -33,17 +33,7 @@ try {
     ini_set('memory_limit', '-1');
     set_time_limit(0);
 
-    $input = new ArgvInput();
-    $consoleOutput = new ConsoleOutput();
-    $consoleOutput->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
-    $consoleOutput->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
-    $consoleOutput->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
-    $consoleOutput->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
-    $consoleOutput->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
-
-    $io = new SymfonyStyle($input, $consoleOutput);
-
-    $io->title('STS Configuration Setup');
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -54,9 +44,12 @@ try {
 
     $isLIS = $general->isLISInstance();
     if (!$isLIS || !$cliMode) {
-        echo "❗ This script is only for LIS instances and must be run from the command line." . PHP_EOL;
+        $io->error("STS setup can only be run in CLI mode for LIS instances.");
         exit(0);
     }
+
+
+    $io->title('STS Configuration Setup');
 
     // ---- helpers -----------------------------------------------------------
     /**
