@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "41274bdcca56f7906e5c6f03b17a6e33",
+    "content-hash": "db4a387545b7b8d538649cef8724b2c0",
     "packages": [
         {
             "name": "brick/phonenumber",
@@ -7062,15 +7062,15 @@
         "ext-gd": "*",
         "ext-gettext": "*",
         "ext-intl": "*",
-        "ext-mbstring": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-sodium": "*",
         "ext-zip": "*",
         "ext-zlib": "*"
     },
-    "platform-dev": [],
+    "platform-dev": {},
     "platform-overrides": {
         "php": "8.2.29",
         "php-64bit": "8.2.29"
