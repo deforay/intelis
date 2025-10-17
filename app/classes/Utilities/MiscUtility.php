@@ -173,9 +173,9 @@ final class MiscUtility
         }
 
         // Additional context with caller info
-        $output = "[{" . DateUtility::getCurrentDateTime() . "}]{$callerInfo}:::DUMP:::$output";
+        $context = "[{" . DateUtility::getCurrentDateTime() . "}]{$callerInfo}:::DUMP:::";
 
-        LoggerUtility::logInfo($output);
+        LoggerUtility::logDebug($context . $output);
     }
     /**
      * Checks if the array contains any null or empty string values.
