@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-// bin/cleanup.php - Symfony Console Version
+// bin/cleanup.php
 // only run from command line
 if (php_sapi_name() !== 'cli') {
     exit(0);
@@ -194,6 +194,69 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     return $stats;
 }
 
+
+/**
+ * Run db-tools.php clean with retention args and pretty-print its output.
+ * Returns the process exit code.
+ */
+function runDbToolsClean(?int $keep, ?int $days, ConsoleOutput $output): int
+{
+    $args = [];
+    if ($keep !== null) $args[] = '--keep=' . (int)$keep;
+    if ($days !== null) $args[] = '--days=' . (int)$days;
+
+    // Fallback: require at least one policy
+    if (!$args) $args[] = '--days=30';
+
+    $script = BIN_PATH . DIRECTORY_SEPARATOR . 'db-tools.php';
+    if (!is_file($script)) {
+        $output->writeln("<fire>✗ db-tools.php not found at: {$script}</fire>");
+        return 1;
+    }
+
+    // Build: /usr/bin/php bin/db-tools.php clean --days=30 ...
+    $cmd = array_merge([PHP_BINARY, $script, 'clean'], $args);
+
+    $descriptorSpec = [
+        0 => ['pipe', 'r'], // stdin
+        1 => ['pipe', 'w'], // stdout
+        2 => ['pipe', 'w'], // stderr
+    ];
+
+    $proc = proc_open($cmd, $descriptorSpec, $pipes, ROOT_PATH, []);
+    if (!is_resource($proc)) {
+        $output->writeln("<fire>✗ Failed to start db-tools.php clean</fire>");
+        return 1;
+    }
+
+    // Nothing to send to stdin — cleanup is non-interactive now
+    fclose($pipes[0]);
+
+    $stdout = stream_get_contents($pipes[1]) ?: '';
+    $stderr = stream_get_contents($pipes[2]) ?: '';
+    fclose($pipes[1]);
+    fclose($pipes[2]);
+
+    $code = proc_close($proc);
+
+    if ($stdout !== '') {
+        foreach (explode("\n", rtrim($stdout)) as $line) {
+            $output->writeln('  ' . $line);
+        }
+    }
+    if ($stderr !== '') {
+        foreach (explode("\n", rtrim($stderr)) as $line) {
+            $output->writeln('  <fire>' . $line . '</fire>');
+        }
+    }
+
+    return (int)$code;
+}
+
+
+$defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int)$argv[1] : 30;
+
+
 // ============================================================================
 // MAIN SCRIPT
 // ============================================================================
@@ -203,15 +266,34 @@ $output->writeln('<success>CLEANUP SCRIPT STARTED: ' . date('Y-m-d H:i:s') . '</
 $output->writeln(str_repeat('=', 80));
 $output->writeln('');
 
-$defaultDuration = (isset($argv[1]) && is_numeric($argv[1])) ? (int)$argv[1] : 30;
 $output->writeln("<info>Default retention:</info> <comment>{$defaultDuration} days</comment>\n");
+
+// DB BACKUP CLEANUP (PITR-aware via db-tools.php)
+$output->writeln('<info>DB BACKUP CLEANUP</info>');
+$output->writeln(str_repeat('-', 80));
+
+// Choose your policy source (env > defaultDuration)
+$keepEnv = getenv('INTELIS_DB_BACKUP_KEEP');
+$daysEnv = getenv('INTELIS_DB_BACKUP_DAYS');
+
+// Only pass --keep if explicitly provided; otherwise prefer --days
+$keepForDbBackups = is_numeric($keepEnv) ? (int)$keepEnv : null;
+$daysForDbBackups = ($keepForDbBackups !== null)
+    ? null
+    : (is_numeric($daysEnv) ? (int)$daysEnv : $defaultDuration);
+
+$exit = runDbToolsClean($keepForDbBackups, $daysForDbBackups, $output);
+
+if ($exit === 0) {
+    $output->writeln("<success>✓ db-tools.php clean completed</success>\n");
+} else {
+    $output->writeln("<fire>✗ db-tools.php clean exited with code {$exit}</fire>\n");
+}
+
+
 
 // Directory configurations
 $cleanup = [
-    ROOT_PATH . DIRECTORY_SEPARATOR . 'backups' => [
-        'duration' => null,
-        'max_size_mb' => 20000,
-    ],
     ROOT_PATH . DIRECTORY_SEPARATOR . 'logs' => [
         'duration' => null,
         'max_size_mb' => 1000
@@ -240,6 +322,7 @@ $totalStats = [
 // FILE SYSTEM CLEANUP
 $output->writeln('<info>FILE SYSTEM CLEANUP</info>');
 $output->writeln(str_repeat('-', 80));
+
 
 foreach ($cleanup as $folder => $config) {
     $duration = $config['duration'] ?? $defaultDuration;
