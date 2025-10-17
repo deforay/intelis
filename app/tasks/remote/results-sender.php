@@ -128,55 +128,38 @@ function showHelp(): void
 }
 
 /**
- * Build payload of referral manifests associated with given test results
- *
- * @param DatabaseService $db
- * @param string $testType
- * @param array|null $selectedRows
- * @return array
+ * Build payload of referral manifests for a given test type based on selected rows.
  */
 function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?array $selectedRows): array
 {
-    if (empty($selectedRows)) {
+    if (empty($selectedRows) || !is_array($selectedRows)) {
         return [];
     }
 
-    // flatten to get all possible sample_package_code values
-    $codes = [];
+    // Detect nested form_data rows (['form_data' => [...]]) vs flat rows
+    $first = reset($selectedRows);
+    $hasNestedFormData = is_array($first) && array_key_exists('form_data', $first);
 
-    // TB module uses nested ['form_data']
-    if (isset(reset($selectedRows)['form_data'])) {
-        $codes = array_column(array_column($selectedRows, 'form_data'), 'sample_package_code');
-    } else {
-        $codes = array_column($selectedRows, 'sample_package_code');
-    }
+    // Collect distinct package codes
+    $codes = $hasNestedFormData
+        ? array_column(array_column($selectedRows, 'form_data'), 'sample_package_code')
+        : array_column($selectedRows, 'sample_package_code');
 
-    // clean + unique
-    $codes = array_values(array_unique(array_filter($codes, fn($v) => !empty($v))));
-
+    $codes = array_values(array_unique(array_filter($codes, static fn($v) => !empty($v))));
     if (empty($codes)) {
         return [];
     }
 
-    // fetch manifests in chunks to avoid huge IN clauses
-    $results = [];
-    $chunkSize = 1000;
-    for ($i = 0; $i < count($codes); $i += $chunkSize) {
-        $chunk = array_slice($codes, $i, $chunkSize);
+    // fetch manifests data matching these manifest codes
+    $db->reset();
+    $db->where('manifest_type', 'referral');
+    $db->where('module', $testType);
+    $db->where('manifest_code', $codes, 'IN');
 
-        $db->reset();
-        $db->where('manifest_type', 'referral');
-        $db->where('test_type', $testType);
-        $db->where('manifest_code', $chunk, 'IN');
-
-        $rows = $db->get('specimen_manifests');
-        if ($rows) {
-            $results = array_merge($results, $rows);
-        }
-    }
-
-    return $results;
+    $rows = $db->get('specimen_manifests');
+    return $rows ?: [];
 }
+
 
 
 // Check for help flag early

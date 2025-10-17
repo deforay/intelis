@@ -195,25 +195,25 @@ final class VlService extends AbstractTestService
             $orignalResultValue = $finalResult;
             $patterns = [
                 '/c\/?p(?:ml|m|opies)?/i',
-                '/copies/i',
-                '/hiv-?1\s*(?:not)?\s*detected/i'
+                '/copies/i'
             ];
+
 
             $finalResult = preg_replace($patterns, '', (string) $finalResult);
             $finalResult = trim($finalResult);
 
-            if (empty($finalResult) || $finalResult == '') {
+
+            if ($resultStatus == 4) {
+                $vlResultCategory = 'rejected';
+            } elseif ($resultStatus == 5) {
+                $vlResultCategory = 'invalid';
+            } elseif ($finalResult === null || $finalResult === '') {
                 $vlResultCategory = null;
             } elseif (in_array(strtolower($finalResult), $this->failureCases)) {
                 $vlResultCategory = 'failed';
             } elseif (in_array($resultStatus, [1, 2, 3, 10])) {
                 $vlResultCategory = null;
-            } elseif ($resultStatus == 4) {
-                $vlResultCategory = 'rejected';
-            } elseif ($resultStatus == 5) {
-                $vlResultCategory = 'invalid';
             } else {
-
                 if (is_numeric($finalResult)) {
                     $interpretedResult =  $this->parseNumericValue($finalResult);
                 } elseif (preg_match('/^([<>])\s*(\d+(\.\d+)?(E[+-]?\d+)?)$/i', $finalResult, $matches)) {
