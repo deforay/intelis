@@ -1109,25 +1109,30 @@ wait $pid
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
-# Make the intelis script executable
-# Remove any old symlinks
-sudo rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
+# Make intelis command globally accessible
+print info "Setting up intelis command..."
 
-# Make sure the actual script is executable for all users
-chmod +x "${lis_path}/intelis" 2>/dev/null || true
+TARGET="/usr/local/bin/intelis"
+SOURCE="${lis_path}/intelis"
 
-# Create a symlink in /usr/bin (exec-enabled path)
-sudo ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null
+if [ -f "${SOURCE}" ]; then
+    # Remove any existing version
+    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
 
-setfacl -m u:root:rwx,u:$USER:rwx,u:www-data:rwx "${lis_path}/intelis" 2>/dev/null || true
+    # Copy and make executable
+    cp "${SOURCE}" "${TARGET}"
+    chmod 755 "${TARGET}"
 
-# Confirm installation
-if [ -L "/usr/bin/intelis" ]; then
-    print success "✅ intelis command installed successfully!"
-    print info "You can now use: intelis backup, intelis interface, intelis token, etc."
+    # Optional: also link from /usr/bin for compatibility
+    ln -sf "${TARGET}" /usr/bin/intelis
+
+    print success "intelis command installed globally at ${TARGET}"
+    log_action "intelis command installed at ${TARGET}"
 else
-    print error "❌ Failed to create intelis symlink."
+    print warning "intelis script not found at ${SOURCE}, skipping setup"
+    log_action "intelis setup skipped — source missing"
 fi
+
 
 
 if [ -d "${lis_path}/run-once" ]; then
