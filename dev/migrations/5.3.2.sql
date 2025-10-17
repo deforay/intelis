@@ -97,3 +97,8 @@ ALTER TABLE specimen_manifests
   ADD COLUMN manifest_type ENUM('collection','referral') DEFAULT 'collection' AFTER module;
 
 UPDATE specimen_manifests SET manifest_type = 'collection' WHERE manifest_type IS NULL;
+
+-- Thana 17-Oct-2025
+UPDATE `privileges` SET `display_name` = 'Add TB Referral Manifest' WHERE `privileges`.`privilege_name` = '/tb/results/add-tb-referral.php'; 
+INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-results', '/tb/results/edit-tb-referral.php', NULL, 'Edit TB Referral Manifest', '2', 'always');
+UPDATE `s_app_menu` SET `inner_pages` = '/tb/results/add-tb-referral.php,/tb/results/edit-tb-referral.php' WHERE `s_app_menu`.`link` = '/tb/results/tb-referral-list.php'; 
