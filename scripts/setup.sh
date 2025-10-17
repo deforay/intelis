@@ -852,22 +852,48 @@ fi
 
 # Make the intelis script executable
 # Remove any old symlinks
-sudo rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
+rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
 
-# Make sure the actual script is executable for all users
-chmod +x "${lis_path}/intelis" 2>/dev/null || true
-
-setfacl -m u:root:rwx,u:$USER:rwx,u:www-data:rwx "${lis_path}/intelis" 2>/dev/null || true
-
-# Create a symlink in /usr/bin (exec-enabled path)
-sudo ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null
-
-# Confirm installation
-if [ -L "/usr/bin/intelis" ]; then
-    print success "✅ intelis command installed successfully!"
-    print info "You can now use: intelis backup, intelis interface, intelis token, etc."
+# Verify the intelis script exists
+if [ ! -f "${lis_path}/intelis" ]; then
+    print warning "intelis script not found at ${lis_path}/intelis - skipping command setup"
+    log_action "intelis script not found - skipping command setup"
 else
-    print error "❌ Failed to create intelis symlink."
+    # Set proper permissions: 755 (rwxr-xr-x)
+    if chmod 755 "${lis_path}/intelis" 2>/dev/null; then
+        print info "Set permissions (755) on intelis script"
+    else
+        print warning "Failed to set permissions on ${lis_path}/intelis"
+        log_action "Failed to chmod intelis script"
+    fi
+
+    # Set ownership to root:root
+    if chown root:root "${lis_path}/intelis" 2>/dev/null; then
+        print info "Set ownership (root:root) on intelis script"
+    else
+        print warning "Failed to set ownership on ${lis_path}/intelis"
+        log_action "Failed to chown intelis script"
+    fi
+
+    # Create symlink in /usr/bin
+    if ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null; then
+        # Verify it worked
+        if [ -L "/usr/bin/intelis" ] && [ -x "${lis_path}/intelis" ]; then
+            echo "✅ SUCCESS: intelis command is now accessible to all users"
+            echo ""
+            echo "Test it with: intelis --help"
+            echo "Or try: intelis cleanup"
+            ls -la /usr/bin/intelis
+            echo ""
+            log_action "intelis command setup completed successfully"
+        else
+            print warning "⚠️ intelis symlink created but may not be executable"
+            log_action "intelis symlink verification failed"
+        fi
+    else
+        print warning "Failed to create intelis symlink (it may already exist)"
+        log_action "Failed to create intelis symlink"
+    fi
 fi
 
 
