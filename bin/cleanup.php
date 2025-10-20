@@ -61,25 +61,32 @@ function formatBytes(int $bytes, int $precision = 2): string
 }
 
 /**
- * Cleanup a directory with progress bar
+ * Fast directory cleanup using native Linux commands
+ * 
+ * @param string $folder Directory to clean
+ * @param int|null $duration Days to keep (null = no age limit)
+ * @param int|null $maxSizeBytes Max folder size in bytes (null = no size limit)
+ * @param ConsoleOutput $output Console output
+ * @return array Stats: files_deleted, bytes_freed, errors
  */
 function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, ConsoleOutput $output): array
 {
     $stats = [
         'files_deleted' => 0,
-        'dirs_deleted' => 0,
         'bytes_freed' => 0,
         'errors' => 0
     ];
 
     if (!file_exists($folder) || !is_dir($folder)) {
         $output->writeln("<warning>Directory does not exist: {$folder}</warning>");
-        LoggerUtility::logWarning("Directory does not exist: {$folder}");
         return $stats;
     }
 
-    $durationToDelete = $duration * 86400;
-    $currentSize = getDirectorySize($folder);
+    // Get current size with fast du command
+    exec("du -sb " . escapeshellarg($folder) . " 2>/dev/null", $duOutput, $exitCode);
+    $currentSize = ($exitCode === 0 && !empty($duOutput[0]))
+        ? (int)explode("\t", $duOutput[0])[0]
+        : 0;
 
     $output->writeln("\n<info>Processing:</info> " . basename($folder));
     $output->writeln("  <comment>Path:</comment> {$folder}");
@@ -89,107 +96,123 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         $output->writeln("  <fire>⚠ WARNING: Exceeds limit of " . formatBytes($maxSizeBytes) . "</fire>");
     }
 
-    try {
-        $files = [];
+    // Determine cleanup strategy
+    $needsSizeCleanup = $maxSizeBytes && $currentSize > $maxSizeBytes;
+    $needsAgeCleanup = $duration !== null;
 
-        // Collect files
-        $output->write("  <comment>Scanning files...</comment>");
-        foreach (
-            new RecursiveIteratorIterator(
-                new RecursiveDirectoryIterator($folder, FilesystemIterator::SKIP_DOTS),
-                RecursiveIteratorIterator::CHILD_FIRST
-            ) as $fileInfo
-        ) {
-            if (in_array($fileInfo->getFilename(), ['.htaccess', 'index.php'])) {
-                continue;
-            }
+    if (!$needsSizeCleanup && !$needsAgeCleanup) {
+        $output->writeln("  <info>ℹ No cleanup needed</info>");
+        return $stats;
+    }
 
+    // Build find command to get all files (sorted by age, oldest first)
+    $findCmd = "find " . escapeshellarg($folder) . " -type f";
+    $findCmd .= " ! -name '.htaccess' ! -name 'index.php'";
+
+    // Only filter by age if we're NOT doing size-based cleanup
+    if ($needsAgeCleanup && !$needsSizeCleanup) {
+        $findCmd .= " -mtime +" . (int)$duration;
+    }
+
+    // Get files with mtime and size: mtime|path|size
+    $findCmd .= " -printf '%T@|%p|%s\n' 2>/dev/null";
+
+    exec($findCmd, $fileList, $exitCode);
+
+    if ($exitCode !== 0 || empty($fileList)) {
+        $output->writeln("  <info>ℹ No files found</info>");
+        return $stats;
+    }
+
+    // Parse and sort files by age (oldest first)
+    $files = [];
+    foreach ($fileList as $line) {
+        $parts = explode('|', $line);
+        if (count($parts) === 3) {
             $files[] = [
-                'path' => $fileInfo->getRealPath(),
-                'is_dir' => $fileInfo->isDir(),
-                'size' => $fileInfo->isFile() ? $fileInfo->getSize() : 0,
-                'mtime' => $fileInfo->getMTime(),
-                'age_days' => (time() - $fileInfo->getMTime()) / 86400
+                'mtime' => (int)$parts[0],
+                'path' => $parts[1],
+                'size' => (int)$parts[2],
+                'age_days' => (time() - (int)$parts[0]) / 86400
             ];
         }
-        $output->writeln(" <success>✓</success> Found " . count($files) . " items");
-
-        if (empty($files)) {
-            return $stats;
-        }
-
-        // Sort by modification time (oldest first)
-        usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
-
-        // Create progress bar
-        $progressBar = new ProgressBar($output, count($files));
-        $progressBar->setFormat(' %current%/%max% [%bar%] %percent:3s%% | %message%');
-        $progressBar->setMessage('Deleting old files...');
-        $progressBar->start();
-
-        // Delete files
-        foreach ($files as $file) {
-            $shouldDelete = false;
-
-            if ($duration && (time() - $file['mtime']) >= $durationToDelete) {
-                $shouldDelete = true;
-            }
-
-            if ($maxSizeBytes && $currentSize > $maxSizeBytes) {
-                $shouldDelete = true;
-            }
-
-            if ($shouldDelete) {
-                try {
-                    if ($file['is_dir']) {
-                        if (MiscUtility::removeDirectory($file['path'])) {
-                            $stats['dirs_deleted']++;
-                        }
-                    } else {
-                        if (@unlink($file['path'])) {
-                            $stats['files_deleted']++;
-                            $stats['bytes_freed'] += $file['size'];
-                            $currentSize -= $file['size'];
-                        }
-                    }
-                } catch (Throwable $e) {
-                    $stats['errors']++;
-                    LoggerUtility::logError("Failed to delete {$file['path']}: " . $e->getMessage());
-                }
-
-                if ($maxSizeBytes && $currentSize <= ($maxSizeBytes * 0.8)) {
-                    break;
-                }
-            }
-
-            $progressBar->advance();
-        }
-
-        $progressBar->finish();
-        $output->writeln("\n");
-
-        // Summary
-        if ($stats['files_deleted'] > 0 || $stats['dirs_deleted'] > 0) {
-            $output->writeln("  <success>✓ Deleted:</success> {$stats['files_deleted']} files, {$stats['dirs_deleted']} directories");
-            $output->writeln("  <success>✓ Freed:</success> " . formatBytes($stats['bytes_freed']));
-
-            LoggerUtility::logInfo("Cleanup completed for {$folder}", [
-                'files_deleted' => $stats['files_deleted'],
-                'dirs_deleted' => $stats['dirs_deleted'],
-                'bytes_freed' => $stats['bytes_freed']
-            ]);
-        } else {
-            $output->writeln("  <info>ℹ No files to delete</info>");
-        }
-
-        if ($stats['errors'] > 0) {
-            $output->writeln("  <fire>✗ Errors:</fire> {$stats['errors']}");
-        }
-    } catch (Throwable $e) {
-        $stats['errors']++;
-        $output->writeln("\n  <fire>✗ Error: {$e->getMessage()}</fire>");
-        LoggerUtility::logError("Error processing directory {$folder}: " . $e->getMessage());
     }
+
+    // Sort by modification time (oldest first)
+    usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+
+    // Determine which files to delete
+    $filesToDelete = [];
+    $bytesToFree = 0;
+    $targetSize = $maxSizeBytes ? $maxSizeBytes * 0.8 : 0; // Clean to 80% of limit
+
+    foreach ($files as $file) {
+        $shouldDelete = false;
+
+        // Delete if older than duration
+        if ($needsAgeCleanup && $file['age_days'] > $duration) {
+            $shouldDelete = true;
+        }
+
+        // Delete oldest files until we reach target size
+        if ($needsSizeCleanup && $currentSize > $targetSize) {
+            $shouldDelete = true;
+        }
+
+        if ($shouldDelete) {
+            $filesToDelete[] = $file['path'];
+            $bytesToFree += $file['size'];
+            $currentSize -= $file['size'];
+        }
+
+        // Stop if we've reached target size
+        if ($needsSizeCleanup && $currentSize <= $targetSize) {
+            break;
+        }
+    }
+
+    if (empty($filesToDelete)) {
+        $output->writeln("  <info>ℹ No files to delete</info>");
+        return $stats;
+    }
+
+    $fileCount = count($filesToDelete);
+    $output->writeln("  <comment>Deleting {$fileCount} files (" . formatBytes($bytesToFree) . ")...</comment>");
+
+    // Delete files in batches
+    $startTime = microtime(true);
+    $deleted = 0;
+    $errors = 0;
+
+    foreach ($filesToDelete as $filePath) {
+        if (@unlink($filePath)) {
+            $deleted++;
+        } else {
+            $errors++;
+        }
+    }
+
+    $elapsed = microtime(true) - $startTime;
+
+    $stats['files_deleted'] = $deleted;
+    $stats['bytes_freed'] = $bytesToFree;
+    $stats['errors'] = $errors;
+
+    $output->writeln("  <success>✓ Deleted:</success> {$deleted} files in " . round($elapsed, 2) . "s");
+    $output->writeln("  <success>✓ Freed:</success> " . formatBytes($bytesToFree));
+
+    if ($errors > 0) {
+        $output->writeln("  <fire>✗ Errors:</fire> {$errors}");
+    }
+
+    // Clean up empty directories
+    exec("find " . escapeshellarg($folder) . " -type d -empty -delete 2>/dev/null");
+
+    LoggerUtility::logInfo("Cleanup completed for {$folder}", [
+        'files_deleted' => $deleted,
+        'bytes_freed' => $bytesToFree,
+        'duration_seconds' => round($elapsed, 2)
+    ]);
 
     return $stats;
 }
@@ -304,11 +327,11 @@ $cleanup = [
     ],
     UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' => [
         'duration' => 120,
-        'max_size_mb' => 2000
+        'max_size_mb' => 1000
     ],
     UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' => [
         'duration' => 120,
-        'max_size_mb' => 2000
+        'max_size_mb' => 1000
     ],
 ];
 

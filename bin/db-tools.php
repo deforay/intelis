@@ -82,6 +82,7 @@ try {
             exit(0);
         case 'clean':
             handleClean($backupFolder, $commandArgs);
+            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'size':
             handleSize($intelisDbConfig, $interfacingDbConfig, $commandArgs);
@@ -950,6 +951,10 @@ function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig,
 
     foreach ($targets as $target) {
         echo sprintf('Purging binary logs older than %d day(s) for %s database...', $days, $target['label']) . PHP_EOL;
+
+        // Get binlog sizes BEFORE purging
+        $sizeBefore = getBinlogTotalSize($target['config']);
+
         $result = runMysqlQuery($target['config'], $sql);
         if ($result !== '') {
             foreach (explode("\n", $result) as $line) {
@@ -958,7 +963,49 @@ function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig,
                 }
             }
         }
+
+        // Get binlog sizes AFTER purging
+        $sizeAfter = getBinlogTotalSize($target['config']);
+        $freed = $sizeBefore - $sizeAfter;
+
         echo '  Log cleanup completed for ' . $target['label'] . PHP_EOL;
+
+        if ($freed > 0) {
+            echo '  Freed: ' . formatFileSize($freed) . ' (' . formatFileSize($sizeBefore) . ' → ' . formatFileSize($sizeAfter) . ')' . PHP_EOL;
+        } else {
+            echo '  No space freed (no old binlogs found)' . PHP_EOL;
+        }
+    }
+}
+
+/**
+ * Get total size of all binary logs for a database connection
+ */
+function getBinlogTotalSize(array $dbConfig): int
+{
+    try {
+        $sql = 'SHOW BINARY LOGS';
+        $result = runMysqlQuery($dbConfig, $sql);
+
+        $totalSize = 0;
+        $lines = explode("\n", trim($result));
+
+        // Skip header line and parse output
+        foreach (array_slice($lines, 1) as $line) {
+            if (empty($line)) continue;
+
+            // Output format: "mysql-bin.000001\t1234567"
+            $parts = preg_split('/\s+/', $line);
+            if (isset($parts[1]) && is_numeric($parts[1])) {
+                $totalSize += (int)$parts[1];
+            }
+        }
+
+        return $totalSize;
+    } catch (Exception $e) {
+        // If we can't get size, return 0 to avoid breaking the purge operation
+        echo '  Warning: Could not calculate binlog size: ' . $e->getMessage() . PHP_EOL;
+        return 0;
     }
 }
 
