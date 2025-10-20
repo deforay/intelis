@@ -24,6 +24,8 @@ $truncateFlag = false;
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
 
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+
     // Parse CLI arguments
     $options = getopt('ft', ['force', 'truncate']);
     if (isset($options['f']) || isset($options['force'])) {
@@ -35,7 +37,6 @@ if ($cliMode) {
     $io->title("Preparing to sync metadata...");
 }
 
-$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
