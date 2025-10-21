@@ -20,12 +20,10 @@ try {
     $tableName = "geographical_divisions";
     $primaryKey = "geo_id";
 
-    $aColumns = array('geo_name', 'geo_code', 'geo_status');
+    $aColumns     = ['g.geo_name', 'g.geo_code', 'g.geo_status', 'p.geo_name'];
+    $orderColumns = ['g.geo_name', 'g.geo_code', 'p.geo_name', 'g.geo_status'];
 
-    /* Indexed column (used for fast and accurate table cardinality) */
-    $sIndexColumn = $primaryKey;
 
-    $sTable = $tableName;
 
     $sOffset = $sLimit = null;
     if (isset($_POST['iDisplayStart']) && $_POST['iDisplayLength'] != '-1') {
@@ -34,54 +32,27 @@ try {
     }
 
 
+    $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $sOrder = "";
-    if (isset($_POST['iSortCol_0'])) {
-        $sOrder = "";
-        for ($i = 0; $i < (int) $_POST['iSortingCols']; $i++) {
-            if ($_POST['bSortable_' . (int) $_POST['iSortCol_' . $i]] == "true") {
-                $sOrder .= $aColumns[(int) $_POST['iSortCol_' . $i]] . "
-				 	" . ($_POST['sSortDir_' . $i]) . ", ";
-            }
-        }
-        $sOrder = substr_replace($sOrder, "", -2);
+    $columnSearch = $general->multipleColumnSearch($_POST['search']['value'] ?? '', $aColumns);
+    $sWhere = [];
+    if (!empty($columnSearch) && $columnSearch != '') {
+        $sWhere[] = $columnSearch;
     }
+    $whereSql = !empty($sWhere) ? (' WHERE ' . implode(' AND ', $sWhere)) : '';
 
 
+    $sQuery = "SELECT
+                    g.geo_id,
+                    g.geo_name,
+                    g.geo_code,
+                    g.geo_status,
+                    p.geo_name AS parent_name
+                FROM geographical_divisions AS g
+                LEFT JOIN geographical_divisions AS p
+                    ON p.geo_id = CAST(NULLIF(g.geo_parent, '') AS UNSIGNED)
+                $whereSql";
 
-    $sWhere = "";
-    if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
-        $searchArray = explode(" ", (string) $_POST['sSearch']);
-        $sWhereSub = "";
-        foreach ($searchArray as $search) {
-            if ($sWhereSub == "") {
-                $sWhereSub .= "(";
-            } else {
-                $sWhereSub .= " AND (";
-            }
-            $colSize = count($aColumns);
-
-            for ($i = 0; $i < $colSize; $i++) {
-                if ($i < $colSize - 1) {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' OR ";
-                } else {
-                    $sWhereSub .= $aColumns[$i] . " LIKE '%" . ($search) . "%' ";
-                }
-            }
-            $sWhereSub .= ")";
-        }
-        $sWhere .= $sWhereSub;
-    }
-
-
-
-
-    $sQuery = "SELECT * FROM $tableName";
-
-    if (!empty($sWhere)) {
-        $sWhere = ' WHERE ' . $sWhere;
-        $sQuery = $sQuery . ' ' . $sWhere;
-    }
 
     if (!empty($sOrder) && $sOrder !== '') {
         $sOrder = preg_replace('/\s+/', ' ', $sOrder);
@@ -89,34 +60,28 @@ try {
     }
 
     if (isset($sLimit) && isset($sOffset)) {
-        $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+        $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
     }
-    $rResult = $db->rawQuery($sQuery);
-    /* Data set length after filtering */
+    [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-    $aResultFilterTotal = $db->rawQuery("SELECT * FROM $tableName $sWhere order by $sOrder");
-    $iFilteredTotal = count($aResultFilterTotal);
-
-    /* Total data set length */
-    $aResultTotal = $db->rawQuery("select COUNT($primaryKey) as total FROM $tableName");
-    // $aResultTotal = $countResult->fetch_row();
-    $iTotal = $aResultTotal[0]['total'];
-
-    /* Output  */
-    $output = array(
+    $output = [
         "sEcho" => (int) $_POST['sEcho'],
-        "iTotalRecords" => $iTotal,
-        "iTotalDisplayRecords" => $iFilteredTotal,
+        "iTotalRecords" => $resultCount,
+        "iTotalDisplayRecords" => $resultCount,
         "aaData" => []
-    );
+    ];
 
     foreach ($rResult as $aRow) {
-        $row = [];
-        $row[] = ($aRow['geo_name']);
+        $row   = [];
+        $row[] = $aRow['geo_name'];
         $row[] = $aRow['geo_code'];
-        $row[] = ($aRow['geo_status']);
-        if (_isAllowed("edit-geographical-divisions.php") && $general->isLISInstance() === false) {
-            $row[] = '<a href="edit-geographical-divisions.php?id=' . base64_encode((string) $aRow['geo_id']) . '" class="btn btn-primary btn-xs" style="margin-right: 2px;" title="' . _translate("Edit") . '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</em></a>';
+        $row[] = $aRow['parent_name'] ?? '';
+        $row[] = $aRow['geo_status'];
+        if (_isAllowed("/common/reference/edit-geographical-divisions.php") && $general->isLISInstance() === false) {
+            $row[] = '<a href="/common/reference/edit-geographical-divisions.php?id=' .
+                base64_encode((string)$aRow['geo_id']) .
+                '" class="btn btn-primary btn-xs" style="margin-right:2px;" title="' . _translate("Edit") .
+                '"><em class="fa-solid fa-pen-to-square"></em> ' . _translate("Edit") . '</a>';
         }
         $output['aaData'][] = $row;
     }

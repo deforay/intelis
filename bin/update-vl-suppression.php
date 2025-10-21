@@ -158,17 +158,10 @@ try {
 
         $offset += $batchSize;
     } while ($batchCount > 0);
-
-    // Success logging
-    $duration = round(microtime(true) - $startTime, 2);
-    LoggerUtility::logInfo("VL Result Category update completed successfully", [
-        'invalid_results_fixed' => $totalInvalidFixed,
-        'records_processed' => $totalProcessed,
-        'records_updated' => $totalUpdated,
-        'duration_seconds' => $duration
-    ]);
-
-    echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
+    if (!$isCli) {
+        $duration = round(microtime(true) - $startTime, 2);
+        echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
+    }
 } catch (Throwable $e) {
     // Critical error logging
     LoggerUtility::logError("VL category update script failed critically", [

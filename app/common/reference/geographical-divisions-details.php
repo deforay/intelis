@@ -32,8 +32,9 @@ require_once APPLICATION_PATH . '/header.php';
 								<tr>
 									<th scope="row"><?php echo _translate("Name"); ?></th>
 									<th scope="row"><?php echo _translate("Code"); ?></th>
+									<th scope="row"><?php echo _translate("Parent"); ?></th>
 									<th scope="row"><?php echo _translate("Status"); ?></th>
-									<?php if (_isAllowed("geographical-divisions-details.php") && $general->isLISInstance() === false) { ?>
+									<?php if ($hasAction) { ?>
 										<th scope="row"><?php echo _translate("Action"); ?></th>
 									<?php } ?>
 								</tr>
@@ -80,6 +81,9 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
+				{
+					"sClass": "center"
+				},
 				<?php if (_isAllowed("geographical-divisions-details.php") && $general->isLISInstance() === false) { ?> {
 						"sClass": "center",
 						"bSortable": false
@@ -91,7 +95,7 @@ require_once APPLICATION_PATH . '/header.php';
 			],
 			"bProcessing": true,
 			"bServerSide": true,
-			"sAjaxSource": "get-geographical-divisions-helper.php",
+			"sAjaxSource": "/common/reference/get-geographical-divisions-helper.php",
 			"fnServerData": function(sSource, aoData, fnCallback) {
 				$.ajax({
 					"dataType": 'json',
