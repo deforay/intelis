@@ -115,16 +115,16 @@
             "php app/tasks/remote/sts-metadata-receiver.php",
             "php app/tasks/remote/lab-metadata-sender.php"
         ],
+        "send-results": "php app/tasks/remote/results-sender.php",
+        "receive-requests": "php app/tasks/remote/requests-receiver.php",
+        "generate-translation-strings": "php app/system/generate-translation-strings.php",
+        "fix-app-menu": "php bin/setup/fix-app-menu.php",
         "sts-sync": [
             "@token",
             "@metadata-sync",
             "@send-results",
             "@receive-requests"
         ],
-        "send-results": "php app/tasks/remote/results-sender.php",
-        "receive-requests": "php app/tasks/remote/requests-receiver.php",
-        "generate-translation-strings": "php app/system/generate-translation-strings.php",
-        "fix-app-menu": "php bin/setup/fix-app-menu.php",
         "post-install": [
             "@migrate",
             "@fixes",

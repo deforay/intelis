@@ -459,8 +459,7 @@ php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
 
 # Download and install switch-php script
-download_file "/usr/local/bin/switch-php" "https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php"
-chmod u+x /usr/local/bin/switch-php
+ensure_switch_php
 
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
@@ -630,49 +629,11 @@ update_php_ini() {
     fi
 }
 
-# --- Ensure OPcache is installed and enabled for Apache (don’t rely on php -m) ---
-ensure_opcache() {
-  local ver="${desired_php_version:-8.2}"
-  local pkg="php${ver}-opcache"
-  local apache_ini_glob="/etc/php/${ver}/apache2/conf.d/*opcache.ini"
-  local installed enabled
-
-  # Is the package installed?
-  if dpkg-query -W -f='${Status}\n' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
-    installed=true
-  else
-    installed=false
-  fi
-
-  # Is it enabled for Apache (conf.d link/file exists)?
-  if ls $apache_ini_glob >/dev/null 2>&1; then
-    enabled=true
-  else
-    enabled=false
-  fi
-
-  if $installed && $enabled; then
-    print success "OPcache already installed and enabled for PHP ${ver} (Apache); skipping."
-    return 0
-  fi
-
-  if ! $installed; then
-    print info "Installing OPcache for PHP ${ver}…"
-    apt-get update -y
-    apt-get install -y "$pkg" || true
-  fi
-
-  if ! $enabled; then
-    print info "Enabling OPcache for PHP ${ver} (Apache)…"
-    phpenmod -v "$ver" -s apache2 opcache 2>/dev/null || phpenmod opcache 2>/dev/null || true
-  fi
-
-  print success "OPcache is ready for PHP ${ver} (Apache)."
-}
-
-# Call it here (replaces your previous OPcache block)
+# Function to ensure OPCache is installed and enabled
 ensure_opcache
 
+# Function to ensure Composer is installed
+ensure_composer
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
