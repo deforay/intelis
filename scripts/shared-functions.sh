@@ -168,7 +168,6 @@ spinner() {
     return "$last_status"
 }
 
-
 download_file() {
     local output_file="$1"
     local url="$2"
@@ -197,49 +196,59 @@ download_file() {
     local log_file
     log_file=$(mktemp)
 
-    # Download with aria2c
-    # FIX: Use full path to aria2c to avoid "command not found" issues
-    local aria2c_cmd
+    # Try aria2c first
     if command -v aria2c &>/dev/null; then
-        aria2c_cmd=$(command -v aria2c)
-    else
-        print error "aria2c not found in PATH"
-        rm -f "$log_file"
-        return 127
+        aria2c -x 5 -s 5 \
+            --console-log-level=error \
+            --summary-interval=0 \
+            --allow-overwrite=true \
+            --no-conf \
+            --conditional-get=false \
+            --remote-time=false \
+            -d "$output_dir" \
+            -o "$filename" \
+            "$url" >"$log_file" 2>&1 &
+        
+        local download_pid=$!
+        spinner "$download_pid" "$message"
+        
+        # Check if file downloaded successfully
+        if [ -f "$output_file" ] && [ -s "$output_file" ]; then
+            print success "Download completed: $filename"
+            rm -f "$log_file"
+            return 0
+        fi
+        
+        # aria2c failed, try wget
+        print warning "aria2c failed, trying wget..."
+        rm -f "$output_file"
     fi
 
-    # Run aria2c directly (not in background initially) to capture real exit code
-    "$aria2c_cmd" -x 5 -s 5 \
-        --console-log-level=error \
-        --summary-interval=0 \
-        --allow-overwrite=true \
-        --no-conf \
-        --conditional-get=false \
-        --remote-time=false \
-        -d "$output_dir" \
-        -o "$filename" \
-        "$url" >"$log_file" 2>&1 &
-    
-    local download_pid=$!
-
-    spinner "$download_pid" "$message"
-    local download_status=$?
-
-    # FIX: Check if file was actually downloaded, regardless of exit code
-    if [ -f "$output_file" ] && [ -s "$output_file" ]; then
-        # File exists and is not empty - consider it a success
-        download_status=0
-        print success "Download completed: $filename"
-    elif [ $download_status -ne 0 ]; then
-        print error "Download failed for: $filename"
-        print info "Detailed download logs:"
-        cat "$log_file"
-    else
-        print success "Download completed: $filename"
+    # Fallback to wget
+    if command -v wget &>/dev/null; then
+        wget --progress=bar:force \
+            --tries=3 \
+            --timeout=30 \
+            -O "$output_file" \
+            "$url" >"$log_file" 2>&1 &
+        
+        local download_pid=$!
+        spinner "$download_pid" "$message"
+        
+        # Check if wget succeeded
+        if [ -f "$output_file" ] && [ -s "$output_file" ]; then
+            print success "Download completed: $filename"
+            rm -f "$log_file"
+            return 0
+        fi
     fi
 
+    # Both failed
+    print error "Download failed for: $filename"
+    print info "Detailed download logs:"
+    cat "$log_file"
     rm -f "$log_file"
-    return $download_status
+    return 1
 }
 
 
@@ -937,4 +946,24 @@ ensure_opcache() {
     fi
 
     print success "OPcache is ready for PHP ${ver} (Apache)."
+}
+
+
+setup_mysql_config() {
+    local config_file="$1"
+    local mysql_cnf="/root/.my.cnf"
+    
+    if [ ! -f "$mysql_cnf" ] && [ -f "$config_file" ]; then
+        local pw=$(php -r "error_reporting(0);\$c=@include '$config_file';echo isset(\$c['database']['password'])?trim(\$c['database']['password']):'';")
+        if [ -n "$pw" ]; then
+            cat > "$mysql_cnf" << 'EOF'
+[client]
+user=root
+EOF
+            printf "password=%s\n" "$pw" >> "$mysql_cnf"
+            chmod 600 "$mysql_cnf"
+            return 0
+        fi
+    fi
+    return 1
 }
