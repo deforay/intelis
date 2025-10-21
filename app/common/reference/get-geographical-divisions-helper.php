@@ -40,7 +40,7 @@ try {
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['search']['value'] ?? '', $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
         $sWhere[] = $columnSearch;
