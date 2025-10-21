@@ -1,15 +1,5 @@
 #!/bin/bash
 # shared-functions.sh - Common functions for LIS scripts
-
-
-ensure_path() {
-  case ":$PATH:" in
-    *":/usr/local/bin:"*) ;; # already present
-    *) export PATH="/usr/local/bin:$PATH" ;;
-  esac
-}
-
-
 # Unified print function for colored output
 print() {
     local type=$1
@@ -52,7 +42,6 @@ print() {
 
 # Install required packages
 install_packages() {
-    export DEBIAN_FRONTEND=noninteractive
     local required_pkgs=(aria2 wget lsb-release bc pigz gpg fzf zstd)
     # Map package names to their actual command names
     declare -A pkg_to_cmd=(
@@ -109,7 +98,6 @@ prepare_system() {
 
     print success "System preparation complete with non-interactive restarts configured."
 }
-
 spinner() {
     local pid=$1
     local message="${2:-Processing...}"
@@ -213,10 +201,16 @@ download_file() {
     # --no-conf: don't load aria2.conf (prevents cache settings)
     # --conditional-get=false: always download, ignore cache headers
     # --remote-time=false: don't preserve remote file timestamps
-    aria2c -x 5 -s 5 --max-tries=10 --retry-wait=3 \
-        --console-log-level=error --summary-interval=0 \
-        --allow-overwrite=true --no-conf --conditional-get=false --remote-time=false \
-        -d "$output_dir" -o "$filename" "$url" >"$log_file" 2>&1 &
+    aria2c -x 5 -s 5 \
+        --console-log-level=error \
+        --summary-interval=0 \
+        --allow-overwrite=true \
+        --no-conf \
+        --conditional-get=false \
+        --remote-time=false \
+        -d "$output_dir" \
+        -o "$filename" \
+        "$url" >"$log_file" 2>&1 &
     local download_pid=$!
 
     spinner "$download_pid" "$message"
@@ -243,7 +237,7 @@ download_if_changed() {
     local tmpfile
     tmpfile=$(mktemp)
 
-    if ! wget -q --tries=10 --waitretry=3 -O "$tmpfile" "$url"; then
+    if ! wget -q -O "$tmpfile" "$url"; then
         print error "Failed to download $(basename "$output_file") from $url"
         rm -f "$tmpfile"
         return 1
@@ -823,6 +817,14 @@ setup_intelis_cron() {
     log_action "Cron job for LIS added/replaced in root's crontab."
 }
 
+
+
+ensure_path() {
+    case ":$PATH:" in
+        *":/usr/local/bin:"*) ;; # already present
+        *) export PATH="/usr/local/bin:$PATH" ;;
+    esac
+}
 
 
 ensure_switch_php() {
