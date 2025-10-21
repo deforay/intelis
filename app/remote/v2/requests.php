@@ -32,6 +32,10 @@ $stsRequestsService = ContainerRegistry::get(RequestsService::class);
 $stsTokensService = ContainerRegistry::get(TokensService::class);
 
 
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
 $payload = [];
 
 try {
@@ -53,8 +57,10 @@ try {
     }
 
     $token = $stsTokensService->validateToken($authToken, $labId);
-    if (!$token) {
-        throw new SystemException('Unauthorized Access. Token missing or invalid.', 401);
+    if ($token === false || empty($token)) {
+        $labDetails = $facilitiesService->getFacilityById($labId);
+        http_response_code(401);
+        throw new SystemException("Unauthorized Access. Token missing or invalid for lab {$labDetails['facility_name']}.", 401);
     }
 
     if (is_string($token)) {
@@ -72,7 +78,6 @@ try {
     $tableName      = TestsService::getTestTableName($testType);
     $primaryKeyName = TestsService::getPrimaryColumn($testType);
 
-    $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
     $facilityMapResult = $facilitiesService->getTestingLabFacilityMap($labId);
 
     $requestsData = $stsRequestsService->getRequests(
