@@ -198,18 +198,10 @@ download_file() {
     log_file=$(mktemp)
 
     # Download with aria2c
-    # FIX: Use full path to aria2c to avoid "command not found" issues
-    local aria2c_cmd
-    if command -v aria2c &>/dev/null; then
-        aria2c_cmd=$(command -v aria2c)
-    else
-        print error "aria2c not found in PATH"
-        rm -f "$log_file"
-        return 127
-    fi
-
-    # Run aria2c directly (not in background initially) to capture real exit code
-    "$aria2c_cmd" -x 5 -s 5 \
+    # --no-conf: don't load aria2.conf (prevents cache settings)
+    # --conditional-get=false: always download, ignore cache headers
+    # --remote-time=false: don't preserve remote file timestamps
+    aria2c -x 5 -s 5 \
         --console-log-level=error \
         --summary-interval=0 \
         --allow-overwrite=true \
@@ -219,18 +211,12 @@ download_file() {
         -d "$output_dir" \
         -o "$filename" \
         "$url" >"$log_file" 2>&1 &
-    
     local download_pid=$!
 
     spinner "$download_pid" "$message"
     local download_status=$?
 
-    # FIX: Check if file was actually downloaded, regardless of exit code
-    if [ -f "$output_file" ] && [ -s "$output_file" ]; then
-        # File exists and is not empty - consider it a success
-        download_status=0
-        print success "Download completed: $filename"
-    elif [ $download_status -ne 0 ]; then
+    if [ $download_status -ne 0 ]; then
         print error "Download failed for: $filename"
         print info "Detailed download logs:"
         cat "$log_file"
