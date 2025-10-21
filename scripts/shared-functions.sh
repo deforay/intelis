@@ -135,7 +135,7 @@ spinner() (
 
     # UTF-8 heuristic; disable animation if not a TTY
     local use_unicode=1
-    printf '%s' "$LC_ALL$LC_CTYPE$LANG" | grep -qi 'utf-8' || use_unicode=0
+    printf '%s' "${LC_ALL:-}${LC_CTYPE:-}${LANG:-}" | grep -qi 'utf-8' || use_unicode=0
     (( is_tty )) || use_unicode=0
 
     # Hide cursor if we can and restore on exit (inside subshell only)
