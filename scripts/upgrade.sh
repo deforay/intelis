@@ -197,6 +197,10 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
+# Clean up vim swap files and setup MySQL config
+find "${lis_path}" -name ".*.swp" -delete 2>/dev/null || true
+setup_mysql_config "${lis_path}/configs/config.production.php" && print info "MySQL config ready"
+
 MYSQL_CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 # Calculate total system memory in MB
