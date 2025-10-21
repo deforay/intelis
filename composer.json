@@ -116,10 +116,10 @@
             "php app/tasks/remote/lab-metadata-sender.php"
         ],
         "sts-sync": [
-            "php app/tasks/remote/sts-metadata-receiver.php",
-            "php app/tasks/remote/results-sender.php",
-            "php app/tasks/remote/requests-receiver.php",
-            "php app/tasks/remote/lab-metadata-sender.php"
+            "@token",
+            "@metadata-sync",
+            "@send-results",
+            "@receive-requests"
         ],
         "send-results": "php app/tasks/remote/results-sender.php",
         "receive-requests": "php app/tasks/remote/requests-receiver.php",
