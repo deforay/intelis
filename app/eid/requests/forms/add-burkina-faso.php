@@ -13,7 +13,7 @@ $specimenTypeResult = $eidObj->getEidSampleTypes();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-//$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';

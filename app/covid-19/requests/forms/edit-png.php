@@ -80,6 +80,7 @@ foreach ($implementingPartnerList as $implementingPartner) {
 foreach ($fundingSourceList as $fundingSource) {
     $fundingSourceArray[$fundingSource['funding_source_id']] = ($fundingSource['funding_source_name']);
 }
+
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 //$implementingPartnerOptions = $general->generateSelectOptions($implementingPartnerArray, $covid19Info['implementing_partner'], '-- Select --');
 //$fundingSourceOptions = $general->generateSelectOptions($fundingSourceArray, $covid19Info['funding_source'], '-- Select --');

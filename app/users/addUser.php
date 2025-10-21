@@ -31,21 +31,6 @@ if ($general->isSTSInstance()) {
 }
 //province Stratt
 $rKey = '';
-$pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
-// $facility = '';
-// $facility.="<option data-code='' data-emails='' data-mobile-nos='' data-contact-person='' value=''> -- Select -- </option>";
-//province end
-$ftResult = [];
-
-$fQuery = "SELECT * FROM facility_type where facility_type_id IN(1,2)";
-$ftResult = $db->rawQuery($fQuery);
-
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 ?>
@@ -216,48 +201,6 @@ $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
                                         </div>
                                    </div>
                               </div>
-                              <!-- <div class="row" style=<?php echo $display; ?>>
-                                   <div class="col-md-12">
-                                        <a href="javascript:void(0);" id="showFilter" class="btn btn-primary"><?php echo _translate("Show Advanced Search Options"); ?></a>
-                                        <a href="javascript:void(0);" style="display:none;" id="hideFilter" class="btn btn-danger"><?php echo _translate("Hide Advanced Search Options"); ?></a>
-                                   </div>
-                                   <div id="facilityFilter" style="display:none;">
-                                        <h4 style="padding:36px 0px 0px 14px;"> <?php echo _translate("Filter Facilities by Province & Districts"); ?></h4>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("Province"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control " name="province" id="province" title="<?php echo _translate('Please choose province'); ?>" style="width:100%;" onchange="getProvinceDistricts();">
-                                                            <?php echo $province; ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("District"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control " name="district" id="district" title="<?php echo _translate('Please choose district'); ?>" style="width:100%;" onchange="getFacilities();">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                        <div class="col-md-4">
-                                             <div class="form-group">
-                                                  <label for="province" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> </label>
-                                                  <div class="col-lg-7">
-                                                       <select class="form-control" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getFacility()">
-                                                            <option value=""> <?php echo _translate("-- Select --"); ?> </option>
-                                                            <?php foreach ($ftResult as $type) { ?>
-                                                                 <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
-                                                            <?php } ?>
-                                                       </select>
-                                                  </div>
-                                             </div>
-                                        </div>
-                                   </div>
-                              </div> -->
                               <div class="row" style="margin: 15px;<?php echo $display; ?>">
                                    <div class="col-md-12">
                                         <button type="button" class="btn btn-primary btn-sm pull-left" style="margin-right:5px;line-height: 2;" onclick="hideAdvanceSearch();"><span>Show Advanced Search Options</span></button>

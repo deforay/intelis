@@ -67,9 +67,6 @@ $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
 $statusQuery = "SELECT * FROM r_sample_status WHERE `status` = 'active' AND status_id NOT IN(9,8)";
 $statusResult = $db->rawQuery($statusQuery);
 
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pdResult = $db->query($pdQuery);
-
 $sQuery = "SELECT * FROM r_generic_sample_types WHERE sample_type_status='active'";
 $sResult = $db->query($sQuery);
 
@@ -256,19 +253,8 @@ if ($general->isSTSInstance()) {
 } else {
 	$sampleCode = 'sample_code';
 }
-//check user exists in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-	$pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id WHERE gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-}
 
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-	$province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_id'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $genericResultInfo['facility_id'], '-- Select --');
 
 //facility details

@@ -36,17 +36,7 @@ if ($_SESSION['accessType'] == 'collection-site') {
     $rKey = '';
 }
 //check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id FROM user_facility_map WHERE user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-    $pdResult = $db->query($pdQuery);
-    $province = "<option value=''> -- Select -- </option>";
-    foreach ($pdResult as $provinceName) {
-        $selected = ($tbInfo['geo_id'] == $provinceName['geo_id']) ? "selected='selected'" : "";
-        $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_id'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
-    }
-}
+
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $tbInfo['facility_id'], '-- Select --');
 $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3+");
