@@ -72,7 +72,7 @@ $schedule->run(PHP_BINARY . ' ' . BIN_PATH . '/backup-configs.php')
 
 
 // Cleanup Old Files
-$schedule->run(PHP_BINARY . " " . BIN_PATH . "/cleanup.php")
+$schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run cleanup -n')
     ->cron('45 0 * * *')
     ->timezone($timeZone)
     ->preventOverlapping()
@@ -112,29 +112,11 @@ $schedule->run(PHP_BINARY . " " . BIN_PATH . "/update-vl-suppression.php")
 
 // REMOTE SYNC JOBS START
 if (!empty($general->getRemoteURL()) && $general->isLISInstance() === true) {
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/sts-metadata-receiver.php")
+    $schedule->run('COMPOSER_ALLOW_SUPERUSER=1 composer -d ' . ROOT_PATH . ' run sts-sync -n')
         ->everyFiveMinutes()
         ->timezone($timeZone)
         ->preventOverlapping()
-        ->description('Syncing metadata from STS');
-
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/requests-receiver.php")
-        ->everyFifteenMinutes()
-        ->timezone($timeZone)
-        ->preventOverlapping()
-        ->description('Syncing requests from STS');
-
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/results-sender.php")
-        ->everyTenMinutes()
-        ->timezone($timeZone)
-        ->preventOverlapping()
-        ->description('Syncing results to STS');
-
-    $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/remote/lab-metadata-sender.php")
-        ->everyThirtyMinutes()
-        ->timezone($timeZone)
-        ->preventOverlapping()
-        ->description('Syncing results to STS');
+        ->description('Syncing data to and from STS');
 }
 // REMOTE SYNC JOBS END
 
