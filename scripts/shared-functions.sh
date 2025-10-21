@@ -110,10 +110,7 @@ prepare_system() {
     print success "System preparation complete with non-interactive restarts configured."
 }
 
-spinner() (
-    # Subshell: traps here won't clobber the parent's traps
-    set -euo pipefail
-
+spinner() {
     local pid=$1
     local message="${2:-Processing...}"
     local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
@@ -135,12 +132,18 @@ spinner() (
 
     # UTF-8 heuristic; disable animation if not a TTY
     local use_unicode=1
-    printf '%s' "${LC_ALL:-}${LC_CTYPE:-}${LANG:-}" | grep -qi 'utf-8' || use_unicode=0
+    printf '%s' "$LC_ALL$LC_CTYPE$LANG" | grep -qi 'utf-8' || use_unicode=0
     (( is_tty )) || use_unicode=0
 
-    # Hide cursor if we can and restore on exit (inside subshell only)
-    if (( is_tty && has_tput )); then tput civis 2>/dev/null || true; fi
-    cleanup() { if (( is_tty && has_tput )); then tput cnorm 2>/dev/null || true; fi; }
+    # Hide cursor if we can and restore on exit
+    if (( is_tty && has_tput )); then
+        tput civis 2>/dev/null || true
+    fi
+    cleanup() {
+        if (( is_tty && has_tput )); then
+            tput cnorm 2>/dev/null || true
+        fi
+    }
     trap cleanup EXIT INT TERM
 
     # Draw loop (only animate on TTY)
@@ -174,9 +177,8 @@ spinner() (
         fi
     fi
 
-    exit "$last_status"
-)
-
+    return "$last_status"
+}
 
 
 download_file() {
