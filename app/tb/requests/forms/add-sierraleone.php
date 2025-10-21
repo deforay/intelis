@@ -49,8 +49,6 @@ $tbReasonsForTesting = $tbService->getTbReasonsForTesting();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-
 if ($_SESSION['accessType'] == 'collection-site') {
 	$sampleCodeKey = 'remote_sample_code_key';
 	$sampleCode = 'remote_sample_code';
@@ -62,7 +60,6 @@ if ($_SESSION['accessType'] == 'collection-site') {
 }
 $pQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
 
-$pdResult = $db->query($pQuery);
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 

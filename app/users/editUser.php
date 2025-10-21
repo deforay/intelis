@@ -72,18 +72,6 @@ if ($general->isSTSInstance()) {
      $display = 'display:block';
 }
 
-//province Stratt
-$pdQuery = "SELECT * from geographical_divisions WHERE geo_parent = 0";
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-     $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
-//Province Details  Ends
-$fQuery = "SELECT * FROM facility_type";
-$ftResult = $db->rawQuery($fQuery);
-
 $geoLocationParentArray = $geolocationService->fetchActiveGeolocations();
 
 ?>
