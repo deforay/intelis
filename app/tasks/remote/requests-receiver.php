@@ -225,9 +225,9 @@ function syncTestRequest(
 function outputSyncResults(SymfonyStyle $io, string $module, int $success, int $failures): void
 {
     if ($success > 0) {
-        $io->success("Synced $success " . strtoupper($module) . " record(s)");
+        $io->success("Synced $success new " . strtoupper($module) . " record(s)");
     } else {
-        $io->success("Synced $success " . strtoupper($module) . " record(s)");
+        $io->success("Synced no new " . strtoupper($module) . " record(s)");
     }
 
     if ($failures > 0) {

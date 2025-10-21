@@ -2,6 +2,7 @@
 
 use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -15,6 +16,11 @@ $_POST = _sanitizeInput($request->getParsedBody());
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
 try {
 
     $tableName = "geographical_divisions";

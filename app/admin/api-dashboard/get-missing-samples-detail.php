@@ -17,9 +17,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 try {
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
 
     $testType = $_POST['testType'] ?? 'vl';
     $table = TestsService::getTestTableName($testType);
