@@ -159,10 +159,32 @@ try {
         $notRejectedExpr,
     ]);
 
-    $waitingQuery = "SELECT COUNT(t.$primaryKey) AS total FROM $table AS t WHERE $waitingWhere";
-    $waitingResult = $db->rawQueryOne($waitingQuery);
-    $waitingTotal = (int) ($waitingResult['total'] ?? 0);
+    // Breakdown by status
+    $waitingByStatusQuery = "
+    SELECT
+        COALESCE(s.status_name, CONCAT('Status ', t.result_status)) AS status_name,
+        t.result_status,
+        COUNT(t.$primaryKey) AS cnt
+    FROM $table AS t
+    LEFT JOIN r_sample_status AS s ON s.status_id = t.result_status
+    WHERE $waitingWhere
+    GROUP BY t.result_status, s.status_name
+    ORDER BY s.status_name
+";
 
+    $waitingByStatusRows = $db->rawQuery($waitingByStatusQuery);
+
+    $waitingCategories = [];
+    $waitingCounts     = [];
+    $waitingTotal      = 0;
+
+    foreach ($waitingByStatusRows as $r) {
+        $label = (string) ($r['status_name'] ?? 'Unknown');
+        $count = (int) $r['cnt'];
+        $waitingCategories[] = $label;
+        $waitingCounts[]     = $count;
+        $waitingTotal       += $count;
+    }
     // ======================================================
     // B) Aggregate (within selected range)
     // ======================================================
@@ -402,7 +424,7 @@ try {
                     <?php echo _translate("SAMPLES WITH NO RESULTS"); ?>
                 </small><br>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?php echo _translate("(LAST 6 MONTHS)"); ?>
+                    <?= _translate("(LAST 6 MONTHS)"); ?>
                 </small>
 
             </div>
@@ -509,6 +531,7 @@ try {
     <?php }
     //waiting result
     if (!empty($waitingTotal) && $waitingTotal > 0) { ?>
+
         $('#<?php echo $samplesWaitingChart; ?>').highcharts({
             chart: {
                 type: 'column',
@@ -529,11 +552,11 @@ try {
                 enabled: false
             },
             xAxis: {
-                categories: [''],
+                categories: [<?= implode(',', array_map(fn($s) => "'" . addslashes($s) . "'", $waitingCategories)); ?>],
                 crosshair: true,
                 scrollbar: {
                     enabled: true
-                },
+                }
             },
             yAxis: {
                 min: 0,
@@ -543,27 +566,28 @@ try {
             },
             tooltip: {
                 headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                pointFormat: '<tr><td style="color:{series.color};padding:0"><?= _translate("Samples", escapeTextOrContext: true); ?>: </td>' +
                     '<td style="padding:0"><strong>{point.y}</strong></td></tr>',
                 footerFormat: '</table>',
-                shared: true,
+                shared: false,
                 useHTML: true
             },
             plotOptions: {
                 column: {
                     pointPadding: 0.2,
                     borderWidth: 0,
-                    cursor: 'pointer',
+                    cursor: 'pointer'
                 }
             },
             series: [{
                 showInLegend: false,
                 name: '<?= _translate("Samples", escapeTextOrContext: true); ?>',
-                data: [<?= $waitingTotal; ?>]
-
+                data: [<?= implode(',', array_map('intval', $waitingCounts)); ?>]
             }],
             colors: ['#8877a9']
         });
+
+
     <?php }
     if ($acceptedTotal > 0) {
     ?>

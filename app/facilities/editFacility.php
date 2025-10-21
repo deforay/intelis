@@ -191,7 +191,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($general->isSTSInstance()) ? 'getFacilityUser();' : ''; ?>getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php
 											$k = 10;

@@ -22,7 +22,7 @@ $eidResults = $eidService->getEidResults();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+
 if ($general->isSTSInstance()) {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -30,12 +30,6 @@ if ($general->isSTSInstance()) {
         $sampleCode = 'remote_sample_code';
     } else {
         $sampleCode = 'sample_code';
-    }
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "SELECT user_id FROM user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
     }
     $rKey = 'R';
 } else {
@@ -46,23 +40,7 @@ if ($general->isSTSInstance()) {
 
 
 
-//set province
-if (!empty($eidInfo['province_id'])) {
-    $stateQuery = "SELECT * from geographical_divisions where geo_id= " . $eidInfo['province_id'];
-    $stateResult = $db->query($stateQuery);
-}
-if (!isset($stateResult[0]['geo_code'])) {
-    $provinceCode = '';
-} else {
-    $provinceCode = $stateResult[0]['geo_code'];
-}
-
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];
