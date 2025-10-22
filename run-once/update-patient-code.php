@@ -35,7 +35,7 @@ if (!$forceRun) {
 
     if ($executed) {
         // Script has already been run
-        echo "Script $scriptName has already been executed. Exiting...";
+        //echo "Script $scriptName has already been executed. Exiting...";
         exit(0);
     }
 }
@@ -120,10 +120,8 @@ try {
 
         $db->insertMulti("patients", $output);
         $db->commitTransaction();
-
-        echo "$scriptName executed and logged successfully" . PHP_EOL;
-        $scriptSucceeded = true;
     }
+    $scriptSucceeded = true;
 } catch (Exception $e) {
     $db->rollbackTransaction();
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
@@ -134,6 +132,7 @@ try {
     ]);
 } finally {
     if ($scriptSucceeded || $forceRun) {
+        echo "$scriptName executed and logged successfully" . PHP_EOL;
         $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', [
             'script_name' => $scriptName,
             'execution_date' => DateUtility::getCurrentDateTime(),
