@@ -677,6 +677,7 @@ $moduleConfigs = [
             'lab_technician',
             'result_printed_datetime',
             'result_printed_on_sts_datetime',
+            'data_from_tests'
         ],
     ],
     'cd4' => [
@@ -836,6 +837,37 @@ try {
                     }
                 }
 
+                if ($module === 'tb') {
+                    $tbId = $localRecord[$primaryKeyName] ?? null;
+                    if (isset($remoteData['data_from_tests']) && !empty($remoteData['data_from_tests']) && $tbId) {
+                        $db->where($primaryKeyName, $tbId);
+                        $db->delete("tb_tests");
+                        foreach ($remoteData['data_from_tests'] as $cdata) {
+                            $tbTestData = [
+                                "tb_id" => $tbId,
+                                'lab_id' => $cdata['lab_id'] ?? null,
+                                'specimen_type' => $cdata['specimen_type'] ?? null,
+                                'sample_received_at_lab_datetime' => DateUtility::isoDateFormat($cdata['sample_received_at_lab_datetime'] ?? null, true),
+                                'is_sample_rejected' => $cdata['is_sample_rejected'][$key] ?? 'no',
+                                'reason_for_sample_rejection' => $cdata['reason_for_sample_rejection'] ?? null,
+                                'rejection_on' => DateUtility::isoDateFormat($cdata['rejection_on'] ?? null),
+                                'test_type' => $cdata['test_type'] ?? null,
+                                'test_result' => $cdata['test_result'] ?? null,
+                                'sample_tested_datetime' => DateUtility::isoDateFormat($cdata['sample_tested_datetime'] ?? null, true),
+                                'tested_by' => $cdata['tested_by'] ?? null,
+                                'result_reviewed_by' => $cdata['result_reviewed_by'] ?? null,
+                                'result_reviewed_datetime' => DateUtility::isoDateFormat($cdata['result_reviewed_datetime'] ?? null, true),
+                                'result_approved_by' => $cdata['result_approved_by'] ?? null,
+                                'result_approved_datetime' => DateUtility::isoDateFormat($cdata['result_approved_datetime'] ?? null, true),
+                                'revised_by' => $cdata['revised_by'] ?? null,
+                                'revised_on' => DateUtility::isoDateFormat($cdata['revised_on'] ?? null, true),
+                                'comments' => $cdata['comments'] ?? null,
+                                'updated_datetime' => DateUtility::getCurrentDateTime(),
+                            ];
+                            $db->insert("tb_tests", $tbTestData);
+                        }
+                    }
+                }
                 if ($module === 'hepatitis') {
                     $hepatitisId = $localRecord[$primaryKeyName] ?? null;
                     if (isset($remoteData['data_from_risks']) && !empty($remoteData['data_from_risks']) && $hepatitisId) {

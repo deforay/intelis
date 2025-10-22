@@ -134,7 +134,6 @@ final class TbService extends AbstractTestService
     public function getTbTestsByFormId($tbId = "")
     {
         $response = [];
-
         // Using this in sync requests/results
         if (is_array($tbId) && !empty($tbId)) {
             $results = $this->db->rawQuery("SELECT * FROM tb_tests WHERE `tb_id` IN (" . implode(",", $tbId) . ") ORDER BY tb_test_id ASC");
@@ -147,7 +146,6 @@ final class TbService extends AbstractTestService
         } else if (!is_array($tbId)) {
             $response = $this->db->rawQuery("SELECT * FROM tb_tests ORDER BY tb_test_id ASC");
         }
-
         return $response;
     }
 
