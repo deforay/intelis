@@ -488,6 +488,7 @@ $output->writeln('');
 
 LoggerUtility::logInfo("Cleanup script completed", [
     'files_deleted' => $totalStats['files_deleted'],
+    'dirs_deleted' => $totalStats['dirs_deleted'],
     'space_freed_bytes' => $totalStats['bytes_freed'],
     'db_rows_deleted' => $dbStats['rows_deleted'],
     'total_errors' => $totalStats['errors'] + $dbStats['errors']
