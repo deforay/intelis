@@ -195,6 +195,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $elapsed = microtime(true) - $startTime;
 
     $stats['files_deleted'] = $deleted;
+    $stats['dirs_deleted'] = 0;
     $stats['bytes_freed'] = $bytesToFree;
     $stats['errors'] = $errors;
 

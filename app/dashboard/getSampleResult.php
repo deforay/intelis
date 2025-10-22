@@ -413,8 +413,8 @@ try {
     </div>
 </div>
 
-<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12 ">
-    <div class="dashboard-stat2 " style="cursor:pointer;">
+<div class="col-lg-6 col-md-12 col-sm-12 col-xs-12">
+    <div class="dashboard-stat2" style="cursor:pointer;">
         <div class="display font-purple-soft">
             <div class="number">
                 <h3 class="font-purple-soft">
@@ -424,7 +424,7 @@ try {
                     <?php echo _translate("SAMPLES WITH NO RESULTS"); ?>
                 </small><br>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?= _translate("(LAST 6 MONTHS)"); ?>
+                    <?= DateUtility::lastMonthsLabel(6) . " " . _translate("(LAST 6 MONTHS)"); ?>
                 </small>
 
             </div>
@@ -443,7 +443,7 @@ try {
                     <?= _translate("CURRENT SAMPLES STATUS - OVERALL"); ?>
                 </h4>
                 <small class="font-purple-soft" style="font-size:0.75em;">
-                    <?= _translate("(BASED ON SAMPLES COLLECTED IN THE SELECTED DATE RANGE)"); ?>
+                    <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
                 </small>
             </div>
             <div class="icon">

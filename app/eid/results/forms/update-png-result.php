@@ -2,10 +2,15 @@
 
 // imported in eid-edit-request.php based on country in global config
 
-use App\Registries\AppRegistry;
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
 
 
 // Sanitized values from $request object
@@ -37,8 +42,6 @@ if ($general->isSTSInstance()) {
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-
-
 
 $province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');

@@ -55,7 +55,7 @@ if (isset($_SESSION['storageHistoryDataQuery']) && trim((string) $_SESSION['stor
           $sheet->fromArray($rowData, null, 'A' . $rRowCount);
      }
      $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Storage-History-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Storage-History-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save($filename);
      echo urlencode(basename($filename));
 }

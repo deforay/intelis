@@ -23,7 +23,7 @@ $patientsService = ContainerRegistry::get(PatientsService::class);
 $commonService = ContainerRegistry::get(CommonService::class);
 
 $activeModules = SystemService::getActiveModules(onlyTests: true);
-
+$scriptName = basename(__FILE__);
 
 // Check for force flag (-f or --force)
 $forceRun = in_array('-f', $argv) || in_array('--force', $argv);
@@ -129,11 +129,11 @@ try {
         'trace' => $e->getTraceAsString(),
     ]);
 } finally {
-    // After successful execution, log the script run
-    $data = [
-        'script_name' => $scriptName,
-        'execution_date' => DateUtility::getCurrentDateTime(),
-        'status' => 'executed'
-    ];
-    $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', $data);
+    if ($scriptSucceeded || $forceRun) {
+        $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', [
+            'script_name' => $scriptName,
+            'execution_date' => DateUtility::getCurrentDateTime(),
+            'status' => $scriptSucceeded ? 'executed' : 'forced'
+        ]);
+    }
 }

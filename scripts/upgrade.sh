@@ -197,6 +197,10 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
+# Clean up vim swap files and setup MySQL config
+find "${lis_path}" -name ".*.swp" -delete 2>/dev/null || true
+setup_mysql_config "${lis_path}/configs/config.production.php" && print info "MySQL config ready"
+
 MYSQL_CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 # Calculate total system memory in MB
@@ -1080,12 +1084,9 @@ if [ -f "${SOURCE}" ]; then
     # Remove any existing version
     rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
 
-    # Copy and make executable
-    cp "${SOURCE}" "${TARGET}"
-    chmod 755 "${TARGET}"
-
-    # Optional: also link from /usr/bin for compatibility
-    ln -sf "${TARGET}" /usr/bin/intelis
+    # Create symlink and make source executable
+    chmod 755 "${SOURCE}"
+    ln -sf "${SOURCE}" "${TARGET}"
 
     print success "intelis command installed globally at ${TARGET}"
     log_action "intelis command installed at ${TARGET}"
@@ -1093,7 +1094,6 @@ else
     print warning "intelis script not found at ${SOURCE}, skipping setup"
     log_action "intelis setup skipped — source missing"
 fi
-
 
 
 if [ -d "${lis_path}/run-once" ]; then
