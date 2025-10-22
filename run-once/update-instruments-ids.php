@@ -109,7 +109,7 @@ try {
         'status' => 'executed'
     ];
 
-    $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', $data);
+
 
     echo "$scriptName executed and logged successfully" . PHP_EOL;
     $scriptSucceeded = true;

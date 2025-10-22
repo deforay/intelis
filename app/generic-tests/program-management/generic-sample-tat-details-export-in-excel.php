@@ -97,6 +97,6 @@ $sheet = $general->centerAndBoldRowInSheet($sheet, 'A3');
 $sheet = $general->applyBordersToSheet($sheet);
 
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = 'VLSM-LAB-TESTS-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+$filename = 'InteLIS-LAB-TESTS-TAT-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
 $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
 echo urlencode(basename($filename));

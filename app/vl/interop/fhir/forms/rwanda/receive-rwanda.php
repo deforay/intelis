@@ -369,7 +369,7 @@ try {
         $response['errors'] = $errors;
     }
 
-    $trackId = $general->addApiTracking($transactionId, 'vlsm-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
+    $trackId = $general->addApiTracking($transactionId, 'intelis-system', $processedCounter, 'FHIR-VL-Receive', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
     $db->commitTransaction();
 } catch (Throwable $exception) {

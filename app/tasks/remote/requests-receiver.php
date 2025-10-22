@@ -908,7 +908,7 @@ try {
 
         $general->addApiTracking(
             $transactionId,
-            'vlsm-system',
+            'intelis-system',
             $successCounter,
             'receive-requests',
             $module,
@@ -1152,7 +1152,7 @@ try {
 
         $general->addApiTracking(
             $transactionId,
-            'vlsm-system',
+            'intelis-system',
             $successCounter,
             'receive-requests',
             'generic-tests',

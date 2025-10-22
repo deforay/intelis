@@ -65,7 +65,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
         $output[] = $row;
     }
     if (isset($_SESSION['resultNotAvailableCount']) && $_SESSION['resultNotAvailableCount'] > 50000) {
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report' . date('d-M-Y-H-i-s') . '.csv';
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report' . date('d-M-Y-H-i-s') . '.csv';
         $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
         // we dont need the $output variable anymore
         unset($output);
@@ -108,7 +108,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
             $sheet->fromArray($rowData, null, 'A' . $rRowCount);
         }
         $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
         $writer->save($fileName);
         echo urlencode(basename($fileName));
     }

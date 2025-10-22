@@ -96,26 +96,23 @@ $remoteURL = $general->getRemoteURL();
 
 
     function verifyManifest(testType) {
-        if ($("#manifestCode").val() != "") {
+        let manifestCode = $("#manifestCode").val().trim();
+        if (manifestCode != "") {
             $.blockUI();
             if ($.fn.DataTable.isDataTable("#manifestDataTable")) {
                 $('#manifestDataTable').DataTable().clear().destroy();
 
                 // Restore the translated empty row
-                $("#manifestDataTable tbody").html(`
-        <tr>
-            <td colspan="13" class="dataTables_empty" style="text-align:center;">
-                <?= _translate("Please enter a valid Manifest Code to activate", true); ?>
-            </td>
-        </tr>
-    `);
+                $("#manifestDataTable tbody").html(`<tr>
+                    <td colspan="13" class="dataTables_empty" style="text-align:center;">
+                        <?= _translate("Please enter a valid Manifest Code to activate", true); ?>
+                    </td>
+                </tr>`);
             }
 
 
-
-
             $.post("/specimen-referral-manifest/verify-manifest.php", {
-                    manifestCode: $("#manifestCode").val(),
+                    manifestCode: manifestCode,
                     testType: testType
                 },
                 function(data) {
@@ -174,11 +171,12 @@ $remoteURL = $general->getRemoteURL();
     }
 
     function syncManifestFromSTS(testType) {
-        if ($("#manifestCode").val() != "") {
+        let manifestCode = $("#manifestCode").val().trim();
+        if (manifestCode != "") {
             $.blockUI();
 
             $.post("/tasks/remote/requests-receiver.php", {
-                    manifestCode: $("#manifestCode").val(),
+                    manifestCode: manifestCode,
                     testType: testType
                 },
                 function(data) {
@@ -192,18 +190,18 @@ $remoteURL = $general->getRemoteURL();
                             !Array.isArray(parsed) &&
                             Object.keys(parsed).length === 0
                         ) {
-                            toast.error("<?= _translate("No samples found in the manifest", true); ?>");
+                            toast.error("<?= _translate("No samples found in the manifest", true); ?>" + ' ' + manifestCode);
                         } else {
                             $('.activateSample').show();
                             $('#sampleId').val(data);
                             loadRequestData();
                         }
                     } catch (e) {
-                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>" + ' ' + manifestCode);
                     }
                 });
         } else {
-            alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
+            alert("<?php echo _translate("Please enter a valid Sample Manifest Code", true); ?>");
         }
     }
 
