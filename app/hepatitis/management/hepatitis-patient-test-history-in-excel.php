@@ -66,7 +66,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
      }
 
      if (isset($_SESSION['patientTestHistoryResultCount']) && $_SESSION['patientTestHistoryResultCount'] > 50000) {
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
@@ -104,7 +104,7 @@ if (isset($_SESSION['patientTestHistoryResult']) && trim((string) $_SESSION['pat
                $sheet->fromArray($rowData, null, 'A' . $rRowCount);
           }
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Patient-Test-History-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($fileName);
           echo urlencode(basename($fileName));
      }

@@ -1,10 +1,17 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var EidService $eidObj */
 $eidObj = ContainerRegistry::get(EidService::class);
+
 $eidResults = $eidObj->getEidResults();
 $labFieldDisabled = '';
 

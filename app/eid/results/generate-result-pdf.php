@@ -144,7 +144,7 @@ if (!empty($pages)) {
     $resultPdf->setPrintHeader(false);
     $resultPdf->setPrintFooter(false);
     $resultPdf->concat();
-    $resultFilename = 'VLSM-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
+    $resultFilename = 'InteLIS-EID-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
     $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 }
 MiscUtility::removeDirectory($pathFront);

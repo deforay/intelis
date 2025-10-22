@@ -149,7 +149,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 
 	if (isset($_SESSION['cd4ResultQueryCount']) && $_SESSION['cd4ResultQueryCount'] > 50000) {
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
@@ -163,7 +163,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
 		echo urlencode(basename($filename));
 	}
