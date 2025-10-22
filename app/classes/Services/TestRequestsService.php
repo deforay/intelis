@@ -394,6 +394,7 @@ final class TestRequestsService
         $localHash = $this->getManifestHash($selectedSamples, $testType, $manifestCode);
 
         if ($localHash === '') {
+            $result['status'] = 'mismatch';
             $result['message'] = 'Unable to compute local manifest hash.';
             return $result;
         }
@@ -443,8 +444,9 @@ final class TestRequestsService
                     $result['message'] = (string) $decodedResponse['message'];
                 }
             } else {
+                $result['status'] = 'error';
                 $result['remoteResponse'] = $responseBody;
-                $result['message'] ??= 'Unexpected response from verify-manifest endpoint.';
+                $result['message'] ??= _translate('Incorrect response when verifying manifest');
             }
 
             $result['httpStatus'] = $httpStatus;
@@ -462,6 +464,7 @@ final class TestRequestsService
                 $labId
             );
         } catch (Throwable $e) {
+            $result['status'] = 'error';
             $result['message'] = 'Failed to contact remote verify-manifest endpoint.';
             LoggerUtility::logError('Remote manifest hash verification failed: ' . $e->getMessage(), [
                 'manifestCode' => $manifestCode,
