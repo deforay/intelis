@@ -128,34 +128,29 @@ $remoteURL = $general->getRemoteURL();
                     }
 
                     // Object response with status
-                    if (typeof response === 'object' && response !== null && response.status) {
+                    if (typeof response === 'object' && response !== null) {
                         if (response.status === 'not-found') {
-                            toast.error("<?= _translate('Manifest not found', true); ?>");
+                            toast.error("<?= _translate('Could not find manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
                             return;
                         }
                         if (response.status === 'match') {
                             $('.activateSample').show();
+                            toast.success("<?= _translate('Samples loaded successfully for manifest', true); ?>" + ' ' + manifestCode);
                             loadRequestData(); // init once or reload
                             return;
                         }
-                        if (response.status === 'mismatch') {
-                            getSamplesForManifest();
+                        if (response.status === null || response.status === 'mismatch') {
+                            syncManifestFromSTS(testType);
                             return;
                         }
-                    }
-
-                    // Legacy string responses
-                    if (response === 'match') {
-                        $('.activateSample').show();
-                        loadRequestData();
-                    } else if (response === 'not-found') {
-                        toast.error("<?= _translate('Manifest not found', true); ?>");
-                    } else {
-                        syncManifestFromSTS(testType);
                     }
                 } catch (e) {
                     console.error(e);
                     toast.error("<?= _translate('Some error occurred while processing the manifest', true); ?>");
+                    $('.activateSample').hide();
+                    $('#sampleId').val('');
                 }
             }
         );
@@ -174,22 +169,39 @@ $remoteURL = $general->getRemoteURL();
                     $.unblockUI();
                     let parsed;
                     try {
-                        parsed = JSON.parse(data);
+
+                        if (!data) {
+                            toast.error("<?= _translate('Unable to sync samples from manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
+                        let parsed;
+                        try {
+                            parsed = JSON.parse(data);
+                        } catch (err) {
+                            toast.error("<?= _translate('Invalid server response while processing manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
                         if (
                             parsed == null ||
-                            Object.keys(parsed).length === 0
+                            (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
-                            toast.error("<?= _translate("No samples found in the manifest", true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _translate('Unable to find or sync samples from manifest', true); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                         } else {
-                            toast.success("<?= _translate("Samples synced successfully from STS for manifest", true); ?>" + ' ' + manifestCode);
+                            toast.success("<?= _translate('Samples synced successfully from STS for manifest', true); ?>" + ' ' + manifestCode);
                             $('.activateSample').show();
                             $('#sampleId').val(data);
                         }
                         loadRequestData();
                     } catch (e) {
                         toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>" + ' ' + manifestCode);
+                        $('.activateSample').hide();
+                        $('#sampleId').val('');
                     }
                 });
         } else {
