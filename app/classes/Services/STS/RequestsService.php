@@ -35,9 +35,7 @@ final class RequestsService
     {
         $this->setTestType($testType);
 
-
         [$rResult, $resultCount] = $this->runQuery($labId, $facilityMapResult, $manifestCode, $syncSinceDate);
-
         // Handle specific test types with additional logic
         if ($testType === 'covid19') {
             $requestData = $this->returnCovid19Requests($rResult, $resultCount);
@@ -50,6 +48,9 @@ final class RequestsService
                 'is_result_sms_sent' => 'no'
             ]);
             $requestData = $this->returnCustomTestsRequests($rResult, $resultCount);
+        } else if ($testType === 'tb') {
+            // Default for other test types
+            $requestData = $this->returnTbRequests($rResult, count($rResult));
         } else {
             // Default for other test types
             $requestData = $this->returnRequests($rResult, $resultCount);
@@ -64,7 +65,6 @@ final class RequestsService
         $this->tableName = TestsService::getTestTableName($testType);
         $this->primaryKeyName = TestsService::getPrimaryColumn($testType);
         $serviceClass = TestsService::getTestServiceClass($testType);
-
         $this->testTypeService = ContainerRegistry::get($serviceClass);
     }
 
@@ -111,7 +111,7 @@ final class RequestsService
 
         if ($manifestCode) {
             $condition .= " AND sample_package_code like '$manifestCode'";
-        }elseif ($syncSinceDate) {
+        } elseif ($syncSinceDate) {
             $condition .= " AND DATE(last_modified_datetime) >= '$syncSinceDate'";
         } else {
             $condition .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $this->dataSyncInterval DAY)";
@@ -133,6 +133,26 @@ final class RequestsService
         ];
     }
 
+    private function returnTbRequests(array $rResult, int $resultCount): array
+    {
+        $requests = $sampleIds = $facilityIds = [];
+
+        if ($resultCount > 0) {
+            $sampleIds = array_column($rResult, $this->primaryKeyName);
+            $facilityIds = array_column($rResult, 'facility_id');
+            /** @var TbService $tbService */
+            $tbService = $this->testTypeService;
+            foreach ($rResult as $r) {
+                $requests[$r[$this->primaryKeyName]] = $r;
+                $requests[$r[$this->primaryKeyName]]['data_from_tests'] = $tbService->getTbTestsByFormId($r[$this->primaryKeyName]);
+            }
+        }
+        return [
+            'sampleIds' => $sampleIds,
+            'facilityIds' => $facilityIds,
+            'requests' => $requests
+        ];
+    }
     private function returnCovid19Requests(array $rResult, int $resultCount): array
     {
         $requests = $sampleIds = $facilityIds = [];
