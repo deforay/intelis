@@ -333,7 +333,7 @@ try {
                 $resultPdf->setPrintFooter(false);
                 $resultPdf->concat();
 
-                $resultFilename = 'VLSM-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
+                $resultFilename = 'InteLIS-TB-Test-result-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
                 $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
 
                 error_log("TB PDF report successfully generated: " . $resultFilename);

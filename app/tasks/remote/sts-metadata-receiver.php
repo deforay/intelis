@@ -78,12 +78,15 @@ if (empty($remoteURL) || $remoteURL == '') {
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
+$version = VERSION;
+
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
+    if ($cliMode) {
+        $io->error(_translate("No network connectivity while trying STS medatata sync."));
+    }
     LoggerUtility::logError("No network connectivity while trying STS medatata sync.");
     return false;
 }
-
-$version = VERSION;
 
 $instanceId = $general->getInstanceId();
 

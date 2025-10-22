@@ -11,4 +11,4 @@ else
 fi
 
 # Run composer with the passed arguments
-composer "$@"
+COMPOSER_ALLOW_SUPERUSER=1 composer "$@"

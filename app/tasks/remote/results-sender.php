@@ -317,7 +317,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'generic-tests', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- VL -----------------------
@@ -395,7 +395,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'vl', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- EID -----------------------
@@ -473,7 +473,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'eid', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- COVID-19 -----------------------
@@ -571,7 +571,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'covid19', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- HEPATITIS -----------------------
@@ -649,7 +649,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'hepatitis', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- TB -----------------------
@@ -751,7 +751,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'tb', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // ----------------------- CD4 -----------------------
@@ -829,7 +829,7 @@ try {
             }
         }
 
-        $general->addApiTracking($transactionId, 'vlsm-system', $count, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
+        $general->addApiTracking($transactionId, 'intelis-system', $count, 'send-results', 'cd4', $url, $payload, $jsonResponse, 'json', $labId);
     }
 
     // Final sync timestamp update
