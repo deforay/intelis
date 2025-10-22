@@ -355,10 +355,11 @@ final class CommonService
                 $query .= " JOIN facility_details as f ON f.facility_state_id=gd.geo_id
                     WHERE gd.geo_parent = 0 AND
                     gd.geo_status='active' AND
-                    f.facility_id IN (?)";
+                    f.facility_id IN (?)
+                    ORDER BY gd.geo_name ASC";
                 $result = $this->db->rawQuery($query, [$facilityMap]);
             } else {
-                $query .= " WHERE gd.geo_parent = 0 AND gd.geo_status='active'";
+                $query .= " WHERE gd.geo_parent = 0 AND gd.geo_status='active' ORDER BY gd.geo_name ASC";
                 $result = $this->db->rawQuery($query);
             }
 

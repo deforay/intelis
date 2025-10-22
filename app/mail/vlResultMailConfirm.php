@@ -1,7 +1,6 @@
 <?php
 
 use App\Utilities\DateUtility;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
@@ -254,7 +253,7 @@ if (isset($_POST['toEmail']) && trim((string) $_POST['toEmail']) != "" && !empty
       $pdf->writeHTML($pdfContent);
       $pdf->lastPage();
       $pathFront = realpath(TEMP_PATH);
-      $filename = 'vlsm-result-' . date('d-M-Y-H-i-s') . '.pdf';
+      $filename = 'intelis-result-' . date('d-M-Y-H-i-s') . '.pdf';
       $pdf->Output($pathFront . DIRECTORY_SEPARATOR . $filename, "F");
       $downloadFile1 = TEMP_PATH . DIRECTORY_SEPARATOR . (htmlspecialchars((string) $_POST['pdfFile']));
       $downloadFile2 = TEMP_PATH . DIRECTORY_SEPARATOR . $filename;
