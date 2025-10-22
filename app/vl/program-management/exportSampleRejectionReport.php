@@ -54,10 +54,10 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
      $sheet->fromArray($headings, null, 'A1'); // Write headings
      $sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
      $sheet = $general->centerAndBoldRowInSheet($sheet, 'A1');
-	$sheet = $general->applyBordersToSheet($sheet);
+     $sheet = $general->applyBordersToSheet($sheet);
 
      $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-     $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
 }

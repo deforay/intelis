@@ -684,7 +684,7 @@ if (!empty($requestResult)) {
           $resultPdf->setPrintHeader(false);
           $resultPdf->setPrintFooter(false);
           $resultPdf->concat();
-          $resultFilename = 'VLSM-LAB-TESTS-RESULT-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
+          $resultFilename = 'InteLIS-LAB-TESTS-RESULT-' . date('d-M-Y-H-i-s') . "-" . MiscUtility::generateRandomString(6) . '.pdf';
           $resultPdf->Output(TEMP_PATH . DIRECTORY_SEPARATOR . $resultFilename, "F");
           MiscUtility::removeDirectory($pathFront);
           unset($_SESSION['rVal']);

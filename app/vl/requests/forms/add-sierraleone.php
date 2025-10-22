@@ -1,9 +1,12 @@
 <?php
 
-
-
-use App\Registries\ContainerRegistry;
+use App\Services\CommonService;
 use App\Services\FacilitiesService;
+use App\Registries\ContainerRegistry;
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
@@ -15,14 +18,14 @@ if ($arr['sample_code'] == 'auto' || $arr['sample_code'] == 'alphanumeric' || $a
      $maxLength = '';
      if ($arr['max_length'] != '' && $arr['sample_code'] == 'alphanumeric') {
           $maxLength = $arr['max_length'];
-          $maxLength = "maxlength=" . $maxLength;
+          $maxLength = "maxlength=$maxLength";
      }
 } else {
      $sampleClass = '';
      $maxLength = '';
      if ($arr['max_length'] != '') {
           $maxLength = $arr['max_length'];
-          $maxLength = "maxlength=" . $maxLength;
+          $maxLength = "maxlength=$maxLength";
      }
 }
 // check if STS
@@ -68,7 +71,7 @@ $sFormat = '';
           <h1><em class="fa-solid fa-pen-to-square"></em> VIRAL LOAD LABORATORY REQUEST FORM </h1>
           <ol class="breadcrumb">
                <li><a href="/dashboard/index.php"><em class="fa-solid fa-chart-pie"></em> Home</a></li>
-               <li class="active">Add Vl Request</li>
+               <li class="active">Add VL Request</li>
           </ol>
      </section>
      <!-- Main content -->

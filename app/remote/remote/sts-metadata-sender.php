@@ -231,7 +231,7 @@ if (isset(SYSTEM_CONFIG['modules']['hepatitis']) && SYSTEM_CONFIG['modules']['he
     }
     $response['hepatitisReasonForTesting'] = $general->fetchDataFromTable('r_hepatitis_test_reasons', $condition);
 
-    $counter += (count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']));
+    $counter += count($response['hepatitisRejectionReasons']) + count($response['hepatitisSampleTypes']) + count($response['hepatitisComorbidities']) + count($response['hepatitisResults']) + count($response['hepatitisReasonForTesting']);
 }
 
 if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === true) {
@@ -294,7 +294,6 @@ if (empty($data['globalConfigLastModified'])) {
 $condition = "COALESCE(remote_sync_needed, 'no') = 'yes' AND updated_datetime > '" . $data['globalConfigLastModified'] . "'";
 
 $response['globalConfig'] = $general->fetchDataFromTable('global_config', $condition);
-
 
 $condition = [];
 $signatureCondition = [];
@@ -399,7 +398,7 @@ if (!empty($response)) {
     $payload = json_encode([]);
 }
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
+$general->addApiTracking($transactionId, 'intelis-system', $counter, 'common-data-sync', 'common', $_SERVER['REQUEST_URI'], JsonUtility::encodeUtf8Json($data), $payload, 'json', $labId);
 
 $sql = 'UPDATE facility_details
             SET facility_attributes

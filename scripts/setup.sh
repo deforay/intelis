@@ -861,15 +861,9 @@ if [ -f "${SOURCE}" ]; then
     # Remove any existing version
     rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
 
-    # Change ownership to root and make executable by all
-    chown root:root "${SOURCE}"
+    # Create symlink and make source executable
     chmod 755 "${SOURCE}"
-    
-    # Create symlink
     ln -sf "${SOURCE}" "${TARGET}"
-
-    # Optional: also link from /usr/bin for compatibility
-    ln -sf "${TARGET}" /usr/bin/intelis
 
     print success "intelis command installed globally at ${TARGET}"
     log_action "intelis command installed at ${TARGET}"
