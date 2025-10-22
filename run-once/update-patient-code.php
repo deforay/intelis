@@ -27,7 +27,7 @@ $scriptName = basename(__FILE__);
 
 // Check for force flag (-f or --force)
 $forceRun = in_array('-f', $argv) || in_array('--force', $argv);
-
+$scriptSucceeded = false;
 if (!$forceRun) {
     // Check if the script has already been run
     $db->where('script_name', $scriptName);
@@ -39,6 +39,7 @@ if (!$forceRun) {
         exit(0);
     }
 }
+
 
 
 try {
@@ -119,6 +120,9 @@ try {
 
         $db->insertMulti("patients", $output);
         $db->commitTransaction();
+
+        echo "$scriptName executed and logged successfully" . PHP_EOL;
+        $scriptSucceeded = true;
     }
 } catch (Exception $e) {
     $db->rollbackTransaction();

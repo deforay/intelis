@@ -144,24 +144,30 @@ final class SecurityService
     {
         $lockoutPeriod = 15 * 60; // Lockout period in seconds (15 minutes)
 
-        // Check if the user is locked out
-        if ($_SESSION[$ipAddress]['failedAttempts'] >= 10) {
-            $lastFailedLoginTimestamp = strtotime($_SESSION[$ipAddress]['lastFailedLogin']);
-            $timeSinceLastFail = time() - $lastFailedLoginTimestamp;
+        if (session_status() !== PHP_SESSION_NONE) {
+            $_SESSION[$ipAddress] ??= [
+                'failedAttempts' => 0,
+                'lastFailedLogin' => null
+            ];
+            // Check if the user is locked out
+            if ($_SESSION[$ipAddress]['failedAttempts'] >= 10) {
+                $lastFailedLoginTimestamp = strtotime($_SESSION[$ipAddress]['lastFailedLogin']);
+                $timeSinceLastFail = time() - $lastFailedLoginTimestamp;
 
-            if ($timeSinceLastFail < $lockoutPeriod) {
-                // User is still within the lockout period
-                throw new SystemException(
-                    "Too many failed login attempts. Please try again after " .
-                        ceil(($lockoutPeriod - $timeSinceLastFail) / 60) . " minutes.",
-                    403
-                );
-            } else {
-                // Lockout period has expired; reset failed attempts
-                $_SESSION[$ipAddress] = [
-                    'failedAttempts' => 0,
-                    'lastFailedLogin' => null
-                ];
+                if ($timeSinceLastFail < $lockoutPeriod) {
+                    // User is still within the lockout period
+                    throw new SystemException(
+                        "Too many failed login attempts. Please try again after " .
+                            ceil(($lockoutPeriod - $timeSinceLastFail) / 60) . " minutes.",
+                        403
+                    );
+                } else {
+                    // Lockout period has expired; reset failed attempts
+                    $_SESSION[$ipAddress] = [
+                        'failedAttempts' => 0,
+                        'lastFailedLogin' => null
+                    ];
+                }
             }
         }
     }
