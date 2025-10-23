@@ -1,6 +1,6 @@
 #!/usr/bin/env php
 <?php
-
+// bin/setup/fix-audit-tables.php
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;

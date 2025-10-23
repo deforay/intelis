@@ -48,16 +48,6 @@ $remoteURL = $general->getRemoteURL();
     let stsURL = '<?= $remoteURL; ?>';
     window.csrf_token = '<?= $_SESSION['csrf_token']; ?>';
 
-    function addCsrfTokenToForm(form) {
-        if (form.find('input[name="csrf_token"]').length === 0) {
-            $('<input>').attr({
-                type: 'hidden',
-                name: 'csrf_token',
-                value: window.csrf_token
-            }).appendTo(form);
-        }
-    }
-
     Highcharts.setOptions({
         chart: {
             style: {
@@ -85,6 +75,22 @@ $remoteURL = $general->getRemoteURL();
         beforeSend: function(xhr, settings) {
             if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {
                 xhr.setRequestHeader('X-CSRF-Token', window.csrf_token);
+            }
+        },
+        complete: function(xhr) {
+            // Fast path: standard status codes
+            if (xhr && (xhr.status === 401 || xhr.status === 440)) {
+                window.location.href = '/login/login.php?e=timeout';
+                return;
+            }
+            // Optional fallback: if some proxy rewrites to 200 with a JSON flag
+            try {
+                const body = JSON.parse(xhr.responseText || '{}');
+                if (body && body.error === 'session_expired') {
+                    window.location.href = '/login/login.php?e=timeout';
+                }
+            } catch (_) {
+                /* ignore non-JSON */
             }
         }
     });
@@ -130,7 +136,7 @@ $remoteURL = $general->getRemoteURL();
                     // Object response with status
                     if (typeof response === 'object' && response !== null) {
                         if (response.status === 'not-found') {
-                            toast.error("<?= _translate('Could not find manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _translate('Unable to find manifest', true); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -145,6 +151,9 @@ $remoteURL = $general->getRemoteURL();
                             syncManifestFromSTS(testType);
                             return;
                         }
+                    } else {
+                        syncManifestFromSTS(testType);
+                        return;
                     }
                 } catch (e) {
                     console.error(e);
@@ -171,7 +180,7 @@ $remoteURL = $general->getRemoteURL();
                     try {
 
                         if (!data) {
-                            toast.error("<?= _translate('Unable to sync samples from manifest', true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _translate('Unable to sync manifest', true); ?>" + ' ' + manifestCode);
                             $('.activateSample').hide();
                             $('#sampleId').val('');
                             return;
@@ -715,15 +724,16 @@ $remoteURL = $general->getRemoteURL();
             existingPatientId = $('.patientId').val();
         }
 
-        // Add CSRF token to all existing forms
-        $('form').each(function() {
-            addCsrfTokenToForm($(this));
-        });
-
-        // Add CSRF token to forms added in the future
-        // If your application adds forms dynamically via AJAX or other means
-        $(document).on('submit', 'form', function(e) {
-            addCsrfTokenToForm($(this));
+        // Automatically inject CSRF token into any form (static or dynamically added)
+        $(document).on('submit', 'form', function() {
+            const $form = $(this);
+            if (!$form.find('input[name="csrf_token"]').length) {
+                $('<input>', {
+                    type: 'hidden',
+                    name: 'csrf_token',
+                    value: window.csrf_token
+                }).appendTo($form);
+            }
         });
 
 
