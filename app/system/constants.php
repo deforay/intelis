@@ -25,6 +25,7 @@ namespace SAMPLE_STATUS {
     const EXPIRED = 10; // Sample has expired
     const NO_RESULT = 11; // Sample has no result
     const CANCELLED = 12; // Sample Cancelled - No Testing required
+    const REFERRED = 13; // Sample Referred to another Lab
 }
 
 /**
