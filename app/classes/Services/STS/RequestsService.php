@@ -50,7 +50,7 @@ final class RequestsService
             $requestData = $this->returnCustomTestsRequests($rResult, $resultCount);
         } else if ($testType === 'tb') {
             // Default for other test types
-            $requestData = $this->returnTbRequests($rResult, count($rResult));
+            $requestData = $this->returnTbRequests($rResult, $resultCount);
         } else {
             // Default for other test types
             $requestData = $this->returnRequests($rResult, $resultCount);
