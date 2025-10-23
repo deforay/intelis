@@ -90,11 +90,55 @@ if (!$isCli && !empty($systemConfig['system']['cache_di']) && true === $systemCo
 // Configuration and DB
 $builder->addDefinitions([
     'applicationConfig' => $systemConfig,
-    'db' => DI\factory(
-        function (ContainerInterface $c) {
-            return new DatabaseService($c->get('applicationConfig')['database']);
+    'db' => DI\factory(function (ContainerInterface $c) {
+        $dbConfig = $c->get('applicationConfig')['database'] ?? [];
+
+        try {
+            return new DatabaseService($dbConfig);
+        } catch (Throwable $e) {
+
+            // Always log the full message for debugging
+            error_log('[DB INIT ERROR] ' . $e->getMessage());
+
+            // Detect CLI vs Web early
+            $isCli = (php_sapi_name() === 'cli');
+
+            if ($isCli) {
+                fwrite(STDERR, "❌ Database connection failed: {$e->getMessage()}\n");
+                exit(1);
+            }
+
+            // For web, send a clean 500 response before app stack loads
+            http_response_code(500);
+            header('Content-Type: text/html; charset=utf-8');
+
+            echo <<<HTML
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>System Error</title>
+<style>
+body {
+  font-family: system-ui, sans-serif;
+  background: #fafafa;
+  color: #333;
+  margin: 4rem;
+}
+h1 { color: #c00; }
+p  { max-width: 600px; }
+</style>
+</head>
+<body>
+<h1>Database Connection Failed</h1>
+<p>The application could not connect to its database. Please check your configuration file or database server.</p>
+</body>
+</html>
+HTML;
+
+            exit;
         }
-    ),
+    }),
     DatabaseService::class => DI\get('db')
 ]);
 
