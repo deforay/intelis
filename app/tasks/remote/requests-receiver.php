@@ -133,7 +133,6 @@ function syncTestRequest(
     $didFail = false;
     $failureReason = null;
     $resultRecord = $localRecord;
-
     if (!empty($localRecord)) {
         // Build the patchable payload
         $updatePayload = MiscUtility::excludeKeys($incoming, $excludeKeysForUpdate);
@@ -172,6 +171,9 @@ function syncTestRequest(
             if ($isSilent) {
                 unset($updatePayload['last_modified_datetime']);
             }
+            if (($updatePayload['lab_id'] == $updatePayload['referred_to_lab_id']) && ($updatePayload['referred_to_lab_id'] != $updatePayload['referred_by_lab_id'])) {
+                $updatePayload['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+            }
             $db->where($primaryKeyName, $localRecord[$primaryKeyName]);
             $res = $db->update($tableName, $updatePayload);
 
@@ -200,7 +202,9 @@ function syncTestRequest(
         }
         $incoming['is_result_mail_sent'] ??= 'no';
         $incoming['data_sync'] = 0;
-
+        if (($incoming['lab_id'] == $incoming['referred_to_lab_id']) && ($incoming['referred_to_lab_id'] != $incoming['referred_by_lab_id'])) {
+            $incoming['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
+        }
         $res = $db->insert($tableName, $incoming);
         if ($res === true || $res > 0) {
             $didInsert = true;
