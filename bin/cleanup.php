@@ -62,19 +62,20 @@ function formatBytes(int $bytes, int $precision = 2): string
 
 /**
  * Fast directory cleanup using native Linux commands
- * 
+ *
  * @param string $folder Directory to clean
  * @param int|null $duration Days to keep (null = no age limit)
  * @param int|null $maxSizeBytes Max folder size in bytes (null = no size limit)
  * @param ConsoleOutput $output Console output
- * @return array Stats: files_deleted, bytes_freed, errors
+ * @return array Stats: files_deleted, dirs_deleted, bytes_freed, errors
  */
 function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, ConsoleOutput $output): array
 {
     $stats = [
         'files_deleted' => 0,
-        'bytes_freed' => 0,
-        'errors' => 0
+        'dirs_deleted'  => 0,   // <-- add this
+        'bytes_freed'   => 0,
+        'errors'        => 0,
     ];
 
     if (!file_exists($folder) || !is_dir($folder)) {
@@ -97,11 +98,13 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     }
 
     // Determine cleanup strategy
-    $needsSizeCleanup = $maxSizeBytes && $currentSize > $maxSizeBytes;
-    $needsAgeCleanup = $duration !== null;
+    $needsSizeCleanup = $maxSizeBytes !== null && $currentSize > $maxSizeBytes;
+    $needsAgeCleanup  = $duration !== null;
 
     if (!$needsSizeCleanup && !$needsAgeCleanup) {
         $output->writeln("  <info>ℹ No cleanup needed</info>");
+        // Still attempt to prune empty directories
+        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
         return $stats;
     }
 
@@ -121,6 +124,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     if ($exitCode !== 0 || empty($fileList)) {
         $output->writeln("  <info>ℹ No files found</info>");
+        // Still attempt to prune empty directories
+        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
         return $stats;
     }
 
@@ -129,22 +134,22 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     foreach ($fileList as $line) {
         $parts = explode('|', $line);
         if (count($parts) === 3) {
+            $mtimeFloat = (float)$parts[0];
             $files[] = [
-                'mtime' => (int)$parts[0],
-                'path' => $parts[1],
-                'size' => (int)$parts[2],
-                'age_days' => (time() - (int)$parts[0]) / 86400
+                'mtime'     => $mtimeFloat,
+                'path'      => $parts[1],
+                'size'      => (int)$parts[2],
+                'age_days'  => (time() - (int)$mtimeFloat) / 86400,
             ];
         }
     }
 
-    // Sort by modification time (oldest first)
     usort($files, fn($a, $b) => $a['mtime'] <=> $b['mtime']);
 
     // Determine which files to delete
     $filesToDelete = [];
-    $bytesToFree = 0;
-    $targetSize = $maxSizeBytes ? $maxSizeBytes * 0.8 : 0; // Clean to 80% of limit
+    $bytesToFree   = 0;
+    $targetSize    = $maxSizeBytes ? (int)($maxSizeBytes * 0.8) : 0; // Clean to 80% of limit
 
     foreach ($files as $file) {
         $shouldDelete = false;
@@ -162,7 +167,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         if ($shouldDelete) {
             $filesToDelete[] = $file['path'];
             $bytesToFree += $file['size'];
-            $currentSize -= $file['size'];
+            $currentSize  -= $file['size'];
         }
 
         // Stop if we've reached target size
@@ -173,16 +178,18 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
 
     if (empty($filesToDelete)) {
         $output->writeln("  <info>ℹ No files to delete</info>");
+        // Still attempt to prune empty directories
+        $stats['dirs_deleted'] += pruneEmptyDirs($folder);
         return $stats;
     }
 
     $fileCount = count($filesToDelete);
     $output->writeln("  <comment>Deleting {$fileCount} files (" . formatBytes($bytesToFree) . ")...</comment>");
 
-    // Delete files in batches
+    // Delete files
     $startTime = microtime(true);
     $deleted = 0;
-    $errors = 0;
+    $errors  = 0;
 
     foreach ($filesToDelete as $filePath) {
         if (@unlink($filePath)) {
@@ -195,9 +202,8 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $elapsed = microtime(true) - $startTime;
 
     $stats['files_deleted'] = $deleted;
-    $stats['dirs_deleted'] = 0;
-    $stats['bytes_freed'] = $bytesToFree;
-    $stats['errors'] = $errors;
+    $stats['bytes_freed']   = $bytesToFree;
+    $stats['errors']        = $errors;
 
     $output->writeln("  <success>✓ Deleted:</success> {$deleted} files in " . round($elapsed, 2) . "s");
     $output->writeln("  <success>✓ Freed:</success> " . formatBytes($bytesToFree));
@@ -206,16 +212,32 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
         $output->writeln("  <fire>✗ Errors:</fire> {$errors}");
     }
 
-    // Clean up empty directories
-    exec("find " . escapeshellarg($folder) . " -type d -empty -delete 2>/dev/null");
+    // Prune empty directories and count them
+    $stats['dirs_deleted'] += pruneEmptyDirs($folder);
 
     LoggerUtility::logInfo("Cleanup completed for {$folder}", [
-        'files_deleted' => $deleted,
-        'bytes_freed' => $bytesToFree,
-        'duration_seconds' => round($elapsed, 2)
+        'files_deleted'     => $deleted,
+        'dirs_deleted'      => $stats['dirs_deleted'],
+        'bytes_freed'       => $bytesToFree,
+        'duration_seconds'  => round($elapsed, 2),
     ]);
 
     return $stats;
+}
+
+/**
+ * Remove empty directories under $folder and return how many were deleted.
+ */
+function pruneEmptyDirs(string $folder): int
+{
+    $toDelete = [];
+    exec("find " . escapeshellarg($folder) . " -type d -empty -print 2>/dev/null", $toDelete);
+    $count = is_array($toDelete) ? count($toDelete) : 0;
+    if ($count > 0) {
+        // Do the actual deletion
+        exec("find " . escapeshellarg($folder) . " -type d -empty -delete 2>/dev/null");
+    }
+    return $count;
 }
 
 
@@ -466,6 +488,7 @@ $output->writeln('');
 
 LoggerUtility::logInfo("Cleanup script completed", [
     'files_deleted' => $totalStats['files_deleted'],
+    'dirs_deleted' => $totalStats['dirs_deleted'],
     'space_freed_bytes' => $totalStats['bytes_freed'],
     'db_rows_deleted' => $dbStats['rows_deleted'],
     'total_errors' => $totalStats['errors'] + $dbStats['errors']

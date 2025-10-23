@@ -19,11 +19,15 @@ use Symfony\Component\String\Slugger\AsciiSlugger;
 
 function _translate(?string $text, bool|string $escapeTextOrContext = false): string
 {
-    if (empty($text) || !is_string($text) || $_SESSION['APP_LOCALE'] === 'en_US') {
+    $sessionLocale = '';
+    if (session_status() !== PHP_SESSION_NONE) {
+        $sessionLocale = $_SESSION['APP_LOCALE'] ?? '';
+    }
+    if (empty($text) || !is_string($text) || $sessionLocale === 'en_US') {
         return $text ?? '';
     }
 
-    $locale = $_SESSION['APP_LOCALE'] ?? 'en_US';
+    $locale = $sessionLocale ?? 'en_US';
 
     return MemoUtility::remember(function () use ($text, $escapeTextOrContext, $locale) {
 

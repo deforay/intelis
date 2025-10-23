@@ -97,77 +97,63 @@ $remoteURL = $general->getRemoteURL();
 
     function verifyManifest(testType) {
         let manifestCode = $("#manifestCode").val().trim();
-        if (manifestCode != "") {
-            $.blockUI();
-            if ($.fn.DataTable.isDataTable("#manifestDataTable")) {
-                $('#manifestDataTable').DataTable().clear().destroy();
+        if (!manifestCode) {
+            alert("<?= _translate('Please enter the Sample Manifest Code', true); ?>");
+            return;
+        }
 
-                // Restore the translated empty row
-                $("#manifestDataTable tbody").html(`<tr>
-                    <td colspan="13" class="dataTables_empty" style="text-align:center;">
-                        <?= _translate("Please enter a valid Manifest Code to activate", true); ?>
-                    </td>
-                </tr>`);
-            }
+        $.blockUI();
+        $.post(
+            "/specimen-referral-manifest/verify-manifest.php", {
+                manifestCode: manifestCode,
+                testType: testType
+            },
+            function(data) {
+                $.unblockUI();
 
+                try {
+                    if (typeof data === 'string') data = data.trim();
+                    if (!data) {
+                        toast.error("<?= _translate('Unable to verify manifest', true); ?>");
+                        return;
+                    }
 
-            $.post("/specimen-referral-manifest/verify-manifest.php", {
-                    manifestCode: manifestCode,
-                    testType: testType
-                },
-                function(data) {
-                    $.unblockUI();
-                    try {
-                        if (typeof data === 'string') {
-                            data = data.trim();
+                    let response = data;
+                    if (typeof data === 'string') {
+                        try {
+                            response = JSON.parse(data);
+                        } catch (_) {
+                            /* legacy string fallback */
                         }
+                    }
 
-                        if (!data) {
-                            toast.error("<?= _translate("Unable to verify manifest", true); ?>");
+                    // Object response with status
+                    if (typeof response === 'object' && response !== null) {
+                        if (response.status === 'not-found') {
+                            toast.error("<?= _translate('Could not find manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
                             return;
                         }
-
-                        let response = data;
-                        if (typeof data === 'string') {
-                            try {
-                                response = JSON.parse(data);
-                            } catch (parseError) {
-                                // fall back to legacy behaviour
-                            }
-                        }
-
-                        if (typeof response === 'object' && response !== null && response.status) {
-                            if (response.status === 'not-found') {
-                                toast.error("<?= _translate("Manifest not found", true); ?>");
-                                return;
-                            }
-                            if (response.status === 'match') {
-                                $('.activateSample').show();
-                                loadRequestData();
-                                return;
-                            }
-                            if (response.status === 'mismatch') {
-                                getSamplesForManifest();
-                                return;
-                            }
-                        }
-
-                        if (response === 'match') {
+                        if (response.status === 'match') {
                             $('.activateSample').show();
-                            loadRequestData();
-                        } else if (response === 'not-found') {
-                            toast.error("<?= _translate("Manifest not found", true); ?>");
-                        } else {
-                            syncManifestFromSTS(testType);
+                            toast.success("<?= _translate('Samples loaded successfully for manifest', true); ?>" + ' ' + manifestCode);
+                            loadRequestData(); // init once or reload
+                            return;
                         }
-                    } catch (e) {
-                        console.error(e);
-                        toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>");
+                        if (response.status === null || response.status === 'mismatch') {
+                            syncManifestFromSTS(testType);
+                            return;
+                        }
                     }
-                });
-        } else {
-            alert("<?php echo _translate("Please enter the Sample Manifest Code", true); ?>");
-        }
+                } catch (e) {
+                    console.error(e);
+                    toast.error("<?= _translate('Some error occurred while processing the manifest', true); ?>");
+                    $('.activateSample').hide();
+                    $('#sampleId').val('');
+                }
+            }
+        );
     }
 
     function syncManifestFromSTS(testType) {
@@ -183,21 +169,39 @@ $remoteURL = $general->getRemoteURL();
                     $.unblockUI();
                     let parsed;
                     try {
-                        parsed = JSON.parse(data);
+
+                        if (!data) {
+                            toast.error("<?= _translate('Unable to sync samples from manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
+                        let parsed;
+                        try {
+                            parsed = JSON.parse(data);
+                        } catch (err) {
+                            toast.error("<?= _translate('Invalid server response while processing manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
+                            return;
+                        }
                         if (
-                            parsed &&
-                            typeof parsed === 'object' &&
-                            !Array.isArray(parsed) &&
-                            Object.keys(parsed).length === 0
+                            parsed == null ||
+                            (typeof parsed === 'object' && Object.keys(parsed).length === 0)
                         ) {
-                            toast.error("<?= _translate("No samples found in the manifest", true); ?>" + ' ' + manifestCode);
+                            toast.error("<?= _translate('Unable to find or sync samples from manifest', true); ?>" + ' ' + manifestCode);
+                            $('.activateSample').hide();
+                            $('#sampleId').val('');
                         } else {
+                            toast.success("<?= _translate('Samples synced successfully from STS for manifest', true); ?>" + ' ' + manifestCode);
                             $('.activateSample').show();
                             $('#sampleId').val(data);
-                            loadRequestData();
                         }
+                        loadRequestData();
                     } catch (e) {
                         toast.error("<?= _translate("Some error occurred while processing the manifest", true); ?>" + ' ' + manifestCode);
+                        $('.activateSample').hide();
+                        $('#sampleId').val('');
                     }
                 });
         } else {

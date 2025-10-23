@@ -27,7 +27,7 @@ $scriptName = basename(__FILE__);
 
 // Check for force flag (-f or --force)
 $forceRun = in_array('-f', $argv) || in_array('--force', $argv);
-
+$scriptSucceeded = false;
 if (!$forceRun) {
     // Check if the script has already been run
     $db->where('script_name', $scriptName);
@@ -35,10 +35,11 @@ if (!$forceRun) {
 
     if ($executed) {
         // Script has already been run
-        echo "Script $scriptName has already been executed. Exiting...";
+        //echo "Script $scriptName has already been executed. Exiting...";
         exit(0);
     }
 }
+
 
 
 try {
@@ -120,6 +121,7 @@ try {
         $db->insertMulti("patients", $output);
         $db->commitTransaction();
     }
+    $scriptSucceeded = true;
 } catch (Exception $e) {
     $db->rollbackTransaction();
     LoggerUtility::logError($e->getFile() . ':' . $e->getLine() . ":" . $db->getLastError());
@@ -130,6 +132,7 @@ try {
     ]);
 } finally {
     if ($scriptSucceeded || $forceRun) {
+        echo "$scriptName executed and logged successfully" . PHP_EOL;
         $db->setQueryOption('IGNORE')->insert('s_run_once_scripts_log', [
             'script_name' => $scriptName,
             'execution_date' => DateUtility::getCurrentDateTime(),
