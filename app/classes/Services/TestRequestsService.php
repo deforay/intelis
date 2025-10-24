@@ -580,7 +580,7 @@ final class TestRequestsService
                 return $data;
             };
 
-            // Case 1: When result_status == RECEIVED_AT_CLINIC
+            // Case 1: When result_status == RECEIVED_AT_CLINIC or REFERRED
             $this->db->reset();
             $this->db->where('result_status IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
@@ -588,7 +588,7 @@ final class TestRequestsService
             $this->db->update($tableName, $buildUpdateData(true));
 
             // This is to allow users to just update the SAMPLE RECEIVED AT LAB DATETIME in bulk
-            // Case 2: When result_status != RECEIVED_AT_CLINIC
+            // Case 2: When result_status != RECEIVED_AT_CLINIC and != REFERRED
             $this->db->reset();
             $this->db->where('result_status NOT IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
