@@ -247,6 +247,21 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
             alert("<?php echo _translate("An error occurred. Please try again."); ?>");
         });
     }
+
+    function generateManifestPDF(pId) {
+
+        $.post('/tb/results/pdf/generate-tb-manifest.php', {
+                id: pId
+            },
+            function(data) {
+                if (data == "" || data == null || data == undefined) {
+                    alert('Unable to generate manifest PDF');
+                } else {
+                    window.open('/temporary/sample-manifests/' + data, '_blank');
+                }
+
+            });
+    }
 </script>
 
 <?php require_once APPLICATION_PATH . '/footer.php'; ?>
