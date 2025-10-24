@@ -642,6 +642,39 @@ final class CommonService
         return strtolower($request->getHeaderLine('X-Requested-With')) === 'xmlhttprequest';
     }
 
+    public static function isSameOriginRequest(ServerRequestInterface|ServerRequest $request): bool
+    {
+        $hostHeader = strtolower($request->getHeaderLine('Host'));
+        if ($hostHeader === '') {
+            return false;
+        }
+
+        [$reqHost, $reqPortFromHost] = self::splitHostAndPort($hostHeader);
+        if ($reqHost === '') {
+            return false;
+        }
+
+        $reqPort = self::inferRequestPort($request, $reqPortFromHost);
+        if ($reqPort === null) {
+            return false;
+        }
+
+        $reference = $request->getHeaderLine('Origin') ?: $request->getHeaderLine('Referer');
+        if ($reference === '' || strtolower($reference) === 'null') {
+            return false;
+        }
+
+        $referenceParts = parse_url($reference);
+        if ($referenceParts === false || empty($referenceParts['host'])) {
+            return false;
+        }
+
+        $refHost = strtolower($referenceParts['host']);
+        $refPort = self::inferOriginPort($referenceParts, $reqPort);
+
+        return $reqHost === $refHost && $reqPort === $refPort;
+    }
+
     public static function isCliRequest(): bool
     {
         return php_sapi_name() === 'cli';
@@ -656,6 +689,84 @@ final class CommonService
             }
         }
         return false;
+    }
+
+    private static function splitHostAndPort(string $hostHeader): array
+    {
+        $host = $hostHeader;
+        $port = null;
+        if (str_contains($hostHeader, ':')) {
+            [$host, $portPart] = explode(':', $hostHeader, 2);
+            if ($portPart !== '') {
+                $port = (int) $portPart;
+            }
+        }
+
+        return [trim($host), $port];
+    }
+
+    private static function inferRequestPort(ServerRequestInterface|ServerRequest $request, ?int $portFromHost): ?int
+    {
+        if ($portFromHost !== null) {
+            return $portFromHost;
+        }
+
+        $uri = $request->getUri();
+        $uriPort = $uri->getPort();
+        if ($uriPort !== null) {
+            return (int) $uriPort;
+        }
+
+        $uriScheme = strtolower($uri->getScheme());
+        if ($uriScheme === 'https') {
+            return 443;
+        }
+        if ($uriScheme === 'http') {
+            return 80;
+        }
+
+        $serverParams = $request->getServerParams();
+
+        $forwardedPort = $serverParams['HTTP_X_FORWARDED_PORT'] ?? null;
+        if (!empty($forwardedPort)) {
+            return (int) $forwardedPort;
+        }
+
+        $forwardedProto = strtolower($serverParams['HTTP_X_FORWARDED_PROTO'] ?? '');
+        if ($forwardedProto === 'https') {
+            return 443;
+        }
+        if ($forwardedProto === 'http') {
+            return 80;
+        }
+
+        $https = $serverParams['HTTPS'] ?? null;
+        if (!empty($https) && $https !== 'off' && $https !== '0') {
+            return 443;
+        }
+
+        if (!empty($serverParams['SERVER_PORT'])) {
+            return (int) $serverParams['SERVER_PORT'];
+        }
+
+        return null;
+    }
+
+    private static function inferOriginPort(array $originParts, int $fallbackPort): int
+    {
+        if (isset($originParts['port'])) {
+            return (int) $originParts['port'];
+        }
+
+        $scheme = strtolower($originParts['scheme'] ?? '');
+        if ($scheme === 'https') {
+            return 443;
+        }
+        if ($scheme === 'http') {
+            return 80;
+        }
+
+        return $fallbackPort;
     }
 
 
@@ -1565,6 +1676,12 @@ final class CommonService
         // ...
 
         // If all checks pass, return true
+        return true;
+    }
+
+    public static function validateM2MToken(ServerRequestInterface $request, string $path): bool
+    {
+        // Temporary: always true while we decide final model
         return true;
     }
 }

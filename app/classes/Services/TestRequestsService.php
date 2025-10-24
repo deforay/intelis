@@ -561,12 +561,12 @@ final class TestRequestsService
             $timestamp = DateUtility::getCurrentDateTime();
 
             // Common logic builder
-            $buildUpdateData = function (bool $isClinic) use ($userId, $sampleReceivedOn, $timestamp) {
+            $buildUpdateData = function (bool $updateStatusAlso) use ($userId, $sampleReceivedOn, $timestamp) {
                 $data = [
                     'last_modified_datetime' => $timestamp
                 ];
 
-                if ($isClinic) {
+                if ($updateStatusAlso) {
                     $data['result_status'] = SAMPLE_STATUS\RECEIVED_AT_TESTING_LAB;
                     $data['data_sync'] = 0;
                     $data['last_modified_by'] = $userId;
@@ -582,7 +582,7 @@ final class TestRequestsService
 
             // Case 1: When result_status == RECEIVED_AT_CLINIC
             $this->db->reset();
-            $this->db->where('result_status = ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
+            $this->db->where('result_status IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $buildUpdateData(true));
@@ -590,7 +590,7 @@ final class TestRequestsService
             // This is to allow users to just update the SAMPLE RECEIVED AT LAB DATETIME in bulk
             // Case 2: When result_status != RECEIVED_AT_CLINIC
             $this->db->reset();
-            $this->db->where('result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC);
+            $this->db->where('result_status NOT IN (' . SAMPLE_STATUS\RECEIVED_AT_CLINIC . ', ' . SAMPLE_STATUS\REFERRED . ')');
             $this->db->where('sample_code IS NOT NULL');
             $this->db->where('sample_package_code', $manifestCode);
             $this->db->update($tableName, $buildUpdateData(false));
