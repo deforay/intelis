@@ -627,7 +627,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                 <?php
                                 $referralResultDisplay = '';
                                 $referralDisplay = '';
-                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) || ($labId != $tbInfo['referred_to_lab_id'])) {
+                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) && ($labId != $tbInfo['referred_to_lab_id'])) {
                                     $referralResultDisplay = 'style="display:none;"';
                                 }
                                 if ((isset($tbInfo['result']) && !empty($tbInfo['result'])) || ($labId == $tbInfo['referred_to_lab_id'])) {
