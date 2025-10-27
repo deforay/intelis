@@ -222,6 +222,16 @@ final class UsersService
         return $this->getAllUsers($facilityMap, 'active', null, $updatedDateTime);
     }
 
+    public function getUserName($userId)
+    {
+        if (empty($userId)) {
+            return null;
+        }
+
+        $this->db->where('user_id', $userId);
+        return $this->db->getValue($this->table, 'user_name', 1);
+    }
+
     public function getOrCreateUser($name, $status = 'active', $role = 4)
     {
         $uQuery = "SELECT `user_id`
