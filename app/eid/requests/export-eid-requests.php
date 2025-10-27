@@ -5,12 +5,14 @@ use App\Registries\ContainerRegistry;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\CommonService;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Utilities\DateUtility;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 
+ini_set('memory_limit', '512M');
+set_time_limit(300);
+ini_set('max_execution_time', 300);
 
 
 /** @var DatabaseService $db */
@@ -28,11 +30,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
-
-$output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "EID Number", "Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Sample Tested On", "Result", "Lab Assigned Code", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
@@ -52,9 +49,10 @@ if ($formId != COUNTRY\DRC) {
     $headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 }
 
-$no = 1;
-$resultSet = $db->rawQuery($_SESSION['eidRequestSearchResultQuery']);
-foreach ($resultSet as $aRow) {
+
+
+$buildRow = function ($aRow, $no) use ($general, $key, $formId, $globalConf) {
+
     $row = [];
     //set gender
     $gender = '';
@@ -128,32 +126,55 @@ foreach ($resultSet as $aRow) {
     $row[] = $aRow['funding_source_name'] ?? null;
     $row[] = $aRow['i_partner_name'] ?? null;
     $row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-    $output[] = $row;
-    $no++;
+    return $row;
+};
+
+
+// Build filter info for header row
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+	}
 }
 
-if (isset($_SESSION['eidRequestSearchResultQueryCount']) && $_SESSION['eidRequestSearchResultQueryCount'] > 50000) {
-
-    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-    // we dont need the $output variable anymore
-    unset($output);
-    echo base64_encode((string) $fileName);
-} else {
-
-
-    $excel = new Spreadsheet();
-    $sheet = $excel->getActiveSheet();
-
-    $sheet->fromArray($headings, null, 'A3');
-
-    foreach ($output as $rowNo => $rowData) {
-        $rRowCount = $rowNo + 4;
-        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-    }
-
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = 'VLSM-EID-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-    echo urlencode(basename($filename));
+// Prepare headings (with alpha-numeric conversion if requested)
+$processedHeadings = $headings;
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	$processedHeadings = array_map(function ($value) {
+		$string = str_replace(' ', '', $value);
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}, $headings);
 }
+
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Write filter info row
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+
+// Empty row for spacing
+$writer->addRow(Row::fromValues(['']));
+
+// Write headings
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
+
+// Stream data
+$resultSet = $db->rawQueryGenerator($_SESSION['eidRequestSearchResultQuery']);
+$no = 1;
+
+foreach ($resultSet as $aRow) {
+	$row = $buildRow($aRow, $no++);
+	$writer->addRow(Row::fromValues($row));
+
+	// Periodic garbage collection
+	if ($no % 5000 === 0) {
+		gc_collect_cycles();
+	}
+}
+
+$writer->close();
+
+echo urlencode(basename($filename));

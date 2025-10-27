@@ -8,9 +8,8 @@ use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -29,11 +28,8 @@ $covid19Results = $covid19Service->getCovid19Results();
 $arr = $general->getGlobalConfig();
 $sarr = $general->getSystemConfig();
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
-$output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array(_translate("S. No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab Name"), _translate("Date specimen received"), _translate("Testing Point"), _translate("Lab staff Assigned"), _translate("Source Of Alert / POE"), _translate("Health Facility/POE County"), _translate("Health Facility/POE State"), _translate("Health Facility/POE"), _translate("Case ID"), _translate("Patient Name"), _translate("Patient DoB"), _translate("Patient Age"), _translate("Patient Sex"), _translate("Is Patient Pregnant"), _translate("Patient Phone Number"), _translate("Patient Email"), _translate("Patient Address"), _translate("Patient State"), _translate("Patient County"), _translate("Patient City/Village"), _translate("Nationality"), _translate("Fever/Temperature"), _translate("Temprature Measurement"), _translate("Symptoms Detected"), _translate("Medical History"), _translate("Comorbidities"), _translate("Recenty Hospitalized?"), _translate("Patient Lives With Children"), _translate("Patient Cares for Children"), _translate("Close Contacts"), _translate("Has Recent Travel History"), _translate("Country Names"), _translate("Travel Return Date"), _translate("Airline"), _translate("Seat No."), _translate("Arrival Date/Time"), _translate("Departure Airport"), _translate("Transit"), _translate("Reason of Visit"), _translate("Number of Days Sick"), _translate("Date of Symptoms Onset"), _translate("Date of Initial Consultation"), _translate("Sample Collection Date"), _translate("Reason for Test Request"), _translate("Date specimen registered"), _translate("Specimen Condition"), _translate("Specimen Status"), _translate("Specimen Type"), _translate("Sample Tested Date"), _translate("Testing Platform"), _translate("Test Method"), _translate("Result"), _translate("Date result released"));
@@ -45,9 +41,8 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
 }
 
 
-$no = 1;
-$resultSet = $db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']);
-foreach ($resultSet as $aRow) {
+$buildRow = function ($aRow, $no) use ($general, $key, $covid19Results) {
+    global $db;
     $symptomList = [];
     $squery = "SELECT s.*, ps.* FROM form_covid19 as c19
         INNER JOIN covid19_patient_symptoms AS ps ON c19.covid19_id = ps.covid19_id
@@ -178,30 +173,55 @@ foreach ($resultSet as $aRow) {
     $row[] = $covid19Results[$aRow['result']] ?? $aRow['result'];
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
-    $output[] = $row;
-    $no++;
+    return $row;
+};
+
+
+// Build filter info for header row
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+	}
 }
 
-if (isset($_SESSION['covid19RequestSearchResultQueryCount']) && $_SESSION['covid19RequestSearchResultQueryCount'] > 50000) {
-
-    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-    // we dont need the $output variable anymore
-    unset($output);
-    echo base64_encode((string) $fileName);
-} else {
-    $excel = new Spreadsheet();
-    $sheet = $excel->getActiveSheet();
-
-    $sheet->fromArray($headings, null, 'A3');
-
-    foreach ($output as $rowNo => $rowData) {
-        $rRowCount = $rowNo + 4;
-        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-    }
-
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save($filename);
-    echo urlencode(basename($filename));
+// Prepare headings (with alpha-numeric conversion if requested)
+$processedHeadings = $headings;
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	$processedHeadings = array_map(function ($value) {
+		$string = str_replace(' ', '', $value);
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}, $headings);
 }
+
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Write filter info row
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+
+// Empty row for spacing
+$writer->addRow(Row::fromValues(['']));
+
+// Write headings
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
+
+// Stream data
+$resultSet = $db->rawQueryGenerator($_SESSION['covid19RequestSearchResultQuery']);
+$no = 1;
+
+foreach ($resultSet as $aRow) {
+	$row = $buildRow($aRow, $no++);
+	$writer->addRow(Row::fromValues($row));
+
+	// Periodic garbage collection
+	if ($no % 5000 === 0) {
+		gc_collect_cycles();
+	}
+}
+
+$writer->close();
+
+echo urlencode(basename($filename));

@@ -5,11 +5,9 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Services\CommonService;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
-
 
 
 
@@ -29,14 +27,11 @@ $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
 
 if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExportResultQuery']) != "") {
 
 
-	$output = [];
 	if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
 		$headings = array("S.No.", "Sample ID", "Remote Sample ID", "Health Facility", "Health Facility Code", "District/County", "Province/State", "Testing Lab Name (Hub)", "Lab Assigned Code", "Sample Received On", "Child ID", "Child Name", "Mother ID", "Child Date of Birth", "Child Age", "Child Sex", "Breastfeeding", "Clinician's Phone Number", "PCR Test Performed Before", "Last PCR Test results", "Reason For PCR Test", "Sample Collection Date", "Sample Requestor Phone Number", "Sample Type", "EID Number","Is Sample Rejected?", "Freezer", "Rack", "Box", "Position", "Volume (ml)", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner", "Request Created On");
 	} else {
@@ -56,9 +51,8 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$headings = MiscUtility::removeMatchingElements($headings, ["Freezer", "Rack", "Box", "Position", "Volume (ml)"]);
 	}
 
-	$no = 1;
-	$resultSet = $db->rawQuery($_SESSION['eidExportResultQuery']);
-	foreach ($resultSet as $aRow) {
+	// Row builder function
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId) {
 		$row = [];
 
 		//set gender
@@ -135,32 +129,34 @@ if (isset($_SESSION['eidExportResultQuery']) && trim((string) $_SESSION['eidExpo
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
-		$output[] = $row;
+		
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-		$no++;
-	}
+		return $row;
+	};
 
-	if (isset($_SESSION['eidExportResultQueryCount']) && $_SESSION['eidExportResultQueryCount'] > 50000) {
+	
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo base64_encode((string) $fileName);
-	} else {
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
+	$writer = new Writer();
+	$writer->openToFile($filename);
 
-		$sheet->fromArray($headings, null, 'A3');
+	// Write headings
+	$writer->addRow(Row::fromValues($headings));
 
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+	// Stream data
+	$resultSet = $db->rawQueryGenerator($_SESSION['eidExportResultQuery']);
+	$no = 1;
+
+	foreach ($resultSet as $aRow) {
+		$row = $buildRow($aRow, $no++);
+		$writer->addRow(Row::fromValues($row));
+
+		// Periodic garbage collection every 5000 rows (reduced frequency)
+		if ($no % 5000 === 0) {
+			gc_collect_cycles();
 		}
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-EID-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-		$writer->save($filename);
-		echo urlencode(basename($filename));
 	}
+
+	$writer->close();
+	echo urlencode(basename($filename));
 }

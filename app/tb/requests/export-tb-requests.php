@@ -6,9 +6,8 @@ use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 
 /** @var DatabaseService $db */
@@ -27,10 +26,8 @@ $arr = $general->getGlobalConfig();
 
 $sQuery = $_SESSION['tbRequestSearchResultQuery'];
 
-$rResult = $db->rawQuery($sQuery);
 
 
-$output = [];
 
 if (isset($_POST['patientInfo']) && $_POST['patientInfo'] == 'yes') {
     $headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Date specimen Received", "Lab staff Assigned", "Health Facility/POE County", "Health Facility/POE State", "Health Facility/POE", "Case ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Date specimen collected", "Reason for Test Request",  "Date specimen Entered", "Specimen Status", "Specimen Type", "Date specimen Tested", "Testing Platform", "Test Method", "Result", "Date result released");
@@ -42,8 +39,8 @@ if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID",
     unset($headings[$key]);
 }
 
-$no = 1;
-foreach ($rResult as $aRow) {
+
+$buildRow = function ($aRow, $no) use ($general, $key, $tbResults, $db) {
     $row = [];
 
     // Get testing platform and test method
@@ -80,11 +77,10 @@ foreach ($rResult as $aRow) {
     } else {
         $patientLname = '';
     }
+	$row[] = $no;
 
 
 
-
-    $row[] = $no;
     if ($general->isStandaloneInstance()) {
         $row[] = $aRow["sample_code"];
     } else {
@@ -120,31 +116,54 @@ foreach ($rResult as $aRow) {
     $row[] = $tbResults[$aRow['result']];
     $row[] = DateUtility::humanReadableDateFormat($aRow['result_printed_datetime'] ?? '');
 
-    $output[] = $row;
-    $no++;
+    return $row;
+};
+
+// Build filter info for header row
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+	}
 }
 
-if (isset($_SESSION['tbRequestSearchResultQueryCount']) && $_SESSION['tbRequestSearchResultQueryCount'] > 50000) {
-
-    $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-    $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-    // we dont need the $output variable anymore
-    unset($output);
-    echo base64_encode((string) $fileName);
-} else {
-
-    $excel = new Spreadsheet();
-    $sheet = $excel->getActiveSheet();
-
-    $sheet->fromArray($headings, null, 'A3');
-
-    foreach ($output as $rowNo => $rowData) {
-        $rRowCount = $rowNo + 4;
-        $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-    }
-
-    $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
-    $writer->save($filename);
-    echo urlencode(basename($filename));
+// Prepare headings (with alpha-numeric conversion if requested)
+$processedHeadings = $headings;
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	$processedHeadings = array_map(function ($value) {
+		$string = str_replace(' ', '', $value);
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}, $headings);
 }
+
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Write filter info row
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+
+// Empty row for spacing
+$writer->addRow(Row::fromValues(['']));
+
+// Write headings
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
+
+// Stream data
+$resultSet = $db->rawQueryGenerator($sQuery);
+$no = 1;
+
+foreach ($resultSet as $aRow) {
+	$row = $buildRow($aRow, $no++);
+	$writer->addRow(Row::fromValues($row));
+
+	// Periodic garbage collection
+	if ($no % 5000 === 0) {
+		gc_collect_cycles();
+	}
+}
+
+$writer->close();
+
+echo urlencode(basename($filename));

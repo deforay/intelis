@@ -7,9 +7,8 @@ use App\Services\DatabaseService;
 use App\Services\CommonService;
 use App\Services\Covid19Service;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -28,12 +27,10 @@ $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
 
 if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19ResultQuery']) != "") {
 
-	$output = [];
 
 	$headings = array("S. No.", "Sample ID", "Remote Sample ID", "Testing Lab Name", "Sample Received On", "Health Facility Name", "Health Facility Code", "District/County", "Province/State", "Patient ID", "Patient Name", "Patient DoB", "Patient Age", "Patient Sex", "Sample Collection Date", "Symptoms Presented in last 14 days", "Co-morbidities", "Is Sample Rejected?", "Rejection Reason", "Recommended Corrective Action", "Sample Tested On", "Result", "Date Result Dispatched", "Comments", "Funding Source", "Implementing Partner");
 	if ($general->isStandaloneInstance() && ($key = array_search("Remote Sample ID", $headings)) !== false) {
@@ -44,11 +41,9 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$headings = array_values(array_diff($headings, ["Patient ID", "Patient Name"]));
 	}
 
-	$no = 1;
 	$sysmtomsArr = [];
 	$comorbiditiesArr = [];
-	$resultSet = $db->rawQuery($_SESSION['covid19ResultQuery']);
-	foreach ($resultSet as $aRow) {
+	$buildRow = function ($aRow, $no) use ($general, $key, $covid19Service, $covid19Symptoms, $covid19Comorbidities, $covid19Results, $sysmtomsArr, $comorbiditiesArr) {
 		$row = [];
 		//set gender
 		$gender = match (strtolower((string)$aRow['patient_gender'])) {
@@ -128,31 +123,32 @@ if (isset($_SESSION['covid19ResultQuery']) && trim((string) $_SESSION['covid19Re
 		$row[] = $aRow['lab_tech_comments'];
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
-		$output[] = $row;
-		$no++;
-	}
+		return $row;
+	};
 
-	if (isset($_SESSION['covid19ResultQueryCount']) && $_SESSION['covid19ResultQueryCount'] > 50000) {
+		
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-COVID19-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo base64_encode((string) $fileName);
-	} else {
+	$writer = new Writer();
+	$writer->openToFile($filename);
 
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
+	// Write headings
+	$writer->addRow(Row::fromValues($headings));
 
-		$sheet->fromArray($headings, null, 'A3');
-		foreach ($output as $rowNo => $rowData) {
-			$rRowCount = $rowNo + 4;
-			$sheet->fromArray($rowData, null, 'A' . $rRowCount);
+	// Stream data
+	$resultSet = $db->rawQueryGenerator($_SESSION['covid19ResultQuery']);
+	$no = 1;
+
+	foreach ($resultSet as $aRow) {
+		$row = $buildRow($aRow, $no++);
+		$writer->addRow(Row::fromValues($row));
+
+		// Periodic garbage collection every 5000 rows (reduced frequency)
+		if ($no % 5000 === 0) {
+			gc_collect_cycles();
 		}
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'Covid-19-Export-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
-		$writer->save($filename);
-		echo urlencode(basename($filename));
 	}
+
+	$writer->close();
+	echo urlencode(basename($filename));
 }
