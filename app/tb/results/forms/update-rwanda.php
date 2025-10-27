@@ -617,6 +617,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
                                     <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
+                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) ? 'display:none;' : ''; ?>" onclick="$('.fnal-result').toggle();$('.referrelLabSection').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Final Interpretation"); ?></a>
                                 </div>
                                 <?php
                                 $referralResultDisplay = '';
