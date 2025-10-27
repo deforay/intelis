@@ -1,41 +1,104 @@
-#modalBox {
-    background-color: #fff;
-    padding: 0;
-    border: 1px solid #6E4E1D;
-    z-index: 9999 !important;
-    border-radius: 8px;
-    -webkit-border-radius: 8px;
-    -moz-border-radius: 8px;
+:root {
+    --dfy-overlay: rgba(0, 0, 0, .6);
+    --dfy-bg: #fff;
+    --dfy-fg: #111;
+    --dfy-border: rgba(0, 0, 0, .12);
+    --dfy-shadow: 0 10px 30px rgba(0, 0, 0, .35);
+    --dfy-radius: 14px;
+    --dfy-anim-ms: 160ms;
 }
 
-#mbm {
-    font-family: sans-serif;
-    font-weight: bold;
-    float: right;
-    padding-bottom: 5px;
+@media (prefers-color-scheme: dark) {
+    :root {
+        --dfy-bg: #151515;
+        --dfy-fg: #eee;
+        --dfy-border: rgba(255, 255, 255, .15);
+        --dfy-shadow: 0 10px 30px rgba(0, 0, 0, .6);
+    }
 }
 
-#modalOverlay {
-    background-image: url("../img/modal/overlay.png");
+.dialog[hidden] {
+    display: none !important;
+}
+
+.dialog {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+}
+
+.dialog::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--dfy-overlay);
+    backdrop-filter: blur(2px);
+    opacity: 0;
+    transition: opacity var(--dfy-anim-ms) ease;
+}
+
+/* Modal container */
+.dfy-modal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -48%);
+    opacity: 0;
+    background: var(--dfy-bg);
+    color: var(--dfy-fg);
+    border: 1px solid var(--dfy-border);
+    border-radius: var(--dfy-radius);
+    box-shadow: var(--dfy-shadow);
+    overflow: hidden;
+    transition: opacity var(--dfy-anim-ms) ease, transform var(--dfy-anim-ms) ease;
+    max-width: 95vw;
+    max-height: 90vh;
+    display: grid;
+}
+
+.dfy-modal__iframe {
+    border: none;
     width: 100%;
     height: 100%;
 }
 
-.dialog {
-    display: none
-}
-
-* html #modalOverlay {
-    background-image: none;
-    filter: progid:DXImageTransform.Microsoft.AlphaImageLoader(src="../img/modal/overlay.png", sizingMethod="scale");
-}
-
-.closeModal {
-    background: url("../img/modal/close.png") no-repeat;
-    width: 31px;
-    height: 34px;
-    cursor: pointer;
+/* Close button */
+.dfy-modal__close {
     position: absolute;
-    right: -20px;
-    top: -20px;
+    top: 10px;
+    right: 12px;
+    font-size: 26px;
+    font-weight: 600;
+    color: var(--dfy-fg);
+    background: rgba(255, 255, 255, .3);
+    backdrop-filter: blur(4px);
+    border: none;
+    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    cursor: pointer;
+    z-index: 2;
+    line-height: 1;
+}
+
+.dfy-modal__close:hover {
+    background: rgba(0, 0, 0, .15);
+}
+
+/* Fallback */
+.dfy-modal__fallback {
+    display: grid;
+    place-items: center;
+    font: 500 14px/1.4 system-ui, sans-serif;
+    padding: 16px;
+}
+
+/* Show states */
+.dialog.is-open::before {
+    opacity: 1;
+}
+
+.dialog.is-open .dfy-modal {
+    opacity: 1;
+    transform: translate(-50%, -50%);
 }

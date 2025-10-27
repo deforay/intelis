@@ -1,73 +1,70 @@
+(function () {
+    let lastActive = null;
 
-function displayDeforayModal(actualContentDiv, maxWidth, maxHeight) {
+    const qs = (id) => document.getElementById(id);
 
-    if (!document.getElementById('modalOverlay') || !document.getElementById('modalBoxDiv')) {
-        initModalBox();
+    function lockScroll() { document.body.style.overflow = 'hidden'; }
+    function unlockScroll() { document.body.style.overflow = ''; }
+
+    function displayDeforayModal(_, w, h) {
+        const modalWrapper = qs('dDiv');
+        if (!modalWrapper) return;
+        modalWrapper.removeAttribute('hidden');
+        modalWrapper.classList.add('is-open');
+        lockScroll();
+
+        const modal = modalWrapper.querySelector('.dfy-modal');
+        const iframe = qs('dFrame');
+
+        if (w) modal.style.width = Math.min(window.innerWidth * 0.95, parseInt(w, 10)) + 'px';
+        if (h) modal.style.height = Math.min(window.innerHeight * 0.9, parseInt(h, 10)) + 'px';
+
+        lastActive = document.activeElement;
+        document.addEventListener('keydown', escHandler);
+        modalWrapper.addEventListener('mousedown', overlayClick);
     }
 
-    let modalOverlay = document.getElementById('modalOverlay');
-    let modalBoxDiv = document.getElementById('modalBoxDiv');
-    modalBoxDiv.innerHTML = document.getElementById(actualContentDiv).innerHTML;
+    function removeDeforayModal() {
+        const modalWrapper = qs('dDiv');
+        if (!modalWrapper) return;
+        modalWrapper.classList.remove('is-open');
+        modalWrapper.setAttribute('hidden', '');
+        unlockScroll();
 
-    modalOverlay.style.display = 'block';
-    let modalBox = document.getElementById('modalBox');
-    modalBox.style.width = maxWidth + 'px';
-    modalBox.style.height = maxHeight + 'px';
-    modalBox.style.display = 'block';
-    document.body.style.overflow = 'hidden';
-    return false;
-}
+        const iframe = qs('dFrame');
+        if (iframe) iframe.src = '';
 
+        document.removeEventListener('keydown', escHandler);
+        modalWrapper.removeEventListener('mousedown', overlayClick);
 
-function removeDeforayModal() {
-    document.getElementById('modalOverlay').style.display = 'none';
-    document.getElementById('modalBox').style.display = 'none';
-
-    // Re-enable scrolling on the body
-    document.body.style.overflow = '';
-}
-function initModalBox() {
-
-    if (document.getElementById('modalOverlay') && document.getElementById('modalBox')) {
-        return;
-    }
-
-    let obody = document.getElementsByTagName('body')[0];
-    let frag = document.createDocumentFragment();
-    let modalOverlay = document.createElement('div');
-    modalOverlay.id = 'modalOverlay';
-    modalOverlay.style.display = 'none';
-    modalOverlay.style.position = 'fixed';
-    modalOverlay.style.top = '0';
-    modalOverlay.style.left = '0';
-    modalOverlay.style.right = '0';
-    modalOverlay.style.bottom = '0';
-    modalOverlay.style.zIndex = '9998';
-    modalOverlay.style.backgroundColor = 'rgba(0, 0, 0, 0.5)';
-    frag.appendChild(modalOverlay);
-
-
-    let modalBox = document.createElement('div');
-    modalBox.id = 'modalBox';
-    modalBox.style.display = 'none';
-    modalBox.style.position = 'fixed';
-    modalBox.style.top = '45%';
-    modalBox.style.left = '50%';
-    modalBox.style.transform = 'translate(-50%, -50%)';
-    modalBox.style.zIndex = '9999';
-
-    let modalBoxDiv = document.createElement('div');
-    modalBoxDiv.id = 'modalBoxDiv';
-    modalBox.appendChild(modalBoxDiv);
-
-    frag.insertBefore(modalBox, modalOverlay.nextSibling);
-    obody.insertBefore(frag, obody.firstChild);
-
-    document.addEventListener('keydown', function (event) {
-        if (event.key === 'Escape') {
-            removeDeforayModal();
+        if (lastActive && typeof lastActive.focus === 'function') {
+            lastActive.focus({ preventScroll: true });
         }
-    });
+    }
 
-}
-window.onload = initModalBox;
+    function escHandler(e) {
+        if (e.key === 'Escape') removeDeforayModal();
+    }
+
+    function overlayClick(e) {
+        const modal = e.currentTarget.querySelector('.dfy-modal');
+        if (!modal.contains(e.target)) removeDeforayModal();
+    }
+
+    window.displayDeforayModal = displayDeforayModal;
+    window.removeDeforayModal = removeDeforayModal;
+
+    window.showModal = function (url, w, h) {
+        displayDeforayModal('dDiv', w, h);
+        const iframe = qs('dFrame');
+        const fallback = qs('dfy-modal-fallback');
+        if (!iframe) return;
+
+        fallback.hidden = true;
+        iframe.onload = () => (fallback.hidden = true);
+        iframe.onerror = () => (fallback.hidden = false);
+        iframe.src = url;
+    };
+
+    window.closeModal = removeDeforayModal;
+})();

@@ -357,11 +357,12 @@ $langCode = explode('_', $locale)[0]; // Gets 'en' from 'en_US'
 		</aside>
 
 		<!-- content-wrapper -->
-		<div id="dDiv" class="dialog">
-			<div style="text-align:center">
-				<span onclick="closeModal();" style="float:right;clear:both;" class="closeModal"></span>
+		<div id="dDiv" class="dialog" hidden>
+			<div class="dfy-modal" role="dialog" aria-modal="true">
+				<button type="button" class="dfy-modal__close" aria-label="Close" onclick="closeModal()">×</button>
+				<iframe id="dFrame" src="" title="LIS Content" class="dfy-modal__iframe" loading="lazy" referrerpolicy="no-referrer"></iframe>
+				<div id="dfy-modal-fallback" class="dfy-modal__fallback" hidden>
+					<?= _translate("Unable to load this page or resource"); ?>
+				</div>
 			</div>
-			<iframe id="dFrame" src="" title="LIS Content" style="border:none;" scrolling="yes" marginwidth="0" marginheight="0" frameborder="0" vspace="0" hspace="0"></iframe>
-			<?= _translate("Unable to load this page or resource"); ?>
-			</iframe>
 		</div>

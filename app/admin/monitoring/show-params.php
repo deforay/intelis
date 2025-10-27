@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
 use App\Utilities\ArchiveUtility;
@@ -12,108 +14,145 @@ use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
-
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-// Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
-$_COOKIE = _sanitizeInput($request->getCookieParams());
 
-$id = isset($_GET['id']) && !empty($_GET['id']) ? MiscUtility::desqid((string) $_GET['id']) : null;
-
+// ---------- Resolve and validate the track row ----------
+$id = isset($_GET['id']) && $_GET['id'] !== '' ? MiscUtility::desqid((string)$_GET['id']) : null;
 if ($id === null) {
     http_response_code(400);
-    throw new SystemException('Invalid request', 400);
+    throw new SystemException('Invalid or missing id', 400);
 }
 
 $db->where('api_track_id', $id);
 $result = $db->getOne('track_api_requests');
 
-$userRequest = $userResponse = "{}";
-$folder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
-
-// Load request data
-try {
-    $userRequest = ArchiveUtility::findAndDecompressArchive(
-        $folder . DIRECTORY_SEPARATOR . 'requests',
-        $result['transaction_id'] . '.json'
-    );
-} catch (Throwable $e) {
-    LoggerUtility::log('error', "Failed to load request data for {$result['transaction_id']}: " . $e->getMessage());
-    $userRequest = "{}";
+if (empty($result)) {
+    http_response_code(404);
+    throw new SystemException('Transaction not found', 404);
 }
 
-// Load response data
-try {
-    $userResponse = ArchiveUtility::findAndDecompressArchive(
-        $folder . DIRECTORY_SEPARATOR . 'responses',
-        $result['transaction_id'] . '.json'
-    );
-} catch (Throwable $e) {
-    LoggerUtility::log('error', "Failed to load response data for {$result['transaction_id']}: " . $e->getMessage());
-    $userResponse = "{}";
+$transactionId = (string)($result['transaction_id'] ?? '');
+if ($transactionId === '') {
+    http_response_code(500);
+    throw new SystemException('Transaction row is corrupt: missing transaction_id', 500);
 }
 
-$isParamsOnly = !empty($result['api_params']);
+// ---------- Locate archives ----------
+$baseFolder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api') ?: (UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
+$reqDir     = $baseFolder . DIRECTORY_SEPARATOR . 'requests';
+$resDir     = $baseFolder . DIRECTORY_SEPARATOR . 'responses';
+$reqName    = $transactionId . '.json';
+$resName    = $transactionId . '.json';
+
+// ---------- Load & decode helpers ----------
+/**
+ * @return array{decoded: mixed|null, raw: string|null, error: string|null}
+ */
+$load = function (string $dir, string $filename): array {
+    $out = ['decoded' => null, 'raw' => null, 'error' => null];
+    try {
+        $raw = ArchiveUtility::findAndDecompressArchive($dir, $filename); // string
+        // Validate + decode with JsonUtility (UTF-8 tolerant)
+        if (!JsonUtility::isJSON($raw, logError: true, checkUtf8Encoding: true)) {
+            throw new RuntimeException('Invalid JSON in file');
+        }
+        $decoded = JsonUtility::decodeJson($raw, true);
+        if ($decoded === null) {
+            throw new RuntimeException('JSON decode returned null');
+        }
+        $out['decoded'] = $decoded;
+        $out['raw']     = $raw;
+    } catch (Throwable $e) {
+        $out['error'] = $e->getMessage();
+        LoggerUtility::log('error', "Viewer load error for {$filename}: " . $e->getMessage());
+    }
+    return $out;
+};
+
+// ---------- Load request/response ----------
+$req = $load($reqDir, $reqName);
+$res = $load($resDir, $resName);
+
+$isParamsOnly  = !empty($result['api_params']);
+$bothMissing   = ($req['decoded'] === null && $res['decoded'] === null);
+
+// Clean values for header
+$apiUrl        = (string)($result['api_url'] ?? 'N/A');
+$method        = strtoupper((string)($result['request_method'] ?? 'POST'));
+$requestedOn   = isset($result['requested_on']) ? date('Y-m-d H:i:s', strtotime((string)$result['requested_on'])) : 'N/A';
+$statusCode    = $result['status_code'] ?? null;
+$responseTime  = $result['response_time'] ?? null;
+
+// Precompute status class
+$statusClass = null;
+if ($statusCode !== null) {
+    $statusClass = $statusCode < 300 ? 'status-success' : ($statusCode < 400 ? 'status-warning' : 'status-error');
+}
+
+// Safe JS embedding (objects or null)
+$jsRequest  = $req['decoded'] !== null ? json_encode($req['decoded'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : 'null';
+$jsResponse = $res['decoded'] !== null ? json_encode($res['decoded'], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE) : 'null';
 
 ?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>API Request Details</title>
+    <meta name="viewport" content="width=device-width,initial-scale=1.0">
+    <title>API Request Viewer</title>
     <link rel="stylesheet" href="/assets/css/bootstrap.min.css">
     <link rel="stylesheet" href="/assets/css/font-awesome.min.css">
-
     <style>
         * {
-            box-sizing: border-box;
+            box-sizing: border-box
         }
 
         body {
             margin: 0;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             background: #1e1e1e;
             color: #d4d4d4;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .container {
             height: 100vh;
             display: flex;
-            flex-direction: column;
+            flex-direction: column
         }
 
-        /* Header */
         .header {
             background: #252526;
             border-bottom: 1px solid #3e3e42;
             padding: 12px 20px;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .api-url {
             font-family: 'Courier New', monospace;
             font-size: 13px;
             color: #4ec9b0;
-            margin: 0 0 8px 0;
+            margin: 0 0 8px;
             display: flex;
-            align-items: center;
             gap: 8px;
+            align-items: center;
+            word-break: break-all
         }
 
         .method-badge {
             background: #0e639c;
-            color: white;
+            color: #fff;
             padding: 2px 8px;
             border-radius: 3px;
             font-size: 11px;
             font-weight: 600;
+            flex-shrink: 0
         }
 
         .meta-info {
@@ -121,15 +160,15 @@ $isParamsOnly = !empty($result['api_params']);
             gap: 20px;
             font-size: 12px;
             color: #858585;
+            flex-wrap: wrap
         }
 
         .meta-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 6px
         }
 
-        /* Toolbar */
         .toolbar {
             background: #2d2d30;
             border-bottom: 1px solid #3e3e42;
@@ -137,12 +176,13 @@ $isParamsOnly = !empty($result['api_params']);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
+            flex-shrink: 0
         }
 
         .toolbar-group {
             display: flex;
-            gap: 5px;
+            gap: 6px;
+            flex-wrap: wrap
         }
 
         .toolbar-btn {
@@ -153,28 +193,47 @@ $isParamsOnly = !empty($result['api_params']);
             border-radius: 3px;
             cursor: pointer;
             font-size: 12px;
-            transition: all 0.2s;
+            transition: .2s;
             display: flex;
-            align-items: center;
-            gap: 5px;
+            gap: 6px;
+            align-items: center
         }
 
         .toolbar-btn:hover {
             background: #505050;
-            border-color: #777;
+            border-color: #777
         }
 
         .toolbar-btn.active {
             background: #0e639c;
             border-color: #0e639c;
-            color: white;
+            color: #fff
         }
 
-        /* Main Content */
+        .toolbar-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed
+        }
+
+        .search-box {
+            background: #3e3e42;
+            border: 1px solid #555;
+            color: #d4d4d4;
+            padding: 6px 10px;
+            border-radius: 3px;
+            font-size: 12px;
+            width: 220px
+        }
+
+        .search-box:focus {
+            outline: none;
+            border-color: #0e639c
+        }
+
         .content {
             flex: 1;
             display: flex;
-            overflow: hidden;
+            overflow: hidden
         }
 
         .panel {
@@ -182,11 +241,15 @@ $isParamsOnly = !empty($result['api_params']);
             display: flex;
             flex-direction: column;
             background: #1e1e1e;
-            border-right: 1px solid #3e3e42;
+            border-right: 1px solid #3e3e42
         }
 
         .panel:last-child {
-            border-right: none;
+            border-right: none
+        }
+
+        .panel.panel-missing {
+            background: #2a2a2a
         }
 
         .panel-header {
@@ -196,28 +259,37 @@ $isParamsOnly = !empty($result['api_params']);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            flex-shrink: 0;
+            flex-shrink: 0
+        }
+
+        .panel-header.has-error {
+            background: #3d2626;
+            border-bottom-color: #5e3838
         }
 
         .panel-title {
             font-size: 13px;
             font-weight: 600;
             display: flex;
-            align-items: center;
             gap: 8px;
+            align-items: center
         }
 
         .request-icon {
-            color: #4ec9b0;
+            color: #4ec9b0
         }
 
         .response-icon {
-            color: #ce9178;
+            color: #ce9178
+        }
+
+        .error-icon {
+            color: #f48771
         }
 
         .panel-actions {
             display: flex;
-            gap: 5px;
+            gap: 6px
         }
 
         .action-btn {
@@ -228,30 +300,108 @@ $isParamsOnly = !empty($result['api_params']);
             border-radius: 3px;
             cursor: pointer;
             font-size: 11px;
-            transition: all 0.2s;
+            transition: .2s
         }
 
         .action-btn:hover {
             background: #3e3e42;
-            border-color: #777;
+            border-color: #777
+        }
+
+        .action-btn:disabled {
+            opacity: .5;
+            cursor: not-allowed
         }
 
         .panel-content {
             flex: 1;
             overflow: auto;
-            padding: 15px;
+            padding: 15px
         }
 
-        /* JSON Tree Styles */
+        .error-message {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #858585;
+            text-align: center;
+            padding: 20px
+        }
+
+        .error-icon-large {
+            font-size: 48px;
+            color: #f48771;
+            margin-bottom: 15px
+        }
+
+        .error-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #d4d4d4;
+            margin-bottom: 8px
+        }
+
+        .error-detail {
+            font-size: 12px;
+            color: #858585;
+            font-family: 'Courier New', monospace;
+            background: #2a2a2a;
+            padding: 10px;
+            border-radius: 4px;
+            margin-top: 10px;
+            max-width: 520px;
+            word-break: break-word
+        }
+
+        .both-missing-alert {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            padding: 40px;
+            text-align: center
+        }
+
+        .both-missing-alert .error-icon-large {
+            font-size: 64px;
+            margin-bottom: 20px
+        }
+
+        .status-badge {
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: 600
+        }
+
+        .status-success {
+            background: #107c10;
+            color: #fff
+        }
+
+        .status-warning {
+            background: #ff8c00;
+            color: #fff
+        }
+
+        .status-error {
+            background: #e81123;
+            color: #fff
+        }
+
         .json-tree {
             font-family: 'Courier New', 'Consolas', monospace;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.8
         }
 
         .json-line {
             display: flex;
             align-items: flex-start;
+            min-height: 1.8em
         }
 
         .json-toggle {
@@ -260,399 +410,329 @@ $isParamsOnly = !empty($result['api_params']);
             user-select: none;
             color: #858585;
             flex-shrink: 0;
+            text-align: center
         }
 
         .json-toggle:hover {
-            color: #ccc;
+            color: #ccc
+        }
+
+        .json-toggle:empty {
+            cursor: default
         }
 
         .json-key {
             color: #9cdcfe;
             margin-right: 5px;
+            flex-shrink: 0
         }
 
         .json-string {
-            color: #ce9178;
+            color: #ffb992;
+            white-space: pre-wrap;
+            word-break: break-word
         }
 
         .json-number {
-            color: #b5cea8;
+            color: #c2f0b3
         }
 
-        .json-boolean {
-            color: #569cd6;
-            font-weight: 600;
-        }
-
+        .json-boolean,
         .json-null {
             color: #569cd6;
-            font-weight: 600;
+            font-weight: 600
         }
 
         .json-bracket {
-            color: #d4d4d4;
+            color: #d4d4d4
         }
 
-        .json-collapsed {
-            display: none;
+        .json-children.json-collapsed {
+            display: none
         }
 
         .json-indent {
             display: inline-block;
             width: 20px;
+            flex-shrink: 0
         }
 
-        /* Search */
-        .search-box {
-            background: #3e3e42;
-            border: 1px solid #555;
-            color: #d4d4d4;
-            padding: 6px 10px;
-            border-radius: 3px;
-            font-size: 12px;
-            width: 200px;
+        .json-value-container {
+            flex: 1;
+            min-width: 0;
+            display: inline
         }
 
-        .search-box:focus {
-            outline: none;
-            border-color: #0e639c;
+        .raw-json {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 12px;
+            border-radius: 6px;
+            border: 1px solid #3e3e42;
+            white-space: pre;
+            overflow-x: auto;
+            font-family: 'Courier New', monospace;
+            font-size: 13px;
+            line-height: 1.6;
         }
 
         .search-highlight {
-            background-color: #6b5c00;
-            color: #ffffff;
+            background: #6b5c00;
+            color: #fff
         }
 
-        /* Scrollbar */
         .panel-content::-webkit-scrollbar {
             width: 12px;
-            height: 12px;
-        }
-
-        .panel-content::-webkit-scrollbar-track {
-            background: #1e1e1e;
+            height: 12px
         }
 
         .panel-content::-webkit-scrollbar-thumb {
             background: #424242;
-            border-radius: 6px;
+            border-radius: 6px
         }
 
         .panel-content::-webkit-scrollbar-thumb:hover {
-            background: #4e4e4e;
-        }
-
-        /* Loading */
-        .loading {
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100%;
-            color: #858585;
-        }
-
-        /* Raw View */
-        .raw-json {
-            font-family: 'Courier New', monospace;
-            font-size: 13px;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-            margin: 0;
-            color: #d4d4d4;
-        }
-
-        /* Status Badge */
-        .status-badge {
-            padding: 3px 8px;
-            border-radius: 3px;
-            font-size: 11px;
-            font-weight: 600;
-        }
-
-        .status-success {
-            background: #107c10;
-            color: white;
-        }
-
-        .status-error {
-            background: #e81123;
-            color: white;
-        }
-
-        .status-warning {
-            background: #ff8c00;
-            color: white;
+            background: #4e4e4e
         }
     </style>
 </head>
 
 <body>
     <div class="container">
+
         <!-- Header -->
         <div class="header">
             <div class="api-url">
-                <span class="method-badge">POST</span>
-                <span><?= htmlspecialchars($result['api_url']); ?></span>
+                <span class="method-badge"><?= htmlspecialchars($method, ENT_QUOTES, 'UTF-8') ?></span>
+                <span><?= htmlspecialchars($apiUrl, ENT_QUOTES, 'UTF-8') ?></span>
             </div>
-
             <div class="meta-info">
-                <div class="meta-item">
-                    <i class="fa fa-clock-o"></i>
-                    <span><?= date('Y-m-d H:i:s', strtotime($result['requested_on'])); ?></span>
-                </div>
-                <div class="meta-item">
-                    <i class="fa fa-hashtag"></i>
-                    <span><?= htmlspecialchars($result['transaction_id']); ?></span>
-                </div>
-                <?php if (isset($result['response_time'])) { ?>
-                    <div class="meta-item">
-                        <i class="fa fa-tachometer"></i>
-                        <span><?= number_format($result['response_time'], 2); ?>ms</span>
-                    </div>
-                <?php } ?>
-                <?php if (isset($result['status_code'])) {
-                    $statusClass = $result['status_code'] < 300 ? 'status-success' : ($result['status_code'] < 400 ? 'status-warning' : 'status-error');
-                ?>
-                    <div class="meta-item">
-                        <span class="status-badge <?= $statusClass; ?>"><?= $result['status_code']; ?></span>
-                    </div>
-                <?php } ?>
+                <div class="meta-item"><i class="fa fa-clock-o"></i><span><?= htmlspecialchars($requestedOn, ENT_QUOTES, 'UTF-8') ?></span></div>
+                <div class="meta-item"><i class="fa fa-hashtag"></i><span><?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?></span></div>
+                <?php if ($responseTime !== null): ?>
+                    <div class="meta-item"><i class="fa fa-tachometer"></i><span><?= number_format((float)$responseTime, 2) ?>ms</span></div>
+                <?php endif; ?>
+                <?php if ($statusCode !== null): ?>
+                    <div class="meta-item"><span class="status-badge <?= $statusClass ?>"><?= (int)$statusCode ?></span></div>
+                <?php endif; ?>
+                <?php if ($req['error']): ?>
+                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Request file missing/corrupt</span></div>
+                <?php endif; ?>
+                <?php if ($res['error']): ?>
+                    <div class="meta-item"><i class="fa fa-exclamation-triangle error-icon"></i><span>Response file missing/corrupt</span></div>
+                <?php endif; ?>
             </div>
         </div>
 
-        <!-- Toolbar -->
-        <div class="toolbar">
-            <div class="toolbar-group">
-                <button class="toolbar-btn active" onclick="setViewMode('tree')" id="btn-tree">
-                    <i class="fa fa-sitemap"></i> Tree View
-                </button>
-                <button class="toolbar-btn" onclick="setViewMode('raw')" id="btn-raw">
-                    <i class="fa fa-code"></i> Raw JSON
-                </button>
-                <?php if (!$isParamsOnly) { ?>
-                    <button class="toolbar-btn" onclick="toggleLayout()" id="btn-layout">
-                        <i class="fa fa-columns"></i> Split View
-                    </button>
-                <?php } ?>
+        <?php if ($bothMissing): ?>
+            <div class="content">
+                <div class="both-missing-alert">
+                    <i class="fa fa-exclamation-circle error-icon-large"></i>
+                    <h2>No Data Available</h2>
+                    <p>Both request and response data files are missing or could not be loaded.</p>
+                    <div class="error-detail">
+                        <div><strong>Request Error:</strong> <?= htmlspecialchars((string)$req['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                        <div style="margin-top:10px;"><strong>Response Error:</strong> <?= htmlspecialchars((string)$res['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                    </div>
+                    <p style="margin-top:20px;font-size:12px;">
+                        Transaction: <?= htmlspecialchars($transactionId, ENT_QUOTES, 'UTF-8') ?><br>
+                        Base path: <?= htmlspecialchars($baseFolder, ENT_QUOTES, 'UTF-8') ?>
+                    </p>
+                </div>
+            </div>
+        <?php else: ?>
+
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <div class="toolbar-group">
+                    <button class="toolbar-btn active" onclick="setViewMode('tree')" id="btn-tree"><i class="fa fa-sitemap"></i> Tree</button>
+                    <button class="toolbar-btn" onclick="setViewMode('raw')" id="btn-raw"><i class="fa fa-code"></i> Raw</button>
+                    <?php if (!$isParamsOnly && $req['decoded'] !== null && $res['decoded'] !== null): ?>
+                        <button class="toolbar-btn" onclick="toggleLayout()" id="btn-layout"><i class="fa fa-columns"></i> Split View</button>
+                    <?php endif; ?>
+                </div>
+                <div class="toolbar-group">
+                    <input type="text" class="search-box" placeholder="Search…" id="search-input" oninput="searchJSON(this.value)">
+                    <button class="toolbar-btn" onclick="expandAll()"><i class="fa fa-plus-square-o"></i> Expand</button>
+                    <button class="toolbar-btn" onclick="collapseAll()"><i class="fa fa-minus-square-o"></i> Collapse</button>
+                    <button class="toolbar-btn" onclick="beautify()"><i class="fa fa-magic"></i> Beautify</button>
+                </div>
             </div>
 
-            <div class="toolbar-group">
-                <input type="text" class="search-box" placeholder="Search..." id="search-input"
-                    oninput="searchJSON(this.value)">
-                <button class="toolbar-btn" onclick="expandAll()">
-                    <i class="fa fa-plus-square-o"></i> Expand All
-                </button>
-                <button class="toolbar-btn" onclick="collapseAll()">
-                    <i class="fa fa-minus-square-o"></i> Collapse All
-                </button>
-            </div>
-        </div>
+            <!-- Content -->
+            <div class="content" id="main-content">
 
-        <!-- Content -->
-        <div class="content" id="main-content">
-            <?php if ($isParamsOnly) { ?>
-                <!-- Single Panel -->
-                <div class="panel">
-                    <div class="panel-header">
+                <!-- Request -->
+                <div class="panel <?= $req['decoded'] === null ? 'panel-missing' : '' ?>">
+                    <div class="panel-header <?= $req['decoded'] === null ? 'has-error' : '' ?>">
                         <div class="panel-title">
-                            <i class="fa fa-cogs request-icon"></i>
-                            <span>API Parameters</span>
+                            <i class="fa fa-arrow-circle-up <?= $req['decoded'] === null ? 'error-icon' : 'request-icon' ?>"></i>
+                            <span>Request <?= $req['decoded'] === null ? '(Missing)' : '' ?></span>
                         </div>
                         <div class="panel-actions">
-                            <button class="action-btn" onclick="copyJSON('request-data')">
-                                <i class="fa fa-copy"></i> Copy
-                            </button>
-                            <button class="action-btn" onclick="downloadJSON('request-data', 'api-params.json')">
-                                <i class="fa fa-download"></i> Download
-                            </button>
+                            <button class="action-btn" onclick="copyJSON('request')" <?= $req['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-copy"></i> Copy</button>
+                            <button class="action-btn" onclick="downloadJSON('request','request.json')" <?= $req['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i> Download</button>
                         </div>
                     </div>
                     <div class="panel-content" id="request-panel">
-                        <div class="loading">Loading...</div>
-                    </div>
-                </div>
-            <?php } else { ?>
-                <!-- Request Panel -->
-                <div class="panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fa fa-arrow-circle-up request-icon"></i>
-                            <span>Request</span>
-                        </div>
-                        <div class="panel-actions">
-                            <button class="action-btn" onclick="copyJSON('request-data')">
-                                <i class="fa fa-copy"></i> Copy
-                            </button>
-                            <button class="action-btn" onclick="downloadJSON('request-data', 'request.json')">
-                                <i class="fa fa-download"></i> Download
-                            </button>
-                        </div>
-                    </div>
-                    <div class="panel-content" id="request-panel">
-                        <div class="loading">Loading...</div>
+                        <?php if ($req['decoded'] === null): ?>
+                            <div class="error-message">
+                                <i class="fa fa-file-o error-icon-large"></i>
+                                <div class="error-title">Request Not Available</div>
+                                <p>Couldn’t load <code><?= htmlspecialchars($reqName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                <div class="error-detail"><?= htmlspecialchars((string)$req['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                            </div>
+                        <?php else: ?>
+                            <div>Loading…</div>
+                        <?php endif; ?>
                     </div>
                 </div>
 
-                <!-- Response Panel -->
-                <div class="panel">
-                    <div class="panel-header">
-                        <div class="panel-title">
-                            <i class="fa fa-arrow-circle-down response-icon"></i>
-                            <span>Response</span>
+                <!-- Response -->
+                <?php if (!$isParamsOnly): ?>
+                    <div class="panel <?= $res['decoded'] === null ? 'panel-missing' : '' ?>">
+                        <div class="panel-header <?= $res['decoded'] === null ? 'has-error' : '' ?>">
+                            <div class="panel-title">
+                                <i class="fa fa-arrow-circle-down <?= $res['decoded'] === null ? 'error-icon' : 'response-icon' ?>"></i>
+                                <span>Response <?= $res['decoded'] === null ? '(Missing)' : '' ?></span>
+                            </div>
+                            <div class="panel-actions">
+                                <button class="action-btn" onclick="copyJSON('response')" <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-copy"></i> Copy</button>
+                                <button class="action-btn" onclick="downloadJSON('response','response.json')" <?= $res['decoded'] === null ? 'disabled' : '' ?>><i class="fa fa-download"></i> Download</button>
+                            </div>
                         </div>
-                        <div class="panel-actions">
-                            <button class="action-btn" onclick="copyJSON('response-data')">
-                                <i class="fa fa-copy"></i> Copy
-                            </button>
-                            <button class="action-btn" onclick="downloadJSON('response-data', 'response.json')">
-                                <i class="fa fa-download"></i> Download
-                            </button>
+                        <div class="panel-content" id="response-panel">
+                            <?php if ($res['decoded'] === null): ?>
+                                <div class="error-message">
+                                    <i class="fa fa-file-o error-icon-large"></i>
+                                    <div class="error-title">Response Not Available</div>
+                                    <p>Couldn’t load <code><?= htmlspecialchars($resName, ENT_QUOTES, 'UTF-8') ?></code>.</p>
+                                    <div class="error-detail"><?= htmlspecialchars((string)$res['error'], ENT_QUOTES, 'UTF-8') ?></div>
+                                </div>
+                            <?php else: ?>
+                                <div>Loading…</div>
+                            <?php endif; ?>
                         </div>
                     </div>
-                    <div class="panel-content" id="response-panel">
-                        <div class="loading">Loading...</div>
-                    </div>
-                </div>
-            <?php } ?>
-        </div>
+                <?php endif; ?>
+
+            </div>
+        <?php endif; ?>
+
     </div>
 
     <script>
-        // Data
-        const requestData = <?= $userRequest; ?>;
-        const responseData = <?= $userResponse; ?>;
-        const isParamsOnly = <?= $isParamsOnly ? 'true' : 'false'; ?>;
+        // ---------- Data from PHP ----------
+        const requestData = <?= $jsRequest ?>;
+        const responseData = <?= $jsResponse ?>;
+        const isParamsOnly = <?= $isParamsOnly ? 'true' : 'false' ?>;
 
         let viewMode = 'tree';
         let layout = 'split';
 
-        // Initialize
         document.addEventListener('DOMContentLoaded', function() {
             renderContent();
         });
 
-        // Render content based on view mode
+        // ---------- Rendering ----------
         function renderContent() {
-            if (viewMode === 'tree') {
-                document.getElementById('request-panel').innerHTML = renderJSONTree(requestData, 'request');
-                if (!isParamsOnly) {
-                    document.getElementById('response-panel').innerHTML = renderJSONTree(responseData, 'response');
-                }
-            } else {
-                document.getElementById('request-panel').innerHTML = '<pre class="raw-json">' +
-                    JSON.stringify(requestData, null, 2) + '</pre>';
-                if (!isParamsOnly) {
-                    document.getElementById('response-panel').innerHTML = '<pre class="raw-json">' +
-                        JSON.stringify(responseData, null, 2) + '</pre>';
-                }
+            if (requestData !== null) {
+                document.getElementById('request-panel').innerHTML =
+                    viewMode === 'tree' ? renderJSONTree(requestData, 'request') :
+                    '<pre class="raw-json">' + highlightJson(JSON.stringify(requestData, null, 2)) + '</pre>';
+            }
+            if (!isParamsOnly && responseData !== null) {
+                document.getElementById('response-panel').innerHTML =
+                    viewMode === 'tree' ? renderJSONTree(responseData, 'response') :
+                    '<pre class="raw-json">' + highlightJson(JSON.stringify(responseData, null, 2)) + '</pre>';
             }
         }
 
-        // Render JSON as collapsible tree
         function renderJSONTree(obj, prefix, level = 0) {
             if (obj === null) return '<span class="json-null">null</span>';
-            if (typeof obj !== 'object') {
-                if (typeof obj === 'string') return '<span class="json-string">"' + escapeHtml(obj) + '"</span>';
-                if (typeof obj === 'number') return '<span class="json-number">' + obj + '</span>';
-                if (typeof obj === 'boolean') return '<span class="json-boolean">' + obj + '</span>';
-                return escapeHtml(String(obj));
+
+            const t = typeof obj;
+            if (t !== 'object') {
+                if (t === 'string') return '<span class="json-string">"' + escapeHtml(obj) + '"</span>';
+                if (t === 'number') return '<span class="json-number">' + String(obj) + '</span>';
+                if (t === 'boolean') return '<span class="json-boolean">' + String(obj) + '</span>';
+                return '<span class="json-string">' + escapeHtml(String(obj)) + '</span>';
             }
 
             const isArray = Array.isArray(obj);
-            const keys = Object.keys(obj);
-
-            if (keys.length === 0) {
-                return isArray ? '<span class="json-bracket">[]</span>' : '<span class="json-bracket">{}</span>';
-            }
+            const keys = isArray ? obj.map((_, i) => i) : Object.keys(obj);
+            if (keys.length === 0) return '<span class="json-bracket">' + (isArray ? '[]' : '{}') + '</span>';
 
             let html = '<div class="json-tree">';
+
+            // Opening
             html += '<div class="json-line">';
-            html += '<span class="json-indent">'.repeat(level);
+            html += '<span class="json-indent"></span>'.repeat(level);
             html += '<span class="json-toggle" onclick="toggleNode(this)">▼</span>';
             html += '<span class="json-bracket">' + (isArray ? '[' : '{') + '</span>';
             html += '</div>';
 
+            // Children
             html += '<div class="json-children">';
-            keys.forEach((key, index) => {
-                const value = obj[key];
-                const comma = index < keys.length - 1 ? ',' : '';
+            keys.forEach((key, idx) => {
+                const value = isArray ? obj[key] : obj[key];
+                const comma = idx < keys.length - 1 ? ',' : '';
 
                 html += '<div class="json-line">';
-                html += '<span class="json-indent">'.repeat(level + 1);
+                html += '<span class="json-indent"></span>'.repeat(level + 1);
 
-                if (typeof value === 'object' && value !== null && Object.keys(value).length > 0) {
-                    html += '<span class="json-toggle" onclick="toggleNode(this)">▼</span>';
-                } else {
-                    html += '<span class="json-toggle"></span>';
-                }
+                const expandable = (value !== null && typeof value === 'object' && Object.keys(value).length > 0);
+                html += '<span class="json-toggle" ' + (expandable ? 'onclick="toggleNode(this)"' : '') + '>' + (expandable ? '▼' : '') + '</span>';
 
                 if (!isArray) {
-                    html += '<span class="json-key">"' + escapeHtml(key) + '"</span>: ';
+                    html += '<span class="json-key">"' + escapeHtml(String(key)) + '"</span>: ';
                 }
 
-                if (typeof value === 'object' && value !== null) {
-                    html += renderJSONTree(value, prefix + '_' + key, level + 1);
-                } else {
-                    html += renderJSONTree(value, prefix + '_' + key, level + 1);
-                }
-
-                html += comma;
+                html += '<div class="json-value-container">' + renderJSONTree(value, prefix + '_' + key, level + 1) + '</div>' + comma;
                 html += '</div>';
             });
             html += '</div>';
 
+            // Closing
             html += '<div class="json-line">';
-            html += '<span class="json-indent">'.repeat(level);
+            html += '<span class="json-indent"></span>'.repeat(level);
             html += '<span class="json-toggle"></span>';
             html += '<span class="json-bracket">' + (isArray ? ']' : '}') + '</span>';
             html += '</div>';
-            html += '</div>';
 
+            html += '</div>';
             return html;
         }
 
-        // Toggle node expansion
+        // ---------- Interactions ----------
         function toggleNode(el) {
+            if (!el.textContent) return;
+            const children = el.closest('.json-line').nextElementSibling;
+            if (!children || !children.classList.contains('json-children')) return;
+
             if (el.textContent === '▼') {
                 el.textContent = '▶';
-                const parent = el.closest('.json-line').nextElementSibling;
-                if (parent && parent.classList.contains('json-children')) {
-                    parent.classList.add('json-collapsed');
-                }
+                children.classList.add('json-collapsed');
             } else {
                 el.textContent = '▼';
-                const parent = el.closest('.json-line').nextElementSibling;
-                if (parent && parent.classList.contains('json-children')) {
-                    parent.classList.remove('json-collapsed');
-                }
+                children.classList.remove('json-collapsed');
             }
         }
 
-        // Expand all nodes
         function expandAll() {
             document.querySelectorAll('.json-toggle').forEach(el => {
-                if (el.textContent === '▶') {
-                    el.textContent = '▼';
-                }
+                if (el.textContent === '▶') el.textContent = '▼';
             });
-            document.querySelectorAll('.json-children').forEach(el => {
-                el.classList.remove('json-collapsed');
-            });
+            document.querySelectorAll('.json-children').forEach(el => el.classList.remove('json-collapsed'));
         }
 
-        // Collapse all nodes
         function collapseAll() {
             document.querySelectorAll('.json-toggle').forEach(el => {
-                if (el.textContent === '▼') {
-                    el.textContent = '▶';
-                }
+                if (el.textContent === '▼') el.textContent = '▶';
             });
-            document.querySelectorAll('.json-children').forEach(el => {
-                el.classList.add('json-collapsed');
-            });
+            document.querySelectorAll('.json-children').forEach(el => el.classList.add('json-collapsed'));
         }
 
-        // Set view mode
         function setViewMode(mode) {
             viewMode = mode;
             document.getElementById('btn-tree').classList.toggle('active', mode === 'tree');
@@ -660,7 +740,6 @@ $isParamsOnly = !empty($result['api_params']);
             renderContent();
         }
 
-        // Toggle layout
         function toggleLayout() {
             const content = document.getElementById('main-content');
             if (layout === 'split') {
@@ -674,17 +753,26 @@ $isParamsOnly = !empty($result['api_params']);
             }
         }
 
-        // Copy JSON
-        function copyJSON(dataName) {
-            const data = dataName === 'request-data' ? requestData : responseData;
+        function copyJSON(which) {
+            const data = which === 'request' ? requestData : responseData;
+            if (data === null) {
+                alert('No data');
+                return;
+            }
             navigator.clipboard.writeText(JSON.stringify(data, null, 2)).then(() => {
-                alert('Copied to clipboard!');
-            });
+                const btn = event.target.closest('button');
+                const old = btn.innerHTML;
+                btn.innerHTML = '<i class="fa fa-check"></i> Copied';
+                setTimeout(() => btn.innerHTML = old, 1500);
+            }).catch(err => alert('Copy failed: ' + err));
         }
 
-        // Download JSON
-        function downloadJSON(dataName, filename) {
-            const data = dataName === 'request-data' ? requestData : responseData;
+        function downloadJSON(which, filename) {
+            const data = which === 'request' ? requestData : responseData;
+            if (data === null) {
+                alert('No data');
+                return;
+            }
             const blob = new Blob([JSON.stringify(data, null, 2)], {
                 type: 'application/json'
             });
@@ -696,33 +784,63 @@ $isParamsOnly = !empty($result['api_params']);
             URL.revokeObjectURL(url);
         }
 
-        // Search JSON
-        function searchJSON(query) {
-            // Remove previous highlights
-            document.querySelectorAll('.search-highlight').forEach(el => {
-                el.classList.remove('search-highlight');
-            });
+        function beautify() {
+            if (viewMode === 'raw') {
+                renderContent();
+                return;
+            }
+            // no-op: tree already pretty; in Raw view it pretty-prints via JSON.stringify
+            setViewMode('raw'); // quick access to pretty text
+        }
 
-            if (!query) return;
-
-            // Highlight matches
-            const regex = new RegExp(escapeRegex(query), 'gi');
-            document.querySelectorAll('.json-key, .json-string, .json-number').forEach(el => {
-                if (regex.test(el.textContent)) {
+        // ---------- Search ----------
+        function searchJSON(q) {
+            document.querySelectorAll('.search-highlight').forEach(el => el.classList.remove('search-highlight'));
+            if (!q) return;
+            const re = new RegExp(escapeRegex(q), 'i');
+            document.querySelectorAll('.json-key,.json-string,.json-number').forEach(el => {
+                if (re.test(el.textContent)) {
                     el.classList.add('search-highlight');
+                    // expand parents
+                    let parent = el.closest('.json-children');
+                    while (parent) {
+                        parent.classList.remove('json-collapsed');
+                        const t = parent.previousElementSibling?.querySelector('.json-toggle');
+                        if (t && t.textContent === '▶') t.textContent = '▼';
+                        parent = parent.parentElement?.closest('.json-children');
+                    }
                 }
             });
         }
 
-        // Utility functions
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
+        // ---------- Utils ----------
+        function escapeHtml(s) {
+            const d = document.createElement('div');
+            d.textContent = String(s);
+            return d.innerHTML;
         }
 
-        function escapeRegex(text) {
-            return text.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        function escapeRegex(s) {
+            return String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        }
+
+        function highlightJson(jsonString) {
+            return jsonString
+                .replace(/(&)/g, '&amp;')
+                .replace(/(>)/g, '&gt;')
+                .replace(/(<)/g, '&lt;')
+                .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(\.\d+)?([eE][+\-]?\d+)?)/g,
+                    function(match) {
+                        let cls = 'json-number';
+                        if (/^"/.test(match)) {
+                            cls = /:$/.test(match) ? 'json-key' : 'json-string';
+                        } else if (/true|false/.test(match)) {
+                            cls = 'json-boolean';
+                        } else if (/null/.test(match)) {
+                            cls = 'json-null';
+                        }
+                        return '<span class="' + cls + '">' + match + '</span>';
+                    });
         }
     </script>
 </body>
