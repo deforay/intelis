@@ -621,9 +621,9 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                     <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
                                 </div>
                                 <?php
-                                $referralDisplay = '';
+                                $referralResultDisplay = $referralDisplay = '';
                                 if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id']))) {
-                                    $referralDisplay = 'style="display:none;"';
+                                    $referralResultDisplay = 'style="display:none;"';
                                 }
                                 if ((isset($tbInfo['result']) && !empty($tbInfo['result']))) {
                                     $referralDisplay = 'style="display:none;"';
@@ -643,7 +643,7 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                     </div>
                                 </div>
                                 <br>
-                                <div class="row pr-5 fnal-result">
+                                <div class="row pr-5 fnal-result" <?php echo $referralResultDisplay; ?>>
                                     <div class="col-md-6">
                                         <label class="label-control" for="finalResult"><?php echo _translate("Final Interpretation"); ?></label>
                                         <select name="finalResult" id="finalResult" class="form-control" title="Please enter the final interpretation" onchange="(this.value != '') ? $('.refer-inputs').hide(): $('.refer-inputs').show();">

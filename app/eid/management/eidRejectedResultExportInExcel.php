@@ -61,7 +61,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           $output[] = $row;
      }
      if (isset($_SESSION['rejectedViralLoadResultCount']) && $_SESSION['rejectedViralLoadResultCount'] > 50000) {
-          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
+          $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.csv';
           $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
           // we dont need the $output variable anymore
           unset($output);
@@ -98,7 +98,7 @@ if (isset($_SESSION['rejectedViralLoadResult']) && trim((string) $_SESSION['reje
           }
 
           $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+          $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
           $writer->save($filename);
           echo urlencode(basename($filename));
      }

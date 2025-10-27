@@ -102,3 +102,6 @@ UPDATE specimen_manifests SET manifest_type = 'collection' WHERE manifest_type I
 UPDATE `privileges` SET `display_name` = 'Add TB Referral Manifest' WHERE `privileges`.`privilege_name` = '/tb/results/add-tb-referral.php'; 
 INSERT INTO `privileges` (`privilege_id`, `resource_id`, `privilege_name`, `shared_privileges`, `display_name`, `display_order`, `show_mode`) VALUES (NULL, 'tb-results', '/tb/results/edit-tb-referral.php', NULL, 'Edit TB Referral Manifest', '2', 'always');
 UPDATE `s_app_menu` SET `inner_pages` = '/tb/results/add-tb-referral.php,/tb/results/edit-tb-referral.php' WHERE `s_app_menu`.`link` = '/tb/results/tb-referral-list.php'; 
+
+-- Thana 23-Oct-2025
+INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('13', 'Sample Referred to another Lab', 'active')

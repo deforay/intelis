@@ -197,6 +197,10 @@ if ! command -v mysql &>/dev/null; then
     exit 1
 fi
 
+# Clean up vim swap files and setup MySQL config
+find "${lis_path}" -name ".*.swp" -delete 2>/dev/null || true
+setup_mysql_config "${lis_path}/configs/config.production.php" && print info "MySQL config ready"
+
 MYSQL_CONFIG_FILE="/etc/mysql/mysql.conf.d/mysqld.cnf"
 backup_timestamp=$(date +%Y%m%d%H%M%S)
 # Calculate total system memory in MB
@@ -459,8 +463,7 @@ php_version=$(php -v | head -n 1 | grep -oP 'PHP \K([0-9]+\.[0-9]+)')
 desired_php_version="8.2"
 
 # Download and install switch-php script
-download_file "/usr/local/bin/switch-php" "https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php"
-chmod u+x /usr/local/bin/switch-php
+ensure_switch_php
 
 if [[ "${php_version}" != "${desired_php_version}" ]]; then
     print info "Current PHP version is ${php_version}. Switching to PHP ${desired_php_version}."
@@ -630,49 +633,11 @@ update_php_ini() {
     fi
 }
 
-# --- Ensure OPcache is installed and enabled for Apache (don’t rely on php -m) ---
-ensure_opcache() {
-  local ver="${desired_php_version:-8.2}"
-  local pkg="php${ver}-opcache"
-  local apache_ini_glob="/etc/php/${ver}/apache2/conf.d/*opcache.ini"
-  local installed enabled
-
-  # Is the package installed?
-  if dpkg-query -W -f='${Status}\n' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
-    installed=true
-  else
-    installed=false
-  fi
-
-  # Is it enabled for Apache (conf.d link/file exists)?
-  if ls $apache_ini_glob >/dev/null 2>&1; then
-    enabled=true
-  else
-    enabled=false
-  fi
-
-  if $installed && $enabled; then
-    print success "OPcache already installed and enabled for PHP ${ver} (Apache); skipping."
-    return 0
-  fi
-
-  if ! $installed; then
-    print info "Installing OPcache for PHP ${ver}…"
-    apt-get update -y
-    apt-get install -y "$pkg" || true
-  fi
-
-  if ! $enabled; then
-    print info "Enabling OPcache for PHP ${ver} (Apache)…"
-    phpenmod -v "$ver" -s apache2 opcache 2>/dev/null || phpenmod opcache 2>/dev/null || true
-  fi
-
-  print success "OPcache is ready for PHP ${ver} (Apache)."
-}
-
-# Call it here (replaces your previous OPcache block)
+# Function to ensure OPCache is installed and enabled
 ensure_opcache
 
+# Function to ensure Composer is installed
+ensure_composer
 
 # Apply changes to PHP configuration files
 for phpini in /etc/php/${php_version}/apache2/php.ini /etc/php/${php_version}/cli/php.ini; do
@@ -1109,24 +1074,25 @@ wait $pid
 print success "Database migrations and post-update tasks completed."
 log_action "Database migrations and post-update tasks completed."
 
-# Make the intelis script executable
-# Remove any old symlinks
-sudo rm -f /usr/local/bin/intelis /usr/bin/intelis 2>/dev/null || true
+# Make intelis command globally accessible
+print info "Setting up intelis command..."
 
-# Make sure the actual script is executable for all users
-chmod +x "${lis_path}/intelis" 2>/dev/null || true
+TARGET="/usr/local/bin/intelis"
+SOURCE="${lis_path}/intelis"
 
-# Create a symlink in /usr/bin (exec-enabled path)
-sudo ln -s "${lis_path}/intelis" /usr/bin/intelis 2>/dev/null
+if [ -f "${SOURCE}" ]; then
+    # Remove any existing version
+    rm -f "${TARGET}" /usr/bin/intelis 2>/dev/null || true
 
-setfacl -m u:root:rwx,u:$USER:rwx,u:www-data:rwx "${lis_path}/intelis" 2>/dev/null || true
+    # Create symlink and make source executable
+    chmod 755 "${SOURCE}"
+    ln -sf "${SOURCE}" "${TARGET}"
 
-# Confirm installation
-if [ -L "/usr/bin/intelis" ]; then
-    print success "✅ intelis command installed successfully!"
-    print info "You can now use: intelis backup, intelis interface, intelis token, etc."
+    print success "intelis command installed globally at ${TARGET}"
+    log_action "intelis command installed at ${TARGET}"
 else
-    print error "❌ Failed to create intelis symlink."
+    print warning "intelis script not found at ${SOURCE}, skipping setup"
+    log_action "intelis setup skipped — source missing"
 fi
 
 

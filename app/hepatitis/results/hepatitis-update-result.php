@@ -47,7 +47,7 @@ $request = AppRegistry::get('request');
 $_GET = _sanitizeInput($request->getQueryParams());
 $id = $_GET['id'] ?? null;
 
-if(empty($id)){
+if (empty($id)) {
 	header('Location: /hepatitis/results/hepatitis-manual-results.php');
 	exit;
 }
@@ -58,10 +58,6 @@ $id = MiscUtility::desqid((string) $id);
 // get instruments
 $importQuery = "SELECT * FROM instruments WHERE `status` = 'active'";
 $importResult = $db->query($importQuery);
-
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-$pdResult = $db->query($pdQuery);
-
 
 // Comorbidity
 $comorbidityData = $hepatitisService->getHepatitisComorbidities();

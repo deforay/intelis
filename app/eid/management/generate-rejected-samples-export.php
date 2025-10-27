@@ -87,7 +87,7 @@ if (isset($_SESSION['rejectedSamples']) && trim((string) $_SESSION['rejectedSamp
           }
      }
      $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-     $filename = 'VLSM-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
+     $filename = 'InteLIS-Rejected-Data-report' . date('d-M-Y-H-i-s') . '.xlsx';
      $writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
      echo $filename;
 }

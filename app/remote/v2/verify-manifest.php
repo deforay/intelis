@@ -12,6 +12,7 @@ use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Exceptions\SystemException;
+use App\Services\FacilitiesService;
 use App\Services\STS\TokensService;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
@@ -33,6 +34,9 @@ $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
 
 /** @var TokensService $stsTokensService */
 $stsTokensService = ContainerRegistry::get(TokensService::class);
+
+/** @var FacilitiesService $facilitiesService */
+$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /** @var Slim\Psr7\Request $request */
 $request = AppRegistry::get('request');
@@ -83,8 +87,9 @@ try {
 
     $token = $stsTokensService->validateToken($authToken, $labId);
     if ($token === false || empty($token)) {
+        $labDetails = $facilitiesService->getFacilityById($labId);
         http_response_code(401);
-        throw new SystemException('Unauthorized Access. Token missing or invalid.', 401);
+        throw new SystemException("Unauthorized Access. Token missing or invalid for lab {$labDetails['facility_name']}.", 401);
     }
 
     $db->where('manifest_code', $manifestCode);

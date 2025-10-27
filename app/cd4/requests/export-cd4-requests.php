@@ -140,7 +140,7 @@ if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
 	}, $headings);
 }
 
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
 
 $writer = new Writer();
 $writer->openToFile($filename);

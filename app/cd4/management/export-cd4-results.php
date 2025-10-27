@@ -144,7 +144,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 
 
 		
-	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-CD4-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
 
 	$writer = new Writer();
 	$writer->openToFile($filename);

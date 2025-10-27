@@ -7,9 +7,12 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
-use App\Registries\ContainerRegistry;
 use App\Utilities\FileCacheUtility;
+use App\Registries\ContainerRegistry;
 use JsonMachine\JsonDecoder\ExtJsonDecoder;
+use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Console\Style\SymfonyStyle;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 
 // Request STS to send metadata to this instance of LIS
@@ -21,6 +24,8 @@ $truncateFlag = false;
 if ($cliMode) {
     require_once __DIR__ . "/../../../bootstrap.php";
 
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
+
     // Parse CLI arguments
     $options = getopt('ft', ['force', 'truncate']);
     if (isset($options['f']) || isset($options['force'])) {
@@ -29,8 +34,9 @@ if ($cliMode) {
     if (isset($options['t']) || isset($options['truncate'])) {
         $truncateFlag = true;
     }
-    echo "Preparing to sync data..." . PHP_EOL;
+    $io->title("Preparing to sync metadata...");
 }
+
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -72,12 +78,15 @@ if (empty($remoteURL) || $remoteURL == '') {
 
 $labId = $general->getSystemConfig('sc_testing_lab_id');
 
+$version = VERSION;
+
 if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-    LoggerUtility::logError("No network connectivity while trying remote sync.");
+    if ($cliMode) {
+        $io->error(_translate("No network connectivity while trying STS medatata sync."));
+    }
+    LoggerUtility::logError("No network connectivity while trying STS medatata sync.");
     return false;
 }
-
-$version = VERSION;
 
 $instanceId = $general->getInstanceId();
 
@@ -426,7 +435,7 @@ try {
     if (!empty($jsonResponse) && $jsonResponse != "[]") {
 
         if ($cliMode) {
-            echo "Received data from STS" . PHP_EOL;
+            $io->success(_translate("Receieved metadata from STS"));
         }
 
         $options = [
@@ -466,7 +475,7 @@ try {
                     $emptyTableArray = $general->getTableFieldsAsArray($dataToSync[$dataType]['tableName']);
 
                     if ($cliMode) {
-                        echo "Syncing data for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                        $io->info(_translate("Syncing data for") . " " . $dataToSync[$dataType]['tableName']);
                     }
 
 
@@ -587,10 +596,10 @@ try {
                 $db->rollbackTransaction();
 
                 if ($cliMode) {
-                    echo "Error while syncing metadata from remote for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                    $io->error(_translate("Error while syncing metadata from STS for") . " " . $dataToSync[$dataType]['tableName']);
                 }
                 LoggerUtility::logError(
-                    "Error while syncing metadata from remote for " . $dataToSync[$dataType]['tableName'],
+                    "Error while syncing metadata from STS for " . $dataToSync[$dataType]['tableName'],
                     [
                         'dataType' => $dataType,
                         'tableName' => $dataToSync[$dataType]['tableName'],
@@ -606,16 +615,16 @@ try {
                 continue;
             }
             if ($cliMode) {
-                echo "Completed for " . $dataToSync[$dataType]['tableName'] . PHP_EOL;
+                $io->info(_translate("Completed syncing data for") . " " . $dataToSync[$dataType]['tableName']);
             }
         }
     }
     $id = $db->update('s_vlsm_instance', ['last_remote_reference_data_sync' => DateUtility::getCurrentDateTime()]);
 } catch (Throwable $e) {
     if ($cliMode) {
-        echo "Error in metadata sync" . PHP_EOL;
+        $io->error(_translate("Error while syncing metadata from STS"));
     }
-    LoggerUtility::logError("Error while syncing metadata from remote", [
+    LoggerUtility::logError("Error while syncing metadata from STS", [
         'line' => $e->getLine(),
         'file' => $e->getFile(),
         'code' => $e->getCode(),

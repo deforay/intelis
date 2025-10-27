@@ -4,6 +4,7 @@ namespace App\Middlewares;
 
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
+use App\Exceptions\SystemException;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
@@ -57,13 +58,21 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
     private function shouldExcludeFromAuthCheck(ServerRequestInterface $request): bool
     {
         $uri = $request->getUri()->getPath();
-        if (
-            CommonService::isCliRequest() ||
-            CommonService::isAjaxRequest($request) !== false ||
-            CommonService::isExcludedUri($uri, $this->excludedUris ?? []) === true
-        ) {
+        if (CommonService::isCliRequest()) {
             return true;
         }
+
+        if (CommonService::isAjaxRequest($request)) {
+            if (CommonService::isSameOriginRequest($request) === false) {
+                throw new SystemException(_translate('Invalid request origin.'), 403);
+            }
+            return true;
+        }
+
+        if (CommonService::isExcludedUri($uri, $this->excludedUris ?? []) === true) {
+            return true;
+        }
+
         return false;
     }
 }

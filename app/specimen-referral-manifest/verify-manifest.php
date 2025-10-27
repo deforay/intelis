@@ -2,10 +2,10 @@
 
 // app/specimen-referral-manifest/verify-manifest.php
 
+use App\Utilities\JsonUtility;
 use App\Registries\AppRegistry;
 use App\Registries\ContainerRegistry;
 use App\Services\TestRequestsService;
-
 
 /** @var TestRequestsService $testRequestsService */
 $testRequestsService = ContainerRegistry::get(TestRequestsService::class);
@@ -20,8 +20,4 @@ $verifyManifest = $testRequestsService->verifyManifestHashWithRemote(
     testType: $_POST['testType'],
 );
 
-echo json_encode($verifyManifest);;
-
-echo $verifyManifest['verified'];
-
-
+echo JsonUtility::encodeUtf8Json($verifyManifest);

@@ -1,10 +1,17 @@
 <?php
 
-use App\Registries\ContainerRegistry;
 use App\Services\EidService;
 use App\Utilities\DateUtility;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+/** @var EidService $eidObj */
 $eidObj = ContainerRegistry::get(EidService::class);
+
 $eidResults = $eidObj->getEidResults();
 $labFieldDisabled = '';
 
@@ -13,7 +20,7 @@ $specimenTypeResult = $eidObj->getEidSampleTypes();
 $rKey = '';
 $sKey = '';
 $sFormat = '';
-//$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
+
 if ($_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';

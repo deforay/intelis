@@ -20,8 +20,8 @@
         "ext-gd": "*",
         "ext-gettext": "*",
         "ext-intl": "*",
-        "ext-mbstring": "*",
         "ext-json": "*",
+        "ext-mbstring": "*",
         "ext-openssl": "*",
         "ext-pdo": "*",
         "ext-sodium": "*",
@@ -115,16 +115,16 @@
             "php app/tasks/remote/sts-metadata-receiver.php",
             "php app/tasks/remote/lab-metadata-sender.php"
         ],
-        "sts-sync": [
-            "php app/tasks/remote/sts-metadata-receiver.php",
-            "php app/tasks/remote/results-sender.php",
-            "php app/tasks/remote/requests-receiver.php",
-            "php app/tasks/remote/lab-metadata-sender.php"
-        ],
         "send-results": "php app/tasks/remote/results-sender.php",
         "receive-requests": "php app/tasks/remote/requests-receiver.php",
         "generate-translation-strings": "php app/system/generate-translation-strings.php",
         "fix-app-menu": "php bin/setup/fix-app-menu.php",
+        "sts-sync": [
+            "@token",
+            "@metadata-sync",
+            "@send-results",
+            "@receive-requests"
+        ],
         "post-install": [
             "@migrate",
             "@fixes",
@@ -138,7 +138,8 @@
             "@token",
             "@purge-cache",
             "@collation",
-            "@metadata-sync"
+            "@metadata-sync",
+            "@cleanup"
         ]
     }
 }

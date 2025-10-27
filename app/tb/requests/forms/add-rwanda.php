@@ -230,7 +230,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                     </td>
                                     <td class="treatmentSelected" style="width: 50%; display: none;">
                                         <label class="label-control" for="treatmentDate"><?php echo _translate("Date of treatment Initiation"); ?><span class="mandatory">*</span></label>
-                                        <input type="text" name="treatmentDate" id="treatmentDate" class="treatmentSelectedInput form-control date" title="Please choose treatment date" />
+                                        <input type="text" name="treatmentDate" id="treatmentDate" placeholder="Enter the date of treatment initiation" class="treatmentSelectedInput form-control date" title="Please choose treatment date" />
                                     </td>
                                 </tr>
                                 <tr class="treatmentSelected" style="display: none;">
@@ -240,7 +240,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                     </td>
                                     <td style="width: 50%;">
                                         <label class="label-control" for="regimenDate"><?php echo _translate("Date of Initiation of Current Regimen"); ?><span class="mandatory">*</span></label>
-                                        <input type="text" name="regimenDate" id="regimenDate" class="treatmentSelectedInput form-control date" title="Please choose date of current regimen" />
+                                        <input type="text" name="regimenDate" id="regimenDate" placeholder="Enter the initiation of current regimen" class="treatmentSelectedInput form-control date" title="Please choose date of current regimen" />
                                     </td>
                                 </tr>
                                 <tr class="treatmentSelected" style="display: none;">

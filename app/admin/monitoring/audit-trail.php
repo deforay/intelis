@@ -1,15 +1,17 @@
 <?php
-// audit-trail-viewer.php - Enhanced version with better change visualization
+// app/admin/monitoring/audit-trail.php
 
-use GuzzleHttp\Client;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
+use App\Services\ArchiveService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\AuditArchiveService;
+
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
@@ -22,6 +24,7 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var UsersService  $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
+$userCache = [];
 
 try {
     // Sanitized values from request object
@@ -49,80 +52,125 @@ try {
         return $db->rawQuery($columnsSql, [SYSTEM_CONFIG['database']['db'], $tableName]);
     }
 
-    // Function to get CSV file path based on test type and unique ID
-    function getAuditFilePath($testType, $uniqueId)
+    function resolveAuditFilePath(string $testType, string $uniqueId): ?string
     {
-        return ROOT_PATH . "/audit-trail/{$testType}/{$uniqueId}.csv.gz";
-    }
+        $tests = TestsService::getTestTypes();
 
-    // Function to read data from CSV file
-    function readAuditDataFromCsv($filePath)
-    {
-        $data = [];
-        if (file_exists($filePath)) {
-            $fileHandle = gzopen($filePath, 'r');
-            if ($fileHandle !== false) {
-                $headers = fgetcsv($fileHandle);
-                while (($row = fgetcsv($fileHandle)) !== false) {
-                    $record = [];
-                    foreach ($headers as $i => $header) {
-                        // Remove quotes and slashes from values
-                        $value = $row[$i] ?? '';
-                        if (substr($value, 0, 1) === '"' && substr($value, -1) === '"') {
-                            $value = substr($value, 1, -1);
-                        }
-                        $record[$header] = stripslashes($value);
-                    }
-                    $data[] = $record;
+        // Normalize posted key
+        if (!isset($tests[$testType])) {
+            foreach ($tests as $k => $_) {
+                if (strcasecmp($k, $testType) === 0) {
+                    $testType = $k;
+                    break;
                 }
-                gzclose($fileHandle);
             }
         }
-        return $data;
+        if (!isset($tests[$testType])) return null;
+
+        $table = $tests[$testType]['tableName'] ?? null;
+        if (!$table) return null;
+
+        // Find canonical and all aliases for this table
+        $canonical = null;
+        $aliases = [];
+        foreach ($tests as $k => $meta) {
+            if (($meta['tableName'] ?? null) === $table) {
+                if ($canonical === null) $canonical = $k; // first key = canonical
+                else $aliases[] = $k;
+            }
+        }
+
+        $candidates = [];
+        $push = function ($key) use (&$candidates, $uniqueId) {
+            $folder = preg_replace('/[^\w\-]+/', '-', $key);
+            $base   = ROOT_PATH . "/audit-trail/{$folder}/{$uniqueId}.csv";
+            foreach (['.zst', '.gz', '.zip', ''] as $ext) $candidates[] = $base . $ext;
+        };
+
+        if ($canonical) $push($canonical);
+        $push($testType);                // whatever user posted
+        foreach ($aliases as $a) $push($a);
+
+        foreach ($candidates as $path) {
+            if (is_file($path)) return $path;
+        }
+
+        // Final fallback: scan ALL subfolders for a matching file (legacy layouts)
+        foreach (glob(ROOT_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
+            foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
+                $p = $dir . '/' . $uniqueId . $ext;
+                if (is_file($p)) return $p;
+            }
+        }
+        return null;
     }
+
+    function readAuditDataFromCsvFlexible(string $filePath): array
+    {
+        if (!is_file($filePath)) return [];
+
+        // Let ArchiveService detect and decompress. For plain CSV it can just read as-is.
+        // If your ArchiveService expects only compressed files, you can guard with extension
+        // and use file_get_contents for plain .csv; below assumes it handles both.
+        try {
+            $csvString = ArchiveService::decompressToString($filePath);
+        } catch (Throwable $e) {
+            // Fallback: plain CSV read
+            $csvString = @file_get_contents($filePath);
+            if ($csvString === false) return [];
+        }
+
+        // Parse CSV from a temp stream
+        $fp = fopen('php://temp', 'r+');
+        fwrite($fp, $csvString);
+        rewind($fp);
+
+        $headers = fgetcsv($fp);
+        if ($headers === false || $headers === null) {
+            fclose($fp);
+            return [];
+        }
+
+        $rows = [];
+        while (($row = fgetcsv($fp)) !== false) {
+            $assoc = [];
+            foreach ($headers as $i => $h) {
+                // original archiver writes json_encode() values; fgetcsv already unquotes;
+                // we’ll show as-is (including literal "null" when used).
+                $assoc[$h] = $row[$i] ?? '';
+            }
+            $rows[] = $assoc;
+        }
+        fclose($fp);
+
+        return $rows;
+    }
+
+
 
     $sampleCode = null;
     if (!empty($_POST)) {
         // Define $sampleCode from POST data
         $request = AppRegistry::get('request');
         $_POST = _sanitizeInput($request->getParsedBody());
-        $sampleCode = $_POST['sampleCode'] ?? null;
+
+        $sampleCode = isset($_POST['sampleCode']) ? trim((string)$_POST['sampleCode']) : null;
     }
 
     if (isset($_POST['testType']) && $sampleCode) {
-        $formTable = TestsService::getTestTableName($_POST['testType']);
-        $auditTable = 'audit_' . $formTable;
-
+        $formTable   = TestsService::getTestTableName($_POST['testType']);
         $filteredData = $_POST['hiddenColumns'] ?? '';
 
-        // Get scheme (http or https)
-        $scheme = isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] === 'on' ? "https" : "http";
-
-        // Get host (domain or IP with port if any)
-        $host = $_SERVER['HTTP_HOST'];
-
-        // Build the full URL
-        $baseUrl = "{$scheme}://{$host}";
-
-        // Archive latest audit data for this sample
-        $client = new Client();
+        // Archive latest audit data for this sample (no HTTP; call the service)
         try {
-            $response = $client->get("{$baseUrl}/tasks/archive-audit-tables.php?sampleCode=$sampleCode", [
-                'headers' => [
-                    'X-CSRF-Token' => $_SESSION['csrf_token'],
-                    'X-Requested-With' => 'XMLHttpRequest', // Spoof as AJAX to avoid ACL. Auth etc.
-                ],
-                'verify' => false,
-            ]);
-
-            if ($response->getStatusCode() === 200) {
-                $uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
-            } else {
-                echo "<h3 align='center'>Failed to archive the latest audit trail data. Please try again.</h3>";
-                $uniqueId = null;
-            }
-        } catch (Exception $e) {
-            LoggerUtility::log('error', 'Request to archive audit data failed: ' . $e->getMessage());
+            $archiver = new AuditArchiveService($db);
+            $archiver->archiveSample($_POST['testType'], $sampleCode);
+            // echo "<div class='alert alert-success' style='margin:10px 0;'>Audit archive refreshed for sample "
+            //     . htmlspecialchars($sampleCode) . ".</div>";
+            $uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
+        } catch (Throwable $e) {
+            LoggerUtility::logError('ArchiveSample failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            echo "<div class='alert alert-danger' style='margin:10px 0;'>Failed to refresh audit archive.</div>";
             $uniqueId = null;
         }
     } else {
@@ -130,6 +178,7 @@ try {
         $uniqueId = "";
         $filteredData = "";
     }
+
 
     // Include audit-specific columns explicitly
     $auditColumns = [
@@ -347,12 +396,13 @@ try {
                     'last_modified_by'
                 ];
 
+                $currentData = [];
                 if (!empty($uniqueId)) {
-                    $filePath = getAuditFilePath($_POST['testType'], $uniqueId);
-                    $posts = readAuditDataFromCsv($filePath);
+                    $filePath = resolveAuditFilePath($_POST['testType'], $uniqueId);
+                    $posts = $filePath ? readAuditDataFromCsvFlexible($filePath) : [];
                     // Sort the records by revision ID
                     usort($posts, function ($a, $b) {
-                        return $a['revision'] <=> $b['revision'];
+                        return (int)($a['revision'] ?? 0) <=> (int)($b['revision'] ?? 0);
                     });
 
                     // Fetch current data
@@ -433,7 +483,8 @@ try {
                                                     for ($i = 0; $i < count($posts); $i++) {
                                                         echo "<tr>";
                                                         foreach ($colArr as $j => $colName) {
-                                                            $value = $posts[$i][$colName] ?? '';
+                                                            $value = array_key_exists($colName, $posts[$i]) ? $posts[$i][$colName] : '';
+
                                                             $previousValue = $i > 0 ? ($posts[$i - 1][$colName] ?? null) : null;
 
                                                             // Check if value changed from previous revision

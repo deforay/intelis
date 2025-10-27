@@ -42,7 +42,8 @@ try {
             // Update the form_tb table - set lab_id to referred_to_lab_id
             $updateData = [
                 'lab_id' => $newLabId,
-                'last_modified_datetime' => DateUtility::getCurrentDateTime()
+                'last_modified_datetime' => DateUtility::getCurrentDateTime(),
+                'data_sync' => 0
             ];
 
             $db->where("tb_id", $tbId);

@@ -180,7 +180,7 @@ try {
         'message' => 'Metadata synced successfully'
     ]);
 
-    $general->addApiTracking($transactionId, 'vlsm-system', $counter, 'system-metadata-sync', 'common', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
+    $general->addApiTracking($transactionId, 'intelis-system', $counter, 'system-metadata-sync', 'common', $_SERVER['REQUEST_URI'], $jsonResponse, $payload, 'json', $labId);
     $db->commitTransaction();
 } catch (Throwable $e) {
     $db->rollbackTransaction();

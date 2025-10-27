@@ -54,9 +54,9 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                     <div class="row">
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
-                                <label for="referralLabId" class="control-label"> <?php echo _translate("Referral Lab"); ?> <span class="mandatory">*</span></label>
+                                <label for="referralLabId" class="control-label"> <?php echo _translate("Referral From Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralLabId" id="referralLabId" class="form-control select2 isRequired"
-                                    title="<?php echo _translate("Please select referral Laboratory"); ?>" required>
+                                    title="<?php echo _translate("Please select referral from Laboratory"); ?>" required>
                                     <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                 </select>
                             </div>
@@ -109,6 +109,21 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                             <div class="sampleCounterDiv">
                                 <?= _translate("Selected samples"); ?> : <span id="selectedCount">0</span>
                             </div>
+                        </div>
+                    </div>
+                    <div class="row sampleSelectionArea" style="margin-top: 30px;display:none;">
+                        <div class="form-group col-md-6">
+                            <div style="margin-left:3%;">
+                                <label for="referralToLabId" class="control-label"> <?php echo _translate("Referral To Lab"); ?> <span class="mandatory">*</span></label>
+                                <select name="referralToLabId" id="referralToLabId" class="form-control select2 isRequired"
+                                    title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
+                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="referralReason" class="control-label"> <?php echo _translate("Reason for Referral"); ?> <span class="mandatory">*</span></label>
+                            <textarea type="text" class="form-control isRequired" id="referralReason" name="referralReason" placeholder="Enter referral reason" title="Please enter reerral reason"></textarea>
                         </div>
                     </div>
                     <div class="box-footer sampleSelectionArea" style="margin-top: 20px;display:none;">
@@ -175,7 +190,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
     }
 
     function validateForm() {
-        const referralLabId = $("#referralLabId").val();
+        const referralLabId = $("#referralToLabId").val();
         const selectedSamples = $("#search_to option").length;
 
         if (!referralLabId) {

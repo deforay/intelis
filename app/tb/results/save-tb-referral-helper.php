@@ -19,8 +19,8 @@ $general = ContainerRegistry::get(CommonService::class);
 
 try {
     // Validate required fields
-    if (empty($_POST['referralLabId'])) {
-        $_SESSION['alertMsg'] = _translate("Please select a referral lab");
+    if (empty($_POST['referralToLabId'])) {
+        $_SESSION['alertMsg'] = _translate("Please select a referral to lab");
         header("Location: /tb/results/tb-referral.php");
         exit;
     }
@@ -34,6 +34,7 @@ try {
     $testType = $_POST['type'] ?? 'tb';
     $referralLabId = $_POST['referralLabId'];
     $referralSamples = $_POST['referralSamples'];
+    $referralToLabId = $_POST['referralToLabId'];
 
     // Get current user and lab information
     $userId = $_SESSION['userId'] ?? null;
@@ -52,7 +53,7 @@ try {
         $currentDateTime = DateUtility::getCurrentDateTime();
         $data = [
             'module' => 'tb',
-            'lab_id' => $referralLabId,
+            'lab_id' => $referralToLabId,
             'number_of_samples' => $numberOfSamples,
             'manifest_type' => 'referral',
             'manifest_status' => 'pending',
@@ -81,9 +82,11 @@ try {
         $updateData = [
             'sample_package_id' => $manifestId,
             'sample_package_code' => $_POST['packageCode'],
+            'result_status' => 13,
             'data_sync' => 0,
-            'referred_by_lab_id' => $userFacilityId,
-            'referred_to_lab_id' => $referralLabId,
+            'referred_by_lab_id' => $referralLabId,
+            'referred_to_lab_id' => $referralToLabId,
+            'reason_for_referral' => $_POST['referralReason'],
             'last_modified_by' => $userId,
             'last_modified_datetime' => $currentDateTime
         ];
