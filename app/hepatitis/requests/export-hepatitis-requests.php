@@ -11,9 +11,8 @@ use App\Services\CommonService;
 use App\Utilities\MiscUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
-use PhpOffice\PhpSpreadsheet\Cell\Coordinate;
+use OpenSpout\Writer\XLSX\Writer;
+use OpenSpout\Common\Entity\Row;
 
 
 /** @var DatabaseService $db */
@@ -24,8 +23,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 $key = (string) $general->getGlobalConfig('key');
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
+
 
 $sessionQuery = $_SESSION['hepatitisRequestSearchResultQuery'];
 if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
@@ -41,9 +39,8 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         unset($headings[$key]);
     }
 
-    $no = 1;
-    $resultSet = $db->rawQuery($sessionQuery);
-    foreach ($resultSet as $aRow) {
+
+    $buildRow = function ($aRow, $no) use ($general, $key) {
         $row = [];
 
         //Sex
@@ -113,31 +110,58 @@ if (isset($sessionQuery) && trim((string) $sessionQuery) != "") {
         $row[] = ($aRow['lab_tech_comments']);
         $row[] = $aRow['funding_source_name'] ?? null;
         $row[] = $aRow['i_partner_name'] ?? null;
-        $output[] = $row;
-        $no++;
-    }
+        return $row;    
+    };
 
 
-    if (isset($_SESSION['hepatitisRequestSearchResultQueryCount']) && $_SESSION['hepatitisRequestSearchResultQueryCount'] > 50000) {
 
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.csv';
-        $fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-        // we dont need the $output variable anymore
-        unset($output);
-        echo base64_encode((string) $fileName);
-    } else {
-        $excel = new Spreadsheet();
-        $sheet = $excel->getActiveSheet();
-        $sheet->fromArray($headings, null, 'A3');
+// Build filter info for header row
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+	}
+}
 
-        foreach ($output as $rowNo => $rowData) {
-            $rRowCount = $rowNo + 4;
-            $sheet->fromArray($rowData, null, 'A' . $rRowCount);
-        }
+// Prepare headings (with alpha-numeric conversion if requested)
+$processedHeadings = $headings;
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	$processedHeadings = array_map(function ($value) {
+		$string = str_replace(' ', '', $value);
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}, $headings);
+}
 
-        $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-        $fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'Hepatitis-Requests-' . date('d-M-Y-H-i-s') . '.xlsx';
-        $writer->save($fileName);
-        echo urlencode(basename($fileName));
-    }
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HEPATITIS-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Write filter info row
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+
+// Empty row for spacing
+$writer->addRow(Row::fromValues(['']));
+
+// Write headings
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
+
+// Stream data
+$resultSet = $db->rawQueryGenerator($sessionQuery);
+$no = 1;
+
+foreach ($resultSet as $aRow) {
+	$row = $buildRow($aRow, $no++);
+	$writer->addRow(Row::fromValues($row));
+
+	// Periodic garbage collection
+	if ($no % 5000 === 0) {
+		gc_collect_cycles();
+	}
+}
+
+$writer->close();
+
+echo urlencode(basename($filename));
+
 }

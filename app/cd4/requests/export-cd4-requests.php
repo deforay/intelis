@@ -5,8 +5,9 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -20,10 +21,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $arr = $general->getGlobalConfig();
 $formId = (int) $arr['vl_form'];
 
-$delimiter = $arr['default_csv_delimiter'] ?? ',';
-$enclosure = $arr['default_csv_enclosure'] ?? '"';
 
-$output = [];
 
 $headings = [_translate("S.No."), _translate("Sample ID"), _translate("Remote Sample ID"), _translate("Testing Lab"), _translate("Sample Reception Date"), _translate("Health Facility Name"), _translate("Health Facility Code"), _translate("District/County"), _translate("Province/State"), _translate("Unique ART No."), _translate("Patient Name"), _translate("Date of Birth"), _translate("Age"), _translate("Sex"), _translate("Date of Sample Collection"), _translate("Sample Type"), _translate("Date of Treatment Initiation"), _translate("Current Regimen"), _translate("Date of Initiation of Current Regimen"), _translate("Is Patient Pregnant?"), _translate("Is Patient Breastfeeding?"), _translate("ARV Adherence"), _translate("Indication for CD4 Testing"), _translate("Requesting Clinican"), _translate("Request Date"), _translate("Is Sample Rejected?"), _translate("Sample Tested On"), _translate("CD4 Result"), _translate("Result Printed Date"), _translate("CD4 Result (%)"), _translate("Comments"), _translate("Funding Source"), _translate("Implementing Partner"), _translate("Request Created On")];
 
@@ -32,11 +30,10 @@ if ($general->isStandaloneInstance()) {
 }
 
 
-$no = 1;
+
 
 $key = (string) $general->getGlobalConfig('key');
-$resultSet = $db->rawQueryGenerator($_SESSION['cd4RequestQuery']);
-foreach ($resultSet as $aRow) {
+$buildRow = function ($aRow, $no) use ($general, $key) {
 	$row = [];
 	$age = null;
 	$aRow['patient_age_in_years'] = (int) $aRow['patient_age_in_years'];
@@ -122,28 +119,58 @@ foreach ($resultSet as $aRow) {
 	$row[] = $aRow['funding_source_name'] ?? null;
 	$row[] = $aRow['i_partner_name'] ?? null;
 	$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'] ?? '', true);
-	$output[] = $row;
-	unset($row);
-	$no++;
+	return $row;
+};
+
+
+// Build filter info for header row
+$nameValue = '';
+foreach ($_POST as $key => $value) {
+	if (trim($value) != '' && trim($value) != '-- Select --') {
+		$nameValue .= str_replace("_", " ", $key) . " : " . $value . "  ";
+	}
 }
 
-if (isset($_SESSION['cd4RequestQueryCount']) && $_SESSION['cd4RequestQueryCount'] > 100000) {
-
-	$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '.csv';
-	$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-	// we dont need the $output variable anymore
-	unset($output);
-	echo base64_encode((string) $fileName);
-} else {
-
-	$excel = new Spreadsheet();
-	$sheet = $excel->getActiveSheet();
-
-	$sheet->fromArray($headings, null, 'A1'); // Write headings
-	$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
-
-	$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-	$filename = 'VLSM-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
-	$writer->save(TEMP_PATH . DIRECTORY_SEPARATOR . $filename);
-	echo urlencode(basename($filename));
+// Prepare headings (with alpha-numeric conversion if requested)
+$processedHeadings = $headings;
+if (isset($_POST['withAlphaNum']) && $_POST['withAlphaNum'] == 'yes') {
+	$processedHeadings = array_map(function ($value) {
+		$string = str_replace(' ', '', $value);
+		return preg_replace('/[^A-Za-z0-9\-]/', '', $string);
+	}, $headings);
 }
+
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-REQUESTS-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(6) . '.xlsx';
+
+$writer = new Writer();
+$writer->openToFile($filename);
+
+// Write filter info row
+$writer->addRow(Row::fromValues([html_entity_decode($nameValue)]));
+
+// Empty row for spacing
+$writer->addRow(Row::fromValues(['']));
+
+// Write headings
+$writer->addRow(Row::fromValues(array_map('html_entity_decode', $processedHeadings)));
+
+// Stream data
+$resultSet = $db->rawQueryGenerator($_SESSION['cd4RequestQuery']);
+$no = 1;
+
+foreach ($resultSet as $aRow) {
+	$row = $buildRow($aRow, $no++);
+	$writer->addRow(Row::fromValues($row));
+
+	// Periodic garbage collection
+	if ($no % 5000 === 0) {
+		gc_collect_cycles();
+	}
+}
+
+$writer->close();
+
+echo urlencode(basename($filename));
+
+
+
