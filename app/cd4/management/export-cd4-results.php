@@ -5,8 +5,8 @@ use App\Utilities\MiscUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use PhpOffice\PhpSpreadsheet\IOFactory;
-use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use OpenSpout\Common\Entity\Row;
+use OpenSpout\Writer\XLSX\Writer;
 
 ini_set('memory_limit', -1);
 set_time_limit(0);
@@ -22,8 +22,7 @@ $key = (string) $general->getGlobalConfig('key');
 $globalConfig = $general->getGlobalConfig();
 $formId = (int) $globalConfig['vl_form'];
 
-$delimiter = $globalConfig['default_csv_delimiter'] ?? ',';
-$enclosure = $globalConfig['default_csv_enclosure'] ?? '"';
+
 
 if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuery']) != "") {
 
@@ -41,9 +40,7 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 	}
 
 
-	$no = 1;
-	$resultSet = $db->rawQueryGenerator($_SESSION['cd4ResultQuery']);
-	foreach ($resultSet as $aRow) {
+	$buildRow = function ($aRow, $no) use ($general, $key, $formId) {
 		$row = [];
 
 		$age = _translate('Not Reported');
@@ -142,29 +139,33 @@ if (isset($_SESSION['cd4ResultQuery']) && trim((string) $_SESSION['cd4ResultQuer
 		$row[] = $aRow['funding_source_name'] ?? null;
 		$row[] = $aRow['i_partner_name'] ?? null;
 		$row[] = DateUtility::humanReadableDateFormat($aRow['request_created_datetime'], true);
-		$output[] = $row;
-		$no++;
+		return $row;
+	};
+
+
+		
+	$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '.xlsx';
+
+	$writer = new Writer();
+	$writer->openToFile($filename);
+
+	// Write headings
+	$writer->addRow(Row::fromValues($headings));
+
+	// Stream data
+	$resultSet = $db->rawQueryGenerator($_SESSION['cd4ResultQuery']);
+	$no = 1;
+
+	foreach ($resultSet as $aRow) {
+		$row = $buildRow($aRow, $no++);
+		$writer->addRow(Row::fromValues($row));
+
+		// Periodic garbage collection every 5000 rows (reduced frequency)
+		if ($no % 5000 === 0) {
+			gc_collect_cycles();
+		}
 	}
 
-
-	if (isset($_SESSION['cd4ResultQueryCount']) && $_SESSION['cd4ResultQueryCount'] > 50000) {
-
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '.csv';
-		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
-		// we dont need the $output variable anymore
-		unset($output);
-		echo base64_encode((string) $fileName);
-	} else {
-
-		$excel = new Spreadsheet();
-		$sheet = $excel->getActiveSheet();
-
-		$sheet->fromArray($headings, null, 'A1'); // Write headings
-		$sheet->fromArray($output, null, 'A2');  // Write data starting from row 2
-
-		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-CD4-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
-		$writer->save($filename);
-		echo urlencode(basename($filename));
-	}
+	$writer->close();
+	echo urlencode(basename($filename));
 }
