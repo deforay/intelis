@@ -129,6 +129,6 @@ foreach ($formResults as $row) {
 
 $response = json_encode(array('timestamp' => time(), 'processed' => $counter, 'response' => $resp));
 
-$general->addApiTracking($transactionId, 'vlsm-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
+$general->addApiTracking($transactionId, 'intelis-system', $counter, 'FHIR-VL-Send', 'vl', $fhir->getRequestUrl(), $json, null, 'json');
 
 echo JsonUtility::prettyJson($response);

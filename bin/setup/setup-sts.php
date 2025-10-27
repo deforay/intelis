@@ -33,17 +33,7 @@ try {
     ini_set('memory_limit', '-1');
     set_time_limit(0);
 
-    $input = new ArgvInput();
-    $consoleOutput = new ConsoleOutput();
-    $consoleOutput->getFormatter()->setStyle('title', new OutputFormatterStyle('white', 'blue', ['bold']));
-    $consoleOutput->getFormatter()->setStyle('header', new OutputFormatterStyle('yellow', null, ['bold']));
-    $consoleOutput->getFormatter()->setStyle('success', new OutputFormatterStyle('green'));
-    $consoleOutput->getFormatter()->setStyle('info', new OutputFormatterStyle('cyan'));
-    $consoleOutput->getFormatter()->setStyle('comment', new OutputFormatterStyle('white'));
-
-    $io = new SymfonyStyle($input, $consoleOutput);
-
-    $io->title('STS Configuration Setup');
+    $io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
     /** @var CommonService $general */
     $general = ContainerRegistry::get(CommonService::class);
@@ -54,9 +44,12 @@ try {
 
     $isLIS = $general->isLISInstance();
     if (!$isLIS || !$cliMode) {
-        echo "❗ This script is only for LIS instances and must be run from the command line." . PHP_EOL;
+        $io->error("STS setup can only be run in CLI mode for LIS instances.");
         exit(0);
     }
+
+
+    $io->title('STS Configuration Setup');
 
     // ---- helpers -----------------------------------------------------------
     /**
@@ -159,27 +152,57 @@ try {
 
     /**
      * fzf-based picker; returns selected lab or null.
+     * Filters by BOTH facility_id and facility_name.
      * @param array<int,array{facility_id:int|string,facility_name:string}> $labs
      */
     function pickLabViaFzf(array $labs): ?array
     {
-        $tmp = tempnam(sys_get_temp_dir(), 'labs_');
+        $inFile  = tempnam(sys_get_temp_dir(), 'labs_in_');
+        $outFile = tempnam(sys_get_temp_dir(), 'labs_out_');
+
+        // Keep two clear fields: "ID<TAB>Name"
         $lines = array_map(fn($l) => $l['facility_id'] . "\t" . $l['facility_name'], $labs);
-        file_put_contents($tmp, implode(PHP_EOL, $lines));
+        file_put_contents($inFile, implode(PHP_EOL, $lines));
 
-        $cmd = 'cat ' . escapeshellarg($tmp)
-            . ' | fzf --ansi --height=80% --reverse --border --cycle '
-            . ' --prompt="Select lab > " '
-            . ' --header="Type to filter • ↑/↓ to move • Enter to select" '
-            . ' --with-nth=2 --delimiter="\t" 2>/dev/null';
+        // Show both fields and filter on both (nth=1,2). Keep attached to TTY and write selection via keybind.
+        // Optional: a tiny preview to make it clearer.
+        $cmd = sprintf(
+            'OUT=%s; export OUT; ' .
+                'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
+                ' --prompt="Select lab > " ' .
+                ' --header="Type ID or name • ↑/↓ to move • Enter to select" ' .
+                ' --delimiter="\t" --nth=1,2 ' .        // <-- search by BOTH ID and Name
+                ' --bind "enter:execute-silent(echo {+} > \"$OUT\")+abort" ' .
+                ' --preview \'printf "ID: %%s\nName: %%s\n" "$(echo {} | cut -f1)" "$(echo {} | cut -f2)"\' ' .
+                ' --preview-window=down,3,wrap',
+            escapeshellarg($outFile),
+            escapeshellarg($inFile)
+        );
 
-        $out = trim((string) shell_exec($cmd));
-        @unlink($tmp);
+        $descriptors = [0 => STDIN, 1 => STDOUT, 2 => STDERR];
+        $proc = proc_open($cmd, $descriptors, $pipes);
+        if (is_resource($proc)) {
+            proc_close($proc);
+        }
 
-        if ($out === '' || strpos($out, "\t") === false) return null;
+        $out = @file_get_contents($outFile);
+        @unlink($inFile);
+        @unlink($outFile);
+
+        $out = $out === false ? '' : trim($out);
+        if ($out === '' || strpos($out, "\t") === false) {
+            return null; // user aborted or nothing selected
+        }
+
         [$id, $name] = explode("\t", $out, 2);
-        return ['facility_id' => trim($id), 'facility_name' => trim($name)];
+        return [
+            'facility_id'   => trim($id),
+            'facility_name' => trim($name),
+        ];
     }
+
+
+
     // ------------------------------------------------------------------------
 
     // Clear file cache

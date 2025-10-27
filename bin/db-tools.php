@@ -82,6 +82,7 @@ try {
             exit(0);
         case 'clean':
             handleClean($backupFolder, $commandArgs);
+            handlePurgeBinlogs($intelisDbConfig, $interfacingDbConfig, $commandArgs);
             exit(0);
         case 'size':
             handleSize($intelisDbConfig, $interfacingDbConfig, $commandArgs);
@@ -950,6 +951,10 @@ function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig,
 
     foreach ($targets as $target) {
         echo sprintf('Purging binary logs older than %d day(s) for %s database...', $days, $target['label']) . PHP_EOL;
+
+        // Get binlog sizes BEFORE purging
+        $sizeBefore = getBinlogTotalSize($target['config']);
+
         $result = runMysqlQuery($target['config'], $sql);
         if ($result !== '') {
             foreach (explode("\n", $result) as $line) {
@@ -958,7 +963,49 @@ function handlePurgeBinlogs(array $intelisDbConfig, ?array $interfacingDbConfig,
                 }
             }
         }
+
+        // Get binlog sizes AFTER purging
+        $sizeAfter = getBinlogTotalSize($target['config']);
+        $freed = $sizeBefore - $sizeAfter;
+
         echo '  Log cleanup completed for ' . $target['label'] . PHP_EOL;
+
+        if ($freed > 0) {
+            echo '  Freed: ' . formatFileSize($freed) . ' (' . formatFileSize($sizeBefore) . ' → ' . formatFileSize($sizeAfter) . ')' . PHP_EOL;
+        } else {
+            echo '  No space freed (no old binlogs found)' . PHP_EOL;
+        }
+    }
+}
+
+/**
+ * Get total size of all binary logs for a database connection
+ */
+function getBinlogTotalSize(array $dbConfig): int
+{
+    try {
+        $sql = 'SHOW BINARY LOGS';
+        $result = runMysqlQuery($dbConfig, $sql);
+
+        $totalSize = 0;
+        $lines = explode("\n", trim($result));
+
+        // Skip header line and parse output
+        foreach (array_slice($lines, 1) as $line) {
+            if (empty($line)) continue;
+
+            // Output format: "mysql-bin.000001\t1234567"
+            $parts = preg_split('/\s+/', $line);
+            if (isset($parts[1]) && is_numeric($parts[1])) {
+                $totalSize += (int)$parts[1];
+            }
+        }
+
+        return $totalSize;
+    } catch (Exception $e) {
+        // If we can't get size, return 0 to avoid breaking the purge operation
+        echo '  Warning: Could not calculate binlog size: ' . $e->getMessage() . PHP_EOL;
+        return 0;
     }
 }
 
@@ -2481,49 +2528,56 @@ function handleVerify(string $backupFolder, array $args): void
     echo "\nBackup is valid and can be restored.\n";
 }
 
-
 /**
- * Clean old backups based on retention policy
+ * Clean old backups based on retention policy.
+ * - Always retains a safety floor of the N most recent backups (default 3; override via INTELIS_DB_BACKUP_MIN_KEEP)
+ * - Deletes matching *.meta.json alongside each removed backup
+ * - Sweeps orphan *.meta.json files that no longer have a corresponding archive
  */
 function handleClean(string $backupFolder, array $args): void
 {
     $keepCount = extractKeepOption($args);
-    $keepDays = extractDaysOption($args, 0);
+    $keepDays  = extractDaysOption($args, 0);
 
     if ($keepCount === null && $keepDays === 0) {
         throw new SystemException('Please specify --keep=N or --days=N for retention policy');
     }
 
-    $backups = getSortedBackups($backupFolder);
-
+    $backups = getSortedBackups($backupFolder); // returns *.sql.zip and *.sql.gz.gpg (sorted DESC by mtime)
     if (empty($backups)) {
-        echo 'No backups found to clean.' . PHP_EOL;
+        echo "No backups found to clean.\n";
         return;
     }
 
-    echo "Backup cleanup\n";
+    // Safety floor: keep at least N newest backups, no matter what
+    $minKeepEnv = getenv('INTELIS_DB_BACKUP_MIN_KEEP');
+    $minKeep    = is_numeric($minKeepEnv) ? max((int)$minKeepEnv, 1) : 3;
+
+    echo "Backup cleanup (safety floor: keep at least {$minKeep})\n";
     echo str_repeat('-', 50) . "\n";
     echo "Total backups: " . count($backups) . "\n";
 
     $toDelete = [];
 
     if ($keepCount !== null) {
-        // Keep N most recent backups
-        if (count($backups) <= $keepCount) {
-            echo "Retention policy: Keep {$keepCount} most recent\n";
+        // Keep mode: effective keep is max(user keep, safety floor)
+        $effectiveKeep = max((int)$keepCount, $minKeep);
+
+        if (count($backups) <= $effectiveKeep) {
+            echo "Retention policy: Keep {$keepCount} most recent (effective {$effectiveKeep} with safety floor)\n";
             echo "Action: Nothing to delete (have " . count($backups) . " backups)\n";
             return;
         }
 
-        $toDelete = array_slice($backups, $keepCount);
-        echo "Retention policy: Keep {$keepCount} most recent\n";
+        // Backups are sorted newest->oldest; delete everything after the effective keep
+        $toDelete = array_slice($backups, $effectiveKeep);
+        echo "Retention policy: Keep {$keepCount} most recent (effective {$effectiveKeep})\n";
     } elseif ($keepDays > 0) {
-        // Keep backups newer than N days
-        $cutoffTime = time() - ($keepDays * 86400);
-
-        foreach ($backups as $backup) {
-            if ($backup['mtime'] < $cutoffTime) {
-                $toDelete[] = $backup;
+        // Days mode: select by age first
+        $cutoffTime = time() - $keepDays * 86400;
+        foreach ($backups as $b) {
+            if ($b['mtime'] < $cutoffTime) {
+                $toDelete[] = $b;
             }
         }
 
@@ -2533,58 +2587,120 @@ function handleClean(string $backupFolder, array $args): void
             echo "Action: Nothing to delete (all backups are within retention period)\n";
             return;
         }
+
+        // Apply safety floor: ensure we leave at least $minKeep newest backups overall
+        // We can delete at most (total - minKeep) items; pick the oldest ones first.
+        $maxDeletable = max(0, count($backups) - $minKeep);
+
+        // Sort candidates oldest->newest so we keep the relatively newer ones if we need to trim
+        usort($toDelete, static fn($a, $b) => $a['mtime'] <=> $b['mtime']);
+
+        if (count($toDelete) > $maxDeletable) {
+            $toDelete = array_slice($toDelete, 0, $maxDeletable);
+            echo "(Safety floor applied: retaining at least {$minKeep} newest backups)\n";
+        }
+
+        if (empty($toDelete)) {
+            echo "Action: Nothing to delete after safety floor\n";
+            return;
+        }
     }
 
     echo "Backups to delete: " . count($toDelete) . "\n";
     echo str_repeat('-', 50) . "\n";
 
-    // Show what will be deleted
+    // Show what will be deleted (including meta size if present)
     $totalSize = 0;
     foreach ($toDelete as $backup) {
-        $age = floor((time() - $backup['mtime']) / 86400);
-        $size = $backup['size'];
+        $ageDays = (int) floor((time() - $backup['mtime']) / 86400);
+        $size    = (int) $backup['size'];
+
+        $basePath = preg_replace('/\.(sql\.gz\.gpg|sql\.zip)$/i', '', $backup['path']);
+        $metaPath = $basePath . '.meta.json';
+        if (is_file($metaPath)) {
+            $size += (int) @filesize($metaPath);
+        }
+
         $totalSize += $size;
         echo sprintf(
-            "  %s (%s, %d days old)\n",
+            "  %s (%s incl. meta, %d days old)\n",
             $backup['basename'],
             formatFileSize($size),
-            $age
+            $ageDays
         );
     }
 
     echo str_repeat('-', 50) . "\n";
-    echo "Total space to free: " . formatFileSize($totalSize) . "\n\n";
+    echo "Total space to free (incl. meta): " . formatFileSize($totalSize) . "\n\n";
 
-    // Confirm deletion
-    echo "Proceed with deletion? (y/N): ";
-    $input = trim(fgets(STDIN) ?: '');
+    // Delete files immediately (non-interactive)
+    echo "Proceeding with deletion...\n";
 
-    if (strtolower($input) !== 'y') {
-        echo "Cleanup cancelled.\n";
-        return;
-    }
-
-    // Delete files
-    $deleted = 0;
-    $failed = 0;
+    $deleted     = 0;
+    $failed      = 0;
+    $metaDeleted = 0;
 
     foreach ($toDelete as $backup) {
-        if (@unlink($backup['path'])) {
+        $path     = $backup['path'];
+        $basePath = preg_replace('/\.(sql\.gz\.gpg|sql\.zip)$/i', '', $path);
+        $metaPath = $basePath . '.meta.json';
+
+        if (@unlink($path)) {
             $deleted++;
             echo "✅ Deleted: " . $backup['basename'] . "\n";
+
+            if (is_file($metaPath) && @unlink($metaPath)) {
+                $metaDeleted++;
+                echo "   └─ 🧹 Removed meta: " . basename($metaPath) . "\n";
+            }
         } else {
             $failed++;
             echo "❌ Failed to delete: " . $backup['basename'] . "\n";
         }
     }
 
+    // Sweep orphan meta files (no matching archive)
+    $metaFiles   = glob($backupFolder . DIRECTORY_SEPARATOR . '*.meta.json') ?: [];
+    $orphanMeta  = 0;
+    $orphanFreed = 0;
+
+    if (!empty($metaFiles)) {
+        // Build a set of basenames for existing archives (after deletions)
+        $existing = [];
+        foreach (getSortedBackups($backupFolder) as $b) {
+            $existing[preg_replace('/\.(sql\.gz\.gpg|sql\.zip)$/i', '', $b['path'])] = true;
+        }
+
+        foreach ($metaFiles as $m) {
+            $base = preg_replace('/\.meta\.json$/i', '', $m);
+            if (empty($existing[$base])) {
+                $sz = (int) @filesize($m);
+                if (@unlink($m)) {
+                    $orphanMeta++;
+                    $orphanFreed += $sz;
+                    echo "🧹 Removed orphan meta: " . basename($m) . "\n";
+                }
+            }
+        }
+    }
+
     echo str_repeat('-', 50) . "\n";
     echo "Cleanup complete: {$deleted} deleted, {$failed} failed\n";
+    if ($metaDeleted > 0) {
+        echo "Paired PITR meta removed: {$metaDeleted}\n";
+    }
+    if ($orphanMeta > 0) {
+        echo "Orphan PITR meta removed: {$orphanMeta} (" . formatFileSize($orphanFreed) . ")\n";
+        // Count orphan meta into “freed” tally for visibility
+        $totalSize += $orphanFreed;
+    }
 
-    if ($deleted > 0) {
-        echo "Freed: " . formatFileSize($totalSize) . "\n";
+    if ($deleted > 0 || $orphanMeta > 0) {
+        echo "Freed (incl. meta): " . formatFileSize($totalSize) . "\n";
     }
 }
+
+
 
 /**
  * Extract --keep option from arguments

@@ -17,9 +17,10 @@ $_POST = _sanitizeInput($request->getParsedBody());
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
 try {
-    /** @var CommonService $general */
-    $general = ContainerRegistry::get(CommonService::class);
 
     $testType = $_POST['testType'] ?? 'vl';
     $table = TestsService::getTestTableName($testType);
@@ -44,7 +45,7 @@ try {
 
     $sOrder = $general->generateDataTablesSorting($_POST, $orderColumns);
 
-    $columnSearch = $general->multipleColumnSearch($_POST['search']['value'] ?? '', $aColumns);
+    $columnSearch = $general->multipleColumnSearch($_POST['sSearch'], $aColumns);
     $sWhere = [];
     if (!empty($columnSearch) && $columnSearch != '') {
         $sWhere[] = $columnSearch;

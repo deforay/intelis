@@ -168,7 +168,6 @@ spinner() {
     return "$last_status"
 }
 
-
 download_file() {
     local output_file="$1"
     local url="$2"
@@ -197,35 +196,59 @@ download_file() {
     local log_file
     log_file=$(mktemp)
 
-    # Download with aria2c
-    # --no-conf: don't load aria2.conf (prevents cache settings)
-    # --conditional-get=false: always download, ignore cache headers
-    # --remote-time=false: don't preserve remote file timestamps
-    aria2c -x 5 -s 5 \
-        --console-log-level=error \
-        --summary-interval=0 \
-        --allow-overwrite=true \
-        --no-conf \
-        --conditional-get=false \
-        --remote-time=false \
-        -d "$output_dir" \
-        -o "$filename" \
-        "$url" >"$log_file" 2>&1 &
-    local download_pid=$!
-
-    spinner "$download_pid" "$message"
-    local download_status=$?
-
-    if [ $download_status -ne 0 ]; then
-        print error "Download failed for: $filename"
-        print info "Detailed download logs:"
-        cat "$log_file"
-    else
-        print success "Download completed: $filename"
+    # Try aria2c first
+    if command -v aria2c &>/dev/null; then
+        aria2c -x 5 -s 5 \
+            --console-log-level=error \
+            --summary-interval=0 \
+            --allow-overwrite=true \
+            --no-conf \
+            --conditional-get=false \
+            --remote-time=false \
+            -d "$output_dir" \
+            -o "$filename" \
+            "$url" >"$log_file" 2>&1 &
+        
+        local download_pid=$!
+        spinner "$download_pid" "$message"
+        
+        # Check if file downloaded successfully
+        if [ -f "$output_file" ] && [ -s "$output_file" ]; then
+            print success "Download completed: $filename"
+            rm -f "$log_file"
+            return 0
+        fi
+        
+        # aria2c failed, try wget
+        print warning "aria2c failed, trying wget..."
+        rm -f "$output_file"
     fi
 
+    # Fallback to wget
+    if command -v wget &>/dev/null; then
+        wget --progress=bar:force \
+            --tries=3 \
+            --timeout=30 \
+            -O "$output_file" \
+            "$url" >"$log_file" 2>&1 &
+        
+        local download_pid=$!
+        spinner "$download_pid" "$message"
+        
+        # Check if wget succeeded
+        if [ -f "$output_file" ] && [ -s "$output_file" ]; then
+            print success "Download completed: $filename"
+            rm -f "$log_file"
+            return 0
+        fi
+    fi
+
+    # Both failed
+    print error "Download failed for: $filename"
+    print info "Detailed download logs:"
+    cat "$log_file"
     rm -f "$log_file"
-    return $download_status
+    return 1
 }
 
 
@@ -815,4 +838,132 @@ setup_intelis_cron() {
 
     print success "Cron job for LIS added/replaced in root's crontab."
     log_action "Cron job for LIS added/replaced in root's crontab."
+}
+
+
+
+ensure_path() {
+    case ":$PATH:" in
+        *":/usr/local/bin:"*) ;; # already present
+        *) export PATH="/usr/local/bin:$PATH" ;;
+    esac
+}
+
+
+ensure_switch_php() {
+    if command -v switch-php >/dev/null 2>&1; then
+        return 0
+    fi
+    echo "switch-php not found; installing…"
+    download_file "/usr/local/bin/switch-php" "https://raw.githubusercontent.com/deforay/utility-scripts/master/php/switch-php"
+    chmod +x /usr/local/bin/switch-php
+}
+
+
+ensure_composer() {
+    ensure_path
+
+    if command -v composer >/dev/null 2>&1; then
+        echo "✓ Composer found: $(command -v composer)"
+        return 0
+    fi
+
+    echo "Composer not on PATH. Using switch-php to install it…"
+    ensure_switch_php
+
+    # use your target PHP version; 8.2 matches your app's composer.json
+    TARGET_PHP="${TARGET_PHP:-8.2}"
+    switch-php "$TARGET_PHP"
+
+    # Re-check PATH; some cron envs miss /usr/local/bin, so add a safety symlink
+    if ! command -v composer >/dev/null 2>&1; then
+        if [ -x /usr/local/bin/composer ] && [ -w /usr/bin ]; then
+            if [ ! -e /usr/bin/composer ] || [ "$(readlink -f /usr/bin/composer)" != "/usr/local/bin/composer" ]; then
+            ln -sf /usr/local/bin/composer /usr/bin/composer
+            fi
+        fi
+    fi
+
+    # Fallback: verified install if still missing after switch-php
+    if ! command -v composer >/dev/null 2>&1; then
+    print warning "Composer still missing after switch-php; installing verified global composer…"
+
+    sig="$(curl -fsSL https://composer.github.io/installer.sig)" || {
+        print error "Failed to fetch Composer installer signature."; exit 1; }
+
+    installer="$(mktemp)"
+    curl -fsSL https://getcomposer.org/installer -o "$installer" || {
+        print error "Failed to download Composer installer."; rm -f "$installer"; exit 1; }
+
+    actual="$(php -r "echo hash_file('sha384', '${installer}');")"
+    if [ "$sig" != "$actual" ]; then
+        print error "Composer installer signature mismatch."; rm -f "$installer"; exit 1
+    fi
+
+    php "$installer" --no-ansi --quiet --install-dir=/usr/local/bin --filename=composer || {
+        print error "Composer installation failed."; rm -f "$installer"; exit 1; }
+    rm -f "$installer"
+    fi
+    print success "✓ Composer installed: $(command -v composer)"
+    export COMPOSER_ALLOW_SUPERUSER=1
+}
+
+# --- Ensure OPcache is installed and enabled for Apache (don’t rely on php -m) ---
+ensure_opcache() {
+    local ver="${desired_php_version:-8.2}"
+    local pkg="php${ver}-opcache"
+    local apache_ini_glob="/etc/php/${ver}/apache2/conf.d/*opcache.ini"
+    local installed enabled
+
+    # Is the package installed?
+    if dpkg-query -W -f='${Status}\n' "$pkg" 2>/dev/null | grep -q "install ok installed"; then
+        installed=true
+    else
+        installed=false
+    fi
+
+    # Is it enabled for Apache (conf.d link/file exists)?
+    if ls $apache_ini_glob >/dev/null 2>&1; then
+        enabled=true
+    else
+        enabled=false
+    fi
+
+    if $installed && $enabled; then
+        print success "OPcache already installed and enabled for PHP ${ver} (Apache); skipping."
+        return 0
+    fi
+
+    if ! $installed; then
+        print info "Installing OPcache for PHP ${ver}…"
+        apt-get update -y
+        apt-get install -y "$pkg" || true
+    fi
+
+    if ! $enabled; then
+        print info "Enabling OPcache for PHP ${ver} (Apache)…"
+        phpenmod -v "$ver" -s apache2 opcache 2>/dev/null || phpenmod opcache 2>/dev/null || true
+    fi
+
+    print success "OPcache is ready for PHP ${ver} (Apache)."
+}
+
+
+setup_mysql_config() {
+    local config_file="$1"
+    local mysql_cnf="/root/.my.cnf"
+    
+    if [ ! -f "$mysql_cnf" ] && [ -f "$config_file" ]; then
+        local pw=$(php -r "error_reporting(0);\$c=@include '$config_file';echo isset(\$c['database']['password'])?trim(\$c['database']['password']):'';")
+        if [ -n "$pw" ]; then
+            cat > "$mysql_cnf" << 'EOF'
+[client]
+user=root
+EOF
+            printf "password=%s\n" "$pw" >> "$mysql_cnf"
+            chmod 600 "$mysql_cnf"
+            return 0
+        fi
+    fi
+    return 1
 }

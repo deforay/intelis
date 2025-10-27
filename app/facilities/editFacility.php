@@ -57,6 +57,11 @@ $pResult = $general->fetchDataFromTable('geographical_divisions', "geo_parent = 
 
 $fType = $facilityInfo['facility_type'];
 
+$labDiv = $allowFileDiv = "none";
+if ($fType == 2) {
+	$labDiv = $allowFileDiv = "block";
+}
+
 $testTypeInfo = $db->rawQuery('SELECT * FROM testing_labs WHERE facility_id = ?', [$id]);
 $availPlatforms = [];
 if (!empty($testTypeInfo) && !empty($testTypeInfo['attributes'])) {
@@ -64,7 +69,7 @@ if (!empty($testTypeInfo) && !empty($testTypeInfo['attributes'])) {
 	$availPlatforms = $attrValue->platforms;
 }
 
-$signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=? ORDER BY display_order, name_of_signatory', array($id));
+$signResults = $db->rawQuery('SELECT * FROM lab_report_signatories WHERE lab_id=? ORDER BY display_order, name_of_signatory', [$id]);
 
 $editTestType = '';
 $div = '';
@@ -117,14 +122,7 @@ if (isset(SYSTEM_CONFIG['modules']['tb']) && SYSTEM_CONFIG['modules']['tb'] === 
 	$reportFormats['tb'] = $general->activeReportFormats('tb');
 }
 $formats = json_decode((string) $facilityInfo['report_format'], true);
-$labDiv = "none";
-$allowFileDiv = "none";
-if ($facilityInfo['test_type'] == 2) {
-	$labDiv = "block";
-}
-if ($fType == "2") {
-	$allowFileDiv = "block";
-}
+
 $geoLocationParentArray = $geolocation->fetchActiveGeolocations();
 $geoLocationChildArray = $geolocation->fetchActiveGeolocations(0, $facilityInfo['facility_state_id']);
 $formId = (int) $general->getGlobalConfig('vl_form');
@@ -191,7 +189,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 								<div class="form-group">
 									<label for="facilityType" class="col-lg-4 control-label"><?php echo _translate("Facility Type"); ?> <span class="mandatory">*</span> </label>
 									<div class="col-lg-7">
-										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($general->isSTSInstance()) ? 'getFacilityUser();' : ''; ?>getTestType(); showSignature(this.value);">
+										<select class="form-control isRequired" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
 											<option value=""> <?php echo _translate("-- Select --"); ?> </option>
 											<?php
 											$k = 10;

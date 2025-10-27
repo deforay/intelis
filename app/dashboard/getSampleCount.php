@@ -69,11 +69,14 @@ if (!$general->isSTSInstance()) {
 $whereCondition = implode(' AND ', $whereConditionArray);
 
 if (!empty($_POST['sampleCollectionDate'])) {
+    $selectedRange = (string) $_POST['sampleCollectionDate'];
     [$startDate, $endDate] = DateUtility::convertDateRange($_POST['sampleCollectionDate'] ?? '');
 } else {
     $endDate = date('Y-m-d');
     $startDate = date('Y-m-d', strtotime('-7 days'));
+    $selectedRange = date('d-M-Y', strtotime($startDate)) . ' to ' . date('d-M-Y', strtotime($endDate));
 }
+
 $sQuery = "SELECT
     vl.facility_id,
     f.facility_code,
@@ -120,13 +123,17 @@ $tableResult = $db->rawQuery($sQuery);
     <div class="dashboard-stat2 " style="cursor:pointer;">
         <div class="display">
             <div class="number">
-                <h3 class="font-purple-soft"></h3>
-                <small class="font-purple-soft">
-                    <?php echo _translate("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
-                </small><br>
+                <div class="number">
+                    <h4 class="font-purple-soft" style="font-weight:600;">
+                        <?php echo _translate("SAMPLES REGISTERED BY COLLECTION POINT"); ?>
+                    </h4>
+                    <small class="font-purple-soft" style="font-size:0.75em;">
+                        <?php echo _translate("In Selected Range") . " : " . $selectedRange; ?>
+                    </small>
+                </div>
             </div>
             <div class="icon">
-                <em class="fa-solid fa-chart-pie"></em>
+                <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
         <div id="collectionSite<?php echo $testType; ?>">

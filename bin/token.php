@@ -33,9 +33,7 @@ if (!$isLIS || !$cliMode) {
 }
 
 
-$input = new ArgvInput();
-$output = new ConsoleOutput();
-$io = new SymfonyStyle($input, $output);
+$io = new SymfonyStyle(new ArgvInput(), new ConsoleOutput());
 
 // Set the URL for the token generation endpoint
 $remoteURL = rtrim($general->getRemoteURL(), '/');

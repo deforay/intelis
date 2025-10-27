@@ -70,7 +70,7 @@ $state = $geolocationService->getProvinces("yes");
               <tr>
                 <td>&nbsp;<strong>Facility Type &nbsp;:</strong></td>
                 <td>
-                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="<?php echo ($general->isSTSInstance()) ? 'getFacilityUser();' : ''; ?> getTestType(); showSignature(this.value);">
+                  <select class="form-control isRequired select2-element" id="facilityType" name="facilityType" title="<?php echo _translate('Please select facility type'); ?>" onchange="getTestType(); showSignature(this.value);">
                     <option value=""> <?php echo _translate("-- Select --"); ?> </option>
                     <?php
                     foreach ($fResult as $type) {

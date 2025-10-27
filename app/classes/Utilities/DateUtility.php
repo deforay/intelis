@@ -496,4 +496,40 @@ final class DateUtility
     {
         return self::getCurrentYear() - $years;
     }
+
+    /**
+     * Returns the start/end for the last N months ending "now".
+     * If $includeTime=false, start is at startOfDay and end is at endOfDay.
+     *
+     * @return array{0:string,1:string} [$start, $end] formatted.
+     */
+    public static function lastMonthsRange(
+        int $months,
+        bool $includeTime = false,
+        string $format = 'Y-m-d H:i:s'
+    ): array {
+        $now   = Carbon::now();
+        $start = (clone $now)->subMonths($months);
+
+        if ($includeTime === false) {
+            $start = $start->startOfDay();
+            $end   = (clone $now)->endOfDay();
+            $format = $format === 'Y-m-d H:i:s' ? 'Y-m-d' : $format;
+        } else {
+            $end = $now; // precise "now"
+        }
+
+        return [$start->format($format), $end->format($format)];
+    }
+
+    /**
+     * Human label for last N months, e.g., "22-Apr-2025 to 22-Oct-2025".
+     * Uses $_SESSION['phpDateFormat'] if set; otherwise 'd-M-Y'.
+     */
+    public static function lastMonthsLabel(int $months, ?string $format = null): string
+    {
+        $fmt = $format ?? ($_SESSION['phpDateFormat'] ?? 'd-M-Y');
+        [$start, $end] = self::lastMonthsRange($months, false, $fmt);
+        return "$start to $end";
+    }
 }

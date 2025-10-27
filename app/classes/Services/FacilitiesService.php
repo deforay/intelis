@@ -44,14 +44,14 @@ final class FacilitiesService
     {
         return MemoUtility::remember(function () use ($testType) {
 
-        $fQuery = 'SELECT * FROM facility_details as f
+            $fQuery = 'SELECT * FROM facility_details as f
             INNER JOIN testing_labs as t ON t.facility_id=f.facility_id
             WHERE t.test_type = ?
                 AND f.facility_type=2
                 AND (f.facility_attributes->>"$.allow_results_file_upload" = "yes"
                     OR f.facility_attributes->>"$.allow_results_file_upload" IS NULL)
             ORDER BY f.facility_name ASC';
-        return $this->db->rawQuery($fQuery, [$testType]);
+            return $this->db->rawQuery($fQuery, [$testType]);
         });
     }
 
@@ -130,6 +130,13 @@ final class FacilitiesService
             if (empty($userId)) {
                 return null;
             }
+            $sessionEnabled = false;
+            if (session_status() !== PHP_SESSION_NONE) {
+                if (isset($_SESSION['facilityMap'])) {
+                    return $_SESSION['facilityMap'];
+                }
+                $sessionEnabled = true;
+            }
 
             /* if (!empty($facilityType)) {
             $this->db->join("facility_details f", "map.facility_id=f.facility_id", "INNER");
@@ -140,6 +147,9 @@ final class FacilitiesService
             $response = $this->db->getValue("user_facility_map", "facility_id", null);
             if ($this->db->count > 0) {
                 $userfacilityMap = implode(",", $response);
+            }
+            if ($sessionEnabled) {
+                $_SESSION['facilityMap'] = $userfacilityMap;
             }
             return $userfacilityMap;
         });
@@ -176,9 +186,12 @@ final class FacilitiesService
     public function getHealthFacilities($testType = null, $byPassFacilityMap = false, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
 
-        $userId = $userId ?? $_SESSION['userId'] ?? null;
+        $userId ??= null;
+        if (isset($_SESSION['userId']) && $userId === null) {
+            $userId ??= $_SESSION['userId'];
+        }
         if (!$byPassFacilityMap && !empty($userId)) {
-            $facilityMap = $_SESSION['facilityMap'] ?? $this->getUserFacilityMap($userId);
+            $facilityMap = $this->getUserFacilityMap($userId);
             if (!empty($facilityMap)) {
                 $this->db->where("`facility_id` IN ($facilityMap)");
             }
@@ -246,7 +259,10 @@ final class FacilitiesService
     // $onlyActive = true/false
     public function getTestingLabs($testType = null, $byPassFacilityMap = true, $allColumns = false, $condition = [], $onlyActive = true, $userId = null)
     {
-        $userId = $userId ?: $_SESSION['userId'] ?: null;
+        $userId ??= null;
+        if (isset($_SESSION['userId']) && $userId === null) {
+            $userId ??= $_SESSION['userId'];
+        }
         if (!$byPassFacilityMap && !empty($userId)) {
             $facilityMap = $this->getUserFacilityMap($userId, 2);
             if (!empty($facilityMap)) {

@@ -35,8 +35,6 @@ $covid19SelectedComorbidities = $covid19Service->getCovid19ComorbiditiesByFormId
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
-
 
 if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
     $sampleCodeKey = 'remote_sample_code_key';
@@ -52,26 +50,7 @@ if ($general->isSTSInstance() && $_SESSION['accessType'] == 'collection-site') {
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-//check user exist in user_facility_map table
-$chkUserFcMapQry = "SELECT user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-$chkUserFcMapResult = $db->query($chkUserFcMapQry);
-if ($chkUserFcMapResult) {
-    $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-}
-$pdResult = $db->query($pdQuery);
-$provinceInfo = [];
-foreach ($pdResult as $state) {
-    $provinceInfo[$state['geo_name']] = ($state['geo_name']);
-}
-$province = "<option value=''> <?= _translate('-- Select --'); ?> </option>";
-foreach ($pdResult as $provinceName) {
-    $selected = "";
-    if ($covid19Info['geo_id'] == $provinceName['geo_id']) {
-        $selected = "selected='selected'";
-    }
-    $province .= "<option data-code='" . $provinceName['geo_code'] . "' data-province-id='" . $provinceName['geo_id'] . "' data-name='" . $provinceName['geo_name'] . "' value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'" . $selected . ">" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $covid19Info['facility_id'], '-- Select --');
 
 $ageInfo = "";

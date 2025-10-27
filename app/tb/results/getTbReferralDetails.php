@@ -71,6 +71,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 // Main query - grouped by sample_package_id and sample_package_code
 $sQuery = "SELECT 
 vl.referred_to_lab_id, 
+vl.reason_for_referral, 
 vl.sample_package_id, 
 vl.sample_package_code, 
 COUNT(vl.$primaryKeyColumn) as sample_count, 
@@ -89,7 +90,8 @@ WHERE vl.referred_to_lab_id IS NOT NULL
 GROUP BY vl.sample_package_id, vl.sample_package_code, f2.facility_name, f2.facility_code";
 
 if (!empty($sOrder)) {
-    $sQuery = $sQuery . ' ORDER BY referral_date ' . $sOrder;
+    $sORderQ = $sOrder ? ', ' . $sOrder : '';
+    $sQuery = $sQuery . ' ORDER BY referral_date' . $sORderQ;
 } else {
     $sQuery = $sQuery . ' ORDER BY referral_date DESC';
 }
@@ -111,7 +113,7 @@ foreach ($result as $row) {
     $rowData = [];
 
     // Checkbox
-    $rowData[] = '<input type="checkbox" class="sample-checkbox" value="' . $row[$primaryKeyColumn] . '" />';
+    // $rowData[] = '<input type="checkbox" class="sample-checkbox" value="' . $row[$primaryKeyColumn] . '" />';
     // Sample Package Code
     $rowData[] = $row['sample_package_code'] ?? '-';
 
@@ -132,13 +134,24 @@ foreach ($result as $row) {
     }
     $rowData[] = $referralDate;
 
+    $rowData[] = $row['reason_for_referral'];
+
     // Edit Button
     $encodedId = base64_encode($row['referred_to_lab_id']);
     $encodedCode = base64_encode($row['sample_package_id']);
     $editBtn = '<a href="edit-tb-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
                     <i class="fa fa-edit"></i>
                 </a>';
-    $rowData[] = $editBtn;
+
+    $packageId = base64_encode($row['sample_package_id']);
+    $printManifestPdfText = _translate("Print Manifest Referral PDF");
+    $printBarcode = <<<BARCODEBUTTON
+    <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
+        <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
+    </a>
+    BARCODEBUTTON;
+
+    $rowData[] = $editBtn . $printBarcode;
     $output['aaData'][] = $rowData;
 }
 
