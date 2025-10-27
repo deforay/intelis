@@ -621,7 +621,8 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                     <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
                                 </div>
                                 <?php
-                                $referralResultDisplay = $referralDisplay = '';
+                                $referralResultDisplay = '';
+                                $referralDisplay = '';
                                 if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id']))) {
                                     $referralResultDisplay = 'style="display:none;"';
                                 }
