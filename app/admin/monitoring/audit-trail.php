@@ -6,12 +6,10 @@ use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
-use App\Services\ArchiveService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\AuditArchiveService;
-
 
 $title = _translate("Audit Trail");
 require_once APPLICATION_PATH . '/header.php';
@@ -22,7 +20,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var UsersService  $usersService */
+/** @var UsersService $usersService */
 $usersService = ContainerRegistry::get(UsersService::class);
 $userCache = [];
 
@@ -34,15 +32,9 @@ try {
 
     $activeModules = SystemService::getActiveModules(onlyTests: true);
 
-    // Function to fetch unique_id based on sampleCode from formTable
-    function getUniqueIdFromSampleCode($db, $tableName, $sampleCode)
-    {
-        $query = "SELECT unique_id FROM $tableName WHERE sample_code = ? OR remote_sample_code = ? OR external_sample_code = ?";
-        $result = $db->rawQuery($query, [$sampleCode, $sampleCode, $sampleCode]);
-        return $result[0]['unique_id'] ?? null; // Return unique_id if found, otherwise null
-    }
-
-    // Function to get column names for a specified table
+    /**
+     * Get column names for a specified table
+     */
     function getColumns($db, $tableName)
     {
         $columnsSql = "SELECT COLUMN_NAME
@@ -52,142 +44,44 @@ try {
         return $db->rawQuery($columnsSql, [SYSTEM_CONFIG['database']['db'], $tableName]);
     }
 
-    function resolveAuditFilePath(string $testType, string $uniqueId): ?string
-    {
-        $tests = TestsService::getTestTypes();
-
-        // Normalize posted key
-        if (!isset($tests[$testType])) {
-            foreach ($tests as $k => $_) {
-                if (strcasecmp($k, $testType) === 0) {
-                    $testType = $k;
-                    break;
-                }
-            }
-        }
-        if (!isset($tests[$testType])) return null;
-
-        $table = $tests[$testType]['tableName'] ?? null;
-        if (!$table) return null;
-
-        // Find canonical and all aliases for this table
-        $canonical = null;
-        $aliases = [];
-        foreach ($tests as $k => $meta) {
-            if (($meta['tableName'] ?? null) === $table) {
-                if ($canonical === null) $canonical = $k; // first key = canonical
-                else $aliases[] = $k;
-            }
-        }
-
-        $candidates = [];
-        $push = function ($key) use (&$candidates, $uniqueId) {
-            $folder = preg_replace('/[^\w\-]+/', '-', $key);
-            $base   = ROOT_PATH . "/audit-trail/{$folder}/{$uniqueId}.csv";
-            foreach (['.zst', '.gz', '.zip', ''] as $ext) $candidates[] = $base . $ext;
-        };
-
-        if ($canonical) $push($canonical);
-        $push($testType);                // whatever user posted
-        foreach ($aliases as $a) $push($a);
-
-        foreach ($candidates as $path) {
-            if (is_file($path)) return $path;
-        }
-
-        // Final fallback: scan ALL subfolders for a matching file (legacy layouts)
-        foreach (glob(ROOT_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
-            foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
-                $p = $dir . '/' . $uniqueId . $ext;
-                if (is_file($p)) return $p;
-            }
-        }
-        return null;
-    }
-
-    function readAuditDataFromCsvFlexible(string $filePath): array
-    {
-        if (!is_file($filePath)) return [];
-
-        // Let ArchiveService detect and decompress. For plain CSV it can just read as-is.
-        // If your ArchiveService expects only compressed files, you can guard with extension
-        // and use file_get_contents for plain .csv; below assumes it handles both.
-        try {
-            $csvString = ArchiveService::decompressToString($filePath);
-        } catch (Throwable $e) {
-            // Fallback: plain CSV read
-            $csvString = @file_get_contents($filePath);
-            if ($csvString === false) return [];
-        }
-
-        // Parse CSV from a temp stream
-        $fp = fopen('php://temp', 'r+');
-        fwrite($fp, $csvString);
-        rewind($fp);
-
-        $headers = fgetcsv($fp);
-        if ($headers === false || $headers === null) {
-            fclose($fp);
-            return [];
-        }
-
-        $rows = [];
-        while (($row = fgetcsv($fp)) !== false) {
-            $assoc = [];
-            foreach ($headers as $i => $h) {
-                // original archiver writes json_encode() values; fgetcsv already unquotes;
-                // we’ll show as-is (including literal "null" when used).
-                $assoc[$h] = $row[$i] ?? '';
-            }
-            $rows[] = $assoc;
-        }
-        fclose($fp);
-
-        return $rows;
-    }
-
-
-
+    // Process form submission
     $sampleCode = null;
-    if (!empty($_POST)) {
-        // Define $sampleCode from POST data
-        $request = AppRegistry::get('request');
-        $_POST = _sanitizeInput($request->getParsedBody());
+    $testType = null;
+    $formTable = "";
+    $filteredData = "";
+    $posts = [];
 
-        $sampleCode = isset($_POST['sampleCode']) ? trim((string)$_POST['sampleCode']) : null;
-    }
-
-    if (isset($_POST['testType']) && $sampleCode) {
-        $formTable   = TestsService::getTestTableName($_POST['testType']);
+    if (!empty($_POST['testType']) && !empty($_POST['sampleCode'])) {
+        $testType = $_POST['testType'];
+        $sampleCode = trim((string)$_POST['sampleCode']);
         $filteredData = $_POST['hiddenColumns'] ?? '';
 
-        // Archive latest audit data for this sample (no HTTP; call the service)
+        // Use AuditArchiveService to get audit data
         try {
-            $archiver = new AuditArchiveService($db);
-            $archiver->archiveSample($_POST['testType'], $sampleCode);
-            // echo "<div class='alert alert-success' style='margin:10px 0;'>Audit archive refreshed for sample "
-            //     . htmlspecialchars($sampleCode) . ".</div>";
-            $uniqueId = getUniqueIdFromSampleCode($db, $formTable, $sampleCode);
+            $archiveService = new AuditArchiveService($db);
+
+            // Read audit data (with hot archive enabled by default)
+            $posts = $archiveService->readAudit($testType, $sampleCode, hotArchive: true);
         } catch (Throwable $e) {
-            LoggerUtility::logError('ArchiveSample failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
-            echo "<div class='alert alert-danger' style='margin:10px 0;'>Failed to refresh audit archive.</div>";
-            $uniqueId = null;
+            LoggerUtility::logError(
+                'Failed to read audit data: ' . $e->getMessage(),
+                ['trace' => $e->getTraceAsString()]
+            );
+            echo "<div class='alert alert-danger' style='margin:10px 0;'>Failed to load audit trail.</div>";
         }
-    } else {
-        $formTable = "";
-        $uniqueId = "";
-        $filteredData = "";
+
+        // Get form table for column info
+        $formTable = TestsService::getTestTableName($testType);
     }
 
-
-    // Include audit-specific columns explicitly
+    // Include audit-specific columns
     $auditColumns = [
         ['COLUMN_NAME' => 'action'],
         ['COLUMN_NAME' => 'revision'],
         ['COLUMN_NAME' => 'dt_datetime']
     ];
     $dbColumns = $formTable ? getColumns($db, $formTable) : [];
-    $resultColumn = array_merge($auditColumns, $dbColumns); // Merge audit columns with database columns
+    $resultColumn = array_merge($auditColumns, $dbColumns);
 ?>
     <style>
         /* Base styles */
@@ -214,133 +108,34 @@ try {
             color: #388e3c;
         }
 
-        /* Timeline view */
-        .audit-timeline {
-            position: relative;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 20px 0;
-        }
-
-        .timeline-item {
-            display: flex;
-            margin-bottom: 20px;
-            position: relative;
-        }
-
-        .timeline-item::before {
-            content: '';
-            position: absolute;
-            left: 20px;
-            top: 30px;
-            bottom: -20px;
-            width: 2px;
-            background-color: #ddd;
-            z-index: 0;
-        }
-
-        .timeline-item:last-child::before {
-            display: none;
-        }
-
-        .timeline-marker {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            text-align: center;
-            line-height: 40px;
-            font-size: 16px;
-            color: white;
-            margin-right: 15px;
-            z-index: 1;
-            flex-shrink: 0;
-        }
-
-        .timeline-content {
-            background-color: #f9f9f9;
-            border-radius: 4px;
-            padding: 15px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
-            flex-grow: 1;
-        }
-
-        .timeline-content h4 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        .timeline-changes {
-            margin-top: 10px;
-        }
-
-        .change-item {
-            margin-bottom: 5px;
-            padding: 5px;
-            background-color: #f5f5f5;
-            border-radius: 3px;
-        }
-
-        .change-field {
-            font-weight: bold;
-        }
-
-        .change-old {
-            color: #d32f2f;
-            text-decoration: line-through;
-            margin-right: 5px;
-        }
-
-        .change-new {
-            color: #388e3c;
-            font-weight: bold;
-        }
-
-        /* Version comparison */
-        .version-selector {
-            margin: 20px 0;
-            background-color: #f5f5f5;
-            padding: 15px;
-            border-radius: 4px;
-        }
-
-        .comparison-table {
-            margin-top: 20px;
-        }
-
         .diff-row {
-            background-color: #fff3e0;
+            background-color: #fff9c4;
         }
 
-        /* Tab styling */
-        .nav-tabs {
-            margin-bottom: 20px;
+        /* Export button styles */
+        .snapshot-btn {
+            margin-left: 5px;
+            padding: 2px 8px;
+            font-size: 12px;
         }
 
-        /* Change summary */
-        .change-summary {
+        /* Comparison section */
+        #comparisonResult {
             margin-top: 20px;
         }
 
-        .panel-title {
-            font-size: 14px;
-        }
-
-        .old-value {
-            color: #d32f2f;
-            background-color: #ffebee;
-        }
-
-        .new-value {
-            color: #388e3c;
-            background-color: #e8f5e9;
+        /* Version selector styles */
+        .version-selector {
+            margin: 15px 0;
+            padding: 15px;
+            background-color: #f5f5f5;
+            border-radius: 5px;
         }
     </style>
-    <link href="/assets/css/multi-select.css" rel="stylesheet" />
-    <link href="/assets/css/buttons.dataTables.min.css" rel="stylesheet" />
 
-    <!-- Content Wrapper. Contains page content -->
+    <!-- Content Wrapper -->
     <div class="content-wrapper">
-        <!-- Content Header (Page header) -->
+        <!-- Content Header -->
         <section class="content-header">
             <h1><em class="fa-solid fa-clock-rotate-left"></em> <?php echo _translate("Audit Trail"); ?></h1>
             <ol class="breadcrumb">
@@ -351,429 +146,268 @@ try {
 
         <!-- Main content -->
         <section class="content">
-            <div class="row">
-                <div class="col-xs-12">
-                    <div class="box">
-                        <form name="form1" action="audit-trail.php" method="post" id="searchForm" autocomplete="off">
-                            <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
-                                <tr>
-                                    <td><strong><?php echo _translate("Test Type"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
-                                    <td>
-                                        <select id="testType" name="testType" class="form-control isRequired">
-                                            <option value="">-- Choose Test Type--</option>
-                                            <?php foreach ($activeModules as $module): ?>
-                                                <option value="<?php echo $module; ?>"
-                                                    <?php echo (isset($_POST['testType']) && $_POST['testType'] == $module) ? "selected='selected'" : ""; ?>>
-                                                    <?php echo strtoupper($module); ?>
-                                                </option>
-                                            <?php endforeach; ?>
-                                        </select>
-                                    </td>
-                                    <td>&nbsp;<strong><?php echo _translate("Sample ID"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
-                                    <td>
-                                        <input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control isRequired" />
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td colspan="4">
-                                        <input type="submit" value="<?php echo _translate("Submit"); ?>" class="btn btn-success btn-sm" onclick="validateNow();return false;">
-                                        <button type="reset" class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span><?= _translate('Reset'); ?></span></button>
-                                        <input type="hidden" name="hiddenColumns" id="hiddenColumns" value="<?= htmlspecialchars($_POST['hiddenColumns'] ?? ''); ?>" />
-                                    </td>
-                                </tr>
-                            </table>
-                        </form>
-                    </div>
-                </div>
-
-                <?php
-                $usernameFields = [
-                    'tested_by',
-                    'result_approved_by',
-                    'result_reviewed_by',
-                    'revised_by',
-                    'request_created_by',
-                    'last_modified_by'
-                ];
-
-                $currentData = [];
-                if (!empty($uniqueId)) {
-                    $filePath = resolveAuditFilePath($_POST['testType'], $uniqueId);
-                    $posts = $filePath ? readAuditDataFromCsvFlexible($filePath) : [];
-                    // Sort the records by revision ID
-                    usort($posts, function ($a, $b) {
-                        return (int)($a['revision'] ?? 0) <=> (int)($b['revision'] ?? 0);
-                    });
-
-                    // Fetch current data
-                    $currentData = $db->rawQuery("SELECT * FROM $formTable WHERE unique_id = ?", [$uniqueId]);
-                ?>
-                    <div class="col-xs-12">
-                        <div class="box">
-                            <div class="box-body">
-                                <?php if (!empty($posts)) { ?>
-                                    <h3> Audit Trail for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
-
-                                    <!-- Column visibility control -->
-                                    <div class="row">
-                                        <div class="col-md-6">
-                                            <div class="form-group">
-                                                <label for="auditColumn">Show/Hide Columns:</label>
-                                                <select name="auditColumn[]" id="auditColumn" class="" multiple="multiple">
-                                                    <?php
-                                                    $i = 0;
-                                                    foreach ($resultColumn as $col) {
-                                                        $selected = "";
-                                                        if (!empty($_POST['hiddenColumns']) && in_array($i, explode(",", $_POST['hiddenColumns']))) {
-                                                            $selected = "selected";
-                                                        }
-                                                        echo "<option value='$i' $selected>{$col['COLUMN_NAME']}</option>";
-                                                        $i++;
-                                                    }
-                                                    ?>
-                                                </select>
-                                            </div>
-                                        </div>
-                                    </div>
-
-                                    <!-- Tab navigation -->
-                                    <ul class="nav nav-tabs" role="tablist">
-                                        <li role="presentation" class="active">
-                                            <a href="#tabTable" aria-controls="tabTable" role="tab" data-toggle="tab">
-                                                <i class="fa fa-table"></i> Table View
-                                            </a>
-                                        </li>
-                                        <li role="presentation">
-                                            <a href="#tabTimeline" aria-controls="tabTimeline" role="tab" data-toggle="tab">
-                                                <i class="fa fa-clock-o"></i> Timeline View
-                                            </a>
-                                        </li>
-                                        <li role="presentation">
-                                            <a href="#tabChanges" aria-controls="tabChanges" role="tab" data-toggle="tab">
-                                                <i class="fa fa-exchange"></i> Changes Only
-                                            </a>
-                                        </li>
-                                        <li role="presentation">
-                                            <a href="#tabCompare" aria-controls="tabCompare" role="tab" data-toggle="tab">
-                                                <i class="fa fa-code-fork"></i> Compare Versions
-                                            </a>
-                                        </li>
-                                    </ul>
-
-                                    <!-- Tab content -->
-                                    <div class="tab-content">
-                                        <!-- Table View Tab -->
-                                        <div role="tabpanel" class="tab-pane active" id="tabTable">
-                                            <table aria-describedby="table" id="auditTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
-                                                <thead>
-                                                    <tr>
-                                                        <?php
-                                                        $colArr = [];
-                                                        foreach ($resultColumn as $col) {
-                                                            $colArr[] = $col['COLUMN_NAME'];
-                                                            echo "<th>{$col['COLUMN_NAME']}</th>";
-                                                        }
-                                                        ?>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <?php
-                                                    $userCache = [];
-
-                                                    for ($i = 0; $i < count($posts); $i++) {
-                                                        echo "<tr>";
-                                                        foreach ($colArr as $j => $colName) {
-                                                            $value = array_key_exists($colName, $posts[$i]) ? $posts[$i][$colName] : '';
-
-                                                            $previousValue = $i > 0 ? ($posts[$i - 1][$colName] ?? null) : null;
-
-                                                            // Check if value changed from previous revision
-                                                            if ($j > 2 && $previousValue !== null && $value !== $previousValue) {
-                                                                // Format the value to show what changed
-                                                                $displayValue = "<span class='diff-old'>" . htmlspecialchars($previousValue) . "</span> <span class='diff-new'>" . htmlspecialchars($value) . "</span>";
-                                                                echo "<td class='diff-cell'>" . $displayValue . "</td>";
-                                                            } else {
-                                                                // Look up username for user IDs
-                                                                if (in_array($colName, $usernameFields) && !empty($value)) {
-                                                                    if (!isset($userCache[$value])) {
-                                                                        $user = $usersService->getUserByID($value, ['user_name']);
-                                                                        $userCache[$value] = $user['user_name'] ?? $value;
-                                                                    }
-                                                                    $value = $userCache[$value];
-                                                                }
-                                                                echo "<td>" . htmlspecialchars($value) . "</td>";
-                                                            }
-                                                        }
-                                                        echo "</tr>";
-                                                    }
-                                                    ?>
-                                                </tbody>
-                                            </table>
-                                        </div>
-
-                                        <!-- Timeline View Tab -->
-                                        <div role="tabpanel" class="tab-pane" id="tabTimeline">
-                                            <div class="audit-timeline">
-                                                <?php
-                                                foreach ($posts as $i => $post) {
-                                                    $action = $post['action'];
-                                                    $date = $post['dt_datetime'];
-                                                    $revision = $post['revision'];
-
-                                                    $icon = $action == 'insert' ? 'fa fa-plus-circle' : ($action == 'update' ? 'fa fa-edit' : 'fa fa-trash');
-
-                                                    $color = $action == 'insert' ? 'success' : ($action == 'update' ? 'warning' : 'danger');
-                                                ?>
-                                                    <div class="timeline-item">
-                                                        <div class="timeline-marker bg-<?= $color ?>">
-                                                            <i class="<?= $icon ?>"></i>
-                                                        </div>
-                                                        <div class="timeline-content">
-                                                            <h4><?= ucfirst($action) ?> - Revision <?= $revision ?></h4>
-                                                            <p><i class="fa fa-calendar"></i> <?= date('F j, Y, g:i a', strtotime($date)) ?></p>
-                                                            <div class="timeline-changes">
-                                                                <?php
-                                                                // Show what changed in this revision
-                                                                if ($i > 0) {
-                                                                    $prevPost = $posts[$i - 1];
-                                                                    $changeCount = 0;
-
-                                                                    foreach ($colArr as $colName) {
-                                                                        if ($colName != 'action' && $colName != 'revision' && $colName != 'dt_datetime') {
-                                                                            $oldValue = $prevPost[$colName] ?? '';
-                                                                            $newValue = $post[$colName] ?? '';
-
-                                                                            if ($oldValue !== $newValue) {
-                                                                                $changeCount++;
-
-                                                                                // Format user IDs to names
-                                                                                if (in_array($colName, $usernameFields)) {
-                                                                                    if (!empty($oldValue) && !isset($userCache[$oldValue])) {
-                                                                                        $user = $usersService->getUserByID($oldValue, ['user_name']);
-                                                                                        $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
-                                                                                    }
-                                                                                    if (!empty($newValue) && !isset($userCache[$newValue])) {
-                                                                                        $user = $usersService->getUserByID($newValue, ['user_name']);
-                                                                                        $userCache[$newValue] = $user['user_name'] ?? $newValue;
-                                                                                    }
-                                                                                    $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
-                                                                                    $newValue = !empty($newValue) ? $userCache[$newValue] : '';
-                                                                                }
-
-                                                                                echo "<div class='change-item'>";
-                                                                                echo "<span class='change-field'>{$colName}:</span> ";
-                                                                                echo "<span class='change-old'>" . htmlspecialchars($oldValue) . "</span> → ";
-                                                                                echo "<span class='change-new'>" . htmlspecialchars($newValue) . "</span>";
-                                                                                echo "</div>";
-                                                                            }
-                                                                        }
-                                                                    }
-
-                                                                    if ($changeCount === 0) {
-                                                                        echo "<div class='change-item'>No fields were changed in this revision.</div>";
-                                                                    }
-                                                                } else {
-                                                                    echo "<div class='change-item'>Initial record creation</div>";
-                                                                }
-                                                                ?>
-                                                            </div>
-                                                            <!-- Snapshot Export Button -->
-                                                            <div class="mt-3">
-                                                                <button class="btn btn-xs btn-info snapshot-btn" data-revision="<?= $revision ?>">
-                                                                    <i class="fa fa-download"></i> Export Snapshot at Rev <?= $revision ?>
-                                                                </button>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                <?php } ?>
-                                            </div>
-                                        </div>
-
-                                        <!-- Changes Only Tab -->
-                                        <div role="tabpanel" class="tab-pane" id="tabChanges">
-                                            <div class="change-summary">
-                                                <div class="panel-group" id="changeSummary">
-                                                    <?php
-                                                    for ($i = 1; $i < count($posts); $i++) {
-                                                        $current = $posts[$i];
-                                                        $previous = $posts[$i - 1];
-                                                        $changes = [];
-
-                                                        foreach ($colArr as $colName) {
-                                                            if ($colName != 'action' && $colName != 'revision' && $colName != 'dt_datetime') {
-                                                                $oldValue = $previous[$colName] ?? '';
-                                                                $newValue = $current[$colName] ?? '';
-
-                                                                if ($oldValue !== $newValue) {
-                                                                    // Format user IDs to names
-                                                                    if (in_array($colName, $usernameFields)) {
-                                                                        if (!empty($oldValue) && !isset($userCache[$oldValue])) {
-                                                                            $user = $usersService->getUserByID($oldValue, ['user_name']);
-                                                                            $userCache[$oldValue] = $user['user_name'] ?? $oldValue;
-                                                                        }
-                                                                        if (!empty($newValue) && !isset($userCache[$newValue])) {
-                                                                            $user = $usersService->getUserByID($newValue, ['user_name']);
-                                                                            $userCache[$newValue] = $user['user_name'] ?? $newValue;
-                                                                        }
-                                                                        $oldValue = !empty($oldValue) ? $userCache[$oldValue] : '';
-                                                                        $newValue = !empty($newValue) ? $userCache[$newValue] : '';
-                                                                    }
-
-                                                                    $changes[$colName] = [
-                                                                        'from' => $oldValue,
-                                                                        'to' => $newValue
-                                                                    ];
-                                                                }
-                                                            }
-                                                        }
-
-                                                        if (!empty($changes)) {
-                                                    ?>
-                                                            <div class="panel panel-default">
-                                                                <div class="panel-heading">
-                                                                    <h4 class="panel-title">
-                                                                        <a data-toggle="collapse" data-parent="#changeSummary" href="#collapse<?= $current['revision'] ?>">
-                                                                            Revision <?= $current['revision'] ?> - <?= ucfirst($current['action']) ?>
-                                                                            (<?= date('Y-m-d H:i:s', strtotime($current['dt_datetime'])) ?>)
-                                                                        </a>
-                                                                    </h4>
-                                                                </div>
-                                                                <div id="collapse<?= $current['revision'] ?>" class="panel-collapse collapse">
-                                                                    <div class="panel-body">
-                                                                        <table class="table table-striped">
-                                                                            <thead>
-                                                                                <tr>
-                                                                                    <th>Field</th>
-                                                                                    <th>Old Value</th>
-                                                                                    <th>New Value</th>
-                                                                                </tr>
-                                                                            </thead>
-                                                                            <tbody>
-                                                                                <?php foreach ($changes as $field => $change): ?>
-                                                                                    <tr>
-                                                                                        <td><?= $field ?></td>
-                                                                                        <td class="old-value"><?= htmlspecialchars($change['from']) ?></td>
-                                                                                        <td class="new-value"><?= htmlspecialchars($change['to']) ?></td>
-                                                                                    </tr>
-                                                                                <?php endforeach; ?>
-                                                                            </tbody>
-                                                                        </table>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                    <?php
-                                                        }
-                                                    }
-                                                    ?>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <!-- Compare Versions Tab -->
-                                        <div role="tabpanel" class="tab-pane" id="tabCompare">
-                                            <div class="version-selector">
-                                                <div class="row">
-                                                    <div class="col-md-5">
-                                                        <div class="form-group">
-                                                            <label for="versionFrom">From Version:</label>
-                                                            <select id="versionFrom" class="form-control">
-                                                                <?php foreach ($posts as $post): ?>
-                                                                    <option value="<?= $post['revision'] ?>">
-                                                                        Revision <?= $post['revision'] ?>
-                                                                        (<?= ucfirst($post['action']) ?> -
-                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
-                                                                    </option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-5">
-                                                        <div class="form-group">
-                                                            <label for="versionTo">To Version:</label>
-                                                            <select id="versionTo" class="form-control">
-                                                                <?php
-                                                                foreach ($posts as $i => $post):
-                                                                    $selected = ($i === count($posts) - 1) ? 'selected' : '';
-                                                                ?>
-                                                                    <option value="<?= $post['revision'] ?>" <?= $selected ?>>
-                                                                        Revision <?= $post['revision'] ?>
-                                                                        (<?= ucfirst($post['action']) ?> -
-                                                                        <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
-                                                                    </option>
-                                                                <?php endforeach; ?>
-                                                            </select>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-2">
-                                                        <div class="form-group">
-                                                            <label>&nbsp;</label>
-                                                            <button id="compareBtn" class="btn btn-primary form-control">
-                                                                <i class="fa fa-exchange"></i> Compare
-                                                            </button>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="comparisonResult" class="comparison-table">
-                                                <!-- Will be populated via JavaScript when Compare button is clicked -->
-                                            </div>
-                                        </div>
-                                    </div>
-                                <?php } else {
-                                    echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
-                                }
-                                ?>
+            <div class="box box-default">
+                <div class="box-body">
+                    <!-- Search Form -->
+                    <form method='post' name='searchForm' id='searchForm' autocomplete="off">
+                        <div class="row">
+                            <div class="col-xs-4 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="sampleCode"><?= _translate("Sample ID"); ?> <span class="mandatory">*</span></label>
+                                    <input type="text" class="form-control" id="sampleCode" name="sampleCode"
+                                        placeholder="<?= _translate("Enter Sample ID"); ?>"
+                                        title="<?= _translate("Please enter sample ID"); ?>"
+                                        value="<?= htmlspecialchars($sampleCode ?? ''); ?>" required />
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="testType"><?= _translate("Test Type"); ?> <span class="mandatory">*</span></label>
+                                    <select class="form-control" id="testType" name="testType"
+                                        title="<?= _translate("Please select test type"); ?>" required>
+                                        <option value=""><?= _translate("-- Select --"); ?></option>
+                                        <?php foreach ($activeModules as $key => $module) { ?>
+                                            <option value="<?= $key; ?>"
+                                                <?= (isset($testType) && $testType == $key) ? 'selected="selected"' : ''; ?>>
+                                                <?= $module['name'] ?? $key; ?>
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="col-xs-4 col-md-3 col-lg-3">
+                                <div class="form-group">
+                                    <label for="auditColumn"><?= _translate("Select Column"); ?></label>
+                                    <select class="form-control" id="auditColumn" name="auditColumn[]"
+                                        title="<?= _translate("Please select column"); ?>" multiple>
+                                        <?php
+                                        $c = 0;
+                                        foreach ($resultColumn as $column) {
+                                        ?>
+                                            <option value="<?= $c; ?>"><?= $column['COLUMN_NAME']; ?></option>
+                                        <?php
+                                            $c++;
+                                        }
+                                        ?>
+                                    </select>
+                                    <input type="hidden" id="hiddenColumns" name="hiddenColumns" value="<?= $filteredData; ?>" />
+                                </div>
+                            </div>
+                            <div class="col-md-3 col-lg-3">
+                                <br />
+                                <button type="button" onclick="validateNow();" class="btn btn-primary btn-sm">
+                                    <span><?= _translate("Search"); ?></span>
+                                </button>
+                                <button type="button" class="btn btn-default btn-sm" onclick="document.location.href = document.location">
+                                    <span><?= _translate("Reset"); ?></span>
+                                </button>
                             </div>
                         </div>
-                    </div>
+                    </form>
 
-                    <!-- Current data section -->
-                    <div class="col-xs-12">
-                        <div class="box">
-                            <div class="box-body">
-                                <?php
-                                // Display Current Data if available
-                                if (!empty($currentData)) { ?>
-                                    <h3> <?= _translate("Current Data for Sample"); ?> <?php echo htmlspecialchars($sampleCode ?? ''); ?></h3>
-                                    <table id="currentDataTable" class="table-bordered table table-striped table-hover" aria-hidden="true">
-                                        <thead>
-                                            <tr>
-                                                <?php
-                                                // Display column headers
-                                                foreach (array_keys($currentData[0]) as $colName) {
-                                                    echo "<th>$colName</th>";
-                                                }
-                                                ?>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <tr>
-                                                <?php
-                                                // Display row data
-                                                foreach ($currentData[0] as $colName => $value) {
-                                                    if (in_array($colName, $usernameFields) && !empty($value)) {
+                    <?php
+                    if (!empty($posts)) {
+                        // Build column array
+                        $colArr = array_keys($posts[0] ?? []);
+
+                        // Username fields for formatting
+                        $usernameFields = [
+                            'lab_assigned_to',
+                            'approved_by',
+                            'revised_by',
+                            'locked_by',
+                            'last_modified_by',
+                            'result_approved_by'
+                        ];
+
+                        // Cache usernames
+                        foreach ($posts as $post) {
+                            foreach ($usernameFields as $field) {
+                                if (!empty($post[$field]) && !isset($userCache[$post[$field]])) {
+                                    $userCache[$post[$field]] = $usersService->getUserName($post[$field]);
+                                }
+                            }
+                        }
+
+                        // Get current form data from database for comparison
+                        $uniqueId = $posts[0]['unique_id'] ?? null;
+                        $currentFormData = [];
+                        if ($uniqueId && $formTable) {
+                            $db->where('unique_id', $uniqueId);
+                            $currentFormData = $db->getOne($formTable) ?: [];
+                        }
+                    ?>
+                        <!-- Version Comparison Section -->
+                        <div class="version-selector">
+                            <h4><?= _translate("Compare Revisions"); ?></h4>
+                            <div class="row">
+                                <div class="col-md-3">
+                                    <label><?= _translate("From Revision"); ?></label>
+                                    <select class="form-control" id="versionFrom">
+                                        <?php foreach ($posts as $post) { ?>
+                                            <option value="<?= htmlspecialchars($post['revision']); ?>">
+                                                <?= _translate("Revision"); ?> <?= htmlspecialchars($post['revision']); ?>
+                                                (<?= date('Y-m-d H:i', strtotime($post['dt_datetime'])); ?>)
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label><?= _translate("To Revision"); ?></label>
+                                    <select class="form-control" id="versionTo">
+                                        <?php foreach ($posts as $post) { ?>
+                                            <option value="<?= htmlspecialchars($post['revision']); ?>"
+                                                <?= ($post === end($posts)) ? 'selected' : ''; ?>>
+                                                <?= _translate("Revision"); ?> <?= htmlspecialchars($post['revision']); ?>
+                                                (<?= date('Y-m-d H:i', strtotime($post['dt_datetime'])); ?>)
+                                            </option>
+                                        <?php } ?>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <br />
+                                    <button type="button" class="btn btn-info" id="compareBtn">
+                                        <?= _translate("Compare"); ?>
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="comparisonResult"></div>
+                        </div>
+
+                        <!-- Current Data Table -->
+                        <div class="box box-primary collapsed-box">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><?= _translate("Current Data"); ?></h3>
+                                <div class="box-tools pull-right">
+                                    <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                        <i class="fa fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-body current">
+                                <table class="table table-bordered table-striped" id="currentDataTable">
+                                    <thead>
+                                        <tr>
+                                            <?php foreach ($colArr as $col) {
+                                                if ($col !== 'action' && $col !== 'revision' && $col !== 'dt_datetime') { ?>
+                                                    <th><?= htmlspecialchars($col); ?></th>
+                                            <?php }
+                                            } ?>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <?php foreach ($colArr as $col) {
+                                                if ($col !== 'action' && $col !== 'revision' && $col !== 'dt_datetime') {
+                                                    $value = $currentFormData[$col] ?? '';
+
+                                                    // Format username fields
+                                                    if (in_array($col, $usernameFields) && !empty($value)) {
                                                         if (!isset($userCache[$value])) {
-                                                            $user = $usersService->getUserByID($value, ['user_name']);
-                                                            $userCache[$value] = $user['user_name'] ?? $value;
+                                                            $userCache[$value] = $usersService->getUserName($value);
                                                         }
                                                         $value = $userCache[$value];
                                                     }
-                                                    echo '<td>' . htmlspecialchars(stripslashes($value)) . '</td>';
-                                                }
-                                                ?>
-                                            </tr>
-                                        </tbody>
-                                    </table>
-                                <?php } else {
-                                    echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
-                                }
-                                ?>
+                                            ?>
+                                                    <td><?= htmlspecialchars($value); ?></td>
+                                            <?php }
+                                            } ?>
+                                        </tr>
+                                    </tbody>
+                                </table>
                             </div>
                         </div>
-                    </div>
-                <?php } else {
-                    echo '<h3 align="center">' . _translate("Please enter Sample ID and Test Type to view audit trail") . '</h3>';
-                } ?>
+
+                        <!-- Audit History Table -->
+                        <div class="box box-primary">
+                            <div class="box-header with-border">
+                                <h3 class="box-title"><?= _translate("Audit History"); ?></h3>
+                            </div>
+                            <div class="box-body">
+                                <table class="table table-bordered table-striped" id="auditTable">
+                                    <thead>
+                                        <tr>
+                                            <th><?= _translate("Action"); ?></th>
+                                            <?php foreach ($colArr as $col) { ?>
+                                                <th><?= htmlspecialchars($col); ?></th>
+                                            <?php } ?>
+                                            <th><?= _translate("Export"); ?></th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php
+                                        $prevRow = null;
+                                        foreach ($posts as $idx => $post) {
+                                        ?>
+                                            <tr>
+                                                <td>
+                                                    <?php
+                                                    $action = $post['action'] ?? '';
+                                                    if ($action === 'insert') {
+                                                        echo '<span class="label label-success">' . strtoupper($action) . '</span>';
+                                                    } elseif ($action === 'update') {
+                                                        echo '<span class="label label-warning">' . strtoupper($action) . '</span>';
+                                                    } elseif ($action === 'delete') {
+                                                        echo '<span class="label label-danger">' . strtoupper($action) . '</span>';
+                                                    } else {
+                                                        echo '<span class="label label-default">' . strtoupper($action) . '</span>';
+                                                    }
+                                                    ?>
+                                                </td>
+                                                <?php
+                                                foreach ($colArr as $col) {
+                                                    $cellValue = $post[$col] ?? '';
+                                                    $isDifferent = false;
+
+                                                    // Check if value changed from previous revision
+                                                    if ($prevRow !== null && isset($prevRow[$col])) {
+                                                        $isDifferent = ($cellValue !== $prevRow[$col]);
+                                                    }
+
+                                                    // Format username fields
+                                                    $displayValue = $cellValue;
+                                                    if (in_array($col, $usernameFields) && !empty($cellValue)) {
+                                                        $displayValue = $userCache[$cellValue] ?? $cellValue;
+                                                    }
+
+                                                    $cellClass = $isDifferent ? 'diff-cell' : '';
+                                                ?>
+                                                    <td class="<?= $cellClass; ?>">
+                                                        <?php
+                                                        if ($isDifferent && $prevRow !== null) {
+                                                            $oldValue = $prevRow[$col] ?? '';
+                                                            if (in_array($col, $usernameFields) && !empty($oldValue)) {
+                                                                $oldValue = $userCache[$oldValue] ?? $oldValue;
+                                                            }
+                                                            echo '<span class="diff-old">' . htmlspecialchars($oldValue) . '</span>';
+                                                            echo '<span class="diff-new">' . htmlspecialchars($displayValue) . '</span>';
+                                                        } else {
+                                                            echo htmlspecialchars($displayValue);
+                                                        }
+                                                        ?>
+                                                    </td>
+                                                <?php } ?>
+                                                <td>
+                                                    <button type="button" class="btn btn-xs btn-info snapshot-btn"
+                                                        data-revision="<?= htmlspecialchars($post['revision']); ?>">
+                                                        <i class="fa fa-download"></i> <?= _translate("Export"); ?>
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                        <?php
+                                            $prevRow = $post;
+                                        }
+                                        ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    <?php } elseif ($testType && $sampleCode) {
+                        echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
+                    } else {
+                        echo '<h3 align="center">' . _translate("Please enter Sample ID and Test Type to view audit trail") . '</h3>';
+                    } ?>
+                </div>
             </div>
         </section>
     </div>
@@ -804,10 +438,10 @@ try {
                 scrollX: true,
                 scrollCollapse: true,
                 paging: false,
-                ordering: false, // Make table non-sortable
+                ordering: false,
                 order: [
                     [1, 'asc']
-                ], // Order by revision ID (second column) by default
+                ]
             });
 
             // Initialize current data table
@@ -819,9 +453,8 @@ try {
                 scrollX: true
             });
 
-            // Apply column visibility based on selected columns
+            // Apply column visibility
             var col = $("#hiddenColumns").val();
-
             if (col) {
                 table.columns().visible(false);
                 table.columns(col.split(',')).visible(true);
@@ -849,7 +482,6 @@ try {
                     return;
                 }
 
-                // Get audit data from PHP
                 const auditData = <?php echo json_encode($posts ?? []); ?>;
                 const fromData = auditData.find(item => item.revision == fromRevision);
                 const toData = auditData.find(item => item.revision == toRevision);
@@ -859,7 +491,6 @@ try {
                     return;
                 }
 
-                // Create comparison HTML
                 let html = '<h4>Comparing Revision ' + fromRevision + ' with Revision ' + toRevision + '</h4>';
                 html += '<table class="table table-bordered">';
                 html += '<thead><tr><th>Field</th><th>Revision ' + fromRevision + '</th><th>Revision ' + toRevision + '</th></tr></thead>';
@@ -876,7 +507,6 @@ try {
                         let fromValue = fromData[colName] || '';
                         let toValue = toData[colName] || '';
 
-                        // Format user IDs to names
                         if (usernameFields.includes(colName)) {
                             if (fromValue && userCache[fromValue]) {
                                 fromValue = userCache[fromValue];
@@ -917,22 +547,16 @@ try {
                     return;
                 }
 
-                // Create CSV content
                 const columns = <?php echo json_encode($colArr ?? []); ?>;
-
-                // Add headers
                 let csvContent = columns.join(',') + '\n';
 
-                // Add data row
                 const row = columns.map(col => {
                     const value = snapshot[col] || '';
-                    // Properly escape quotes in CSV
                     return '"' + String(value).replace(/"/g, '""') + '"';
                 }).join(',');
 
                 csvContent += row;
 
-                // Create download link
                 const blob = new Blob([csvContent], {
                     type: 'text/csv;charset=utf-8;'
                 });

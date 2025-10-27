@@ -15,6 +15,7 @@ use App\Registries\AppRegistry;
 use App\Services\ConfigService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
+use App\Utilities\ArchiveUtility;
 use App\Exceptions\SystemException;
 use App\Services\FacilitiesService;
 use App\Utilities\FileCacheUtility;
@@ -865,14 +866,33 @@ final class CommonService
             $responseData = JsonUtility::encodeUtf8Json($responseData ?? '{}');
 
             $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
+
+            // Save request data
             if (!empty($requestData) && $requestData != '[]') {
-                MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'requests');
-                MiscUtility::dataToZippedFile($requestData, "$folderPath/requests/$transactionId.json");
+                $requestDir = $folderPath . DIRECTORY_SEPARATOR . 'requests';
+                MiscUtility::makeDirectory($requestDir);
+
+                // Use ArchiveUtility with auto-backend selection
+                ArchiveUtility::compressContent(
+                    $requestData,
+                    "$requestDir/$transactionId.json"
+                    // No backend specified - system will choose best available
+                );
             }
+
+            // Save response data
             if (!empty($responseData) && $responseData != '[]') {
-                MiscUtility::makeDirectory($folderPath . DIRECTORY_SEPARATOR . 'responses');
-                MiscUtility::dataToZippedFile($responseData, "$folderPath/responses/$transactionId.json");
+                $responseDir = $folderPath . DIRECTORY_SEPARATOR . 'responses';
+                MiscUtility::makeDirectory($responseDir);
+
+                // Use ArchiveUtility with auto-backend selection
+                ArchiveUtility::compressContent(
+                    $responseData,
+                    "$responseDir/$transactionId.json"
+                    // No backend specified - system will choose best available
+                );
             }
+
             $this->db->reset();
             $data = [
                 'transaction_id' => $transactionId ?? null,
@@ -885,6 +905,7 @@ final class CommonService
                 'facility_id' => $labId ?? null,
                 'data_format' => $format ?? null
             ];
+
             return $this->db->insert("track_api_requests", $data);
         } catch (Throwable $exc) {
             if (!empty($this->db->getLastError())) {
