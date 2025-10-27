@@ -44,6 +44,9 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
 $typeOfPatient = json_decode((string) $tbInfo['patient_type']);
 $reasonForTbTest = json_decode((string) $tbInfo['reason_for_tb_test']);
 $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
+
+
+$labId = $general->getSystemConfig('sc_testing_lab_id');
 ?>
 
 <div class="content-wrapper">
@@ -618,16 +621,16 @@ $testTypeRequested = json_decode((string) $tbInfo['tests_requested']);
                                 <div class="controls" style="margin-top: 20px;">
                                     <button type="button" class="btn btn-success" onclick="addTestSection()">+ <?php echo _translate("Add Test"); ?></button>
                                     <button type="button" class="btn btn-danger" onclick="removeTestSection()">- <?php echo _translate("Remove Test"); ?></button>
-                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.fnal-result').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
-                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) ? 'display:none;' : ''; ?>" onclick="$('.fnal-result').toggle();$('.referrelLabSection').hide();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Final Interpretation"); ?></a>
+                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['result']) && !empty($tbInfo['result'])) ? 'display:none;' : ''; ?>" onclick="$('.referrelLabSection').toggle();$('.referrelLabSection').is(':visible') ? $('.fnal-result').hide() : $('.fnal-result').show();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Refer to another Testing Lab"); ?></a>
+                                    <a style="margin: 0px 5px;<?php echo (isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) ? 'display:none;' : ''; ?>" onclick="$('.fnal-result').toggle();$('.fnal-result').is(':visible') ? $('.referrelLabSection').hide() : $('.referrelLabSection').show();" href="javascript:void(0);" class="refer-inputs btn btn-default btn-sm"> <em class="fa-solid fa-plus"></em> <?php echo _translate("Final Interpretation"); ?></a>
                                 </div>
                                 <?php
                                 $referralResultDisplay = '';
                                 $referralDisplay = '';
-                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id']))) {
+                                if ((isset($tbInfo['referred_to_lab_id']) && !empty($tbInfo['referred_to_lab_id'])) || ($labId != $tbInfo['referred_to_lab_id'])) {
                                     $referralResultDisplay = 'style="display:none;"';
                                 }
-                                if ((isset($tbInfo['result']) && !empty($tbInfo['result']))) {
+                                if ((isset($tbInfo['result']) && !empty($tbInfo['result'])) || ($labId == $tbInfo['referred_to_lab_id'])) {
                                     $referralDisplay = 'style="display:none;"';
                                 }
                                 ?>
