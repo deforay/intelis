@@ -100,7 +100,7 @@ try {
           $row[] = strtoupper((string) $aRow['test_type']);
           $row[] = $aRow['api_url'];
           $row[] = DateUtility::humanReadableDateFormat($aRow['requested_on'], true);
-          $row[] = "<a href='javascript:void(0);' class='btn btn-success btn-xs' style='margin-right: 2px;' title='Result' onclick=\"showModal('show-params.php?id=" . MiscUtility::sqid( $aRow['api_track_id']) . "',1200,720);\"> Show Params</a>";
+          $row[] = "<a href='javascript:void(0);' class='btn btn-success btn-xs' style='margin-right: 2px;' title='Result' onclick=\"showModal('/admin/monitoring/show-params.php?id=" . MiscUtility::sqid($aRow['api_track_id']) . "',1200,720);\"> Show Params</a>";
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);
