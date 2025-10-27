@@ -107,7 +107,7 @@ if (isset($_SESSION['resultNotAvailable']) && trim((string) $_SESSION['resultNot
 
 
     $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
+    $filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-Results-Not-Available-Report-' . date('d-M-Y-H-i-s') . '.xlsx';
     $writer->save($filename);
     echo urlencode(basename($filename));
 }

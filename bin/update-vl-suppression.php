@@ -40,10 +40,11 @@ $startTime = microtime(true);
 
 try {
     // First, fix any ACCEPTED results that have blank/null result values
-    // Set status based on whether sample_received_at_lab_datetime is set
+    // Set status based on whether sample_code is created or not
+    // if sample_code is set, it means sample has been registered at lab
     $fixInvalidSql = "UPDATE form_vl
                         SET result_status = CASE 
-                            WHEN sample_received_at_lab_datetime IS NOT NULL THEN ?
+                            WHEN sample_code IS NOT NULL THEN ?
                             ELSE ?
                         END,
                         data_sync = 0 
@@ -157,17 +158,10 @@ try {
 
         $offset += $batchSize;
     } while ($batchCount > 0);
-
-    // Success logging
-    $duration = round(microtime(true) - $startTime, 2);
-    LoggerUtility::logInfo("VL Result Category update completed successfully", [
-        'invalid_results_fixed' => $totalInvalidFixed,
-        'records_processed' => $totalProcessed,
-        'records_updated' => $totalUpdated,
-        'duration_seconds' => $duration
-    ]);
-
-    echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
+    if (!$isCli) {
+        $duration = round(microtime(true) - $startTime, 2);
+        echo "Completed! Invalid fixed: {$totalInvalidFixed}, Processed: {$totalProcessed}, Updated: {$totalUpdated}, Duration: {$duration}s\n";
+    }
 } catch (Throwable $e) {
     // Critical error logging
     LoggerUtility::logError("VL category update script failed critically", [

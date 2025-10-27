@@ -287,6 +287,6 @@ foreach (range('A', 'O') as $columnID) {
 }
 
 $writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
+$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-HIGH-VL-AND-VIROLOGIC-FAILURE-REPORT-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 $writer->save($filename);
 echo urlencode(basename($filename));

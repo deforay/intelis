@@ -154,6 +154,19 @@ try {
      if (isset($_POST['status']) && trim((string) $_POST['status']) != '') {
           $sWhere[] = '  (vl.result_status IS NOT NULL AND vl.result_status =' . $_POST['status'] . ')';
      }
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
+          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
+     }
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
+          $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
+     }
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
+          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
+     }
+     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
+          $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
+     }
+
      if (isset($_POST['showReordSample']) && trim((string) $_POST['showReordSample']) != '') {
           $sWhere[] = ' vl.sample_reordered IN ("' . $_POST['showReordSample'] . '")';
      }
@@ -181,18 +194,6 @@ try {
      if (isset($_POST['labIdModel']) && trim((string) $_POST['labIdModel']) != '') {
           $sWhere[] = ' vl.lab_id like "' . $_POST['labIdModel'] . '" ';
      }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 4) {
-          $sWhere[] = ' vl.is_sample_rejected is not null AND vl.is_sample_rejected like "yes"';
-     }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 6) {
-          $sWhere[] = " vl.sample_received_at_lab_datetime is NOT NULL ";
-     }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == 7) {
-          $sWhere[] = ' vl.result is not null AND vl.result not like "" AND result_status = ' . SAMPLE_STATUS\ACCEPTED;
-     }
-     if (isset($_POST['srcStatus']) && $_POST['srcStatus'] == "sent") {
-          $sWhere[] = ' vl.result_sent_to_source is not null and vl.result_sent_to_source = "sent"';
-     }
      if (isset($_POST['patientId']) && trim((string) $_POST['patientId']) != '') {
           $sWhere[] = " vl.patient_id LIKE '%" . $_POST['patientId'] . "%' ";
      }
@@ -208,6 +209,7 @@ try {
           }
      } elseif (!$_POST['hidesrcofreq']) {
           $sWhere[] = 'vl.result_status != ' . SAMPLE_STATUS\RECEIVED_AT_CLINIC;
+          $sWhere[] = 'vl.result_status != ' . SAMPLE_STATUS\REFERRED;
      }
      if (!empty($sWhere)) {
           $_SESSION['tbRequestData']['sWhere'] = $sWhere = implode(" AND ", $sWhere);

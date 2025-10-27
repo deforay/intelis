@@ -1,8 +1,8 @@
 <?php
 
+use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
-use App\Utilities\DateUtility;
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -365,7 +365,7 @@ $errorInfo ??= [];
   <div class="error-container">
     <div class="error-content">
       <div class="error-card">
-        
+
         <a href="/login/logout.php" class="logout-btn">
           <i class="fa fa-sign-out"></i> <?= _translate('Logout'); ?>
         </a>

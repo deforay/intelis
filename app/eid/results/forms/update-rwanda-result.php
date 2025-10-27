@@ -16,7 +16,6 @@ $eidResults = $eidService->getEidResults();
 // Getting the list of Provinces, Districts and Facilities
 
 $rKey = '';
-$pdQuery = "SELECT * FROM geographical_divisions WHERE geo_parent = 0 and geo_status='active'";
 if ($general->isSTSInstance()) {
     $sampleCodeKey = 'remote_sample_code_key';
     $sampleCode = 'remote_sample_code';
@@ -25,24 +24,13 @@ if ($general->isSTSInstance()) {
     } else {
         $sampleCode = 'sample_code';
     }
-    //check user exist in user_facility_map table
-    $chkUserFcMapQry = "Select user_id from user_facility_map where user_id='" . $_SESSION['userId'] . "'";
-    $chkUserFcMapResult = $db->query($chkUserFcMapQry);
-    if ($chkUserFcMapResult) {
-        $pdQuery = "SELECT DISTINCT gd.geo_name,gd.geo_id,gd.geo_code FROM geographical_divisions as gd JOIN facility_details as fd ON fd.facility_state_id=gd.geo_id JOIN user_facility_map as vlfm ON vlfm.facility_id=fd.facility_id where gd.geo_parent = 0 AND gd.geo_status='active' AND vlfm.user_id='" . $_SESSION['userId'] . "'";
-    }
     $rKey = 'R';
 } else {
     $sampleCodeKey = 'sample_code_key';
     $sampleCode = 'sample_code';
     $rKey = '';
 }
-$pdResult = $db->query($pdQuery);
-$province = "<option value=''> -- Select -- </option>";
-foreach ($pdResult as $provinceName) {
-    $province .= "<option value='" . $provinceName['geo_name'] . "##" . $provinceName['geo_code'] . "'>" . ($provinceName['geo_name']) . "</option>";
-}
-
+$province = $general->getUserMappedProvinces($_SESSION['facilityMap']);
 $facility = $general->generateSelectOptions($healthFacilities, $eidInfo['facility_id'], '-- Select --');
 
 $eidInfo['mother_treatment'] = isset($eidInfo['mother_treatment']) ? explode(",", (string) $eidInfo['mother_treatment']) : [];

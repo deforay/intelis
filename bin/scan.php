@@ -3,6 +3,7 @@
 //bin/scan.php
 
 use App\Utilities\DateUtility;
+use App\Utilities\LoggerUtility;
 use App\Services\CommonService;
 use App\Registries\ContainerRegistry;
 use Symfony\Component\Console\Helper\Table;
@@ -53,7 +54,7 @@ function asBool(mixed $v): bool
 
 /**
  * Show the REAL value as the label ([ON]/[OFF]),
- * but color it green/red depending on whether the value is considered “good”.
+ * but color it green/red depending on whether the value is considered "good".
  * If $goodWhenFalse = true → OFF is green; otherwise ON is green.
  */
 function formatStatus(mixed $value, bool $goodWhenFalse = false): string
@@ -186,8 +187,12 @@ function getOSInfo()
 
 $output = new ConsoleOutput();
 
+// Header with instance type
+$headerText = "InteLIS System Information";
 echo PHP_EOL;
-echo str_pad("InteLIS System Information", 80, "=", STR_PAD_BOTH) . PHP_EOL;
+echo str_pad("", 80, "=") . PHP_EOL;
+echo str_pad($headerText, 80, " ", STR_PAD_BOTH) . PHP_EOL;
+echo str_pad("", 80, "=") . PHP_EOL;
 echo PHP_EOL;
 
 // Combined System Overview Table
@@ -221,24 +226,26 @@ $overviewRows = [
 if ($isLIS) {
     $remoteURL = $general->getRemoteURL();
     $labId = $general->getSystemConfig('sc_testing_lab_id');
-    $isConnected = '❌ Not Connected';
+    $connectionStatus = '<fg=red>✗ Not Connected</>';
 
     if (!empty($remoteURL)) {
-        $isConnected = CommonService::validateStsUrl($remoteURL, $labId) ? '✅ Connected' : '❌ Not Connected';
+        $connectionStatus = CommonService::validateStsUrl($remoteURL, $labId)
+            ? '<fg=green>✓ Connected</>'
+            : '<fg=red>✗ Not Connected</>';
     }
 
     $overviewRows[] = new TableSeparator();
     $overviewRows[] = [
         'STS URL',
-        "$remoteURL ($isConnected)" ?: 'Not Configured',
-        'InteLIS Lab ID',
-        $labId ?: 'Not Configured'
+        $remoteURL ?: '<fg=yellow>Not Configured</>',
+        'Connection',
+        $connectionStatus
     ];
     $overviewRows[] = [
+        'InteLIS Lab ID',
+        $labId ?: '<fg=yellow>Not Configured</>',
         'STS Token',
-        $instanceInfo ? maskSensitive($instanceInfo['sts_token']) : 'Not Set',
-        '',
-        ''
+        $instanceInfo ? maskSensitive($instanceInfo['sts_token']) : '<fg=yellow>Not Set</>'
     ];
 
     if ($labId) {
@@ -248,7 +255,7 @@ if ($isLIS) {
         );
         $overviewRows[] = [
             'Lab Name',
-            $labDetails ? substr($labDetails['facility_name'], 0, 35) : 'Unknown',
+            $labDetails ? substr($labDetails['facility_name'], 0, 40) : '<fg=yellow>Unknown</>',
             'STS API Key',
             maskSensitive(SYSTEM_CONFIG['sts']['api_key'] ?? '')
         ];
@@ -271,14 +278,32 @@ $diskUsed = $diskTotal - $diskFree;
 $diskUsagePercent = round(($diskUsed / $diskTotal) * 100, 1);
 
 // Color code disk usage if high
-$diskUsageDisplay = formatBytes($diskUsed) . " ({$diskUsagePercent}%)";
+$diskUsageDisplay = formatBytes($diskUsed) . " / " . formatBytes($diskTotal) . " ({$diskUsagePercent}%)";
 if ($diskUsagePercent >= 90) {
     $diskUsageDisplay = "<fg=red;options=bold>{$diskUsageDisplay}</>";
 } elseif ($diskUsagePercent >= 80) {
     $diskUsageDisplay = "<fg=yellow>{$diskUsageDisplay}</>";
+} else {
+    $diskUsageDisplay = "<fg=green>{$diskUsageDisplay}</>";
 }
 
-$logsSize = getDirSize(ROOT_PATH . "/logs");
+// Get log statistics
+$logStats = LoggerUtility::getLogStats();
+$logsSize = isset($logStats['total_size_mb']) ? $logStats['total_size_mb'] * 1024 * 1024 : getDirSize(ROOT_PATH . "/logs");
+$logFileCount = $logStats['file_count'] ?? 'N/A';
+
+// Color code logs size if high (warning at 500MB, danger at 800MB)
+$logsSizeDisplay = formatBytes($logsSize);
+if (is_numeric($logsSize)) {
+    $logsSizeMB = $logsSize / (1024 * 1024);
+    if ($logsSizeMB >= 800) {
+        $logsSizeDisplay = "<fg=red;options=bold>{$logsSizeDisplay}</>";
+    } elseif ($logsSizeMB >= 500) {
+        $logsSizeDisplay = "<fg=yellow>{$logsSizeDisplay}</>";
+    }
+}
+$logsSizeDisplay .= " ({$logFileCount} files)";
+
 $backupsSize = getDirSize(ROOT_PATH . "/backups");
 
 $apacheRunning = isServiceRunning('apache2') || isServiceRunning('httpd');
@@ -289,7 +314,7 @@ $phpVersion = phpversion();
 $diagRows = [
     [
         'OS Name',
-        $osInfo['name'],
+        substr($osInfo['name'], 0, 30),
         'Apache',
         formatStatus($apacheRunning)
     ],
@@ -307,22 +332,16 @@ $diagRows = [
     ],
     new TableSeparator(),
     [
-        'Disk Total',
-        formatBytes($diskTotal),
-        'Disk Free',
-        formatBytes($diskFree)
-    ],
-    [
-        'Disk Used',
+        'Disk Usage',
         $diskUsageDisplay,
-        'Logs Size',
-        formatBytes($logsSize)
+        'Logs',
+        $logsSizeDisplay
     ],
     [
-        'Backups Size',
+        'Backups',
         formatBytes($backupsSize),
         'Root Path',
-        ROOT_PATH
+        substr(ROOT_PATH, 0, 35)
     ]
 ];
 
@@ -473,4 +492,58 @@ if ($isLIS && $instanceInfo) {
     echo PHP_EOL;
 }
 
-echo str_repeat("=", 80) . PHP_EOL;
+// System Health Summary
+$healthIssues = [];
+$healthWarnings = [];
+
+// Check critical services
+if (!$apacheRunning) $healthIssues[] = 'Apache is not running';
+if (!$mysqlRunning) $healthIssues[] = 'MySQL/MariaDB is not running';
+
+// Check disk space
+if ($diskUsagePercent >= 95) {
+    $healthIssues[] = "Critical: Disk usage at {$diskUsagePercent}%";
+} elseif ($diskUsagePercent >= 85) {
+    $healthWarnings[] = "Warning: Disk usage at {$diskUsagePercent}%";
+}
+
+// Check logs size
+if (is_numeric($logsSize)) {
+    $logsSizeMB = $logsSize / (1024 * 1024);
+    if ($logsSizeMB >= 900) {
+        $healthIssues[] = "Critical: Logs size at " . round($logsSizeMB) . "MB (approaching 1GB limit)";
+    } elseif ($logsSizeMB >= 700) {
+        $healthWarnings[] = "Warning: Logs size at " . round($logsSizeMB) . "MB";
+    }
+}
+
+// Check LIS connection
+if ($isLIS && !empty($remoteURL) && $labId) {
+    if (!CommonService::validateStsUrl($remoteURL, $labId)) {
+        $healthWarnings[] = "STS connection failed";
+    }
+}
+
+// Display health summary
+if (!empty($healthIssues) || !empty($healthWarnings)) {
+    $output->writeln(str_repeat("=", 80));
+
+    if (!empty($healthIssues)) {
+        $output->writeln("<fg=red;options=bold>CRITICAL ISSUES:</>");
+        foreach ($healthIssues as $issue) {
+            $output->writeln("  <fg=red>✗</> {$issue}");
+        }
+    }
+
+    if (!empty($healthWarnings)) {
+        $output->writeln("<fg=yellow;options=bold>WARNINGS:</>");
+        foreach ($healthWarnings as $warning) {
+            $output->writeln("  <fg=yellow>!</> {$warning}");
+        }
+    }
+    $output->writeln(str_repeat("=", 80));
+} else {
+    $output->writeln(str_repeat("=", 80));
+    $output->writeln("<fg=green;options=bold>✓ System Health: All checks passed</>");
+    $output->writeln(str_repeat("=", 80));
+}

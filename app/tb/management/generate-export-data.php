@@ -130,7 +130,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 
 	if (isset($_SESSION['tbResultQueryCount']) && $_SESSION['tbResultQueryCount'] > 50000) {
 
-		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
+		$fileName = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-TB-Export-Data-' . date('d-M-Y-H-i-s') . '.csv';
 		$fileName = MiscUtility::generateCsv($headings, $output, $fileName, $delimiter, $enclosure);
 		// we dont need the $output variable anymore
 		unset($output);
@@ -148,7 +148,7 @@ if (isset($_SESSION['tbResultQuery']) && trim((string) $_SESSION['tbResultQuery'
 		}
 
 		$writer = IOFactory::createWriter($excel, IOFactory::READER_XLSX);
-		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'VLSM-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
+		$filename = TEMP_PATH . DIRECTORY_SEPARATOR . 'InteLIS-VIRAL-LOAD-Data-' . date('d-M-Y-H-i-s') . '-' . MiscUtility::generateRandomString(5) . '.xlsx';
 		$writer->save($filename);
 		echo urlencode(basename($filename));
 	}

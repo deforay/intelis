@@ -1,6 +1,7 @@
 <?php
 
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\SecurityService;
@@ -22,22 +23,35 @@ if (isset($_SESSION['userId'])) {
 	}
 }
 
+
+// Get request parameters
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
+
+$logoutReason = $_GET['e'] ?? '';
+if ($logoutReason === 'timeout') {
+	// Message shown once; translate if you want
+	$_SESSION['alertMsg'] = _translate('Your session expired due to inactivity. Please log in again.', true);
+}
+
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
 
-if ($db->isConnected() === false) {
-	throw new SystemException("Database connection failed. Please check your database settings", 500);
+if (!($db instanceof DatabaseService) || $db->isConnected() === false) {
+	$_SESSION['alertMsg'] = _translate("Database connection failed. Please check your database settings", true);
+} else {
+
+	// If there are NO users, then we need to register an admin user
+	// This happens during first setup typically
+	$db->where("role_id=1");
+	$count = $db->getValue("user_details", "count(*)");
+	if ($count == 0) {
+		header("Location:/setup/index.php");
+	}
 }
 
 SecurityService::rotateCSRF();
 
-// If there are NO users, then we need to register the admin user
-// This happens during first setup typically
-$db->where("role_id=1");
-$count = $db->getValue("user_details", "count(*)");
-if ($count == 0) {
-	header("Location:/setup/index.php");
-}
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
@@ -179,7 +193,20 @@ if (file_exists(WEB_ROOT . DIRECTORY_SEPARATOR . "uploads/bg.jpg")) {
 				</div>
 
 				<div style="padding-top:10px;" class="panel-body">
-					<div style="display:none" id="login-alert" class="alert alert-danger col-sm-12"></div>
+					<?php
+					$initialAlert = '';
+					if (!empty($_SESSION['alertMsg'])) {
+						$initialAlert = trim((string) $_SESSION['alertMsg']);
+						// Clear it so it doesn't persist across refreshes
+						$_SESSION['alertMsg'] = '';
+						unset($_SESSION['alertMsg']);
+					}
+					?>
+					<div id="login-alert"
+						class="alert <?= $initialAlert ? 'alert-warning' : 'alert-danger' ?> col-sm-12"
+						style="<?= $initialAlert ? '' : 'display:none' ?>">
+						<?= htmlspecialchars($initialAlert ?: '', ENT_QUOTES, 'UTF-8'); ?>
+					</div>
 					<form id="loginForm" name="loginForm" class="form-horizontal" method="post" action="/login/loginProcess.php" onsubmit="validateNow();return false;">
 						<input type="hidden" name="csrf_token" value="<?= $_SESSION['csrf_token']; ?>" />
 						<div style="margin-bottom: 5px" class="input-group hpot">
