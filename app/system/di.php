@@ -12,6 +12,7 @@ use App\Services\BatchService;
 use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\DateUtility;
+use App\Utilities\MemoUtility;
 use App\Utilities\MiscUtility;
 use App\Helpers\BatchPdfHelper;
 use App\Registries\AppRegistry;
@@ -36,6 +37,7 @@ use App\Services\TestResultsService;
 use App\Utilities\ValidationUtility;
 use App\Helpers\PdfConcatenateHelper;
 use App\Registries\ContainerRegistry;
+use App\Services\AuditArchiveService;
 use App\Services\GenericTestsService;
 use App\Services\GeoLocationsService;
 use App\Services\TestRequestsService;
@@ -53,7 +55,6 @@ use App\Middlewares\Api\ApiLegacyFallbackMiddleware;
 use App\Services\STS\TokensService as STSTokensService;
 use App\Services\STS\ResultsService as STSResultsService;
 use App\Services\STS\RequestsService as STSRequestsService;
-use App\Utilities\MemoUtility;
 
 try {
     // Load configuration
@@ -159,6 +160,7 @@ $builder->addDefinitions([
     UsersService::class => DI\autowire(),
     GeoLocationsService::class => DI\autowire(),
     TestResultsService::class => DI\autowire(),
+    AuditArchiveService::class => DI\autowire(),
     AppMenuService::class => DI\autowire(),
     FacilitiesService::class => DI\autowire(),
     InstrumentsService::class => DI\autowire(),
