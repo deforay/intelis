@@ -9,6 +9,7 @@ use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Server\MiddlewareInterface;
 use Psr\Http\Message\ServerRequestInterface;
 use Psr\Http\Server\RequestHandlerInterface;
+use Laminas\Diactoros\Response\JsonResponse;
 use Laminas\Diactoros\Response\RedirectResponse;
 
 class SystemAdminAuthMiddleware implements MiddlewareInterface
@@ -43,12 +44,14 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             // authentication check
             return $handler->handle($request);
         } elseif (empty($_SESSION['adminUserId'])) {
-
+            if (CommonService::isAjaxRequest($request)) {
+                return new JsonResponse(['error' => 'session_expired'], 401);
+            }
             // Redirect to the login page if the system user is not logged in
             $redirect = new RedirectResponse('/system-admin/login/login.php');
         }
 
-        if (!is_null($redirect)) {
+        if ($redirect !== null) {
             return $redirect;
         } else {
             return $handler->handle($request);
@@ -62,11 +65,8 @@ class SystemAdminAuthMiddleware implements MiddlewareInterface
             return true;
         }
 
-        if (CommonService::isAjaxRequest($request)) {
-            if (CommonService::isSameOriginRequest($request) === false) {
-                throw new SystemException(_translate('Invalid request origin.'), 403);
-            }
-            return true;
+        if (CommonService::isAjaxRequest($request) && CommonService::isSameOriginRequest($request) === false) {
+            throw new SystemException(_translate('Invalid request origin.'), 403);
         }
 
         if (CommonService::isExcludedUri($uri, $this->excludedUris ?? []) === true) {

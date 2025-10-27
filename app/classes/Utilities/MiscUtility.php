@@ -642,55 +642,6 @@ final class MiscUtility
         return $prefix . substr($ulid, 0, $remaining);
     }
 
-    /**
-     * String to a file inside a zip archive.
-     *
-     * @param string $stringData
-     * @param string $fileName The FULL PATH of the file inside the zip archive.
-     * @return bool Returns true on success, false on failure.
-     */
-    public static function dataToZippedFile(string $stringData, string $fileName): bool
-    {
-        if (empty($stringData) || empty($fileName)) {
-            return false;
-        }
-
-        $zip = new ZipArchive();
-        $zipPath = "$fileName.zip";
-
-        if ($zip->open($zipPath, ZipArchive::CREATE) === true) {
-            $zip->addFromString(basename($fileName), $stringData);
-            $result = $zip->status == ZipArchive::ER_OK;
-            $zip->close();
-            return $result;
-        }
-
-        return false;
-    }
-
-    /**
-     * Unzips an archive and returns contents of a file inside it.
-     *
-     * @param string $zipFile The path to the zip file.
-     * @param string $fileName The name of the JSON file inside the zip archive.
-     * @return string
-     */
-    public static function getDataFromZippedFile(string $zipFile, string $fileName): string
-    {
-        if (!file_exists($zipFile)) {
-            return "{}";
-        }
-        $zip = new ZipArchive;
-        if ($zip->open($zipFile) === true) {
-            $json = $zip->getFromName($fileName);
-            $zip->close();
-
-            return $json !== false ? $json : "{}";
-        } else {
-            return "{}";
-        }
-    }
-
     public static function getFileExtension($filename): string
     {
         if (empty($filename)) {
