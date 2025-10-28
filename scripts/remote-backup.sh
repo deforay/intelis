@@ -77,7 +77,7 @@ print success "Instance name set to: $sanitized_name"
 # --- LIS path -----------------------------------------------------------------
 
 print header "Setting up LIS folder path"
-default_lis_path="/var/www/vlsm"
+default_lis_path="/var/www/intelis"
 read -r -p "Enter the LIS folder path [default: $default_lis_path]: " lis_path
 lis_path=${lis_path:-$default_lis_path}
 [[ "$lis_path" != /* ]] && lis_path="$(realpath "$lis_path")" && print info "Converted to absolute path: $lis_path"
