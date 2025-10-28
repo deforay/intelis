@@ -125,7 +125,7 @@ final class SystemService
     {
         $this->setGlobalDateFormat();
 
-        $_SESSION['APP_TIMEZONE'] = $_SESSION['APP_TIMEZONE'] ?? $this->getTimezone();
+        $_SESSION['APP_TIMEZONE'] ??= $this->getTimezone();
         date_default_timezone_set($_SESSION['APP_TIMEZONE']);
     }
 

@@ -160,8 +160,7 @@ try {
     ]);
 
     // Breakdown by status
-    $waitingByStatusQuery = "
-    SELECT
+    $waitingByStatusQuery = "SELECT
         COALESCE(s.status_name, CONCAT('Status ', t.result_status)) AS status_name,
         t.result_status,
         COUNT(t.$primaryKey) AS cnt
@@ -169,8 +168,8 @@ try {
     LEFT JOIN r_sample_status AS s ON s.status_id = t.result_status
     WHERE $waitingWhere
     GROUP BY t.result_status, s.status_name
-    ORDER BY s.status_name
-";
+    HAVING cnt > 0
+    ORDER BY cnt DESC";
 
     $waitingByStatusRows = $db->rawQuery($waitingByStatusQuery);
 
@@ -409,7 +408,7 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="200" style="min-height:200px;"></div>
+        <div id="<?php echo $samplesRejectedChart; ?>" width="210" height="300" style="min-height:300px;"></div>
     </div>
 </div>
 
@@ -432,7 +431,7 @@ try {
                 <em class="fa-solid fa-chart-simple"></em>
             </div>
         </div>
-        <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="200" style="min-height:200px;"></div>
+        <div id="<?php echo $samplesWaitingChart; ?>" width="210" height="300" style="min-height:300px;"></div>
     </div>
 </div>
 <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12 ">
@@ -535,7 +534,7 @@ try {
         $('#<?php echo $samplesWaitingChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 200
+                height: 300
             },
             title: {
                 text: ''
@@ -577,6 +576,9 @@ try {
                     pointPadding: 0.2,
                     borderWidth: 0,
                     cursor: 'pointer'
+                },
+                dataLabels: {
+                    enabled: true
                 }
             },
             series: [{
@@ -661,7 +663,7 @@ try {
         $('#<?php echo $samplesRejectedChart; ?>').highcharts({
             chart: {
                 type: 'column',
-                height: 200
+                height: 300
             },
             title: {
                 text: ''
@@ -706,9 +708,10 @@ try {
                 column: {
                     pointPadding: 0.2,
                     borderWidth: 0,
-                    cursor: 'pointer',
+                    cursor: 'pointer'
                 }
             },
+
             series: [{
                 showInLegend: false,
                 name: "<?php echo _translate("Samples", escapeTextOrContext: true); ?>",
