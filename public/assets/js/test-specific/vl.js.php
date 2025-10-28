@@ -85,8 +85,7 @@
                     format: "html"
                 },
                 function(data) {
-                    if (data != 0) {
-                    }
+                    if (data != 0) {}
                 });
             //$.unblockUI();
         }
