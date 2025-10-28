@@ -177,7 +177,7 @@ final class SystemService
             'CACHE_PATH' => CACHE_PATH,
             'UPLOAD_PATH' => UPLOAD_PATH,
             'TEMP_PATH' => TEMP_PATH,
-            'LOGS_PATH' => ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'
+            'LOG_PATH' => LOG_PATH
         ];
 
         $folderPermissions = [];
@@ -343,4 +343,3 @@ final class SystemService
         return $rows;
     }
 }
-

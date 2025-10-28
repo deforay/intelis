@@ -215,7 +215,7 @@ if ($logType === 'php_error') {
     $file = ini_get('error_log');
 } else {
     $date = isset($_GET['date']) ? DateUtility::isoDateFormat($_GET['date']) : date('Y-m-d');
-    $file = ROOT_PATH . '/logs/' . $date . '-logfile.log';
+    $file = LOG_PATH . '/' . $date . '-logfile.log';
 }
 
 function getMostRecentLogFile($logDirectory)
@@ -257,7 +257,7 @@ function parseSearchTerms($searchString)
         }
     }
 
-    return array_filter($terms, function($term) {
+    return array_filter($terms, function ($term) {
         return strlen($term['value']) > 0;
     });
 }
@@ -394,13 +394,11 @@ function processPHPErrorLog($entries)
             ) {
                 $inStackTrace = true;
             }
-        }
-        else {
+        } else {
             if (preg_match('/^#\d+/', $line)) {
                 $currentEntry .= "\n" . $line;
                 $inStackTrace = true;
-            }
-            else if ($inStackTrace || trim($line) !== '') {
+            } else if ($inStackTrace || trim($line) !== '') {
                 $currentEntry .= "\n" . $line;
             }
         }

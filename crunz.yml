@@ -27,7 +27,7 @@ log_errors: false
 
 # This is the absolute path to the errors' log file
 # You need to make sure you have the required permission to write to this file though.
-errors_log_file: logs/scheduled-tasks.log
+errors_log_file: var/logs/scheduled-tasks.log
 
 # By default the output is not logged as they are redirected to the
 # null output.

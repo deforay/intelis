@@ -5,7 +5,7 @@
  */
 
 namespace CORE {
-    const SYSADMIN_SECRET_KEY_FILE = APPLICATION_PATH . "/system-admin/secret-key.txt";
+    const SYSADMIN_SECRET_KEY_FILE = VAR_PATH . "/secret-key.txt";
 }
 
 /**

@@ -43,11 +43,11 @@ if ($transactionId === '') {
 }
 
 // ---------- Locate archives ----------
-$baseFolder = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api') ?: (UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api');
+$baseFolder = realpath(VAR_PATH . DIRECTORY_SEPARATOR . 'track-api') ?: (VAR_PATH . DIRECTORY_SEPARATOR . 'track-api');
 $reqDir     = $baseFolder . DIRECTORY_SEPARATOR . 'requests';
 $resDir     = $baseFolder . DIRECTORY_SEPARATOR . 'responses';
-$reqName    = $transactionId . '.json';
-$resName    = $transactionId . '.json';
+$reqName    = "$transactionId.json";
+$resName    = "$transactionId.json";
 
 // ---------- Load & decode helpers ----------
 /**

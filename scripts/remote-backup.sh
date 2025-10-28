@@ -335,9 +335,9 @@ EXCLUDE_LIST="/tmp/backup-excludes.$"
 cat > "$EXCLUDE_LIST" <<'EXCLUDES'
 # LIS-specific directories to exclude
 /public/temporary/
-/logs/
+/var/logs/
 /vendor/
-/cache/
+/var/cache/
 
 # Temporary and cache files
 *.tmp
@@ -468,4 +468,4 @@ print info    "Disable backups: /usr/local/bin/intelis-backup.sh --disable"
 print info    "LIS path  : $lis_path (entire directory will be backed up)"
 print info    "Remote    : ${DEST_DIR} on ${backup_user}@${backup_host}:${backup_port}"
 print info    "Schedule  : Every 8 hours and at reboot"
-print info    "Excluded items: public/temporary/, logs/, vendor/, cache/, temp files, version control"
+print info    "Excluded items: public/temporary/, var/logs/, vendor/, var/cache/, temp files, version control"

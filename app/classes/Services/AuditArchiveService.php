@@ -36,8 +36,8 @@ final class AuditArchiveService
     public function __construct(
         private readonly DatabaseService $db
     ) {
-        $this->archiveRoot  = ROOT_PATH . '/audit-trail';
-        $this->metadataPath = ROOT_PATH . '/metadata/archive.mdata.json';
+        $this->archiveRoot  = VAR_PATH . '/audit-trail';
+        $this->metadataPath = VAR_PATH . '/metadata/archive.mdata.json';
     }
 
     /**
@@ -565,7 +565,7 @@ final class AuditArchiveService
         $candidates = [];
         $push = function ($key) use (&$candidates, $uniqueId) {
             $folder = preg_replace('/[^\w\-]+/', '-', $key);
-            $base   = ROOT_PATH . "/audit-trail/{$folder}/{$uniqueId}.csv";
+            $base   = VAR_PATH . "/audit-trail/{$folder}/{$uniqueId}.csv";
             foreach (['.zst', '.gz', '.zip', ''] as $ext) $candidates[] = $base . $ext;
         };
 
@@ -578,7 +578,7 @@ final class AuditArchiveService
         }
 
         // Final fallback: scan ALL subfolders for a matching file (legacy layouts)
-        foreach (glob(ROOT_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
+        foreach (glob(VAR_PATH . '/audit-trail/*', GLOB_ONLYDIR) as $dir) {
             foreach (['.csv.zst', '.csv.gz', '.csv.zip', '.csv'] as $ext) {
                 $p = $dir . '/' . $uniqueId . $ext;
                 if (is_file($p)) return $p;

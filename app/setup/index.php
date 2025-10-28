@@ -253,14 +253,14 @@ $testName = TestsService::getTestTypes();
                 </td>
               </tr>
               <tr>
-                <td><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
+                <td><?php echo LOG_PATH; ?></td>
                 <td>
                   <?php
-                  echo ($folderPermissions['LOGS_PATH']['exists'] == 1) ? "Yes" : "No";
+                  echo ($folderPermissions['LOG_PATH']['exists'] == 1) ? "Yes" : "No";
                   ?>
                 </td>
-                <td><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                  <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
+                <td><?php echo ($folderPermissions['LOG_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                  <?php echo ($folderPermissions['LOG_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?>
                 </td>
               </tr>
               </tbody>
