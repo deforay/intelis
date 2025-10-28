@@ -251,10 +251,10 @@ try {
                         <form name="form1" action="audit-trail.php" method="post" id="searchForm" autocomplete="off">
                             <table aria-describedby="table" class="table pageFilters" aria-hidden="true" style="margin-left:1%;margin-top:20px;width:98%;">
                                 <tr>
-                                    <td><strong><?php echo _translate("Test Type"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
-                                    <td>
+                                    <td style="width:10%;vertical-align:middle;"><strong><?php echo _translate("Test Type"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
+                                    <td style="width:40%;vertical-align:middle;">
                                         <select id="testType" name="testType" class="form-control isRequired">
-                                            <option value="">-- Choose Test Type--</option>
+                                            <option value=""><?= _translate("-- Choose Test Type --"); ?></option>
                                             <?php foreach ($activeModules as $module): ?>
                                                 <option value="<?php echo $module; ?>"
                                                     <?php echo (isset($_POST['testType']) && $_POST['testType'] == $module) ? "selected='selected'" : ""; ?>>
@@ -263,9 +263,9 @@ try {
                                             <?php endforeach; ?>
                                         </select>
                                     </td>
-                                    <td>&nbsp;<strong><?php echo _translate("Sample ID"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
-                                    <td>
-                                        <input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control isRequired" />
+                                    <td style="width:20%;vertical-align:middle;">&nbsp;<strong><?php echo _translate("Sample ID or Remote Sample ID"); ?><span class="mandatory">*</span>&nbsp;:</strong></td>
+                                    <td style="width:30%;vertical-align:middle;">
+                                        <input type="text" value="<?= htmlspecialchars($_POST['sampleCode'] ?? ''); ?>" name="sampleCode" id="sampleCode" class="form-control isRequired" placeholder="<?= _translate("Sample ID or Remote Sample ID") ?>">
                                     </td>
                                 </tr>
                                 <tr>
@@ -306,13 +306,13 @@ try {
                         <div class="box">
                             <div class="box-body">
                                 <?php if (!empty($posts)) { ?>
-                                    <h3> Audit Trail for Sample <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
+                                    <h3> <?= _translate("Audit Trail for Sample"); ?> <?php echo htmlspecialchars((string) $sampleCode); ?></h3>
 
                                     <!-- Column visibility control -->
                                     <div class="row">
                                         <div class="col-md-6">
                                             <div class="form-group">
-                                                <label for="auditColumn">Show/Hide Columns:</label>
+                                                <label for="auditColumn"><?= _translate("Show/Hide Columns"); ?>:</label>
                                                 <select name="auditColumn[]" id="auditColumn" class="" multiple="multiple">
                                                     <?php
                                                     $i = 0;
@@ -334,22 +334,22 @@ try {
                                     <ul class="nav nav-tabs" role="tablist">
                                         <li role="presentation" class="active">
                                             <a href="#tabTable" aria-controls="tabTable" role="tab" data-toggle="tab">
-                                                <i class="fa fa-table"></i> Table View
+                                                <i class="fa fa-table"></i> <?= _translate("Table View"); ?>
                                             </a>
                                         </li>
                                         <li role="presentation">
                                             <a href="#tabTimeline" aria-controls="tabTimeline" role="tab" data-toggle="tab">
-                                                <i class="fa fa-clock-o"></i> Timeline View
+                                                <i class="fa fa-clock-o"></i> <?= _translate("Timeline View"); ?>
                                             </a>
                                         </li>
                                         <li role="presentation">
                                             <a href="#tabChanges" aria-controls="tabChanges" role="tab" data-toggle="tab">
-                                                <i class="fa fa-exchange"></i> Changes Only
+                                                <i class="fa fa-exchange"></i> <?= _translate("Changes Only"); ?>
                                             </a>
                                         </li>
                                         <li role="presentation">
                                             <a href="#tabCompare" aria-controls="tabCompare" role="tab" data-toggle="tab">
-                                                <i class="fa fa-code-fork"></i> Compare Versions
+                                                <i class="fa fa-code-fork"></i> <?= _translate("Compare Versions"); ?>
                                             </a>
                                         </li>
                                     </ul>
@@ -474,7 +474,7 @@ try {
                                                             <!-- Snapshot Export Button -->
                                                             <div class="mt-3">
                                                                 <button class="btn btn-xs btn-info snapshot-btn" data-revision="<?= $revision ?>">
-                                                                    <i class="fa fa-download"></i> Export Snapshot at Rev <?= $revision ?>
+                                                                    <i class="fa fa-download"></i> <?= _translate("Export Snapshot at Revision"); ?> <?= $revision ?>
                                                                 </button>
                                                             </div>
                                                         </div>
@@ -537,9 +537,9 @@ try {
                                                                         <table class="table table-striped">
                                                                             <thead>
                                                                                 <tr>
-                                                                                    <th>Field</th>
-                                                                                    <th>Old Value</th>
-                                                                                    <th>New Value</th>
+                                                                                    <th><?= _translate("Field"); ?></th>
+                                                                                    <th><?= _translate("Old Value"); ?></th>
+                                                                                    <th><?= _translate("New Value"); ?></th>
                                                                                 </tr>
                                                                             </thead>
                                                                             <tbody>
@@ -573,7 +573,7 @@ try {
                                                             <select id="versionFrom" class="form-control">
                                                                 <?php foreach ($posts as $post): ?>
                                                                     <option value="<?= $post['revision'] ?>">
-                                                                        Revision <?= $post['revision'] ?>
+                                                                        <?= _translate("Revision"); ?> <?= $post['revision'] ?>
                                                                         (<?= ucfirst($post['action']) ?> -
                                                                         <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
                                                                     </option>
@@ -583,14 +583,14 @@ try {
                                                     </div>
                                                     <div class="col-md-5">
                                                         <div class="form-group">
-                                                            <label for="versionTo">To Version:</label>
+                                                            <label for="versionTo"><?= _translate("To Version"); ?>:</label>
                                                             <select id="versionTo" class="form-control">
                                                                 <?php
                                                                 foreach ($posts as $i => $post):
                                                                     $selected = ($i === count($posts) - 1) ? 'selected' : '';
                                                                 ?>
                                                                     <option value="<?= $post['revision'] ?>" <?= $selected ?>>
-                                                                        Revision <?= $post['revision'] ?>
+                                                                        <?= _translate("Revision"); ?> <?= $post['revision'] ?>
                                                                         (<?= ucfirst($post['action']) ?> -
                                                                         <?= date('Y-m-d H:i:s', strtotime($post['dt_datetime'])) ?>)
                                                                     </option>
@@ -602,7 +602,7 @@ try {
                                                         <div class="form-group">
                                                             <label>&nbsp;</label>
                                                             <button id="compareBtn" class="btn btn-primary form-control">
-                                                                <i class="fa fa-exchange"></i> Compare
+                                                                <i class="fa fa-exchange"></i> <?= _translate("Compare"); ?>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -614,7 +614,7 @@ try {
                                         </div>
                                     </div>
                                 <?php } else {
-                                    echo '<h3 align="center">' . _translate("Records are not available for this Sample ID") . '</h3>';
+                                    echo '<h3 align="center">' . _translate("Records are not available for this Sample ID or Remote Sample ID") . '</h3>';
                                 }
                                 ?>
                             </div>
@@ -666,7 +666,7 @@ try {
                         </div>
                     </div>
                 <?php } else {
-                    echo '<h3 align="center">' . _translate("Please enter Sample ID and Test Type to view audit trail") . '</h3>';
+                    echo '<h3 align="center">' . _translate("Please enter Sample ID and select a Test Type to view audit trail") . '</h3>';
                 } ?>
             </div>
         </section>
@@ -690,7 +690,7 @@ try {
                     exportOptions: {
                         columns: ':visible'
                     },
-                    text: 'Export To CSV',
+                    text: "<?= _translate("Export To CSV", true); ?>",
                     title: 'AuditTrailSample-<?php echo $sampleCode ?? ""; ?>',
                     extension: '.csv'
                 }],
@@ -739,7 +739,7 @@ try {
                 const toRevision = $('#versionTo').val();
 
                 if (fromRevision === toRevision) {
-                    alert('Please select different revisions to compare');
+                    alert("<?= _translate("Please select different revisions to compare", true); ?>");
                     return;
                 }
 
@@ -749,7 +749,7 @@ try {
                 const toData = auditData.find(item => item.revision == toRevision);
 
                 if (!fromData || !toData) {
-                    $('#comparisonResult').html('<div class="alert alert-danger">Could not find one or both revisions to compare.</div>');
+                    $('#comparisonResult').html('<div class="alert alert-danger">"<?= _translate("Could not find one or both revisions to compare", true); ?></div>');
                     return;
                 }
 

@@ -6,9 +6,9 @@ use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\CD4Service;
 use App\Services\EidService;
-use InvalidArgumentException;
 use App\Services\Covid19Service;
 use App\Services\HepatitisService;
+use App\Exceptions\SystemException;
 use App\Services\GenericTestsService;
 
 final class TestsService
@@ -128,7 +128,7 @@ final class TestsService
             'custom-test' => 'generic-tests',
             'covid-19' => 'covid19',
             'covid' => 'covid19',
-            'recency'      => 'vl'
+            'recency' => 'vl'
         ];
 
         // Resolve aliases
@@ -148,58 +148,58 @@ final class TestsService
 
     public static function getTestTableName(string $testType): string
     {
-        return self::getTestTypes()[$testType]['tableName'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['tableName'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getPrimaryColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['primaryKey'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['primaryKey'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getTestName(string $testType): string
     {
-        return self::getTestTypes()[$testType]['testName'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['testName'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getTestShortCode(string $testType): string
     {
-        return self::getTestTypes()[$testType]['testShortCode'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['testShortCode'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getPatientIdColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['patientId'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['patientId'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getPatientFirstNameColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['patientFirstName'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['patientFirstName'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getPatientLastNameColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['patientLastName'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['patientLastName'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getSpecimenTypeColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['specimenType'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['specimenType'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getSpecimenTypeTable(string $testType): string
     {
-        return self::getTestTypes()[$testType]['specimenTypeTable'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['specimenTypeTable'] ?? throw new SystemException("Invalid test type key");
     }
 
 
     public static function getResultColumn(string $testType): string
     {
-        return self::getTestTypes()[$testType]['resultColumn'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['resultColumn'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getTestServiceClass(string $testType): string
     {
-        return self::getTestTypes()[$testType]['serviceClass'] ?? throw new InvalidArgumentException("Invalid test type key");
+        return self::getTestTypes()[$testType]['serviceClass'] ?? throw new SystemException("Invalid test type key");
     }
 
     public static function getAllTableNames(): array
