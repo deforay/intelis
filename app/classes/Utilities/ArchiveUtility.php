@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace App\Utilities;
 
-use InvalidArgumentException;
-use RuntimeException;
 use ZipArchive;
+use RuntimeException;
+use InvalidArgumentException;
 
 /**
  * Smart single-file compressor/decompressor with fallback support.
