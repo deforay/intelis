@@ -865,7 +865,7 @@ final class CommonService
             $requestData = JsonUtility::encodeUtf8Json($requestData ?? '{}');
             $responseData = JsonUtility::encodeUtf8Json($responseData ?? '{}');
 
-            $folderPath = UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api';
+            $folderPath = VAR_PATH . DIRECTORY_SEPARATOR . 'track-api';
 
             // Save request data
             if (!empty($requestData) && $requestData != '[]') {

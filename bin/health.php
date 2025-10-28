@@ -18,10 +18,10 @@ $db = ContainerRegistry::get(DatabaseService::class);
 
 // ---------- config (tweak thresholds/paths here) ----------
 $paths = [
-    'logs'      => LOG_PATH,                 // ROOT_PATH . '/logs'
-    'cache'     => CACHE_PATH,               // ROOT_PATH . '/cache'
-    'uploads'   => WEB_ROOT . '/uploads',    // public/uploads
-    'temporary' => WEB_ROOT . '/temporary',  // public/temporary
+    'logs'      => LOG_PATH,
+    'cache'     => CACHE_PATH,
+    'uploads'   => UPLOAD_PATH,
+    'temporary' => TEMP_PATH,
 ];
 
 $diskMount             = '/';

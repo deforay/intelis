@@ -8,13 +8,11 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/../bootstrap.php";
 
-use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\Table;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Formatter\OutputFormatterStyle;
 
 // Create output instance
