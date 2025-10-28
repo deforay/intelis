@@ -520,7 +520,7 @@ if (file_exists($file)) {
     }
 } else {
     if ($logType === 'application') {
-        $recentFile = getMostRecentLogFile(ROOT_PATH . '/logs');
+        $recentFile = getMostRecentLogFile(LOG_PATH);
 
         if ($recentFile) {
             if (preg_match('/(\d{4}-\d{2}-\d{2})/', basename($recentFile), $matches)) {

@@ -289,7 +289,7 @@ if ($diskUsagePercent >= 90) {
 
 // Get log statistics
 $logStats = LoggerUtility::getLogStats();
-$logsSize = isset($logStats['total_size_mb']) ? $logStats['total_size_mb'] * 1024 * 1024 : getDirSize(ROOT_PATH . "/logs");
+$logsSize = isset($logStats['total_size_mb']) ? $logStats['total_size_mb'] * 1024 * 1024 : getDirSize(LOG_PATH);
 $logFileCount = $logStats['file_count'] ?? 'N/A';
 
 // Color code logs size if high (warning at 500MB, danger at 800MB)
@@ -304,7 +304,7 @@ if (is_numeric($logsSize)) {
 }
 $logsSizeDisplay .= " ({$logFileCount} files)";
 
-$backupsSize = getDirSize(ROOT_PATH . "/backups");
+$backupsSize = getDirSize(BACKUP_PATH);
 
 $apacheRunning = isServiceRunning('apache2') || isServiceRunning('httpd');
 $mysqlRunning = isServiceRunning('mysql') || isServiceRunning('mysqld') || isServiceRunning('mariadb');
@@ -328,7 +328,7 @@ $diagRows = [
         'Memory Limit',
         $originalMemoryLimit,
         'Max Exec Time',
-        $originalMaxExecutionTime . 's'
+        "{$originalMaxExecutionTime}s"
     ],
     new TableSeparator(),
     [

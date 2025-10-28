@@ -5,7 +5,7 @@
 $isCli = php_sapi_name() === 'cli';
 // Require bootstrap file if run from command line
 if ($isCli) {
-    require_once(__DIR__ . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . ".." . DIRECTORY_SEPARATOR . "bootstrap.php");
+    require_once '../../bootstrap.php';
 }
 
 
@@ -14,7 +14,6 @@ use App\Registries\ContainerRegistry;
 
 /** @var FileCacheUtility $fileCache */
 $fileCache = ContainerRegistry::get(FileCacheUtility::class);
-
 
 
 // If not run from command line and 'instance' is set in session, unset it
