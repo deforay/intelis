@@ -952,7 +952,7 @@ chown www-data:www-data "${lis_path}/var" 2>/dev/null || true
 migrate_dir_into_var "${lis_path}/logs"                      "${lis_path}/var/logs"        "logs"
 migrate_dir_into_var "${lis_path}/audit-trail"              "${lis_path}/var/audit-trail" "audit-trail"
 migrate_dir_into_var "${lis_path}/cache"                    "${lis_path}/var/cache"       "cache"
-migrate_dir_into_var "${lis_path}/logs/metadata"            "${lis_path}/var/metadata"    "metadata"
+migrate_dir_into_var "${lis_path}/metadata"            "${lis_path}/var/metadata"    "metadata"
 migrate_dir_into_var "${lis_path}/public/uploads/track-api" "${lis_path}/var/track-api"   "track-api uploads"
 
 
