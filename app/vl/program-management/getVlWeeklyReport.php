@@ -75,7 +75,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
   $sWhere[] = $sWhereSub;
 }
 
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
+$sQuery = "SELECT 
 
 		vl.facility_id,f.facility_code,f.facility_state,f.facility_district,f.facility_name,
 
@@ -175,25 +175,20 @@ if (isset($sLimit) && isset($sOffset)) {
   $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
 
-$sResult = $db->rawQuery($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-/* Data set length after filtering */
-
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
-$output = array(
+$output = [
   "sEcho" => (int) $_POST['sEcho'],
-  "iTotalRecords" => $iTotal,
-  "iTotalDisplayRecords" => $iFilteredTotal,
+  "iTotalRecords" => $resultCount,
+  "iTotalDisplayRecords" => $resultCount,
   "aaData" => []
-);
+];
 
-foreach ($sResult as $aRow) {
+foreach ($rResult as $aRow) {
   $row = [];
-  $row[] = ($aRow['facility_state']);
-  $row[] = ($aRow['facility_district']);
-  $row[] = ($aRow['facility_name']);
+  $row[] = $aRow['facility_state'];
+  $row[] = $aRow['facility_district'];
+  $row[] = $aRow['facility_name'];
   // $row[] = $aRow['facility_code'];
   $row[] = $aRow['rejections'];
   $row[] = $aRow['lt15suppressed'];
