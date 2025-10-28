@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-10-22 17:20+0530\n"
-"PO-Revision-Date: 2025-10-22 17:20+0530\n"
+"POT-Creation-Date: 2025-10-28 12:47+0530\n"
+"PO-Revision-Date: 2025-10-28 12:48+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -33,7 +33,7 @@ msgstr "Tableau de bord de l'échange de données LIS/DAMA"
 #: app/admin/api-dashboard/missing-samples-detail.php:47 app/admin/index.php:11
 #: app/admin/monitoring/activity-log.php:47
 #: app/admin/monitoring/api-sync-history.php:40
-#: app/admin/monitoring/audit-trail.php:298
+#: app/admin/monitoring/audit-trail.php:241
 #: app/admin/monitoring/lab-sync-details.php:98
 #: app/admin/monitoring/log-files.php:302
 #: app/admin/monitoring/sources-of-requests.php:64
@@ -229,11 +229,11 @@ msgstr "Tableau de bord de l'échange de données LIS/DAMA"
 #: app/tb/requests/forms/add-burkina-faso.php:62
 #: app/tb/requests/forms/add-rwanda.php:49
 #: app/tb/requests/forms/edit-burkina-faso.php:82
-#: app/tb/requests/forms/edit-rwanda.php:54 app/tb/requests/tb-requests.php:107
+#: app/tb/requests/forms/edit-rwanda.php:57 app/tb/requests/tb-requests.php:107
 #: app/tb/results/add-tb-referral.php:44 app/tb/results/edit-tb-referral.php:53
 #: app/tb/results/email-results.php:61
 #: app/tb/results/forms/update-burkina-faso.php:82
-#: app/tb/results/forms/update-rwanda.php:54
+#: app/tb/results/forms/update-rwanda.php:57
 #: app/tb/results/forms/update-sierraleone.php:91
 #: app/tb/results/forms/update-southsudan.php:87
 #: app/tb/results/tb-failed-results.php:58
@@ -297,7 +297,7 @@ msgstr "Saisissez une plage de dates"
 #: app/admin/api-dashboard/api-dashboard.php:242
 #: app/admin/monitoring/api-sync-history.php:62
 #: app/admin/monitoring/api-sync-history.php:131
-#: app/admin/monitoring/audit-trail.php:311
+#: app/admin/monitoring/audit-trail.php:254
 #: app/admin/monitoring/lab-sync-details.php:140
 #: app/admin/monitoring/lab-sync-details.php:212
 #: app/admin/monitoring/sources-of-requests.php:125
@@ -319,10 +319,10 @@ msgstr "Saisissez une plage de dates"
 #: app/specimen-referral-manifest/view-manifests.php:58
 #: app/system-admin/api-stats/api-stats.php:46
 #: app/tb/requests/forms/add-rwanda.php:391
-#: app/tb/requests/forms/edit-rwanda.php:411
-#: app/tb/requests/forms/edit-rwanda.php:542
-#: app/tb/results/forms/update-rwanda.php:410
-#: app/tb/results/forms/update-rwanda.php:541
+#: app/tb/requests/forms/edit-rwanda.php:414
+#: app/tb/requests/forms/edit-rwanda.php:545
+#: app/tb/results/forms/update-rwanda.php:413
+#: app/tb/results/forms/update-rwanda.php:544
 msgid "Test Type"
 msgstr "Type de test"
 
@@ -464,10 +464,10 @@ msgstr "CD4"
 #: app/cd4/management/cd4-clinic-report.php:196
 #: app/cd4/management/cd4-export-data.php:108
 #: app/cd4/management/cd4-sample-status.php:77
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/cd4-requests.php:389 app/cd4/requests/cd4-requests.php:522
 #: app/cd4/requests/cd4-requests.php:575
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:107
 #: app/cd4/results/cd4-manual-results.php:140
 #: app/cd4/results/cd4-manual-results.php:201
@@ -530,11 +530,11 @@ msgstr "CD4"
 #: app/tb/management/tb-export-data.php:112
 #: app/tb/management/tb-sample-status.php:74
 #: app/tb/requests/forms/add-rwanda.php:349
-#: app/tb/requests/forms/edit-rwanda.php:356
-#: app/tb/requests/forms/edit-rwanda.php:500
+#: app/tb/requests/forms/edit-rwanda.php:359
+#: app/tb/requests/forms/edit-rwanda.php:503
 #: app/tb/requests/tb-requests.php:231 app/tb/requests/tb-requests.php:309
-#: app/tb/results/forms/update-rwanda.php:355
-#: app/tb/results/forms/update-rwanda.php:499
+#: app/tb/results/forms/update-rwanda.php:358
+#: app/tb/results/forms/update-rwanda.php:502
 #: app/tb/results/tb-failed-results.php:106
 #: app/tb/results/tb-manual-results.php:111
 #: app/vl/program-management/export-vl-results.php:33
@@ -598,11 +598,11 @@ msgstr "Veuiller selectionner le laboratoire de test"
 #: app/cd4/management/cd4-clinic-report.php:449
 #: app/cd4/management/cd4-clinic-report.php:467
 #: app/cd4/management/cd4-export-data.php:87
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/add-samples-from-manifest.php:108
 #: app/cd4/requests/cd4-requests.php:363 app/cd4/requests/cd4-requests.php:528
 #: app/cd4/requests/cd4-requests.php:581
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:81
 #: app/cd4/results/cd4-failed-results.php:204
 #: app/cd4/results/cd4-print-results.php:82
@@ -874,7 +874,7 @@ msgstr "Veuillez choisir Région/Etat"
 #: app/cd4/results/email-results.php:238 app/cd4/results/email-results.php:253
 #: app/cd4/results/email-results.php:573 app/cd4/results/email-results.php:577
 #: app/cd4/results/get-cd4-result-status.php:165
-#: app/classes/Services/CommonService.php:370
+#: app/classes/Services/CommonService.php:371
 #: app/common/reference/add-geographical-divisions.php:74
 #: app/common/reference/edit-geographical-divisions.php:87
 #: app/covid-19/management/covid-19-clinic-report.php:101
@@ -1581,11 +1581,11 @@ msgstr "-- Sélectionner --"
 #: app/cd4/management/cd4-clinic-report.php:450
 #: app/cd4/management/cd4-clinic-report.php:476
 #: app/cd4/management/cd4-export-data.php:97
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/add-samples-from-manifest.php:111
 #: app/cd4/requests/cd4-requests.php:374 app/cd4/requests/cd4-requests.php:531
 #: app/cd4/requests/cd4-requests.php:584
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:89
 #: app/cd4/results/cd4-failed-results.php:207
 #: app/cd4/results/cd4-print-results.php:89
@@ -1918,13 +1918,13 @@ msgstr "Via DAMA"
 #: app/tb/requests/forms/add-rwanda.php:313
 #: app/tb/requests/forms/edit-burkina-faso.php:266
 #: app/tb/requests/forms/edit-burkina-faso.php:341
-#: app/tb/requests/forms/edit-rwanda.php:183
-#: app/tb/requests/forms/edit-rwanda.php:317
+#: app/tb/requests/forms/edit-rwanda.php:186
+#: app/tb/requests/forms/edit-rwanda.php:320
 #: app/tb/results/forms/update-burkina-faso.php:220
 #: app/tb/results/forms/update-burkina-faso.php:266
 #: app/tb/results/forms/update-burkina-faso.php:340
-#: app/tb/results/forms/update-rwanda.php:181
-#: app/tb/results/forms/update-rwanda.php:315 app/users/addUser.php:381
+#: app/tb/results/forms/update-rwanda.php:184
+#: app/tb/results/forms/update-rwanda.php:318 app/users/addUser.php:381
 #: app/users/editUser.php:477
 #: app/vl/results/forms/update-cameroon-result.php:525
 msgid "Other"
@@ -2119,7 +2119,6 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 
 #: app/admin/api-dashboard/api-dashboard.php:576
 #: app/admin/api-dashboard/missing-samples-detail.php:121
-#: app/admin/monitoring/audit-trail.php:323
 #: app/admin/monitoring/export-test-results-report.php:31
 #: app/admin/monitoring/test-results-metadata.php:130
 #: app/batch/add-batch-position.php:103 app/batch/add-batch.php:283
@@ -2132,10 +2131,10 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/cd4/management/cd4-clinic-report.php:441
 #: app/cd4/management/cd4-export-data.php:206
 #: app/cd4/management/cd4-export-data.php:251
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/add-samples-from-manifest.php:85
 #: app/cd4/requests/cd4-requests.php:498 app/cd4/requests/cd4-requests.php:555
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:181
 #: app/cd4/results/cd4-manual-results.php:178
 #: app/cd4/results/cd4-manual-results.php:237
@@ -2154,8 +2153,8 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/covid-19/management/generate-export-drc.php:39
 #: app/covid-19/requests/addSamplesFromManifest.php:86
 #: app/covid-19/requests/covid-19-requests.php:423
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:93
 #: app/covid-19/requests/forms/add-cameroon.php:99
 #: app/covid-19/requests/forms/edit-cameroon.php:95
@@ -2266,12 +2265,12 @@ msgstr "Résultats envoyés pour les demandes ne provenant pas de la DAMA"
 #: app/tb/requests/forms/add-rwanda.php:79
 #: app/tb/requests/forms/edit-burkina-faso.php:106
 #: app/tb/requests/forms/edit-burkina-faso.php:112
-#: app/tb/requests/forms/edit-rwanda.php:79
-#: app/tb/requests/forms/edit-rwanda.php:83 app/tb/requests/tb-requests.php:303
+#: app/tb/requests/forms/edit-rwanda.php:82
+#: app/tb/requests/forms/edit-rwanda.php:86 app/tb/requests/tb-requests.php:303
 #: app/tb/results/forms/update-burkina-faso.php:105
 #: app/tb/results/forms/update-burkina-faso.php:111
-#: app/tb/results/forms/update-rwanda.php:77
-#: app/tb/results/forms/update-rwanda.php:81
+#: app/tb/results/forms/update-rwanda.php:80
+#: app/tb/results/forms/update-rwanda.php:84
 #: app/tb/results/tb-failed-results.php:180
 #: app/tb/results/tb-manual-results.php:129
 #: app/tb/results/tb-manual-results.php:182
@@ -2736,8 +2735,8 @@ msgid "Patient Info"
 msgstr "Information du patient"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:125
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Request Date"
@@ -2784,15 +2783,15 @@ msgid "Escalate Issue"
 msgstr "Escalade du problème"
 
 #: app/admin/api-dashboard/missing-samples-detail.php:332
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/eid/results/pdf/result-pdf-burkina-faso.php:428
 #: app/import-result/imported-results.php:441
 #: app/tb/requests/forms/add-rwanda.php:410
-#: app/tb/requests/forms/edit-rwanda.php:431
-#: app/tb/requests/forms/edit-rwanda.php:561
-#: app/tb/results/forms/update-rwanda.php:430
-#: app/tb/results/forms/update-rwanda.php:560
+#: app/tb/requests/forms/edit-rwanda.php:434
+#: app/tb/requests/forms/edit-rwanda.php:564
+#: app/tb/results/forms/update-rwanda.php:433
+#: app/tb/results/forms/update-rwanda.php:563
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/program-management/sample-storage-reports.php:242
 #: app/vl/program-management/storageHistoryDataToExcel.php:25
@@ -2884,11 +2883,11 @@ msgstr "Saisissez vos commentaires ou notes..."
 #: app/tb/reference/add-tb-test-reasons.php:76
 #: app/tb/requests/forms/add-burkina-faso.php:498
 #: app/tb/requests/forms/add-rwanda.php:494
-#: app/tb/requests/forms/edit-rwanda.php:667
+#: app/tb/requests/forms/edit-rwanda.php:672
 #: app/tb/results/add-tb-referral.php:135
 #: app/tb/results/edit-tb-referral.php:143 app/tb/results/email-results.php:333
 #: app/tb/results/forms/update-burkina-faso.php:550
-#: app/tb/results/forms/update-rwanda.php:664 app/users/addUser.php:272
+#: app/tb/results/forms/update-rwanda.php:669 app/users/addUser.php:272
 #: app/users/edit-profile.php:139 app/users/editUser.php:360
 #: app/vl/program-management/upload-vl-control.php:127
 #: app/vl/reference/add-vl-art-code-details.php:93
@@ -2933,9 +2932,9 @@ msgid "User Activity Log"
 msgstr "Journal d’activité de l’utilisateur"
 
 #: app/admin/monitoring/activity-log.php:50
-#: app/admin/monitoring/audit-trail.php:14
-#: app/admin/monitoring/audit-trail.php:296
-#: app/admin/monitoring/audit-trail.php:299 app/system/translate-strings.php:22
+#: app/admin/monitoring/audit-trail.php:15
+#: app/admin/monitoring/audit-trail.php:239
+#: app/admin/monitoring/audit-trail.php:242 app/system/translate-strings.php:22
 msgid "Audit Trail"
 msgstr "Piste d’audit"
 
@@ -3086,13 +3085,13 @@ msgstr "Type d'action"
 #: app/tb/requests/forms/add-burkina-faso.php:159
 #: app/tb/requests/forms/add-rwanda.php:136
 #: app/tb/requests/forms/edit-burkina-faso.php:179
-#: app/tb/requests/forms/edit-rwanda.php:140
+#: app/tb/requests/forms/edit-rwanda.php:143
 #: app/tb/requests/tb-requests.php:267 app/tb/results/add-tb-referral.php:181
 #: app/tb/results/add-tb-referral.php:182
 #: app/tb/results/edit-tb-referral.php:200
 #: app/tb/results/edit-tb-referral.php:201 app/tb/results/email-results.php:287
 #: app/tb/results/forms/update-burkina-faso.php:178
-#: app/tb/results/forms/update-rwanda.php:138
+#: app/tb/results/forms/update-rwanda.php:141
 #: app/tb/results/tb-failed-results.php:160
 #: app/tb/results/tb-manual-results.php:119
 #: app/tb/results/tb-print-results.php:144
@@ -3405,7 +3404,16 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: app/admin/monitoring/audit-trail.php:330 app/batch/edit-batch.php:327
+#: app/admin/monitoring/audit-trail.php:257
+msgid "-- Choose Test Type --"
+msgstr "-- Choisir le type de test --"
+
+#: app/admin/monitoring/audit-trail.php:266
+#: app/admin/monitoring/audit-trail.php:268
+msgid "Sample ID or Remote Sample ID"
+msgstr "ID de l'échantillon ou ID de l'échantillon à distance"
+
+#: app/admin/monitoring/audit-trail.php:273 app/batch/edit-batch.php:327
 #: app/cd4/reference/add-cd4-sample-rejection-reasons.php:74
 #: app/cd4/reference/add-cd4-sample-type.php:56
 #: app/cd4/reference/add-cd4-test-reasons.php:70
@@ -3490,7 +3498,7 @@ msgstr "Action"
 msgid "Submit"
 msgstr "Envoyer"
 
-#: app/admin/monitoring/audit-trail.php:331
+#: app/admin/monitoring/audit-trail.php:274
 #: app/admin/monitoring/lab-sync-details.php:184
 #: app/admin/monitoring/sync-status.php:369
 #: app/cd4/management/cd4-clinic-report.php:178
@@ -3610,22 +3618,93 @@ msgstr "Envoyer"
 msgid "Reset"
 msgstr "Réinitialiser"
 
-#: app/admin/monitoring/audit-trail.php:672
-#: app/admin/monitoring/audit-trail.php:717
+#: app/admin/monitoring/audit-trail.php:309
+msgid "Audit Trail for Sample"
+msgstr "Piste d'audit pour l'échantillon"
+
+#: app/admin/monitoring/audit-trail.php:315
+msgid "Show/Hide Columns"
+msgstr "Afficher/masquer les colonnes"
+
+#: app/admin/monitoring/audit-trail.php:337
+msgid "Table View"
+msgstr "Affichage Tableau"
+
+#: app/admin/monitoring/audit-trail.php:342
+msgid "Timeline View"
+msgstr "Vue de la Chronologie"
+
+#: app/admin/monitoring/audit-trail.php:347
+msgid "Changes Only"
+msgstr "Changements uniquement"
+
+#: app/admin/monitoring/audit-trail.php:352
+msgid "Compare Versions"
+msgstr "Comparer les versions"
+
+#: app/admin/monitoring/audit-trail.php:477
+msgid "Export Snapshot at Revision"
+msgstr "Instantané d'exportation lors de la révision"
+
+#: app/admin/monitoring/audit-trail.php:540
+msgid "Field"
+msgstr "Champ"
+
+#: app/admin/monitoring/audit-trail.php:541
+msgid "Old Value"
+msgstr "Ancienne Valeur"
+
+#: app/admin/monitoring/audit-trail.php:542
+msgid "New Value"
+msgstr "Nouvelle Valeur"
+
+#: app/admin/monitoring/audit-trail.php:576
+#: app/admin/monitoring/audit-trail.php:593
+msgid "Revision"
+msgstr "Révision"
+
+#: app/admin/monitoring/audit-trail.php:586
+msgid "To Version"
+msgstr "Vers la version"
+
+#: app/admin/monitoring/audit-trail.php:605
+msgid "Compare"
+msgstr "Comparer"
+
+#: app/admin/monitoring/audit-trail.php:617
+msgid "Records are not available for this Sample ID or Remote Sample ID"
+msgstr ""
+"Les enregistrements ne sont pas disponibles pour cette ID d'échantillon ou "
+"ID d'échantillon à distance"
+
+#: app/admin/monitoring/audit-trail.php:631
+msgid "Current Data for Sample"
+msgstr "Données actuelles de l'échantillon"
+
+#: app/admin/monitoring/audit-trail.php:662
 msgid "Records are not available for this Sample ID"
 msgstr ""
 "Il n'y a pas d'enregistrements disponibles pour ce numéro d'identification "
 "d'échantillon"
 
-#: app/admin/monitoring/audit-trail.php:686
-msgid "Current Data for Sample"
-msgstr "Données actuelles de l'échantillon"
-
-#: app/admin/monitoring/audit-trail.php:724
-msgid "Please enter Sample ID and Test Type to view audit trail"
+#: app/admin/monitoring/audit-trail.php:669
+msgid "Please enter Sample ID and select a Test Type to view audit trail"
 msgstr ""
-"Veuillez saisir l'ID de l'échantillon et le type de test pour visualiser la "
-"piste d'audit"
+"Veuillez saisir l'identifiant de l'échantillon et sélectionner un type de "
+"test pour visualiser la piste d'audit"
+
+#: app/admin/monitoring/audit-trail.php:693
+msgid "Export To CSV"
+msgstr "Exporter au format CSV"
+
+#: app/admin/monitoring/audit-trail.php:742
+msgid "Please select different revisions to compare"
+msgstr "Veuillez sélectionner les différentes révisions pour les comparer"
+
+#: app/admin/monitoring/audit-trail.php:752
+msgid "Could not find one or both revisions to compare"
+msgstr ""
+"Il n'a pas été possible de trouver une ou les deux révisions à comparer"
 
 #: app/admin/monitoring/export-test-results-report.php:32
 #: app/admin/monitoring/test-results-metadata.php:133
@@ -3636,12 +3715,12 @@ msgstr ""
 #: app/cd4/management/cd4-clinic-report.php:443
 #: app/cd4/management/cd4-export-data.php:212
 #: app/cd4/management/cd4-export-data.php:253
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/management/export-cd4-results.php:40
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/management/export-cd4-results.php:39
 #: app/cd4/requests/add-samples-from-manifest.php:89
 #: app/cd4/requests/cd4-requests.php:505 app/cd4/requests/cd4-requests.php:559
-#: app/cd4/requests/export-cd4-requests.php:28
-#: app/cd4/requests/export-cd4-requests.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
+#: app/cd4/requests/export-cd4-requests.php:29
 #: app/cd4/results/cd4-failed-results.php:185
 #: app/cd4/results/cd4-manual-results.php:185
 #: app/cd4/results/cd4-manual-results.php:241
@@ -3659,8 +3738,8 @@ msgstr ""
 #: app/covid-19/management/generate-export-drc.php:40
 #: app/covid-19/requests/addSamplesFromManifest.php:90
 #: app/covid-19/requests/covid-19-requests.php:427
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/results/covid-19-failed-results.php:185
 #: app/covid-19/results/covid-19-manual-results.php:130
 #: app/covid-19/results/covid-19-manual-results.php:179
@@ -3797,8 +3876,8 @@ msgstr "ID de l'échantillon à distance"
 #: app/covid-19/requests/addSamplesFromManifest.php:94
 #: app/covid-19/requests/covid-19-requests.php:133
 #: app/covid-19/requests/covid-19-requests.php:431
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:335
 #: app/covid-19/requests/forms/add-cameroon.php:337
 #: app/covid-19/requests/forms/edit-cameroon.php:330
@@ -3906,10 +3985,10 @@ msgstr "ID de l'échantillon à distance"
 #: app/tb/management/tb-sample-status.php:114
 #: app/tb/requests/addSamplesFromManifest.php:67
 #: app/tb/requests/forms/add-rwanda.php:306
-#: app/tb/requests/forms/edit-rwanda.php:310
+#: app/tb/requests/forms/edit-rwanda.php:313
 #: app/tb/requests/tb-requests.php:119 app/tb/requests/tb-requests.php:307
 #: app/tb/results/email-results.php:140
-#: app/tb/results/forms/update-rwanda.php:308
+#: app/tb/results/forms/update-rwanda.php:311
 #: app/tb/results/tb-failed-results.php:74
 #: app/tb/results/tb-failed-results.php:188
 #: app/tb/results/tb-manual-results.php:85
@@ -3961,8 +4040,8 @@ msgstr "Échantillon reçu le"
 
 #: app/admin/monitoring/export-test-results-report.php:35
 #: app/admin/monitoring/test-results-metadata.php:142
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/generic-tests/program-management/generic-export-data.php:292
 #: app/generic-tests/program-management/generic-export-data.php:332
 #: app/vl/program-management/export-vl-results.php:33
@@ -3999,8 +4078,8 @@ msgstr "Echantillon testé le"
 #: app/covid-19/management/generate-export-drc.php:94
 #: app/covid-19/requests/addSamplesFromManifest.php:115
 #: app/covid-19/requests/covid-19-requests.php:461
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/results/covid-19-failed-results.php:210
 #: app/covid-19/results/covid-19-manual-results.php:149
 #: app/covid-19/results/covid-19-manual-results.php:185
@@ -4114,11 +4193,11 @@ msgstr "Résultat"
 #: app/tb/requests/forms/add-burkina-faso.php:388
 #: app/tb/requests/forms/add-rwanda.php:416
 #: app/tb/requests/forms/edit-burkina-faso.php:409
-#: app/tb/requests/forms/edit-rwanda.php:437
-#: app/tb/requests/forms/edit-rwanda.php:567
+#: app/tb/requests/forms/edit-rwanda.php:440
+#: app/tb/requests/forms/edit-rwanda.php:570
 #: app/tb/results/forms/update-burkina-faso.php:412
-#: app/tb/results/forms/update-rwanda.php:436
-#: app/tb/results/forms/update-rwanda.php:566
+#: app/tb/results/forms/update-rwanda.php:439
+#: app/tb/results/forms/update-rwanda.php:569
 #: app/vl/requests/forms/add-burkina-faso.php:610
 #: app/vl/requests/forms/add-cameroon.php:655
 #: app/vl/requests/forms/edit-burkina-faso.php:696
@@ -4175,7 +4254,7 @@ msgstr "L'échantillon est-il rejeté"
 #: app/admin/monitoring/test-results-metadata.php:163
 #: app/cd4/management/cd4-clinic-report.php:273
 #: app/cd4/management/cd4-clinic-report.php:300
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/management/get-rejected-samples.php:100
 #: app/cd4/reference/cd4-sample-rejection-reasons.php:42
 #: app/covid-19/management/covid-19-clinic-report.php:265
@@ -4272,7 +4351,7 @@ msgstr "Lien vers le fichier"
 #: app/hepatitis/management/get-rejected-samples.php:99
 #: app/hepatitis/management/hepatitis-clinic-report.php:551
 #: app/hepatitis/management/hepatitis-testing-target-report.php:195
-#: app/login/login.php:187 app/system-admin/edit-config/index.php:132
+#: app/login/login.php:214 app/system-admin/edit-config/index.php:132
 #: app/tb/management/get-rejected-samples.php:101
 #: app/tb/management/tb-clinic-report.php:550
 #: app/tb/management/tb-export-data.php:242
@@ -4790,18 +4869,6 @@ msgid "Long search terms may impact performance"
 msgstr ""
 "Les termes de recherche longs peuvent avoir un impact sur les performances"
 
-#: app/admin/monitoring/show-params.php:59
-msgid "API PARAMS"
-msgstr "PARAMÈTRES DE L'API"
-
-#: app/admin/monitoring/show-params.php:61
-msgid "REQUEST"
-msgstr "REQUÊTE"
-
-#: app/admin/monitoring/show-params.php:62
-msgid "RESPONSE"
-msgstr "Réponse"
-
 #: app/admin/monitoring/sources-of-requests.php:60
 #: app/admin/monitoring/sources-of-requests.php:67
 #: app/system/translate-strings.php:171
@@ -4911,10 +4978,10 @@ msgstr "Statut de l'échantillon"
 #: app/covid-19/results/edit-covid-19-qc-data.php:199
 #: app/covid-19/results/forms/update-cameroon-result.php:413
 #: app/tb/requests/forms/add-rwanda.php:404
-#: app/tb/requests/forms/edit-rwanda.php:424
-#: app/tb/requests/forms/edit-rwanda.php:555
-#: app/tb/results/forms/update-rwanda.php:423
-#: app/tb/results/forms/update-rwanda.php:554
+#: app/tb/requests/forms/edit-rwanda.php:427
+#: app/tb/requests/forms/edit-rwanda.php:558
+#: app/tb/results/forms/update-rwanda.php:426
+#: app/tb/results/forms/update-rwanda.php:557
 msgid "Test Result"
 msgstr "Résultats du test"
 
@@ -5198,7 +5265,7 @@ msgstr "Erreur de chargement des districts"
 #: app/eid/requests/get-request-list.php:265
 #: app/generic-tests/requests/get-request-list.php:123
 #: app/hepatitis/requests/get-request-list.php:252
-#: app/tb/requests/get-request-list.php:257
+#: app/tb/requests/get-request-list.php:259
 #: app/vl/requests/get-request-list.php:337
 #: app/vl/requests/vl-requests.php:1185
 msgid "Generating..."
@@ -5644,7 +5711,7 @@ msgstr "Lot"
 #: app/tb/management/tb-export-data.php:269
 #: app/tb/management/tb-sample-status.php:63
 #: app/tb/requests/addSamplesFromManifest.php:68
-#: app/tb/requests/get-request-list.php:273 app/tb/requests/tb-requests.php:141
+#: app/tb/requests/get-request-list.php:275 app/tb/requests/tb-requests.php:141
 #: app/tb/requests/tb-requests.php:308 app/tb/results/tb-failed-results.php:191
 #: app/tb/results/tb-manual-results.php:89
 #: app/tb/results/tb-manual-results.php:139
@@ -5704,7 +5771,7 @@ msgstr "Dernière modification"
 #: app/eid/management/eid-export-data.php:271
 #: app/eid/management/eid-export-data.php:308
 #: app/eid/requests/eid-requests.php:474
-#: app/eid/requests/export-eid-requests.php:49
+#: app/eid/requests/export-eid-requests.php:46
 #: app/eid/requests/forms/add-cameroon.php:454
 #: app/eid/requests/forms/edit-cameroon.php:480
 #: app/eid/results/eid-print-results.php:176
@@ -5894,12 +5961,12 @@ msgstr "Créer un lot"
 #: app/tb/requests/forms/add-sierraleone.php:88
 #: app/tb/requests/forms/add-southsudan.php:63
 #: app/tb/requests/forms/edit-burkina-faso.php:91
-#: app/tb/requests/forms/edit-rwanda.php:64
+#: app/tb/requests/forms/edit-rwanda.php:67
 #: app/tb/requests/forms/edit-sierraleone.php:113
 #: app/tb/requests/forms/edit-southsudan.php:79
 #: app/tb/results/email-results.php:75
 #: app/tb/results/forms/update-burkina-faso.php:91
-#: app/tb/results/forms/update-rwanda.php:63
+#: app/tb/results/forms/update-rwanda.php:66
 #: app/tb/results/forms/update-sierraleone.php:99
 #: app/tb/results/forms/update-southsudan.php:95 app/users/addUser.php:55
 #: app/users/edit-profile.php:49 app/users/editUser.php:97
@@ -5947,8 +6014,8 @@ msgstr "indique les champs obligatoires"
 
 #: app/batch/add-batch.php:175 app/batch/edit-batch.php:265
 #: app/covid-19/management/generate-export-drc.php:92
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/eid/requests/forms/add-burkina-faso.php:365
 #: app/eid/requests/forms/add-cameroon.php:524
 #: app/eid/requests/forms/edit-burkina-faso.php:371
@@ -6197,11 +6264,11 @@ msgstr "Alphanumérique"
 #: app/cd4/management/cd4-clinic-report.php:424
 #: app/cd4/management/cd4-clinic-report.php:451
 #: app/cd4/management/cd4-clinic-report.php:559
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/add-samples-from-manifest.php:114
 #: app/cd4/requests/cd4-requests.php:145 app/cd4/requests/cd4-requests.php:224
 #: app/cd4/requests/cd4-requests.php:534 app/cd4/requests/cd4-requests.php:587
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/results/cd4-failed-results.php:115
 #: app/cd4/results/cd4-manual-results.php:113
 #: app/cd4/results/cd4-manual-results.php:204
@@ -6390,8 +6457,8 @@ msgstr "Veuillez sélectionner le type d'échantillon"
 
 #: app/batch/add-batch.php:265 app/cd4/management/cd4-export-data.php:237
 #: app/cd4/management/cd4-export-data.php:262
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/common/reference/add-funding-sources.php:3
 #: app/common/reference/add-funding-sources.php:14
 #: app/common/reference/add-funding-sources.php:33
@@ -6746,7 +6813,7 @@ msgstr "Contrôle de la fabrication"
 #: app/instruments/get-instruments.php:107
 #: app/patients/get-patients-helper.php:117 app/roles/getRoleDetails.php:100
 #: app/system/translate-strings.php:109
-#: app/tb/requests/get-request-list.php:315 app/users/getUserDetails.php:84
+#: app/tb/requests/get-request-list.php:317 app/users/getUserDetails.php:84
 #: app/vl/reference/get-vl-results-helper.php:83
 #: app/vl/reference/get-vl-test-failure-reasons-helper.php:119
 #: app/vl/requests/get-request-list.php:426
@@ -6991,9 +7058,9 @@ msgstr "Tout"
 #: app/cd4/management/cd4-clinic-report.php:165
 #: app/cd4/management/cd4-clinic-report.php:264
 #: app/cd4/management/cd4-clinic-report.php:367
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/cd4/requests/cd4-requests.php:280
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/requests/forms/add-rwanda.php:257
 #: app/cd4/requests/forms/edit-rwanda.php:307
 #: app/cd4/requests/patientModal.php:110
@@ -7056,10 +7123,10 @@ msgstr "Tout"
 #: app/tb/requests/forms/add-burkina-faso.php:195
 #: app/tb/requests/forms/add-rwanda.php:174
 #: app/tb/requests/forms/edit-burkina-faso.php:215
-#: app/tb/requests/forms/edit-rwanda.php:178
+#: app/tb/requests/forms/edit-rwanda.php:181
 #: app/tb/requests/patientModal.php:85 app/tb/requests/tb-requests.php:178
 #: app/tb/results/forms/update-burkina-faso.php:214
-#: app/tb/results/forms/update-rwanda.php:176
+#: app/tb/results/forms/update-rwanda.php:179
 #: app/vl/program-management/export-vl-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/program-management/highViralLoad.php:236
@@ -7190,10 +7257,10 @@ msgstr "Sélectionnez svp le sexe"
 #: app/tb/requests/forms/add-burkina-faso.php:199
 #: app/tb/requests/forms/add-rwanda.php:177
 #: app/tb/requests/forms/edit-burkina-faso.php:219
-#: app/tb/requests/forms/edit-rwanda.php:181
+#: app/tb/requests/forms/edit-rwanda.php:184
 #: app/tb/requests/tb-requests.php:182 app/tb/results/email-results.php:179
 #: app/tb/results/forms/update-burkina-faso.php:218
-#: app/tb/results/forms/update-rwanda.php:179
+#: app/tb/results/forms/update-rwanda.php:182
 #: app/vl/program-management/highViralLoad.php:244
 #: app/vl/program-management/highViralLoad.php:410
 #: app/vl/program-management/highViralLoad.php:565
@@ -7260,10 +7327,10 @@ msgstr "Homme"
 #: app/tb/requests/forms/add-burkina-faso.php:200
 #: app/tb/requests/forms/add-rwanda.php:178
 #: app/tb/requests/forms/edit-burkina-faso.php:220
-#: app/tb/requests/forms/edit-rwanda.php:182
+#: app/tb/requests/forms/edit-rwanda.php:185
 #: app/tb/requests/tb-requests.php:183 app/tb/results/email-results.php:182
 #: app/tb/results/forms/update-burkina-faso.php:219
-#: app/tb/results/forms/update-rwanda.php:180
+#: app/tb/results/forms/update-rwanda.php:183
 #: app/vl/program-management/highViralLoad.php:247
 #: app/vl/program-management/highViralLoad.php:413
 #: app/vl/program-management/highViralLoad.php:568
@@ -7524,10 +7591,10 @@ msgstr "Exporter vers Excel"
 #: app/tb/management/tb-export-data.php:270
 #: app/tb/requests/addSamplesFromManifest.php:70
 #: app/tb/requests/forms/add-rwanda.php:170
-#: app/tb/requests/forms/edit-rwanda.php:174
+#: app/tb/requests/forms/edit-rwanda.php:177
 #: app/tb/requests/patientModal.php:76 app/tb/requests/tb-requests.php:248
 #: app/tb/requests/tb-requests.php:314
-#: app/tb/results/forms/update-rwanda.php:172
+#: app/tb/results/forms/update-rwanda.php:175
 #: app/tb/results/tb-failed-results.php:145
 #: app/tb/results/tb-failed-results.php:197
 #: app/tb/results/tb-manual-results.php:188
@@ -7633,8 +7700,8 @@ msgstr "Noms du patient"
 #: app/covid-19/management/covid-19-sample-status.php:83
 #: app/covid-19/management/generate-export-drc.php:91
 #: app/covid-19/requests/covid-19-requests.php:166
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/eid/management/eid-clinic-report.php:189
 #: app/eid/management/eid-clinic-report.php:564
 #: app/eid/management/eid-sample-status.php:87
@@ -7660,7 +7727,7 @@ msgstr "Date de test de l'échantillon"
 
 #: app/cd4/management/cd4-clinic-report.php:197
 #: app/cd4/management/cd4-clinic-report.php:425
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 msgid "CD4 Result"
 msgstr "Résultat CD4"
 
@@ -7856,8 +7923,8 @@ msgstr "Statut"
 #: app/covid-19/management/covid-19-clinic-report.php:291
 #: app/covid-19/management/covid-19-clinic-report.php:390
 #: app/covid-19/management/generate-export-drc.php:41
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/eid/management/eid-clinic-report.php:296
 #: app/eid/management/eid-clinic-report.php:393
 #: app/hepatitis/management/hepatitis-clinic-report.php:294
@@ -7968,10 +8035,10 @@ msgstr "Code TARV du patient"
 #: app/cd4/management/cd4-export-data.php:183
 #: app/cd4/management/cd4-export-data.php:222
 #: app/cd4/management/cd4-export-data.php:257
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/management/export-cd4-results.php:35
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/management/export-cd4-results.php:34
 #: app/cd4/requests/cd4-requests.php:419
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/requests/patientModal.php:104
 #: app/cd4/results/cd4-failed-results.php:153
 #: app/cd4/results/cd4-failed-results.php:201
@@ -7990,7 +8057,7 @@ msgstr "Code TARV du patient"
 #: app/covid-19/requests/covid-19-dhis2.php:89
 #: app/covid-19/requests/covid-19-requests.php:342
 #: app/covid-19/requests/covid-19-requests.php:452
-#: app/covid-19/requests/export-covid19-requests.php:39
+#: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/patientModal.php:77
 #: app/covid-19/results/can-record-confirmatory-tests.php:182
 #: app/covid-19/results/covid-19-failed-results.php:152
@@ -8098,8 +8165,8 @@ msgid "Enter Patient Name"
 msgstr "Saisir le nom du patient"
 
 #: app/cd4/management/cd4-clinic-report.php:544
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/requests/patientModal.php:107
 #: app/covid-19/management/covid-19-clinic-report.php:536
 #: app/covid-19/requests/forms/edit-cameroon.php:233
@@ -8135,8 +8202,8 @@ msgid "DoB"
 msgstr "DoB"
 
 #: app/cd4/management/cd4-clinic-report.php:553
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/covid-19/management/covid-19-clinic-report.php:545
 #: app/eid/management/eid-clinic-report.php:552
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:144
@@ -8737,11 +8804,11 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/requests/forms/edit-burkina-faso.php:253
 #: app/tb/requests/forms/edit-burkina-faso.php:275
 #: app/tb/requests/forms/edit-burkina-faso.php:419
-#: app/tb/requests/forms/edit-rwanda.php:152
-#: app/tb/requests/forms/edit-rwanda.php:232
-#: app/tb/requests/forms/edit-rwanda.php:328
-#: app/tb/requests/forms/edit-rwanda.php:371
-#: app/tb/requests/forms/edit-rwanda.php:515
+#: app/tb/requests/forms/edit-rwanda.php:155
+#: app/tb/requests/forms/edit-rwanda.php:235
+#: app/tb/requests/forms/edit-rwanda.php:331
+#: app/tb/requests/forms/edit-rwanda.php:374
+#: app/tb/requests/forms/edit-rwanda.php:518
 #: app/tb/requests/forms/edit-sierraleone.php:224
 #: app/tb/requests/forms/edit-southsudan.php:185
 #: app/tb/requests/tb-requests.php:206 app/tb/requests/tb-requests.php:243
@@ -8752,11 +8819,11 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/tb/results/forms/update-burkina-faso.php:253
 #: app/tb/results/forms/update-burkina-faso.php:275
 #: app/tb/results/forms/update-burkina-faso.php:422
-#: app/tb/results/forms/update-rwanda.php:150
-#: app/tb/results/forms/update-rwanda.php:230
-#: app/tb/results/forms/update-rwanda.php:326
-#: app/tb/results/forms/update-rwanda.php:370
-#: app/tb/results/forms/update-rwanda.php:514 app/users/addUser.php:129
+#: app/tb/results/forms/update-rwanda.php:153
+#: app/tb/results/forms/update-rwanda.php:233
+#: app/tb/results/forms/update-rwanda.php:329
+#: app/tb/results/forms/update-rwanda.php:373
+#: app/tb/results/forms/update-rwanda.php:517 app/users/addUser.php:129
 #: app/users/editUser.php:176
 #: app/vl/program-management/getHighVlResultDetails.php:237
 #: app/vl/program-management/highViralLoad.php:263
@@ -8963,11 +9030,11 @@ msgstr "Oui"
 #: app/tb/requests/forms/edit-burkina-faso.php:252
 #: app/tb/requests/forms/edit-burkina-faso.php:274
 #: app/tb/requests/forms/edit-burkina-faso.php:420
-#: app/tb/requests/forms/edit-rwanda.php:151
-#: app/tb/requests/forms/edit-rwanda.php:231
-#: app/tb/requests/forms/edit-rwanda.php:327
-#: app/tb/requests/forms/edit-rwanda.php:372
-#: app/tb/requests/forms/edit-rwanda.php:516
+#: app/tb/requests/forms/edit-rwanda.php:154
+#: app/tb/requests/forms/edit-rwanda.php:234
+#: app/tb/requests/forms/edit-rwanda.php:330
+#: app/tb/requests/forms/edit-rwanda.php:375
+#: app/tb/requests/forms/edit-rwanda.php:519
 #: app/tb/requests/forms/edit-sierraleone.php:223
 #: app/tb/requests/forms/edit-southsudan.php:184
 #: app/tb/requests/tb-requests.php:207 app/tb/requests/tb-requests.php:244
@@ -8978,11 +9045,11 @@ msgstr "Oui"
 #: app/tb/results/forms/update-burkina-faso.php:252
 #: app/tb/results/forms/update-burkina-faso.php:274
 #: app/tb/results/forms/update-burkina-faso.php:423
-#: app/tb/results/forms/update-rwanda.php:149
-#: app/tb/results/forms/update-rwanda.php:229
-#: app/tb/results/forms/update-rwanda.php:325
-#: app/tb/results/forms/update-rwanda.php:371
-#: app/tb/results/forms/update-rwanda.php:515 app/users/addUser.php:130
+#: app/tb/results/forms/update-rwanda.php:152
+#: app/tb/results/forms/update-rwanda.php:232
+#: app/tb/results/forms/update-rwanda.php:328
+#: app/tb/results/forms/update-rwanda.php:374
+#: app/tb/results/forms/update-rwanda.php:518 app/users/addUser.php:130
 #: app/users/editUser.php:177
 #: app/vl/program-management/getHighVlResultDetails.php:238
 #: app/vl/program-management/highViralLoad.php:266
@@ -9089,8 +9156,8 @@ msgstr "Gérer les colonnes"
 
 #: app/cd4/management/cd4-export-data.php:240
 #: app/cd4/management/cd4-export-data.php:263
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/covid-19/management/covid-19-export-data.php:260
 #: app/covid-19/management/covid-19-export-data.php:283
 #: app/covid-19/requests/forms/add-cameroon.php:158
@@ -9497,8 +9564,8 @@ msgstr "Impossible de générer le fichier excel"
 msgid "Apply"
 msgstr "Appliquer"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-sample-storage.php:26
@@ -9507,18 +9574,18 @@ msgstr "Appliquer"
 msgid "S.No."
 msgstr "S.No."
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/tb/requests/forms/add-rwanda.php:92
-#: app/tb/requests/forms/edit-rwanda.php:96
-#: app/tb/results/forms/update-rwanda.php:94
+#: app/tb/requests/forms/edit-rwanda.php:99
+#: app/tb/results/forms/update-rwanda.php:97
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Health Facility Name"
 msgstr "FOSA"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/eid/requests/forms/add-cameroon.php:504
 #: app/vl/program-management/export-vl-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
@@ -9527,16 +9594,16 @@ msgstr "FOSA"
 msgid "Sample Reception Date"
 msgstr "Date de réception de l'échantillon"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Health Facility Code"
 msgstr "Code de FOSA"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/management/export-cd4-results.php:35
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/management/export-cd4-results.php:34
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/program-management/export-vl-results.php:36
 #: app/vl/requests/export-vl-requests.php:29
@@ -9544,8 +9611,8 @@ msgstr "Code de FOSA"
 msgid "Unique ART No."
 msgstr "Unique ART No."
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/covid-19/requests/forms/add-cameroon.php:231
 #: app/covid-19/requests/forms/add-cameroon.php:233
 #: app/covid-19/requests/forms/edit-cameroon.php:226
@@ -9567,11 +9634,11 @@ msgstr "Unique ART No."
 #: app/tb/requests/forms/add-rwanda.php:159
 #: app/tb/requests/forms/add-rwanda.php:160
 #: app/tb/requests/forms/edit-burkina-faso.php:207
-#: app/tb/requests/forms/edit-rwanda.php:163
-#: app/tb/requests/forms/edit-rwanda.php:164
+#: app/tb/requests/forms/edit-rwanda.php:166
+#: app/tb/requests/forms/edit-rwanda.php:167
 #: app/tb/results/forms/update-burkina-faso.php:206
-#: app/tb/results/forms/update-rwanda.php:161
-#: app/tb/results/forms/update-rwanda.php:162
+#: app/tb/results/forms/update-rwanda.php:164
+#: app/tb/results/forms/update-rwanda.php:165
 #: app/vl/program-management/export-vl-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:27
@@ -9585,13 +9652,13 @@ msgstr "Unique ART No."
 msgid "Date of Birth"
 msgstr "Date de naissance"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 msgid "Patient Cellphone Number"
 msgstr "Numéro de téléphone portable du patient"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/generic-tests/requests/add-request.php:469
 #: app/generic-tests/requests/edit-request.php:666
 #: app/generic-tests/results/update-generic-test-result.php:627
@@ -9607,15 +9674,15 @@ msgstr "Numéro de téléphone portable du patient"
 msgid "Date of Sample Collection"
 msgstr "Date de prélèvement"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Date of Treatment Initiation"
 msgstr "Date d’initiation du traitement ARV"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/cd4/requests/get-request-list.php:338
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
@@ -9623,18 +9690,18 @@ msgstr "Date d’initiation du traitement ARV"
 msgid "Current Regimen"
 msgstr "Protocole actuel"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/tb/requests/forms/add-rwanda.php:242
-#: app/tb/requests/forms/edit-rwanda.php:246
-#: app/tb/results/forms/update-rwanda.php:244
+#: app/tb/requests/forms/edit-rwanda.php:249
+#: app/tb/results/forms/update-rwanda.php:247
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Date of Initiation of Current Regimen"
 msgstr "Date de début du Protocole actuel"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/generic-tests/requests/add-request.php:431
 #: app/generic-tests/requests/add-request.php:434
 #: app/generic-tests/requests/edit-request.php:623
@@ -9656,8 +9723,8 @@ msgstr "Date de début du Protocole actuel"
 msgid "Is Patient Pregnant?"
 msgstr "La patiente est-elle enceinte ?"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/generic-tests/requests/add-request.php:444
 #: app/generic-tests/requests/add-request.php:447
 #: app/generic-tests/requests/edit-request.php:639
@@ -9679,8 +9746,8 @@ msgstr "La patiente est-elle enceinte ?"
 msgid "Is Patient Breastfeeding?"
 msgstr "La patiente allaite-t-elle ?"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 #: app/vl/requests/forms/add-burkina-faso.php:346
@@ -9689,7 +9756,7 @@ msgstr "La patiente allaite-t-elle ?"
 msgid "ARV Adherence"
 msgstr "Observant aux ARV"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 #: app/vl/requests/forms/add-burkina-faso.php:412
@@ -9698,13 +9765,13 @@ msgstr "Observant aux ARV"
 msgid "Indication for Viral Load Testing"
 msgstr "Motif d’analyse du test de la CV"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 msgid "Requesting Clinican Cellphone Number"
 msgstr "Demande de numéro de téléphone portable du clinicien"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/covid-19/requests/forms/add-cameroon.php:416
 #: app/covid-19/requests/forms/add-drc.php:746
 #: app/covid-19/requests/forms/add-drc.php:748
@@ -9728,11 +9795,11 @@ msgstr "Demande de numéro de téléphone portable du clinicien"
 #: app/tb/requests/forms/add-burkina-faso.php:394
 #: app/tb/requests/forms/add-rwanda.php:361
 #: app/tb/requests/forms/edit-burkina-faso.php:415
-#: app/tb/requests/forms/edit-rwanda.php:368
-#: app/tb/requests/forms/edit-rwanda.php:512
+#: app/tb/requests/forms/edit-rwanda.php:371
+#: app/tb/requests/forms/edit-rwanda.php:515
 #: app/tb/results/forms/update-burkina-faso.php:418
-#: app/tb/results/forms/update-rwanda.php:367
-#: app/tb/results/forms/update-rwanda.php:511
+#: app/tb/results/forms/update-rwanda.php:370
+#: app/tb/results/forms/update-rwanda.php:514
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 #: app/vl/requests/forms/add-burkina-faso.php:505
@@ -9744,7 +9811,7 @@ msgstr "Demande de numéro de téléphone portable du clinicien"
 msgid "Is Sample Rejected?"
 msgstr "L'échantillon est-il rejeté ?"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/common/reference/add-recommended-corrective-action.php:5
 #: app/common/reference/add-recommended-corrective-action.php:28
 #: app/common/reference/edit-recommended-corrective-action.php:10
@@ -9759,14 +9826,14 @@ msgstr "L'échantillon est-il rejeté ?"
 msgid "Recommended Corrective Action"
 msgstr "Mesures correctrices recommandées"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Result (cp/mL)"
 msgstr "Résultats (cp/mL)"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/vl/program-management/export-vl-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:27
@@ -9774,14 +9841,14 @@ msgstr "Résultats (cp/mL)"
 msgid "Result Printed Date"
 msgstr "Date d'impression des Résultat"
 
-#: app/cd4/management/export-cd4-results.php:32
+#: app/cd4/management/export-cd4-results.php:31
 #: app/vl/program-management/export-vl-results.php:33
 #: app/vl/requests/export-vl-requests.php:29
 msgid "Result (log)"
 msgstr "Résultats (journal)"
 
-#: app/cd4/management/export-cd4-results.php:32
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/management/export-cd4-results.php:31
+#: app/cd4/requests/export-cd4-requests.php:26
 #: app/generic-tests/program-management/generic-export-data.php:307
 #: app/generic-tests/program-management/generic-export-data.php:337
 #: app/vl/program-management/export-vl-results.php:33
@@ -9792,7 +9859,7 @@ msgstr "Résultats (journal)"
 msgid "Request Created On"
 msgstr "Demande Créé le"
 
-#: app/cd4/management/export-cd4-results.php:49
+#: app/cd4/management/export-cd4-results.php:46
 msgid "Not Reported"
 msgstr "Non Rapporté"
 
@@ -11209,11 +11276,11 @@ msgstr "Essayer de synchroniser depuis EMR/FHIR"
 msgid "Trying to sync to EMR/FHIR"
 msgstr "Essai de synchronisation avec EMR/FHIR"
 
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 msgid "Indication for CD4 Testing"
 msgstr "Indication pour le test CD4"
 
-#: app/cd4/requests/export-cd4-requests.php:28
+#: app/cd4/requests/export-cd4-requests.php:26
 msgid "CD4 Result (%)"
 msgstr "Résultat CD4 (%)"
 
@@ -11258,11 +11325,11 @@ msgstr "Résultat CD4 (%)"
 #: app/tb/requests/forms/add-rwanda.php:80
 #: app/tb/requests/forms/add-sierraleone.php:114
 #: app/tb/requests/forms/edit-burkina-faso.php:114
-#: app/tb/requests/forms/edit-rwanda.php:84
+#: app/tb/requests/forms/edit-rwanda.php:87
 #: app/tb/requests/forms/edit-sierraleone.php:139
 #: app/tb/requests/forms/edit-southsudan.php:105
 #: app/tb/results/forms/update-burkina-faso.php:113
-#: app/tb/results/forms/update-rwanda.php:82
+#: app/tb/results/forms/update-rwanda.php:85
 #: app/tb/results/forms/update-sierraleone.php:125
 #: app/tb/results/forms/update-southsudan.php:120
 #: app/vl/requests/forms/add-burkina-faso.php:108
@@ -11328,9 +11395,9 @@ msgstr ""
 #: app/tb/requests/forms/add-sierraleone.php:196
 #: app/tb/requests/forms/add-southsudan.php:167
 #: app/tb/requests/forms/edit-burkina-faso.php:185
-#: app/tb/requests/forms/edit-rwanda.php:149
+#: app/tb/requests/forms/edit-rwanda.php:152
 #: app/tb/results/forms/update-burkina-faso.php:184
-#: app/tb/results/forms/update-rwanda.php:147
+#: app/tb/results/forms/update-rwanda.php:150
 #: app/vl/requests/forms/add-cameroon.php:235
 #: app/vl/requests/forms/add-drc.php:181 app/vl/requests/forms/add-png.php:142
 #: app/vl/requests/forms/add-rwanda.php:182
@@ -11420,11 +11487,11 @@ msgstr "Cryptage des données d'identification des patients"
 #: app/tb/requests/forms/add-sierraleone.php:197
 #: app/tb/requests/forms/add-southsudan.php:168
 #: app/tb/requests/forms/edit-burkina-faso.php:186
-#: app/tb/requests/forms/edit-rwanda.php:150
+#: app/tb/requests/forms/edit-rwanda.php:153
 #: app/tb/requests/forms/edit-sierraleone.php:222
 #: app/tb/requests/forms/edit-southsudan.php:183
 #: app/tb/results/forms/update-burkina-faso.php:185
-#: app/tb/results/forms/update-rwanda.php:148 app/users/addUser.php:94
+#: app/tb/results/forms/update-rwanda.php:151 app/users/addUser.php:94
 #: app/users/addUser.php:128 app/users/editUser.php:138
 #: app/users/editUser.php:175 app/vl/reference/add-vl-art-code-details.php:69
 #: app/vl/reference/add-vl-art-code-details.php:80
@@ -11522,45 +11589,45 @@ msgstr "Veuillez saisir la date de naissance ou l'âge du patient"
 #: app/generic-tests/requests/get-request-list.php:129
 #: app/hepatitis/requests/get-request-list.php:265
 #: app/specimen-referral-manifest/view-manifests.php:57
-#: app/tb/requests/get-request-list.php:270
+#: app/tb/requests/get-request-list.php:272
 #: app/vl/requests/get-request-list.php:351
 msgid "Manifest Code"
 msgstr "Code du manifeste"
 
 #: app/cd4/requests/get-request-list.php:329
 #: app/covid-19/management/generate-export-drc.php:49
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/get-request-list.php:315
 #: app/generic-tests/requests/get-request-list.php:135
 #: app/hepatitis/requests/get-request-list.php:271
-#: app/tb/requests/get-request-list.php:276
+#: app/tb/requests/get-request-list.php:278
 msgid "Patient DoB"
 msgstr "DoB du patient"
 
 #: app/cd4/requests/get-request-list.php:332
 #: app/covid-19/management/generate-export-drc.php:50
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/get-request-list.php:318
 #: app/generic-tests/requests/get-request-list.php:138
 #: app/hepatitis/requests/get-request-list.php:274
 #: app/tb/requests/forms/add-rwanda.php:164
-#: app/tb/requests/forms/edit-rwanda.php:168
-#: app/tb/requests/get-request-list.php:279
-#: app/tb/results/forms/update-rwanda.php:166
+#: app/tb/requests/forms/edit-rwanda.php:171
+#: app/tb/requests/get-request-list.php:281
+#: app/tb/results/forms/update-rwanda.php:169
 #: app/vl/requests/get-request-list.php:377
 msgid "Patient Age"
 msgstr "Age du Patient"
 
 #: app/cd4/requests/get-request-list.php:335
 #: app/covid-19/management/generate-export-drc.php:51
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/get-request-list.php:321
 #: app/generic-tests/requests/get-request-list.php:141
 #: app/hepatitis/requests/get-request-list.php:277
-#: app/tb/requests/get-request-list.php:282
+#: app/tb/requests/get-request-list.php:284
 #: app/vl/requests/get-request-list.php:380
 msgid "Patient Sex"
 msgstr "Sexe du patient"
@@ -11576,7 +11643,7 @@ msgstr "Sexe du patient"
 #: app/generic-tests/results/get-manual-results.php:237
 #: app/hepatitis/requests/get-request-list.php:315
 #: app/hepatitis/results/hepatitis-samples-for-manual-result-entry.php:159
-#: app/tb/requests/get-request-list.php:318
+#: app/tb/requests/get-request-list.php:320
 #: app/tb/results/tb-samples-for-manual-result-entry.php:220
 #: app/vl/requests/get-request-list.php:429
 #: app/vl/results/get-manual-results.php:277
@@ -11588,7 +11655,7 @@ msgstr "Verrouillé"
 #: app/covid-19/requests/get-request-list.php:373
 #: app/eid/requests/get-request-list.php:337
 #: app/hepatitis/requests/get-request-list.php:327
-#: app/tb/requests/get-request-list.php:334
+#: app/tb/requests/get-request-list.php:336
 #: app/vl/requests/get-request-list.php:435
 msgid "Barcode"
 msgstr "Code barre"
@@ -11597,7 +11664,7 @@ msgstr "Code barre"
 #: app/covid-19/requests/get-request-list.php:365
 #: app/eid/requests/get-request-list.php:329
 #: app/hepatitis/requests/get-request-list.php:322
-#: app/tb/requests/get-request-list.php:326
+#: app/tb/requests/get-request-list.php:328
 #: app/vl/requests/get-request-list.php:441
 msgid "Sync Sample"
 msgstr "Échantillon de synchronisation"
@@ -11606,7 +11673,7 @@ msgstr "Échantillon de synchronisation"
 #: app/covid-19/requests/get-request-list.php:365
 #: app/eid/requests/get-request-list.php:329
 #: app/hepatitis/requests/get-request-list.php:322
-#: app/tb/requests/get-request-list.php:326
+#: app/tb/requests/get-request-list.php:328
 #: app/vl/requests/get-request-list.php:441
 msgid "Sync"
 msgstr "Synchroniser"
@@ -11642,15 +11709,15 @@ msgstr "Synchroniser"
 #: app/tb/requests/forms/edit-burkina-faso.php:628
 #: app/tb/requests/forms/edit-burkina-faso.php:650
 #: app/tb/requests/forms/edit-burkina-faso.php:682
-#: app/tb/requests/forms/edit-rwanda.php:104
-#: app/tb/requests/forms/edit-rwanda.php:180
-#: app/tb/requests/forms/edit-rwanda.php:205
-#: app/tb/requests/forms/edit-rwanda.php:230
-#: app/tb/requests/forms/edit-rwanda.php:326
-#: app/tb/requests/forms/edit-rwanda.php:370
-#: app/tb/requests/forms/edit-rwanda.php:378
-#: app/tb/requests/forms/edit-rwanda.php:514
-#: app/tb/requests/forms/edit-rwanda.php:522
+#: app/tb/requests/forms/edit-rwanda.php:107
+#: app/tb/requests/forms/edit-rwanda.php:183
+#: app/tb/requests/forms/edit-rwanda.php:208
+#: app/tb/requests/forms/edit-rwanda.php:233
+#: app/tb/requests/forms/edit-rwanda.php:329
+#: app/tb/requests/forms/edit-rwanda.php:373
+#: app/tb/requests/forms/edit-rwanda.php:381
+#: app/tb/requests/forms/edit-rwanda.php:517
+#: app/tb/requests/forms/edit-rwanda.php:525
 #: app/tb/requests/patientModal.php:73
 #: app/tb/results/forms/update-burkina-faso.php:127
 #: app/tb/results/forms/update-burkina-faso.php:217
@@ -11662,15 +11729,15 @@ msgstr "Synchroniser"
 #: app/tb/results/forms/update-burkina-faso.php:631
 #: app/tb/results/forms/update-burkina-faso.php:653
 #: app/tb/results/forms/update-burkina-faso.php:685
-#: app/tb/results/forms/update-rwanda.php:102
-#: app/tb/results/forms/update-rwanda.php:178
-#: app/tb/results/forms/update-rwanda.php:203
-#: app/tb/results/forms/update-rwanda.php:228
-#: app/tb/results/forms/update-rwanda.php:324
-#: app/tb/results/forms/update-rwanda.php:369
-#: app/tb/results/forms/update-rwanda.php:377
-#: app/tb/results/forms/update-rwanda.php:513
-#: app/tb/results/forms/update-rwanda.php:521
+#: app/tb/results/forms/update-rwanda.php:105
+#: app/tb/results/forms/update-rwanda.php:181
+#: app/tb/results/forms/update-rwanda.php:206
+#: app/tb/results/forms/update-rwanda.php:231
+#: app/tb/results/forms/update-rwanda.php:327
+#: app/tb/results/forms/update-rwanda.php:372
+#: app/tb/results/forms/update-rwanda.php:380
+#: app/tb/results/forms/update-rwanda.php:516
+#: app/tb/results/forms/update-rwanda.php:524
 #: app/vl/requests/facilitiesModal.php:106
 #: app/vl/requests/forms/add-burkina-faso.php:132
 #: app/vl/requests/forms/add-burkina-faso.php:164
@@ -13029,12 +13096,16 @@ msgstr "Invité"
 msgid "Sorry"
 msgstr "Désolé"
 
-#: app/classes/Middlewares/App/AppAuthMiddleware.php:47
+#: app/classes/Middlewares/App/AppAuthMiddleware.php:70
 #: app/login/loginProcess.php:134
 msgid "Please change your password to proceed."
 msgstr "Veuillez modifier votre mot de passe pour continuer."
 
-#: app/classes/Services/CommonService.php:704 app/header.php:38
+#: app/classes/Middlewares/SystemAdminAuthMiddleware.php:69
+msgid "Invalid request origin."
+msgstr "Origine de la demande non valide."
+
+#: app/classes/Services/CommonService.php:816 app/header.php:38
 msgid "Sample Tracking System"
 msgstr "Système de suivi des échantillons"
 
@@ -13600,8 +13671,8 @@ msgid "COVID-19 Testing Target Report"
 msgstr "Rapport de test ciblé COVID-19"
 
 #: app/covid-19/management/generate-export-drc.php:38
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/specimen-referral-manifest/generateVLManifest.php:203
 msgid "S. No."
 msgstr "S. No."
@@ -13633,28 +13704,28 @@ msgid "EPID Number"
 msgstr "N° EPID"
 
 #: app/covid-19/management/generate-export-drc.php:52
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/generic-tests/mail/mail-generic-tests-results.php:233
 #: app/vl/result-mail/editTestResultEmailConfig.php:94
 msgid "Is Patient Pregnant"
 msgstr "La patiente est-elle enceinte"
 
 #: app/covid-19/management/generate-export-drc.php:53
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient Phone Number"
 msgstr "Numéro de téléphone du patient"
 
 #: app/covid-19/management/generate-export-drc.php:54
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient Email"
 msgstr "Courriel du patient"
 
 #: app/covid-19/management/generate-export-drc.php:55
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient Address"
 msgstr "Adresse du patient"
 
@@ -13667,8 +13738,8 @@ msgid "Commune"
 msgstr "Commune"
 
 #: app/covid-19/management/generate-export-drc.php:58
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:287
 #: app/covid-19/requests/forms/edit-cameroon.php:283
 #: app/covid-19/results/forms/update-cameroon-result.php:247
@@ -13676,14 +13747,14 @@ msgid "Nationality"
 msgstr "Nationalité"
 
 #: app/covid-19/management/generate-export-drc.php:59
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Fever/Temperature"
 msgstr "Fièvre/température"
 
 #: app/covid-19/management/generate-export-drc.php:60
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Temprature Measurement"
 msgstr "Mesure de la température"
 
@@ -13700,123 +13771,123 @@ msgid "Asymptomatic"
 msgstr "Asymptomatique"
 
 #: app/covid-19/management/generate-export-drc.php:64
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Symptoms Detected"
 msgstr "Symptômes détectés"
 
 #: app/covid-19/management/generate-export-drc.php:65
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Medical History"
 msgstr "Historique Medical"
 
 #: app/covid-19/management/generate-export-drc.php:66
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Comorbidities"
 msgstr "Comorbidités"
 
 #: app/covid-19/management/generate-export-drc.php:67
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Recenty Hospitalized?"
 msgstr "Hospitalisé récemment ?"
 
 #: app/covid-19/management/generate-export-drc.php:68
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient Lives With Children"
 msgstr "Les patients vivent avec des enfants"
 
 #: app/covid-19/management/generate-export-drc.php:69
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient Cares for Children"
 msgstr "Les patients s'occupent des enfants"
 
 #: app/covid-19/management/generate-export-drc.php:70
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Close Contacts"
 msgstr "Contacts étroits"
 
 #: app/covid-19/management/generate-export-drc.php:71
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Has Recent Travel History"
 msgstr "A des antécédents de voyage récents"
 
 #: app/covid-19/management/generate-export-drc.php:72
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Country Names"
 msgstr "Noms de pays"
 
 #: app/covid-19/management/generate-export-drc.php:73
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Travel Return Date"
 msgstr "Date de retour du voyage"
 
 #: app/covid-19/management/generate-export-drc.php:74
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Airline"
 msgstr "Compagnie aérienne"
 
 #: app/covid-19/management/generate-export-drc.php:75
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Seat No."
 msgstr "Numéro de siège."
 
 #: app/covid-19/management/generate-export-drc.php:76
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Arrival Date/Time"
 msgstr "Date et heure d'arrivée"
 
 #: app/covid-19/management/generate-export-drc.php:77
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Departure Airport"
 msgstr "Aéroport de départ"
 
 #: app/covid-19/management/generate-export-drc.php:78
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Transit"
 msgstr "Transport en commun"
 
 #: app/covid-19/management/generate-export-drc.php:79
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Reason of Visit"
 msgstr "Motif de la visite"
 
 #: app/covid-19/management/generate-export-drc.php:80
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Number of Days Sick"
 msgstr "Nombre de jours de maladie"
 
 #: app/covid-19/management/generate-export-drc.php:81
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date of Symptoms Onset"
 msgstr "Date d'apparition des symptômes"
 
 #: app/covid-19/management/generate-export-drc.php:82
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date of Initial Consultation"
 msgstr "Date de la consultation initiale"
 
 #: app/covid-19/management/generate-export-drc.php:84
 #: app/covid-19/management/generate-export-drc.php:85
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:326
 #: app/covid-19/requests/forms/edit-cameroon.php:321
 #: app/covid-19/results/forms/update-cameroon-result.php:281
@@ -13824,32 +13895,32 @@ msgid "Reason for Test Request"
 msgstr "Motif de la demande de test"
 
 #: app/covid-19/management/generate-export-drc.php:86
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date specimen received"
 msgstr "Date de réception"
 
 #: app/covid-19/management/generate-export-drc.php:87
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date specimen registered"
 msgstr "Date d'enregistrement du spécimen"
 
 #: app/covid-19/management/generate-export-drc.php:88
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Specimen Condition"
 msgstr "Condition du spécimen"
 
 #: app/covid-19/management/generate-export-drc.php:89
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Specimen Status"
 msgstr "Statut du spécimen"
 
 #: app/covid-19/management/generate-export-drc.php:90
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:346
 #: app/covid-19/requests/forms/edit-cameroon.php:341
 #: app/covid-19/results/forms/update-cameroon-result.php:300
@@ -13857,19 +13928,19 @@ msgstr "Statut du spécimen"
 #: app/tb/requests/forms/add-rwanda.php:310
 #: app/tb/requests/forms/add-rwanda.php:385
 #: app/tb/requests/forms/edit-burkina-faso.php:337
-#: app/tb/requests/forms/edit-rwanda.php:314
-#: app/tb/requests/forms/edit-rwanda.php:405
-#: app/tb/requests/forms/edit-rwanda.php:536
+#: app/tb/requests/forms/edit-rwanda.php:317
+#: app/tb/requests/forms/edit-rwanda.php:408
+#: app/tb/requests/forms/edit-rwanda.php:539
 #: app/tb/results/forms/update-burkina-faso.php:336
-#: app/tb/results/forms/update-rwanda.php:312
-#: app/tb/results/forms/update-rwanda.php:404
-#: app/tb/results/forms/update-rwanda.php:535
+#: app/tb/results/forms/update-rwanda.php:315
+#: app/tb/results/forms/update-rwanda.php:407
+#: app/tb/results/forms/update-rwanda.php:538
 msgid "Specimen Type"
 msgstr "Type de spécimen"
 
 #: app/covid-19/management/generate-export-drc.php:93
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:444
 #: app/covid-19/requests/forms/edit-cameroon.php:452
 #: app/covid-19/results/forms/update-cameroon-result.php:408
@@ -13882,8 +13953,8 @@ msgid "Test Method"
 msgstr "Méthode d'essai"
 
 #: app/covid-19/management/generate-export-drc.php:95
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Date result released"
 msgstr "Date de publication du résultat"
 
@@ -14334,7 +14405,7 @@ msgid "Bulk Import Covid-19 Requests"
 msgstr "Importer des demandes de test en bloc"
 
 #: app/covid-19/requests/covid-19-requests.php:444
-#: app/covid-19/requests/export-covid19-requests.php:39
+#: app/covid-19/requests/export-covid19-requests.php:35
 #: app/covid-19/requests/forms/add-cameroon.php:212
 #: app/covid-19/requests/forms/edit-cameroon.php:208
 #: app/covid-19/results/forms/update-cameroon-result.php:191
@@ -14350,8 +14421,8 @@ msgstr "No du Cas"
 msgid "Printer:"
 msgstr "Imprimante:"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:408
 #: app/covid-19/requests/forms/edit-cameroon.php:404
 #: app/covid-19/results/add-covid-19-qc-data.php:142
@@ -14360,18 +14431,18 @@ msgstr "Imprimante:"
 msgid "Testing Point"
 msgstr "Labo de test"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Lab staff Assigned"
 msgstr "Personnel de laboratoire Assigné"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Source Of Alert / POE"
 msgstr "Sources d'Alert/POE"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/covid-19/requests/forms/add-cameroon.php:130
 #: app/covid-19/requests/forms/edit-cameroon.php:132
 #: app/covid-19/results/forms/update-cameroon-result.php:138
@@ -14384,8 +14455,8 @@ msgstr "Sources d'Alert/POE"
 msgid "Health Facility/POE County"
 msgstr "FOSA/POE Comté"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/eid/requests/forms/add-burkina-faso.php:81
 #: app/eid/requests/forms/edit-burkina-faso.php:88
 #: app/eid/results/forms/update-burkina-faso-result.php:87
@@ -14395,8 +14466,8 @@ msgstr "FOSA/POE Comté"
 msgid "Health Facility/POE State"
 msgstr "FOSA/POE État"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 #: app/eid/requests/forms/add-burkina-faso.php:96
 #: app/eid/requests/forms/edit-burkina-faso.php:103
 #: app/eid/results/forms/update-burkina-faso-result.php:102
@@ -14406,18 +14477,18 @@ msgstr "FOSA/POE État"
 msgid "Health Facility/POE"
 msgstr "FOSA/POE"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient State"
 msgstr "Région du patient"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient County"
 msgstr "Comté du patient"
 
-#: app/covid-19/requests/export-covid19-requests.php:39
-#: app/covid-19/requests/export-covid19-requests.php:41
+#: app/covid-19/requests/export-covid19-requests.php:35
+#: app/covid-19/requests/export-covid19-requests.php:37
 msgid "Patient City/Village"
 msgstr "Ville/village du patient"
 
@@ -14457,8 +14528,8 @@ msgstr "INFORMATIONS SUR LE SITE"
 #: app/eid/results/forms/update-burkina-faso-result.php:71
 #: app/eid/results/forms/update-cameroon-result.php:78
 #: app/tb/requests/forms/add-rwanda.php:86
-#: app/tb/requests/forms/edit-rwanda.php:90
-#: app/tb/results/forms/update-rwanda.php:88
+#: app/tb/requests/forms/edit-rwanda.php:93
+#: app/tb/results/forms/update-rwanda.php:91
 msgid "To be filled by requesting Clinician/Nurse"
 msgstr "A remplir par le clinicien/infirmier demandeur"
 
@@ -14557,8 +14628,8 @@ msgstr "Région"
 #: app/covid-19/requests/forms/edit-cameroon.php:128
 #: app/covid-19/results/forms/update-cameroon-result.php:134
 #: app/tb/requests/forms/add-rwanda.php:107
-#: app/tb/requests/forms/edit-rwanda.php:111
-#: app/tb/results/forms/update-rwanda.php:109
+#: app/tb/requests/forms/edit-rwanda.php:114
+#: app/tb/results/forms/update-rwanda.php:112
 msgid "Please choose State"
 msgstr "Veuillez choisir l'État"
 
@@ -14584,10 +14655,10 @@ msgstr "Nom du projet"
 #: app/tb/requests/forms/add-burkina-faso.php:143
 #: app/tb/requests/forms/add-rwanda.php:121
 #: app/tb/requests/forms/edit-burkina-faso.php:163
-#: app/tb/requests/forms/edit-rwanda.php:125
+#: app/tb/requests/forms/edit-rwanda.php:128
 #: app/tb/results/forms/update-burkina-faso.php:162
 #: app/tb/results/forms/update-burkina-faso.php:389
-#: app/tb/results/forms/update-rwanda.php:123
+#: app/tb/results/forms/update-rwanda.php:126
 msgid "Testing Laboratory"
 msgstr "Laboratoire de test"
 
@@ -14605,8 +14676,8 @@ msgstr "Saisir l'identifiant du cas ou le nom du patient"
 #: app/covid-19/requests/forms/add-cameroon.php:197
 #: app/covid-19/requests/forms/edit-cameroon.php:193
 #: app/tb/requests/forms/add-rwanda.php:138
-#: app/tb/requests/forms/edit-rwanda.php:142
-#: app/tb/results/forms/update-rwanda.php:140
+#: app/tb/requests/forms/edit-rwanda.php:145
+#: app/tb/results/forms/update-rwanda.php:143
 #: app/vl/requests/forms/add-cameroon.php:226
 #: app/vl/requests/forms/edit-cameroon.php:281
 msgid "Enter art number or patient name"
@@ -14618,8 +14689,8 @@ msgstr "Saisir le code TARV ou le nom du patient"
 #: app/eid/requests/forms/edit-burkina-faso.php:149
 #: app/eid/results/forms/update-burkina-faso-result.php:148
 #: app/tb/requests/forms/add-rwanda.php:137
-#: app/tb/requests/forms/edit-rwanda.php:141
-#: app/tb/results/forms/update-rwanda.php:139
+#: app/tb/requests/forms/edit-rwanda.php:144
+#: app/tb/results/forms/update-rwanda.php:142
 #: app/vl/requests/forms/add-cameroon.php:227
 #: app/vl/requests/forms/add-drc.php:174
 msgid "No Patient Found"
@@ -14659,13 +14730,13 @@ msgstr "Aucun patient trouvé"
 #: app/tb/requests/forms/add-sierraleone.php:194
 #: app/tb/requests/forms/add-southsudan.php:165
 #: app/tb/requests/forms/edit-burkina-faso.php:183
-#: app/tb/requests/forms/edit-rwanda.php:148
+#: app/tb/requests/forms/edit-rwanda.php:151
 #: app/tb/requests/forms/edit-sierraleone.php:219
 #: app/tb/requests/forms/edit-sierraleone.php:221
 #: app/tb/requests/forms/edit-southsudan.php:180
 #: app/tb/requests/forms/edit-southsudan.php:182
 #: app/tb/results/forms/update-burkina-faso.php:182
-#: app/tb/results/forms/update-rwanda.php:146
+#: app/tb/results/forms/update-rwanda.php:149
 #: app/vl/requests/forms/add-drc.php:179 app/vl/requests/forms/add-png.php:140
 #: app/vl/requests/forms/add-sierraleone.php:219
 #: app/vl/requests/forms/add-southsudan.php:226
@@ -14706,11 +14777,11 @@ msgstr "Veuillez saisir l'identifiant du dossier DHIS2"
 #: app/tb/requests/forms/add-rwanda.php:185
 #: app/tb/requests/forms/add-rwanda.php:186
 #: app/tb/requests/forms/edit-burkina-faso.php:197
-#: app/tb/requests/forms/edit-rwanda.php:189
-#: app/tb/requests/forms/edit-rwanda.php:190
+#: app/tb/requests/forms/edit-rwanda.php:192
+#: app/tb/requests/forms/edit-rwanda.php:193
 #: app/tb/results/forms/update-burkina-faso.php:196
-#: app/tb/results/forms/update-rwanda.php:187
-#: app/tb/results/forms/update-rwanda.php:188
+#: app/tb/results/forms/update-rwanda.php:190
+#: app/tb/results/forms/update-rwanda.php:191
 msgid "First Name"
 msgstr "Prénom"
 
@@ -14720,8 +14791,8 @@ msgstr "Prénom"
 #: app/covid-19/results/forms/update-cameroon-result.php:185
 #: app/covid-19/results/forms/update-cameroon-result.php:187
 #: app/tb/requests/forms/add-rwanda.php:190
-#: app/tb/requests/forms/edit-rwanda.php:194
-#: app/tb/results/forms/update-rwanda.php:192
+#: app/tb/requests/forms/edit-rwanda.php:197
+#: app/tb/results/forms/update-rwanda.php:195
 msgid "Last name"
 msgstr "Nom"
 
@@ -14734,8 +14805,8 @@ msgstr "Nom"
 #: app/eid/results/forms/update-cameroon-result.php:179
 #: app/eid/results/forms/update-cameroon-result.php:247
 #: app/tb/requests/forms/add-rwanda.php:160
-#: app/tb/requests/forms/edit-rwanda.php:164
-#: app/tb/results/forms/update-rwanda.php:162
+#: app/tb/requests/forms/edit-rwanda.php:167
+#: app/tb/results/forms/update-rwanda.php:165
 msgid "Please enter Date of birth"
 msgstr "Veuillez saisir votre date de naissance"
 
@@ -14743,9 +14814,9 @@ msgstr "Veuillez saisir votre date de naissance"
 #: app/tb/requests/forms/add-burkina-faso.php:193
 #: app/tb/requests/forms/add-rwanda.php:163
 #: app/tb/requests/forms/edit-burkina-faso.php:213
-#: app/tb/requests/forms/edit-rwanda.php:167
+#: app/tb/requests/forms/edit-rwanda.php:170
 #: app/tb/results/forms/update-burkina-faso.php:212
-#: app/tb/results/forms/update-rwanda.php:165
+#: app/tb/results/forms/update-rwanda.php:168
 msgid "Age (years)"
 msgstr "Âge (Années )"
 
@@ -14768,8 +14839,8 @@ msgstr "Âge du cas"
 #: app/generic-tests/results/update-generic-test-result.php:552
 #: app/generic-tests/results/update-generic-test-result.php:556
 #: app/tb/requests/forms/add-rwanda.php:175
-#: app/tb/requests/forms/edit-rwanda.php:179
-#: app/tb/results/forms/update-rwanda.php:177
+#: app/tb/requests/forms/edit-rwanda.php:182
+#: app/tb/results/forms/update-rwanda.php:180
 #: app/vl/results/forms/update-cameroon-result.php:377
 #: app/vl/results/forms/update-cameroon-result.php:381
 msgid "Please choose sex"
@@ -14821,8 +14892,8 @@ msgstr "Numéro de téléphone"
 #: app/generic-tests/results/update-generic-test-result.php:692
 #: app/patients/add-patient.php:203 app/patients/edit-patient.php:220
 #: app/patients/view-patients.php:37 app/tb/requests/forms/add-rwanda.php:196
-#: app/tb/requests/forms/edit-rwanda.php:200
-#: app/tb/results/forms/update-rwanda.php:198 app/users/addUser.php:83
+#: app/tb/requests/forms/edit-rwanda.php:203
+#: app/tb/results/forms/update-rwanda.php:201 app/users/addUser.php:83
 #: app/users/addUser.php:85 app/users/edit-profile.php:97
 #: app/users/edit-profile.php:99 app/users/editUser.php:126
 #: app/users/editUser.php:128 app/vl/requests/forms/add-cameroon.php:312
@@ -14916,9 +14987,9 @@ msgstr "Veuillez saisir le numéro de passeport"
 #: app/tb/requests/forms/add-burkina-faso.php:308
 #: app/tb/requests/forms/add-rwanda.php:296
 #: app/tb/requests/forms/edit-burkina-faso.php:328
-#: app/tb/requests/forms/edit-rwanda.php:300
+#: app/tb/requests/forms/edit-rwanda.php:303
 #: app/tb/results/forms/update-burkina-faso.php:328
-#: app/tb/results/forms/update-rwanda.php:298
+#: app/tb/results/forms/update-rwanda.php:301
 msgid "SPECIMEN INFORMATION"
 msgstr "INFORMATIONS SUR LES SPÉCIMENS"
 
@@ -15032,12 +15103,12 @@ msgstr "Échantillon envoyé le"
 #: app/covid-19/results/forms/update-cameroon-result.php:302
 #: app/tb/requests/forms/add-rwanda.php:311
 #: app/tb/requests/forms/add-rwanda.php:386
-#: app/tb/requests/forms/edit-rwanda.php:315
-#: app/tb/requests/forms/edit-rwanda.php:406
-#: app/tb/requests/forms/edit-rwanda.php:537
-#: app/tb/results/forms/update-rwanda.php:313
-#: app/tb/results/forms/update-rwanda.php:405
-#: app/tb/results/forms/update-rwanda.php:536
+#: app/tb/requests/forms/edit-rwanda.php:318
+#: app/tb/requests/forms/edit-rwanda.php:409
+#: app/tb/requests/forms/edit-rwanda.php:540
+#: app/tb/results/forms/update-rwanda.php:316
+#: app/tb/results/forms/update-rwanda.php:408
+#: app/tb/results/forms/update-rwanda.php:539
 msgid "Please choose specimen type"
 msgstr "Veuillez choisir le type de spécimen"
 
@@ -15177,10 +15248,10 @@ msgstr "Date de réception"
 #: app/tb/requests/forms/edit-burkina-faso.php:382
 #: app/tb/requests/forms/edit-burkina-faso.php:401
 #: app/tb/requests/forms/edit-burkina-faso.php:405
-#: app/tb/requests/forms/edit-rwanda.php:363
-#: app/tb/requests/forms/edit-rwanda.php:444
-#: app/tb/requests/forms/edit-rwanda.php:507
-#: app/tb/requests/forms/edit-rwanda.php:574
+#: app/tb/requests/forms/edit-rwanda.php:366
+#: app/tb/requests/forms/edit-rwanda.php:447
+#: app/tb/requests/forms/edit-rwanda.php:510
+#: app/tb/requests/forms/edit-rwanda.php:577
 #: app/tb/requests/forms/edit-sierraleone.php:175
 #: app/tb/requests/forms/edit-sierraleone.php:450
 #: app/tb/requests/forms/edit-sierraleone.php:456
@@ -15194,10 +15265,10 @@ msgstr "Date de réception"
 #: app/tb/results/forms/update-burkina-faso.php:397
 #: app/tb/results/forms/update-burkina-faso.php:403
 #: app/tb/results/forms/update-burkina-faso.php:408
-#: app/tb/results/forms/update-rwanda.php:362
-#: app/tb/results/forms/update-rwanda.php:443
-#: app/tb/results/forms/update-rwanda.php:506
-#: app/tb/results/forms/update-rwanda.php:573
+#: app/tb/results/forms/update-rwanda.php:365
+#: app/tb/results/forms/update-rwanda.php:446
+#: app/tb/results/forms/update-rwanda.php:509
+#: app/tb/results/forms/update-rwanda.php:576
 #: app/tb/results/forms/update-sierraleone.php:161
 #: app/tb/results/forms/update-sierraleone.php:307
 #: app/tb/results/forms/update-sierraleone.php:371
@@ -15250,10 +15321,10 @@ msgstr "Veuillez saisir la date"
 #: app/covid-19/results/forms/update-cameroon-result.php:333
 #: app/eid/results/forms/update-cameroon-result.php:519
 #: app/tb/requests/forms/add-rwanda.php:356
-#: app/tb/requests/forms/edit-rwanda.php:363
-#: app/tb/requests/forms/edit-rwanda.php:507
-#: app/tb/results/forms/update-rwanda.php:362
-#: app/tb/results/forms/update-rwanda.php:506
+#: app/tb/requests/forms/edit-rwanda.php:366
+#: app/tb/requests/forms/edit-rwanda.php:510
+#: app/tb/results/forms/update-rwanda.php:365
+#: app/tb/results/forms/update-rwanda.php:509
 msgid "Please enter sample receipt date"
 msgstr "Veuillez entrer la date de réception"
 
@@ -15317,11 +15388,11 @@ msgstr "Veuillez sélectionner un point de testing"
 #: app/tb/requests/forms/add-burkina-faso.php:404
 #: app/tb/requests/forms/add-rwanda.php:369
 #: app/tb/requests/forms/edit-burkina-faso.php:425
-#: app/tb/requests/forms/edit-rwanda.php:376
-#: app/tb/requests/forms/edit-rwanda.php:520
+#: app/tb/requests/forms/edit-rwanda.php:379
+#: app/tb/requests/forms/edit-rwanda.php:523
 #: app/tb/results/forms/update-burkina-faso.php:428
-#: app/tb/results/forms/update-rwanda.php:375
-#: app/tb/results/forms/update-rwanda.php:519
+#: app/tb/results/forms/update-rwanda.php:378
+#: app/tb/results/forms/update-rwanda.php:522
 msgid "Reason for Rejection"
 msgstr "Motif du rejet"
 
@@ -15345,11 +15416,11 @@ msgstr "Veuillez sélectionner le motif du rejet"
 #: app/tb/requests/forms/add-burkina-faso.php:411
 #: app/tb/requests/forms/add-rwanda.php:378
 #: app/tb/requests/forms/edit-burkina-faso.php:444
-#: app/tb/requests/forms/edit-rwanda.php:398
-#: app/tb/requests/forms/edit-rwanda.php:529
+#: app/tb/requests/forms/edit-rwanda.php:401
+#: app/tb/requests/forms/edit-rwanda.php:532
 #: app/tb/results/forms/update-burkina-faso.php:447
-#: app/tb/results/forms/update-rwanda.php:397
-#: app/tb/results/forms/update-rwanda.php:528
+#: app/tb/results/forms/update-rwanda.php:400
+#: app/tb/results/forms/update-rwanda.php:531
 #: app/vl/requests/forms/add-burkina-faso.php:538
 #: app/vl/requests/forms/add-cameroon.php:579
 #: app/vl/requests/forms/add-drc.php:510
@@ -15621,7 +15692,7 @@ msgstr "COVID-19-FORMULAIRE DE DEMANDE DE TEST DE LABORATOIRE DE L'OMS"
 #: app/covid-19/requests/forms/edit-cameroon.php:70
 #: app/covid-19/results/forms/update-cameroon-result.php:75
 #: app/generic-tests/requests/edit-request.php:384
-#: app/tb/requests/forms/edit-rwanda.php:55
+#: app/tb/requests/forms/edit-rwanda.php:58
 msgid "Edit Request"
 msgstr "Modifier la demande"
 
@@ -15633,8 +15704,8 @@ msgstr "Veuillez saisir l'ID de l'échantillon"
 #: app/covid-19/requests/forms/edit-cameroon.php:134
 #: app/covid-19/results/forms/update-cameroon-result.php:140
 #: app/tb/requests/forms/add-rwanda.php:99
-#: app/tb/requests/forms/edit-rwanda.php:103
-#: app/tb/results/forms/update-rwanda.php:101
+#: app/tb/requests/forms/edit-rwanda.php:106
+#: app/tb/results/forms/update-rwanda.php:104
 msgid "Please choose County"
 msgstr "Veuillez choisir le comté"
 
@@ -15644,8 +15715,8 @@ msgstr "Veuillez choisir le comté"
 #: app/eid/requests/forms/edit-drc.php:129
 #: app/eid/results/forms/update-drc-result.php:111
 #: app/tb/requests/forms/add-rwanda.php:93
-#: app/tb/requests/forms/edit-rwanda.php:97
-#: app/tb/results/forms/update-rwanda.php:95
+#: app/tb/requests/forms/edit-rwanda.php:100
+#: app/tb/results/forms/update-rwanda.php:98
 #: app/vl/requests/forms/add-drc.php:115
 #: app/vl/results/forms/update-drc-result.php:142
 msgid "Please choose facility"
@@ -15689,8 +15760,8 @@ msgstr "Cas Âge (années)"
 #: app/covid-19/requests/forms/edit-cameroon.php:233
 #: app/covid-19/results/forms/update-cameroon-result.php:202
 #: app/tb/requests/forms/add-rwanda.php:164
-#: app/tb/requests/forms/edit-rwanda.php:168
-#: app/tb/results/forms/update-rwanda.php:166
+#: app/tb/requests/forms/edit-rwanda.php:171
+#: app/tb/results/forms/update-rwanda.php:169
 msgid "Age (in years)"
 msgstr "Âge (en années)"
 
@@ -15818,11 +15889,11 @@ msgstr "Résultat final"
 #: app/tb/requests/forms/add-burkina-faso.php:462
 #: app/tb/requests/forms/add-rwanda.php:428
 #: app/tb/requests/forms/edit-burkina-faso.php:512
-#: app/tb/requests/forms/edit-rwanda.php:449
-#: app/tb/requests/forms/edit-rwanda.php:579
+#: app/tb/requests/forms/edit-rwanda.php:452
+#: app/tb/requests/forms/edit-rwanda.php:582
 #: app/tb/results/forms/update-burkina-faso.php:515
-#: app/tb/results/forms/update-rwanda.php:448
-#: app/tb/results/forms/update-rwanda.php:578
+#: app/tb/results/forms/update-rwanda.php:451
+#: app/tb/results/forms/update-rwanda.php:581
 #: app/vl/requests/forms/add-burkina-faso.php:570
 #: app/vl/requests/forms/add-cameroon.php:619
 #: app/vl/requests/forms/edit-burkina-faso.php:657
@@ -15841,10 +15912,10 @@ msgstr "Révisé par"
 #: app/generic-tests/requests/edit-request.php:855
 #: app/generic-tests/results/update-generic-test-result.php:815
 #: app/tb/requests/forms/add-rwanda.php:429
-#: app/tb/requests/forms/edit-rwanda.php:450
-#: app/tb/requests/forms/edit-rwanda.php:580
-#: app/tb/results/forms/update-rwanda.php:449
-#: app/tb/results/forms/update-rwanda.php:579
+#: app/tb/requests/forms/edit-rwanda.php:453
+#: app/tb/requests/forms/edit-rwanda.php:583
+#: app/tb/results/forms/update-rwanda.php:452
+#: app/tb/results/forms/update-rwanda.php:582
 #: app/vl/requests/forms/add-cameroon.php:621
 #: app/vl/requests/forms/edit-cameroon.php:688
 #: app/vl/results/forms/update-cameroon-result.php:692
@@ -15866,15 +15937,15 @@ msgstr "Veuillez choisir examiné par"
 #: app/tb/requests/forms/add-rwanda.php:434
 #: app/tb/requests/forms/add-rwanda.php:435
 #: app/tb/requests/forms/edit-burkina-faso.php:518
-#: app/tb/requests/forms/edit-rwanda.php:455
-#: app/tb/requests/forms/edit-rwanda.php:456
-#: app/tb/requests/forms/edit-rwanda.php:585
-#: app/tb/requests/forms/edit-rwanda.php:586
+#: app/tb/requests/forms/edit-rwanda.php:458
+#: app/tb/requests/forms/edit-rwanda.php:459
+#: app/tb/requests/forms/edit-rwanda.php:588
+#: app/tb/requests/forms/edit-rwanda.php:589
 #: app/tb/results/forms/update-burkina-faso.php:521
-#: app/tb/results/forms/update-rwanda.php:454
-#: app/tb/results/forms/update-rwanda.php:455
-#: app/tb/results/forms/update-rwanda.php:584
-#: app/tb/results/forms/update-rwanda.php:585
+#: app/tb/results/forms/update-rwanda.php:457
+#: app/tb/results/forms/update-rwanda.php:458
+#: app/tb/results/forms/update-rwanda.php:587
+#: app/tb/results/forms/update-rwanda.php:588
 #: app/vl/requests/forms/add-cameroon.php:615
 #: app/vl/requests/forms/edit-cameroon.php:682
 #: app/vl/results/forms/update-cameroon-result.php:686
@@ -15889,10 +15960,10 @@ msgstr "Examiné le"
 #: app/generic-tests/requests/edit-request.php:864
 #: app/generic-tests/results/update-generic-test-result.php:824
 #: app/tb/requests/forms/add-rwanda.php:435
-#: app/tb/requests/forms/edit-rwanda.php:456
-#: app/tb/requests/forms/edit-rwanda.php:586
-#: app/tb/results/forms/update-rwanda.php:455
-#: app/tb/results/forms/update-rwanda.php:585
+#: app/tb/requests/forms/edit-rwanda.php:459
+#: app/tb/requests/forms/edit-rwanda.php:589
+#: app/tb/results/forms/update-rwanda.php:458
+#: app/tb/results/forms/update-rwanda.php:588
 #: app/vl/requests/forms/add-cameroon.php:615
 #: app/vl/requests/forms/edit-cameroon.php:682
 #: app/vl/results/forms/update-cameroon-result.php:686
@@ -15910,10 +15981,10 @@ msgstr "Veuillez saisir le statut de l'échantillon"
 #: app/generic-tests/results/update-generic-test-result.php:833
 #: app/generic-tests/results/update-generic-test-result.php:848
 #: app/tb/requests/forms/add-rwanda.php:441
-#: app/tb/requests/forms/edit-rwanda.php:462
-#: app/tb/requests/forms/edit-rwanda.php:592
-#: app/tb/results/forms/update-rwanda.php:461
-#: app/tb/results/forms/update-rwanda.php:591
+#: app/tb/requests/forms/edit-rwanda.php:465
+#: app/tb/requests/forms/edit-rwanda.php:595
+#: app/tb/results/forms/update-rwanda.php:464
+#: app/tb/results/forms/update-rwanda.php:594
 #: app/vl/requests/forms/add-cameroon.php:637
 msgid "Please choose approved by"
 msgstr "Veuillez choisir approuvé par"
@@ -16075,10 +16146,10 @@ msgstr "Veuillez saisir reçu le"
 #: app/covid-19/results/covid-19-qc-data.php:87
 #: app/covid-19/results/edit-covid-19-qc-data.php:186
 #: app/tb/requests/forms/add-rwanda.php:422
-#: app/tb/requests/forms/edit-rwanda.php:443
-#: app/tb/requests/forms/edit-rwanda.php:573
-#: app/tb/results/forms/update-rwanda.php:442
-#: app/tb/results/forms/update-rwanda.php:572
+#: app/tb/requests/forms/edit-rwanda.php:446
+#: app/tb/requests/forms/edit-rwanda.php:576
+#: app/tb/results/forms/update-rwanda.php:445
+#: app/tb/results/forms/update-rwanda.php:575
 msgid "Tested On"
 msgstr "Testé sur"
 
@@ -17133,11 +17204,11 @@ msgstr "Machine utilisée pour le test"
 #: app/tb/requests/forms/add-burkina-faso.php:472
 #: app/tb/requests/forms/add-rwanda.php:440
 #: app/tb/requests/forms/edit-burkina-faso.php:522
-#: app/tb/requests/forms/edit-rwanda.php:461
-#: app/tb/requests/forms/edit-rwanda.php:591
+#: app/tb/requests/forms/edit-rwanda.php:464
+#: app/tb/requests/forms/edit-rwanda.php:594
 #: app/tb/results/forms/update-burkina-faso.php:525
-#: app/tb/results/forms/update-rwanda.php:460
-#: app/tb/results/forms/update-rwanda.php:590
+#: app/tb/results/forms/update-rwanda.php:463
+#: app/tb/results/forms/update-rwanda.php:593
 #: app/vl/requests/forms/add-burkina-faso.php:621
 #: app/vl/requests/forms/add-cameroon.php:635
 #: app/vl/requests/forms/edit-burkina-faso.php:711
@@ -17194,9 +17265,9 @@ msgstr "Commentaires du Technicien labo"
 #: app/system-admin/instance-overview/instanceIndex.php:116
 #: app/tb/requests/forms/add-burkina-faso.php:494
 #: app/tb/requests/forms/add-rwanda.php:490
-#: app/tb/requests/forms/edit-rwanda.php:664
+#: app/tb/requests/forms/edit-rwanda.php:669
 #: app/tb/results/forms/update-burkina-faso.php:547
-#: app/tb/results/forms/update-rwanda.php:661
+#: app/tb/results/forms/update-rwanda.php:666
 #: app/vl/requests/forms/add-burkina-faso.php:673
 #: app/vl/requests/forms/add-cameroon.php:696
 #: app/vl/requests/forms/edit-cameroon.php:769
@@ -17692,15 +17763,15 @@ msgstr "Veuillez choisir le motif du rejet"
 #: app/tb/requests/forms/add-rwanda.php:446
 #: app/tb/requests/forms/add-rwanda.php:447
 #: app/tb/requests/forms/edit-burkina-faso.php:528
-#: app/tb/requests/forms/edit-rwanda.php:467
-#: app/tb/requests/forms/edit-rwanda.php:468
-#: app/tb/requests/forms/edit-rwanda.php:597
-#: app/tb/requests/forms/edit-rwanda.php:598
+#: app/tb/requests/forms/edit-rwanda.php:470
+#: app/tb/requests/forms/edit-rwanda.php:471
+#: app/tb/requests/forms/edit-rwanda.php:600
+#: app/tb/requests/forms/edit-rwanda.php:601
 #: app/tb/results/forms/update-burkina-faso.php:531
-#: app/tb/results/forms/update-rwanda.php:466
-#: app/tb/results/forms/update-rwanda.php:467
-#: app/tb/results/forms/update-rwanda.php:596
-#: app/tb/results/forms/update-rwanda.php:597
+#: app/tb/results/forms/update-rwanda.php:469
+#: app/tb/results/forms/update-rwanda.php:470
+#: app/tb/results/forms/update-rwanda.php:599
+#: app/tb/results/forms/update-rwanda.php:600
 #: app/vl/requests/forms/add-cameroon.php:631
 msgid "Approved on"
 msgstr "Validé le"
@@ -17741,7 +17812,7 @@ msgstr "Sélectionner Approuvé par"
 #: app/vl/requests/forms/edit-cameroon.php:892
 #: app/vl/requests/forms/edit-drc.php:1103
 #: app/vl/results/forms/update-drc-result.php:810
-#: public/assets/js/main.js.php:474
+#: public/assets/js/main.js.php:483
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères pour rechercher"
 
@@ -21656,7 +21727,7 @@ msgstr "Tous les types de tests disponibles ont été sélectionnés"
 msgid "Configuration updated successfully"
 msgstr "La configuration a été mise à jour avec succès"
 
-#: app/header.php:33 app/login/login.php:62
+#: app/header.php:33 app/login/login.php:76
 msgid "Lab Sample Management Module"
 msgstr "Module de gestion des échantillons dU labo"
 
@@ -21697,9 +21768,8 @@ msgstr "Modifier le profil"
 msgid "Sign out"
 msgstr "Déconnexion"
 
-#: app/header.php:365 app/support/index.php:105
-#: app/vl/requests/addFacilityModal.php:246
-#: app/vl/requests/facilitiesModal.php:134
+#: app/header.php:365 app/support/index.php:109
+#: app/system-admin/admin-header.php:180
 msgid "Unable to load this page or resource"
 msgstr "Impossible de charger cette page ou cette ressource"
 
@@ -23011,30 +23081,41 @@ msgstr "Instruments"
 msgid "Results imported successfully"
 msgstr "Résultats importés avec succès"
 
-#: app/login/login.php:65
+#: app/login/login.php:34
+msgid "Your session expired due to inactivity. Please log in again."
+msgstr ""
+"Votre session a expiré pour cause d'inactivité. Veuillez vous reconnecter."
+
+#: app/login/login.php:41
+msgid "Database connection failed. Please check your database settings"
+msgstr ""
+"La connexion à la base de données a échoué. Veuillez vérifier les paramètres "
+"de votre base de données"
+
+#: app/login/login.php:79
 msgid "Sample Management System"
 msgstr "Système de gestion des échantillons"
 
-#: app/login/login.php:92 app/login/login.php:213
+#: app/login/login.php:106 app/login/login.php:240
 #: app/system-admin/login/login.php:85
 msgid "Login"
 msgstr "Connexion"
 
-#: app/login/login.php:187
+#: app/login/login.php:214
 msgid "Please enter your lab name"
 msgstr "Veuillez saisir le nom de votre laboratoire"
 
-#: app/login/login.php:191 app/system-admin/login/login.php:76
+#: app/login/login.php:218 app/system-admin/login/login.php:76
 #: app/system-admin/setup/index.php:86 app/users/editUser.php:107
 #: app/users/editUser.php:109 app/users/users.php:30 app/users/users.php:57
 msgid "User Name"
 msgstr "Nom d'utilisateur"
 
-#: app/login/login.php:191
+#: app/login/login.php:218
 msgid "Please enter your user name"
 msgstr "Veuillez entrer votre nom d’utilisateur"
 
-#: app/login/login.php:196 app/setup/index.php:430
+#: app/login/login.php:223 app/setup/index.php:430
 #: app/system-admin/edit-config/resetPassword.php:36
 #: app/system-admin/edit-config/resetPassword.php:38
 #: app/system-admin/login/login.php:80
@@ -23049,24 +23130,24 @@ msgstr "Veuillez entrer votre nom d’utilisateur"
 msgid "Password"
 msgstr "Mot de passe"
 
-#: app/login/login.php:196
+#: app/login/login.php:223
 msgid "Please enter your password"
 msgstr "Veuillez saisir votre mot de passe"
 
-#: app/login/login.php:201
+#: app/login/login.php:228
 msgid "Get New Image"
 msgstr "Obtenir une nouvelle image"
 
-#: app/login/login.php:206
+#: app/login/login.php:233
 msgid "Please enter the text from the image"
 msgstr "Veuillez saisir le texte de l'image"
 
-#: app/login/login.php:272
+#: app/login/login.php:299
 msgid "Text you entered from the image is incorrect. Please try again"
 msgstr ""
 "Le texte que vous avez saisi dans l'image est incorrect. Veuillez réessayer"
 
-#: app/login/login.php:282
+#: app/login/login.php:309
 msgid "Please enter the text from the image to proceed."
 msgstr "Veuillez saisir le texte de l'image pour continuer."
 
@@ -23594,7 +23675,8 @@ msgstr "Tests de laboratoire, example Manifeste d'orientation"
 msgid "Hepatitis Sample Referral Manifest"
 msgstr "Manifeste de renvoi de l'échantillon d'hépatite"
 
-#: app/specimen-referral-manifest/generateTBManifest.php:57
+#: app/specimen-referral-manifest/generateTBManifest.php:56
+#: app/tb/results/pdf/generate-tb-manifest.php:84
 msgid "TB Sample Referral Manifest"
 msgstr "Modèle de manifeste d'orientation de la tuberculose"
 
@@ -23722,10 +23804,6 @@ msgstr "Historique de connexion de l’utilisateur"
 #: app/system-admin/reset-password/reset-password.php:26
 msgid "Reset Password"
 msgstr "Réinitialiser le mot de passe"
-
-#: app/system-admin/admin-header.php:176
-msgid "some problem"
-msgstr "un problème"
 
 #: app/system-admin/api-stats/api-stats.php:2
 #: app/system-admin/instance-overview/instanceIndex.php:9
@@ -24323,8 +24401,8 @@ msgid "QC Test Kits"
 msgstr "Kits de test QC"
 
 #: app/system/translate-strings.php:46 app/tb/requests/forms/add-rwanda.php:248
-#: app/tb/requests/forms/edit-rwanda.php:252
-#: app/tb/results/forms/update-rwanda.php:250
+#: app/tb/requests/forms/edit-rwanda.php:255
+#: app/tb/results/forms/update-rwanda.php:253
 msgid "Risk Factors"
 msgstr "Facteurs de risque"
 
@@ -25292,7 +25370,7 @@ msgstr "Tuberculose-Demande de test"
 #: app/tb/requests/forms/add-burkina-faso.php:60
 #: app/tb/requests/forms/add-rwanda.php:47
 #: app/tb/requests/forms/edit-burkina-faso.php:80
-#: app/tb/requests/forms/edit-rwanda.php:52
+#: app/tb/requests/forms/edit-rwanda.php:55
 #: app/tb/results/forms/update-burkina-faso.php:80
 #: app/tb/results/forms/update-sierraleone.php:89
 msgid "TB LABORATORY TEST REQUEST FORM"
@@ -25349,9 +25427,9 @@ msgstr "Code TARV du patient"
 #: app/tb/requests/forms/add-burkina-faso.php:183
 #: app/tb/requests/forms/add-rwanda.php:189
 #: app/tb/requests/forms/edit-burkina-faso.php:203
-#: app/tb/requests/forms/edit-rwanda.php:193
+#: app/tb/requests/forms/edit-rwanda.php:196
 #: app/tb/results/forms/update-burkina-faso.php:202
-#: app/tb/results/forms/update-rwanda.php:191
+#: app/tb/results/forms/update-rwanda.php:194
 msgid "Surname"
 msgstr "Nom"
 
@@ -25376,9 +25454,9 @@ msgstr "Population déplacée"
 #: app/tb/requests/forms/add-burkina-faso.php:238
 #: app/tb/requests/forms/add-rwanda.php:199
 #: app/tb/requests/forms/edit-burkina-faso.php:258
-#: app/tb/requests/forms/edit-rwanda.php:203
+#: app/tb/requests/forms/edit-rwanda.php:206
 #: app/tb/results/forms/update-burkina-faso.php:258
-#: app/tb/results/forms/update-rwanda.php:201
+#: app/tb/results/forms/update-rwanda.php:204
 msgid "Type of patient"
 msgstr "Type de patient"
 
@@ -25449,9 +25527,9 @@ msgstr "Suivi"
 #: app/tb/requests/forms/add-burkina-faso.php:312
 #: app/tb/requests/forms/add-rwanda.php:305
 #: app/tb/requests/forms/edit-burkina-faso.php:332
-#: app/tb/requests/forms/edit-rwanda.php:309
+#: app/tb/requests/forms/edit-rwanda.php:312
 #: app/tb/results/forms/update-burkina-faso.php:332
-#: app/tb/results/forms/update-rwanda.php:307
+#: app/tb/results/forms/update-rwanda.php:310
 msgid "Date Specimen Collected"
 msgstr "Date du prélèvement"
 
@@ -25530,50 +25608,50 @@ msgid "TB LAM Result"
 msgstr "TB LAM Résultat"
 
 #: app/tb/requests/forms/add-rwanda.php:71
-#: app/tb/requests/forms/edit-rwanda.php:75
-#: app/tb/results/forms/update-rwanda.php:73
+#: app/tb/requests/forms/edit-rwanda.php:78
+#: app/tb/results/forms/update-rwanda.php:76
 msgid "FACILITY INFORMATION"
 msgstr "INFORMATIONS SUR LES INSTALLATIONS"
 
 #: app/tb/requests/forms/add-rwanda.php:98
-#: app/tb/requests/forms/edit-rwanda.php:102
-#: app/tb/results/forms/update-rwanda.php:100
+#: app/tb/requests/forms/edit-rwanda.php:105
+#: app/tb/results/forms/update-rwanda.php:103
 msgid "Health Facility County"
 msgstr "Établissement de santé Comté"
 
 #: app/tb/requests/forms/add-rwanda.php:106
-#: app/tb/requests/forms/edit-rwanda.php:110
-#: app/tb/results/forms/update-rwanda.php:108
+#: app/tb/requests/forms/edit-rwanda.php:113
+#: app/tb/results/forms/update-rwanda.php:111
 msgid "Health Facility State"
 msgstr "Établissement de santé État"
 
 #: app/tb/requests/forms/add-rwanda.php:112
-#: app/tb/requests/forms/edit-rwanda.php:116
-#: app/tb/results/forms/update-rwanda.php:114
+#: app/tb/requests/forms/edit-rwanda.php:119
+#: app/tb/results/forms/update-rwanda.php:117
 msgid "Affiliated TB Testing Site"
 msgstr "Site affilié de dépistage de la tuberculose"
 
 #: app/tb/requests/forms/add-rwanda.php:113
-#: app/tb/requests/forms/edit-rwanda.php:117
-#: app/tb/results/forms/update-rwanda.php:115
+#: app/tb/requests/forms/edit-rwanda.php:120
+#: app/tb/results/forms/update-rwanda.php:118
 msgid "Please select afflicated laboratory"
 msgstr "Veuillez sélectionner le laboratoire concerné"
 
 #: app/tb/requests/forms/add-rwanda.php:122
-#: app/tb/requests/forms/edit-rwanda.php:126
-#: app/tb/results/forms/update-rwanda.php:124
+#: app/tb/requests/forms/edit-rwanda.php:129
+#: app/tb/results/forms/update-rwanda.php:127
 msgid "Please select Testing Laboratory"
 msgstr "Veuillez sélectionner le laboratoire d'essai"
 
 #: app/tb/requests/forms/add-rwanda.php:132
-#: app/tb/requests/forms/edit-rwanda.php:136
-#: app/tb/results/forms/update-rwanda.php:134
+#: app/tb/requests/forms/edit-rwanda.php:139
+#: app/tb/results/forms/update-rwanda.php:137
 msgid "PATIENT DETAILS"
 msgstr "LE PATIENT"
 
 #: app/tb/requests/forms/add-rwanda.php:135
-#: app/tb/requests/forms/edit-rwanda.php:139
-#: app/tb/results/forms/update-rwanda.php:137
+#: app/tb/requests/forms/edit-rwanda.php:142
+#: app/tb/results/forms/update-rwanda.php:140
 msgid ""
 "Complete full information on patient identification, contact and type of "
 "patient by TB program definition"
@@ -25582,56 +25660,56 @@ msgstr ""
 "patient par définition du programme de lutte contre la tuberculose"
 
 #: app/tb/requests/forms/add-rwanda.php:138
-#: app/tb/requests/forms/edit-rwanda.php:142
-#: app/tb/results/forms/update-rwanda.php:140
+#: app/tb/requests/forms/edit-rwanda.php:145
+#: app/tb/results/forms/update-rwanda.php:143
 msgid "Enter Patient ID or Patient Name"
 msgstr "Saisir l'identifiant ou le nom du patient"
 
 #: app/tb/requests/forms/add-rwanda.php:154
-#: app/tb/requests/forms/edit-rwanda.php:158
-#: app/tb/results/forms/update-rwanda.php:156
+#: app/tb/requests/forms/edit-rwanda.php:161
+#: app/tb/results/forms/update-rwanda.php:159
 msgid "e-TB tracker No."
 msgstr "e-TB tracker No."
 
 #: app/tb/requests/forms/add-rwanda.php:155
-#: app/tb/requests/forms/edit-rwanda.php:159
-#: app/tb/results/forms/update-rwanda.php:157
+#: app/tb/requests/forms/edit-rwanda.php:162
+#: app/tb/results/forms/update-rwanda.php:160
 msgid "Enter the e-TB tracker number"
 msgstr "Saisir le numéro du tracker e-TB"
 
 #: app/tb/requests/forms/add-rwanda.php:155
-#: app/tb/requests/forms/edit-rwanda.php:159
-#: app/tb/results/forms/update-rwanda.php:157
+#: app/tb/requests/forms/edit-rwanda.php:162
+#: app/tb/results/forms/update-rwanda.php:160
 msgid "Please enter the e-TB tracker number"
 msgstr "Veuillez saisir le numéro de suivi de l'e-TB"
 
 #: app/tb/requests/forms/add-rwanda.php:171
-#: app/tb/requests/forms/edit-rwanda.php:175
-#: app/tb/results/forms/update-rwanda.php:173
+#: app/tb/requests/forms/edit-rwanda.php:178
+#: app/tb/results/forms/update-rwanda.php:176
 msgid "Please enter Patient ID"
 msgstr "Veuillez saisir l'identifiant du patient"
 
 #: app/tb/requests/forms/add-rwanda.php:186
-#: app/tb/requests/forms/edit-rwanda.php:190
-#: app/tb/results/forms/update-rwanda.php:188
+#: app/tb/requests/forms/edit-rwanda.php:193
+#: app/tb/results/forms/update-rwanda.php:191
 msgid "Please enter First name"
 msgstr "Veuillez saisir votre prénom"
 
 #: app/tb/requests/forms/add-rwanda.php:190
-#: app/tb/requests/forms/edit-rwanda.php:194
-#: app/tb/results/forms/update-rwanda.php:192
+#: app/tb/requests/forms/edit-rwanda.php:197
+#: app/tb/results/forms/update-rwanda.php:195
 msgid "Please enter Last name"
 msgstr "Veuillez saisir votre nom de famille"
 
 #: app/tb/requests/forms/add-rwanda.php:195
-#: app/tb/requests/forms/edit-rwanda.php:199
-#: app/tb/results/forms/update-rwanda.php:197
+#: app/tb/requests/forms/edit-rwanda.php:202
+#: app/tb/results/forms/update-rwanda.php:200
 msgid "Phone contact"
 msgstr "Contact par téléphone"
 
 #: app/tb/requests/forms/add-rwanda.php:196
-#: app/tb/requests/forms/edit-rwanda.php:200
-#: app/tb/results/forms/update-rwanda.php:198 app/users/addUser.php:85
+#: app/tb/requests/forms/edit-rwanda.php:203
+#: app/tb/results/forms/update-rwanda.php:201 app/users/addUser.php:85
 #: app/users/edit-profile.php:99 app/users/editUser.php:128
 #: app/vl/requests/forms/add-drc.php:127
 #: app/vl/results/forms/update-drc-result.php:154
@@ -25639,32 +25717,32 @@ msgid "Please enter phone number"
 msgstr "Veuillez saisir votre numéro de téléphone"
 
 #: app/tb/requests/forms/add-rwanda.php:200
-#: app/tb/requests/forms/edit-rwanda.php:204
-#: app/tb/results/forms/update-rwanda.php:202
+#: app/tb/requests/forms/edit-rwanda.php:207
+#: app/tb/results/forms/update-rwanda.php:205
 msgid "Please select the type of patient"
 msgstr "Veuillez sélectionner le type de patient"
 
 #: app/tb/requests/forms/add-rwanda.php:208
-#: app/tb/requests/forms/edit-rwanda.php:212
-#: app/tb/results/forms/update-rwanda.php:210
+#: app/tb/requests/forms/edit-rwanda.php:215
+#: app/tb/results/forms/update-rwanda.php:213
 msgid "Enter type of patient if others"
 msgstr "Indiquer le type de patient s'il s'agit d'autres personnes"
 
 #: app/tb/requests/forms/add-rwanda.php:208
-#: app/tb/requests/forms/edit-rwanda.php:212
-#: app/tb/results/forms/update-rwanda.php:210
+#: app/tb/requests/forms/edit-rwanda.php:215
+#: app/tb/results/forms/update-rwanda.php:213
 msgid "Please enter type of patient if others"
 msgstr "Veuillez indiquer le type de patient s'il y en a d'autres"
 
 #: app/tb/requests/forms/add-rwanda.php:215
-#: app/tb/requests/forms/edit-rwanda.php:219
-#: app/tb/results/forms/update-rwanda.php:217
+#: app/tb/requests/forms/edit-rwanda.php:222
+#: app/tb/results/forms/update-rwanda.php:220
 msgid "TREATMENT AND RISK FACTORS INFORMATION"
 msgstr "INFORMATIONS SUR LE TRAITEMENT ET LES FACTEURS DE RISQUE"
 
 #: app/tb/requests/forms/add-rwanda.php:218
-#: app/tb/requests/forms/edit-rwanda.php:222
-#: app/tb/results/forms/update-rwanda.php:220
+#: app/tb/requests/forms/edit-rwanda.php:225
+#: app/tb/results/forms/update-rwanda.php:223
 msgid ""
 "Please complete full information on treatment history, TB regimen and risk "
 "factors"
@@ -25673,97 +25751,97 @@ msgstr ""
 "thérapeutiques, le régime antituberculeux et les facteurs de risque"
 
 #: app/tb/requests/forms/add-rwanda.php:224
-#: app/tb/requests/forms/edit-rwanda.php:228
-#: app/tb/results/forms/update-rwanda.php:226
+#: app/tb/requests/forms/edit-rwanda.php:231
+#: app/tb/results/forms/update-rwanda.php:229
 msgid "Is patient initiated on TB treatment?"
 msgstr "Le patient a-t-il été mis sous traitement antituberculeux ?"
 
 #: app/tb/requests/forms/add-rwanda.php:232
-#: app/tb/requests/forms/edit-rwanda.php:236
-#: app/tb/results/forms/update-rwanda.php:234
+#: app/tb/requests/forms/edit-rwanda.php:239
+#: app/tb/results/forms/update-rwanda.php:237
 msgid "Date of treatment Initiation"
 msgstr "Date de début du traitement"
 
 #: app/tb/requests/forms/add-rwanda.php:238
-#: app/tb/requests/forms/edit-rwanda.php:242
-#: app/tb/results/forms/update-rwanda.php:240
+#: app/tb/requests/forms/edit-rwanda.php:245
+#: app/tb/results/forms/update-rwanda.php:243
 msgid "Current regimen"
 msgstr "Régime actuel"
 
 #: app/tb/requests/forms/add-rwanda.php:239
-#: app/tb/requests/forms/edit-rwanda.php:243
-#: app/tb/results/forms/update-rwanda.php:241
+#: app/tb/requests/forms/edit-rwanda.php:246
+#: app/tb/results/forms/update-rwanda.php:244
 msgid "Enter the current regimen"
 msgstr "Saisir le régime actuel"
 
 #: app/tb/requests/forms/add-rwanda.php:239
-#: app/tb/requests/forms/edit-rwanda.php:243
-#: app/tb/results/forms/update-rwanda.php:241
+#: app/tb/requests/forms/edit-rwanda.php:246
+#: app/tb/results/forms/update-rwanda.php:244
 msgid "Please enter current regimen"
 msgstr "Veuillez indiquer le régime actuel"
 
 #: app/tb/requests/forms/add-rwanda.php:270
-#: app/tb/requests/forms/edit-rwanda.php:274
-#: app/tb/results/forms/update-rwanda.php:272
+#: app/tb/requests/forms/edit-rwanda.php:277
+#: app/tb/results/forms/update-rwanda.php:275
 msgid "PURPOSE AND TEST(S) REQUESTED FOR TB DIAGNOSTICS"
 msgstr "OBJECTIF ET TEST(S) DEMANDÉ(S) POUR LES DIAGNOSTICS TB"
 
 #: app/tb/requests/forms/add-rwanda.php:273
-#: app/tb/requests/forms/edit-rwanda.php:277
-#: app/tb/results/forms/update-rwanda.php:275
+#: app/tb/requests/forms/edit-rwanda.php:280
+#: app/tb/results/forms/update-rwanda.php:278
 msgid "Please tick/circle all as applicable below"
 msgstr "Veuillez cocher/circuler toutes les cases applicables ci-dessous"
 
 #: app/tb/requests/forms/add-rwanda.php:279
-#: app/tb/requests/forms/edit-rwanda.php:283
-#: app/tb/results/forms/update-rwanda.php:281
+#: app/tb/requests/forms/edit-rwanda.php:286
+#: app/tb/results/forms/update-rwanda.php:284
 msgid "Purpose of TB test(s)"
 msgstr "Objet du (des) test(s) de dépistage de la tuberculose"
 
 #: app/tb/requests/forms/add-rwanda.php:299
-#: app/tb/requests/forms/edit-rwanda.php:303
-#: app/tb/results/forms/update-rwanda.php:301
+#: app/tb/requests/forms/edit-rwanda.php:306
+#: app/tb/results/forms/update-rwanda.php:304
 msgid "Please complete full information and circle/tick as appropriate"
 msgstr ""
 "Veuillez compléter l'ensemble des informations et entourer/cocher les cases "
 "correspondantes"
 
 #: app/tb/requests/forms/add-rwanda.php:315
-#: app/tb/requests/forms/edit-rwanda.php:319
-#: app/tb/results/forms/update-rwanda.php:317
+#: app/tb/requests/forms/edit-rwanda.php:322
+#: app/tb/results/forms/update-rwanda.php:320
 msgid "Enter specimen type of others"
 msgstr "Saisir le type de spécimen des autres"
 
 #: app/tb/requests/forms/add-rwanda.php:315
-#: app/tb/requests/forms/edit-rwanda.php:319
-#: app/tb/results/forms/update-rwanda.php:317
+#: app/tb/requests/forms/edit-rwanda.php:322
+#: app/tb/results/forms/update-rwanda.php:320
 msgid "Please enter the specimen type if others"
 msgstr "Veuillez indiquer le type de spécimen s'il y en a d'autres"
 
 #: app/tb/requests/forms/add-rwanda.php:320
-#: app/tb/requests/forms/edit-rwanda.php:324
-#: app/tb/results/forms/update-rwanda.php:322
+#: app/tb/requests/forms/edit-rwanda.php:327
+#: app/tb/results/forms/update-rwanda.php:325
 msgid "Is specimen re-ordered as part of corrective action?"
 msgstr ""
 "L'échantillon est-il commandé à nouveau dans le cadre d'une action "
 "corrective ?"
 
 #: app/tb/requests/forms/add-rwanda.php:321
-#: app/tb/requests/forms/edit-rwanda.php:325
-#: app/tb/results/forms/update-rwanda.php:323
+#: app/tb/requests/forms/edit-rwanda.php:328
+#: app/tb/results/forms/update-rwanda.php:326
 msgid "Is specimen re-ordered as part of corrective action"
 msgstr ""
 "L'échantillon est-il commandé à nouveau dans le cadre d'une action corrective"
 
 #: app/tb/requests/forms/add-rwanda.php:336
-#: app/tb/requests/forms/edit-rwanda.php:341
-#: app/tb/results/forms/update-rwanda.php:340
+#: app/tb/requests/forms/edit-rwanda.php:344
+#: app/tb/results/forms/update-rwanda.php:343
 msgid "TEST RESULTS INFORMATION"
 msgstr "INFORMATIONS SUR LES RÉSULTATS DES TESTS"
 
 #: app/tb/requests/forms/add-rwanda.php:339
-#: app/tb/requests/forms/edit-rwanda.php:344
-#: app/tb/results/forms/update-rwanda.php:343
+#: app/tb/requests/forms/edit-rwanda.php:347
+#: app/tb/results/forms/update-rwanda.php:346
 msgid ""
 "Please complete full information and appropriate results with reference to "
 "TB test(s) requested above"
@@ -25773,199 +25851,201 @@ msgstr ""
 "dessus"
 
 #: app/tb/requests/forms/add-rwanda.php:350
-#: app/tb/requests/forms/edit-rwanda.php:357
-#: app/tb/requests/forms/edit-rwanda.php:501
-#: app/tb/results/forms/update-rwanda.php:356
-#: app/tb/results/forms/update-rwanda.php:500
+#: app/tb/requests/forms/edit-rwanda.php:360
+#: app/tb/requests/forms/edit-rwanda.php:504
+#: app/tb/results/forms/update-rwanda.php:359
+#: app/tb/results/forms/update-rwanda.php:503
 msgid "Please select testing laboratory"
 msgstr "Veuillez sélectionner le laboratoire d'essai"
 
 #: app/tb/requests/forms/add-rwanda.php:355
-#: app/tb/requests/forms/edit-rwanda.php:362
-#: app/tb/requests/forms/edit-rwanda.php:506
-#: app/tb/results/forms/update-rwanda.php:361
-#: app/tb/results/forms/update-rwanda.php:505
+#: app/tb/requests/forms/edit-rwanda.php:365
+#: app/tb/requests/forms/edit-rwanda.php:509
+#: app/tb/results/forms/update-rwanda.php:364
+#: app/tb/results/forms/update-rwanda.php:508
 msgid "Date specimen received at TB testing site"
 msgstr ""
 "Date de réception de l'échantillon au centre de dépistage de la tuberculose"
 
 #: app/tb/requests/forms/add-rwanda.php:362
-#: app/tb/requests/forms/edit-rwanda.php:369
-#: app/tb/requests/forms/edit-rwanda.php:513
-#: app/tb/results/forms/update-rwanda.php:368
-#: app/tb/results/forms/update-rwanda.php:512
+#: app/tb/requests/forms/edit-rwanda.php:372
+#: app/tb/requests/forms/edit-rwanda.php:516
+#: app/tb/results/forms/update-rwanda.php:371
+#: app/tb/results/forms/update-rwanda.php:515
 msgid "Please select the Is sample rejected?"
 msgstr "Veuillez sélectionner l'option L'échantillon est-il rejeté ?"
 
 #: app/tb/requests/forms/add-rwanda.php:370
-#: app/tb/requests/forms/edit-rwanda.php:377
-#: app/tb/requests/forms/edit-rwanda.php:521
-#: app/tb/results/forms/update-rwanda.php:376
-#: app/tb/results/forms/update-rwanda.php:520
+#: app/tb/requests/forms/edit-rwanda.php:380
+#: app/tb/requests/forms/edit-rwanda.php:524
+#: app/tb/results/forms/update-rwanda.php:379
+#: app/tb/results/forms/update-rwanda.php:523
 msgid "Please select the reason for rejection"
 msgstr "Veuillez sélectionner le motif du rejet"
 
 #: app/tb/requests/forms/add-rwanda.php:379
-#: app/tb/requests/forms/edit-rwanda.php:399
-#: app/tb/requests/forms/edit-rwanda.php:530
-#: app/tb/results/forms/update-rwanda.php:398
-#: app/tb/results/forms/update-rwanda.php:529
+#: app/tb/requests/forms/edit-rwanda.php:402
+#: app/tb/requests/forms/edit-rwanda.php:533
+#: app/tb/results/forms/update-rwanda.php:401
+#: app/tb/results/forms/update-rwanda.php:532
 msgid "Select rejection date"
 msgstr "Sélectionner la date de rejet"
 
 #: app/tb/requests/forms/add-rwanda.php:379
-#: app/tb/requests/forms/edit-rwanda.php:399
-#: app/tb/requests/forms/edit-rwanda.php:530
-#: app/tb/results/forms/update-rwanda.php:398
-#: app/tb/results/forms/update-rwanda.php:529
+#: app/tb/requests/forms/edit-rwanda.php:402
+#: app/tb/requests/forms/edit-rwanda.php:533
+#: app/tb/results/forms/update-rwanda.php:401
+#: app/tb/results/forms/update-rwanda.php:532
 msgid "Please select the rejection date"
 msgstr "Veuillez sélectionner la date de rejet"
 
 #: app/tb/requests/forms/add-rwanda.php:392
-#: app/tb/requests/forms/edit-rwanda.php:412
-#: app/tb/requests/forms/edit-rwanda.php:543
-#: app/tb/results/forms/update-rwanda.php:411
-#: app/tb/results/forms/update-rwanda.php:542
+#: app/tb/requests/forms/edit-rwanda.php:415
+#: app/tb/requests/forms/edit-rwanda.php:546
+#: app/tb/results/forms/update-rwanda.php:414
+#: app/tb/results/forms/update-rwanda.php:545
 msgid "Please select the test type"
 msgstr "Veuillez sélectionner le type de test"
 
 #: app/tb/requests/forms/add-rwanda.php:393
-#: app/tb/requests/forms/edit-rwanda.php:413
-#: app/tb/requests/forms/edit-rwanda.php:544
-#: app/tb/results/forms/update-rwanda.php:412
-#: app/tb/results/forms/update-rwanda.php:543
+#: app/tb/requests/forms/edit-rwanda.php:416
+#: app/tb/requests/forms/edit-rwanda.php:547
+#: app/tb/results/forms/update-rwanda.php:415
+#: app/tb/results/forms/update-rwanda.php:546
 msgid "Select test type"
 msgstr "Sélectionner le type de test"
 
 #: app/tb/requests/forms/add-rwanda.php:405
-#: app/tb/requests/forms/edit-rwanda.php:425
-#: app/tb/requests/forms/edit-rwanda.php:556
-#: app/tb/results/forms/update-rwanda.php:424
-#: app/tb/results/forms/update-rwanda.php:555
+#: app/tb/requests/forms/edit-rwanda.php:428
+#: app/tb/requests/forms/edit-rwanda.php:559
+#: app/tb/results/forms/update-rwanda.php:427
+#: app/tb/results/forms/update-rwanda.php:558
 msgid "Please select the test result"
 msgstr "Veuillez sélectionner le résultat du test"
 
 #: app/tb/requests/forms/add-rwanda.php:406
-#: app/tb/requests/forms/edit-rwanda.php:426
-#: app/tb/requests/forms/edit-rwanda.php:557
-#: app/tb/requests/forms/edit-rwanda.php:745
-#: app/tb/results/forms/update-rwanda.php:425
-#: app/tb/results/forms/update-rwanda.php:556
-#: app/tb/results/forms/update-rwanda.php:744
+#: app/tb/requests/forms/edit-rwanda.php:429
+#: app/tb/requests/forms/edit-rwanda.php:560
+#: app/tb/requests/forms/edit-rwanda.php:750
+#: app/tb/results/forms/update-rwanda.php:428
+#: app/tb/results/forms/update-rwanda.php:559
+#: app/tb/results/forms/update-rwanda.php:749
 msgid "Select test result"
 msgstr "Sélectionner le résultat du test"
 
 #: app/tb/requests/forms/add-rwanda.php:411
-#: app/tb/requests/forms/edit-rwanda.php:432
-#: app/tb/requests/forms/edit-rwanda.php:562
-#: app/tb/results/forms/update-rwanda.php:431
-#: app/tb/results/forms/update-rwanda.php:561
+#: app/tb/requests/forms/edit-rwanda.php:435
+#: app/tb/requests/forms/edit-rwanda.php:565
+#: app/tb/results/forms/update-rwanda.php:434
+#: app/tb/results/forms/update-rwanda.php:564
 msgid "Please enter comments"
 msgstr "Veuillez entrer vos commentaires"
 
 #: app/tb/requests/forms/add-rwanda.php:417
-#: app/tb/requests/forms/edit-rwanda.php:438
-#: app/tb/requests/forms/edit-rwanda.php:568
-#: app/tb/results/forms/update-rwanda.php:437
-#: app/tb/results/forms/update-rwanda.php:567
+#: app/tb/requests/forms/edit-rwanda.php:441
+#: app/tb/requests/forms/edit-rwanda.php:571
+#: app/tb/results/forms/update-rwanda.php:440
+#: app/tb/results/forms/update-rwanda.php:570
 msgid "Please choose tested by"
 msgstr "Veuillez choisir testé par"
 
 #: app/tb/requests/forms/add-rwanda.php:423
-#: app/tb/requests/forms/edit-rwanda.php:444
-#: app/tb/requests/forms/edit-rwanda.php:574
-#: app/tb/results/forms/update-rwanda.php:443
-#: app/tb/results/forms/update-rwanda.php:573
+#: app/tb/requests/forms/edit-rwanda.php:447
+#: app/tb/requests/forms/edit-rwanda.php:577
+#: app/tb/results/forms/update-rwanda.php:446
+#: app/tb/results/forms/update-rwanda.php:576
 msgid "Please enter sample tested"
 msgstr "Veuillez saisir l'échantillon testé"
 
 #: app/tb/requests/forms/add-rwanda.php:447
-#: app/tb/requests/forms/edit-rwanda.php:468
-#: app/tb/requests/forms/edit-rwanda.php:598
-#: app/tb/results/forms/update-rwanda.php:467
-#: app/tb/results/forms/update-rwanda.php:597
+#: app/tb/requests/forms/edit-rwanda.php:471
+#: app/tb/requests/forms/edit-rwanda.php:601
+#: app/tb/results/forms/update-rwanda.php:470
+#: app/tb/results/forms/update-rwanda.php:600
 msgid "Please enter the approved on date"
 msgstr "Veuillez indiquer la date d'approbation"
 
 #: app/tb/requests/forms/add-rwanda.php:452
-#: app/tb/requests/forms/edit-rwanda.php:473
-#: app/tb/requests/forms/edit-rwanda.php:603
-#: app/tb/results/forms/update-rwanda.php:472
-#: app/tb/results/forms/update-rwanda.php:602
+#: app/tb/requests/forms/edit-rwanda.php:476
+#: app/tb/requests/forms/edit-rwanda.php:606
+#: app/tb/results/forms/update-rwanda.php:475
+#: app/tb/results/forms/update-rwanda.php:605
 msgid "Revised By"
 msgstr "Révisé par"
 
 #: app/tb/requests/forms/add-rwanda.php:453
-#: app/tb/requests/forms/edit-rwanda.php:474
-#: app/tb/requests/forms/edit-rwanda.php:604
-#: app/tb/results/forms/update-rwanda.php:473
-#: app/tb/results/forms/update-rwanda.php:603
+#: app/tb/requests/forms/edit-rwanda.php:477
+#: app/tb/requests/forms/edit-rwanda.php:607
+#: app/tb/results/forms/update-rwanda.php:476
+#: app/tb/results/forms/update-rwanda.php:606
 msgid "Please choose revised by"
 msgstr "Veuillez choisir révisé par"
 
 #: app/tb/requests/forms/add-rwanda.php:458
-#: app/tb/requests/forms/edit-rwanda.php:479
-#: app/tb/requests/forms/edit-rwanda.php:609
-#: app/tb/results/forms/update-rwanda.php:478
-#: app/tb/results/forms/update-rwanda.php:608
+#: app/tb/requests/forms/edit-rwanda.php:482
+#: app/tb/requests/forms/edit-rwanda.php:612
+#: app/tb/results/forms/update-rwanda.php:481
+#: app/tb/results/forms/update-rwanda.php:611
 msgid "Revised on"
 msgstr "Révisé le"
 
 #: app/tb/requests/forms/add-rwanda.php:459
-#: app/tb/requests/forms/edit-rwanda.php:480
-#: app/tb/requests/forms/edit-rwanda.php:610
-#: app/tb/results/forms/update-rwanda.php:479
-#: app/tb/results/forms/update-rwanda.php:609
+#: app/tb/requests/forms/edit-rwanda.php:483
+#: app/tb/requests/forms/edit-rwanda.php:613
+#: app/tb/results/forms/update-rwanda.php:482
+#: app/tb/results/forms/update-rwanda.php:612
 msgid "Enter the revised on date"
 msgstr "Saisir la date de révision"
 
 #: app/tb/requests/forms/add-rwanda.php:459
-#: app/tb/requests/forms/edit-rwanda.php:480
-#: app/tb/requests/forms/edit-rwanda.php:610
-#: app/tb/results/forms/update-rwanda.php:479
-#: app/tb/results/forms/update-rwanda.php:609
+#: app/tb/requests/forms/edit-rwanda.php:483
+#: app/tb/requests/forms/edit-rwanda.php:613
+#: app/tb/results/forms/update-rwanda.php:482
+#: app/tb/results/forms/update-rwanda.php:612
 msgid "Please enter the revised on date"
 msgstr "Veuillez indiquer la date de révision"
 
 #: app/tb/requests/forms/add-rwanda.php:467
-#: app/tb/requests/forms/edit-rwanda.php:619
-#: app/tb/results/forms/update-rwanda.php:617
+#: app/tb/requests/forms/edit-rwanda.php:622
+#: app/tb/results/forms/update-rwanda.php:620
 msgid "Add Test"
 msgstr "Ajouter Test"
 
 #: app/tb/requests/forms/add-rwanda.php:468
-#: app/tb/requests/forms/edit-rwanda.php:620
-#: app/tb/results/forms/update-rwanda.php:618
+#: app/tb/requests/forms/edit-rwanda.php:623
+#: app/tb/results/forms/update-rwanda.php:621
 msgid "Remove Test"
 msgstr "Supprimer le test"
 
 #: app/tb/requests/forms/add-rwanda.php:473
-#: app/tb/requests/forms/edit-rwanda.php:648
-#: app/tb/results/forms/update-rwanda.php:646
+#: app/tb/requests/forms/edit-rwanda.php:625
+#: app/tb/requests/forms/edit-rwanda.php:653
+#: app/tb/results/forms/update-rwanda.php:623
+#: app/tb/results/forms/update-rwanda.php:651
 msgid "Final Interpretation"
 msgstr "Interprétation finale"
 
 #: app/tb/requests/forms/add-rwanda.php:934
-#: app/tb/requests/forms/edit-rwanda.php:1003
-#: app/tb/results/forms/update-rwanda.php:1061
+#: app/tb/requests/forms/edit-rwanda.php:1008
+#: app/tb/results/forms/update-rwanda.php:1066
 msgid "Select option"
 msgstr "Sélectionnez une option"
 
 #: app/tb/requests/forms/add-rwanda.php:939
-#: app/tb/requests/forms/edit-rwanda.php:1008
-#: app/tb/results/forms/update-rwanda.php:1066
+#: app/tb/requests/forms/edit-rwanda.php:1013
+#: app/tb/results/forms/update-rwanda.php:1071
 msgid "Select patient type"
 msgstr "Sélectionner le type de patient"
 
 #: app/tb/requests/forms/add-rwanda.php:944
-#: app/tb/requests/forms/edit-rwanda.php:1013
-#: app/tb/results/forms/update-rwanda.php:1071
+#: app/tb/requests/forms/edit-rwanda.php:1018
+#: app/tb/results/forms/update-rwanda.php:1076
 msgid "Select specimen type"
 msgstr "Sélectionner le type de spécimen"
 
 #: app/tb/requests/forms/add-rwanda.php:950
-#: app/tb/requests/forms/edit-rwanda.php:1019
-#: app/tb/results/forms/update-rwanda.php:1077
+#: app/tb/requests/forms/edit-rwanda.php:1024
+#: app/tb/results/forms/update-rwanda.php:1082
 msgid "Select testing lab"
 msgstr "Sélectionner un laboratoire d'essai"
 
@@ -25979,23 +26059,23 @@ msgstr "Saisir le nom du clinicien"
 msgid "Edit TB Request"
 msgstr "Modifier la demande TB"
 
-#: app/tb/requests/forms/edit-rwanda.php:485
-#: app/tb/results/forms/update-rwanda.php:484
+#: app/tb/requests/forms/edit-rwanda.php:488
+#: app/tb/results/forms/update-rwanda.php:487
 msgid "Reason for result change"
 msgstr "Raison du changement de résultat"
 
-#: app/tb/requests/forms/edit-rwanda.php:621
-#: app/tb/results/forms/update-rwanda.php:619
+#: app/tb/requests/forms/edit-rwanda.php:624
+#: app/tb/results/forms/update-rwanda.php:622
 msgid "Refer to another Testing Lab"
 msgstr "Adressez-vous à un autre laboratoire d'essai"
 
-#: app/tb/requests/forms/edit-rwanda.php:635
-#: app/tb/results/forms/update-rwanda.php:633
+#: app/tb/requests/forms/edit-rwanda.php:640
+#: app/tb/results/forms/update-rwanda.php:638
 msgid "Referring Lab"
 msgstr "Laboratoire référent"
 
-#: app/tb/requests/forms/edit-rwanda.php:641
-#: app/tb/results/forms/update-rwanda.php:639
+#: app/tb/requests/forms/edit-rwanda.php:646
+#: app/tb/results/forms/update-rwanda.php:644
 msgid "Reason for Referrel"
 msgstr "Motif du renvoi"
 
@@ -26130,12 +26210,12 @@ msgid "Email TB Test Results"
 msgstr ""
 "Envoyer par courriel les résultats du test de dépistage de la tuberculose"
 
-#: app/tb/results/forms/update-rwanda.php:52
+#: app/tb/results/forms/update-rwanda.php:55
 #: app/tb/results/forms/update-southsudan.php:85
 msgid "TB LABORATORY TEST RESULTS FORM"
 msgstr "FORMULAIRE DE RÉSULTATS DE TESTS DE LABORATOIRE POUR LA TUBERCULOSE"
 
-#: app/tb/results/forms/update-rwanda.php:55
+#: app/tb/results/forms/update-rwanda.php:58
 #: app/tb/results/forms/update-southsudan.php:88
 msgid "Update Result"
 msgstr "Mettre à jour"
@@ -26143,6 +26223,10 @@ msgstr "Mettre à jour"
 #: app/tb/results/forms/update-sierraleone.php:92
 msgid "Edit New Request"
 msgstr "Modifier la nouvelle demande"
+
+#: app/tb/results/getTbReferralDetails.php:147
+msgid "Print Manifest Referral PDF"
+msgstr "Imprimer le manifeste de référence PDF"
 
 #: app/tb/results/pdf/result-pdf-burkina-faso.php:189
 #: app/vl/results/pdf/result-pdf-burkina-faso.php:211
@@ -26208,29 +26292,29 @@ msgstr "XPERT MTB Résultat"
 msgid "Please select a referral to lab"
 msgstr "Veuillez sélectionner une référence pour le laboratoire"
 
-#: app/tb/results/save-tb-referral-helper.php:110
+#: app/tb/results/save-tb-referral-helper.php:112
 msgid "Successfully referred"
 msgstr "Renvoi réussi"
 
-#: app/tb/results/save-tb-referral-helper.php:110
+#: app/tb/results/save-tb-referral-helper.php:112
 msgid "sample(s) to the lab"
 msgstr "échantillon(s) au laboratoire"
 
-#: app/tb/results/save-tb-referral-helper.php:112
+#: app/tb/results/save-tb-referral-helper.php:114
 msgid "Failed to refer"
 msgstr "Absence de renvoi"
 
-#: app/tb/results/save-tb-referral-helper.php:112
+#: app/tb/results/save-tb-referral-helper.php:114
 #: app/tb/results/update-tb-referral-helper.php:94
 #: app/tb/results/update-tb-referral-helper.php:96
 msgid "sample(s)"
 msgstr "échantillon(s)"
 
-#: app/tb/results/save-tb-referral-helper.php:115
+#: app/tb/results/save-tb-referral-helper.php:117
 msgid "Failed to refer samples. Please try again."
 msgstr "Échec de l'envoi des échantillons. Veuillez réessayer."
 
-#: app/tb/results/save-tb-referral-helper.php:120
+#: app/tb/results/save-tb-referral-helper.php:122
 msgid "An error occurred while processing the referral. Please try again."
 msgstr ""
 "Une erreur s'est produite lors du traitement de la demande. Veuillez "
@@ -28436,118 +28520,118 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: public/assets/js/main.js.php:101
+#: public/assets/js/main.js.php:107
 msgid "Please enter the Sample Manifest Code"
 msgstr "Veuillez saisir l'exemple de code de manifeste"
 
-#: public/assets/js/main.js.php:117
+#: public/assets/js/main.js.php:123
 msgid "Unable to verify manifest"
 msgstr "Impossible de vérifier le manifeste"
 
-#: public/assets/js/main.js.php:133
-msgid "Could not find manifest"
-msgstr "Manifeste introuvable"
+#: public/assets/js/main.js.php:139
+msgid "Unable to find manifest"
+msgstr "Impossible de trouver le manifeste"
 
-#: public/assets/js/main.js.php:140
+#: public/assets/js/main.js.php:146
 msgid "Samples loaded successfully for manifest"
 msgstr "Échantillons chargés avec succès pour le manifeste"
 
-#: public/assets/js/main.js.php:151 public/assets/js/main.js.php:202
+#: public/assets/js/main.js.php:160 public/assets/js/main.js.php:211
 msgid "Some error occurred while processing the manifest"
 msgstr "Une erreur s'est produite lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:174
-msgid "Unable to sync samples from manifest"
-msgstr "Impossible de synchroniser les échantillons du manifeste"
-
 #: public/assets/js/main.js.php:183
+msgid "Unable to sync manifest"
+msgstr "Impossible de synchroniser le manifeste"
+
+#: public/assets/js/main.js.php:192
 msgid "Invalid server response while processing manifest"
 msgstr "Réponse invalide du serveur lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:192
+#: public/assets/js/main.js.php:201
 msgid "Unable to find or sync samples from manifest"
 msgstr "Impossible de trouver ou de synchroniser les échantillons du manifeste"
 
-#: public/assets/js/main.js.php:196
+#: public/assets/js/main.js.php:205
 msgid "Samples synced successfully from STS for manifest"
 msgstr ""
 "Échantillons synchronisés avec succès à partir de STS pour le manifeste"
 
-#: public/assets/js/main.js.php:208
+#: public/assets/js/main.js.php:217
 msgid "Please enter a valid Sample Manifest Code"
 msgstr "Veuillez saisir un exemple de code de manifeste valide"
 
-#: public/assets/js/main.js.php:221 public/assets/js/main.js.php:248
+#: public/assets/js/main.js.php:230 public/assets/js/main.js.php:257
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: public/assets/js/main.js.php:227
+#: public/assets/js/main.js.php:236
 msgid "Receiving Metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
-#: public/assets/js/main.js.php:227 public/assets/js/main.js.php:254
-#: public/assets/js/main.js.php:276 public/assets/js/main.js.php:300
+#: public/assets/js/main.js.php:236 public/assets/js/main.js.php:263
+#: public/assets/js/main.js.php:285 public/assets/js/main.js.php:309
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: public/assets/js/main.js.php:238 public/assets/js/main.js.php:265
-#: public/assets/js/main.js.php:289 public/assets/js/main.js.php:313
+#: public/assets/js/main.js.php:247 public/assets/js/main.js.php:274
+#: public/assets/js/main.js.php:298 public/assets/js/main.js.php:322
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: public/assets/js/main.js.php:254
+#: public/assets/js/main.js.php:263
 msgid "Sending Lab Metadata"
 msgstr "Envoi de métadonnées de laboratoire"
 
-#: public/assets/js/main.js.php:276
+#: public/assets/js/main.js.php:285
 msgid "Sending Test Results"
 msgstr "Envoi des résultats des tests"
 
-#: public/assets/js/main.js.php:300
+#: public/assets/js/main.js.php:309
 msgid "Receiving Test Requests"
 msgstr "Réception des demandes de test"
 
-#: public/assets/js/main.js.php:348
+#: public/assets/js/main.js.php:357
 msgid "STS server is reachable"
 msgstr "Le serveur STS est accessible"
 
-#: public/assets/js/main.js.php:356
+#: public/assets/js/main.js.php:365
 msgid "STS server is unreachable"
 msgstr "Le serveur STS est inaccessible"
 
-#: public/assets/js/main.js.php:380 public/assets/js/main.js.php:391
+#: public/assets/js/main.js.php:389 public/assets/js/main.js.php:400
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: public/assets/js/main.js.php:509
+#: public/assets/js/main.js.php:518
 msgid "Cache cleared successfully"
 msgstr "Le Câche a été éliminé avec succès"
 
-#: public/assets/js/main.js.php:525
+#: public/assets/js/main.js.php:534
 msgid "Synced successfully"
 msgstr "Synchronisation réussie"
 
-#: public/assets/js/main.js.php:543
+#: public/assets/js/main.js.php:552
 msgid "Sample Collection date cannot be in the future"
 msgstr "La date de prélèvement de l'échantillon ne peut pas être ultérieure"
 
-#: public/assets/js/main.js.php:550
+#: public/assets/js/main.js.php:559
 msgid "Sample Collection Date is over 6 months old"
 msgstr "La date de prélèvement de l'échantillon remonte à plus de 6 mois"
 
-#: public/assets/js/main.js.php:625
+#: public/assets/js/main.js.php:634
 msgid "Invalid date format. Please check the input dates."
 msgstr "Format de date incorrect. Veuillez vérifier les dates saisies."
 
-#: public/assets/js/main.js.php:630
+#: public/assets/js/main.js.php:639
 msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
 
-#: public/assets/js/main.js.php:800
+#: public/assets/js/main.js.php:810
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -28555,7 +28639,7 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: public/assets/js/main.js.php:841
+#: public/assets/js/main.js.php:851
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identifiant du patient : "
 
@@ -28754,6 +28838,24 @@ msgstr "Format ISO"
 #: public/assets/js/smart-date-format.js.php:750
 msgid "German Format"
 msgstr "Format allemand"
+
+#~ msgid "API PARAMS"
+#~ msgstr "PARAMÈTRES DE L'API"
+
+#~ msgid "REQUEST"
+#~ msgstr "REQUÊTE"
+
+#~ msgid "RESPONSE"
+#~ msgstr "Réponse"
+
+#~ msgid "some problem"
+#~ msgstr "un problème"
+
+#~ msgid "Could not find manifest"
+#~ msgstr "Manifeste introuvable"
+
+#~ msgid "Unable to sync samples from manifest"
+#~ msgstr "Impossible de synchroniser les échantillons du manifeste"
 
 #~ msgid "Manifest not found"
 #~ msgstr "Manifeste non trouvé"
@@ -29269,9 +29371,6 @@ msgstr "Format allemand"
 
 #~ msgid "Do you wish to change the test status ?"
 #~ msgstr "Souhaitez-vous modifier le statut du test ?"
-
-#~ msgid "Select Columns"
-#~ msgstr "Sélectionner les colonnes"
 
 #~ msgid "In-House Controls"
 #~ msgstr "Contrôles internes"
