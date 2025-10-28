@@ -5,7 +5,7 @@ use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
-require_once __DIR__ . '/../bootstrap.php';
+require_once __DIR__ . '/../../bootstrap.php';
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);
@@ -17,12 +17,12 @@ $smartConnectURL = $general->getGlobalConfig('vldashboard_url');
 
 $remoteURL = $general->getRemoteURL();
 
-$timeZone = $_SESSION['APP_TIMEZONE'];
+$timeZone = $_SESSION['APP_TIMEZONE'] ?? date_default_timezone_get();
 
 $schedule = new Schedule();
 
 # Touch heartbeat file if Crunz runs
-touch(ROOT_PATH . DIRECTORY_SEPARATOR . ".cron_heartbeat");
+touch(VAR_PATH . DIRECTORY_SEPARATOR . ".cron_heartbeat");
 
 // Archive Data from Audit Tables
 $schedule->run(PHP_BINARY . " " . APPLICATION_PATH . "/tasks/archive-audit-tables.php")
