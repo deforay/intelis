@@ -157,6 +157,45 @@ ensure_cache_di_true() {
 }
 
 
+# --- Migrate legacy directories into var/* ------------------------------------
+migrate_dir_into_var() {
+    local src="$1"
+    local dst="$2"
+    local label="$3"  # human-readable short name for logs
+
+    if [ -L "$src" ]; then
+        print info "Skipping $label: source is a symlink ($src)"
+        return 0
+    fi
+
+    if [ -d "$src" ]; then
+        mkdir -p "$dst"
+        print info "Migrating $label → $dst"
+        # Copy contents (merge), preserving ownership/mode/timestamps; no delete on dest
+        rsync -a "$src"/ "$dst"/
+        local rs=$?
+        if [ $rs -eq 0 ]; then
+            # Remove the source dir now that data is safely copied
+            rm -rf "$src"
+            # Ensure sentinel so empty dirs stay in VCS
+            touch "$dst/.hgkeep" 2>/dev/null || true
+            # Normalize ownership and reasonable perms
+            chown -R www-data:www-data "$dst" 2>/dev/null || true
+            chmod -R u=rwX,g=rX,o= "$dst" 2>/dev/null || true
+            print success "Moved $label to $dst"
+            log_action "Migrated $label ($src → $dst)"
+        else
+            print warning "rsync failed for $label ($src → $dst), leaving source intact"
+            log_action "Migration FAILED for $label ($src → $dst)"
+            return $rs
+        fi
+    else
+        print info "No $label found at $src; nothing to migrate"
+    fi
+}
+
+
+
 # Save the current trap settings
 current_trap=$(trap -p ERR)
 
@@ -715,8 +754,7 @@ fi
 
 log_action "Ubuntu packages updated/installed."
 
-# set_permissions "${lis_path}" "quick"
-set_permissions "${lis_path}/logs" "full"
+set_permissions "${lis_path}/var/logs" "full"
 
 # Function to list databases and get the database list
 get_databases() {
@@ -905,6 +943,18 @@ fi
 
 print success "LIS copied to ${lis_path}."
 log_action "LIS copied to ${lis_path}."
+
+# Ensure var/* root exists
+mkdir -p "${lis_path}/var" 2>/dev/null || true
+chown www-data:www-data "${lis_path}/var" 2>/dev/null || true
+
+# Migrations to move directories into var/
+migrate_dir_into_var "${lis_path}/logs"                      "${lis_path}/var/logs"        "logs"
+migrate_dir_into_var "${lis_path}/audit-trail"              "${lis_path}/var/audit-trail" "audit-trail"
+migrate_dir_into_var "${lis_path}/cache"                    "${lis_path}/var/cache"       "cache"
+migrate_dir_into_var "${lis_path}/logs/metadata"            "${lis_path}/var/metadata"    "metadata"
+migrate_dir_into_var "${lis_path}/public/uploads/track-api" "${lis_path}/var/track-api"   "track-api uploads"
+
 
 # Set proper permissions
 set_permissions "${lis_path}" "quick"
@@ -1158,8 +1208,8 @@ if [ -f "${lis_path}/startup.php" ]; then
     sudo touch "${lis_path}/startup.php"
 fi
 
-if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
-    sudo rm "${lis_path}/cache/CompiledContainer.php"
+if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
+    sudo rm "${lis_path}/var/cache/CompiledContainer.php"
 fi
 
 # Cron job setup

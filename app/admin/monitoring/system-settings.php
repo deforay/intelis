@@ -255,14 +255,14 @@ $apiTrackResultCount = count($apiTrackResult);
                     <?php echo ($folderPermissions['TEMP_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
                 </tr>
                 <tr>
-                  <td scope="row"><?php echo ROOT_PATH . DIRECTORY_SEPARATOR . 'logs'; ?></td>
+                  <td scope="row"><?php echo LOG_PATH; ?></td>
                   <td>
                     <?php
-                    echo ($folderPermissions['LOGS_PATH']['exists'] == 1) ? "Yes" : "No";
+                    echo ($folderPermissions['LOG_PATH']['exists'] == 1) ? "Yes" : "No";
                     ?>
                   </td>
-                  <td scope="row"><?php echo ($folderPermissions['LOGS_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
-                    <?php echo ($folderPermissions['LOGS_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
+                  <td scope="row"><?php echo ($folderPermissions['LOG_PATH']['readable'] == 1) ? "Yes" : "No"; ?>
+                    <?php echo ($folderPermissions['LOG_PATH']['writable'] == 1) ? " / Yes" : " / No"; ?></td>
                 </tr>
               </tbody>
             </table>

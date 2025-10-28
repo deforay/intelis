@@ -19,7 +19,7 @@ final class QueryLoggerUtility
 
             try {
                 // Try to use the RotatingFileHandler for query logging
-                $handler = new RotatingFileHandler(ROOT_PATH . '/logs/db/query.log', 30, Level::Debug);
+                $handler = new RotatingFileHandler(LOG_PATH . '/db/query.log', 30, Level::Debug);
                 $handler->setFilenameFormat('{date}-{filename}', 'Y-m-d');
                 self::$queryLogger->pushHandler($handler);
             } catch (Throwable $e) {

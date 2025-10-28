@@ -72,7 +72,7 @@ class AuditTrailService
      */
     private static function findAuditFile(string $testType, string $uniqueId): ?string
     {
-        $archivePath = ROOT_PATH . "/audit-trail/{$testType}";
+        $archivePath = VAR_PATH . "/audit-trail/{$testType}";
 
         if (!is_dir($archivePath)) {
             return null;
@@ -390,7 +390,7 @@ class AuditTrailService
                 return;
             }
 
-            $archivePath = ROOT_PATH . "/audit-trail/{$testType}";
+            $archivePath = VAR_PATH . "/audit-trail/{$testType}";
             \App\Utilities\MiscUtility::makeDirectory($archivePath);
 
             $fileExtension = self::getFileExtension();
