@@ -28,7 +28,7 @@ final class LoggerUtility
         }
 
         self::$logger = new Logger('app');
-        $logDir = defined('LOG_PATH') ? LOG_PATH : ROOT_PATH . '/logs';
+        $logDir = defined('LOG_PATH') ? LOG_PATH : VAR_PATH . '/logs';
         $logLevel = defined('LOG_LEVEL') ? self::parseLogLevel(LOG_LEVEL) : Level::Debug;
 
         try {
@@ -353,7 +353,7 @@ final class LoggerUtility
      */
     public static function getLogStats(): array
     {
-        $logDir = defined('LOG_PATH') ? LOG_PATH : ROOT_PATH . '/logs';
+        $logDir = defined('LOG_PATH') ? LOG_PATH : VAR_PATH . '/logs';
         $stats = [
             'log_calls_this_request' => self::$logCallCount,
             'log_directory' => $logDir,

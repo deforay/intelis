@@ -96,6 +96,7 @@
         "interface": "php bin/interface.php",
         "lock-samples": "php bin/update-sample-status.php",
         "purge-cache": "php app/includes/clear-cache.php",
+        "clear-logs": "php bin/clear-logs.php",
         "fixes": [
             "php bin/setup/update-privileges.php",
             "php bin/setup/fix-app-menu.php"

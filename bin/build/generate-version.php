@@ -83,7 +83,7 @@ function updateComposerJson($composerJsonPath, $newVersion)
 
 try {
     // Set migrations path
-    $migrationsPath = ROOT_PATH . '/dev/migrations/';
+    $migrationsPath = ROOT_PATH . '/sys/migrations/';
 
     // Get the current version from version.php
     $currentVersion = getCurrentVersion($versionFilePath);
