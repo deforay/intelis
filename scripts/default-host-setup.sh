@@ -53,12 +53,12 @@ done
 
 # Prompt for the LIS path if not provided via -p
 if [ -z "$lis_path" ]; then
-    print info "Enter the LIS installation path [press enter to select /var/www/vlsm]: "
+    print info "Enter the LIS installation path [press enter to select /var/www/intelis]: "
     read -t 60 lis_path
 
     # Check if read command timed out or no input was provided
     if [ $? -ne 0 ] || [ -z "$lis_path" ]; then
-        lis_path="/var/www/vlsm"
+        lis_path="/var/www/intelis"
         print info "Using default path: $lis_path"
     else
         print info "LIS installation path is set to ${lis_path}"

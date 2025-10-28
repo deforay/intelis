@@ -33,7 +33,7 @@ source "$SHARED_FN_PATH"
 # Show help if requested
 if [[ "$1" == "--help" || "$1" == "-h" ]]; then
     echo "Usage: sudo intelis-refresh [-p path] [-m mode] [-a] [-d]"
-    echo "  -p : LIS install path (default: /var/www/vlsm)"
+    echo "  -p : LIS install path (default: /var/www/intelis)"
     echo "  -m : Mode (full, quick, minimal)"
     echo "  -a : Restart Apache/httpd"
     echo "  -d : Restart MySQL"
@@ -77,7 +77,7 @@ is_valid_application_path() {
 
 # Cron-safe default path
 if [ -z "$lis_path" ]; then
-    lis_path="/var/www/vlsm"
+    lis_path="/var/www/intelis"
     print info "No path specified. Using default: $lis_path"
 fi
 
