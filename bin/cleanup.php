@@ -340,19 +340,19 @@ if ($exit === 0) {
 
 // Directory configurations
 $cleanup = [
-    ROOT_PATH . DIRECTORY_SEPARATOR . 'logs' => [
+    LOG_PATH => [
         'duration' => null,
         'max_size_mb' => 1000
     ],
-    WEB_ROOT . DIRECTORY_SEPARATOR . 'temporary' => [
+    TEMP_PATH => [
         'duration' => 3,
         'max_size_mb' => 500
     ],
-    UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' => [
+    VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'requests' => [
         'duration' => 120,
         'max_size_mb' => 1000
     ],
-    UPLOAD_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' => [
+    VAR_PATH . DIRECTORY_SEPARATOR . 'track-api' . DIRECTORY_SEPARATOR . 'responses' => [
         'duration' => 120,
         'max_size_mb' => 1000
     ],

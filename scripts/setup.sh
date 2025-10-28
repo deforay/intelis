@@ -873,8 +873,8 @@ else
 fi
 
 
-if [ -f "${lis_path}/cache/CompiledContainer.php" ]; then
-    rm "${lis_path}/cache/CompiledContainer.php"
+if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
+    rm "${lis_path}/var/cache/CompiledContainer.php"
 fi
 
 # Set proper permissions

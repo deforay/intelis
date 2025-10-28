@@ -37,7 +37,6 @@ key.storage
 
 # Node & Composer dependencies
 vendor/
-var/
 **/node_modules/
 
 # Git-related (but allow .github directory)
@@ -54,11 +53,8 @@ syntax: regexp
 ^public/uploads/(?!index\.php|\.htaccess).*
 ^public/temporary/(?!index\.php|\.htaccess).*
 
-# Cache - ignore contents but allow .htaccess and .hgkeep
-^cache/(?!\.htaccess|\.hgkeep).*
-
-# Logs - ignore contents but allow .hgkeep
-^logs/(?!\.hgkeep).*
+# var directory (allow .hgkeep and .htaccess sentinels)
+^var/(?!.*\.hgkeep$)(?!.*\.htaccess$).*
 
 ^docker/mysql/data/(?!\.htaccess).*
 ^interop/dhis2/examples/(?!index\.php).*
@@ -75,7 +71,3 @@ syntax: regexp
 ^\.ddev/commands/.*\.log$
 ^\.ddev/import-db/
 ^\.ddev/import-files/
-
-# Internal data directories
-^audit-trail/(?!\.hgkeep).*
-^metadata/(?!\.hgkeep).*

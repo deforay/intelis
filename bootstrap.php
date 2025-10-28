@@ -50,9 +50,10 @@ defined('ROOT_PATH')
 
 define('WEB_ROOT', ROOT_PATH . '/public');
 define('CONFIG_PATH', ROOT_PATH . '/configs');
+define('VAR_PATH', ROOT_PATH . '/var');
 define('BACKUP_PATH', ROOT_PATH . '/backups');
-define('CACHE_PATH', ROOT_PATH . '/cache');
-define('LOG_PATH', ROOT_PATH . '/logs');
+define('CACHE_PATH', VAR_PATH . '/cache');
+define('LOG_PATH', VAR_PATH . '/logs');
 define('APPLICATION_PATH', ROOT_PATH . '/app');
 define('BIN_PATH', ROOT_PATH . '/bin');
 define('UPLOAD_PATH', WEB_ROOT . '/uploads');

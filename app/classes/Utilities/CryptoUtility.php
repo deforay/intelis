@@ -8,7 +8,7 @@ use App\Exceptions\SystemException;
 
 final class CryptoUtility
 {
-    private const KEY_FILE = ROOT_PATH . '/key.storage'; // File to store the key
+    private const KEY_FILE = VAR_PATH . '/key.storage'; // File to store the key
 
     private static function getKey(): string
     {
