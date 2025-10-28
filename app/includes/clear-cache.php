@@ -5,7 +5,7 @@
 $isCli = php_sapi_name() === 'cli';
 // Require bootstrap file if run from command line
 if ($isCli) {
-    require_once '../../bootstrap.php';
+    require_once __DIR__ . '/../../bootstrap.php';
 }
 
 
