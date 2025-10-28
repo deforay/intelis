@@ -82,8 +82,7 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 
 
 $aWhere = '';
-$sQuery = "SELECT SQL_CALC_FOUND_ROWS
-                    vl.sample_code,
+$sQuery = "SELECT vl.sample_code,
                     vl.patient_art_no,
                     vl.sample_collection_date,
                     vl.sample_tested_datetime,
@@ -152,21 +151,17 @@ if (!empty($sOrder) && $sOrder !== '') {
 }
 
 if (isset($sLimit) && isset($sOffset)) {
-     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
+     $sQuery = "$sQuery LIMIT $sOffset,$sLimit";
 }
 
-$rResult = $db->rawQuery($sQuery);
+[$rResult, $resultCount] = $db->getDataAndCount($sQuery);
 
-$aResultFilterTotal = $db->rawQueryOne("SELECT FOUND_ROWS() as `totalCount`");
-$iTotal = $iFilteredTotal = $aResultFilterTotal['totalCount'];
-
-
-$output = array(
+$output = [
      "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $iTotal,
-     "iTotalDisplayRecords" => $iFilteredTotal,
+     "iTotalRecords" => $resultCount,
+     "iTotalDisplayRecords" => $resultCount,
      "aaData" => []
-);
+];
 
 foreach ($rResult as $aRow) {
 
