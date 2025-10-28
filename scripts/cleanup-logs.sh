@@ -5,12 +5,14 @@ set -euo pipefail
 # Usage: cleanup-logs.sh [-n] [-v] [--dir DIR] [--pattern GLOB] [--max-size MB] [--keep-tail MB] [--max-total MB] [--keep N]
 #
 # Example full crontab
-# 30 2 * * * /var/www/vlsm/scripts/cleanup-logs.sh --dir /var/www/vlsm/logs --max-size 500 --max-total 10240 --keep 30 >> /var/log/vlsm-log-cleanup.log 2>&1
+# 30 2 * * * /var/www/intelis/scripts/cleanup-logs.sh --dir /var/www/intelis/var/logs --max-size 500 --max-total 10240 --keep 30 >> /var/log/intelis-log-cleanup.log 2>&1
 # or minimal crontab
-# 30 2 * * * /var/www/vlsm/scripts/cleanup-logs.sh
+# 30 2 * * * /var/www/intelis/scripts/cleanup-logs.sh
 
 # --- Defaults ---
-DEFAULT_LOG_DIR="/var/www/vlsm/logs"
+# Default to the "var/logs" directory one level up from the script location
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEFAULT_LOG_DIR="$SCRIPT_DIR/../var/logs"
 LOG_DIR="$DEFAULT_LOG_DIR"
 PATTERN="*-logfile.log"
 MAX_SIZE_MB=500        # Truncate files larger than this

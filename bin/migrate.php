@@ -50,7 +50,7 @@ if (version_compare($currentMajorVersion, '4.4.3', '<')) {
 }
 
 // Define the logs directory path
-$logsDir = ROOT_PATH . "/logs";
+$logsDir = LOG_PATH;
 
 const MIG_NOT_HANDLED = 0;
 const MIG_EXECUTED    = 1;
@@ -316,7 +316,7 @@ function handle_idempotent_ddl(DatabaseService $db, SymfonyStyle $io, string $qu
 
 $db->where('name', 'sc_version');
 $currentVersion = $db->getValue('system_config', 'value');
-$migrationFiles = (array)glob(ROOT_PATH . '/dev/migrations/*.sql');
+$migrationFiles = (array)glob(ROOT_PATH . '/sys/migrations/*.sql');
 
 // Extract version numbers and map them to files
 $versions = array_map(fn($file) => basename($file, '.sql'), $migrationFiles);
@@ -339,7 +339,7 @@ $skippedQueries = $successfulQueries = 0;
 $totalErrors     = 0;
 
 foreach ($versions as $version) {
-    $file = APPLICATION_PATH . '/../dev/migrations/' . $version . '.sql';
+    $file = APPLICATION_PATH . '/../sys/migrations/' . $version . '.sql';
 
     if (version_compare($version, $currentVersion, '>=')) {
         if (!$quietMode) {
