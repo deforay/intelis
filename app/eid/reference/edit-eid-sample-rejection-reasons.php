@@ -2,9 +2,16 @@
 
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
-$rejReaons = $general->getRejectionReasons('eid');
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+$rejectionReasons = $general->getRejectionReasons('eid');
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
 $request = AppRegistry::get('request');
@@ -52,7 +59,7 @@ $rsnInfo = $db->query($rsnQuery);
 									<label for="rejectionType" class="col-lg-4 control-label">Rejection Type</label>
 									<div class="col-lg-7">
 										<select class="form-control select2 isRequired" id="rejectionType" name="rejectionType" placeholder="Rejection Type" title="Please enter Rejection Type">
-											<?= $general->generateSelectOptions($rejReaons, strtolower((string) $rsnInfo[0]['rejection_type']), '-- Select --'); ?>
+											<?= $general->generateSelectOptions($rejectionReasons, strtolower((string) $rsnInfo[0]['rejection_type']), '-- Select --'); ?>
 										</select>
 									</div>
 								</div>

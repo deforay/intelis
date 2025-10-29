@@ -202,7 +202,7 @@ $state = $geolocationService->getProvinces("yes", true, $_SESSION['facilityMap']
                                     <div class="form-group">
                                         <label for="patientPhoneNumber" class="col-lg-4 control-label"><?= _translate('Phone Number'); ?> </label>
                                         <div class="col-lg-7">
-                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                            <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?= $maxPhoneLength; ?>" title="<?= _translate('Enter phone number'); ?>" />
                                         </div>
                                     </div>
                                 </div>

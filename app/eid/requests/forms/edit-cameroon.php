@@ -225,7 +225,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                         <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day'); ?>" style="width:100%;" value="<?= $eidInfo['child_weight']; ?>" /></td>
 
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="Caretaker Phone Number" style="width:100%;" value="<?= htmlspecialchars((string) $eidInfo['caretaker_phone_number']); ?>" onchange="" /></td>
 
 
                                     </tr>
@@ -524,7 +524,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_eid", array("clinic
                                     <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
+                                            <input class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" value="<?= $eidInfo['sample_requestor_phone'] ?>" />
                                         </td>
                                         <?php if ($general->isLISInstance()) { ?>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>

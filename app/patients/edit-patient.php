@@ -219,7 +219,7 @@ if (!empty($patientQueryInfo['is_encrypted']) && $patientQueryInfo['is_encrypted
                                     <div class="form-group">
                                         <label for="patientPhoneNumber" class="col-lg-4 control-label"><?= _translate('Phone Number'); ?> </label>
                                         <div class="col-lg-7">
-                                            <input type="text" value="<?= $patientQueryInfo['patient_phone_number']; ?>" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                            <input type="text" value="<?= $patientQueryInfo['patient_phone_number']; ?>" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number" placeholder="<?= _translate('Enter Phone Number'); ?>" maxlength="<?= $maxPhoneLength; ?>" title="<?= _translate('Enter phone number'); ?>" />
                                         </div>
                                     </div>
                                 </div>
