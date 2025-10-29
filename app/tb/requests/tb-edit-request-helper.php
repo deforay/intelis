@@ -293,14 +293,7 @@ try {
         'lab_technician' => (isset($_POST['labTechnician']) && $_POST['labTechnician'] != '') ? $_POST['labTechnician'] : $_SESSION['userId'],
         'source_of_request' => "web"
     ];
-    if (isset($_POST['referLabId']) && !empty($_POST['referLabId']) && !isset($_POST['finalResult']) || empty($_POST['finalResult'])) {
-        $labId = !empty($_POST['labId']) ? $_POST['labId'] : $_POST['testResult']['labId'][0];
-        $tbData['referred_by_lab_id'] = $labId;
-        $tbData['referred_to_lab_id'] = (!empty($_POST['referLabId']) && $_POST['referLabId'] != $labId) ? $_POST['referLabId'] : null;
-        $tbData['reason_for_referral'] = !empty($_POST['reasonForReferrel']) ? $_POST['reasonForReferrel'] : null;
-        $tbData['referred_on_datetime'] = DateUtility::getCurrentDateTime();
-        $tbData['referred_by'] = $_SESSION['userId'];
-    } else if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
+    if (isset($_POST['finalResult']) && !empty($_POST['finalResult'])) {
         $tbData['result'] = $_POST['finalResult'];
     }
     $db->where('tb_id', $_POST['tbSampleId']);
