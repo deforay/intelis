@@ -6,11 +6,16 @@
 # sudo chmod u+x intelis-setup.sh;
 # sudo ./intelis-setup.sh;
 
+set -Eeuo pipefail
+umask 022
+
+
 # Check if running as root
-if [ "$EUID" -ne 0 ]; then
-    print error "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo"
+if (( EUID != 0 )); then
+    echo "Need admin privileges for this script. Run sudo -s before running this script or run this script with sudo" >&2
     exit 1
 fi
+
 
 # Download and update shared-functions.sh
 SHARED_FN_PATH="/usr/local/lib/intelis/shared-functions.sh"
@@ -35,6 +40,7 @@ source "$SHARED_FN_PATH"
 prepare_system
 
 log_file="/tmp/intelis-setup-$(date +'%Y%m%d-%H%M%S').log"
+export log_file
 
 # Error trap
 trap 'error_handling "${BASH_COMMAND}" "$LINENO" "$?"' ERR
@@ -174,7 +180,7 @@ handle_database_setup_and_import() {
     if [[ "$sql_file" == *".gz" ]]; then
         gunzip -c "$sql_file" | mysql vlsm
     elif [[ "$sql_file" == *".zip" ]]; then
-        unzip -p "$sql_file" | mysql vlsm
+        unzip -p "$sql_file" '*.sql' | mysql vlsm
     else
         mysql vlsm < "$sql_file"
     fi
@@ -213,30 +219,39 @@ eval "$current_trap"
 intelis_sql_file=""
 DB_STRATEGY_FLAG=""
 
+# ---- CLI flags  ----
+INSTALL_TYPE_FLAG=""
+STS_URL_FLAG=""
+LIS_PATH_FLAG=""
+
 while [[ $# -gt 0 ]]; do
     case "$1" in
+        # new flags
+        --type)           INSTALL_TYPE_FLAG="$2"; shift 2;;
+        --type=*)         INSTALL_TYPE_FLAG="${1#*=}"; shift;;
+        --sts-url)        STS_URL_FLAG="$2"; shift 2;;
+        --sts-url=*)      STS_URL_FLAG="${1#*=}"; shift;;
+        --lis-path)       LIS_PATH_FLAG="$2"; shift 2;;
+        --lis-path=*)     LIS_PATH_FLAG="${1#*=}"; shift;;
+
+        # existing flags
         --database=*|--db=*)
-        intelis_sql_file="${1#*=}"
-        shift
-        ;;
+        intelis_sql_file="${1#*=}"; shift;;
         --database|--db)
-        intelis_sql_file="$2"
-        shift 2
-        ;;
+        intelis_sql_file="$2"; shift 2;;
         --db-strategy=*)
-        DB_STRATEGY_FLAG="${1#*=}"
-        shift
-        ;;
+        DB_STRATEGY_FLAG="${1#*=}"; shift;;
         --db-strategy)
-        DB_STRATEGY_FLAG="$2"
-        shift 2
-        ;;
+        DB_STRATEGY_FLAG="$2"; shift 2;;
+
+        # unknown
         *)
-        # unrecognized -> keep or discard; here we just shift
-        shift
-        ;;
+        shift;;
     esac
 done
+
+# prefer flag > env > prompt (this safely overrides the earlier lis_path prompt if provided)
+lis_path="${LIS_PATH_FLAG:-${INTELIS_LIS_PATH:-$lis_path}}"
 
 # Check if the specified SQL file exists
 if [[ -n "$intelis_sql_file" ]]; then
@@ -293,18 +308,22 @@ download_file "master.tar.gz" "https://codeload.github.com/deforay/intelis/tar.g
 
 # Extract the tar.gz file into temporary directory
 temp_dir=$(mktemp -d)
+trap 'rm -rf "$temp_dir"' EXIT   # ensures cleanup on any exit
 print info "Extracting files from master.tar.gz..."
-
 tar -xzf master.tar.gz -C "$temp_dir" &
-tar_pid=$!           # Save tar PID
+tar_pid=$!
 spinner "${tar_pid}" # Spinner tracks extraction
-wait ${tar_pid}      # Wait for extraction to finish
-
+wait ${tar_pid}
+tar_status=$?
+if (( tar_status != 0 )); then
+    print error "Extraction failed (status=${tar_status})"
+    exit 1
+fi
 log_action "LIS downloaded."
 
 # backup old code if it exists
 if [ -d "${lis_path}" ]; then
-    cp -R "${lis_path}" "${lis_path}"-$(date +%Y%m%d-%H%M%S)
+    rsync -a --delete --info=progress2 "${lis_path}/" "${lis_path}-$(date +%Y%m%d-%H%M%S)/"
 else
     mkdir -p "${lis_path}"
 fi
@@ -317,6 +336,7 @@ rsync -a --info=progress2 "$temp_dir/intelis-master/" "$lis_path/"
 rm -rf "$temp_dir/intelis-master/"
 rm master.tar.gz
 
+
 log_action "LIS copied to ${lis_path}."
 
 # Set proper permissions
@@ -328,8 +348,8 @@ print header "Running composer operations"
 cd "${lis_path}"
 
 # Configure composer timeout regardless of installation path
-sudo -u www-data composer config process-timeout 30000
-sudo -u www-data composer clear-cache
+sudo -u www-data composer config process-timeout 30000 --no-interaction
+sudo -u www-data composer clear-cache --no-interaction
 
 echo "Checking if composer dependencies need updating..."
 NEED_FULL_INSTALL=false
@@ -427,52 +447,42 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
 
         # Update the composer.lock file to match the current state
         print info "Finalizing composer installation..."
-        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
+        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
         print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
         # Perform full install if vendor.tar.gz isn't available
         print info "Running full composer install (this may take a while)..."
-        sudo -u www-data composer install --prefer-dist --no-dev
+        sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
     fi
 else
     print info "Dependencies are up to date. Skipping vendor download."
 fi
 
 # Always generate the optimized autoloader, regardless of install path
-sudo -u www-data composer dump-autoload -o
+sudo -u www-data composer dump-autoload -o --no-interaction
 
 log_action "Composer operations completed."
 
-# Function to configure Apache Virtual Host
-configure_vhost() {
-    local vhost_file=$1
-    local document_root="${lis_path}/public"
-    local directory_block="<Directory ${lis_path}/public>\n\
-        AddDefaultCharset UTF-8\n\
-        Options -Indexes -MultiViews +FollowSymLinks\n\
-        AllowOverride All\n\
-        Require all granted\n\
-    </Directory>"
-
-    # Replace the DocumentRoot line
-    sed -i "s|DocumentRoot .*|DocumentRoot ${document_root}|" "$vhost_file"
-
-    # Check if any Directory block exists
-    if grep -q "<Directory" "$vhost_file"; then
-        # Replace existing Directory block
-        sed -i "/<Directory/,/<\/Directory>/c\\$directory_block" "$vhost_file"
-    else
-        # Insert Directory block after DocumentRoot line
-        sed -i "/DocumentRoot/a\\$directory_block" "$vhost_file"
-    fi
-}
-
 # Ask user for the hostname
-read -p "Enter domain name (press enter to use 'intelis'): " hostname
+# Ask user for the hostname
+if [[ -t 0 ]]; then
+  read -p "Enter domain name (press enter to use 'intelis'): " hostname
+else
+  hostname=""
+fi
+hostname="$(printf '%s' "$hostname" | xargs)"
+: "${hostname:=intelis}"
+
+
+# Trim leading/trailing whitespace early
+hostname="$(printf '%s' "$hostname" | xargs)"
 
 # Clean up the hostname: remove protocol and trailing slashes
 if [[ -n "$hostname" ]]; then
+
+    hostname=$(printf '%s' "$hostname" | tr '[:upper:]' '[:lower:]')
+
     # Remove http:// or https:// if present
     hostname=$(echo "$hostname" | sed -E 's|^https?://||i')
 
@@ -498,85 +508,252 @@ else
 fi
 
 log_action "Hostname: $hostname"
+# Idempotently ensure names are present on a given IP line in /etc/hosts.
+# If the IP line exists, append any missing names to that line.
+# If it doesn't, create a new line with all names.
+ensure_hosts_mapping() {
+  local ip="$1"; shift
+  local names=("$@")
+  local hosts="/etc/hosts"
+  local tmp="$(mktemp)"
 
-# Check if the hostname entry is already in /etc/hosts
-if ! grep -q "127.0.0.1 ${hostname}" /etc/hosts; then
-    print info "Adding ${hostname} to hosts file..."
-    echo "127.0.0.1 ${hostname}" | tee -a /etc/hosts
-    log_action "${hostname} entry added to hosts file."
-else
-    print info "${hostname} entry is already in the hosts file."
-    log_action "${hostname} entry is already in the hosts file."
-fi
+  awk -v ip="$ip" -v req="$(printf "%s " "${names[@]}")" '
+    BEGIN {
+      n=split(req, R)
+      for (i=1;i<=n;i++) if (R[i]!="") need[R[i]]=1
+      updated=0
+    }
+    {
+      line=$0
+      sub(/\r$/, "", line)  # strip CR if any
 
-if ! grep -q "127.0.0.1 intelis" /etc/hosts; then
-    print info "Adding intelis to hosts file..."
-    echo "127.0.0.1 intelis" | tee -a /etc/hosts
-    log_action "intelis entry added to hosts file."
-else
-    print info "intelis entry is already in the hosts file."
-    log_action "intelis entry is already in the hosts file."
-fi
+      # Pass through full-line comments unchanged
+      if (match(line, /^[[:space:]]*#.*$/)) { print line; next }
+
+      # Tokenize up to any inline comment
+      split("", T); nt=0
+      for (i=1;i<=NF;i++) { if ($i ~ /^#/) break; T[++nt]=$i }
+
+      if (nt>0 && T[1]==ip) {
+        # Reset per-line presence
+        delete present
+        for (i=2;i<=nt;i++) present[T[i]]=1
+
+        # Rebuild the line once, appending any missing required names
+        out=ip
+        for (i=2;i<=nt;i++) out=out" "T[i]
+        for (n in need) if (!(n in present)) out=out" "n
+
+        # Only print this *first* occurrence; skip later duplicates wholly
+        if (!updated) { print out; updated=1 }
+        # else: drop duplicate ip lines (we normalize to one line)
+        next
+      }
+
+      print line
+    }
+    END {
+      # If no existing line had the IP, add a new one with all names
+      if (!updated) {
+        out=ip
+        for (n in need) out=out" "n
+        print out
+      }
+    }
+  ' "$hosts" > "$tmp" && cat "$tmp" > "$hosts" && rm -f "$tmp"
+}
 
 
-if ! grep -q "127.0.0.1 vlsm" /etc/hosts; then
-    print info "Adding vlsm to hosts file..."
-    echo "127.0.0.1 vlsm" | tee -a /etc/hosts
-    log_action "vlsm entry added to hosts file."
-else
-    print info "vlsm entry is already in the hosts file."
-    log_action "vlsm entry is already in the hosts file."
-fi
+# Use it once to ensure all three names share the same 127.0.0.1 entry
+ensure_hosts_mapping "127.0.0.1" "${hostname}" "intelis" "vlsm"
+systemd-resolve --flush-caches 2>/dev/null || resolvectl flush-caches 2>/dev/null || true
 
 
-# Ask user if they're installing LIS or STS
-read -p "Is this an LIS or STS installation? [LIS/STS] (press enter for default: LIS): " installation_type
-# Default to LIS if empty
-installation_type="${installation_type:-LIS}"
-# Convert to lowercase first character for case-insensitive comparison
-first_char=$(echo "$installation_type" | cut -c1 | tr '[:upper:]' '[:lower:]')
+print info "Ensured hosts mapping for 127.0.0.1 → ${hostname} intelis vlsm"
+log_action "Ensured hosts mapping for 127.0.0.1: ${hostname}, intelis, vlsm"
 
+
+# --- Installation type prompt (LIS / STS / Standalone) ---
+install_type=""
 is_lis=false
 is_sts=false
-if [[ "$first_char" == "l" ]]; then
-    echo "Installing InteLIS as the default host..."
-    log_action "Installing InteLIS as the default host..."
-    is_lis=true
-    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
-    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
-    configure_vhost "$apache_vhost_file"
-elif [[ "$first_char" == "s" ]]; then
-    echo "Installing InteLIS alongside other apps..."
-    log_action "Installing InteLIS alongside other apps..."
-    is_sts=true
-    vhost_file="/etc/apache2/sites-available/${hostname}.conf"
-    echo "<VirtualHost *:80>
-    ServerName ${hostname}
+is_standalone=false
+
+normalize_type() {
+  case "$(echo "$1" | tr '[:upper:]' '[:lower:]')" in
+    1|l|lis) echo "LIS" ;;
+    2|s|sts) echo "STS" ;;
+    3|standalone|sa) echo "Standalone" ;;
+    *) echo "" ;;
+  esac
+}
+
+install_type="$(normalize_type "${INSTALL_TYPE_FLAG:-${INTELIS_TYPE:-}}")"
+if [[ -z "$install_type" ]]; then
+  if [[ -t 0 ]]; then
+    # TTY present → prompt
+    while true; do
+      echo
+      echo "Choose installation type:"
+      echo "  1) LIS"
+      echo "  2) STS"
+      echo "  3) Standalone"
+      read -r -p "Enter choice [1-3] (default: 1): " choice
+      install_type="$(normalize_type "${choice:-1}")"
+      [[ -n "$install_type" ]] && break
+      print warning "Invalid choice. Please enter 1, 2, or 3."
+    done
+  else
+    install_type="LIS"  # default in non-interactive
+  fi
+fi
+
+is_lis=false; is_sts=false; is_standalone=false
+[[ "$install_type" == "LIS" ]] && is_lis=true
+[[ "$install_type" == "STS" ]] && is_sts=true
+[[ "$install_type" == "Standalone" ]] && is_standalone=true
+
+log_action "Installation type selected: ${install_type}"
+
+
+# --- Apache vhost helpers (idempotent) ---
+
+update_000_default_idempotent() {
+  local docroot="$1"
+  local file="/etc/apache2/sites-available/000-default.conf"
+  local begin="# BEGIN INTELIS"
+  local end="# END INTELIS"
+
+  if [[ ! -f "$file" ]]; then
+    print error "Missing ${file}; Apache default site not found."
+    return 1
+  fi
+
+  # strip prior INTELIS block
+  awk -v b="$begin" -v e="$end" '$0==b{in=1;next}$0==e{in=0;next}!in{print}' "$file" > "${file}.tmp"
+
+  # inject fresh INTELIS block right after the first <VirtualHost ...>
+  awk -v b="$begin" -v e="$end" -v dr="$docroot" '
+    BEGIN{ins=0}
+    /<VirtualHost[[:space:]][^>]+>/ && !ins {
+      print
+      print b
+      print "    DocumentRoot " dr
+      print "    <Directory " dr ">"
+      print "        AddDefaultCharset UTF-8"
+      print "        Options -Indexes -MultiViews +FollowSymLinks"
+      print "        AllowOverride All"
+      print "        Require all granted"
+      print "    </Directory>"
+      print e
+      ins=1; next
+    }
+    {print}
+    END {
+      if(!ins){
+        print b
+        print "    DocumentRoot " dr
+        print "    <Directory " dr ">"
+        print "        AddDefaultCharset UTF-8"
+        print "        Options -Indexes -MultiViews +FollowSymLinks"
+        print "        AllowOverride All"
+        print "        Require all granted"
+        print "    </Directory>"
+        print e
+      }
+    }
+  ' "${file}.tmp" > "${file}.new"
+
+  mv "${file}.new" "$file" && rm -f "${file}.tmp"
+  print success "Updated 000-default.conf → IP → ${docroot}"
+}
+
+# Optional: also map https://IP/ → LIS if default-ssl is present/enabled
+update_default_ssl_idempotent() {
+  local docroot="$1"
+  local file="/etc/apache2/sites-available/default-ssl.conf"
+  local begin="# BEGIN INTELIS"
+  local end="# END INTELIS"
+
+  # enable ssl mods & site if possible (no-op if already enabled)
+  a2enmod ssl >/dev/null 2>&1 || true
+  [[ -f "$file" ]] && a2ensite default-ssl >/dev/null 2>&1 || true
+
+  [[ ! -f "$file" ]] && { print info "default-ssl.conf not found; skipping https IP mapping"; return 0; }
+
+  awk -v b="$begin" -v e="$end" '$0==b{in=1;next}$0==e{in=0;next}!in{print}' "$file" > "${file}.tmp"
+
+  awk -v b="$begin" -v e="$end" -v dr="$docroot" '
+    BEGIN{ins=0}
+    /<VirtualHost[[:space:]]+\*:443>/ && !ins {
+      print
+      print b
+      print "    DocumentRoot " dr
+      print "    <Directory " dr ">"
+      print "        AddDefaultCharset UTF-8"
+      print "        Options -Indexes -MultiViews +FollowSymLinks"
+      print "        AllowOverride All"
+      print "        Require all granted"
+      print "    </Directory>"
+      print e
+      ins=1; next
+    }
+    {print}
+  ' "${file}.tmp" > "${file}.new"
+
+  mv "${file}.new" "$file" && rm -f "${file}.tmp"
+  print success "Updated default-ssl.conf → HTTPS IP → ${docroot}"
+}
+
+make_vhost_if_absent() {
+  local site="$1" docroot="$2"
+  local file="/etc/apache2/sites-available/${site}.conf"
+  if [[ ! -f "$file" ]]; then
+    cat >"$file" <<EOF
+<VirtualHost *:80>
+    ServerName ${site}
     ServerAlias intelis
     ServerAlias vlsm
-    DocumentRoot ${lis_path}/public
-    <Directory ${lis_path}/public>
+    DocumentRoot ${docroot}
+    <Directory ${docroot}>
         AddDefaultCharset UTF-8
         Options -Indexes -MultiViews +FollowSymLinks
         AllowOverride All
         Require all granted
     </Directory>
-</VirtualHost>" >"$vhost_file"
-    a2ensite "${hostname}.conf"
+    ErrorLog \${APACHE_LOG_DIR}/${site}_error.log
+    CustomLog \${APACHE_LOG_DIR}/${site}_access.log combined
+</VirtualHost>
+EOF
+
+    print success "Created vhost ${file}"
+  else
+    print info "Vhost ${site}.conf exists; leaving as-is."
+  fi
+  a2ensite "${site}.conf" >/dev/null 2>&1 || true
+}
+
+
+if $is_lis; then
+  print info "Configuring default vhost so http(s)://<IP>/ → ${lis_path}/public"
+  update_000_default_idempotent "${lis_path}/public"
+  a2ensite 000-default >/dev/null 2>&1 || true
+
+  update_default_ssl_idempotent "${lis_path}/public"   # safe no-op if default-ssl absent
 else
-    echo "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
-    log_action "Invalid installation type '$installation_type'. Defaulting Intelis to LIS installation..."
-    apache_vhost_file="/etc/apache2/sites-available/000-default.conf"
-    cp "$apache_vhost_file" "${apache_vhost_file}.bak"
-    configure_vhost "$apache_vhost_file"
+  print info "Creating dedicated vhost for ${hostname}; leaving 000-default untouched"
+  make_vhost_if_absent "${hostname}" "${lis_path}/public"
 fi
 
-# Restart Apache to apply changes
-restart_service apache || {
-    print error "Failed to restart Apache. Please check the configuration."
-    log_action "Failed to restart Apache. Please check the configuration."
-    exit 1
-}
+a2enmod rewrite >/dev/null 2>&1 || true
+a2enmod headers >/dev/null 2>&1 || true
+a2enmod ssl >/dev/null 2>&1 || true
+a2enmod deflate >/dev/null 2>&1 || true
+
+
+# sanity check & reload
+apachectl configtest >/dev/null 2>&1 || { print error "apachectl configtest failed"; exit 1; }
+restart_service apache || { print error "Apache restart failed"; exit 1; }
 
 # Cron job setup
 setup_intelis_cron "${lis_path}"
@@ -753,47 +930,66 @@ fi
 chmod 644 "$mysql_cnf"
 restart_service mysql
 
-# Only prompt for Remote STS URL for LIS nodes
+# Remote STS URL is REQUIRED only for LIS nodes; skipped for STS/Standalone
 if $is_lis; then
-    # Prompt for Remote STS URL
-    while true; do
-        read -p "Please enter the Remote STS URL (or press Enter to skip): " remote_sts_url
+    remote_sts_url="${STS_URL_FLAG:-${INTELIS_STS_URL:-}}"
+    trim_url() { echo -n "$1" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//' | sed 's:/*$::'; }
 
-        log_action "Remote STS URL entered: $remote_sts_url"
-
-        if [ -z "$remote_sts_url" ]; then
-            echo "No STS URL provided. Skipping validation."
-            log_action "No STS URL provided. Skipping validation."
-            break
+    validate_sts() {
+        local u; u="$(trim_url "$1")"
+        [[ -z "$u" ]] && return 1
+        # basic scheme guard
+        if ! [[ "$u" =~ ^https?:// ]]; then
+        print warning "STS URL missing scheme, assuming https://"
+        u="https://$u"
         fi
+        # hit version endpoint with timeout & retry
+        local code
+        code=$(curl -sS -m 6 --connect-timeout 4 --retry 2 --retry-delay 1 -o /dev/null -w '%{http_code}' "$u/api/version.php" || echo "000")
+        [[ "$code" == "200" ]] && { remote_sts_url="$u"; return 0; }
+        return 1
+    }
 
-        echo "Validating the provided STS URL..."
-        response_code=$(curl -s -o /dev/null -w "%{http_code}" "$remote_sts_url/api/version.php")
-
-        if [ "$response_code" -eq 200 ]; then
-            print success "STS URL validation successful."
-            log_action "STS URL validation successful."
-
-            # Define desired_sts_url
-            desired_sts_url="\$systemConfig['remoteURL'] = '$remote_sts_url';"
-
-            config_file="${lis_path}/configs/config.production.php"
-
-            # Check if the desired configuration already exists in the file
-            if ! grep -qF "$desired_sts_url" "${config_file}"; then
-                # The desired configuration does not exist, so update the file
-                sed -i "s|\$systemConfig\['remoteURL'\]\s*=\s*'.*';|$desired_sts_url|" "${config_file}"
-                print info "Remote STS URL updated in the configuration file."
-            else
-                print info "Remote STS URL is already set as desired in the configuration file."
-            fi
-            break
+    if [[ -n "$remote_sts_url" ]]; then
+        if ! validate_sts "$remote_sts_url"; then
+        print error "Provided STS URL failed validation for LIS. (Use --sts-url or INTELIS_STS_URL)."
+        exit 1
+        fi
+    else
+        # prompt only if TTY
+        if [[ -t 0 ]]; then
+        while true; do
+            read -r -p "Enter the Remote STS URL (required for LIS, e.g., https://sts.example.com): " candidate
+            if validate_sts "$candidate"; then break; fi
+            print error "Validation failed. Please re-enter."
+        done
         else
-            print error "Failed to validate the provided STS URL (HTTP response code: $response_code). Please try again."
-            log_action "STS URL validation failed with response code $response_code."
+        print error "LIS requires STS URL in non-interactive mode. Provide --sts-url or INTELIS_STS_URL."
+        exit 1
         fi
-    done
+    fi
+
+    
+
+
+    # persist to config
+    config_file="${lis_path}/configs/config.production.php"
+    desired_sts_url="\$systemConfig['remoteURL'] = '${remote_sts_url}';"
+
+    if [[ ! -w "${config_file}" ]]; then
+        print error "Config ${config_file} is not writable."
+        exit 1
+    fi
+
+    if grep -qE "^\s*\$systemConfig\['remoteURL'\]\s*=" "${config_file}"; then
+        sed -i "s|\$systemConfig\['remoteURL'\]\s*=.*|${desired_sts_url}|" "${config_file}"
+    else
+        printf "\n%s\n" "${desired_sts_url}" >> "${config_file}"
+    fi
+    log_action "STS URL set to ${remote_sts_url}"
 fi
+
+
 
 if grep -q "\['cache_di'\] => false" "${config_file}"; then
     sed -i "s|\('cache_di' => \)false,|\1true,|" "${config_file}"
@@ -878,14 +1074,15 @@ if [ -f "${lis_path}/var/cache/CompiledContainer.php" ]; then
 fi
 
 # Set proper permissions
-download_file "/usr/local/bin/intelis-refresh" https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh
+download_file "/usr/local/bin/intelis-refresh" \
+  "https://raw.githubusercontent.com/deforay/intelis/master/scripts/refresh.sh" \
+  "Downloading intelis-refresh..."
+
 chmod +x /usr/local/bin/intelis-refresh
 (print success "Setting final permissions in the background..." &&
     intelis-refresh -p "${lis_path}" -m full >/dev/null 2>&1 &&
     find "${lis_path}" -exec chown www-data:www-data {} \; 2>/dev/null || true) &
 disown
-
-restart_service apache
 
 print success "Setup complete. Proceed to LIS setup."
 log_action "Setup complete. Proceed to LIS setup."
