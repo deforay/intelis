@@ -90,6 +90,7 @@ $testName = TestsService::getTestTypes();
 
   <script type="text/javascript" src="/assets/js/jquery.min.js"></script>
   <script type="text/javascript" src="/assets/js/jquery-ui.min.js"></script>
+  <script type="text/javascript" src="/assets/js/utils.js?v=<?= filemtime(WEB_ROOT . '/assets/js/utils.js') ?>"></script>
 
   <!-- iCheck -->
   <style>
@@ -490,7 +491,7 @@ $testName = TestsService::getTestTypes();
         if (url == '') {
           return false;
         }
-        $.post("/includes/check-sts-url.php", {
+        $.post("/setup/check-sts-url.php", {
             remoteURL: url,
           },
           function(data) {
@@ -529,7 +530,7 @@ $testName = TestsService::getTestTypes();
               remoteURL: $('#remoteURL').val()
             },
             function(data) {
-              $.post("/includes/getTestingLabOptions.php",
+              $.post("/setup/getTestingLabOptions.php",
                 function(data) {
                   if (data != 0) {
                     $("#testingLab").html(data);
