@@ -206,63 +206,65 @@ function selectFileWithFzf(array $candidates, string $header): ?string
         return null;
     }
 
-    $inputLines = [];
-    foreach ($candidates as $candidate) {
-        $path = $candidate['path'];
-        $label = sprintf(
-            "%s  %s  %s",
-            $candidate['basename'],
-            date('Y-m-d H:i:s', $candidate['mtime']),
-            formatFileSize((int) $candidate['size'])
-        );
-        $inputLines[] = $path . "\t" . $label;
+    $inputFile = tempnam(sys_get_temp_dir(), 'dbtools_fzf_in_');
+    $outputFile = tempnam(sys_get_temp_dir(), 'dbtools_fzf_out_');
+
+    if ($inputFile === false || $outputFile === false) {
+        if ($inputFile !== false) @unlink($inputFile);
+        if ($outputFile !== false) @unlink($outputFile);
+        return null;
     }
 
-    $input = implode("\n", $inputLines);
+    $lines = [];
+    foreach ($candidates as $candidate) {
+        $lines[] = implode("\t", [
+            $candidate['path'],
+            sprintf(
+                "%s  %s  %s",
+                $candidate['basename'],
+                date('Y-m-d H:i:s', $candidate['mtime']),
+                formatFileSize((int) $candidate['size'])
+            ),
+        ]);
+    }
+
+    file_put_contents($inputFile, implode(PHP_EOL, $lines));
+
+    $cmd = sprintf(
+        'OUT=%s; export OUT; ' .
+        'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
+        ' --prompt=%s ' .
+        ' --header=%s ' .
+        ' --delimiter="\t" --with-nth=2.. ' .
+        ' --bind "enter:execute-silent(echo {1} > \"$OUT\")+abort" ',
+        escapeshellarg($outputFile),
+        escapeshellarg($inputFile),
+        escapeshellarg('Select> '),
+        escapeshellarg($header)
+    );
 
     $descriptors = [
-        0 => ['pipe', 'r'],
-        1 => ['pipe', 'w'],
-        2 => ['pipe', 'w'],
-    ];
-
-    $cmd = [
-        'fzf',
-        '--with-nth=2..',
-        '--delimiter=\\t',
-        '--ansi',
-        '--reverse',
-        '--height=80%',
-        '--header=' . $header,
-        '--prompt=Select> ',
+        0 => STDIN,
+        1 => STDOUT,
+        2 => STDERR,
     ];
 
     $process = proc_open($cmd, $descriptors, $pipes, null, buildProcessEnv());
-    if (!is_resource($process)) {
+    if (is_resource($process)) {
+        proc_close($process);
+    }
+
+    $selection = @file_get_contents($outputFile);
+
+    @unlink($inputFile);
+    @unlink($outputFile);
+
+    $selection = $selection === false ? '' : trim($selection);
+    if ($selection === '') {
         return null;
     }
 
-    fwrite($pipes[0], $input);
-    fclose($pipes[0]);
-
-    $selection = stream_get_contents($pipes[1]) ?: '';
-    $stderr = stream_get_contents($pipes[2]) ?: '';
-    fclose($pipes[1]);
-    fclose($pipes[2]);
-
-    $exitCode = proc_close($process);
-
-    if ($exitCode !== 0 || trim($selection) === '') {
-        if (trim($stderr) !== '') {
-            echo trim($stderr) . PHP_EOL;
-        }
-        return null;
-    }
-
-    $parts = explode("\t", trim($selection), 2);
-    $path = $parts[0] ?? '';
-
-    return $path !== '' ? $path : null;
+    return $selection;
 }
 
 /**
