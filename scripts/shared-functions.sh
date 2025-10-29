@@ -99,74 +99,57 @@ prepare_system() {
     print success "System preparation complete with non-interactive restarts configured."
 }
 spinner() {
-    local pid=$1
+    # BC signature: spinner <pid> [message]
+    local pid="${1:-}"
     local message="${2:-Processing...}"
-    local frames=("⠋" "⠙" "⠹" "⠸" "⠼" "⠴" "⠦" "⠧" "⠇" "⠏")
-    local ascii_frames=('|' '/' '-' '\')
-    local delay=0.1
-    local i=0
-    local last_status=0
+    local delay=0.2
+    local status=1
+    local is_tty=0
 
-    # Colors (only when TTY)
-    local blue="\033[1;36m"
-    local green="\033[1;32m"
-    local red="\033[1;31m"
-    local reset="\033[0m"
-
-    # TTY + tput detection
-    local is_tty=0 has_tput=0
-    [ -t 1 ] && is_tty=1
-    command -v tput >/dev/null 2>&1 && has_tput=1
-
-    # UTF-8 heuristic; disable animation if not a TTY
-    local use_unicode=1
-    printf '%s' "$LC_ALL$LC_CTYPE$LANG" | grep -qi 'utf-8' || use_unicode=0
-    (( is_tty )) || use_unicode=0
-
-    # Hide cursor if we can and restore on exit
-    if (( is_tty && has_tput )); then
-        tput civis 2>/dev/null || true
-    fi
-    cleanup() {
-        if (( is_tty && has_tput )); then
-            tput cnorm 2>/dev/null || true
-        fi
+    # Basic validation
+    [[ "$pid" =~ ^[0-9]+$ ]] || {
+        printf "[FAIL] %s (invalid pid)\n" "$message"
+        return 1
     }
-    trap cleanup EXIT INT TERM
 
-    # Draw loop (only animate on TTY)
+    # TTY check (no locale/tput usage; set -u safe)
+    [ -t 1 ] && is_tty=1
+
+    # One-line start
     if (( is_tty )); then
-        while kill -0 "$pid" 2>/dev/null; do
-            printf "\r\033[K"
-            if (( use_unicode )); then
-                printf "${blue}%s${reset} %s" "${frames[i]}" "$message"
-                (( i = (i + 1) % ${#frames[@]} ))
-            else
-                printf "${blue}%s${reset} %s" "${ascii_frames[i]}" "$message"
-                (( i = (i + 1) % ${#ascii_frames[@]} ))
-            fi
-            sleep "$delay"
-        done
+        # Print message and then dots while we wait
+        printf "%s " "$message"
     fi
 
-    wait "$pid" 2>/dev/null; last_status=$?
-
-    if (( is_tty )); then
-        if (( last_status == 0 )); then
-            printf "\r\033[K%b✅%b %s\n" "${green}" "${reset}" "$message"
-        else
-            printf "\r\033[K%b❌%b %s (exit code: %d)\n" "${red}" "${reset}" "$message" "$last_status"
-        fi
+    # First try to 'wait' if it's our child; else fall back to polling
+    if wait "$pid" 2>/dev/null; then
+        status=0
     else
-        if (( last_status == 0 )); then
-            printf "[OK] %s\n" "$message"
-        else
-            printf "[FAIL:%d] %s\n" "$last_status" "$message"
+        status=$?
+        if [[ $status -eq 127 ]]; then
+            # Not our child → poll existence until it exits
+            status=0
+            while kill -0 "$pid" 2>/dev/null; do
+                (( is_tty )) && printf "."
+                sleep "$delay"
+            done
+            # Can't know true exit code here; treat as success unless caller checks otherwise
         fi
     fi
 
-    return "$last_status"
+    # Line end for TTY
+    (( is_tty )) && printf "\n"
+
+    # BC: print a clear success/fail line with the same message
+    if (( status == 0 )); then
+        printf "\033[1;92m✅ Success:\033[0m %s\n" "$message"
+    else
+        printf "\033[1;91m❌ Error:\033[0m %s (exit code: %d)\n" "$message" "$status"
+    fi
+
+    return "$status"
 }
+
 
 download_file() {
     local output_file="$1"
