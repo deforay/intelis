@@ -2,9 +2,19 @@
 
 
 use App\Registries\AppRegistry;
+use App\Services\CommonService;
+use App\Registries\ContainerRegistry;
 
 require_once APPLICATION_PATH . '/header.php';
-$rejReaons = $general->getRejectionReasons('generic-tests');
+
+
+
+
+/** @var CommonService $general */
+$general = ContainerRegistry::get(CommonService::class);
+
+
+$rejectionReasons = $general->getRejectionReasons('generic-tests');
 
 // Sanitized values from $request object
 /** @var Laminas\Diactoros\ServerRequest $request */
@@ -53,7 +63,7 @@ $rsnInfo = $db->query($rsnQuery);
 									<label for="rejectionType" class="col-lg-4 control-label">Rejection Type</label>
 									<div class="col-lg-7">
 										<select class="form-control select2 editableSelect" id="rejectionType" name="rejectionType" placeholder="Rejection Type" title="Please enter Rejection Type">
-											<?= $general->generateSelectOptions($rejReaons, strtolower((string) $rsnInfo[0]['rejection_type']), '-- Select --'); ?>
+											<?= $general->generateSelectOptions($rejectionReasons, strtolower((string) $rsnInfo[0]['rejection_type']), '-- Select --'); ?>
 										</select>
 									</div>
 								</div>

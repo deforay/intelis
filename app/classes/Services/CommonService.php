@@ -213,28 +213,30 @@ final class CommonService
 
     public function getDataByTableAndFields($table, $fields, $option = true, $condition = null, $group = null)
     {
-        $response = [];
-        if (!is_array($fields)) {
-            $fields = [$fields];
-        }
-
-        $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
-        if ($condition) {
-            $query .= " WHERE $condition";
-        }
-
-        if (!empty($group)) {
-            $query .= " GROUP BY $group";
-        }
-        $results = $this->db->rawQuery($query);
-        if ($option) {
-            foreach ($results as $row) {
-                $response[$row[$fields[0]]] = $row[$fields[1]];
+        return MemoUtility::remember(function () use ($table, $fields, $option, $condition, $group) {
+            $response = [];
+            if (!is_array($fields)) {
+                $fields = [$fields];
             }
-        } else {
-            $response = $results;
-        }
-        return $response;
+
+            $query = "SELECT " . implode(",", $fields) . " FROM " . $table;
+            if ($condition) {
+                $query .= " WHERE $condition";
+            }
+
+            if (!empty($group)) {
+                $query .= " GROUP BY $group";
+            }
+            $results = $this->db->rawQuery($query);
+            if ($option) {
+                foreach ($results as $row) {
+                    $response[$row[$fields[0]]] = $row[$fields[1]];
+                }
+            } else {
+                $response = $results;
+            }
+            return $response;
+        });
     }
 
 
@@ -249,22 +251,24 @@ final class CommonService
      */
     public function fetchDataFromTable(string $tableName, string|array|null $conditions = [], string|array|null $columns = '*', $numRows = null): ?array
     {
-        if ($this->db == null || empty($tableName)) {
-            return null;
-        }
-
-        if (!isset($columns) || $columns == '' || empty($columns)) {
-            $columns = '*';
-        }
-
-        if ($conditions !== '' && !empty($conditions)) {
-            $conditions = is_array($conditions) ? $conditions : [$conditions];
-            foreach ($conditions as $where) {
-                $this->db->where($where);
+        return MemoUtility::remember(function () use ($tableName, $conditions, $columns, $numRows) {
+            if ($this->db == null || empty($tableName)) {
+                return null;
             }
-        }
 
-        return $this->db->get($tableName, $numRows, $columns);
+            if (!isset($columns) || $columns == '' || empty($columns)) {
+                $columns = '*';
+            }
+
+            if ($conditions !== '' && !empty($conditions)) {
+                $conditions = is_array($conditions) ? $conditions : [$conditions];
+                foreach ($conditions as $where) {
+                    $this->db->where($where);
+                }
+            }
+
+            return $this->db->get($tableName, $numRows, $columns);
+        });
     }
 
     public static function encrypt($message, $key): string
@@ -422,12 +426,14 @@ final class CommonService
 
     public function getTestingPlatforms($testType = null)
     {
-        if (!empty($testType)) {
-            $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
-        }
-        $this->db->where("status", "active");
-        $this->db->orderBy('machine_name', "ASC");
-        return $this->db->get('instruments');
+        return MemoUtility::remember(function () use ($testType) {
+            if (!empty($testType)) {
+                $this->db->where("(JSON_SEARCH(supported_tests, 'all', '$testType') IS NOT NULL) OR (supported_tests IS NULL)");
+            }
+            $this->db->where("status", "active");
+            $this->db->orderBy('machine_name', "ASC");
+            return $this->db->get('instruments');
+        });
     }
 
     public function getDataFromOneFieldAndValue($tablename, $fieldname, $fieldValue, $condition = null)
@@ -443,14 +449,16 @@ final class CommonService
 
     public function getRejectionReasons($testType): array
     {
-        $rejReaons = [];
-        $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
-        if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
-            foreach ($rejArray as $rej) {
-                $rejReaons[$rej] = $rej;
+        return MemoUtility::remember(function () use ($testType) {
+            $rejectionReasons = [];
+            $rejArray = ['general', 'whole blood', 'plasma', 'dbs', 'testing'];
+            if (in_array($testType, ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'generic-tests'])) {
+                foreach ($rejArray as $rej) {
+                    $rejectionReasons[$rej] = $rej;
+                }
             }
-        }
-        return $rejReaons;
+            return $rejectionReasons;
+        });
     }
 
     public function getValueByName($fieldValue = null, $fieldName = null, $tableName = null, $returnFieldName = null)
@@ -470,30 +478,32 @@ final class CommonService
 
     public function getLocaleList(?int $formId = null)
     {
-        if (empty($formId) || $formId == 0) {
-            $formId = (int)$this->getGlobalConfig('vl_form') ?? 0;
-        }
-        // Locale mapping
-        $localeMap = [
-            'en_US' => 'English',
-            'fr_FR' => 'French',
-            'en_CM' => 'English_Cameroon',
-            'fr_CM' => 'French_Cameroon'
-        ];
+        return MemoUtility::remember(function () use ($formId) {
+            if (empty($formId) || $formId == 0) {
+                $formId = (int)$this->getGlobalConfig('vl_form') ?? 0;
+            }
+            // Locale mapping
+            $localeMap = [
+                'en_US' => 'English',
+                'fr_FR' => 'French',
+                'en_CM' => 'English_Cameroon',
+                'fr_CM' => 'French_Cameroon'
+            ];
 
-        // Define Cameroon locales
-        $cameroonLocales = ['en_CM', 'fr_CM'];
+            // Define Cameroon locales
+            $cameroonLocales = ['en_CM', 'fr_CM'];
 
-        if ($formId === COUNTRY\CAMEROON) {
-            // Keep only Cameroon locales
-            $localeMap = array_intersect_key($localeMap, array_flip($cameroonLocales));
-        } elseif ($formId !== 0) {
-            // Remove Cameroon locales for other specific countries
-            $localeMap = array_diff_key($localeMap, array_flip($cameroonLocales));
-        }
-        // If 0, keep all locales in $localeMap
+            if ($formId === COUNTRY\CAMEROON) {
+                // Keep only Cameroon locales
+                $localeMap = array_intersect_key($localeMap, array_flip($cameroonLocales));
+            } elseif ($formId !== 0) {
+                // Remove Cameroon locales for other specific countries
+                $localeMap = array_diff_key($localeMap, array_flip($cameroonLocales));
+            }
+            // If 0, keep all locales in $localeMap
 
-        return $localeMap;
+            return $localeMap;
+        });
     }
 
     public function activeReportFormats($module): array
@@ -991,14 +1001,18 @@ final class CommonService
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = [0, 0, 0]): string
     {
-        $barcodeobj = new TCPDFBarcode($code, $type);
-        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
+            $barcodeobj = new TCPDFBarcode($code, $type);
+            return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+        });
     }
 
     public function get2DBarcodeImageContent($code, $type = 'QRCODE', $width = 2, $height = 30, $color = [0, 0, 0])
     {
-        $barcodeobj = new TCPDF2DBarcode($code, $type);
-        return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+        return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
+            $barcodeobj = new TCPDF2DBarcode($code, $type);
+            return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
+        });
     }
 
     public function stringToCamelCase($string, $character = "_", $capitalizeFirstCharacter = false)
@@ -1086,73 +1100,78 @@ final class CommonService
     }
     public function multipleColumnSearch(?string $searchText, ?array $allColumns, bool $splitSearch = false): ?string
     {
-        // Initialize the where clause array
-        $sWhere = [];
+        return MemoUtility::remember(function () use ($searchText, $allColumns, $splitSearch) {
 
-        // Ensure the search text and columns are not empty
-        if (!empty($searchText) && !empty($allColumns) && is_array($allColumns)) {
-            // Trim the search text
-            $searchText = trim($searchText);
+            // Initialize the where clause array
+            $sWhere = [];
 
-            // Add the condition for the entire search string
-            $sWhereSub = [];
-            foreach ($allColumns as $column) {
-                if (!empty($column)) {
-                    // Escape the entire search text to prevent SQL injection
-                    $escapedSearchText = $this->db->escape($searchText);
-                    // Add the search condition for the current column
-                    $sWhereSub[] = "$column LIKE '%$escapedSearchText%'";
+            // Ensure the search text and columns are not empty
+            if (!empty($searchText) && !empty($allColumns) && is_array($allColumns)) {
+                // Trim the search text
+                $searchText = trim($searchText);
+
+                // Add the condition for the entire search string
+                $sWhereSub = [];
+                foreach ($allColumns as $column) {
+                    if (!empty($column)) {
+                        // Escape the entire search text to prevent SQL injection
+                        $escapedSearchText = $this->db->escape($searchText);
+                        // Add the search condition for the current column
+                        $sWhereSub[] = "$column LIKE '%$escapedSearchText%'";
+                    }
                 }
-            }
-            if (!empty($sWhereSub)) {
-                $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
-            }
+                if (!empty($sWhereSub)) {
+                    $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
+                }
 
-            if ($splitSearch) {
-                // Split the search query into separate words
-                $searchArray = array_filter(explode(" ", $searchText));
+                if ($splitSearch) {
+                    // Split the search query into separate words
+                    $searchArray = array_filter(explode(" ", $searchText));
 
-                // Loop through each search word
-                foreach ($searchArray as $search) {
-                    if (!empty($search)) {
-                        // Initialize sub where clause array
-                        $sWhereSub = [];
+                    // Loop through each search word
+                    foreach ($searchArray as $search) {
+                        if (!empty($search)) {
+                            // Initialize sub where clause array
+                            $sWhereSub = [];
 
-                        // Loop through each column to generate search conditions for each word
-                        foreach ($allColumns as $column) {
-                            if (!empty($column)) {
-                                // Escape the search term to prevent SQL injection
-                                $escapedSearch = $this->db->escape($search);
-                                // Add the search condition for the current column
-                                $sWhereSub[] = "$column LIKE '%$escapedSearch%'";
+                            // Loop through each column to generate search conditions for each word
+                            foreach ($allColumns as $column) {
+                                if (!empty($column)) {
+                                    // Escape the search term to prevent SQL injection
+                                    $escapedSearch = $this->db->escape($search);
+                                    // Add the search condition for the current column
+                                    $sWhereSub[] = "$column LIKE '%$escapedSearch%'";
+                                }
                             }
-                        }
-                        if (!empty($sWhereSub)) {
-                            $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
+                            if (!empty($sWhereSub)) {
+                                $sWhere[] = " (" . implode(' OR ', $sWhereSub) . ") ";
+                            }
                         }
                     }
                 }
             }
-        }
 
-        // Combine all where clauses into a single SQL string
-        return !empty($sWhere) ? implode(' OR ', $sWhere) : null;
+            // Combine all where clauses into a single SQL string
+            return !empty($sWhere) ? implode(' OR ', $sWhere) : null;
+        });
     }
 
 
     public function generateDataTablesSorting($postData, $orderColumns)
     {
-        $sOrder = null;
-        if (isset($postData['iSortCol_0'])) {
-            for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
-                if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
-                    $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
+        return MemoUtility::remember(function () use ($postData, $orderColumns) {
+            $sOrder = null;
+            if (isset($postData['iSortCol_0'])) {
+                for ($i = 0; $i < (int) $postData['iSortingCols']; $i++) {
+                    if ($postData['bSortable_' . (int) $postData['iSortCol_' . $i]] == "true") {
+                        $sOrder .= $orderColumns[(int) $postData['iSortCol_' . $i]] . " " . ($postData['sSortDir_' . $i]) . ", ";
+                    }
                 }
+                $sOrder = substr_replace($sOrder, "", -2);
             }
-            $sOrder = substr_replace($sOrder, "", -2);
-        }
 
-        return $sOrder;
+            return $sOrder;
+        });
     }
 
     public function generateSelectOptionsAPI($options): array
@@ -1595,23 +1614,25 @@ final class CommonService
 
     public function getTableFieldsAsArray(string $tableName, array $unwantedColumns = []): array
     {
-        $tableFieldsAsArray = [];
-        if (!empty($tableName) && $tableName != '') {
-            try {
-                $tableFieldsAsArray = $this->db->getTableFieldsAsArray($tableName, $unwantedColumns);
-            } catch (Throwable $e) {
-                $tableFieldsAsArray = [];
-                LoggerUtility::logError($e->getMessage(), [
-                    'file' => $e->getFile(),
-                    'line' => $e->getLine(),
-                    'last_db_error' => $this->db->getLastError(),
-                    'last_db_query' => $this->db->getLastQuery(),
-                    'trace' => $e->getTraceAsString(),
-                ]);
+        return MemoUtility::remember(function () use ($tableName, $unwantedColumns) {
+            $tableFieldsAsArray = [];
+            if (!empty($tableName) && $tableName != '') {
+                try {
+                    $tableFieldsAsArray = $this->db->getTableFieldsAsArray($tableName, $unwantedColumns);
+                } catch (Throwable $e) {
+                    $tableFieldsAsArray = [];
+                    LoggerUtility::logError($e->getMessage(), [
+                        'file' => $e->getFile(),
+                        'line' => $e->getLine(),
+                        'last_db_error' => $this->db->getLastError(),
+                        'last_db_query' => $this->db->getLastQuery(),
+                        'trace' => $e->getTraceAsString(),
+                    ]);
+                }
             }
-        }
 
-        return $tableFieldsAsArray;
+            return $tableFieldsAsArray;
+        });
     }
 
     public function updateCurrentDateTime($tables)

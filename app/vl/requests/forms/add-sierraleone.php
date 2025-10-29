@@ -287,7 +287,7 @@ $sFormat = '';
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control isRequired phone-number" maxlength="<?= $maxPhoneLength; ?>" placeholder="Enter Phone Number" title="Enter phone number" />
                                                   </div>
                                              </div>
                                         </div>

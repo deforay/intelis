@@ -202,7 +202,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                         <td><input type="text" class="form-control forceNumeric" id="childWeight" name="childWeight" placeholder="<?= _translate('Infant weight of the day in Kg'); ?>" title="<?= _translate('Infant weight of the day in Kg'); ?>" style="width:100%;" /></td>
 
                                         <th scope="row"><?= _translate('Caretaker phone number'); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="caretakerPhoneNumber" name="caretakerPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Caretaker Phone Number'); ?>" title="<?= _translate('Caretaker Phone Number'); ?>" style="width:100%;" /></td>
 
 
                                     </tr>
@@ -496,7 +496,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                     <tr>
                                         <th scope="row"><?= _translate('Contact Number'); ?></th>
                                         <td>
-                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_phone'] ?? null; ?>" class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
+                                            <input value="<?php echo $_SESSION['eidData']['sample_requestor_phone'] ?? null; ?>" class="form-control phone-number" type="text" name="sampleRequestorPhone" id="sampleRequestorPhone" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Requesting Officer Phone'); ?>" />
                                         </td>
                                         <?php if ($general->isLISInstance()) { ?>
                                             <th scope="row"><label for=""><?= _translate('Sample Received Date'); ?> </label></th>
