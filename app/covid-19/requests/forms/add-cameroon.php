@@ -254,7 +254,7 @@ $facility = $general->generateSelectOptions($healthFacilities, $_SESSION['covid1
                                     </tr>
                                     <tr>
                                         <th scope="row"><?= _translate("Phone number"); ?></th>
-                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
+                                        <td><input type="text" class="form-control phone-number" id="patientPhoneNumber" name="patientPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Case Phone Number'); ?>" style="width:100%;" onchange="" /></td>
 
                                         <th scope="row"><?= _translate("Address"); ?></th>
                                         <td><textarea class="form-control " id="patientAddress" name="patientAddress" placeholder="<?= _translate('Address'); ?>" title="<?= _translate('Case Address'); ?>" style="width:100%;" onchange=""></textarea></td>

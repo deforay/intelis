@@ -49,15 +49,14 @@ $systemDisplayName = (SYSTEM_CONFIG['instance-name'] != null || SYSTEM_CONFIG['i
 $request = AppRegistry::get('request');
 
 $countryCode = $arr['default_phone_prefix'] ?? '';
-$minNumberOfDigits = _castVariable($arr['min_phone_length'] ?? null, 'int') ?? 15;
-$maxNumberOfDigits = _castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15;
+$maxPhoneLength = $_SESSION['maxPhoneLength'] ??= strlen((string) $countryCode) + (_castVariable($arr['max_phone_length'] ?? null, 'int') ?? 15);
 
 $_SESSION['menuItems'] ??= (ContainerRegistry::get(AppMenuService::class))->getMenu();
 
 $instrumentsCount = $general->getInstrumentsCount();
 $nonAdminUserCount = $general->getNonAdminUsersCount();
 
-$displayTopBar = ($instrumentsCount == 0 || $nonAdminUserCount == 0);
+$displayTopBar = $instrumentsCount == 0 || $nonAdminUserCount == 0;
 
 $margin = $displayTopBar ? 'style="margin-top:50px !important;"' : '';
 $topSide = $displayTopBar ? 'style="top:50px !important;"' : 'style="top:0 !important;"';

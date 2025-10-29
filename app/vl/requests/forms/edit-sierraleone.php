@@ -386,7 +386,7 @@ if (isset($treatmentInd[1]) && $treatmentInd[1] == "Other") {
 									<div class="col-xs-3 col-md-3">
 										<div class="form-group">
 											<label for="patientPhoneNumber">Phone Number<span class="mandatory">*</span></label>
-											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number isRequired" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
+											<input type="text" name="patientPhoneNumber" id="patientPhoneNumber" class="form-control phone-number isRequired" maxlength="<?= $maxPhoneLength; ?>" placeholder="Enter Phone Number" title="Enter phone number" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" />
 										</div>
 									</div>
 								</div>

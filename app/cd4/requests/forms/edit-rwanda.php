@@ -669,7 +669,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <div class="col-md-4">
                                                             <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Contact <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?= $cd4QueryInfo['request_clinician_phone_number']; ?>" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" value="<?= $cd4QueryInfo['request_clinician_phone_number']; ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">
@@ -689,7 +689,7 @@ if (isset($cd4QueryInfo['reason_for_result_changes']) && $cd4QueryInfo['reason_f
                                                        <div class="col-md-4">
                                                             <label for="cd4FocalPersonPhoneNumber" class="col-lg-5 control-label"> Phone Contact<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter phone number" value="<?= $cd4QueryInfo['cd4_focal_person_phone_number'] ?>" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="cd4FocalPersonPhoneNumber" name="cd4FocalPersonPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="Phone Number" title="Please enter phone number" value="<?= $cd4QueryInfo['cd4_focal_person_phone_number'] ?>" />
                                                             </div>
                                                        </div>
                                                        <div class="col-md-4">

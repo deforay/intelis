@@ -506,7 +506,7 @@ $sFormat = '';
                                                        <div class="col-md-6">
                                                             <label for="reqClinicianPhoneNumber" class="col-lg-5 control-label">Phone Number <?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="reqClinicianPhoneNumber" name="reqClinicianPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="Phone Number" title="Please enter request clinician phone number" />
                                                             </div>
                                                        </div>
                                                   </div>
@@ -520,7 +520,7 @@ $sFormat = '';
                                                        <div class="col-md-6">
                                                             <label for="vlFocalPersonPhoneNumber" class="col-lg-5 control-label">VL Shipper Phone Number<?php echo ($general->isSTSInstance()) ? "<span class='mandatory'>*</span>" : ''; ?></label>
                                                             <div class="col-lg-7">
-                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="<?= strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="Phone Number" title="Please enter vl shipper phone number" />
+                                                                 <input type="text" class="form-control phone-number <?php echo ($general->isSTSInstance()) ? "isRequired" : ''; ?>" id="vlFocalPersonPhoneNumber" name="vlFocalPersonPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="Phone Number" title="Please enter vl shipper phone number" />
                                                             </div>
                                                        </div>
                                                        <!-- <div class="col-md-4">

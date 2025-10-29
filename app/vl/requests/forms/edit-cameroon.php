@@ -362,7 +362,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                              <div class="col-xs-3 col-md-3">
                                                   <div class="form-group">
                                                        <label for="patientPhoneNumber"><?= _translate('Phone Number'); ?></label>
-                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
+                                                       <input type="text" name="patientPhoneNumber" id="patientPhoneNumber" value="<?= ($vlQueryInfo['patient_mobile_number']); ?>" class="form-control phone-number" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Enter Phone Number'); ?>" title="<?= _translate('Enter phone number'); ?>" />
                                                   </div>
                                              </div>
 
@@ -449,7 +449,7 @@ $reqClinicianList =  $general->getDataByTableAndFields("form_vl", array("request
                                                   <div class="col-md-3">
                                                        <div class="form-group">
                                                             <label for="reqClinicianPhoneNumber" class=""><?= _translate('Contact Number'); ?> </label>
-                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="<?php echo strlen((string) $countryCode) + (int) $maxNumberOfDigits; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
+                                                            <input type="text" class="form-control phone-number" id="reqClinicianPhoneNumber" value="<?= $vlQueryInfo['request_clinician_phone_number']; ?>" name="reqClinicianPhoneNumber" maxlength="<?= $maxPhoneLength; ?>" placeholder="<?= _translate('Phone Number'); ?>" title="<?= _translate('Please enter request clinician phone number'); ?>" />
                                                        </div>
                                                   </div>
                                              </div>
