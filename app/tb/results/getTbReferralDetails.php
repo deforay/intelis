@@ -111,6 +111,7 @@ $output = [
 
 foreach ($result as $row) {
     $rowData = [];
+    $printBarcode = "";
 
     // Checkbox
     // $rowData[] = '<input type="checkbox" class="sample-checkbox" value="' . $row[$primaryKeyColumn] . '" />';
@@ -145,11 +146,13 @@ foreach ($result as $row) {
 
     $packageId = base64_encode($row['sample_package_id']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
-    $printBarcode = <<<BARCODEBUTTON
-    <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
-        <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
-    </a>
-    BARCODEBUTTON;
+    if ($row['lab_id'] != $row['referred_to_lab_id']) {
+        $printBarcode = <<<BARCODEBUTTON
+        <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
+            <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
+        </a>
+        BARCODEBUTTON;
+    }
 
     $rowData[] = $editBtn . $printBarcode;
     $output['aaData'][] = $rowData;
