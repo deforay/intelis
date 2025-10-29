@@ -82,7 +82,6 @@ try {
         $updateData = [
             'sample_package_id' => $manifestId,
             'sample_package_code' => $_POST['packageCode'],
-            'result_status' => 13,
             'data_sync' => 0,
             'referred_by_lab_id' => $referralLabId,
             'referred_to_lab_id' => $referralToLabId,
