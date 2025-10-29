@@ -114,7 +114,8 @@ final class RequestsService
         } elseif ($syncSinceDate) {
             $condition .= " AND DATE(last_modified_datetime) >= '$syncSinceDate'";
         } else {
-            $condition .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $this->dataSyncInterval DAY)";
+            // $condition .= " AND data_sync=0 AND last_modified_datetime >= SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $this->dataSyncInterval DAY)";
+            $condition .= " AND last_modified_datetime >= SUBDATE('" . DateUtility::getCurrentDateTime() . "', INTERVAL $this->dataSyncInterval DAY)";
         }
 
         return $condition;
