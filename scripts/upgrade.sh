@@ -913,7 +913,6 @@ else
 fi
 
 # Remove the empty directory and the downloaded tar file
-# Remove the empty directory if it exists
 if [ -d "$temp_dir/intelis-master/" ]; then
     rm -rf "$temp_dir/intelis-master/"
 fi
@@ -974,8 +973,8 @@ print header "Running composer operations"
 cd "${lis_path}"
 
 # Configure composer timeout regardless of installation path
-sudo -u www-data composer config process-timeout 30000
-sudo -u www-data composer clear-cache
+sudo -u www-data composer config process-timeout 30000 --no-interaction
+sudo -u www-data composer clear-cache --no-interaction
 
 # Replace the checksum comparison part with this improved version:
 
@@ -1075,20 +1074,20 @@ if [ "$NEED_FULL_INSTALL" = true ]; then
 
         # Update the composer.lock file to match the current state
         print info "Finalizing composer installation..."
-        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev
+        sudo -u www-data composer install --no-scripts --no-autoloader --prefer-dist --no-dev --no-interaction
     else
         print warning "Vendor package not found in GitHub releases. Proceeding with regular composer install."
 
         # Perform full install if vendor.tar.gz isn't available
         print info "Running full composer install (this may take a while)..."
-        sudo -u www-data composer install --prefer-dist --no-dev
+        sudo -u www-data composer install --prefer-dist --no-dev --no-interaction
     fi
 else
     print info "Dependencies are up to date. Skipping vendor download."
 fi
 
 # Always generate the optimized autoloader, regardless of install path
-sudo -u www-data composer dump-autoload -o
+sudo -u www-data composer dump-autoload -o --no-interaction
 
 print success "Composer operations completed."
 log_action "Composer operations completed."
