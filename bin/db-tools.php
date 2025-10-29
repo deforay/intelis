@@ -139,6 +139,12 @@ function isGpgBackupFile(string $path): bool
     return str_ends_with(strtolower($path), '.gpg');
 }
 
+function isSafetyBackupBasename(string $basename): bool
+{
+    $lower = strtolower($basename);
+    return str_starts_with($lower, 'pre-restore-') || str_starts_with($lower, 'interfacing-pre-restore-');
+}
+
 function shouldUseFzf(): bool
 {
     static $cached = null;
@@ -216,12 +222,17 @@ function selectFileWithFzf(array $candidates, string $header): ?string
     }
 
     $lines = [];
-    foreach ($candidates as $candidate) {
+    foreach ($candidates as $index => $candidate) {
+        $basename = $candidate['basename'] ?? basename($candidate['path'] ?? '');
+        $isSafety = $candidate['is_safety'] ?? (is_string($basename) && isSafetyBackupBasename($basename));
+        $labelSuffix = $isSafety ? ' [SAFETY BACKUP]' : '';
         $lines[] = implode("\t", [
             $candidate['path'],
             sprintf(
-                "%s  %s  %s",
-                $candidate['basename'],
+                '%3d. %s%s  %s  %s',
+                $index + 1,
+                $basename,
+                $labelSuffix,
                 date('Y-m-d H:i:s', $candidate['mtime']),
                 formatFileSize((int) $candidate['size'])
             ),
@@ -232,11 +243,11 @@ function selectFileWithFzf(array $candidates, string $header): ?string
 
     $cmd = sprintf(
         'OUT=%s; export OUT; ' .
-        'cat %s | fzf --ansi --height=80%% --reverse --border --cycle ' .
-        ' --prompt=%s ' .
-        ' --header=%s ' .
-        ' --delimiter="\t" --with-nth=2.. ' .
-        ' --bind "enter:execute-silent(echo {1} > \"$OUT\")+abort" ',
+            'cat %s | fzf --ansi --height=80%% --reverse --border ' .
+            ' --prompt=%s ' .
+            ' --header=%s ' .
+            ' --delimiter="\t" --with-nth=2.. ' .
+            ' --bind "enter:execute-silent(echo {1} > \"$OUT\")+abort" ',
         escapeshellarg($outputFile),
         escapeshellarg($inputFile),
         escapeshellarg('Select> '),
@@ -829,11 +840,11 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         }
     } else {
         if (!shouldUseFzf()) {
-            showBackupsWithIndex($backups);
+            showBackupsWithIndex($backups, true);
         } else {
-            echo "Launching fzf selector (press Esc to cancel)…\n";
+            echo "Launching backup selector (safety backups listed last; press Esc to cancel)…\n";
         }
-        $selectedPath = promptForBackupSelection($backups);
+        $selectedPath = promptForBackupSelection($backups, true, true);
         if ($selectedPath === null) {
             echo 'Restore cancelled.' . PHP_EOL;
             return;
@@ -1305,6 +1316,14 @@ function promptForPassword(): ?string
     }
 }
 
+function confirmSafetyBackupSelection(string $path): bool
+{
+    $basename = basename($path);
+    echo "You selected a pre-restore safety backup ({$basename}). Restore from this snapshot? (y/N): ";
+    $input = trim(fgets(STDIN) ?: '');
+    return in_array(strtolower($input), ['y', 'yes'], true);
+}
+
 function extractSqlFromBackup(string $zipPath, string $dbPassword, string $backupFolder): string
 {
     $zip = new ZipArchive();
@@ -1530,11 +1549,13 @@ function getSortedBackups(string $backupFolder): array
 
     $backups = [];
     foreach ($files as $file) {
+        $basename = basename($file);
         $backups[] = [
             'path'     => $file,
-            'basename' => basename($file),
+            'basename' => $basename,
             'mtime'    => @filemtime($file) ?: 0,
             'size'     => @filesize($file) ?: 0,
+            'is_safety' => isSafetyBackupBasename($basename),
         ];
     }
 
@@ -1572,27 +1593,84 @@ function getSortedSqlFiles(string $backupFolder): array
     return $sqlFiles;
 }
 
-function showBackupsWithIndex(array $backups): void
+function splitBackupsBySafety(array $backups): array
 {
-    foreach ($backups as $index => $backup) {
-        $position = $index + 1;
-        $timestamp = date('Y-m-d H:i:s', $backup['mtime']);
-        $size = formatFileSize($backup['size']);
-        echo sprintf('[%d] %s  %s  %s', $position, $backup['basename'], $timestamp, $size) . PHP_EOL;
+    $normal = [];
+    $safety = [];
+
+    foreach ($backups as $backup) {
+        $entry = $backup;
+        $basename = $entry['basename'] ?? basename($entry['path'] ?? '');
+        $isSafety = $entry['is_safety'] ?? (is_string($basename) && isSafetyBackupBasename($basename));
+        $entry['is_safety'] = $isSafety;
+        if ($isSafety) {
+            $safety[] = $entry;
+        } else {
+            $normal[] = $entry;
+        }
+    }
+
+    return [$normal, $safety];
+}
+
+function showBackupsWithIndex(array $backups, bool $groupSafety = false): void
+{
+    if (!$groupSafety) {
+        foreach ($backups as $index => $backup) {
+            $position = $index + 1;
+            $timestamp = date('Y-m-d H:i:s', $backup['mtime']);
+            $size = formatFileSize($backup['size']);
+            echo sprintf('[%d] %s  %s  %s', $position, $backup['basename'], $timestamp, $size) . PHP_EOL;
+        }
+        return;
+    }
+
+    [$normal, $safety] = splitBackupsBySafety($backups);
+
+    $index = 1;
+    $render = function (array $items) use (&$index): void {
+        foreach ($items as $item) {
+            $timestamp = date('Y-m-d H:i:s', $item['mtime']);
+            $size = formatFileSize($item['size']);
+            echo sprintf('[%d] %s  %s  %s', $index, $item['basename'], $timestamp, $size) . PHP_EOL;
+            $index++;
+        }
+    };
+
+    if (!empty($normal)) {
+        echo "Regular backups:\n";
+        $render($normal);
+    }
+
+    if (!empty($safety)) {
+        if (!empty($normal)) {
+            echo PHP_EOL;
+        }
+        echo "Safety backups (pre-restore snapshots):\n";
+        $render($safety);
     }
 }
 
-function promptForBackupSelection(array $backups): ?string
+function promptForBackupSelection(array $backups, bool $groupSafety = false, bool $confirmSafety = false): ?string
 {
+    [$normal, $safety] = $groupSafety ? splitBackupsBySafety($backups) : [array_values($backups), []];
+    $orderedBackups = $groupSafety ? array_merge($normal, $safety) : $normal;
+
     if (shouldUseFzf()) {
-        $selected = selectFileWithFzf($backups, 'Select backup (Esc to cancel)');
+        $header = $groupSafety
+            ? 'Select backup (safety backups listed last; Esc to cancel)'
+            : 'Select backup (Esc to cancel)';
+        $selected = selectFileWithFzf($orderedBackups, $header);
         if ($selected === null) {
+            return null;
+        }
+        if ($confirmSafety && isSafetyBackupBasename(basename($selected)) && !confirmSafetyBackupSelection($selected)) {
             return null;
         }
         return $selected;
     }
 
-    $count = count($backups);
+    $count = count($orderedBackups);
     while (true) {
         $prompt = sprintf('Select backup [1-%d] (or press Enter to cancel): ', $count);
         $input = function_exists('readline') ? readline($prompt) : null;
@@ -1617,7 +1695,13 @@ function promptForBackupSelection(array $backups): ?string
             continue;
         }
 
-        return $backups[$index - 1]['path'];
+        $selectedPath = $orderedBackups[$index - 1]['path'];
+
+        if ($confirmSafety && isSafetyBackupBasename(basename($selectedPath)) && !confirmSafetyBackupSelection($selectedPath)) {
+            return null;
+        }
+
+        return $selectedPath;
     }
 }
 
@@ -2475,8 +2559,8 @@ function handleVerify(string $backupFolder, array $args): void
             return;
         }
         echo "Select backup to verify:\n";
-        showBackupsWithIndex($backups);
-        $selectedPath = promptForBackupSelection($backups);
+        showBackupsWithIndex($backups, true);
+        $selectedPath = promptForBackupSelection($backups, true);
         if ($selectedPath === null) {
             echo 'Verification cancelled.' . PHP_EOL;
             return;
