@@ -663,7 +663,6 @@ $moduleConfigs = [
             'sample_received_at_lab_datetime',
             'is_sample_rejected',
             'result',
-            'referral_manifest_id',
             'referral_manifest_code',
             'xpert_mtb_result',
             'result_sent_to_source',

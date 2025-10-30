@@ -162,7 +162,7 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && S
 // Module specific scheduled tasks
 if (SystemService::isModuleActive('tb')) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/tb/tb-referrals.php")
-        ->everyFiveMinutes()
+        ->everyMinute()
         ->timezone($timeZone)
         ->preventOverlapping()
         ->description('Updating TB referrals and referral history');
