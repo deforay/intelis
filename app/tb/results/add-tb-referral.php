@@ -22,7 +22,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
-$sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRandomString(4));
+$sampleManifestCode = strtoupper('RTB' . date('ymdH') .  MiscUtility::generateRandomString(4));
 ?>
 
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
