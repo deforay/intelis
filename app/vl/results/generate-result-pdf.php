@@ -68,7 +68,9 @@ if ((!empty($_POST['id'])) || !empty($_POST['sampleCodes'])) {
 					r_c_a.recommended_corrective_action_name,
 					JSON_UNQUOTE(JSON_EXTRACT(i.approved_by, '$.vl')) AS defaultApprovedBy,
                     JSON_UNQUOTE(JSON_EXTRACT(i.reviewed_by, '$.vl')) AS defaultReviewedBy,
-                    i.machine_name AS instrument_machine_name
+                    i.machine_name AS instrument_machine_name,
+					i.lower_limit AS instrument_lower_limit,
+					i.higher_limit AS instrument_higher_limit
 					FROM form_vl as vl
 					LEFT JOIN r_vl_test_reasons as vltr ON vl.reason_for_vl_testing = vltr.test_reason_id
 					LEFT JOIN facility_details as c_f ON vl.facility_id = c_f.facility_id
