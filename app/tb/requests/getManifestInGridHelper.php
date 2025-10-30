@@ -83,7 +83,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['manifestCode'])) {
-     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']}'";
+     $sWhere[] = " vl.sample_package_code = '{$_POST['manifestCode']}' OR vl.referral_manifest_code = '{$_POST['manifestCode']}' ";
 }
 
 if (!empty($sWhere)) {
@@ -110,16 +110,12 @@ $output = [
 
 foreach ($rResult as $aRow) {
 
-     $aRow['sample_collection_date'] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
-     $aRow['last_modified_datetime'] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
-
-
      $row = [];
      $row[] = $aRow['sample_code'];
      if (!$general->isStandaloneInstance()) {
           $row[] = $aRow['remote_sample_code'];
      }
-     $row[] = $aRow['sample_collection_date'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['sample_collection_date'] ?? '', true);
      $row[] = $aRow['batch_code'];
      $row[] = $aRow['facility_name'];
      $row[] = $aRow['patient_id'];
@@ -128,7 +124,7 @@ foreach ($rResult as $aRow) {
      $row[] = $aRow['facility_district'];
      // $row[] = $aRow['sample_name'];
      $row[] = $aRow['result'];
-     $row[] = $aRow['last_modified_datetime'];
+     $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '', true);
      $row[] = $aRow['status_name'];
      $output['aaData'][] = $row;
 }
