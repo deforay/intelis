@@ -37,7 +37,6 @@ $query = "SELECT
             vl.$patientIdColumn,
             vl.facility_id,
             vl.referred_to_lab_id, 
-            vl.referral_manifest_id, 
             vl.referral_manifest_code, 
             f.facility_name,
             f.facility_code
@@ -60,7 +59,7 @@ foreach ($result as $sample) {
         $displayText .= " - " . $sample['facility_name'];
     }
 ?>
-    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_id']) && $sample['referral_manifest_id'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars($displayText); ?></option>
+    <option value="<?php echo $sample[$primaryKeyColumn]; ?>" <?php echo (isset($packageCodeId) && isset($sample['referral_manifest_code']) && $sample['referral_manifest_code'] == $packageCodeId) ? 'selected="selected"' : ''; ?>><?php echo htmlspecialchars($displayText); ?></option>
 <?php
 }
 ?>

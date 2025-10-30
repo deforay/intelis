@@ -25,7 +25,7 @@ $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 // DataTables parameters
 $sLimit = "";
 $aColumns = [
-    'referral_manifest_id',
+    '',
     'referral_manifest_code',
     'sample_count',
     'referral_lab_name',
@@ -68,11 +68,10 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $sWhere .= ")";
 }
 
-// Main query - grouped by referral_manifest_id and referral_manifest_code
+// Main query - grouped by referral_manifest_code
 $sQuery = "SELECT 
 vl.referred_to_lab_id, 
 vl.reason_for_referral, 
-vl.referral_manifest_id, 
 vl.referral_manifest_code, 
 COUNT(vl.$primaryKeyColumn) as sample_count, 
 f2.facility_name as referral_lab_name, 
@@ -83,11 +82,11 @@ LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id
 WHERE vl.referred_to_lab_id IS NOT NULL 
     AND vl.referred_to_lab_id != '' 
     AND vl.referred_to_lab_id != 0 
-    AND vl.referral_manifest_id IS NOT NULL 
-    AND vl.referral_manifest_id != '' 
-    AND vl.referral_manifest_id != 0 
+    AND vl.referral_manifest_code IS NOT NULL 
+    AND vl.referral_manifest_code != '' 
+    AND vl.referral_manifest_code != 0 
     $sWhere 
-GROUP BY vl.referral_manifest_id, vl.referral_manifest_code, f2.facility_name, f2.facility_code";
+GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
 if (!empty($sOrder)) {
     $sORderQ = $sOrder ? ', ' . $sOrder : '';
@@ -139,12 +138,12 @@ foreach ($result as $row) {
 
     // Edit Button
     $encodedId = base64_encode($row['referred_to_lab_id']);
-    $encodedCode = base64_encode($row['referral_manifest_id']);
+    $encodedCode = base64_encode($row['referral_manifest_code']);
     $editBtn = '<a href="edit-tb-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
                     <i class="fa fa-edit"></i>
                 </a>';
 
-    $packageId = base64_encode($row['referral_manifest_id']);
+    $packageId = base64_encode($row['referral_manifest_code']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
     if ($row['lab_id'] != $row['referred_to_lab_id']) {
         $printBarcode = <<<BARCODEBUTTON
