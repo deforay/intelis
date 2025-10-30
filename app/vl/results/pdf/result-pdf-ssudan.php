@@ -173,13 +173,15 @@ if (!empty($result)) {
      $tndMessage = '';
      $messageTextSize = '15px';
 
-
+     $clinicalInterpretation = '';
      if (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_smile.png" style="width:50px;" alt="smile_face"/>';
           $showMessage = ($globalConfig['l_vl_msg']);
+          $clinicalInterpretation = "&nbsp;&nbsp;Clinical Interpretation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;Low Viral Load";
      } elseif (!empty($result['vl_result_category']) && $result['vl_result_category'] == 'not suppressed') {
           $smileyContent = '<img src="/assets/img/smiley_frown.png" style="width:50px;" alt="frown_face"/>';
           $showMessage = ($globalConfig['h_vl_msg']);
+          $clinicalInterpretation = "&nbsp;&nbsp;Clinical Interpretation&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;High Viral Load";
      } elseif ($result['result_status'] == SAMPLE_STATUS\REJECTED || $result['is_sample_rejected'] == 'yes') {
           $smileyContent = '<img src="/assets/img/cross.png" style="width:50px;" alt="rejected"/>';
      }
@@ -312,22 +314,23 @@ if (!empty($result)) {
      $logValue = '';
 
      if ($result['result_value_log'] != '' && $result['result_value_log'] != null && ($result['reason_for_sample_rejection'] == '' || $result['reason_for_sample_rejection'] == null)) {
-          $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
+          $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['result_value_log'];
      } else {
           $isResultNumeric = is_numeric($result['result']);
           if (is_numeric($result['result'])) {
                $resultValue = (float) $result['result'];
                $logV = (round(log10($resultValue) * 100) / 100);
-               $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
+               $logValue = '&nbsp;&nbsp;Log Value&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $logV;
           } else {
                $logValue = '';
           }
      }
-     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '<br>' . $logValue . '</td><td >' . $smileyContent . '</td></tr>';
+     
+     $html .= '<tr style="background-color:#dbdbdb;"><td colspan="2" style="line-height:26px;font-size:12px;font-weight:bold;">&nbsp;&nbsp;Viral Load Result (copies/mL)&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . htmlspecialchars((string) $result['result']) . '<br>' . $logValue . '<br>' . $clinicalInterpretation . '</td><td >' . $smileyContent . '</td></tr>';
      if ($result['reason_for_sample_rejection'] != '' && $result['is_sample_rejected'] == 'yes') {
           $html .= '<tr><td colspan="3" style="line-height:26px;font-size:12px;font-weight:bold;text-align:left;">&nbsp;&nbsp;Rejection Reason&nbsp;&nbsp;&nbsp;&nbsp;:&nbsp;&nbsp;&nbsp;&nbsp;' . $result['rejection_reason_name'] . '</td></tr>';
      }
-     if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
+    /* if (str_contains(strtolower((string)$result['instrument_machine_name']), 'abbott m2000')) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott m2000 Linear Detection range: 839 copies/mL - 10 million copies/mL</td>';
           $html .= '</tr>';
@@ -335,7 +338,7 @@ if (!empty($result)) {
           $html .= '<tr>';
           $html .= '<td colspan="3" style="line-height:8px;font-size:8px;padding-top:8px;">Abbott Alinity M Linear Detection range: 400 copies/mL - 10,000,000 copies/mL</td>';
           $html .= '</tr>';
-     }
+     }*/
      //$html .= '<tr><td colspan="3"></td></tr>';
      $html .= '</table>';
      $html .= '</td>';
@@ -356,6 +359,14 @@ if (!empty($result)) {
           $html .= '<td colspan="3" style="line-height:16px;"></td>';
           $html .= '</tr>';
      }
+
+     $linearDetection = "";
+     if($result['instrument_lower_limit'] != '0' && $result['instrument_higher_limit'] != '0'){
+          $linearDetection = $result['instrument_lower_limit']." - ".$result['instrument_higher_limit'].' copies/mL ';
+     }
+
+
+
      // if (trim($result['lab_tech_comments']) != '') {
      //      $html .= '<tr>';
      //      $html .= '<td colspan="3" style="line-height:11px;font-size:11px;font-weight:bold;">LAB COMMENTS&nbsp;&nbsp;:&nbsp;&nbsp;<span style="font-weight:normal;">' . ($result['lab_tech_comments']) . '</span></td>';
@@ -370,9 +381,24 @@ if (!empty($result)) {
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:14px;"></td>';
      // $html .= '</tr>';
+
      $html .= '<tr>';
-     $html .= '<td colspan="3" style="line-height:15px;font-size:11px;font-weight:bold;">TEST PLATFORM &nbsp;&nbsp;:&nbsp;&nbsp; <span style="font-weight:normal;">' . ($result['instrument_machine_name']) . '</span></td>';
+     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">TEST PLATFORM</td>';
+    // $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;"></td>';
+    if($linearDetection != ""){
+     $html .= '<td style="line-height:12px;font-size:11px;font-weight:bold;text-align:left;">LINEAR DETECTION RANGE</td>';
+    }
      $html .= '</tr>';
+     $html .= '<tr>';
+     $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $result['instrument_machine_name'] . '</td>';
+     //$html .= '<td style="line-height:10px;font-size:10px;text-align:left;"></td>';
+      if($linearDetection != ""){
+          $html .= '<td style="line-height:10px;font-size:10px;text-align:left;">' . $linearDetection . '</td>';
+      }
+     $html .= '</tr>';
+
+
+
      // $html .= '<tr>';
      // $html .= '<td colspan="3" style="line-height:8px;"></td>';
      // $html .= '</tr>';
