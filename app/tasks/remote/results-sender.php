@@ -112,7 +112,7 @@ function buildReferralManifestsPayload(DatabaseService $db, string $testType, ?a
     // Collect distinct package codes
     $codes = $hasNestedFormData
         ? array_column(array_column($selectedRows, 'form_data'), 'sample_package_code')
-        : array_column($selectedRows, 'sample_package_code');
+        : array_column($selectedRows, 'referral_manifest_code');
 
     $codes = array_values(array_unique(array_filter($codes, static fn($v) => !empty($v))));
     if (empty($codes)) {
