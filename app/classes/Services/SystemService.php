@@ -147,6 +147,23 @@ final class SystemService
         return $this;
     }
 
+    /**
+     * Check if a module is active.
+     */
+    public static function isModuleActive(string $module, bool $onlyTests = false): bool
+    {
+        $module = trim($module);
+        if ($module === '') {
+            return false;
+        }
+
+        $activeModules = self::getActiveModules($onlyTests);
+        $activeLower = array_map('strtolower', $activeModules);
+
+        return in_array(strtolower($module), $activeLower, true);
+    }
+
+
 
     public static function getActiveModules(bool $onlyTests = false): array
     {
