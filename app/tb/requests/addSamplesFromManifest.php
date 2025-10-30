@@ -118,7 +118,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	
+
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
@@ -164,7 +164,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				}
 			],
 			"aaSorting": [
-				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 9 : 8 ?>, "desc"]
+				[<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 10 : 9 ?>, "desc"]
 			],
 			"fnDrawCallback": function() {},
 			"bProcessing": true,
