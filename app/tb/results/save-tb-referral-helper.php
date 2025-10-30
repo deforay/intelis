@@ -80,8 +80,8 @@ try {
         }
         // Update the sample with referral information
         $updateData = [
-            'sample_package_id' => $manifestId,
-            'sample_package_code' => $_POST['packageCode'],
+            'referral_manifest_id' => $manifestId,
+            'referral_manifest_code' => $_POST['packageCode'],
             'data_sync' => 0,
             'referred_by_lab_id' => $referralLabId,
             'referred_to_lab_id' => $referralToLabId,
