@@ -2,6 +2,7 @@
 
 namespace App\Services\STS;
 
+use App\Services\TbService;
 use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Services\CommonService;
@@ -110,7 +111,11 @@ final class RequestsService
             : "lab_id = $labId";
 
         if ($manifestCode) {
-            $condition .= " AND sample_package_code like '$manifestCode'";
+            if ($this->testType == 'tb') {
+                $condition .= " AND (sample_package_code like '$manifestCode' OR referral_manifest_code like '$manifestCode')";
+            } else {
+                $condition .= " AND sample_package_code like '$manifestCode'";
+            }
         } elseif ($syncSinceDate) {
             $condition .= " AND DATE(last_modified_datetime) >= '$syncSinceDate'";
         } else {
