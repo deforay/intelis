@@ -107,5 +107,5 @@ UPDATE `s_app_menu` SET `inner_pages` = '/tb/results/add-tb-referral.php,/tb/res
 INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('13', 'Sample Referred to another Lab', 'active');
 
 -- Thana 30-Oct-2025
-ALTER TABLE `form_tb` ADD `referral_manifest_id` INT NULL DEFAULT NULL AFTER `sample_package_code`, ADD `referral_manifest_code` VARCHAR(256) NULL DEFAULT NULL AFTER `referral_manifest_id`;
-ALTER TABLE `audit_form_tb` ADD `referral_manifest_id` INT NULL DEFAULT NULL AFTER `sample_package_code`, ADD `referral_manifest_code` VARCHAR(256) NULL DEFAULT NULL AFTER `referral_manifest_id`;
+ALTER TABLE `form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
+ALTER TABLE `audit_form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
