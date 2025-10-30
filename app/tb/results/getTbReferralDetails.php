@@ -25,8 +25,8 @@ $primaryKeyColumn = TestsService::getPrimaryColumn($testType);
 // DataTables parameters
 $sLimit = "";
 $aColumns = [
-    'sample_package_id',
-    'sample_package_code',
+    'referral_manifest_id',
+    'referral_manifest_code',
     'sample_count',
     'referral_lab_name',
     'referral_date'
@@ -62,18 +62,18 @@ $sWhere = "";
 if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
     $searchValue = $_POST['sSearch'];
     $sWhere = " AND (";
-    $sWhere .= " vl.sample_package_code LIKE '%" . $searchValue . "%' ";
+    $sWhere .= " vl.referral_manifest_code LIKE '%" . $searchValue . "%' ";
     $sWhere .= " OR f2.facility_name LIKE '%" . $searchValue . "%' ";
     $sWhere .= " OR f2.facility_code LIKE '%" . $searchValue . "%' ";
     $sWhere .= ")";
 }
 
-// Main query - grouped by sample_package_id and sample_package_code
+// Main query - grouped by referral_manifest_id and referral_manifest_code
 $sQuery = "SELECT 
 vl.referred_to_lab_id, 
 vl.reason_for_referral, 
-vl.sample_package_id, 
-vl.sample_package_code, 
+vl.referral_manifest_id, 
+vl.referral_manifest_code, 
 COUNT(vl.$primaryKeyColumn) as sample_count, 
 f2.facility_name as referral_lab_name, 
 f2.facility_code as referral_lab_code, 
@@ -83,11 +83,11 @@ LEFT JOIN facility_details as f2 ON vl.referred_to_lab_id = f2.facility_id
 WHERE vl.referred_to_lab_id IS NOT NULL 
     AND vl.referred_to_lab_id != '' 
     AND vl.referred_to_lab_id != 0 
-    AND vl.sample_package_id IS NOT NULL 
-    AND vl.sample_package_id != '' 
-    AND vl.sample_package_id != 0 
+    AND vl.referral_manifest_id IS NOT NULL 
+    AND vl.referral_manifest_id != '' 
+    AND vl.referral_manifest_id != 0 
     $sWhere 
-GROUP BY vl.sample_package_id, vl.sample_package_code, f2.facility_name, f2.facility_code";
+GROUP BY vl.referral_manifest_id, vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
 if (!empty($sOrder)) {
     $sORderQ = $sOrder ? ', ' . $sOrder : '';
@@ -116,7 +116,7 @@ foreach ($result as $row) {
     // Checkbox
     // $rowData[] = '<input type="checkbox" class="sample-checkbox" value="' . $row[$primaryKeyColumn] . '" />';
     // Sample Package Code
-    $rowData[] = $row['sample_package_code'] ?? '-';
+    $rowData[] = $row['referral_manifest_code'] ?? '-';
 
     // Number of Samples
     $rowData[] = $row['sample_count'];
@@ -139,12 +139,12 @@ foreach ($result as $row) {
 
     // Edit Button
     $encodedId = base64_encode($row['referred_to_lab_id']);
-    $encodedCode = base64_encode($row['sample_package_id']);
+    $encodedCode = base64_encode($row['referral_manifest_id']);
     $editBtn = '<a href="edit-tb-referral.php?id=' . $encodedId . '&code=' . $encodedCode . '" class="btn btn-sm btn-primary" title="Edit Package">
                     <i class="fa fa-edit"></i>
                 </a>';
 
-    $packageId = base64_encode($row['sample_package_id']);
+    $packageId = base64_encode($row['referral_manifest_id']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
     if ($row['lab_id'] != $row['referred_to_lab_id']) {
         $printBarcode = <<<BARCODEBUTTON
