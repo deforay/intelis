@@ -388,6 +388,9 @@ final class TestRequestsService
             $primaryKey = TestsService::getPrimaryColumn($testType);
             $this->db->reset();
             $this->db->where('sample_package_code', trim((string) $manifestCode));
+            if ($testType == 'tb') {
+                $this->db->orWhere('referral_manifest_code', trim((string) $manifestCode));
+            }
             $selectedSamples = $this->db->getValue($tableName, $primaryKey, null);
         }
 

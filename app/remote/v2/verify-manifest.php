@@ -107,6 +107,9 @@ try {
         $primaryKey = TestsService::getPrimaryColumn($testType);
         $db->reset();
         $db->where('sample_package_code', $manifestCode);
+        if ($testType == 'tb') {
+            $db->orWhere('referral_manifest_code', $manifestCode);
+        }
         $selectedSamples = $db->getValue($tableName, $primaryKey, null);
         $currentHash = $testRequestsService->getManifestHash($selectedSamples, $testType, $manifestCode);
 
