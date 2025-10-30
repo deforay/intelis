@@ -15,6 +15,7 @@ $general = ContainerRegistry::get(CommonService::class);
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $testingLabs = $facilitiesService->getTestingLabs('tb');
+
 try {
     // 1. Check if script is running in CLI mode
     if (php_sapi_name() !== 'cli') {
