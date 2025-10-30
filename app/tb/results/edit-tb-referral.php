@@ -25,7 +25,7 @@ $codeId = base64_decode($_GET['code']);
 $db->where('manifest_id', $codeId);
 $sampleManifestResult = $db->getOne('specimen_manifests');
 
-$db->where('referral_manifest_id', $codeId);
+$db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');
 $db->where('reason_for_referral IS NOT NULL');
 $tbResult = $db->getOne('form_tb');
