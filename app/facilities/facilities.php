@@ -252,9 +252,6 @@ $state = $geolocationService->getProvinces("yes");
       placeholder: "<?php echo _translate("Select District"); ?>"
     });
     oTable = $('#facilityDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-      },
       "lengthMenu": [
         [10, 25, 50, 100, 200, 250, 500, -1],
         [10, 25, 50, 100, 200, 250, 500, "All"]

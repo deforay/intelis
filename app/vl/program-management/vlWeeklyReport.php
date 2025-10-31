@@ -355,9 +355,6 @@ $facilityResult = $db->rawQuery($facilityQuery);
   function loadDataTable() {
     if (oTable != null) oTable.fnDestroy();
     oTable = $('#vlWeeklyReportDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,
@@ -465,9 +462,6 @@ $facilityResult = $db->rawQuery($facilityQuery);
   function loadFemaleDataTable() {
     if (oTableFemale != null) oTableFemale.fnDestroy();
     oTableFemale = $('#vlWeeklyFemaleReportDataTable').dataTable({
-      "oLanguage": {
-        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-      },
       "bJQueryUI": false,
       "bAutoWidth": false,
       "bInfo": true,

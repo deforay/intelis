@@ -249,9 +249,6 @@ $batResult = $db->rawQuery($batQuery);
 	function loadResultStatusData() {
 		$.blockUI();
 		oTable = $('#vlTestResultStatusDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
