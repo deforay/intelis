@@ -659,6 +659,9 @@ foreach ($rejectionTypeResult as $type) {
 	function highViralLoadReport() {
 		$.blockUI();
 		oTableViralLoad = $('#highViralLoadReportTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -753,6 +756,9 @@ foreach ($rejectionTypeResult as $type) {
 	function sampleRjtReport() {
 		$.blockUI();
 		oTableRjtReport = $('#sampleRjtReportTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -841,6 +847,9 @@ foreach ($rejectionTypeResult as $type) {
 	function notAvailReport() {
 		$.blockUI();
 		oTablenotAvailReport = $('#notAvailReportTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -922,6 +931,9 @@ foreach ($rejectionTypeResult as $type) {
 	function incompleteForm() {
 		$.blockUI();
 		oTableincompleteReport = $('#incompleteReport').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -992,6 +1004,9 @@ foreach ($rejectionTypeResult as $type) {
 	function patientHistoryReport() {
 		$.blockUI();
 		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

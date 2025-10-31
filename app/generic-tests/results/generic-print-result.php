@@ -668,6 +668,9 @@ $state = $geolocationService->getProvinces("yes");
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -820,6 +823,9 @@ $state = $geolocationService->getProvinces("yes");
 	function loadPrintedVlRequestData() {
 		$.blockUI();
 		opTable = $('#printedVlRequestDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

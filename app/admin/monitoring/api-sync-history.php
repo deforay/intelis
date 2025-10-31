@@ -194,6 +194,9 @@ foreach ($syncedTypeResults as $synced) {
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
