@@ -1,10 +1,11 @@
 <?php
 
 use Crunz\Schedule;
+use App\Services\TestsService;
 use App\Services\CommonService;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\SystemService;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -160,7 +161,7 @@ if (!empty($smartConnectURL) && !empty(SYSTEM_CONFIG['modules']['covid19']) && S
 
 
 // Module specific scheduled tasks
-if (SystemService::isModuleActive('tb')) {
+if (TestsService::isTestActive('tb')) {
     $schedule->run(PHP_BINARY . " " . BIN_PATH . "/tb/tb-referrals.php")
         ->everyMinute()
         ->timezone($timeZone)

@@ -131,7 +131,7 @@ try {
         $labTechniciansList[$row['user_id']] = ($row['user_name']);
     }
 
-    $activeModule = SystemService::getActiveModules(true);
+    $activeModule = SystemService::getActiveModules(onlyTests: true);
     $data = [];
     $data['formId'] = $formId;
     $data['activeModule'] = implode(",", $activeModule);
