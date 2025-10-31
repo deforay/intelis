@@ -39,6 +39,12 @@ key.storage
 vendor/
 **/node_modules/
 
+# Dont track these directories
+cache/
+logs/
+audit-trail/
+metadata/
+
 # Git-related (but allow .github directory)
 .gitattributes
 .gitignore
