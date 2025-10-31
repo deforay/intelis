@@ -255,9 +255,9 @@ try {
 
         $availableModules = [];
 
-        $activeModules = SystemService::getActiveModules(onlyTests: true);
+        $activeTests = TestsService::getActiveTests();
 
-        foreach ($activeModules as $module) {
+        foreach ($activeTests as $module) {
             $primaryKey = TestsService::getPrimaryColumn($module);
             $availableModules[$primaryKey] = TestsService::getTestTableName($module);
         }

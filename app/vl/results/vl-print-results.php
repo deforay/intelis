@@ -784,6 +784,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		<?php } ?>
 		unprintedTable = null;
 		unprintedTable = $('#unprintedDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -950,6 +953,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		<?php } ?>
 		printedTable = null;
 		printedTable = $('#printedDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

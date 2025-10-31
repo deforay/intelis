@@ -336,20 +336,21 @@ div.dataTables_processing>div:last-child {
 
 /* BlockUI Overlay Styling */
 .blockUI.blockOverlay {
-    background-color: rgba(0, 0, 0, 0.6) !important;
-    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.1) !important;
+    backdrop-filter: blur(2px);
     opacity: 1 !important;
 }
 
 /* BlockUI Message Styling */
 .blockUI.blockMsg {
     border: none !important;
-    padding: 1.2em 2em !important;
-    background-color: rgba(255, 255, 255, 0.3) !important;
+    padding: 1.5em !important;
+    background-color: rgba(0, 0, 0, 0.2) !important;
     backdrop-filter: blur(8px);
     border-radius: 6px !important;
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3) !important;
     color: #ffffff !important;
+    font-size: 1.7em;
     font-family: 'Segoe UI', Roboto, 'Open Sans', 'Ubuntu', Arial, sans-serif !important;
 }
 

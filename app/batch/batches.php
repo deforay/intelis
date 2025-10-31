@@ -138,6 +138,9 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		});
 		$.blockUI();
 		oTable = $('#batchCodeDataTable').dataTable({
+			"oLanguage": {
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
