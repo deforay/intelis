@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Services\TestsService;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
@@ -35,9 +34,9 @@ final class AppMenuService
 
     public function getMenu($parentId = 0, $menuId = 0): array
     {
-        $activeTests = TestsService::getActiveTests();
-        $activeTestsInfo = implode("','", $activeTests);
-        $this->db->where("module IN ('$activeTestsInfo') AND (sub_module IN ('$activeTestsInfo') OR sub_module IS NULL)");
+        $activeModules = SystemService::getActiveModules();
+        $activeModulesInfo = implode("','", $activeModules);
+        $this->db->where("module IN ('$activeModulesInfo') AND (sub_module IN ('$activeModulesInfo') OR sub_module IS NULL)");
         $this->db->where('status', 'active');
         if (!empty($menuId) && $menuId > 0) {
             $this->db->where('id', $menuId);
