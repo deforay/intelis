@@ -338,13 +338,14 @@ div.dataTables_processing>div:last-child {
 .blockUI.blockOverlay {
     background-color: rgba(0, 0, 0, 0.6) !important;
     backdrop-filter: blur(3px);
+    opacity: 1 !important;
 }
 
 /* BlockUI Message Styling */
 .blockUI.blockMsg {
     border: none !important;
     padding: 1.2em 2em !important;
-    background-color: rgba(44, 62, 80, 0.95) !important;
+    background-color: rgba(255, 255, 255, 0.3) !important;
     backdrop-filter: blur(8px);
     border-radius: 6px !important;
     box-shadow: 0 4px 16px rgba(0, 0, 0, 0.2) !important;

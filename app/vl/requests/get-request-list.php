@@ -19,7 +19,6 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
 try {
 
      /** @var CommonService $general */
