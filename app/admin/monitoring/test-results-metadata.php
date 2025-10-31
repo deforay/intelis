@@ -244,9 +244,6 @@ $activeModules = SystemService::getActiveModules();
 
         $.blockUI();
         oTable = $('#testResultReport').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

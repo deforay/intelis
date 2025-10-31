@@ -116,9 +116,6 @@ $testingLabs = $facilitiesService->getTestingLabs('tb');
 
         // Initialize DataTable
         oTable = $('#referralDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?php echo _translate("records per page"); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

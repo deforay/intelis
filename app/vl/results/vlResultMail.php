@@ -394,8 +394,8 @@ $batchResult = $db->rawQuery($batchQuery);
 		$('#sampleCollectionDate').val("");
 
 		$('.search').multiSelect({
-			selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID"); ?>">',
-			selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID"); ?>">',
+			selectableHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID", true); ?>">',
+			selectionHeader: '<input type="text" class="search-input form-control" autocomplete="off" placeholder="<?php echo _translate("Enter Sample ID", true); ?>">',
 			afterInit: function(ms) {
 				var that = this,
 					$selectableSearch = that.$selectableUl.prev(),
