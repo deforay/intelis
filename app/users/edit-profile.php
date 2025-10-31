@@ -201,9 +201,6 @@ responsive: true
 <script type="text/javascript">
   $(document).ready(function() {
     $('#loginAttempts').DataTable({
-      language: {
-        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-      },
       responsive: true,
       ordering: false
     });

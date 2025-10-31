@@ -590,9 +590,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
         <?php } ?>
         oTable = $('#vlRequestDataTables').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,
@@ -747,9 +744,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
             sort = '<?= (!$general->isStandaloneInstance()) ? 13 : 12; ?>';
         <?php } ?>
         opTable = $('#printedVlRequestDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

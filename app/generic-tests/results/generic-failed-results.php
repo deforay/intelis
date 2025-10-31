@@ -372,9 +372,6 @@ $state = $geolocationService->getProvinces("yes");
         $.blockUI();
 
         oTable = $('#genericFailedResultDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

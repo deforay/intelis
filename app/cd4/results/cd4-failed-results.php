@@ -395,9 +395,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
     function loadVlRequestData() {
         $.blockUI();
         oTable = $('#cd4FailedRequestDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,
