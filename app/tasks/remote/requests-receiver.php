@@ -249,8 +249,10 @@ function spinner(int $loopIndex, int $count, string $label = 'Processed', array 
     }
 
     echo "\r$lastSpinnerChar $label: $count";
-    ob_flush();
-    flush();
+    if (ob_get_level() > 0) {
+        ob_flush();
+        flush();
+    }
 }
 
 function clearSpinner(): void
