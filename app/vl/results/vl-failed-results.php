@@ -382,9 +382,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $.blockUI();
 
         oTable = $('#vlFailedResultDataTable').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

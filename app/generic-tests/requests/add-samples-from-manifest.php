@@ -154,7 +154,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 <script type="text/javascript">
 	var oTable = null;
 
-	
+
 	function loadRequestData() {
 		$.blockUI();
 		if (oTable) {
@@ -162,9 +162,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 		}
 
 		oTable = $('#manifestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

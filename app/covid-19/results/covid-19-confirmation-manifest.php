@@ -90,9 +90,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	var oTable = null;
 	$(document).ready(function() {
 		oTable = $('#covid19ManifestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

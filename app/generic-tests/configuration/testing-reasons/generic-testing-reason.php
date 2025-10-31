@@ -75,9 +75,6 @@ $title = _translate("Other Lab Tests Testing Reasons");
 	$(document).ready(function() {
 		$.blockUI();
 		oTable = $('#partnerTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
