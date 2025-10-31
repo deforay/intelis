@@ -100,17 +100,6 @@ $remoteURL = $general->getRemoteURL();
     // Global BlockUI defaults
     if (typeof $.blockUI !== 'undefined') {
         $.blockUI.defaults.message = '<h3><?= _translate("Please wait...", true); ?></h3>';
-        $.blockUI.defaults.css = {
-            border: 'none',
-            padding: '1.2em 2em',
-            backgroundColor: 'transparent',
-            color: '#fff'
-        };
-        $.blockUI.defaults.overlayCSS = {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            opacity: 1,
-            cursor: 'wait'
-        };
     }
 
     $.ajaxSetup({

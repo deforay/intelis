@@ -262,6 +262,7 @@ if ($module == 'generic-tests') {
     noOfSamples = 100;
     sortedTitle = [];
 
+
     function validateNow() {
         flag = deforayValidator.init({
             formId: 'moveSpecimenReferralManifestForm'
