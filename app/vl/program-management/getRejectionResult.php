@@ -144,7 +144,11 @@ if (!empty($tableResult)) { ?>
 </table>
 <script>
     $(function() {
-        $("#vlRequestDataTable").DataTable();
+        $("#vlRequestDataTable").DataTable({
+            language: {
+                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
+            },
+        });
     });
     $(document).ready(function() {
         $('#vlRequestDataTable tbody').on('click', 'tr', function() {

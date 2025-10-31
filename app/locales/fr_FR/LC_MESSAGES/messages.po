@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2025-10-31 12:05+0530\n"
-"PO-Revision-Date: 2025-10-31 12:05+0530\n"
+"POT-Creation-Date: 2025-10-31 12:51+0530\n"
+"PO-Revision-Date: 2025-10-31 12:51+0530\n"
 "Last-Translator: Amit <amit@deforay.com>\n"
 "Language-Team: \n"
 "Language: fr\n"
@@ -141,7 +141,7 @@ msgstr "Tableau de bord de l'échange de données API/EMR"
 #: app/eid/results/forms/update-sierraleone-result.php:54
 #: app/eid/results/forms/update-southsudan-result.php:54
 #: app/facilities/addFacility.php:77 app/facilities/editFacility.php:144
-#: app/facilities/facilities.php:44 app/facilities/mapTestType.php:43
+#: app/facilities/facilities.php:50 app/facilities/mapTestType.php:43
 #: app/facilities/upload-facilities.php:80
 #: app/generic-tests/configuration/add-test-type.php:58
 #: app/generic-tests/configuration/clone-test-type.php:97
@@ -304,7 +304,7 @@ msgstr "Saisissez une plage de dates"
 #: app/admin/monitoring/test-results-metadata.php:62 app/batch/batches.php:101
 #: app/facilities/addFacility.php:341 app/facilities/addFacility.php:760
 #: app/facilities/editFacility.php:370 app/facilities/editFacility.php:743
-#: app/facilities/editFacility.php:1072 app/facilities/facilities.php:84
+#: app/facilities/editFacility.php:1072 app/facilities/facilities.php:91
 #: app/facilities/mapTestType.php:65
 #: app/generic-tests/requests/add-request.php:224
 #: app/generic-tests/requests/edit-request.php:407
@@ -340,7 +340,7 @@ msgstr "Type de test"
 #: app/facilities/editFacility.php:376 app/facilities/editFacility.php:676
 #: app/facilities/editFacility.php:705 app/facilities/editFacility.php:760
 #: app/facilities/editFacility.php:1139 app/facilities/editFacility.php:1204
-#: app/facilities/facilities.php:89 app/facilities/mapTestType.php:70
+#: app/facilities/facilities.php:96 app/facilities/mapTestType.php:70
 #: app/global-config/editGlobalConfig.php:441
 #: app/global-config/editGlobalConfig.php:490
 #: app/global-config/editGlobalConfig.php:1790
@@ -359,7 +359,7 @@ msgstr "CHARGE VIRALE"
 #: app/facilities/editFacility.php:677 app/facilities/editFacility.php:706
 #: app/facilities/editFacility.php:763 app/facilities/editFacility.php:1087
 #: app/facilities/editFacility.php:1140 app/facilities/editFacility.php:1207
-#: app/facilities/facilities.php:92 app/facilities/mapTestType.php:73
+#: app/facilities/facilities.php:99 app/facilities/mapTestType.php:73
 #: app/global-config/editGlobalConfig.php:444
 #: app/global-config/editGlobalConfig.php:493
 #: app/global-config/editGlobalConfig.php:1797
@@ -377,7 +377,7 @@ msgstr "Diagnostic précoce chez le nourrisson"
 #: app/facilities/editFacility.php:678 app/facilities/editFacility.php:707
 #: app/facilities/editFacility.php:766 app/facilities/editFacility.php:1090
 #: app/facilities/editFacility.php:1141 app/facilities/editFacility.php:1210
-#: app/facilities/facilities.php:95 app/facilities/mapTestType.php:76
+#: app/facilities/facilities.php:102 app/facilities/mapTestType.php:76
 #: app/global-config/editGlobalConfig.php:447
 #: app/global-config/editGlobalConfig.php:496
 #: app/global-config/editGlobalConfig.php:1804
@@ -399,7 +399,7 @@ msgstr "COVID-19"
 #: app/facilities/addFacility.php:1124 app/facilities/editFacility.php:385
 #: app/facilities/editFacility.php:679 app/facilities/editFacility.php:708
 #: app/facilities/editFacility.php:769 app/facilities/editFacility.php:1142
-#: app/facilities/editFacility.php:1213 app/facilities/facilities.php:98
+#: app/facilities/editFacility.php:1213 app/facilities/facilities.php:105
 #: app/facilities/mapTestType.php:79 app/global-config/editGlobalConfig.php:450
 #: app/global-config/editGlobalConfig.php:499
 #: app/global-config/editGlobalConfig.php:1811
@@ -425,7 +425,7 @@ msgstr "Hépatite"
 #: app/facilities/editFacility.php:388 app/facilities/editFacility.php:680
 #: app/facilities/editFacility.php:709 app/facilities/editFacility.php:772
 #: app/facilities/editFacility.php:1143 app/facilities/editFacility.php:1216
-#: app/facilities/facilities.php:101 app/facilities/mapTestType.php:82
+#: app/facilities/facilities.php:108 app/facilities/mapTestType.php:82
 #: app/global-config/editGlobalConfig.php:453
 #: app/global-config/editGlobalConfig.php:502
 #: app/global-config/editGlobalConfig.php:1818
@@ -450,7 +450,7 @@ msgstr "Tuberculose"
 #: app/facilities/addFacility.php:1130 app/facilities/editFacility.php:391
 #: app/facilities/editFacility.php:682 app/facilities/editFacility.php:711
 #: app/facilities/editFacility.php:775 app/facilities/editFacility.php:1145
-#: app/facilities/editFacility.php:1219 app/facilities/facilities.php:104
+#: app/facilities/editFacility.php:1219 app/facilities/facilities.php:111
 #: app/facilities/mapTestType.php:85 app/global-config/editGlobalConfig.php:456
 #: app/global-config/editGlobalConfig.php:505
 #: app/global-config/editGlobalConfig.php:1825
@@ -499,7 +499,7 @@ msgstr "CD4"
 #: app/eid/results/eid-print-results.php:172
 #: app/eid/results/eid-print-results.php:217
 #: app/eid/results/eid-print-results.php:344
-#: app/eid/results/eid-print-results.php:389
+#: app/eid/results/eid-print-results.php:389 app/facilities/facilities.php:182
 #: app/generic-tests/program-management/generic-export-data.php:111
 #: app/generic-tests/program-management/generic-sample-status.php:103
 #: app/generic-tests/requests/add-request.php:333
@@ -649,7 +649,7 @@ msgstr "Enregistré au laboratoire de test"
 #: app/eid/results/eid-print-results.php:353
 #: app/eid/results/eid-print-results.php:395
 #: app/eid/results/email-results.php:205 app/facilities/addFacility.php:238
-#: app/facilities/editFacility.php:269 app/facilities/facilities.php:57
+#: app/facilities/editFacility.php:269 app/facilities/facilities.php:64
 #: app/generic-tests/mail/mail-generic-tests-results.php:222
 #: app/generic-tests/program-management/generic-export-data.php:90
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:58
@@ -771,8 +771,8 @@ msgstr "Province"
 #: app/eid/results/eid-print-results.php:80
 #: app/eid/results/eid-print-results.php:86
 #: app/eid/results/eid-print-results.php:249
-#: app/eid/results/eid-print-results.php:256 app/facilities/facilities.php:59
-#: app/facilities/facilities.php:65
+#: app/eid/results/eid-print-results.php:256 app/facilities/facilities.php:66
+#: app/facilities/facilities.php:72
 #: app/generic-tests/program-management/generic-export-data.php:92
 #: app/generic-tests/program-management/generic-export-data.php:99
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:61
@@ -1210,8 +1210,8 @@ msgstr "Veuillez sélectionner la province ou l'État"
 #: app/facilities/editFacility.php:425 app/facilities/editFacility.php:446
 #: app/facilities/editFacility.php:466 app/facilities/editFacility.php:486
 #: app/facilities/editFacility.php:504 app/facilities/editFacility.php:593
-#: app/facilities/editFacility.php:607 app/facilities/facilities.php:60
-#: app/facilities/facilities.php:74 app/facilities/facilities.php:114
+#: app/facilities/editFacility.php:607 app/facilities/facilities.php:67
+#: app/facilities/facilities.php:81 app/facilities/facilities.php:121
 #: app/generic-tests/configuration/add-test-type.php:233
 #: app/generic-tests/configuration/add-test-type.php:256
 #: app/generic-tests/configuration/add-test-type.php:307
@@ -1633,7 +1633,7 @@ msgstr "-- Sélectionner --"
 #: app/eid/results/eid-print-results.php:356
 #: app/eid/results/eid-print-results.php:396
 #: app/eid/results/email-results.php:220 app/facilities/addFacility.php:263
-#: app/facilities/editFacility.php:291 app/facilities/facilities.php:63
+#: app/facilities/editFacility.php:291 app/facilities/facilities.php:70
 #: app/generic-tests/mail/mail-generic-tests-results.php:223
 #: app/generic-tests/program-management/generic-export-data.php:97
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:67
@@ -2499,12 +2499,14 @@ msgstr "Aucune installation correspondante n'a été trouvée"
 #: app/admin/api-dashboard/api-dashboard.php:888
 #: app/admin/api-dashboard/api-dashboard.php:1010
 #: app/admin/api-dashboard/api-dashboard.php:1122
+#: public/assets/js/main.js.php:85
 msgid "First"
 msgstr "Premier"
 
 #: app/admin/api-dashboard/api-dashboard.php:889
 #: app/admin/api-dashboard/api-dashboard.php:1011
 #: app/admin/api-dashboard/api-dashboard.php:1123
+#: public/assets/js/main.js.php:86
 msgid "Last"
 msgstr "Dernier"
 
@@ -2518,13 +2520,14 @@ msgstr "Dernier"
 #: app/hepatitis/results/email-results.php:336 app/mail/vlResultMail.php:336
 #: app/setup/index.php:324 app/setup/index.php:408
 #: app/tb/results/email-results.php:336 app/vl/results/email-results.php:336
-#: app/vl/results/vlResultMail.php:336
+#: app/vl/results/vlResultMail.php:336 public/assets/js/main.js.php:87
 msgid "Next"
 msgstr "Suivante"
 
 #: app/admin/api-dashboard/api-dashboard.php:891
 #: app/admin/api-dashboard/api-dashboard.php:1013
 #: app/admin/api-dashboard/api-dashboard.php:1125
+#: public/assets/js/main.js.php:88
 msgid "Previous"
 msgstr "Précédent"
 
@@ -2560,7 +2563,6 @@ msgstr "Demandes de test en double potentielles"
 
 #: app/admin/api-dashboard/duplicates-detail.php:87
 #: app/admin/api-dashboard/missing-samples-detail.php:109
-#: app/facilities/facilities.php:165
 msgid "Export to Excel"
 msgstr "Exporter vers Excel"
 
@@ -2614,8 +2616,8 @@ msgstr "Date Span"
 
 #: app/admin/api-dashboard/duplicates-detail.php:106
 #: app/facilities/addFacility.php:80 app/facilities/editFacility.php:145
-#: app/facilities/facilities.php:9 app/facilities/facilities.php:42
-#: app/facilities/facilities.php:45 app/facilities/upload-facilities.php:83
+#: app/facilities/facilities.php:9 app/facilities/facilities.php:48
+#: app/facilities/facilities.php:51 app/facilities/upload-facilities.php:83
 #: app/system/translate-strings.php:12
 msgid "Facilities"
 msgstr "Structures sanitaire"
@@ -3130,7 +3132,7 @@ msgstr "Action"
 #: app/vl/results/vl-print-results.php:203
 #: app/vl/results/vl-print-results.php:460
 #: app/vl/results/vlResultApproval.php:183 app/vl/results/vlResultMail.php:287
-#: app/vl/results/vlTestResult.php:162
+#: app/vl/results/vlTestResult.php:162 public/assets/js/main.js.php:83
 msgid "Search"
 msgstr "Rechercher"
 
@@ -3211,7 +3213,7 @@ msgstr "Pas enregistré"
 #: app/eid/results/eid-manual-results.php:234
 #: app/eid/results/eid-print-results.php:233
 #: app/eid/results/eid-print-results.php:405
-#: app/eid/results/eid-result-status.php:189 app/facilities/facilities.php:182
+#: app/eid/results/eid-result-status.php:189 app/facilities/facilities.php:216
 #: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:55
 #: app/generic-tests/configuration/sample-types/generic-sample-type.php:55
 #: app/generic-tests/configuration/symptoms/generic-symptoms.php:55
@@ -3299,7 +3301,6 @@ msgstr "Chargement des données depuis le serveur"
 
 #: app/admin/monitoring/activity-log.php:184
 #: app/admin/monitoring/api-sync-history.php:198
-#: app/admin/monitoring/sources-of-requests.php:331
 #: app/admin/monitoring/test-results-metadata.php:248 app/batch/batches.php:142
 #: app/cd4/management/cd4-clinic-report.php:664
 #: app/cd4/management/cd4-clinic-report.php:759
@@ -3370,7 +3371,7 @@ msgstr "Chargement des données depuis le serveur"
 #: app/eid/results/eid-manual-results.php:332
 #: app/eid/results/eid-print-results.php:594
 #: app/eid/results/eid-print-results.php:751
-#: app/eid/results/eid-result-status.php:250 app/facilities/facilities.php:213
+#: app/eid/results/eid-result-status.php:250 app/facilities/facilities.php:256
 #: app/generic-tests/configuration/sample-rejection-reasons/generic-sample-rejection-reasons.php:78
 #: app/generic-tests/configuration/sample-types/generic-sample-type.php:78
 #: app/generic-tests/configuration/symptoms/generic-symptoms.php:78
@@ -3435,7 +3436,8 @@ msgstr "Chargement des données depuis le serveur"
 #: app/tb/results/tb-print-results.php:557
 #: app/tb/results/tb-print-results.php:694
 #: app/tb/results/tb-referral-list.php:120
-#: app/tb/results/tb-result-status.php:248 app/users/users.php:95
+#: app/tb/results/tb-result-status.php:248 app/users/edit-profile.php:205
+#: app/users/users.php:95 app/vl/program-management/getRejectionResult.php:149
 #: app/vl/program-management/highViralLoad.php:1309
 #: app/vl/program-management/highViralLoad.php:1415
 #: app/vl/program-management/highViralLoad.php:1514
@@ -3463,8 +3465,9 @@ msgstr "Chargement des données depuis le serveur"
 #: app/vl/results/vl-print-results.php:788
 #: app/vl/results/vl-print-results.php:957
 #: app/vl/results/vlResultApproval.php:333 app/vl/results/vlTestResult.php:379
+#: public/assets/js/main.js.php:77
 msgid "records per page"
-msgstr "záznamů na stránku"
+msgstr "enregistrements par page"
 
 #: app/admin/monitoring/api-sync-history.php:7
 #: app/system/translate-strings.php:170
@@ -3481,7 +3484,7 @@ msgstr "Historique de l’API"
 #: app/admin/monitoring/lab-sync-details.php:144
 #: app/admin/monitoring/sources-of-requests.php:129
 #: app/admin/monitoring/test-results-metadata.php:66
-#: app/facilities/facilities.php:86
+#: app/facilities/facilities.php:93
 msgid "Please select the Test types"
 msgstr "Veuillez sélectionner le projet"
 
@@ -3538,7 +3541,7 @@ msgstr "Synchronisé sur"
 #: app/eid/results/eid-print-results.php:228
 #: app/eid/results/eid-print-results.php:400 app/facilities/addFacility.php:682
 #: app/facilities/addFacility.php:763 app/facilities/editFacility.php:654
-#: app/facilities/editFacility.php:746 app/facilities/facilities.php:176
+#: app/facilities/editFacility.php:746 app/facilities/facilities.php:210
 #: app/generic-tests/configuration/add-test-type.php:219
 #: app/generic-tests/configuration/clone-test-type.php:258
 #: app/generic-tests/configuration/edit-test-type.php:263
@@ -3576,7 +3579,7 @@ msgstr "Synchronisé sur"
 msgid "Action"
 msgstr "Action"
 
-#: app/admin/monitoring/audit-trail.php:257 app/facilities/facilities.php:87
+#: app/admin/monitoring/audit-trail.php:257 app/facilities/facilities.php:94
 msgid "-- Choose Test Type --"
 msgstr "-- Choisir le type de test --"
 
@@ -4705,8 +4708,8 @@ msgstr "Veuillez choisir Province/État/Région"
 #: app/eid/results/eid-result-status.php:178
 #: app/eid/results/email-results.php:162 app/facilities/addFacility.php:102
 #: app/facilities/addFacility.php:105 app/facilities/editFacility.php:163
-#: app/facilities/editFacility.php:165 app/facilities/facilities.php:142
-#: app/facilities/facilities.php:170 app/facilities/upload-facilities.php:129
+#: app/facilities/editFacility.php:165 app/facilities/facilities.php:153
+#: app/facilities/facilities.php:204 app/facilities/upload-facilities.php:129
 #: app/generic-tests/program-management/generic-export-data.php:102
 #: app/generic-tests/program-management/generic-export-data.php:280
 #: app/generic-tests/program-management/generic-export-data.php:328
@@ -4845,7 +4848,7 @@ msgstr "Exporter vers Excel"
 #: app/admin/monitoring/lab-sync-details.php:215
 #: app/covid-19/management/covid-19-clinic-report.php:418
 #: app/eid/management/eid-clinic-report.php:421
-#: app/facilities/facilities.php:173
+#: app/facilities/facilities.php:207
 #: app/generic-tests/requests/add-request.php:816
 #: app/generic-tests/requests/edit-request.php:1047
 #: app/generic-tests/results/update-generic-test-result.php:1001
@@ -4860,7 +4863,7 @@ msgstr "Province"
 #: app/eid/requests/forms/add-cameroon.php:93
 #: app/eid/requests/forms/edit-cameroon.php:115
 #: app/eid/results/forms/update-cameroon-result.php:105
-#: app/facilities/facilities.php:174
+#: app/facilities/facilities.php:208
 #: app/generic-tests/requests/add-request.php:812
 #: app/generic-tests/requests/edit-request.php:1043
 #: app/generic-tests/results/update-generic-test-result.php:997
@@ -4879,7 +4882,7 @@ msgid "Last Result Received From Lab"
 msgstr "Dernier résultat reçu du laboratoire"
 
 #: app/admin/monitoring/lab-sync-details.php:314
-#: app/admin/monitoring/sources-of-requests.php:483
+#: app/admin/monitoring/sources-of-requests.php:480
 #: app/admin/monitoring/test-results-metadata.php:365
 #: app/cd4/management/cd4-clinic-report.php:1110
 #: app/cd4/management/cd4-clinic-report.php:1133
@@ -5077,10 +5080,37 @@ msgstr "Source de la demande"
 msgid "Please select source of request"
 msgstr "Veuillez sélectionner le statut"
 
+#: app/admin/monitoring/sources-of-requests.php:185
+msgid "No. of Samples Requested"
+msgstr "Nombre d'échantillons demandés"
+
+#: app/admin/monitoring/sources-of-requests.php:186
+msgid "No. of Samples Acknowledged"
+msgstr "Nombre d'échantillons ayant fait l'objet d'un accusé de réception"
+
+#: app/admin/monitoring/sources-of-requests.php:187
+msgid "No. of Samples Received at Testing Lab"
+msgstr "Nombre d'échantillons reçus au laboratoire d'essai"
+
+#: app/admin/monitoring/sources-of-requests.php:188 app/batch/batches.php:107
+#: app/cd4/management/get-sample-status.php:458
+#: app/covid-19/management/getSampleStatus.php:380
+#: app/eid/management/getSampleStatus.php:414
+#: app/generic-tests/program-management/get-sample-status.php:309
+#: app/hepatitis/management/get-sample-status.php:511
+#: app/tb/management/getSampleStatus.php:462
+#: app/vl/program-management/getSampleStatus.php:548
+msgid "No. of Samples Tested"
+msgstr "Nombre d'échantillons testés"
+
+#: app/admin/monitoring/sources-of-requests.php:189
+msgid "No. of Results Returned"
+msgstr "Nombre de résultats renvoyés"
+
 #: app/admin/monitoring/sources-of-requests.php:201
-#: app/admin/monitoring/test-results-metadata.php:124
-msgid "Export To Excel"
-msgstr "Exporter vers Excel"
+#: app/facilities/facilities.php:169
+msgid "Export"
+msgstr "Exporter"
 
 #: app/admin/monitoring/sources-of-requests.php:207
 msgid "LIS Sample ID"
@@ -5341,7 +5371,7 @@ msgstr "Enregistré au laboratoire de test"
 #: app/eid/requests/forms/edit-cameroon.php:864
 #: app/eid/results/eid-failed-results.php:329
 #: app/eid/results/eid-print-results.php:478 app/facilities/addFacility.php:831
-#: app/facilities/editFacility.php:872 app/facilities/facilities.php:206
+#: app/facilities/editFacility.php:872 app/facilities/facilities.php:249
 #: app/generic-tests/program-management/generic-export-data.php:369
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:198
 #: app/generic-tests/results/generic-failed-results.php:270
@@ -5384,7 +5414,7 @@ msgstr "Sélectionner la province"
 #: app/eid/requests/forms/edit-cameroon.php:867
 #: app/eid/results/eid-failed-results.php:332
 #: app/eid/results/eid-print-results.php:481 app/facilities/addFacility.php:836
-#: app/facilities/editFacility.php:877 app/facilities/facilities.php:209
+#: app/facilities/editFacility.php:877 app/facilities/facilities.php:252
 #: app/generic-tests/program-management/generic-export-data.php:372
 #: app/generic-tests/program-management/generic-tests-clinic-report.php:201
 #: app/generic-tests/results/generic-failed-results.php:274
@@ -5646,6 +5676,10 @@ msgstr "ID de l'échantillon/Code du lot"
 #: app/vl/results/vl-print-results.php:456
 msgid "Enter Batch Code"
 msgstr "Saisir le code du lot"
+
+#: app/admin/monitoring/test-results-metadata.php:124
+msgid "Export To Excel"
+msgstr "Exporter vers Excel"
 
 #: app/admin/monitoring/test-results-metadata.php:183
 msgid ""
@@ -6207,7 +6241,7 @@ msgstr "Veuillez choisir la machine"
 #: app/batch/add-batch.php:195 app/batch/edit-batch.php:158
 #: app/cd4/requests/cd4-requests.php:488
 #: app/covid-19/requests/covid-19-requests.php:410
-#: app/eid/requests/eid-requests.php:419 app/facilities/facilities.php:160
+#: app/eid/requests/eid-requests.php:419
 #: app/hepatitis/requests/hepatitis-dhis2.php:274
 #: app/hepatitis/requests/hepatitis-requests.php:387
 #: app/tb/requests/tb-requests.php:292 app/vl/requests/vl-requests.php:546
@@ -6802,16 +6836,6 @@ msgstr "Créer un nouveau batch"
 #: app/vl/program-management/getSampleTestingReport.php:119
 msgid "No. of Samples"
 msgstr "Nombre d'échantillons"
-
-#: app/batch/batches.php:107 app/cd4/management/get-sample-status.php:458
-#: app/covid-19/management/getSampleStatus.php:380
-#: app/eid/management/getSampleStatus.php:414
-#: app/generic-tests/program-management/get-sample-status.php:309
-#: app/hepatitis/management/get-sample-status.php:511
-#: app/tb/management/getSampleStatus.php:462
-#: app/vl/program-management/getSampleStatus.php:548
-msgid "No. of Samples Tested"
-msgstr "Nombre d'échantillons testés"
 
 #: app/batch/batches.php:108
 msgid "Tested Date"
@@ -7972,8 +7996,8 @@ msgstr "Résultat CD4"
 #: app/eid/results/eid-print-results.php:365
 #: app/eid/results/eid-print-results.php:399
 #: app/eid/results/eid-result-status.php:181
-#: app/facilities/editFacility.php:358 app/facilities/facilities.php:148
-#: app/facilities/facilities.php:172
+#: app/facilities/editFacility.php:358 app/facilities/facilities.php:159
+#: app/facilities/facilities.php:206
 #: app/generic-tests/configuration/add-test-type.php:196
 #: app/generic-tests/configuration/clone-test-type.php:233
 #: app/generic-tests/configuration/edit-test-type.php:238
@@ -8898,7 +8922,7 @@ msgstr "Veuillez choisir un échantillon communautaire"
 #: app/eid/results/forms/update-cameroon-result.php:533
 #: app/facilities/addFacility.php:607 app/facilities/addFacility.php:621
 #: app/facilities/editFacility.php:594 app/facilities/editFacility.php:608
-#: app/facilities/facilities.php:115
+#: app/facilities/facilities.php:122
 #: app/generic-tests/configuration/add-test-type.php:250
 #: app/generic-tests/configuration/add-test-type.php:584
 #: app/generic-tests/configuration/clone-test-type.php:305
@@ -9124,7 +9148,7 @@ msgstr "Oui"
 #: app/eid/results/forms/update-cameroon-result.php:534
 #: app/facilities/addFacility.php:608 app/facilities/addFacility.php:622
 #: app/facilities/editFacility.php:595 app/facilities/editFacility.php:609
-#: app/facilities/facilities.php:116
+#: app/facilities/facilities.php:123
 #: app/generic-tests/configuration/add-test-type.php:251
 #: app/generic-tests/configuration/add-test-type.php:585
 #: app/generic-tests/configuration/clone-test-type.php:306
@@ -9379,7 +9403,7 @@ msgstr "Sélectionner au moins un filtre pour obtenir un rapport"
 #: app/covid-19/management/covid-19-sample-rejection-report.php:154
 #: app/eid/management/eid-export-data.php:684
 #: app/eid/management/eid-sample-rejection-report.php:154
-#: app/facilities/facilities.php:325
+#: app/facilities/facilities.php:368
 #: app/generic-tests/program-management/generic-export-data.php:659
 #: app/generic-tests/program-management/generic-sample-status.php:366
 #: app/generic-tests/program-management/sample-rejection-report.php:187
@@ -10104,7 +10128,7 @@ msgstr "Catégorie de motif"
 #: app/hepatitis/management/get-rejected-samples.php:138
 #: app/system/translate-strings.php:34
 #: app/tb/management/get-rejected-samples.php:142
-#: app/vl/program-management/getRejectionResult.php:170
+#: app/vl/program-management/getRejectionResult.php:174
 msgid "Sample Rejection Reasons"
 msgstr "Exemples de motifs de rejet"
 
@@ -14424,7 +14448,7 @@ msgstr "COVID 19 Les détails des motifs de l'essai ont été ajoutés avec succ
 #: app/eid/results/forms/update-cameroon-result.php:123
 #: app/facilities/addFacility.php:112 app/facilities/addFacility.php:117
 #: app/facilities/editFacility.php:172 app/facilities/editFacility.php:174
-#: app/facilities/facilities.php:139 app/facilities/facilities.php:169
+#: app/facilities/facilities.php:150 app/facilities/facilities.php:203
 #: app/tb/reference/tb-sample-type.php:32
 #: app/vl/results/forms/update-cameroon-result.php:261
 msgid "Facility Code"
@@ -14433,8 +14457,8 @@ msgstr "Nom et code de la structure"
 #: app/covid-19/reference/covid19-comorbidities.php:38
 #: app/covid-19/reference/covid19-sample-type.php:38
 #: app/facilities/addFacility.php:137 app/facilities/editFacility.php:190
-#: app/facilities/facilities.php:71 app/facilities/facilities.php:145
-#: app/facilities/facilities.php:171 app/tb/reference/tb-sample-type.php:38
+#: app/facilities/facilities.php:78 app/facilities/facilities.php:156
+#: app/facilities/facilities.php:205 app/tb/reference/tb-sample-type.php:38
 msgid "Facility Type"
 msgstr "Type d'installation"
 
@@ -15696,7 +15720,7 @@ msgstr "Autre ID"
 
 #: app/covid-19/requests/forms/add-cameroon.php:614
 #: app/facilities/addFacility.php:140 app/facilities/editFacility.php:192
-#: app/facilities/facilities.php:73
+#: app/facilities/facilities.php:80
 msgid "Please select facility type"
 msgstr "Veuillez sélectionner le type d'établissement"
 
@@ -17990,7 +18014,7 @@ msgstr "Sélectionner Approuvé par"
 #: app/vl/requests/forms/edit-cameroon.php:892
 #: app/vl/requests/forms/edit-drc.php:1103
 #: app/vl/results/forms/update-drc-result.php:810
-#: public/assets/js/main.js.php:483
+#: public/assets/js/main.js.php:507
 msgid "Type one or more character to search"
 msgstr "Tapez un ou plusieurs caractères à rechercher"
 
@@ -18535,7 +18559,7 @@ msgstr ""
 "contre le sida (PEPFAR) par l'intermédiaire des Centres américains de "
 "contrôle et de prévention des maladies (CDC)."
 
-#: app/facilities/addFacility.php:73 app/facilities/facilities.php:156
+#: app/facilities/addFacility.php:73 app/facilities/facilities.php:191
 msgid "Add Facility"
 msgstr "Ajouter installations"
 
@@ -18942,28 +18966,33 @@ msgstr "Cible mensuelle supprimée"
 msgid "Facility details updated successfully"
 msgstr "Les détails de l'installation ont été mis à jour avec succès"
 
-#: app/facilities/facilities.php:111
+#: app/facilities/facilities.php:118
 msgid "Show Only Active"
 msgstr "Afficher uniquement les actifs"
 
-#: app/facilities/facilities.php:113
+#: app/facilities/facilities.php:120
 msgid "Please select Active Facility"
 msgstr "Veuillez sélectionner l'établissement actif"
 
-#: app/facilities/facilities.php:155
+#: app/facilities/facilities.php:133 app/facilities/facilities.php:173
+#: app/facilities/facilities.php:242
+msgid "Advanced Search"
+msgstr "Recherche avancée"
+
+#: app/facilities/facilities.php:178
+msgid "Health Facilities"
+msgstr "Établissements de santé"
+
+#: app/facilities/facilities.php:187
 #: app/vl/program-management/vlControlReport.php:50
 msgid "Bulk Upload"
 msgstr "Chargement groupé"
 
-#: app/facilities/facilities.php:157
-msgid "Manage Testing Lab"
-msgstr "Enregistré au laboratoire de test"
+#: app/facilities/facilities.php:239
+msgid "Hide Filters"
+msgstr "Masquer les filtres"
 
-#: app/facilities/facilities.php:158
-msgid "Manage Health Facilities"
-msgstr "Gérer les établissements de santé"
-
-#: app/facilities/facilities.php:305
+#: app/facilities/facilities.php:348
 msgid "Please choose facility type first"
 msgstr "Veuillez choisir d'abord le type d'établissement"
 
@@ -23786,7 +23815,7 @@ msgstr "Terminer"
 #: app/system-admin/reset-password/reset-password.php:111
 #: app/system-admin/setup/index.php:140 app/users/addUser.php:190
 #: app/users/addUser.php:463 app/users/edit-profile.php:120
-#: app/users/edit-profile.php:249 app/users/editUser.php:252
+#: app/users/edit-profile.php:252 app/users/editUser.php:252
 #: app/users/editUser.php:564
 msgid ""
 "Password must be at least 8 characters long and must include AT LEAST one "
@@ -24185,7 +24214,7 @@ msgid "User"
 msgstr "Utilisateur"
 
 #: app/system-admin/reset-password/reset-password.php:128
-#: app/users/addUser.php:553 app/users/edit-profile.php:266
+#: app/users/addUser.php:553 app/users/edit-profile.php:269
 #: app/users/editUser.php:652
 msgid "Password generated and copied to clipboard"
 msgstr "Mot de passe généré et copié dans le presse-papiers"
@@ -28686,118 +28715,138 @@ msgstr ""
 "La date d'analyse de l'échantillon ne peut être antérieure à la date de "
 "prélèvement de l'échantillon"
 
-#: public/assets/js/main.js.php:107
+#: public/assets/js/main.js.php:78
+msgid "No records found"
+msgstr "Aucun enregistrement trouvé"
+
+#: public/assets/js/main.js.php:79
+msgid "No data available in table"
+msgstr "Aucune donnée disponible dans le tableau"
+
+#: public/assets/js/main.js.php:80
+msgid "Showing _START_ to _END_ of _TOTAL_ entries"
+msgstr "Affichage de _START_ à _END_ sur _TOTAL_ éléments"
+
+#: public/assets/js/main.js.php:81
+msgid "Showing 0 to 0 of 0 entries"
+msgstr "Affiche 0 à 0 de 0 entrées"
+
+#: public/assets/js/main.js.php:82
+msgid "filtered from _MAX_ total entries"
+msgstr "filtré de _MAX_ entrées totales"
+
+#: public/assets/js/main.js.php:131
 msgid "Please enter the Sample Manifest Code"
 msgstr "Veuillez saisir l'exemple de code de manifeste"
 
-#: public/assets/js/main.js.php:123
+#: public/assets/js/main.js.php:147
 msgid "Unable to verify manifest"
 msgstr "Impossible de vérifier le manifeste"
 
-#: public/assets/js/main.js.php:139
+#: public/assets/js/main.js.php:163
 msgid "Unable to find manifest"
 msgstr "Impossible de trouver le manifeste"
 
-#: public/assets/js/main.js.php:146
+#: public/assets/js/main.js.php:170
 msgid "Samples loaded successfully for manifest"
 msgstr "Échantillons chargés avec succès pour le manifeste"
 
-#: public/assets/js/main.js.php:160 public/assets/js/main.js.php:211
+#: public/assets/js/main.js.php:184 public/assets/js/main.js.php:235
 msgid "Some error occurred while processing the manifest"
 msgstr "Une erreur s'est produite lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:183
+#: public/assets/js/main.js.php:207
 msgid "Unable to sync manifest"
 msgstr "Impossible de synchroniser le manifeste"
 
-#: public/assets/js/main.js.php:192
+#: public/assets/js/main.js.php:216
 msgid "Invalid server response while processing manifest"
 msgstr "Réponse invalide du serveur lors du traitement du manifeste"
 
-#: public/assets/js/main.js.php:201
+#: public/assets/js/main.js.php:225
 msgid "Unable to find or sync samples from manifest"
 msgstr "Impossible de trouver ou de synchroniser les échantillons du manifeste"
 
-#: public/assets/js/main.js.php:205
+#: public/assets/js/main.js.php:229
 msgid "Samples synced successfully from STS for manifest"
 msgstr ""
 "Échantillons synchronisés avec succès à partir de STS pour le manifeste"
 
-#: public/assets/js/main.js.php:217
+#: public/assets/js/main.js.php:241
 msgid "Please enter a valid Sample Manifest Code"
 msgstr "Veuillez saisir un exemple de code de manifeste valide"
 
-#: public/assets/js/main.js.php:230 public/assets/js/main.js.php:257
+#: public/assets/js/main.js.php:254 public/assets/js/main.js.php:281
 msgid "Please connect to internet to sync with STS"
 msgstr "Veuillez vous connecter à Internet pour synchroniser avec STS"
 
-#: public/assets/js/main.js.php:236
+#: public/assets/js/main.js.php:260
 msgid "Receiving Metadata from STS"
 msgstr "Réception des métadonnées du STS"
 
-#: public/assets/js/main.js.php:236 public/assets/js/main.js.php:263
-#: public/assets/js/main.js.php:285 public/assets/js/main.js.php:309
+#: public/assets/js/main.js.php:260 public/assets/js/main.js.php:287
+#: public/assets/js/main.js.php:309 public/assets/js/main.js.php:333
 msgid "Please wait..."
 msgstr "Veuillez patienter..."
 
-#: public/assets/js/main.js.php:247 public/assets/js/main.js.php:274
-#: public/assets/js/main.js.php:298 public/assets/js/main.js.php:322
+#: public/assets/js/main.js.php:271 public/assets/js/main.js.php:298
+#: public/assets/js/main.js.php:322 public/assets/js/main.js.php:346
 msgid "Unable to do STS Sync. Please contact technical team for assistance."
 msgstr ""
 "Impossible d'effectuer la synchronisation STS. Veuillez contacter l'équipe "
 "technique pour obtenir de l'aide."
 
-#: public/assets/js/main.js.php:263
+#: public/assets/js/main.js.php:287
 msgid "Sending Lab Metadata"
 msgstr "Envoi de métadonnées de laboratoire"
 
-#: public/assets/js/main.js.php:285
+#: public/assets/js/main.js.php:309
 msgid "Sending Test Results"
 msgstr "Envoi des résultats des tests"
 
-#: public/assets/js/main.js.php:309
+#: public/assets/js/main.js.php:333
 msgid "Receiving Test Requests"
 msgstr "Réception des demandes de test"
 
-#: public/assets/js/main.js.php:357
+#: public/assets/js/main.js.php:381
 msgid "STS server is reachable"
 msgstr "Le serveur STS est accessible"
 
-#: public/assets/js/main.js.php:365
+#: public/assets/js/main.js.php:389
 msgid "STS server is unreachable"
 msgstr "Le serveur STS est inaccessible"
 
-#: public/assets/js/main.js.php:389 public/assets/js/main.js.php:400
+#: public/assets/js/main.js.php:413 public/assets/js/main.js.php:424
 msgid "Thank you.Your message has been submitted."
 msgstr "Merci, votre message a été envoyé."
 
-#: public/assets/js/main.js.php:518
+#: public/assets/js/main.js.php:542
 msgid "Cache cleared successfully"
 msgstr "Le cache a été éliminé avec succès"
 
-#: public/assets/js/main.js.php:534
+#: public/assets/js/main.js.php:558
 msgid "Synced successfully"
 msgstr "Synchronisation réussie"
 
-#: public/assets/js/main.js.php:552
+#: public/assets/js/main.js.php:576
 msgid "Sample Collection date cannot be in the future"
 msgstr "La date de prélèvement de l'échantillon ne peut pas être ultérieure"
 
-#: public/assets/js/main.js.php:559
+#: public/assets/js/main.js.php:583
 msgid "Sample Collection Date is over 6 months old"
 msgstr "La date de prélèvement de l'échantillon remonte à plus de 6 mois"
 
-#: public/assets/js/main.js.php:634
+#: public/assets/js/main.js.php:658
 msgid "Invalid date format. Please check the input dates."
 msgstr "Format de date incorrect. Veuillez vérifier les dates saisies."
 
-#: public/assets/js/main.js.php:639
+#: public/assets/js/main.js.php:663
 msgid "ART Initiation Date cannot be earlier than Patient Date of Birth"
 msgstr ""
 "La date de début du traitement antirétroviral ne peut être antérieure à la "
 "date de naissance du patient"
 
-#: public/assets/js/main.js.php:810
+#: public/assets/js/main.js.php:834
 msgid ""
 "Invalid phone number. Please enter full phone number with the proper country "
 "code"
@@ -28805,7 +28854,7 @@ msgstr ""
 "Numéro de téléphone non valide. Veuillez saisir le numéro de téléphone "
 "complet avec l'indicatif du pays"
 
-#: public/assets/js/main.js.php:851
+#: public/assets/js/main.js.php:875
 msgid "Please enter minimum length for Patient Id : "
 msgstr "Veuillez saisir la longueur minimale pour l'Identité du patient : "
 
@@ -29004,6 +29053,12 @@ msgstr "Format ISO"
 #: public/assets/js/smart-date-format.js.php:750
 msgid "German Format"
 msgstr "Format allemand"
+
+#~ msgid "Manage Testing Lab"
+#~ msgstr "Enregistré au laboratoire de test"
+
+#~ msgid "Manage Health Facilities"
+#~ msgstr "Gérer les établissements de santé"
 
 #~ msgid "eg-email1@gmail.com,email2@gmail.com"
 #~ msgstr "eg-email1@gmail.com,email2@gmail.com"
@@ -29658,9 +29713,6 @@ msgstr "Format allemand"
 #~ msgid "Overall Sample Status"
 #~ msgstr "Statut global de l'échantillon"
 
-#~ msgid "Health Facility"
-#~ msgstr "Etablissement de santé"
-
 #~ msgid "Facility Name & Code"
 #~ msgstr "Nom et code de la structure"
 
@@ -29955,17 +30007,8 @@ msgstr "Format allemand"
 #~ msgid " | Batches"
 #~ msgstr " | Lots"
 
-#~ msgid "No. of Samples Collected"
-#~ msgstr "Nombre d'échantillons prélevés"
-
-#~ msgid "No. of Samples Received at the Testing Lab"
-#~ msgstr "Nombre d'échantillons reçus au laboratoire d'essai"
-
 #~ msgid "No. of Samples with Test Result"
 #~ msgstr "Nombre d'échantillons avec résultat de test"
-
-#~ msgid "No. of Samples Rejected"
-#~ msgstr "Nombre d'échantillons rejetés"
 
 #~ msgid "Last Request Created On"
 #~ msgstr "Dernière demande créée le"

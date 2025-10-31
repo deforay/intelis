@@ -182,11 +182,11 @@ $state = $geolocationService->getProvinces("yes");
 
                         <table aria-describedby="table" class="table table-bordered table-striped" aria-hidden="true">
                             <tr>
-                                <th>No. of Samples Requested</th>
-                                <th>No. of Samples Acknowledged</th>
-                                <th>No. of Samples Received at Testing Lab</th>
-                                <th>No. of Samples Tested</th>
-                                <th>No. of Results Returned</th>
+                                <th><?= _translate("No. of Samples Requested"); ?></th>
+                                <th><?= _translate("No. of Samples Acknowledged"); ?></th>
+                                <th><?= _translate("No. of Samples Received at Testing Lab"); ?></th>
+                                <th><?= _translate("No. of Samples Tested"); ?></th>
+                                <th><?= _translate("No. of Results Returned"); ?></th>
                             </tr>
                             <tr>
                                 <td id="totalSamplesRequested"></td>
@@ -198,7 +198,7 @@ $state = $geolocationService->getProvinces("yes");
                         </table>
 
                         <a class="btn btn-success btn-sm pull-right" style="margin-right:5px;" href="javascript:void(0);" onclick="exportTestRequests();"><em class="fa-solid fa-file-excel"></em>&nbsp;&nbsp;
-                            <?php echo _translate("Export To Excel"); ?>
+                            <?php echo _translate("Export"); ?>
                         </a>
                         <table aria-describedby="table" id="sampleWiseReport" class="table table-bordered table-striped" aria-hidden="true">
                             <thead>
@@ -327,9 +327,6 @@ $state = $geolocationService->getProvinces("yes");
 
         $.blockUI();
         oTable = $('#sampleWiseReport').dataTable({
-            "oLanguage": {
-                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-            },
             "bJQueryUI": false,
             "bAutoWidth": false,
             "bInfo": true,

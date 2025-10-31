@@ -82,7 +82,7 @@ $state = $geolocationService->getProvinces("yes");
                       <?php
                       foreach ($fResult as $type) {
                       ?>
-                        <option value="<?php echo $type['facility_type_id']; ?>"><?php echo ($type['facility_type_name']); ?></option>
+                        <option value="<?php echo $type['facility_type_id']; ?>"><?php echo $type['facility_type_name']; ?></option>
                       <?php
                       }
                       ?>
@@ -128,7 +128,11 @@ $state = $geolocationService->getProvinces("yes");
                 </tr>
                 <tr>
                   <td colspan="4">&nbsp;<input type="button" onclick="searchResultData(),searchVlTATData();" value="Search" class="btn btn-success btn-sm">
-                    &nbsp;<button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                    <button class="btn btn-danger btn-sm" onclick="document.location.href = document.location"><span>Reset</span></button>
+                    <button class="btn btn-ghost btn-sm btn-icon" data-toggle="collapse" data-target="#advanceFilter" aria-expanded="false" aria-controls="advanceFilter">
+                      <em class="fa fa-filter"></em><span class="text"><?= _translate("Advanced Search") ?></span>
+                    </button>
+
                   </td>
                 </tr>
 
@@ -229,6 +233,15 @@ $state = $geolocationService->getProvinces("yes");
   var oTable = null;
 
   $(document).ready(function() {
+
+    var $btn = $('[data-target="#advanceFilter"]');
+    $('#advanceFilter').on('shown.bs.collapse', function() {
+        $btn.find('.text').text('<?= _translate("Hide Filters") ?>');
+      })
+      .on('hidden.bs.collapse', function() {
+        $btn.find('.text').text('<?= _translate("Advanced Search") ?>');
+      });
+
 
     $.blockUI();
 
@@ -371,12 +384,6 @@ $state = $geolocationService->getProvinces("yes");
         Obj = $.parseJSON(data);
         $("#district").html(Obj['districts']);
       });
-  }
-
-
-  function hideAdvanceSearch(hideId, showId) {
-    $("#" + hideId).hide();
-    $("#" + showId).show();
   }
 </script>
 <?php
