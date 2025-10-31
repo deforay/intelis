@@ -87,9 +87,6 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 	$(document).ready(function() {
 		$.blockUI();
 		oTable = $('#specimenReferralManifestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
