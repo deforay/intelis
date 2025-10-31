@@ -38,7 +38,7 @@ $patientLastName = $testTableData['patientLastName'];
 $testType = ($testType == 'covid19') ? 'covid-19' : $testType;
 $title = _translate($testName . " | Edit Batch Position");
 $modules = SYSTEM_CONFIG['modules'];
-$activeModule = SystemService::getActiveModules(true);
+$activeModule = SystemService::getActiveModules(onlyTests: true);
 if (isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)) {
 	$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
 }

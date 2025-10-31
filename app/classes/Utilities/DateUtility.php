@@ -344,24 +344,32 @@ final class DateUtility
             $endDate = '';
 
             if (!empty($dates[0])) {
-                $start = Carbon::parse($dates[0]);
-                if ($includeTime) {
-                    $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
-                        ? $start->format('Y-m-d H:i:s')
-                        : $start->startOfDay()->format('Y-m-d H:i:s');
-                } else {
-                    $startDate = $start->format('Y-m-d');
+                try {
+                    $start = Carbon::parse($dates[0]);
+                    if ($includeTime) {
+                        $startDate = preg_match('/\d{2}:\d{2}/', $dates[0])
+                            ? $start->format('Y-m-d H:i:s')
+                            : $start->startOfDay()->format('Y-m-d H:i:s');
+                    } else {
+                        $startDate = $start->format('Y-m-d');
+                    }
+                } catch (\Exception $e) {
+                    LoggerUtility::log('error', "Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
                 }
             }
 
             if (!empty($dates[1])) {
-                $end = Carbon::parse($dates[1]);
-                if ($includeTime) {
-                    $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
-                        ? $end->format('Y-m-d H:i:s')
-                        : $end->endOfDay()->format('Y-m-d H:i:s'); // end of day instead of next day start
-                } else {
-                    $endDate = $end->format('Y-m-d');
+                try {
+                    $end = Carbon::parse($dates[1]);
+                    if ($includeTime) {
+                        $endDate = preg_match('/\d{2}:\d{2}/', $dates[1])
+                            ? $end->format('Y-m-d H:i:s')
+                            : $end->endOfDay()->format('Y-m-d H:i:s'); // end of day instead of next day start
+                    } else {
+                        $endDate = $end->format('Y-m-d');
+                    }
+                } catch (\Exception $e) {
+                    LoggerUtility::log('error', "Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
                 }
             }
 
