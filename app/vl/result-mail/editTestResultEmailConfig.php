@@ -52,9 +52,9 @@ if (isset($arr['rs_field']) && trim((string) $arr['rs_field']) != '') {
 						<div class="row">
 							<div class="col-md-6">
 								<div class="form-group">
-									<label for="rs_email" class="col-lg-3 control-label"><?php echo _translate("Email Id"); ?> <code><?php echo _translate("(Gmail only)"); ?></code>*</label>
+									<label for="rs_email" class="col-lg-3 control-label"><?php echo _translate("Email Id"); ?> <code><?php echo _translate("(GMail only)"); ?></code>*</label>
 									<div class="col-lg-9">
-										<input type="text" class="form-control isEmail isRequired" id="rs_email" name="rs_email" placeholder="<?php echo _translate('eg.hello.vl@gmail.com'); ?>" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $arr['rs_email']; ?>">
+										<input type="text" class="form-control isEmail isRequired" id="rs_email" name="rs_email" placeholder="e.g. example@gmail.com" title="<?php echo _translate('Please enter email'); ?>" value="<?php echo $arr['rs_email']; ?>">
 									</div>
 								</div>
 							</div>

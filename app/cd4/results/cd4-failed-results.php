@@ -318,10 +318,10 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                           $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
-               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
+            $sampleCode = htmlspecialchars($_GET['s']);
+            $facilityCode = htmlspecialchars($_GET['f']);
+            $patientID = htmlspecialchars($_GET['p']);
+            echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
         }
         ?>
         loadVlRequestData();
@@ -396,7 +396,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
         $.blockUI();
         oTable = $('#cd4FailedRequestDataTable').dataTable({
             "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
+                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
             },
             "bJQueryUI": false,
             "bAutoWidth": false,
