@@ -818,9 +818,6 @@ foreach ($rejectionTypeResult as $type) {
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#importedResultsTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

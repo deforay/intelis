@@ -19,6 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
+
 try {
 
      /** @var CommonService $general */
@@ -456,7 +457,6 @@ try {
           $output['aaData'][] = $row;
      }
      echo JsonUtility::encodeUtf8Json($output);
-
 } catch (Throwable $e) {
      LoggerUtility::logError($e->getMessage(), [
           'exception' => $e,

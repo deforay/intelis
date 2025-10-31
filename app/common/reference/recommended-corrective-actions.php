@@ -74,9 +74,6 @@ if (!empty($_GET['testType'])) {
 	$(document).ready(function() {
 		$.blockUI();
 		oTable = $('#correctiveActionTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,

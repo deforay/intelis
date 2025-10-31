@@ -71,6 +71,48 @@ $remoteURL = $general->getRemoteURL();
         }
     });
 
+    // Global DataTables defaults
+    $.extend(true, $.fn.dataTable.defaults, {
+        "language": {
+            "lengthMenu": "_MENU_ <?= _translate("records per page", true); ?>",
+            "zeroRecords": "<?= _translate("No records found", true); ?>",
+            "sEmptyTable": "<?= _translate("No data available in table", true); ?>",
+            "info": "<?= _translate("Showing _START_ to _END_ of _TOTAL_ entries", true); ?>",
+            "infoEmpty": "<?= _translate("Showing 0 to 0 of 0 entries", true); ?>",
+            "infoFiltered": "(<?= _translate("filtered from _MAX_ total entries", true); ?>)",
+            "search": "<?= _translate("Search", true); ?>:",
+            "paginate": {
+                "first": "<?= _translate("First", true); ?>",
+                "last": "<?= _translate("Last", true); ?>",
+                "next": "<?= _translate("Next", true); ?>",
+                "previous": "<?= _translate("Previous", true); ?>"
+            },
+            "sProcessing": "<?= _translate("Processing...", true); ?>",
+            "loadingRecords": "<?= _translate("Loading...", true); ?>"
+        },
+        "lengthMenu": [
+            [10, 25, 50, 100, 200, 250, 500],
+            [10, 25, 50, 100, 200, 250, 500]
+        ],
+        "pageLength": 10
+    });
+
+    // Global BlockUI defaults
+    if (typeof $.blockUI !== 'undefined') {
+        $.blockUI.defaults.message = '<h3><?= _translate("Please wait...", true); ?></h3>';
+        $.blockUI.defaults.css = {
+            border: 'none',
+            padding: '1.2em 2em',
+            backgroundColor: 'transparent',
+            color: '#fff'
+        };
+        $.blockUI.defaults.overlayCSS = {
+            backgroundColor: 'rgba(0, 0, 0, 0.6)',
+            opacity: 1,
+            cursor: 'wait'
+        };
+    }
+
     $.ajaxSetup({
         beforeSend: function(xhr, settings) {
             if (settings.type === 'POST' || settings.type === 'PUT' || settings.type === 'DELETE') {

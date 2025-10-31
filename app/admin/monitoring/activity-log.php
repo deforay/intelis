@@ -180,9 +180,6 @@ foreach ($actions as $list) {
 	function loadVlRequestData() {
 		$.blockUI();
 		oTable = $('#auditTrailDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
