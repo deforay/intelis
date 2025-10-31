@@ -356,7 +356,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
     if (oTable != null) oTable.fnDestroy();
     oTable = $('#vlWeeklyReportDataTable').dataTable({
       "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
+        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
       },
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -466,7 +466,7 @@ $facilityResult = $db->rawQuery($facilityQuery);
     if (oTableFemale != null) oTableFemale.fnDestroy();
     oTableFemale = $('#vlWeeklyFemaleReportDataTable').dataTable({
       "oLanguage": {
-        "sLengthMenu": "_MENU_ records per page"
+        "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
       },
       "bJQueryUI": false,
       "bAutoWidth": false,

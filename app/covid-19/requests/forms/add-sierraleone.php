@@ -620,7 +620,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
                                 <div class="form-group">
                                     <label for="email" class="col-lg-4 control-label">Email(s) </label>
                                     <div class="col-lg-7">
-                                        <input type="text" class="form-control" id="email" name="email" placeholder="eg-email1@gmail.com,email2@gmail.com" />
+                                        <input type="text" class="form-control" id="email" name="email" placeholder="e.g. email1@gmail.com, email2@gmail.com" />
                                     </div>
                                 </div>
                             </div>
@@ -1036,7 +1036,7 @@ $facility = $general->generateSelectOptions($healthFacilities, null, '-- Select 
     $(document).ready(function() {
         $("#labId,#facilityId,#sampleCollectionDate").on('change', function() {
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleDispatchedDate").val() == "") {
-               // $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
+                // $('#sampleDispatchedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));
             }
             if ($("#labId").val() != '' && $("#labId").val() == $("#facilityId").val() && $("#sampleReceivedDate").val() == "") {
                 // $('#sampleReceivedDate').datetimepicker("setDate", new Date($('#sampleCollectionDate').datetimepicker('getDate')));

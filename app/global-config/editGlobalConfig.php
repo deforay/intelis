@@ -312,7 +312,7 @@ $vlTestingLabs = $facilitiesService->getTestingLabs('vl');
 										<div class="form-group" style="height:38px;">
 											<label for="support_email" class="col-lg-4 control-label"><?php echo _translate("Support Email"); ?></label>
 											<div class="col-lg-8">
-												<input type="text" class="form-control readPage" id="support_email" name="support_email" placeholder="<?php echo _translate('eg. manager1@example.com, manager2@example.com'); ?>" title="<?php echo _translate('Please enter manager email'); ?>" value="<?php echo $arr['support_email']; ?>" />
+												<input type="text" class="form-control readPage" id="support_email" name="support_email" placeholder="'e.g. manager1@example.com, manager2@example.com" title="<?php echo _translate('Please enter manager email'); ?>" value="<?php echo $arr['support_email']; ?>" />
 											</div>
 										</div>
 									</div>

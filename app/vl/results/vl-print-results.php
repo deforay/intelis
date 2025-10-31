@@ -785,7 +785,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		unprintedTable = null;
 		unprintedTable = $('#unprintedDataTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -954,7 +954,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 		printedTable = null;
 		printedTable = $('#printedDataTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,

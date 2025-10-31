@@ -1306,7 +1306,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTableViralLoad = $('#highViralLoadReportTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -1412,7 +1412,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTableRjtReport = $('#sampleRjtReportTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -1511,7 +1511,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTablenotAvailReport = $('#notAvailReportTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -1603,7 +1603,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTableincompleteReport = $('#incompleteReport').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -1679,7 +1679,7 @@ $state = $geolocationService->getProvinces("yes");
 		$.blockUI();
 		oTablepatientTestHistoryReport = $('#patientTestHistoryReport').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,

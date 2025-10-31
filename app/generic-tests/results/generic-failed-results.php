@@ -285,10 +285,10 @@ $state = $geolocationService->getProvinces("yes");
         });
         <?php
         if (isset($_GET['barcode']) && $_GET['barcode'] == 'true') {
-                           $sampleCode = htmlspecialchars($_GET['s']);
-               $facilityCode = htmlspecialchars($_GET['f']);
-               $patientID = htmlspecialchars($_GET['p']);
-               echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
+            $sampleCode = htmlspecialchars($_GET['s']);
+            $facilityCode = htmlspecialchars($_GET['f']);
+            $patientID = htmlspecialchars($_GET['p']);
+            echo "printBarcodeLabel('$sampleCode','$facilityCode','$patientID');";
         }
         ?>
 
@@ -373,7 +373,7 @@ $state = $geolocationService->getProvinces("yes");
 
         oTable = $('#genericFailedResultDataTable').dataTable({
             "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
+                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
             },
             "bJQueryUI": false,
             "bAutoWidth": false,

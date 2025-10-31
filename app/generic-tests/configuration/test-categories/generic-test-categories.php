@@ -74,7 +74,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$.blockUI();
 		oTable = $('#partnerTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
