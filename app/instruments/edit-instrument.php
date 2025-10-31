@@ -93,7 +93,7 @@ if (in_array('vl', $sInfo['supported_tests']) || in_array('hapatitis', $sInfo['s
 	$lowerText = "style='display:none;'";
 }
 $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
-$testTypeList = SystemService::getActiveModules(onlyTests: true);
+$activeTests = TestsService::getActiveTests();
 
 ?>
 <link rel="stylesheet" media="all" type="text/css" href="/assets/css/smart-date-format.css">
@@ -187,7 +187,7 @@ $testTypeList = SystemService::getActiveModules(onlyTests: true);
 											<?php } ?>-->
 											<option value=""><?php echo _translate("Select Test Types"); ?></option>
 
-											<?php foreach ($testTypeList as $testType) { ?>
+											<?php foreach ($activeTests as $testType) { ?>
 												<option value="<?= $testType; ?>" <?php echo (in_array($testType, $sInfo['supported_tests'])) ? "selected='selected'" : ''; ?>><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
 										</select>

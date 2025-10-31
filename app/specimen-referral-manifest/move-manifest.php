@@ -48,8 +48,8 @@ $shortCode = TestsService::getTestShortCode($module);
 
 // Get active test types with their names
 $testTypesNames = [];
-$activeModules = SystemService::getActiveModules(onlyTests: true);
-foreach ($activeModules as $testType) {
+$activeTests = TestsService::getActiveTests();
+foreach ($activeTests as $testType) {
     $testTypesNames[$testType] = TestsService::getTestName($testType);
 }
 

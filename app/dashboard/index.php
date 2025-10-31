@@ -1,13 +1,12 @@
 <?php
 
-use App\Services\SystemService;
 use App\Services\TestsService;
 
 $title = _translate("Dashboard");
 
 require_once APPLICATION_PATH . '/header.php';
 
-$activeModules = SystemService::getActiveModules(onlyTests: true);
+$activeTests = TestsService::getActiveTests();
 $userModules = $_SESSION['modules'] ?? [];
 
 ?>
@@ -76,10 +75,10 @@ $userModules = $_SESSION['modules'] ?? [];
 		<div class="bs bs-tabs">
 			<ul id="myTab" class="nav nav-tabs" style="font-size:1.4em;">
 				<?php
-				foreach ($activeModules as $module) {
+				foreach ($activeTests as $module) {
 					// Check if user has access to this module
 					if (in_array($module, $userModules)) {
-						$isFirstTab = ($module === $activeModules[0] && in_array($module, $userModules));
+						$isFirstTab = ($module === $activeTests[0] && in_array($module, $userModules));
 						$activeClass = $isFirstTab ? ' class="active"' : '';
 						// Convert module name to camelCase dashboard ID (e.g., 'generic-tests' -> 'genericTestsDashboard')
 						$dashboardId = lcfirst(str_replace(' ', '', ucwords(str_replace('-', ' ', $module)))) . 'Dashboard';

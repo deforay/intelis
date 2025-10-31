@@ -6,9 +6,11 @@ use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\CD4Service;
 use App\Services\EidService;
+use App\Utilities\MemoUtility;
 use App\Services\Covid19Service;
 use App\Services\HepatitisService;
 use App\Exceptions\SystemException;
+use App\Registries\ContainerRegistry;
 use App\Services\GenericTestsService;
 
 final class TestsService
@@ -18,15 +20,30 @@ final class TestsService
      */
     public static function isTestActive(string $module): bool
     {
+
         $module = trim($module);
         if ($module === '') {
             return false;
         }
 
-        $activeModules = SystemService::getActiveModules(onlyTests: true);
+        $activeModules = self::getActiveTests();
         $activeLower = array_map('strtolower', $activeModules);
 
         return in_array(strtolower($module), $activeLower, true);
+    }
+
+    public static function getActiveTests(): array
+    {
+        return MemoUtility::remember(function () {
+            $activeModules = SystemService::getActiveModules(onlyTests: true);
+            $activeTests = [];
+            foreach ($activeModules as $module) {
+                if (isset(self::getTestTypes()[strtolower($module)])) {
+                    $activeTests[] = strtolower($module);
+                }
+            }
+            return $activeTests;
+        });
     }
 
 
@@ -233,7 +250,7 @@ final class TestsService
     public static function getSampleTypes(string $testType): array
     {
         $serviceClass = self::getTestServiceClass($testType);
-        $service = \App\Registries\ContainerRegistry::get($serviceClass);
+        $service = ContainerRegistry::get($serviceClass);
 
         $methodMap = [
             'vl' => 'getVlSampleTypes',

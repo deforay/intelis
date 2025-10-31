@@ -27,9 +27,7 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 $vlsmSystemConfig = $general->getSystemConfig();
 $labNameList = $facilitiesService->getTestingLabs();
 
-$activeModules = SystemService::getActiveModules();
-
-$testTypeList = SystemService::getActiveModules(onlyTests: true);
+$activeTests = TestsService::getActiveTests();
 
 
 $userList = $usersService->getAllUsers(null, 'active', 'drop-down');
@@ -128,7 +126,7 @@ sort($fileList);
 									<div class="col-lg-7">
 										<select multiple class="" id="supportedTests" name="supportedTests[]">
 											<option value=""><?php echo _translate("Select Test Types"); ?></option>
-											<?php foreach ($testTypeList as $testType) { ?>
+											<?php foreach ($activeTests as $testType) { ?>
 												<option value="<?= $testType; ?>"><?php echo TestsService::getTestName($testType); ?></option>
 											<?php } ?>
 										</select>
