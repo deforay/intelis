@@ -84,7 +84,6 @@ WHERE vl.referred_to_lab_id IS NOT NULL
     AND vl.referred_to_lab_id != 0 
     AND vl.referral_manifest_code IS NOT NULL 
     AND vl.referral_manifest_code != '' 
-    AND vl.referral_manifest_code != 0 
     $sWhere 
 GROUP BY vl.referral_manifest_code, f2.facility_name, f2.facility_code";
 
@@ -98,7 +97,6 @@ if (!empty($sOrder)) {
 if (isset($sLimit) && $sLimit != '') {
     $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-// die($sQuery);
 [$result, $resultCount] = $db->getDataAndCount($sQuery);
 // Output
 $output = [
