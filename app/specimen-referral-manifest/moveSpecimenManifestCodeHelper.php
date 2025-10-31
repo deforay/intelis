@@ -19,7 +19,7 @@ if (isset($_POST['testType']) && $_POST['testType'] == "") {
     $_POST['testType'] = "generic-tests";
 }
 
-$table = TestsService::getTestTableName($_POST['testType'] ?? 'vl');
+$table = TestsService::getTestTableName($_POST['testType']);
 
 /** @var DatabaseService $db */
 $db = ContainerRegistry::get(DatabaseService::class);

@@ -13,6 +13,23 @@ use App\Services\GenericTestsService;
 
 final class TestsService
 {
+    /**
+     * Check if a test is active.
+     */
+    public static function isTestActive(string $module): bool
+    {
+        $module = trim($module);
+        if ($module === '') {
+            return false;
+        }
+
+        $activeModules = SystemService::getActiveModules(onlyTests: true);
+        $activeLower = array_map('strtolower', $activeModules);
+
+        return in_array(strtolower($module), $activeLower, true);
+    }
+
+
     public static function getTestTypes()
     {
         $testTypes = [
@@ -205,5 +222,36 @@ final class TestsService
     public static function getAllTableNames(): array
     {
         return array_column(self::getTestTypes(), 'tableName');
+    }
+
+    /**
+     * Get sample types for a specific test type.
+     * 
+     * @param string $testType The test type (e.g., 'vl', 'eid', 'covid19')
+     * @return array The sample types array
+     */
+    public static function getSampleTypes(string $testType): array
+    {
+        $serviceClass = self::getTestServiceClass($testType);
+        $service = \App\Registries\ContainerRegistry::get($serviceClass);
+
+        $methodMap = [
+            'vl' => 'getVlSampleTypes',
+            'recency' => 'getVlSampleTypes',
+            'eid' => 'getEidSampleTypes',
+            'covid19' => 'getCovid19SampleTypes',
+            'hepatitis' => 'getHepatitisSampleTypes',
+            'tb' => 'getTbSampleTypes',
+            'cd4' => 'getCd4SampleTypes',
+            'generic-tests' => 'getGenericSampleTypes',
+        ];
+
+        $method = $methodMap[$testType] ?? null;
+
+        if ($method === null || !method_exists($service, $method)) {
+            return [];
+        }
+
+        return $service->$method();
     }
 }

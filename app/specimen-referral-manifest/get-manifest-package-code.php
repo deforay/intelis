@@ -1,10 +1,10 @@
 <?php
 
-use App\Registries\AppRegistry;
-use App\Services\DatabaseService;
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\FacilitiesService;
+use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 
 // Sanitized values from $request object
@@ -18,59 +18,24 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-/** @var FacilitiesService $facilitiesService */
-$facilitiesService = ContainerRegistry::get(FacilitiesService::class);
-
-$sarr = $general->getSystemConfig();
-
-
-if ($general->isSTSInstance()) {
-	$sCode = 'remote_sample_code';
-} elseif ($general->isLISInstance() || $general->isStandaloneInstance()) {
-	$sCode = 'sample_code';
-}
 
 $module = (!empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
-$query = "";
-if ($module == 'vl') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.vl_sample_id FROM specimen_manifests as p INNER JOIN form_vl as vl ON vl.sample_package_code = p.manifest_code ";
-} elseif ($module == 'eid') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.eid_id FROM specimen_manifests as p INNER JOIN form_eid as vl ON vl.sample_package_code = p.manifest_code ";
-} elseif ($module == 'covid19') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.covid19_id FROM specimen_manifests as p INNER JOIN form_covid19 as vl ON vl.sample_package_code = p.manifest_code ";
-} elseif ($module == 'hepatitis') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.hepatitis_id FROM specimen_manifests as p INNER JOIN form_hepatitis as vl ON vl.sample_package_code = p.manifest_code ";
-} elseif ($module == 'tb') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.tb_id FROM specimen_manifests as p INNER JOIN form_tb as vl ON vl.sample_package_code = p.manifest_code ";
-}
-if ($module == 'cd4') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.cd4_id FROM specimen_manifests as p INNER JOIN form_cd4 as vl ON vl.sample_package_code = p.manifest_code ";
-} elseif ($module == 'generic-tests') {
-	$query .= "SELECT p.manifest_code, p.lab_id, vl.sample_code,vl.remote_sample_code,vl.sample_id FROM specimen_manifests as p INNER JOIN form_generic as vl ON vl.sample_package_code = p.manifest_code ";
-}
-$where = [];
-$where[] = " (vl.remote_sample_code IS NOT NULL) AND (vl.sample_package_id is not null OR vl.sample_package_id !='') AND (remote_sample = 'yes') ";
-if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
-	$dateRange = explode("to", (string) $_POST['daterange']);
-	if (isset($dateRange[0]) && trim($dateRange[0]) != "") {
-		$startDate = DateUtility::isoDateFormat(trim($dateRange[0]));
-	}
-	if (isset($dateRange[1]) && trim($dateRange[1]) != "") {
-		$endDate = DateUtility::isoDateFormat(trim($dateRange[1]));
-	}
 
-	$where[] = "DATE(p.request_created_datetime) BETWEEN '" . $startDate . "' AND '" . $endDate . "'";
+$tableName = TestsService::getTestTableName($module);
+$query = "SELECT p.manifest_code, p.lab_id, p.request_created_datetime
+			FROM specimen_manifests as p
+			INNER JOIN $tableName as vl ON vl.sample_package_code = p.manifest_code ";
+$where = [];
+if (isset($_POST['daterange']) && trim((string) $_POST['daterange']) != '') {
+	[$startDate, $endDate] = DateUtility::convertDateRange($_POST['daterange'], includeTime: true);
+	$where[] = "p.request_created_datetime BETWEEN '$startDate' AND '$endDate'";
 }
 if (!empty($_SESSION['facilityMap'])) {
-	$where[] = " facility_id IN(" . $_SESSION['facilityMap'] . ")";
+	$where[] = " vl.facility_id IN(" . $_SESSION['facilityMap'] . ")";
 }
 
 if (!empty($_POST['testingLab'])) {
-	$where[] = " (p.lab_id IN(" . $_POST['testingLab'] . ") OR (p.lab_id like '' OR p.lab_id is null OR p.lab_id = 0))";
-}
-
-if (!empty($_POST['facility'])) {
-	$where[] = " (facility_id IN(" . $_POST['facility'] . ")  OR (facility_id like '' OR facility_id is null OR facility_id = 0))";
+	$where[] = " p.lab_id IN(" . $_POST['testingLab'] . ")";
 }
 
 if (!empty($_POST['genericTestType'])) {
@@ -79,11 +44,16 @@ if (!empty($_POST['genericTestType'])) {
 
 
 if (!empty($where)) {
-	$query .= " where " . implode(" AND ", $where);
+	$query .= " WHERE " . implode(" AND ", $where);
 }
-$query .= " GROUP BY p.manifest_code ORDER BY vl.request_created_datetime ASC";
-//die($query);
-$result = $db->rawQuery($query);
+$query .= " GROUP BY p.manifest_code ORDER BY p.last_modified_datetime ASC";
+
+$manifestResults = $db->rawQuery($query);
+
+if (empty($manifestResults)) {
+	echo "";
+	exit(0);
+}
 
 ?>
 <div class="col-md-9 col-md-offset-1">
@@ -94,8 +64,8 @@ $result = $db->rawQuery($query);
 					<a href="#" id="select-all-packageCode" style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-samplecode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
 				</div><br /><br />
 				<select id="packageCode" name="packageCode[]" multiple="multiple" class="search">
-					<?php foreach ($result as $sample) { ?>
-						<option value="'<?php echo $sample['manifest_code']; ?>'"><?php echo ($sample["manifest_code"]); ?></option>
+					<?php foreach ($manifestResults as $manifest) { ?>
+						<option value="'<?= $manifest['manifest_code']; ?>'"><?= $manifest["manifest_code"] . " (" . DateUtility::humanReadableDateFormat($manifest["request_created_datetime"]) . ")"; ?></option>
 					<?php } ?>
 				</select>
 			</div>
