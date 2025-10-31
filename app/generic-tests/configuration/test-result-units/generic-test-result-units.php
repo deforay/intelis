@@ -74,7 +74,7 @@ require_once APPLICATION_PATH . '/header.php';
 		$.blockUI();
 		oTable = $('#partnerTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page"
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
 			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -91,7 +91,7 @@ require_once APPLICATION_PATH . '/header.php';
 				{
 					"sClass": "center"
 				},
-			
+
 				<?php if (_isAllowed("/generic-tests/configuration/test-result-units/generic-edit-test-result-units.php") && $general->isSTSInstance()) { ?> {
 						"sClass": "center",
 						"bSortable": false

@@ -368,7 +368,7 @@ $batResult = $db->rawQuery($batQuery);
 	function loadTATData() {
 		oTable = $('#vlRequestDataTable').dataTable({
 			"oLanguage": {
-				"sLengthMenu": "_MENU_ records per page",
+				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>",
 				"sProcessing": '<div style="padding: 20px;"><i class="fa fa-spinner fa-spin fa-2x text-primary"></i><br/><br/>Loading data...</div>'
 			},
 			"bJQueryUI": false,

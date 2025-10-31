@@ -591,7 +591,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         <?php } ?>
         oTable = $('#vlRequestDataTables').dataTable({
             "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
+                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
             },
             "bJQueryUI": false,
             "bAutoWidth": false,
@@ -748,7 +748,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
         <?php } ?>
         opTable = $('#printedVlRequestDataTable').dataTable({
             "oLanguage": {
-                "sLengthMenu": "_MENU_ records per page"
+                "sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
             },
             "bJQueryUI": false,
             "bAutoWidth": false,

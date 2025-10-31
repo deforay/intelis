@@ -264,3 +264,25 @@ select,
         opacity: 0;
     }
 }
+
+
+
+.btn-ghost {
+    background: transparent;
+    border-color: #ddd
+}
+
+.btn-ghost:hover,
+.btn-ghost:focus {
+    background: #f7f7f7
+}
+
+.btn-icon .text {
+    margin-left: 6px
+}
+
+@media (max-width:768px) {
+    .btn-icon .text {
+        display: none
+    }
+}
