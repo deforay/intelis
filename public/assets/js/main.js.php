@@ -51,7 +51,7 @@ $remoteURL = $general->getRemoteURL();
     Highcharts.setOptions({
         chart: {
             style: {
-                fontFamily: 'Arial', // Set global font family (optional)
+                fontFamily: 'Arial', // Set global font family
                 fontSize: '16px' // Set global font size
             }
         },
@@ -109,16 +109,17 @@ $remoteURL = $general->getRemoteURL();
             }
         },
         complete: function(xhr) {
+            const redirectUrl = '/login/login.php?e=timeout';
             // Fast path: standard status codes
             if (xhr && (xhr.status === 401 || xhr.status === 440)) {
-                window.location.href = '/login/login.php?e=timeout';
+                window.location.href = redirectUrl;
                 return;
             }
             // Optional fallback: if some proxy rewrites to 200 with a JSON flag
             try {
                 const body = JSON.parse(xhr.responseText || '{}');
                 if (body && body.error === 'session_expired') {
-                    window.location.href = '/login/login.php?e=timeout';
+                    window.location.href = redirectUrl;
                 }
             } catch (_) {
                 /* ignore non-JSON */
