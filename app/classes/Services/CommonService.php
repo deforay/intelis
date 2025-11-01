@@ -1001,6 +1001,9 @@ final class CommonService
 
     public function getBarcodeImageContent($code, $type = 'C39', $width = 2, $height = 30, $color = [0, 0, 0]): string
     {
+        if ($code == null || $code == '') {
+            return '';
+        }
         return MemoUtility::remember(function () use ($code, $type, $width, $height, $color) {
             $barcodeobj = new TCPDFBarcode($code, $type);
             return 'data:image/png;base64,' . base64_encode($barcodeobj->getBarcodePngData($width, $height, $color));
