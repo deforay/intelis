@@ -44,7 +44,7 @@ try {
         $db->rawQuery($update, [$_POST['type']]);
     }
 
-    $pdfLayout = $general->getGlobalConfig('batch_pdf_layout');
+    $pdfLayout = $general->getGlobalConfig('batch_pdf_layout') ?? 'standard';
 
     $aColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, "DATE_FORMAT(vl.sample_tested_datetime, '%d-%b-%Y')", "DATE_FORMAT(b.last_modified_datetime,'%d-%b-%Y %H:%i:%s')"];
     $orderColumns = ['b.batch_code', 'b.batch_code', 'b.lab_assigned_batch_code', null, 'last_tested_date', 'b.last_modified_datetime'];
@@ -164,10 +164,15 @@ try {
             $compactPdfUrl = '/batch/generate-compact-batch-pdf.php';
             $batchId = MiscUtility::sqid((string) $aRow['batch_id']);
 
-            $printBatchPdf = '<a href="' . $fullPdfUrl . '?type=' . $_POST['type'] . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Batch PDF") . '</a>';
+            if ($pdfLayout == 'compact') {
+                $printBatchPdf = '';
+            } else {
+                $printBatchPdf = '<a href="' . $fullPdfUrl . '?type=' . $_POST['type'] . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-info btn-xs" style="margin-right: 2px;" title="' . _translate("Batch PDF") . '"><em class="fa-solid fa-barcode"></em> ' . _translate("Batch PDF") . '</a>';
+            }
+
             $printCompactPdf = '<a href="' . $compactPdfUrl . '?type=' . $_POST['type'] . '&id=' . $batchId . '" target="_blank" rel="noopener" class="btn btn-default btn-xs" style="margin-right: 2px;" title="' . _translate("Compact Batch PDF") . '"><em class="fa-solid fa-table-columns"></em> ' . _translate("Compact Batch PDF") . '</a>';
 
-            $printBarcode = $printBatchPdf . '&nbsp;' . $printCompactPdf;
+            $printBarcode = trim($printBatchPdf . '&nbsp;' . $printCompactPdf);
         }
 
         if (($aRow['total_samples'] == 0 || $aRow['testcount'] == 0) && $delete) {
