@@ -327,7 +327,7 @@ foreach ($rejectionTypeResult as $type) {
   var oTable = null;
 
   function loadVlRequestData() {
-    $.blockUI();
+
     oTable = $('#vlRequestDataTable').dataTable({
       "bJQueryUI": false,
       "bAutoWidth": false,
@@ -374,7 +374,7 @@ foreach ($rejectionTypeResult as $type) {
           "sClass": "center",
           "bSortable": false
         },
-        //{"sClass":"center","bSortable":false},
+
       ],
       "aaSorting": [
         [<?= (!$general->isStandaloneInstance()) ? 10 : 9; ?>, "desc"]
@@ -421,7 +421,6 @@ foreach ($rejectionTypeResult as $type) {
         });
       }
     });
-    $.unblockUI();
   }
 
   function searchVlRequestData() {

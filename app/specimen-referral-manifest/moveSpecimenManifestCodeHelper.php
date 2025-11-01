@@ -13,8 +13,6 @@ use App\Registries\ContainerRegistry;
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-
-
 if (isset($_POST['testType']) && $_POST['testType'] == "") {
     $_POST['testType'] = "generic-tests";
 }

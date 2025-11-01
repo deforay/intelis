@@ -42,6 +42,8 @@ final class RequestsService
             $requestData = $this->returnCovid19Requests($rResult, $resultCount);
         } elseif ($testType === 'hepatitis') {
             $requestData = $this->returnHepatitisRequests($rResult, $resultCount);
+        } else if ($testType === 'tb') {
+            $requestData = $this->returnTbRequests($rResult, $resultCount);
         } elseif ($testType === 'generic-tests') {
             $this->commonService->updateNullColumnsWithDefaults($this->tableName, [
                 'is_result_mail_sent' => 'no',
@@ -49,9 +51,6 @@ final class RequestsService
                 'is_result_sms_sent' => 'no'
             ]);
             $requestData = $this->returnCustomTestsRequests($rResult, $resultCount);
-        } else if ($testType === 'tb') {
-            // Default for other test types
-            $requestData = $this->returnTbRequests($rResult, $resultCount);
         } else {
             // Default for other test types
             $requestData = $this->returnRequests($rResult, $resultCount);
@@ -127,14 +126,11 @@ final class RequestsService
     }
     private function returnRequests(array $rResult, int $resultCount): array
     {
-        $sampleIds = $facilityIds = [];
-        if ($resultCount > 0) {
-            $sampleIds = array_column($rResult, $this->primaryKeyName);
-            $facilityIds = array_column($rResult, 'facility_id');
-        }
+        $syncMeta = $resultCount > 0 ? $this->collectSampleAndFacilityIds($rResult) : ['sampleIds' => [], 'facilityIds' => []];
+
         return [
-            'sampleIds' => $sampleIds,
-            'facilityIds' => $facilityIds,
+            'sampleIds' => $syncMeta['sampleIds'],
+            'facilityIds' => $syncMeta['facilityIds'],
             'requests' => $rResult
         ];
     }
@@ -144,8 +140,9 @@ final class RequestsService
         $requests = $sampleIds = $facilityIds = [];
 
         if ($resultCount > 0) {
-            $sampleIds = array_column($rResult, $this->primaryKeyName);
-            $facilityIds = array_column($rResult, 'facility_id');
+            $syncMeta = $this->collectSampleAndFacilityIds($rResult);
+            $sampleIds = $syncMeta['sampleIds'];
+            $facilityIds = $syncMeta['facilityIds'];
             /** @var TbService $tbService */
             $tbService = $this->testTypeService;
             foreach ($rResult as $r) {
@@ -164,8 +161,9 @@ final class RequestsService
         $requests = $sampleIds = $facilityIds = [];
 
         if ($resultCount > 0) {
-            $sampleIds = array_column($rResult, $this->primaryKeyName);
-            $facilityIds = array_column($rResult, 'facility_id');
+            $syncMeta = $this->collectSampleAndFacilityIds($rResult);
+            $sampleIds = $syncMeta['sampleIds'];
+            $facilityIds = $syncMeta['facilityIds'];
 
             /** @var Covid19Service $covid19Service */
             $covid19Service = $this->testTypeService;
@@ -189,8 +187,9 @@ final class RequestsService
         $requests = $sampleIds = $facilityIds = [];
 
         if ($resultCount > 0) {
-            $sampleIds = array_column($rResult, $this->primaryKeyName);
-            $facilityIds = array_column($rResult, 'facility_id');
+            $syncMeta = $this->collectSampleAndFacilityIds($rResult);
+            $sampleIds = $syncMeta['sampleIds'];
+            $facilityIds = $syncMeta['facilityIds'];
 
             /** @var HepatitisService $hepatitisService */
             $hepatitisService = $this->testTypeService;
@@ -212,8 +211,9 @@ final class RequestsService
         $requests = $sampleIds = $facilityIds = [];
 
         if ($resultCount > 0) {
-            $sampleIds = array_column($rResult, $this->primaryKeyName);
-            $facilityIds = array_column($rResult, 'facility_id');
+            $syncMeta = $this->collectSampleAndFacilityIds($rResult);
+            $sampleIds = $syncMeta['sampleIds'];
+            $facilityIds = $syncMeta['facilityIds'];
 
             /** @var GenericTestsService $customTestsService */
             $customTestsService = $this->testTypeService;
@@ -228,6 +228,52 @@ final class RequestsService
             'sampleIds' => $sampleIds,
             'facilityIds' => $facilityIds,
             'requests' => $requests
+        ];
+    }
+
+    private function isUnsynced(array $row): bool
+    {
+        $status = $row['data_sync'] ?? null;
+
+        if (is_bool($status)) {
+            return $status === false;
+        }
+
+        if (is_numeric($status)) {
+            return (int) $status === 0;
+        }
+
+        if ($status === null || $status === '') {
+            return true;
+        }
+
+        $normalized = strtolower((string) $status);
+        return !in_array($normalized, ['1', 'true', 'yes'], true);
+    }
+
+    private function collectSampleAndFacilityIds(array $rows): array
+    {
+        $sampleIds = [];
+        $facilityIds = [];
+
+        foreach ($rows as $row) {
+            if (array_key_exists('facility_id', $row) && $row['facility_id'] !== null && $row['facility_id'] !== '') {
+                $facilityIds[] = $row['facility_id'];
+            }
+
+            if (
+                $this->isUnsynced($row)
+                && array_key_exists($this->primaryKeyName, $row)
+                && $row[$this->primaryKeyName] !== null
+                && $row[$this->primaryKeyName] !== ''
+            ) {
+                $sampleIds[] = $row[$this->primaryKeyName];
+            }
+        }
+
+        return [
+            'sampleIds' => array_values(array_unique($sampleIds)),
+            'facilityIds' => array_values(array_unique($facilityIds)),
         ];
     }
 }
