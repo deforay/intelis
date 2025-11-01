@@ -24,6 +24,7 @@ $activeTests = TestsService::getActiveTests();
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
+
 ?>
 <style>
   .select2-element {
@@ -243,7 +244,7 @@ $state = $geolocationService->getProvinces("yes");
       });
 
 
-    $.blockUI();
+
 
     $("#state").select2({
       placeholder: "<?php echo _translate("Select Province"); ?>"

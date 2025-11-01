@@ -87,7 +87,7 @@ $remoteURL = $general->getRemoteURL();
                 "next": "<?= _translate("Next", true); ?>",
                 "previous": "<?= _translate("Previous", true); ?>"
             },
-            "sProcessing": "<?= _translate("Processing...", true); ?>",
+            "sProcessing": "<?= _translate("Loading Table Data...", true); ?>",
             "loadingRecords": "<?= _translate("Loading...", true); ?>"
         },
         "lengthMenu": [

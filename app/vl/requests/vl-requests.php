@@ -863,11 +863,8 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 	}
 
 	function loadVlRequestData() {
-		$.blockUI();
+
 		oTable = $('#vlRequestDataTable').dataTable({
-			"oLanguage": {
-				"sLengthMenu": "_MENU_ <?= _translate("records per page", true); ?>"
-			},
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
@@ -875,7 +872,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [
-				//{"sClass":"center","bSortable":false},
+
 				{
 					"sClass": "center"
 				},
@@ -1089,7 +1086,6 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 				});
 			}
 		});
-		$.unblockUI();
 	}
 
 	function searchVlRequestData() {
