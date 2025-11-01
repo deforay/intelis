@@ -156,14 +156,13 @@ if ($module == 'generic-tests') {
                     <div class="row">
                         <div class="col-md-6">
                             <div class="form-group">
-                                <label for="testType" class="col-lg-4 control-label">
+                                <label for="userSelectedTestType" class="col-lg-4 control-label">
                                     <?= _translate("Test Type"); ?>
                                 </label>
                                 <div class="col-lg-7">
-                                    <select class="form-control select2" id="testType" name="testType" title="Choose Test Type">
+                                    <select class="form-control select2" id="userSelectedTestType" name="userSelectedTestType" title="Choose Test Type">
                                         <?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
                                     </select>
-                                    <input type="hidden" class="form-control isRequired" id="testType" name="testType" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                                 </div>
                             </div>
                         </div>
@@ -235,6 +234,7 @@ if ($module == 'generic-tests') {
                     </div>
 
                     <div class="row" id="alertText" style="font-size:18px; margin-top: 20px;"></div>
+                    <input type="hidden" class="form-control isRequired" id="testType" name="testType" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                 </div>
                 <!-- /.box-body -->
                 <div class="box-footer">
@@ -242,7 +242,7 @@ if ($module == 'generic-tests') {
                         <a id="packageSubmit" class="btn btn-success" href="javascript:void(0);" onclick="validateNow();return false;" style="pointer-events:none;" disabled>
                             <em class="fa-solid fa-save"></em> Save Changes
                         </a>
-                        <a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default">
+                        <a href="view-manifests.php?t=<?= $_GET['t']; ?>" class="btn btn-default">
                             <em class="fa-solid fa-times"></em> Cancel
                         </a>
                     </div>
@@ -284,7 +284,7 @@ if ($module == 'generic-tests') {
     }
 
     $(document).ready(function() {
-        $("#testType").select2({
+        $("#userSelectedTestType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
         });
@@ -413,11 +413,12 @@ if ($module == 'generic-tests') {
                     testingLab: $('#testingLab').val(),
                     facility: $('#facilityName').val(),
                     daterange: $('#daterange').val(),
-                    testType: $('#testType').val(),
+                    userSelectedTestType: $('#userSelectedTestType').val(),
                     genericTestType: $('#genericTestType').val(),
                 },
                 function(data) {
                     $.unblockUI();
+                    $("#testType").val($('#userSelectedTestType').val());
                     if (data != "" && data.trim() != "") {
                         // Populate the manifest code select
                         $('#manifestsList').html(data);

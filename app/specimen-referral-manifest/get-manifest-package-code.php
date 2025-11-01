@@ -19,7 +19,7 @@ $db = ContainerRegistry::get(DatabaseService::class);
 $general = ContainerRegistry::get(CommonService::class);
 
 
-$module = (!empty($_POST['testType'])) ? $_POST['testType'] : $_POST['module'];
+$module = (!empty($_POST['userSelectedTestType'])) ? $_POST['userSelectedTestType'] : $_POST['module'];
 
 $tableName = TestsService::getTestTableName($module);
 $query = "SELECT p.manifest_code, p.lab_id, p.request_created_datetime
