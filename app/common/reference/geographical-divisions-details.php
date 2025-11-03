@@ -61,7 +61,7 @@ require_once APPLICATION_PATH . '/header.php';
 	var oTable = null;
 
 	$(document).ready(function() {
-		$.blockUI();
+
 		oTable = $('#samTypDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -88,6 +88,7 @@ require_once APPLICATION_PATH . '/header.php';
 				<?php } ?>
 			],
 			"aaSorting": [
+				[3, "asc"],
 				[0, "asc"]
 			],
 			"bProcessing": true,
@@ -103,7 +104,6 @@ require_once APPLICATION_PATH . '/header.php';
 				});
 			}
 		});
-		$.unblockUI();
 	});
 </script>
 <?php
