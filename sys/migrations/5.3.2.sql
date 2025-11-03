@@ -109,3 +109,8 @@ INSERT INTO `r_sample_status` (`status_id`, `status_name`, `status`) VALUES ('13
 -- Thana 30-Oct-2025
 ALTER TABLE `form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
 ALTER TABLE `audit_form_tb` ADD `referral_manifest_code` VARCHAR(64) NULL DEFAULT NULL AFTER `sample_package_code`;
+
+
+-- Thana 31-Oct-2025
+ALTER TABLE `form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
+ALTER TABLE `audit_form_vl` ADD `referring_lab_id` INT NULL DEFAULT NULL AFTER `lab_id`, ADD `samples_referred_datetime` DATETIME NULL DEFAULT NULL AFTER `referring_lab_id`;
