@@ -112,8 +112,6 @@ if (isset($_POST['sSearch']) && $_POST['sSearch'] != "") {
 }
 
 
-
-
 $sQuery = "SELECT p.request_created_datetime,
             p.manifest_code, p.manifest_status,
             p.module, p.manifest_id, p.number_of_samples,
@@ -122,8 +120,7 @@ $sQuery = "SELECT p.request_created_datetime,
             LEFT JOIN facility_details lab on lab.facility_id = p.lab_id";
 
 if (!empty($_SESSION['facilityMap'])) {
-    $sQuery .= " INNER JOIN $tableName t on t.sample_package_code = p.manifest_code ";
-    $sWhere[] = " t.facility_id IN(" . $_SESSION['facilityMap'] . ") ";
+    $sWhere[] = " EXISTS (SELECT 1 FROM $tableName t WHERE t.sample_package_code = p.manifest_code AND t.facility_id IN(" . $_SESSION['facilityMap'] . ")) ";
 }
 
 if (!empty($sWhere)) {
