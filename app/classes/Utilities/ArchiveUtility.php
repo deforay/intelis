@@ -46,8 +46,8 @@ final class ArchiveUtility
     /** @var int Zstd thread count (0 = auto-detect) */
     private static int $zstdThreads = 0;
 
-    /** @var int|null Maximum allowed file size in bytes (default = 25MB) */
-    private static ?int $maxFileSize = 26214400; // 25 MB
+    /** @var int|null Maximum allowed file size in bytes (null = no limit) */
+    private static ?int $maxFileSize = null;
 
     /** @var int Default file permissions for created directories */
     private static int $dirPermissions = 0777;
