@@ -7,6 +7,7 @@ namespace App\Utilities;
 use ZipArchive;
 use RuntimeException;
 use InvalidArgumentException;
+use App\Utilities\MiscUtility;
 
 /**
  * Smart single-file compressor/decompressor with fallback support.
@@ -120,7 +121,7 @@ final class ArchiveUtility
 
             return self::compressFile($tmp, $dst, $backend);
         } finally {
-            @unlink($tmp);
+            MiscUtility::deleteFile($tmp);
         }
     }
 

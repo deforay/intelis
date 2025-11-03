@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+use App\Utilities\MiscUtility;
+
 // bin/clear-logs.php
 // Removes generated log files while keeping sentinel files intact.
 // Options:
@@ -84,7 +86,7 @@ foreach ($files as $fileInfo) {
         continue;
     }
 
-    if (@unlink($fileInfo['path'])) {
+    if (MiscUtility::deleteFile($fileInfo['path'])) {
         $removedFiles++;
     } else {
         $errors[] = $fileInfo['path'];

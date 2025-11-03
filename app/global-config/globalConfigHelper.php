@@ -51,7 +51,7 @@ try {
 
     $removedImage = realpath(UPLOAD_PATH . DIRECTORY_SEPARATOR . "logo" . DIRECTORY_SEPARATOR . $_POST['removedLogoImage']);
     if (isset($_POST['removedLogoImage']) && trim((string) $_POST['removedLogoImage']) != "" && !empty($removedImage) && file_exists($removedImage)) {
-        unlink($removedImage);
+        MiscUtility::deleteFile($removedImage);
         $data = ['value' => null];
         $db->where('name', 'logo');
         $id = $db->update("global_config", $data);

@@ -2,6 +2,7 @@
 // bin/health.php
 declare(strict_types=1);
 
+use App\Utilities\MiscUtility;
 use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -66,7 +67,7 @@ function assertWritableDir(string $dir): bool
     if (!is_dir($dir) || !is_writable($dir)) return false;
     $probe = rtrim($dir, DIRECTORY_SEPARATOR) . DIRECTORY_SEPARATOR . '.wcheck';
     $ok = @file_put_contents($probe, 'x') !== false;
-    if ($ok) @unlink($probe);
+    if ($ok) MiscUtility::deleteFile($probe);
     return $ok;
 }
 

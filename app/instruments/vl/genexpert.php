@@ -5,6 +5,7 @@
 
 use League\Csv\Reader;
 use App\Services\VlService;
+use App\Utilities\MiscUtility;
 use App\Registries\ContainerRegistry;
 use App\Services\TestResultImportService;
 
@@ -120,9 +121,7 @@ try {
     }
 
     // Clean up temp file if we created one
-    if (isset($tempFile) && file_exists($tempFile)) {
-        unlink($tempFile);
-    }
+    MiscUtility::deleteFile($tempFile);
 
 
     // Send parsed data to service for insertion
