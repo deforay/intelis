@@ -9,6 +9,8 @@ use App\Utilities\MiscUtility;
 //   --keep=<number>   Keep the newest N log files (default: 0)
 //   --days=<number>   Keep log files newer than N days (default: 0)
 
+require_once __DIR__ . '/../bootstrap.php';
+
 if (PHP_SAPI !== 'cli') {
     exit(0);
 }
