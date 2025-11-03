@@ -76,7 +76,7 @@ try {
         if (isset($_POST['removedSignatureImage']) && trim((string) $_POST['removedSignatureImage']) != "") {
             $fImagePath = $signatureImagePath . DIRECTORY_SEPARATOR . $_POST['removedSignatureImage'];
             if (!empty($fImagePath) && file_exists($fImagePath)) {
-                unlink($fImagePath);
+                MiscUtility::deleteFile($fImagePath);
             }
             $data['user_signature'] = null;
         }

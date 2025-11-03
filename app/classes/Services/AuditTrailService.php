@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Services\TestsService;
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 
 class AuditTrailService
@@ -459,9 +460,9 @@ class AuditTrailService
             self::compress($tempFile, $filePath);
 
             // Clean up temp file
-            @unlink($tempFile);
+            MiscUtility::deleteFile($tempFile);
         } catch (\Exception $e) {
-            \App\Utilities\LoggerUtility::logError("Error processing sample audit data", [
+            LoggerUtility::logError("Error processing sample audit data", [
                 'testType' => $testType,
                 'uniqueId' => $uniqueId ?? 'unknown',
                 'error' => $e->getMessage()

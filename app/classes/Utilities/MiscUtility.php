@@ -395,7 +395,7 @@ final class MiscUtility
 
             // If maxAge is 0, delete all cache files, otherwise check file age
             if ($maxAge <= 0 || ($now - $fileInfo->getMTime() > $maxAge)) {
-                if (unlink($fileInfo->getPathname())) {
+                if (self::deleteFile($fileInfo->getPathname())) {
                     $count++;
                 }
             }
@@ -781,7 +781,7 @@ final class MiscUtility
     {
         $lockFile = self::getLockFile($file);
         if (file_exists($lockFile)) {
-            unlink($lockFile);
+            self::deleteFile($lockFile);
         }
     }
 

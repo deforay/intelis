@@ -8,6 +8,7 @@ if (php_sapi_name() !== 'cli') {
 
 require_once __DIR__ . "/../bootstrap.php";
 
+use App\Utilities\MiscUtility;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -190,7 +191,7 @@ function cleanupDirectory(string $folder, ?int $duration, ?int $maxSizeBytes, Co
     $errors  = 0;
 
     foreach ($filesToDelete as $filePath) {
-        if (@unlink($filePath)) {
+        if (MiscUtility::deleteFile($filePath)) {
             $deleted++;
         } else {
             $errors++;

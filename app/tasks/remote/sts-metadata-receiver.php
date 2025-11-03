@@ -562,7 +562,7 @@ try {
                             // in case folder exists, we can delete all old files
                             $images = glob("$signaturesFolder/*.{jpg,png,gif,jpeg}", GLOB_BRACE);
                             foreach ($images as $image) {
-                                @unlink($image);
+                                MiscUtility::deleteFile($image);
                             }
                         }
                         // Save Data to DB

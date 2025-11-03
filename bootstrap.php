@@ -17,10 +17,8 @@ if (session_status() === PHP_SESSION_NONE && PHP_SAPI !== 'cli') {
     session_name(INTELIS_SESSION_NAME);
 
     // Smart secure detection: also works behind proxies
-    $isSecure = (
-        (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
-        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https')
-    );
+    $isSecure = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off' && $_SERVER['HTTPS'] !== '0')
+        || (isset($_SERVER['HTTP_X_FORWARDED_PROTO']) && strtolower($_SERVER['HTTP_X_FORWARDED_PROTO']) === 'https');
 
     // Set cookie parameters
     session_set_cookie_params([
