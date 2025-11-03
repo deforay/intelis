@@ -5,7 +5,6 @@ use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
@@ -36,12 +35,7 @@ try {
     $request = AppRegistry::get('request');
     $_POST = _sanitizeInput($request->getParsedBody());
 
-    $activeModules = SystemService::getActiveModules(onlyTests: true);
-
-    // Function to fetch unique_id based on sampleCode from formTable
-
-
-
+    $activeTests = TestsService::getActiveTests();
 
     $sampleCode = null;
     if (!empty($_POST)) {
@@ -255,7 +249,7 @@ try {
                                     <td style="width:40%;vertical-align:middle;">
                                         <select id="testType" name="testType" class="form-control isRequired">
                                             <option value=""><?= _translate("-- Choose Test Type --"); ?></option>
-                                            <?php foreach ($activeModules as $module): ?>
+                                            <?php foreach ($activeTests as $module): ?>
                                                 <option value="<?php echo $module; ?>"
                                                     <?php echo (isset($_POST['testType']) && $_POST['testType'] == $module) ? "selected='selected'" : ""; ?>>
                                                     <?php echo TestsService::getTestName($module); ?>

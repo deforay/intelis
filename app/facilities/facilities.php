@@ -1,7 +1,7 @@
 <?php
 
+use App\Services\TestsService;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
 use App\Services\GeoLocationsService;
@@ -18,12 +18,13 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
-$activeModules = SystemService::getActiveModules();
+$activeTests = TestsService::getActiveTests();
 
 
 /** @var GeoLocationsService $geolocationService */
 $geolocationService = ContainerRegistry::get(GeoLocationsService::class);
 $state = $geolocationService->getProvinces("yes");
+
 ?>
 <style>
   .select2-element {
@@ -92,22 +93,22 @@ $state = $geolocationService->getProvinces("yes");
                   <td>
                     <select id="testType" name="testType" onchange="return checkFacilityType();" class="form-control select2-element" placeholder="<?php echo _translate('Please select the Test types'); ?>">
                       <option value=""><?= _translate("-- Choose Test Type --"); ?> </option>
-                      <?php if (!empty($activeModules) && in_array('vl', $activeModules)) { ?>
+                      <?php if (!empty($activeTests) && in_array('vl', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'vl') ? "selected='selected'" : ""; ?> value="vl"><?php echo _translate("Viral Load"); ?></option>
                       <?php }
-                      if (!empty($activeModules) && in_array('eid', $activeModules)) { ?>
+                      if (!empty($activeTests) && in_array('eid', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'eid') ? "selected='selected'" : ""; ?> value="eid"><?php echo _translate("Early Infant Diagnosis"); ?></option>
                       <?php }
-                      if (!empty($activeModules) && in_array('covid19', $activeModules)) { ?>
+                      if (!empty($activeTests) && in_array('covid19', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'covid19') ? "selected='selected'" : ""; ?> value="covid19"><?php echo _translate("Covid-19"); ?></option>
                       <?php }
-                      if (!empty($activeModules) && in_array('hepatitis', $activeModules)) { ?>
+                      if (!empty($activeTests) && in_array('hepatitis', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'hepatitis') ? "selected='selected'" : ""; ?> value='hepatitis'><?php echo _translate("Hepatitis"); ?></option>
                       <?php }
-                      if (!empty($activeModules) && in_array('tb', $activeModules)) { ?>
+                      if (!empty($activeTests) && in_array('tb', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'tb') ? "selected='selected'" : ""; ?> value='tb'><?php echo _translate("TB"); ?></option>
                       <?php }
-                      if (!empty($activeModules) && in_array('cd4', $activeModules)) { ?>
+                      if (!empty($activeTests) && in_array('cd4', $activeTests)) { ?>
                         <option <?php echo (isset($_POST['testType']) && $_POST['testType'] == 'cd4') ? "selected='selected'" : ""; ?> value='cd4'><?php echo _translate("CD4"); ?></option>
                       <?php } ?>
                     </select>
@@ -243,7 +244,7 @@ $state = $geolocationService->getProvinces("yes");
       });
 
 
-    $.blockUI();
+
 
     $("#state").select2({
       placeholder: "<?php echo _translate("Select Province"); ?>"

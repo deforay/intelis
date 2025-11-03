@@ -51,7 +51,7 @@ $remoteURL = $general->getRemoteURL();
     Highcharts.setOptions({
         chart: {
             style: {
-                fontFamily: 'Arial', // Set global font family (optional)
+                fontFamily: 'Arial', // Set global font family
                 fontSize: '16px' // Set global font size
             }
         },
@@ -87,7 +87,7 @@ $remoteURL = $general->getRemoteURL();
                 "next": "<?= _translate("Next", true); ?>",
                 "previous": "<?= _translate("Previous", true); ?>"
             },
-            "sProcessing": "<?= _translate("Processing...", true); ?>",
+            "sProcessing": "<?= _translate("Loading Table Data...", true); ?>",
             "loadingRecords": "<?= _translate("Loading...", true); ?>"
         },
         "lengthMenu": [
@@ -100,17 +100,6 @@ $remoteURL = $general->getRemoteURL();
     // Global BlockUI defaults
     if (typeof $.blockUI !== 'undefined') {
         $.blockUI.defaults.message = '<h3><?= _translate("Please wait...", true); ?></h3>';
-        $.blockUI.defaults.css = {
-            border: 'none',
-            padding: '1.2em 2em',
-            backgroundColor: 'transparent',
-            color: '#fff'
-        };
-        $.blockUI.defaults.overlayCSS = {
-            backgroundColor: 'rgba(0, 0, 0, 0.6)',
-            opacity: 1,
-            cursor: 'wait'
-        };
     }
 
     $.ajaxSetup({
@@ -120,16 +109,17 @@ $remoteURL = $general->getRemoteURL();
             }
         },
         complete: function(xhr) {
+            const redirectUrl = '/login/login.php?e=timeout';
             // Fast path: standard status codes
             if (xhr && (xhr.status === 401 || xhr.status === 440)) {
-                window.location.href = '/login/login.php?e=timeout';
+                window.location.href = redirectUrl;
                 return;
             }
             // Optional fallback: if some proxy rewrites to 200 with a JSON flag
             try {
                 const body = JSON.parse(xhr.responseText || '{}');
                 if (body && body.error === 'session_expired') {
-                    window.location.href = '/login/login.php?e=timeout';
+                    window.location.href = redirectUrl;
                 }
             } catch (_) {
                 /* ignore non-JSON */
