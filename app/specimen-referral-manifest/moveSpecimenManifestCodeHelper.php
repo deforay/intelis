@@ -16,7 +16,6 @@ $_POST = _sanitizeInput($request->getParsedBody());
 if (isset($_POST['testType']) && $_POST['testType'] == "") {
     $_POST['testType'] = "generic-tests";
 }
-
 $table = TestsService::getTestTableName($_POST['testType']);
 
 /** @var DatabaseService $db */
@@ -40,26 +39,17 @@ try {
         $newReason = ['reason' => $_POST['reasonForChange'], 'changedBy' => $_SESSION['userId'], 'date' => DateUtility::getCurrentDateTime()];
         $oldReason[] = $newReason;
 
-
         $value = [
             'lab_id' => $_POST['assignLab'],
             'referring_lab_id' => $_POST['testingLab'],
-            'manifest_change_history' => json_encode($oldReason),
             'last_modified_datetime' => DateUtility::getCurrentDateTime(),
             'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
             'data_sync' => 0
         ];
         /* Update Package details table */
         $db->where('manifest_code IN(' . implode(",", $_POST['packageCode']) . ')');
-        $db->update('specimen_manifests', array("lab_id" => $_POST['assignLab']));
+        $db->update('specimen_manifests', array("lab_id" => $_POST['assignLab'], "manifest_change_history" => json_encode($oldReason)));
 
-        $value = [
-            'lab_id' => $_POST['assignLab'],
-            'referring_lab_id' => $_POST['testingLab'],
-            'last_modified_datetime' => DateUtility::getCurrentDateTime(),
-            'samples_referred_datetime' => DateUtility::getCurrentDateTime(),
-            'data_sync' => 0
-        ];
         /* Update test types */
         $db->where('sample_package_code IN(' . implode(",", $_POST['packageCode']) . ')');
         $db->update($table, $value);
