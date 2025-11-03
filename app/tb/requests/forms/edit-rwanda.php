@@ -116,7 +116,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?><span class="mandatory">*</span></label>
                                         <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2 isRequired" title="<?php echo _translate("Please select afflicated laboratory"); ?>">
                                             <?= $general->generateSelectOptions($testingLabs, $tbInfo['affiliated_lab_id'], '-- Select --'); ?>
                                         </select>
@@ -210,7 +210,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
                                             <option value='loss-to-follow-up' <?php echo (is_array($typeOfPatient) && in_array("loss-to-follow-up", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Loss to Follow Up </option>
                                             <option value='treatment-failure' <?php echo (is_array($typeOfPatient) && in_array("treatment-failure", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Treatment Failure </option>
                                             <option value='relapse' <?php echo (is_array($typeOfPatient) && in_array("relapse", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Relapse </option>
-                                            <option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option>
+                                            <!-- <option value='other' <?php echo (is_array($typeOfPatient) && in_array("other", $typeOfPatient)) ? "selected='selected'" : ""; ?>> Other </option> -->
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="<?php echo _translate("Enter type of patient if others"); ?>" title="<?php echo _translate("Please enter type of patient if others"); ?>" style="display: none;" />
                                     </td>
@@ -954,10 +954,6 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() != "yes") {
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-        }
-
         flag = deforayValidator.init({
             formId: 'editTbRequestForm'
         });

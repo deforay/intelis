@@ -139,7 +139,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                         <button type="submit" class="btn btn-primary" onclick="return validateForm();">
                             <em class="fa-solid fa-save"></em> <?php echo _translate("Save Referral"); ?>
                         </button>
-                        <a href="/tb/results/tb-manual-results.php" class="btn btn-default">
+                        <a href="/tb/results/tb-referral-list.php" class="btn btn-default">
                             <em class="fa-solid fa-times"></em> <?php echo _translate("Cancel"); ?>
                         </a>
                     </div>

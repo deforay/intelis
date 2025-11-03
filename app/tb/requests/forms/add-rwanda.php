@@ -109,7 +109,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                         </select>
                                     </td>
                                     <td style="width: 50%;">
-                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?></label>
+                                        <label class="label-control" for="affiliatedLabId"><?php echo _translate("Affiliated TB Testing Site"); ?><span class="mandatory">*</span></label>
                                         <select name="affiliatedLabId" id="affiliatedLabId" class="form-control select2 isRequired" title="<?php echo _translate("Please select afflicated laboratory"); ?>">
                                             <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
                                         </select>
@@ -203,7 +203,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                                             <option value='loss-to-follow-up'> Loss to Follow Up </option>
                                             <option value='treatment-failure'> Treatment Failure </option>
                                             <option value='relapse'> Relapse </option>
-                                            <option value='other'> <?php echo _translate("Other"); ?> </option>
+                                            <!-- <option value='other'> <?php echo _translate("Other"); ?> </option> -->
                                         </select>
                                         <input type="text" class="form-control typeOfPatientOther" id="typeOfPatientOther" name="typeOfPatientOther" placeholder="<?php echo _translate("Enter type of patient if others"); ?>" title="<?php echo _translate("Please enter type of patient if others"); ?>" style="display: none;" />
                                     </td>
@@ -221,7 +221,7 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
                             <table class="table" style="width:100%">
                                 <tr>
                                     <td style="width: 50%;">
-                                        <label for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?>:</label>
+                                        <label for="isPatientInitiatedTreatment"><?php echo _translate("Is patient initiated on TB treatment?"); ?><span class="mandatory">*</span></label>
                                         <select name="isPatientInitiatedTreatment" id="isPatientInitiatedTreatment" class="form-control isRequired" title="Please choose treatment status">
                                             <option value=''>-- <?php echo _translate("Select"); ?> --</option>
                                             <option value='no'><?php echo _translate("No"); ?></option>
@@ -882,10 +882,6 @@ $microscope = array("No AFB" => "No AFB", "1+" => "1+", "2+" => "2+", "3+" => "3
     }
 
     function validateNow() {
-        if ($('#isResultAuthorized').val() != "yes") {
-            $('#authorizedBy,#authorizedOn').removeClass('isRequired');
-        }
-
         flag = deforayValidator.init({
             formId: 'addTbRequestForm'
         });
