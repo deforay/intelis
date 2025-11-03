@@ -168,7 +168,7 @@ final class CommonService
 
 
     // get data from the system_config table from database
-    public function getSystemConfig(?string $name = null)
+    public function getSystemConfig(?string $name = null): null|array|string
     {
         $cacheKey = 'app_system_config';
 
@@ -866,6 +866,15 @@ final class CommonService
                             FROM `track_api_requests`
                             WHERE `request_type` = ?";
         $dateTime = $this->db->rawQueryOne($lastSyncQuery, [$syncType]);
+        return $dateTime['dateTime'] ?? null;
+    }
+
+    public function getLastApiSyncByTypeAndModule(string $syncType, string $testType): ?string
+    {
+        $lastSyncQuery = "SELECT MAX(`requested_on`) AS `dateTime`
+                            FROM `track_api_requests`
+                            WHERE `request_type` = ? AND `test_type` = ? AND (`response_data` IS NOT NULL OR `number_of_records` IS NOT NULL)";
+        $dateTime = $this->db->rawQueryOne($lastSyncQuery, [$syncType, $testType]);
         return $dateTime['dateTime'] ?? null;
     }
 
