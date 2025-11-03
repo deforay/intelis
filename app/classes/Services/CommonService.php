@@ -334,7 +334,7 @@ final class CommonService
     public function activityLog($eventType, $action, $resource)
     {
 
-        $ipaddress = $this->getClientIpAddress();
+        $ipAddress = $this->getClientIpAddress();
 
         $data = [
             'event_type' => $eventType,
@@ -342,7 +342,7 @@ final class CommonService
             'resource' => $resource,
             'user_id' => (!empty($_SESSION['userId'])) ? $_SESSION['userId'] : null,
             'date_time' => DateUtility::getCurrentDateTime(),
-            'ip_address' => $ipaddress,
+            'ip_address' => $ipAddress,
         ];
 
         $this->db->insert('activity_log', $data);
