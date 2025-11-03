@@ -250,17 +250,19 @@ final class ResultsService
                     if (!empty($localRecord)) {
 
                         if (MiscUtility::isArrayEqual($resultFromLab, $localRecord, ['last_modified_datetime', 'form_attributes'])) {
+                            $id = true; // treating as updated
                             $primaryKeyValue = $localRecord[$this->primaryKeyName];
-                            continue;
-                        }
+                            //continue;
+                        } else {
 
-                        if ($isSilent) {
-                            unset($resultFromLab['last_modified_datetime']);
-                        }
+                            if ($isSilent) {
+                                unset($resultFromLab['last_modified_datetime']);
+                            }
 
-                        $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
-                        $id = $this->db->update($this->tableName, $resultFromLab);
-                        $primaryKeyValue = $localRecord[$this->primaryKeyName];
+                            $this->db->where($this->primaryKeyName, $localRecord[$this->primaryKeyName]);
+                            $id = $this->db->update($this->tableName, $resultFromLab);
+                            $primaryKeyValue = $localRecord[$this->primaryKeyName];
+                        }
                     } else {
                         // $id = $this->db->insert($this->tableName, $resultFromLab);
                         // $primaryKeyValue = $this->db->getInsertId();
@@ -283,6 +285,7 @@ final class ResultsService
                             }
                         }
                     }
+                    // sub-table updates/inserts for some test types
                     if ($testType == "covid19") {
 
                         // Insert covid19_tests
