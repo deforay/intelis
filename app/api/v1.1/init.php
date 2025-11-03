@@ -4,6 +4,7 @@ use App\Services\TbService;
 use App\Services\VlService;
 use App\Services\ApiService;
 use App\Services\EidService;
+use App\Services\TestsService;
 use App\Services\UsersService;
 use App\Utilities\JsonUtility;
 use App\Utilities\MiscUtility;
@@ -131,14 +132,14 @@ try {
         $labTechniciansList[$row['user_id']] = ($row['user_name']);
     }
 
-    $activeModule = SystemService::getActiveModules(true);
+    $activeTests = TestsService::getActiveTests();
     $data = [];
     $data['formId'] = $formId;
-    $data['activeModule'] = implode(",", $activeModule);
+    $data['activeModule'] = implode(",", $activeTests);
     $data['facilitiesList'] = $general->getAppHealthFacilitiesAPI(null, $user['user_id'], false, 0, false, null, $updatedDateTime);
     $data['geoGraphicalDivision'] = $geolocationService->fetchActiveGeolocations("", "", "no", true, null, $updatedDateTime);
-    $data['healthFacilitiesList'] = $general->getAppHealthFacilitiesAPI(null, $user['user_id'], true, 1, false, implode(",", $activeModule), $updatedDateTime);
-    $data['testingLabsList'] = $general->getTestingLabsAPI(testType: null, user: $user['user_id'], onlyActive: false, module: false, activeModule: implode(",", $activeModule), updatedDateTime: $updatedDateTime);
+    $data['healthFacilitiesList'] = $general->getAppHealthFacilitiesAPI(null, $user['user_id'], true, 1, false, implode(",", $activeTests), $updatedDateTime);
+    $data['testingLabsList'] = $general->getTestingLabsAPI(testType: null, user: $user['user_id'], onlyActive: false, module: false, activeModule: implode(",", $activeTests), updatedDateTime: $updatedDateTime);
     /* Province Details */
     $data['provinceList'] = $general->getProvinceDetailsApi($user['user_id'], true, $updatedDateTime);
     /* District Details */

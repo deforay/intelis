@@ -4,6 +4,7 @@ namespace App\Helpers;
 
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Services\CommonService;
 use setasign\Fpdi\Tcpdf\Fpdi;
 
 class BatchPdfHelper extends Fpdi
@@ -61,5 +62,43 @@ class BatchPdfHelper extends Fpdi
         $text = _translate("Batch file generated on") . ' : ' . DateUtility::humanReadableDateFormat(DateUtility::getCurrentDateTime(), true);
         $this->Cell(0, 10, $text, 0, false, 'L  ', 0);
         $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'C', 0);
+    }
+
+    public static function buildBarcodeImageTag(
+        CommonService $general,
+        ?string $code,
+        string $format,
+        array $options = []
+    ): string {
+        $code = trim((string) $code);
+        if ($code === '') {
+            return '';
+        }
+
+        $format = strtoupper($format);
+        $linearWidth = $options['linear_width'] ?? '200px';
+        $linearHeight = $options['linear_height'] ?? '25px';
+        $qrSize = $options['qr_size'] ?? '50px';
+
+        $altText = htmlspecialchars($code, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8');
+
+        if (stripos($format, 'QR') === 0) {
+            $src = $general->get2DBarcodeImageContent($code, $format);
+            return sprintf(
+                '<img style="width:%1$s;height:%1$s;" src="%2$s" alt="%3$s">',
+                $qrSize,
+                $src,
+                $altText
+            );
+        }
+
+        $src = $general->getBarcodeImageContent($code, $format);
+        return sprintf(
+            '<img style="width:%1$s;height:%2$s;" src="%3$s" alt="%4$s">',
+            $linearWidth,
+            $linearHeight,
+            $src,
+            $altText
+        );
     }
 }

@@ -1,21 +1,15 @@
 <?php
 
-use App\Services\TbService;
-use App\Services\VlService;
-use App\Services\CD4Service;
-use App\Services\EidService;
+use App\Services\TestsService;
 use App\Services\UsersService;
-use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\Covid19Service;
+use App\Services\SystemService;
 use App\Services\DatabaseService;
-use App\Services\HepatitisService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
-use App\Services\GenericTestsService;
 
-$title = "Move Manifest";
+$title = _translate("Move Manifest");
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -47,59 +41,23 @@ foreach ($users as $u) {
     $usersList[$u["user_id"]] = $u['user_name'];
 }
 $facilities = $facilitiesService->getHealthFacilities($module);
-$shortCode = strtoupper((string) $module);
-if ($module == 'vl') {
-    /** @var VlService $vlService */
-    $vlService = ContainerRegistry::get(VlService::class);
-    $sampleTypes = $vlService->getVlSampleTypes();
-} elseif ($module == 'eid') {
-    /** @var EidService $eidService */
-    $eidService = ContainerRegistry::get(EidService::class);
-    $sampleTypes = $eidService->getEidSampleTypes();
-} else if ($module == 'covid19') {
-    $shortCode = 'C19';
-    /** @var Covid19Service $covid19Service */
-    $covid19Service = ContainerRegistry::get(Covid19Service::class);
-    $sampleTypes = $covid19Service->getCovid19SampleTypes();
-} else if ($module == 'hepatitis') {
-    $shortCode = 'HEP';
-    /** @var HepatitisService $hepDb */
-    $hepDb = ContainerRegistry::get(HepatitisService::class);
-    $sampleTypes = $hepDb->getHepatitisSampleTypes();
-} else if ($module == 'tb') {
-    /** @var TbService $tbService */
-    $tbService = ContainerRegistry::get(TbService::class);
-    $sampleTypes = $tbService->getTbSampleTypes();
-} else if ($module == 'cd4') {
-    /** @var CD4Service $cd4Service */
-    $cd4Service = ContainerRegistry::get(CD4Service::class);
-    $sampleTypes = $cd4Service->getCd4SampleTypes();
-} else if ($module == 'generic-tests') {
-    /** @var GenericTestsService $genericService */
-    $genericService = ContainerRegistry::get(GenericTestsService::class);
-    $sampleTypes = $genericService->getGenericSampleTypes();
+
+// Get sample types and short code for the test type
+$sampleTypes = TestsService::getSampleTypes($module);
+$shortCode = TestsService::getTestShortCode($module);
+
+// Get active test types with their names
+$testTypesNames = [];
+$activeTests = TestsService::getActiveTests();
+foreach ($activeTests as $testType) {
+    $testTypesNames[$testType] = TestsService::getTestName($testType);
 }
 
-$testTypes = array(
-    "vl" => "Viral Load",
-    "eid" => "Early Infant Diagnosis",
-    "covid19" => "Covid-19",
-    "hepatitis" => "Hepatitis",
-    "tb" => "TB",
-    "cd4" => "CD4",
-    "generic-tests" => "Generic Tests"
-);
 
-if (!empty(SYSTEM_CONFIG['modules'])) {
-    foreach (SYSTEM_CONFIG['modules'] as $type => $status) {
-        if ($status) {
-            $testTypesNames[$type] = $testTypes[$type];
-        }
-    }
+if ($module == 'generic-tests') {
+    $testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
+    $testTypeResult = $db->rawQuery($testTypeQuery);
 }
-$packageNo = strtoupper($shortCode . date('ymd') . MiscUtility::generateRandomString(6));
-$testTypeQuery = "SELECT * FROM r_test_types where test_status='active' ORDER BY test_standard_name ASC";
-$testTypeResult = $db->rawQuery($testTypeQuery);
 ?>
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
 <style>
@@ -146,13 +104,11 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
     </section>
     <!-- Main content -->
     <section class="content">
-        <div class="box box-default">
+        <!-- Search Section -->
+        <div class="box box-primary">
             <div class="box-header with-border">
-                <div class="pull-right" style="font-size:15px;"><span class="mandatory">*</span> indicates required
-                    field &nbsp;
-                </div>
+                <h3 class="box-title"><em class="fa-solid fa-search"></em> Search Manifests</h3>
             </div>
-            <br><br><br><br>
             <!-- /.box-header -->
             <div class="box-body">
                 <?php $hide = "";
@@ -163,7 +119,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                             <div class="form-group" style="margin-left:30px; margin-top:30px;">
                                 <label for="genericTestType">Test Type</label>
                                 <select class="form-control" name="genericTestType" id="genericTestType" title="Please choose test type" style="width:100%;" onchange="getManifestCodeForm(this.value)">
-                                    <option value=""> -- Select -- </option>
+                                    <option value=""> <?= _translate('-- Select --'); ?> </option>
                                     <?php foreach ($testTypeResult as $testType) { ?>
                                         <option value="<?php echo $testType['test_type_id'] ?>"><?php echo $testType['test_standard_name'] ?></option>
                                     <?php } ?>
@@ -172,121 +128,132 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                         </div>
                     </div>
                 <?php } ?>
-                <!-- form start -->
-                <form class="<?php echo $hide; ?> form-horizontal" method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
-                    <div class="box-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="daterange" class="col-lg-4 control-label">
-                                        <?= _translate('Date Range'); ?>
-                                    </label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Date Range'); ?>" title="Choose one sample collection date range">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="facilityName" class="col-lg-4 control-label">
-                                        <?php echo _translate("Facility Name"); ?>
-                                        :
-                                    </label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <select class="form-control select2" id="facilityName" name="facilityName" title="Choose one facility name">
-                                            <?= $general->generateSelectOptions($facilities, null, '-- Select --'); ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="row">
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="testingLab" class="col-lg-4 control-label">
-                                        <?php echo _translate("Testing Lab"); ?> <span class="mandatory">*</span> :
-                                    </label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
-                                            <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                        </select>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="form-group">
-                                    <label for="testType" class="col-lg-4 control-label">
-                                        <?php echo _translate("Test Type"); ?>
-                                    </label>
-                                    <div class="col-lg-7" style="margin-left:3%;">
-                                        <select class="form-control select2" id="testType" name="testType" title="Choose Test Type">
-                                            <?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
-                                        </select>
-                                        <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-md-12 text-center">
-                                <div class="form-group">
-                                    <a class="btn btn-primary" href="javascript:void(0);" title="Please select testing lab" onclick="getManifestCodeDetails();return false;">Search </a>
-                                    <a href="move-manifest.php?t=<?= htmlspecialchars((string) $_GET['t']); ?>" class="btn btn-default" onclick=""> Clear</a>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-12" style="text-align:center;padding: 20px;background: aliceblue;">
-                        <div class="form-group">
-                            <label for="assignLab" class="col-lg-4 control-label">
-                                <?php echo _translate("Assign Manifests to Testing Lab"); ?>
-                                <span class="mandatory">*</span> :
-                            </label>
-                            <div class="col-lg-4" style="margin-left:3%;">
-                                <select class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this)">
-                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="reasonForChange" class="col-lg-4 control-label">
-                                <?php echo _translate("Reason for changing manifest"); ?><span class="mandatory">*</span>
-                            </label>
-                            <div class="col-lg-4" style="margin-left:3%;">
-                                <textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?php echo _translate('Reason for changing this manifest'); ?>" title="Enter the Reason for changing this manifest"></textarea>
-                            </div>
-                        </div>
-                    </div>
-
-                    <br>
-
-                    <div class="row" id="sampleDetails">
-                        <div class="col-md-9 col-md-offset-1">
+                <div class="<?php echo $hide; ?> form-horizontal">
+                    <div class="row">
+                        <div class="col-md-6">
                             <div class="form-group">
-                                <div class="col-md-12">
-                                    <div class="col-md-12">
-                                        <div style="width:60%;margin:0 auto;clear:both;">
-                                            <a href='#' id='select-all-packageCode' style="float:left" class="btn btn-info btn-xs">Select All&nbsp;&nbsp;<em class="fa-solid fa-chevron-right"></em></a> <a href='#' id='deselect-all-manifestCode' style="float:right" class="btn btn-danger btn-xs"><em class="fa-solid fa-chevron-left"></em>&nbsp;Deselect All</a>
-                                        </div>
-                                        <br /><br />
-                                        <select id='packageCode' name="packageCode[]" multiple='multiple' class="search"></select>
-                                    </div>
+                                <label for="daterange" class="col-lg-4 control-label">
+                                    <?= _translate('Date Range'); ?>
+                                </label>
+                                <div class="col-lg-7">
+                                    <input type="text" class="form-control" id="daterange" name="daterange" placeholder="<?php echo _translate('Date Range'); ?>" title="Choose one sample collection date range">
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="testingLab" class="col-lg-4 control-label">
+                                    <?= _translate("Manifest From Testing Lab"); ?> <span class="mandatory">*</span>
+                                </label>
+                                <div class="col-lg-7">
+                                    <select class="form-control select2 isRequired" id="testingLab" name="testingLab" title="Choose one test lab">
+                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    </select>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div class="row" id="alertText" style="font-size:18px;"></div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="userSelectedTestType" class="col-lg-4 control-label">
+                                    <?= _translate("Test Type"); ?>
+                                </label>
+                                <div class="col-lg-7">
+                                    <select class="form-control select2" id="userSelectedTestType" name="userSelectedTestType" title="Choose Test Type">
+                                        <?= $general->generateSelectOptions($testTypesNames, $module, '-- Select --'); ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
             <!-- /.box-body -->
             <div class="box-footer">
-                <a id="packageSubmit" class="btn btn-primary" href="javascript:void(0);" title="Please select machine" onclick="validateNow();return false;" style="pointer-events:none;" disabled>Save </a>
-                <a href="view-manifests.php?t=<?= ($_GET['t']); ?>" class="btn btn-default"> Cancel</a>
+                <div class="text-center">
+                    <a class="btn btn-primary" href="javascript:void(0);" onclick="getManifestCodeDetails();return false;">
+                        <em class="fa-solid fa-search"></em> Search Manifests
+                    </a>
+                    <a href="move-manifest.php?t=<?= htmlspecialchars((string) $_GET['t']); ?>" class="btn btn-default">
+                        <em class="fa-solid fa-refresh"></em> Clear
+                    </a>
+                </div>
             </div>
-            <!-- /.box-footer -->
-            </form>
-            <!-- /.row -->
         </div>
+        <!-- /.box -->
+
+        <!-- Move Manifests Section (Hidden until search) -->
+        <form method="post" name="moveSpecimenReferralManifestForm" id="moveSpecimenReferralManifestForm" autocomplete="off" action="moveSpecimenManifestCodeHelper.php">
+            <div class="box box-success" id="moveManifestsSection" style="display: none;">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><em class="fa-solid fa-exchange"></em> Move Selected Manifests</h3>
+                    <div class="pull-right" style="font-size:14px;">
+                        <span class="mandatory">*</span> indicates required field
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <em class="fa-solid fa-info-circle"></em>
+                                Select the manifests you want to move and assign them to a different testing lab.
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="manifestsList">
+
+                    </div>
+
+                    <div class="row" style="margin-top: 30px; background: #f9f9f9; padding: 20px; border-radius: 5px;">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="assignLab" class="col-lg-5 control-label">
+                                    <?php echo _translate("Assign to Testing Lab"); ?>
+                                    <span class="mandatory">*</span>
+                                </label>
+                                <div class="col-lg-7">
+                                    <select class="form-control select2 isRequired" id="assignLab" name="assignLab" title="Choose one assign lab" onchange="checkLab(this);" style="width:100%;">
+                                        <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="reasonForChange" class="col-lg-5 control-label">
+                                    <?php echo _translate("Reason for Moving Manifest"); ?>
+                                    <span class="mandatory">*</span>
+                                </label>
+                                <div class="col-lg-7">
+                                    <textarea class="form-control isRequired" id="reasonForChange" name="reasonForChange" placeholder="<?= _translate('Enter reason for moving this manifest'); ?>" title="<?= _translate('Enter the Reason for moving this manifest', true); ?>" rows="3"></textarea>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row" id="alertText" style="font-size:18px; margin-top: 20px;"></div>
+                    <input type="hidden" class="form-control isRequired" id="testType" name="testType" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
+                </div>
+                <!-- /.box-body -->
+                <div class="box-footer">
+                    <div class="text-center">
+                        <a id="packageSubmit" class="btn btn-success" href="javascript:void(0);" onclick="validateNow();return false;" style="pointer-events:none;" disabled>
+                            <em class="fa-solid fa-save"></em> Save Changes
+                        </a>
+                        <a href="view-manifests.php?t=<?= $_GET['t']; ?>" class="btn btn-default">
+                            <em class="fa-solid fa-times"></em> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.box -->
+        </form>
+    </section>
+    <!-- /.content -->
 </div>
-<!-- /.box -->
-<!-- /.content -->
+<!-- /.content-wrapper -->
 <script src="/assets/js/moment.min.js"></script>
 <script type="text/javascript" src="/assets/plugins/daterangepicker/daterangepicker.js"></script>
 <script src="/assets/js/jquery.multi-select.js"></script>
@@ -294,6 +261,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
 <script type="text/javascript">
     noOfSamples = 100;
     sortedTitle = [];
+
 
     function validateNow() {
         flag = deforayValidator.init({
@@ -309,14 +277,14 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
         let _assign = $(obj).val();
         let _lab = $('#testingLab').val();
         if (_lab == _assign) {
-            confirm("Please choose different lab to assign the package details.");
+            confirm("Please choose different lab to assign the manifest.");
             $(obj).val(null).trigger('change');
             return false;
         }
     }
 
     $(document).ready(function() {
-        $("#testType").select2({
+        $("#userSelectedTestType").select2({
             width: '100%',
             placeholder: "<?php echo _translate("Select Test Type"); ?>"
         });
@@ -356,6 +324,21 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             tags: true
         });
 
+        initializeMultiSelect();
+
+        $('#select-all-packageCode').click(function() {
+            $('#packageCode').multiSelect('select_all');
+            return false;
+        });
+        $('#deselect-all-packageCode').click(function() {
+            $('#packageCode').multiSelect('deselect_all');
+            $("#packageSubmit").attr("disabled", true);
+            $("#packageSubmit").css("pointer-events", "none");
+            return false;
+        });
+    });
+
+    function initializeMultiSelect() {
         $('.search').multiSelect({
             selectableHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
             selectionHeader: "<input type='text' class='search-input form-control' autocomplete='off' placeholder='Enter Manifest Code'>",
@@ -419,18 +402,7 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
                 this.qs2.cache();
             }
         });
-
-        $('#select-all-packageCode').click(function() {
-            $('#packageCode').multiSelect('select_all');
-            return false;
-        });
-        $('#deselect-all-packageCode').click(function() {
-            $('#packageCode').multiSelect('deselect_all');
-            $("#packageSubmit").attr("disabled", true);
-            $("#packageSubmit").css("pointer-events", "none");
-            return false;
-        });
-    });
+    }
 
     function getManifestCodeDetails() {
         if ($('#testingLab').val() != '') {
@@ -439,20 +411,34 @@ $testTypeResult = $db->rawQuery($testTypeQuery);
             $.post("/specimen-referral-manifest/get-manifest-package-code.php", {
                     module: $("#module").val(),
                     testingLab: $('#testingLab').val(),
-                    facility: $('#facility').val(),
+                    facility: $('#facilityName').val(),
                     daterange: $('#daterange').val(),
-                    assignLab: $('#assignLab').val(),
-                    testType: $('#testType').val(),
+                    userSelectedTestType: $('#userSelectedTestType').val(),
                     genericTestType: $('#genericTestType').val(),
                 },
                 function(data) {
-                    if (data != "") {
-                        $("#sampleDetails").html(data);
+                    $.unblockUI();
+                    $("#testType").val($('#userSelectedTestType').val());
+                    if (data != "" && data.trim() != "") {
+                        // Populate the manifest code select
+                        $('#manifestsList').html(data);
+
+                        // Show the move section
+                        $("#moveManifestsSection").slideDown();
+
+                        // Scroll to the section
+                        $('html, body').animate({
+                            scrollTop: $("#moveManifestsSection").offset().top - 20
+                        }, 500);
+
                         $("#packageSubmit").attr("disabled", true);
                         $("#packageSubmit").css("pointer-events", "none");
+                    } else {
+                        // Hide the move section if it was previously shown
+                        $("#moveManifestsSection").slideUp();
+                        alert('No manifests found matching the search criteria.');
                     }
                 });
-            $.unblockUI();
         } else {
             alert('Please select the testing lab');
         }

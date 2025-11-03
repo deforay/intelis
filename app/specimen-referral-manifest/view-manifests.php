@@ -85,14 +85,14 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 	var oTable = null;
 	$(function() {});
 	$(document).ready(function() {
-		$.blockUI();
+
 		oTable = $('#specimenReferralManifestDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
 			"bInfo": true,
 			"bScrollCollapse": true,
 			"iDisplayLength": 100,
-			//"bStateSave" : true,
+			// "bStateSave": true,
 			"bRetrieve": true,
 			"aoColumns": [{
 					"sClass": ""
@@ -101,8 +101,7 @@ $_COOKIE = _sanitizeInput($request->getCookieParams());
 					"sClass": "center"
 				},
 				{
-					"sClass": "center",
-					"bSortable": false
+					"sClass": "left"
 				},
 				{
 					"sClass": "center"

@@ -776,7 +776,7 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 	}
 
 	function unprintedResults() {
-		$.blockUI();
+
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
 		<?php } else { ?>
@@ -938,11 +938,10 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				});
 			}
 		});
-		$.unblockUI();
 	}
 
 	function printedResults() {
-		$.blockUI();
+
 		<?php if ($formId == COUNTRY\CAMEROON) { ?>
 			sort = '<?php echo ($general->isSTSInstance() || $general->isLISInstance()) ? 13 : 12 ?>';
 		<?php } else { ?>
@@ -1104,7 +1103,6 @@ $formId = (int) $general->getGlobalConfig('vl_form');
 				});
 			}
 		});
-		$.unblockUI();
 	}
 
 	function searchVlRequestData() {

@@ -5,9 +5,7 @@ use App\Services\TestsService;
 use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Services\CommonService;
-use App\Services\SystemService;
 use App\Services\DatabaseService;
-use App\Services\SecurityService;
 use App\Registries\ContainerRegistry;
 
 /** @var DatabaseService $db */
@@ -38,8 +36,8 @@ $patientLastName = $testTableData['patientLastName'];
 $testType = ($testType == 'covid19') ? 'covid-19' : $testType;
 $title = _translate($testName . " | Edit Batch Position");
 $modules = SYSTEM_CONFIG['modules'];
-$activeModule = SystemService::getActiveModules(true);
-if (isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeModule)) {
+$activeTests = TestsService::getActiveTests();
+if (isset($_GET['testType']) && !in_array((string)$_GET['testType'], $activeTests)) {
 	$testType = isset($_GET['testType']) ? base64_decode((string)$_GET['testType']) : null;
 }
 require_once APPLICATION_PATH . '/header.php';

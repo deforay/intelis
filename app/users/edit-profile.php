@@ -4,7 +4,7 @@ use App\Utilities\DateUtility;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-
+use App\Services\UsersService;
 
 require_once APPLICATION_PATH . '/header.php';
 
@@ -15,12 +15,15 @@ $db = ContainerRegistry::get(DatabaseService::class);
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+
 $globalConfig = $general->getGlobalConfig();
 
 $localeLists = $general->getLocaleList((int)($globalConfig['vl_form'] ?? 0));
 
-$db->where("user_id", $_SESSION['userId']);
-$userInfo = $db->getOne("user_details");
+
+$userInfo = $usersService->getUserByID($_SESSION['userId']);
 
 $db->orderBy("login_attempted_datetime");
 $db->where("login_id", $_SESSION['loginId']);

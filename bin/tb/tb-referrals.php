@@ -7,6 +7,7 @@ use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
+use App\Services\TestsService;
 
 require_once __DIR__ . '/../../bootstrap.php';
 
@@ -30,7 +31,7 @@ try {
         exit(0);
     }
     //2. if TB module is not active, exit
-    if (!SystemService::isModuleActive('tb')) {
+    if (!TestsService::isTestActive('tb')) {
         echo "TB module is not active. Exiting script.";
         exit(0);
     }
