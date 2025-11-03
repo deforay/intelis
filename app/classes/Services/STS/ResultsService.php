@@ -247,6 +247,8 @@ final class ResultsService
                     $formAttributes = JsonUtility::jsonToSetString($resultFromLab['form_attributes'], 'form_attributes');
                     $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
+
+                    // Now we update/insert the record
                     if (!empty($localRecord)) {
 
                         if (MiscUtility::isArrayEqual($resultFromLab, $localRecord, ['last_modified_datetime', 'form_attributes'])) {

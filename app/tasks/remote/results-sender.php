@@ -189,11 +189,11 @@ if ($cliMode) {
     }
 
     if ($syncSinceDate !== null) {
-        $io->info("Syncing results since: $syncSinceDate");
+        $io->text("Syncing results since: $syncSinceDate");
     }
 
     if ($forceSyncModule !== null) {
-        $io->info("Forcing module sync for: $forceSyncModule");
+        $io->text("Forcing module sync for: $forceSyncModule");
     }
 }
 
@@ -247,7 +247,7 @@ try {
         $genericLabResult = $db->rawQuery($genericQuery);
         $count = count($genericLabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -256,7 +256,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for Custom Tests.");
+                $io->text("Nothing to send for Custom Tests.");
             }
         } else {
             /** @var GenericTestsService $genericService */
@@ -347,7 +347,7 @@ try {
         $vlLabResult = $db->rawQuery($vlQuery);
         $count = count($vlLabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -356,7 +356,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for VL.");
+                $io->text("Nothing to send for VL.");
             }
         } else {
             if ($cliMode) {
@@ -391,7 +391,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->info("VL: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("VL: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
@@ -425,7 +425,7 @@ try {
         $eidLabResult = $db->rawQuery($eidQuery);
         $count = count($eidLabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -434,7 +434,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for EID.");
+                $io->text("Nothing to send for EID.");
             }
         } else {
             if ($cliMode) {
@@ -469,7 +469,7 @@ try {
             }
 
             if ($cliMode) {
-                $io->info("EID: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
+                $io->text("EID: acknowledged $acked / $count row(s). Total " . tdone($t) . "s");
             }
         }
 
@@ -503,7 +503,7 @@ try {
         $c19LabResult = $db->rawQuery($covid19Query);
         $count = count($c19LabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -512,7 +512,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for COVID-19.");
+                $io->text("Nothing to send for COVID-19.");
             }
         } else {
             /** @var Covid19Service $covid19Service */
@@ -601,7 +601,7 @@ try {
         $hepLabResult = $db->rawQuery($hepQuery);
         $count = count($hepLabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -610,7 +610,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for Hepatitis.");
+                $io->text("Nothing to send for Hepatitis.");
             }
         } else {
             if ($cliMode) {
@@ -682,7 +682,7 @@ try {
         $tbLabResult = $db->rawQuery($tbQuery);
         $count = count($tbLabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -691,7 +691,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for TB.");
+                $io->text("Nothing to send for TB.");
             }
         } else {
             // Build nested payload
@@ -781,7 +781,7 @@ try {
         $cd4LabResult = $db->rawQuery($cd4Query);
         $count = count($cd4LabResult);
         if ($cliMode) {
-            $io->info("Selected $count row(s) in " . tdone($t) . "s");
+            $io->text("Selected $count row(s) in " . tdone($t) . "s");
         }
 
         $payload = null;
@@ -790,7 +790,7 @@ try {
 
         if ($count === 0) {
             if ($cliMode) {
-                $io->info("Nothing to send for CD4.");
+                $io->text("Nothing to send for CD4.");
             }
         } else {
             if ($cliMode) {
@@ -852,4 +852,3 @@ try {
         'last_db_query' => $db->getLastQuery(),
     ]);
 }
-
