@@ -658,7 +658,6 @@ if ($formId == COUNTRY\CAMEROON) {
 	}
 
 	function loadVlRequestData() {
-		$.blockUI();
 		oTable = $('#vlRequestDataTable').dataTable({
 			"bJQueryUI": false,
 			"bAutoWidth": false,
@@ -831,7 +830,6 @@ if ($formId == COUNTRY\CAMEROON) {
 				});
 			}
 		});
-		$.unblockUI();
 	}
 
 	function searchVlRequestData() {

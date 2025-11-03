@@ -261,7 +261,7 @@ require_once APPLICATION_PATH . '/header.php';
 		color: #333;
 	}
 
-	/* New performance-related styles */
+
 	.loading-indicator {
 		position: fixed;
 		top: 50%;

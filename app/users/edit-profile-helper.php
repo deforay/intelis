@@ -25,7 +25,7 @@ $usersService = ContainerRegistry::get(UsersService::class);
 $request = AppRegistry::get('request');
 $_POST = _sanitizeInput($request->getParsedBody());
 
-$upId = 0;
+$wasUpdated = 0;
 
 /* Used to check if the password update is from the Recency Web App API */
 $fromRecencyAPI = false;
@@ -44,6 +44,7 @@ if ($fromRecencyAPI === true) {
 
 try {
 
+    $wasUpdated = false;
     if (!empty(trim((string) $_POST['userName']))) {
 
         if ($fromRecencyAPI === true) {
@@ -51,6 +52,8 @@ try {
             $decryptedPassword = CommonService::decrypt($_POST['password'], base64_decode((string) SYSTEM_CONFIG['recency']['crossloginSalt']));
             $data['password'] = $decryptedPassword;
             $db->where('user_name', $data['user_name']);
+            $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+            $wasUpdated = $db->update('user_details', $data);
         } else {
 
             $_SESSION['userLocale'] = $_POST['userLocale'] ?? 'en_US';
@@ -65,7 +68,7 @@ try {
 
             if (isset($_POST['password']) && trim((string) $_POST['password']) != "") {
                 $userRow = $db->rawQueryOne("SELECT `password` FROM user_details as ud WHERE ud.user_id = ?", [$userId]);
-                if ($usersService->passwordVerify((string) $_POST['userName'], (string) $_POST['password'], (string) $userRow['password'])) {
+                if ($usersService->passwordVerify((string) $_SESSION['loginId'], (string) $_POST['password'], (string) $userRow['password'])) {
                     $_SESSION['alertMsg'] = _translate("Your new password cannot be same as the current password. Please try another password.");
                     header("Location:edit-profile.php");
                 }
@@ -93,22 +96,30 @@ try {
                 unset($_SESSION['forcePasswordReset']);
             }
             $db->where('user_id', $userId);
+            $data['updated_datetime'] = DateUtility::getCurrentDateTime();
+            $wasUpdated = $db->update('user_details', $data);
         }
 
-        $data['updated_datetime'] = DateUtility::getCurrentDateTime();
-        $upId = $db->update('user_details', $data);
 
         if ($fromRecencyAPI === true) {
             $response = [];
-            if ($upId > 0) {
+            if ($wasUpdated !== false) {
                 $response['status'] = "success";
                 $response['message'] = "Profile updated successfully!";
+                $general->activityLog('profile-update', $_POST['userName'] . ' profile updated via Recency API', 'user-profile-recency-api');
             } else {
                 $response['status'] = "fail";
                 $response['message'] = "Profile not updated!";
             }
         } else {
-            $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
+            if ($wasUpdated !== false) {
+                $_SESSION['alertMsg'] = _translate("Your profile changes have been saved. You can continue using the application.");
+                $general->activityLog('profile-update', $_POST['userName'] . ' profile updated', 'user-profile');
+                $_SESSION['userName'] = $_POST['userName'];
+                $_SESSSION['email'] = $_POST['email'];
+            } else {
+                $_SESSION['alertMsg'] = _translate("No changes were made to your profile.");
+            }
             header("Location:edit-profile.php");
         }
     }

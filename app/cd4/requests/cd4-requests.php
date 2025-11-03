@@ -804,7 +804,7 @@ if (isset($global['bar_code_printing']) && $global['bar_code_printing'] != "off"
 			//"bStateSave" : true,
 			"bRetrieve": true,
 			"aoColumns": [
-				//{"sClass":"center","bSortable":false},
+
 				{
 					"sClass": "center"
 				},

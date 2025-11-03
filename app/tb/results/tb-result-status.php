@@ -285,7 +285,7 @@ foreach ($rejectionTypeResult as $type) {
                 {
                     "sClass": "center"
                 },
-                //{"sClass":"center","bSortable":false},
+
             ],
             "aaSorting": [
                 [<?= (!$general->isStandaloneInstance()) ? 9 : 8; ?>, "desc"]

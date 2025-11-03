@@ -5,7 +5,7 @@ namespace App\Helpers;
 use setasign\Fpdi\Tcpdf\Fpdi;
 use App\Utilities\DateUtility;
 
-class CustomBatchPdfHelper extends Fpdi
+class CompactBatchPdfHelper extends Fpdi
 {
     public ?string $text;
     public ?array $batchDetails;
