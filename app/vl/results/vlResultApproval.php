@@ -479,14 +479,16 @@ foreach ($rejectionTypeResult as $type) {
     var stValue = $("#status").val();
     var testIds = $("#checkedTests").val();
     if (stValue != '' && testIds != '') {
-      conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
+      conf = confirm("<?= _translate("Continue with updating the status of selected sample(s)?", true); ?>");
       if (conf) {
+        $.blockUI();
         $.post("/vl/results/updateTestStatus.php", {
             status: stValue,
             id: testIds,
             rejectedReason: $("#bulkRejectionReason").val()
           },
           function(data) {
+            $.unblockUI();
             if (data != "") {
               $("#checkedTests").val('');
               selectedTests = [];
@@ -502,13 +504,13 @@ foreach ($rejectionTypeResult as $type) {
           });
       }
     } else {
-      alert("<?= _translate("Please select at least one checkbox", true); ?>");
+      alert("<?= _translate("Please select at least one sample", true); ?>");
     }
   }
 
   function updateStatus(obj, optVal) {
     if (obj.value == '4') {
-      var confrm = confirm("<?= _translate("Do you wish to overwrite this result?", true); ?>");
+      var confrm = confirm("<?= _translate("Reject sample and overwrite its current status?", true); ?>");
       if (confrm) {
         var pos = $("#" + obj.id).offset();
         $("#rejectReasonDiv").show();
@@ -528,7 +530,7 @@ foreach ($rejectionTypeResult as $type) {
       $("#rejectReasonDiv").hide();
     }
     if (obj.value != '') {
-      conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
+      conf = confirm("<?= _translate("Continue with updating the status of selected sample?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: obj.value,
@@ -554,7 +556,7 @@ foreach ($rejectionTypeResult as $type) {
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {
-      conf = confirm("<?= _translate("Do you wish to change the status?", true); ?>");
+      conf = confirm("<?= _translate("Continue with updating the sample rejection?", true); ?>");
       if (conf) {
         $.post("/vl/results/updateTestStatus.php", {
             status: '4',
