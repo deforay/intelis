@@ -192,7 +192,7 @@ class ImageResizeUtility
 
         finfo_close($finfo);
 
-        return $this->resize($this->getSourceWidth(), $this->getSourceHeight());
+        $this->resize($this->getSourceWidth(), $this->getSourceHeight());
     }
 
     // http://stackoverflow.com/a/28819866
@@ -429,7 +429,7 @@ class ImageResizeUtility
 
         $string = file_get_contents($string_temp);
 
-        unlink($string_temp);
+        MiscUtility::deleteFile($string_temp);
 
         return $string;
     }

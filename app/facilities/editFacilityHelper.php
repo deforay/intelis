@@ -194,7 +194,7 @@ try {
 						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 					}
 					if (isset($_POST['deleteTemplate'][$key]) && !empty($_POST['deleteTemplate'][$key])) {
-						unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test . DIRECTORY_SEPARATOR . $facilityId);
+						MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "labs" . DIRECTORY_SEPARATOR . "report-template" . DIRECTORY_SEPARATOR  . $test . DIRECTORY_SEPARATOR . $facilityId);
 						$fileResponse[$test]['file'] = $_POST['oldTemplate'][$key];
 						$fileResponse[$test]['mtop'] = $_POST['headerMargin'][$key];
 					}
@@ -288,8 +288,8 @@ try {
 		}
 
 		if (isset($_POST['removedLabLogoImage']) && trim((string) $_POST['removedLabLogoImage']) != "" && file_exists(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage'])) {
-			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
-			unlink(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
+			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . "actual-" . $_POST['removedLabLogoImage']);
+			MiscUtility::deleteFile(UPLOAD_PATH . DIRECTORY_SEPARATOR . "facility-logo" . DIRECTORY_SEPARATOR . $facilityId . DIRECTORY_SEPARATOR . $_POST['removedLabLogoImage']);
 			$data['facility_logo'] = null;
 			// $db->where('facility_id', $facilityId);
 			// $db->update('facility_details',  $data);

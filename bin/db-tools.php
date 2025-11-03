@@ -216,8 +216,8 @@ function selectFileWithFzf(array $candidates, string $header): ?string
     $outputFile = tempnam(sys_get_temp_dir(), 'dbtools_fzf_out_');
 
     if ($inputFile === false || $outputFile === false) {
-        if ($inputFile !== false) @unlink($inputFile);
-        if ($outputFile !== false) @unlink($outputFile);
+        if ($inputFile !== false) MiscUtility::deleteFile($inputFile);
+        if ($outputFile !== false) MiscUtility::deleteFile($outputFile);
         return null;
     }
 
@@ -267,8 +267,8 @@ function selectFileWithFzf(array $candidates, string $header): ?string
 
     $selection = @file_get_contents($outputFile);
 
-    @unlink($inputFile);
-    @unlink($outputFile);
+    MiscUtility::deleteFile($inputFile);
+    MiscUtility::deleteFile($outputFile);
 
     $selection = $selection === false ? '' : trim($selection);
     if ($selection === '') {
@@ -323,7 +323,7 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
     $exit = proc_close($proc);
 
     if ($exit !== 0) {
-        @unlink($gpgPath);
+        MiscUtility::deleteFile($gpgPath);
         $msg = trim($stderr) ?: trim($stdout) ?: 'Unknown GPG error';
         throw new SystemException("GPG encryption failed: {$msg}");
     }
@@ -379,7 +379,7 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
     $exit = proc_close($proc);
 
     if ($exit !== 0 || !is_file($compressedOutput) || filesize($compressedOutput) === 0) {
-        @unlink($compressedOutput);
+        MiscUtility::deleteFile($compressedOutput);
         $msg = trim($stderr) ?: trim($stdout) ?: 'Unknown GPG error';
         throw new SystemException("Failed to decrypt GPG backup: {$msg}");
     }
@@ -392,11 +392,11 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
     try {
         $sqlPath = ArchiveUtility::decompressToFile($compressedOutput, $tempDir);
     } catch (\Throwable $e) {
-        @unlink($compressedOutput);
+        MiscUtility::deleteFile($compressedOutput);
         throw new SystemException('Failed to decompress decrypted backup: ' . $e->getMessage());
     }
 
-    @unlink($compressedOutput);
+    MiscUtility::deleteFile($compressedOutput);
 
     return $sqlPath;
 }
@@ -1160,7 +1160,7 @@ function extractUnprotectedZip(string $zipPath, string $backupFolder): string
     }
 
     $destination = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (is_file($destination) && !unlink($destination)) {
+    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
         $zip->close();
         throw new SystemException('Unable to clear previous temporary file.');
     }
@@ -1244,7 +1244,7 @@ function extractSqlFromBackupWithPassword(string $zipPath, string $password, str
     }
 
     $destination = $tempDir . DIRECTORY_SEPARATOR . basename($sqlEntryName);
-    if (is_file($destination) && !unlink($destination)) {
+    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
         $zip->close();
         throw new SystemException('Unable to clear previous temporary file.');
     }
@@ -1357,7 +1357,7 @@ function extractSqlFromBackup(string $zipPath, string $dbPassword, string $backu
     }
 
     $destination = $tempDir . DIRECTORY_SEPARATOR . basename($entryName);
-    if (is_file($destination) && !unlink($destination)) {
+    if (is_file($destination) && !MiscUtility::deleteFile($destination)) {
         $zip->close();
         throw new SystemException('Unable to clear previous temporary file.');
     }
@@ -1463,7 +1463,7 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
         ));
         MiscUtility::spinnerAdvance($spinner);
         $compressedPath = ArchiveUtility::compressFile($sqlPath, $sqlPath, $backend);
-        @unlink($sqlPath);
+        MiscUtility::deleteFile($sqlPath);
 
         $spinner->setMessage("Encrypting with GPG (AES-256) …");
         MiscUtility::spinnerAdvance($spinner);
@@ -1472,18 +1472,18 @@ function createBackupArchive(string $prefix, array $config, string $backupFolder
         $gpgPath = $compressedPath . '.gpg';
         $gpgMade = encryptWithGpg($compressedPath, $gpgPath, $passphrase);
         if (!$gpgMade) {
-            @unlink($compressedPath);
+            MiscUtility::deleteFile($compressedPath);
             throw new SystemException('GPG encryption failed.');
         }
-        @unlink($compressedPath);
+        MiscUtility::deleteFile($compressedPath);
     } catch (\Throwable $e) {
         if (isset($spinner)) MiscUtility::spinnerFinish($spinner);
-        @unlink($sqlPath);
+        MiscUtility::deleteFile($sqlPath);
         if (isset($compressedPath)) {
-            @unlink($compressedPath);
+            MiscUtility::deleteFile($compressedPath);
         }
         if ($gpgPath !== null) {
-            @unlink($gpgPath);
+            MiscUtility::deleteFile($gpgPath);
         }
         throw new SystemException("Failed to create database dump for {$config['db']}: " . $e->getMessage());
     }
@@ -2425,7 +2425,7 @@ class TempFileRegistry
     {
         foreach (self::$tempFiles as $file) {
             if (is_file($file)) {
-                @unlink($file);
+                MiscUtility::deleteFile($file);
             }
         }
         self::$tempFiles = [];
@@ -2766,11 +2766,11 @@ function handleClean(string $backupFolder, array $args): void
         $basePath = preg_replace('/\.(sql\.(gz|zst)\.gpg|sql\.zip)$/i', '', $path);
         $metaPath = $basePath . '.meta.json';
 
-        if (@unlink($path)) {
+        if (MiscUtility::deleteFile($path)) {
             $deleted++;
             echo "✅ Deleted: " . $backup['basename'] . "\n";
 
-            if (is_file($metaPath) && @unlink($metaPath)) {
+            if (is_file($metaPath) && MiscUtility::deleteFile($metaPath)) {
                 $metaDeleted++;
                 echo "   └─ 🧹 Removed meta: " . basename($metaPath) . "\n";
             }
@@ -2796,7 +2796,7 @@ function handleClean(string $backupFolder, array $args): void
             $base = preg_replace('/\.meta\.json$/i', '', $m);
             if (empty($existing[$base])) {
                 $sz = (int) @filesize($m);
-                if (@unlink($m)) {
+                if (MiscUtility::deleteFile($m)) {
                     $orphanMeta++;
                     $orphanFreed += $sz;
                     echo "🧹 Removed orphan meta: " . basename($m) . "\n";

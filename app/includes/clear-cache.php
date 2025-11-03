@@ -9,6 +9,7 @@ if ($isCli) {
 }
 
 
+use App\Utilities\MiscUtility;
 use App\Utilities\FileCacheUtility;
 use App\Registries\ContainerRegistry;
 
@@ -24,9 +25,7 @@ if (!$isCli && isset($_SESSION['instance'])) {
 // If run from command line, clear the DI container cache\
 if ($isCli) {
     $compiledContainerPath = CACHE_PATH . DIRECTORY_SEPARATOR . 'CompiledContainer.php';
-    if (file_exists($compiledContainerPath)) {
-        unlink($compiledContainerPath);
-    }
+    MiscUtility::deleteFile($compiledContainerPath);
 }
 
 // Clear the file cache and echo the result

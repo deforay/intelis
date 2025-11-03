@@ -1,6 +1,7 @@
 <?php
 
 use App\Services\UsersService;
+use App\Utilities\MiscUtility;
 use App\Registries\AppRegistry;
 use App\Utilities\LoggerUtility;
 use App\Registries\ContainerRegistry;
@@ -24,7 +25,7 @@ try {
                 'system_admin_password' => $usersService->passwordHash($_POST['password'])
             ];
             $db->insert("system_admin", $insertData);
-            unlink(CORE\SYSADMIN_SECRET_KEY_FILE);
+            MiscUtility::deleteFile(CORE\SYSADMIN_SECRET_KEY_FILE);
             $_SESSION['alertMsg'] = _translate("System Admin added successfully");
             header("Location:/system-admin/login/login.php");
         }
