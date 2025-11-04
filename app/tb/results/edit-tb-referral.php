@@ -22,8 +22,6 @@ $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
 
 $id = base64_decode($_GET['id']);
 $codeId = base64_decode($_GET['code']);
-$db->where('manifest_id', $codeId);
-$sampleManifestResult = $db->getOne('specimen_manifests');
 
 $db->where('referral_manifest_code', $codeId);
 $db->where('reason_for_referral != ""');
@@ -31,7 +29,6 @@ $db->where('reason_for_referral IS NOT NULL');
 $tbResult = $db->getOne('form_tb');
 /* Testing lab list */
 $testingLabs = $facilitiesService->getTestingLabs('tb');
-$sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRandomString(4));
 ?>
 
 <link href="/assets/css/multi-select.css" rel="stylesheet" />
@@ -54,6 +51,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
             <li class="active"><?php echo _translate("Referral Labs"); ?></li>
         </ol>
     </section>
+    <pre><?php print_r($tbResult['referral_manifest_code']); ?></pre>
     <section class="content">
         <div class="box box-default">
             <form class="form-horizontal" method="post" name="referralForm" id="referralForm" autocomplete="off" action="save-tb-referral-helper.php">
@@ -71,8 +69,8 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                         <div class="form-group col-md-6">
                             <div style="margin-left:3%;">
                                 <label for="packageCode" class="control-label"> <?php echo _translate("Referral Manifest Code"); ?> <span class="mandatory">*</span></label>
-                                <input type="hidden" id="manifestId" name="manifestId" value="<?php echo $sampleManifestResult['manifest_id']; ?>" />
-                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo $sampleManifestResult['manifest_code']; ?>" />
+                                <input type="hidden" id="manifestId" name="manifestId" value="<?php echo $tbResult['referral_manifest_id']; ?>" />
+                                <input type="text" class="form-control isRequired" id="packageCode" name="packageCode" placeholder="Manifest Code" title="Please enter manifest code" readonly value="<?php echo $tbResult['referral_manifest_code']; ?>" />
                                 <input type="hidden" class="form-control isRequired" id="module" name="module" placeholder="" title="" readonly value="<?= htmlspecialchars((string) $module); ?>" />
                             </div>
                         </div>
@@ -125,7 +123,7 @@ $sampleManifestCode = strtoupper('TB' . date('ymdH') .  MiscUtility::generateRan
                                 <label for="referralToLabId" class="control-label"> <?php echo _translate("Referral To Lab"); ?> <span class="mandatory">*</span></label>
                                 <select name="referralToLabId" id="referralToLabId" class="form-control select2 isRequired"
                                     title="<?php echo _translate("Please select referral To Laboratory"); ?>" required>
-                                    <?= $general->generateSelectOptions($testingLabs, null, '-- Select --'); ?>
+                                    <?= $general->generateSelectOptions($testingLabs, $tbResult['referred_to_lab_id'], '-- Select --'); ?>
                                 </select>
                             </div>
                         </div>
