@@ -143,7 +143,7 @@ foreach ($result as $row) {
 
     $packageId = base64_encode($row['referral_manifest_code']);
     $printManifestPdfText = _translate("Print Manifest Referral PDF");
-    if ($row['lab_id'] != $row['referred_to_lab_id']) {
+    if ($row['lab_id'] != $row['referred_to_lab_id'] && !$general->isSTSInstance()) {
         $printBarcode = <<<BARCODEBUTTON
         <a href="javascript:void(0);" onclick="generateManifestPDF('{$packageId}');" class="btn btn-info btn-xs print-manifest" data-package-id="{$packageId}" title="{$printManifestPdfText}">
             <em class="fa-solid fa-barcode"></em> {$printManifestPdfText}
