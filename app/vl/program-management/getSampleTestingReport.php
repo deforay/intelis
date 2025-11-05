@@ -83,7 +83,7 @@ try {
             GROUP BY vl.facility_id ORDER BY totalCount DESC";
     $sampleTestingResult = $db->rawQuery($sQuery);
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getMessage());
+    LoggerUtility::logError($e->getMessage());
 }
 
 ?>

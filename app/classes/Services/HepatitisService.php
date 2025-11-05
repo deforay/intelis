@@ -49,7 +49,7 @@ final class HepatitisService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getMessage(), [
+                LoggerUtility::logError('Unable to generate Sample ID : ' . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -273,7 +273,7 @@ final class HepatitisService extends AbstractTestService
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
-            LoggerUtility::log('error', 'Insert Hepatitis Sample : ' . $e->getMessage(), [
+            LoggerUtility::logError('Insert Hepatitis Sample : ' . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred
                 'line' => $e->getLine(), // Line number of the error

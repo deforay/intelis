@@ -96,7 +96,7 @@ try {
             $id = $db->update('facility_details', $fData);
         }
     } catch (Throwable $e) {
-        LoggerUtility::log('error', "Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
+        LoggerUtility::logError("Unlabe to update facility_code in addVlRequestHelper.php " . $db->getLastError(), [
             'exception' => $db->getLastError(),
             'file' => $e->getFile(),
             'line' => $e->getLine()
@@ -448,7 +448,7 @@ try {
     } else {
         $db->rollbackTransaction();
         if ($db->getLastErrno() > 0) {
-            LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
+            LoggerUtility::logError("DB ERROR :: " . $db->getLastError(), [
                 'exception' => $db->getLastError(),
                 'file' => __FILE__,
                 'line' => __LINE__

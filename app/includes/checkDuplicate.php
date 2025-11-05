@@ -45,8 +45,8 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
         $result = $db->rawQuery($sQuery, $parameters);
         $data = !empty($result) ? 1 : 0;
     } catch (Throwable $e) {
-        LoggerUtility::log('error', $e->getMessage());
-        LoggerUtility::log('error', $e->getTraceAsString());
+        LoggerUtility::logError($e->getMessage());
+        LoggerUtility::logError($e->getTraceAsString());
     }
 }
 

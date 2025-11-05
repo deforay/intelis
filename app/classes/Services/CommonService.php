@@ -928,9 +928,9 @@ final class CommonService
             return $this->db->insert("track_api_requests", $data);
         } catch (Throwable $exc) {
             if (!empty($this->db->getLastError())) {
-                LoggerUtility::log('error', 'Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
+                LoggerUtility::logError('Error in track_api_requests : ' . $this->db->getLastErrno() . ':' . $this->db->getLastError());
             }
-            LoggerUtility::log('error', $exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
+            LoggerUtility::logError($exc->getFile() . ":" . $exc->getLine() . " - " . $exc->getMessage());
             return 0;
         }
     }

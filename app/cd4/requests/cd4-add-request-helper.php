@@ -235,7 +235,7 @@ try {
         'last_cd4_date' => DateUtility::isoDateFormat($lastDate ?? ''),
         'last_cd4_result' => $lastResult ?? null,
         'last_cd4_result_percentage' => $lastResultPercentage ?? null,
-        'last_cd4_crag_result'=> $lastCrAgResult ?? null,
+        'last_cd4_crag_result' => $lastCrAgResult ?? null,
         'cd4_result' => $_POST['cd4Result'] ?? null,
         'cd4_result_percentage' => $_POST['cd4ResultPercentage'] ?? null,
         'crag_test_results' => $_POST['crAgResults'] ?? null,
@@ -333,7 +333,7 @@ try {
     } else {
         $db->rollbackTransaction();
         if ($db->getLastErrno() > 0) {
-            LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
+            LoggerUtility::logError("DB ERROR :: " . $db->getLastError(), [
                 'exception' => $db->getLastError(),
                 'file' => __FILE__,
                 'line' => __LINE__

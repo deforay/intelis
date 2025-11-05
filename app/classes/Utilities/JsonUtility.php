@@ -9,14 +9,19 @@ final class JsonUtility
     // Validate if a string is valid JSON
     public static function isJSON($string, bool $logError = false, $checkUtf8Encoding = false): bool
     {
-        if (!is_string($string) || $string === '') {
+        if (!is_string($string)) {
+            return false;
+        }
+
+        $string = trim($string);
+        if ($string === '') {
             return false;
         }
 
         // Optional check for UTF-8 encoding
         if ($checkUtf8Encoding && !mb_check_encoding($string, 'UTF-8')) {
             if ($logError) {
-                LoggerUtility::log('error', 'String is not valid UTF-8.');
+                LoggerUtility::logError('String is not valid UTF-8.');
             }
             return false;
         }
@@ -27,8 +32,8 @@ final class JsonUtility
             return true;
         } else {
             if ($logError) {
-                LoggerUtility::log('error', 'JSON decoding error (' . json_last_error() . '): ' . json_last_error_msg());
-                LoggerUtility::log('error', 'Invalid JSON: ' . self::previewString($string));
+                LoggerUtility::logError('JSON decoding error (' . json_last_error() . '): ' . json_last_error_msg());
+                LoggerUtility::logError('Invalid JSON: ' . self::previewString($string));
             }
             return false;
         }
@@ -45,8 +50,6 @@ final class JsonUtility
         return $len > $max ? ($p . '… (len=' . $len . ')') : $p . " (len={$len})";
     }
 
-
-
     // Encode data to JSON with UTF-8 encoding
     public static function encodeUtf8Json(mixed $data): ?string
     {
@@ -59,27 +62,28 @@ final class JsonUtility
         return self::toJSON($data);
     }
 
-
-
     // Convert data to JSON string — handle scalars & objects too
     public static function toJSON(
         mixed $data,
         int $flags = JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE
     ): ?string {
         // If it’s already a valid JSON string, keep it.
-        if (is_string($data) && self::isJSON($data)) {
-            return $data;
+        if (is_string($data)) {
+            $trimmed = trim($data);
+            if (self::isJSON($trimmed)) {
+                return $trimmed;
+            }
+            $data = $trimmed;
         }
+
         // Encode ANY type to JSON (arrays, objects, scalars, null)
         $json = json_encode($data, $flags);
         if ($json === false) {
-            LoggerUtility::log('error', 'Data could not be encoded as JSON: ' . json_last_error_msg());
+            LoggerUtility::logError('Data could not be encoded as JSON: ' . json_last_error_msg());
             return null;
         }
         return $json;
     }
-
-
 
     // Pretty-print JSON
     public static function prettyJson(array|string $json): string
@@ -143,7 +147,7 @@ final class JsonUtility
         }
         $data = json_decode($json, $returnAssociative);
         if (json_last_error() !== JSON_ERROR_NONE) {
-            LoggerUtility::log('error', 'Error decoding JSON: ' . json_last_error_msg());
+            LoggerUtility::logError('Error decoding JSON: ' . json_last_error_msg());
             return null;
         }
         return $data;
@@ -160,7 +164,6 @@ final class JsonUtility
         return self::toJSON($decoded, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_INVALID_UTF8_SUBSTITUTE) ?? '';
     }
 
-
     // Get keys from JSON object
     public static function getJsonKeys($json): array
     {
@@ -168,10 +171,7 @@ final class JsonUtility
         return is_array($data) ? array_keys($data) : [];
     }
 
-
-
     // Get values from JSON object
-
     public static function getJsonValues($json): array
     {
         $data = self::decodeJson($json);

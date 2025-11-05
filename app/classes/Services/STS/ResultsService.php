@@ -3,7 +3,6 @@
 namespace App\Services\STS;
 
 use Throwable;
-use SAMPLE_STATUS;
 use RuntimeException;
 use JsonMachine\Items;
 use App\Services\TestsService;
@@ -181,8 +180,7 @@ final class ResultsService
         $sampleCodes = $facilityIds = [];
         $labId = null;
 
-
-        if (!empty($jsonResponse) && $jsonResponse != '[]' && JsonUtility::isJSON($jsonResponse)) {
+        if (JsonUtility::isJSON($jsonResponse)) {
 
             $resultData = [];
             $options = [
@@ -247,7 +245,20 @@ final class ResultsService
 
                     $localRecord = $this->testRequestsService->findMatchingLocalRecord($resultFromLab, $this->tableName, $this->primaryKeyName);
 
-                    $formAttributes = JsonUtility::jsonToSetString($resultFromLab['form_attributes'], 'form_attributes');
+                    $formAttributesValue = $resultFromLab['form_attributes'] ?? null;
+
+                    if (is_string($formAttributesValue) && $formAttributesValue !== '') {
+                        if (!JsonUtility::isJSON($formAttributesValue)) {
+                            LoggerUtility::logWarning('Ignoring invalid form_attributes JSON from STS', [
+                                'test_type' => $this->testType,
+                                'sample_code' => $resultFromLab['sample_code'] ?? null,
+                                'remote_form_attributes_preview' => substr($formAttributesValue, 0, 500),
+                            ]);
+                            $formAttributesValue = null;
+                        }
+                    }
+
+                    $formAttributes = JsonUtility::jsonToSetString($formAttributesValue, 'form_attributes');
                     $resultFromLab['form_attributes'] = !empty($formAttributes) ? $this->db->func($formAttributes) : null;
 
 

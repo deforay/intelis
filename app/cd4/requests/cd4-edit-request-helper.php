@@ -314,7 +314,7 @@ try {
      $db->where('cd4_id', $_POST['cd4SampleId']);
      $id = $db->update($tableName, $vlData);
      if ($db->getLastErrno() > 0) {
-          LoggerUtility::log('error', "DB ERROR :: " . $db->getLastError(), [
+          LoggerUtility::logError("DB ERROR :: " . $db->getLastError(), [
                'exception' => $db->getLastError(),
                'file' => __FILE__,
                'line' => __LINE__

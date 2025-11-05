@@ -239,7 +239,7 @@ try {
 
     header("Location:/import-result/imported-results.php?t=$type");
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString()

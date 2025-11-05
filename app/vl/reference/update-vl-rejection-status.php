@@ -32,6 +32,6 @@ try {
         $result = $id[$i];
     }
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage());
+    LoggerUtility::logError($exc->getMessage());
 }
 echo $result;

@@ -35,5 +35,5 @@ try {
     }
     $db->update($tableName, $data);
 } catch (Throwable $exc) {
-    LoggerUtility::log('error', $exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
+    LoggerUtility::logError($exc->getMessage(), ['trace' => $exc->getTraceAsString()]);
 }

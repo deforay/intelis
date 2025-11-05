@@ -125,7 +125,9 @@ try {
             printUsage();
             exit(0);
         default:
-            echo "Unknown command: {$command}\n\n";
+            $safeCommand = MiscUtility::sanitizeCliString($command);
+            MiscUtility::safeCliEcho("Unknown command: {$safeCommand}");
+            echo PHP_EOL;
             printUsage();
             exit(1);
     }
@@ -288,14 +290,16 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
         throw new SystemException('gpg not found. Please install GnuPG or adjust PATH.');
     }
 
+    $cleanPassphrase = str_replace(["\r", "\n"], '', (string) $passphrase);
+
     $cmd = [
         'gpg',
         '--batch',
         '--yes',
         '--pinentry-mode',
         'loopback',
-        '--passphrase',
-        $passphrase,
+        '--passphrase-fd',
+        '0',
         '--symmetric',
         '--cipher-algo',
         'AES256',
@@ -315,6 +319,7 @@ function encryptWithGpg(string $gzPath, string $gpgPath, string $passphrase): bo
         throw new SystemException('Failed to start gpg process.');
     }
 
+    fwrite($pipes[0], $cleanPassphrase . PHP_EOL);
     fclose($pipes[0]);
     $stdout = stream_get_contents($pipes[1]) ?: '';
     $stderr = stream_get_contents($pipes[2]) ?: '';
@@ -339,6 +344,13 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
     if (!is_file($gpgPath)) {
         throw new SystemException('Backup file not found for GPG decrypt.');
     }
+    if (!validateSecureFilePath($gpgPath, $backupFolder)) {
+        throw new SystemException('GPG backup path is outside the allowed directory.');
+    }
+    $realGpgPath = realpath($gpgPath);
+    if ($realGpgPath === false) {
+        throw new SystemException('Unable to resolve GPG backup path.');
+    }
     if (!commandExists('gpg')) {
         throw new SystemException('gpg not found. Please install GnuPG or adjust PATH.');
     }
@@ -346,18 +358,20 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
     $tempDir = getTempDir($backupFolder);
     $compressedOutput = $tempDir . DIRECTORY_SEPARATOR . basename($gpgPath, '.gpg');
 
+    $cleanPassphrase = str_replace(["\r", "\n"], '', (string) $passphrase);
+
     $gpgCmd = [
         'gpg',
         '--batch',
         '--yes',
         '--pinentry-mode',
         'loopback',
-        '--passphrase',
-        $passphrase,
+        '--passphrase-fd',
+        '0',
         '--output',
         $compressedOutput,
         '--decrypt',
-        $gpgPath
+        $realGpgPath
     ];
 
     $descriptors = [
@@ -370,6 +384,7 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
         throw new SystemException('Failed to start gpg decrypt process.');
     }
 
+    fwrite($pipes[0], $cleanPassphrase . PHP_EOL);
     fclose($pipes[0]);
     $stdout = stream_get_contents($pipes[1]) ?: '';
     $stderr = stream_get_contents($pipes[2]) ?: '';
@@ -404,10 +419,19 @@ function decryptGpgToTempSql(string $gpgPath, string $passphrase, string $backup
 /**
  * Quick structural check that file is a readable GPG container (no passphrase needed).
  */
-function verifyGpgStructure(string $gpgPath): bool
+function verifyGpgStructure(string $gpgPath, ?string $allowedDirectory = null): bool
 {
     if (!commandExists('gpg')) return false;
-    $cmd = ['gpg', '--batch', '--list-packets', $gpgPath];
+    $realPath = realpath($gpgPath);
+    if ($realPath === false) {
+        return false;
+    }
+
+    if ($allowedDirectory !== null && !validateSecureFilePath($realPath, $allowedDirectory)) {
+        return false;
+    }
+
+    $cmd = ['gpg', '--batch', '--list-packets', $realPath];
 
     $desc = [
         0 => ['pipe', 'r'],
@@ -699,7 +723,8 @@ function handleExport(string $backupFolder, array $intelisDbConfig, ?array $inte
         }
     }
 
-    echo "Exporting {$label} database to " . basename($outputFile) . "...\n";
+    $safeOutputBasename = MiscUtility::sanitizeCliString(basename($outputFile));
+    MiscUtility::safeCliEcho(sprintf('Exporting %s database to %s...', $label, $safeOutputBasename));
 
     $dsn = sprintf('mysql:host=%s;dbname=%s', $config['host'], $config['db']);
     if (!empty($config['port'])) {
@@ -709,7 +734,7 @@ function handleExport(string $backupFolder, array $intelisDbConfig, ?array $inte
     try {
         $dump = new IMysqldump\Mysqldump($dsn, $config['username'], $config['password'] ?? '');
         $dump->start($outputFile);
-        echo "Export completed: " . $outputFile . PHP_EOL;
+        MiscUtility::safeCliEcho('Export completed: ' . MiscUtility::sanitizeCliString($outputFile));
     } catch (\Exception $e) {
         throw new SystemException('Database export failed: ' . $e->getMessage());
     }
@@ -866,7 +891,7 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         }
     } elseif (isGpgBackupFile($lower)) {
         // Structural check only; we can't fully test without passphrase
-        $ok = verifyGpgStructure($selectedPath);
+        $ok = verifyGpgStructure($selectedPath, $backupFolder);
         if (!$ok) {
             echo "Warning: GPG structure check failed. Continue anyway? (y/N): ";
             $input = trim(fgets(STDIN) ?: '');
@@ -898,13 +923,13 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         echo 'Creating safety backup of current ' . $targetLabel . ' database before restore...' . PHP_EOL;
         $note = 'restoreof-' . slugifyForFilename($basename, 32);
         $preRestorePath = createBackupArchive($backupPrefix, $targetConfig, $backupFolder, $note);
-        echo '  Created: ' . basename($preRestorePath) . PHP_EOL;
+        MiscUtility::safeCliEcho('Created: ' . basename($preRestorePath));
     } else {
         echo '⚠ Skipping safety backup (--skip-safety-backup flag used)' . PHP_EOL;
         echo '  WARNING: No backup will be created before restore!' . PHP_EOL;
     }
 
-    echo 'Decrypting and extracting backup...' . PHP_EOL;
+    MiscUtility::safeCliEcho('Decrypting and extracting backup...');
     if (isGpgBackupFile($lower)) {
         $derived = ($targetConfig['password'] ?? '') . extractRandomTokenFromBackup($selectedPath);
         try {
@@ -922,10 +947,10 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         TempFileRegistry::register($sqlPath);
     }
 
-    echo 'Resetting ' . $targetLabel . ' database...' . PHP_EOL;
+    MiscUtility::safeCliEcho('Resetting ' . $targetLabel . ' database...');
     recreateDatabase($targetConfig);
 
-    echo 'Restoring database from ' . $basename . '...' . PHP_EOL;
+    MiscUtility::safeCliEcho('Restoring database from ' . $basename . '...');
     importSqlDump($targetConfig, $sqlPath);
 
     // PITR suggestion (unchanged)
@@ -949,7 +974,7 @@ function handleRestore(string $backupFolder, array $intelisDbConfig, ?array $int
         );
         echo PHP_EOL;
         echo "Next step (optional - Point-in-Time Recovery):\n";
-        echo "  $cmd\n";
+        MiscUtility::safeCliEcho("  $cmd\n");
         echo "Adjust --to to your desired timestamp (YYYY-MM-DD HH:MM:SS, in UTC or with timezone offset).\n";
     } else {
         echo "Note: PITR suggestion unavailable (no .meta.json found for this backup).\n";
@@ -1039,7 +1064,7 @@ function getBinlogTotalSize(array $dbConfig): int
         return $totalSize;
     } catch (Exception $e) {
         // If we can't get size, return 0 to avoid breaking the purge operation
-        echo '  Warning: Could not calculate binlog size: ' . $e->getMessage() . PHP_EOL;
+        LoggerUtility::logWarning('Warning: Could not calculate binlog size: ' . $e->getMessage());
         return 0;
     }
 }
@@ -1098,10 +1123,19 @@ function promptForImportFileSelection(string $backupFolder): ?string
 
 // Archive and Password Handling Functions
 
-function isZipPasswordProtected(string $zipPath): bool
+function isZipPasswordProtected(string $zipPath, ?string $allowedDirectory = null): bool
 {
     $zip = new ZipArchive();
-    $status = $zip->open($zipPath);
+    $realPath = realpath($zipPath);
+    if ($realPath === false) {
+        return true;
+    }
+
+    if ($allowedDirectory !== null && !validateSecureFilePath($realPath, $allowedDirectory)) {
+        return true;
+    }
+
+    $status = $zip->open($realPath);
 
     if ($status !== true) {
         // If we can't open it, assume it might be password protected
@@ -2440,7 +2474,7 @@ function handleUserFriendlyError(\Throwable $e): void
     $message = $e->getMessage();
     $userMessage = translateErrorMessage($message);
 
-    LoggerUtility::log('error', $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => __FILE__,
         'line' => __LINE__,
         'trace' => $e->getTraceAsString()
@@ -2576,7 +2610,7 @@ function handleVerify(string $backupFolder, array $args): void
     $fileSize = formatFileSize(filesize($selectedPath));
     $lower = strtolower($selectedPath);
 
-    echo "Verifying backup: {$basename} ({$fileSize})\n";
+    MiscUtility::safeCliEcho("Verifying backup: {$basename} ({$fileSize})\n");
     echo str_repeat('-', 50) . "\n";
     echo "✅ File exists and is readable\n";
 
@@ -2594,7 +2628,7 @@ function handleVerify(string $backupFolder, array $args): void
         $status = $zip->open($selectedPath);
         if ($status !== true) {
             echo "❌ FAILED\n";
-            echo "  Error: Cannot open archive (code: {$status})\n";
+            MiscUtility::safeCliEcho("  Error: Cannot open archive (code: {$status})\n");
             exit(1);
         }
         $sqlFound = false;
@@ -2605,7 +2639,7 @@ function handleVerify(string $backupFolder, array $args): void
                 $stat = $zip->statIndex($i);
                 $sqlSize = $stat ? formatFileSize($stat['size']) : 'unknown';
                 echo "✅ PASSED\n";
-                echo "  Found: {$name} ({$sqlSize})\n";
+                MiscUtility::safeCliEcho("  Found: {$name} ({$sqlSize})\n");
                 break;
             }
         }
@@ -2618,12 +2652,12 @@ function handleVerify(string $backupFolder, array $args): void
         $zip->close();
 
         echo "Checking encryption... ";
-        echo isZipPasswordProtected($selectedPath)
+        echo isZipPasswordProtected($selectedPath, $backupFolder)
             ? "✅ Password protected (AES-256)\n"
             : "⚠ WARNING: Archive is not password protected\n";
     } elseif (isGpgBackupFile($lower)) {
         echo "Checking GPG structure... ";
-        if (!verifyGpgStructure($selectedPath)) {
+        if (!verifyGpgStructure($selectedPath, $backupFolder)) {
             echo "❌ FAILED\n";
             echo "  Error: GPG packet structure unreadable\n";
             exit(1);
@@ -2890,7 +2924,7 @@ function handleSize(array $intelisDbConfig, ?array $interfacingDbConfig, array $
 
             echo "\n";
         } catch (SystemException $e) {
-            echo "❌ Failed to get size information: " . $e->getMessage() . "\n\n";
+            MiscUtility::safeCliEcho("❌ Failed to get size information: " . $e->getMessage() . "\n\n");
         }
     }
 }
@@ -3019,7 +3053,7 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
             echo "   MySQL version: {$result['version']}\n";
         } catch (SystemException $e) {
             echo "❌ FAILED\n";
-            echo "   " . $e->getMessage() . "\n";
+            MiscUtility::safeCliEcho("   " . $e->getMessage() . "\n");
             $allPassed = false;
         }
 
@@ -3030,7 +3064,7 @@ function handleConfigTest(string $backupFolder, array $intelisDbConfig, ?array $
             echo "✅ PASSED\n";
         } catch (SystemException $e) {
             echo "❌ FAILED\n";
-            echo "   " . $e->getMessage() . "\n";
+            MiscUtility::safeCliEcho("   " . $e->getMessage() . "\n");
             $allPassed = false;
         }
 
@@ -3384,7 +3418,7 @@ function handlePitrRestore(string $backupFolder, array $intelisDbConfig, ?array 
         echo "  - Unique checks: disabled\n";
         echo "  - Autocommit: disabled\n";
     } catch (\Throwable $e) {
-        echo "  Warning: Could not set optimization flags: " . $e->getMessage() . "\n";
+        MiscUtility::safeCliEcho("  Warning: Could not set optimization flags: " . $e->getMessage() . "\n");
     }
 
     echo "\n";

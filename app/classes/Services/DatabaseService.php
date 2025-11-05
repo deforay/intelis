@@ -97,7 +97,7 @@ final class DatabaseService extends MysqliDb
             $this->connect($connectionName);
             return true;
         } catch (Throwable $e) {
-            LoggerUtility::log('error', $e->getMessage());
+            LoggerUtility::logError($e->getMessage());
             return false;
         }
     }
@@ -148,7 +148,7 @@ final class DatabaseService extends MysqliDb
         if ($result === false) { // Only false indicates failure
             $stmt->close();
             $this->reset();
-            LoggerUtility::log('error', 'DB Result Error: ' . $this->mysqli()->error);
+            LoggerUtility::logError('DB Result Error: ' . $this->mysqli()->error);
             throw new Exception("Failed to get result: " . $this->mysqli()->error);
         }
 
@@ -384,7 +384,7 @@ final class DatabaseService extends MysqliDb
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {
-            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
+            LoggerUtility::logError("Unable to prepare statement: " . $this->mysqli()->error . ':' . $this->mysqli()->errno);
         }
 
         $allValues = array_merge($values, $updateValues);
@@ -397,7 +397,7 @@ final class DatabaseService extends MysqliDb
         } else {
             $error = $stmt->error;
             $stmt->close();
-            LoggerUtility::log('error', "Failed to execute upsert: $error");
+            LoggerUtility::logError("Failed to execute upsert: $error");
             return false;
         }
     }
@@ -509,7 +509,7 @@ final class DatabaseService extends MysqliDb
                                 LoggerUtility::log('warning', 'Count query timed out, using cached value: ' . $countException->getMessage());
                                 $countResolved = true;
                             } else {
-                                LoggerUtility::log('error', 'Count query failed with no cache: ' . $countException->getMessage());
+                                LoggerUtility::logError('Count query failed with no cache: ' . $countException->getMessage());
                             }
                         } finally {
                             if ($downgradedIsolation && $originalIsolationLevel !== null) {
@@ -669,7 +669,7 @@ final class DatabaseService extends MysqliDb
 
         $stmt = $this->mysqli()->prepare($sql);
         if (!$stmt) {
-            LoggerUtility::log('error', "Unable to prepare statement: " . $this->mysqli()->error);
+            LoggerUtility::logError("Unable to prepare statement: " . $this->mysqli()->error);
             return false;
         }
 
@@ -682,7 +682,7 @@ final class DatabaseService extends MysqliDb
         } else {
             $error = $stmt->error;
             $stmt->close();
-            LoggerUtility::log('error', "Failed to execute insertMultipleRows: $error");
+            LoggerUtility::logError("Failed to execute insertMultipleRows: $error");
             return false;
         }
     }

@@ -1,7 +1,6 @@
 <?php
 
-use App\Services\TestsService;
-use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -19,6 +18,12 @@ $general = ContainerRegistry::get(CommonService::class);
 
 /** @var FacilitiesService $facilitiesService */
 $facilitiesService = ContainerRegistry::get(FacilitiesService::class);
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
 
 $id = base64_decode($_GET['id']);
 $codeId = base64_decode($_GET['code']);

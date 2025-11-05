@@ -46,7 +46,7 @@ final class ApiService
 
     private function logError(Throwable $e, string $message): void
     {
-        LoggerUtility::log('error', "$message: " . $e->getMessage(), [
+        LoggerUtility::logError("$message: " . $e->getMessage(), [
             'exception' => $e,
             'file' => $e->getFile(),
             'line' => $e->getLine(),
@@ -138,7 +138,7 @@ final class ApiService
                 return $res->getStatusCode() === 200;
             }
         } catch (Throwable $e) {
-            LoggerUtility::log('error', "Unable to connect to $url: " . $e->getMessage(), [ /* … */]);
+            LoggerUtility::logError("Unable to connect to $url: " . $e->getMessage(), [ /* … */]);
             return false;
         }
     }
@@ -311,7 +311,7 @@ final class ApiService
                 if ($decoded !== false) {
                     $body = $decoded;
                 } else {
-                    LoggerUtility::log('error', 'Gzip decompression failed; treating as raw JSON');
+                    LoggerUtility::logError('Gzip decompression failed; treating as raw JSON');
                 }
             } elseif (str_contains($encoding, 'deflate') || str_contains($encoding, 'application/deflate')) {
                 // try both possibilities (zlib-wrapped vs raw)
@@ -322,7 +322,7 @@ final class ApiService
                 if ($decoded !== false) {
                     $body = $decoded;
                 } else {
-                    LoggerUtility::log('error', 'Deflate decompression failed; treating as raw JSON');
+                    LoggerUtility::logError('Deflate decompression failed; treating as raw JSON');
                 }
             }
 
@@ -422,7 +422,7 @@ final class ApiService
         if ($jsonPayload === null) {
             // We failed to encode or validate JSON on the server side -> 500
             http_response_code(500);
-            LoggerUtility::log('error', 'JSON encoding failed in generateJsonResponse');
+            LoggerUtility::logError('JSON encoding failed in generateJsonResponse');
             $jsonPayload = '{"error":"JSON encoding failed"}';
         }
 
