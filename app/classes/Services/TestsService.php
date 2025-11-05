@@ -42,7 +42,7 @@ final class TestsService
                     $activeTests[] = strtolower($module);
                 }
             }
-            return $activeTests ?? array_keys(TestsService::getTestTypes());
+            return $activeTests;
         });
     }
 

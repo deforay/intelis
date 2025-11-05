@@ -86,7 +86,7 @@ try {
                     $response = json_decode($result->getBody()->getContents());
 
                     if ($response->status == 'fail') {
-                        LoggerUtility::log('error', 'Recency profile not updated! for the user->' . $_POST['userName']);
+                        LoggerUtility::logError('Recency profile not updated! for the user->' . $_POST['userName']);
                     }
                 }
 

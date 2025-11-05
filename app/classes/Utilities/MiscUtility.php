@@ -98,6 +98,43 @@ final class MiscUtility
         }
     }
 
+    /**
+     * Remove control characters from CLI-bound strings to prevent terminal escapes.
+     */
+    public static function sanitizeCliString(mixed $value, bool $preserveLineBreaks = true): string
+    {
+        if (is_bool($value)) {
+            $string = $value ? '1' : '0';
+        } elseif (is_scalar($value) || $value === null) {
+            $string = (string) $value;
+        } else {
+            $encoded = json_encode($value, JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE);
+            $string = $encoded === false ? '' : $encoded;
+        }
+
+        $string = (string) self::toUtf8($string, trim: false, stripInvisible: true);
+
+        $pattern = $preserveLineBreaks
+            ? '/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/u'
+            : '/[\x00-\x1F\x7F]/u';
+
+        $sanitized = preg_replace($pattern, '', $string);
+        return $sanitized ?? '';
+    }
+
+    /**
+     * Echo sanitized CLI text, optionally appending a newline.
+     */
+    public static function safeCliEcho(mixed $message, bool $appendNewline = true, bool $preserveLineBreaks = true): void
+    {
+        $safe = self::sanitizeCliString($message, $preserveLineBreaks);
+        if ($appendNewline) {
+            echo $safe . PHP_EOL;
+        } else {
+            echo $safe;
+        }
+    }
+
     public static function detectCSVDelimiter(string $csvLine): string
     {
         $delimiters = [',', ';', "\t", '|'];
@@ -110,8 +147,6 @@ final class MiscUtility
         arsort($counts);
         return array_key_first($counts);
     }
-
-
 
     public static function removeDirectory($dirname): bool
     {

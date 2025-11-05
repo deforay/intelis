@@ -145,7 +145,7 @@ final class PatientsService
 
             if ($id === false) {
                 // Error handling
-                LoggerUtility::log('error', $this->db->getLastError());
+                LoggerUtility::logError($this->db->getLastError());
             }
             return $systemPatientCode;
         } catch (Throwable $e) {

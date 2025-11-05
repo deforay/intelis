@@ -36,7 +36,7 @@ try {
 } catch (Exception $exc) {
     $_SESSION['alertMsg'] = _translate("Failed to add System Admin. Please try again.");
     header("Location:/system-admin/setup/index.php");
-    LoggerUtility::log('error', $exc->getMessage(), [
+    LoggerUtility::logError($exc->getMessage(), [
         'trace' => $exc->getTraceAsString(),
         'file'  => $exc->getFile(),
         'line'  => $exc->getLine()

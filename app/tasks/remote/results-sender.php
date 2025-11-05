@@ -191,7 +191,7 @@ $systemConfig = SYSTEM_CONFIG;
 $remoteURL = $general->getRemoteURL();
 
 if (empty($remoteURL)) {
-    LoggerUtility::log('error', "Please check if STS URL is set");
+    LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
@@ -206,6 +206,9 @@ $chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
 
 if ($cliMode) {
     $validModules = TestsService::getActiveTests();
+    if (empty($validModules)) {
+        $validModules = array_keys(TestsService::getTestTypes());
+    }
     $awaitingTestType = false;
     $awaitingChunkSize = false;
 
@@ -307,7 +310,7 @@ $url = "$remoteURL/remote/v2/results.php";
 try {
     // Check network
     if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-        LoggerUtility::log('error', "No network connectivity while trying remote sync.");
+        LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }
 

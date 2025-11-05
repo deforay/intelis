@@ -412,7 +412,7 @@ foreach ($versions as $version) {
                                     } else {
                                         $io->error($msg);
                                     }
-                                    if ($canLog) LoggerUtility::log('error', $msg);
+                                    if ($canLog) LoggerUtility::logError($msg);
                                 }
                                 if (!$autoContinueOnError) {
                                     if ($bar) {
@@ -463,7 +463,7 @@ foreach ($versions as $version) {
                             } else {
                                 echo $toPrint;
                             }
-                            if ($canLog) LoggerUtility::log('error', $toPrint);
+                            if ($canLog) LoggerUtility::logError($toPrint);
                         }
                         if (!$autoContinueOnError) {
                             if ($bar) {

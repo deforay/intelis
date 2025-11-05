@@ -135,7 +135,7 @@ try {
         }
     }
 } catch (Throwable $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'line' => $e->getLine(),
         'file' => $e->getFile()
     ]);

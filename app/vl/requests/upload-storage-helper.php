@@ -118,8 +118,8 @@ try {
                 } catch (Throwable $e) {
                     $storageNotAdded[] = $rowData;
                     $failedRow[] = [$rowData['A'], $rowData['C'], $rowData['D'], $rowData['E'], $rowData['F'], $rowData['G']];
-                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
-                    LoggerUtility::log('error', __FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
+                    LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . $db->getLastError());
+                    LoggerUtility::logError(__FILE__ . ":" . __LINE__ . ":" . $db->getLastQuery());
                 }
             }
 

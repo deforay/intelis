@@ -69,9 +69,9 @@ try {
         $db->where('manifest_id', $lastId);
         $previousData = $db->getOne($packageTable);
 
-//echo "<pre>"; print_r($previousData); die;
+        //echo "<pre>"; print_r($previousData); die;
         $existingChangeReasons = json_decode($previousData['manifest_change_history'], true);
-               // echo "<pre>"; print_r($existingChangeReasons); die;
+        // echo "<pre>"; print_r($existingChangeReasons); die;
 
 
         $existingChangeReasons[] = [
@@ -141,7 +141,7 @@ try {
     header("Location:view-manifests.php?t=" . ($_POST['module']));
 } catch (Throwable $e) {
     $db->rollbackTransaction();
-    LoggerUtility::log('error',  $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'trace' => $e->getTraceAsString(),

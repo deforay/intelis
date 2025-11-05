@@ -149,7 +149,7 @@ final class VlService extends AbstractTestService
             try {
                 return $this->generateSampleCode($this->table, $params);
             } catch (Throwable $e) {
-                LoggerUtility::log('error', 'Unable to generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+                LoggerUtility::logError('Unable to generate Sample ID : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                     'exception' => $e,
                     'file' => $e->getFile(), // File where the error occurred
                     'line' => $e->getLine(), // Line number of the error
@@ -631,7 +631,7 @@ final class VlService extends AbstractTestService
             // Rollback the current transaction to release locks and undo changes
             $this->db->rollbackTransaction();
 
-            LoggerUtility::log('error', 'Error Inserting VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
+            LoggerUtility::logError('Error Inserting VL Sample : ' . $e->getFile() . ":" . $e->getLine() . " - " . $e->getMessage(), [
                 'exception' => $e,
                 'file' => $e->getFile(), // File where the error occurred
                 'line' => $e->getLine(), // Line number of the error

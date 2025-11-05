@@ -1,15 +1,22 @@
 <?php
 
+use App\Services\TestsService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
+use App\Registries\AppRegistry;
 use App\Services\CommonService;
 use App\Services\SystemService;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
 use App\Registries\ContainerRegistry;
-use App\Services\TestsService;
 
 require_once __DIR__ . '/../../bootstrap.php';
+
+
+// Sanitized values from $request object
+/** @var Laminas\Diactoros\ServerRequest $request */
+$request = AppRegistry::get('request');
+$_GET = _sanitizeInput($request->getQueryParams());
 
 /** @var CommonService $general */
 $general = ContainerRegistry::get(CommonService::class);
