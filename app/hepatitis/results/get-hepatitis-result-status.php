@@ -170,7 +170,7 @@ try {
         $row[] = $aRow['hbv_vl_count'];
 
         $row[] = DateUtility::humanReadableDateFormat($aRow['last_modified_datetime'] ?? '');
-        $row[] = $status;
+        //$row[] = $status;
 
         $output['aaData'][] = $row;
     }

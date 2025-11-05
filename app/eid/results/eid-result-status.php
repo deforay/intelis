@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\UsersService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
 use App\Registries\ContainerRegistry;
@@ -21,6 +22,9 @@ $healthFacilites = $facilitiesService->getHealthFacilities('eid');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 $batQuery = "SELECT batch_code FROM batch_details where test_type = 'eid' AND batch_status='completed'";
 $batResult = $db->rawQuery($batQuery);
@@ -142,7 +146,7 @@ foreach ($rejectionTypeResult as $type) {
 
           </table>
           <div class="box-header with-border">
-            <div class="col-md-5 col-sm-5">
+            <div class="col-md-3 col-sm-3">
               <input type="hidden" name="checkedTests" id="checkedTests" />
               <select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
                 <option value=""><?php echo _translate("-- Select at least one sample to apply bulk action --"); ?></option>
@@ -150,6 +154,37 @@ foreach ($rejectionTypeResult as $type) {
                 <option value="4"><?php echo _translate("Rejected"); ?></option>
                 <option value="2"><?php echo _translate("Lost"); ?></option>
               </select>
+            </div>
+            <div class="col-md-2 col-sm-2">
+               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Approver --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Tester --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Reviewer --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                 
             </div>
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
               <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
@@ -178,7 +213,6 @@ foreach ($rejectionTypeResult as $type) {
                   <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                   <th><?php echo _translate("Result"); ?></th>
                   <th><?php echo _translate("Last Modified on") ?></th>
-                  <th scope="row"><?php echo _translate("Status"); ?></th>
                   <?php if ((_isAllowed("/eid/requests/eid-edit-request.php"))) { ?>
                     <!--<th>Action</th>-->
                   <?php } ?>
@@ -186,7 +220,7 @@ foreach ($rejectionTypeResult as $type) {
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="13" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+                  <td colspan="12" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -293,9 +327,6 @@ foreach ($rejectionTypeResult as $type) {
         {
           "sClass": "center"
         },
-        {
-          "sClass": "center"
-        },
         //{"sClass":"center","bSortable":false},
       ],
       "aaSorting": [
@@ -366,8 +397,14 @@ foreach ($rejectionTypeResult as $type) {
     $("#checkedTests").val(selectedTests.join());
     if (selectedTests.length != 0) {
       $("#status").prop('disabled', false);
+       $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
     } else {
       $("#status").prop('disabled', true);
+       $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     }
 
   }
@@ -379,6 +416,9 @@ foreach ($rejectionTypeResult as $type) {
       selectedTests.splice($.inArray(this.value, selectedTests), 1);
       selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
       $("#status").prop('disabled', true);
+      $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     });
     if ($("#checkTestsData").is(':checked')) {
       $(".checkTests").each(function() {
@@ -387,12 +427,18 @@ foreach ($rejectionTypeResult as $type) {
         selectedTestsId.push(this.id);
       });
       $("#status").prop('disabled', false);
+      $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
     } else {
       $(".checkTests").each(function() {
         $(this).prop('checked', false);
         selectedTests.splice($.inArray(this.value, selectedTests), 1);
         selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
         $("#status").prop('disabled', true);
+        $("#approver").prop('disabled', true);
+        $("#tester").prop('disabled', true);
+        $("#reviewer").prop('disabled', true);
       });
     }
     $("#checkedTests").val(selectedTests.join());
@@ -400,29 +446,46 @@ foreach ($rejectionTypeResult as $type) {
 
   function submitTestStatus() {
     var stValue = $("#status").val();
+    var approver = $("#approver").val();
+    var tester = $("#tester").val();
+    var reviewer = $("#reviewer").val();
     var testIds = $("#checkedTests").val();
-    if (stValue != '' && testIds != '') {
-      conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
-      if (conf) {
-        $.post("/eid/results/update-status.php", {
-            status: stValue,
-            id: testIds,
-            rejectedReason: $("#bulkRejectionReason").val()
-          },
-          function(data) {
-            if (data != "") {
-              $("#checkedTests").val('');
-              selectedTests = [];
-              selectedTestsId = [];
-              $("#checkTestsData").attr("checked", false);
-              $("#status").val('');
-              $("#status").prop('disabled', true);
-              $("#bulkRejectionReason").val('');
-              $(".bulkRejectionReason").hide();
-              oTable.fnDraw();
-              alert("<?= _translate("Updated successfully."); ?>");
-            }
-          });
+    if(testIds != ''){
+      if ((stValue != '' && approver != '' && reviewer != '')) {
+        conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
+        if (conf) {
+          $.post("/eid/results/update-status.php", {
+              status: stValue,
+              approver: approver,
+              tester: tester,
+              reviewer: reviewer,
+              id: testIds,
+              rejectedReason: $("#bulkRejectionReason").val()
+            },
+            function(data) {
+              if (data != "") {
+                $("#checkedTests").val('');
+                selectedTests = [];
+                selectedTestsId = [];
+                $("#checkTestsData").attr("checked", false);
+                $("#status").val('');
+                $("#status").prop('disabled', true);
+                $("#approver").val('');
+                $("#tester").val('');
+                $("#reviewer").val('');
+                $("#approver").prop('disabled', true);
+                  $("#tester").prop('disabled', true);
+                  $("#reviewer").prop('disabled', true);
+                $("#bulkRejectionReason").val('');
+                $(".bulkRejectionReason").hide();
+                oTable.fnDraw();
+                alert("<?= _translate("Updated successfully."); ?>");
+              }
+            });
+        }
+      }
+      else{
+        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
       }
     } else {
       alert("<?= _translate("Please select at least one checkbox"); ?>");
@@ -492,6 +555,9 @@ foreach ($rejectionTypeResult as $type) {
               $("#checkTestsData").attr("checked", false);
               $("#status").val('');
               $("#status").prop('disabled', true);
+              $("#approver").prop('disabled', true);
+              $("#tester").prop('disabled', true);
+              $("#reviewer").prop('disabled', true);
               $("#rejectReasonDiv").hide();
               $("#statusDropDownId").val('');
               $("#rejectionReason").val('');
