@@ -79,7 +79,7 @@ $sQuery = "SELECT vl.sample_collection_date,
                     ts.status_name FROM form_tb as vl
                     LEFT JOIN facility_details as f ON vl.facility_id=f.facility_id
                     LEFT JOIN r_tb_sample_type as s ON s.sample_id=vl.specimen_type
-                    INNER JOIN r_sample_status as ts ON ts.status_id=vl.result_status
+                    INNER JOIN r_sample_status as ts ON ts.status_id = TRIM(vl.result_status) AND ts.status_id REGEXP '^[0-9]+$' 
                     LEFT JOIN batch_details as b ON b.batch_id=vl.sample_batch_id";
 
 if (!empty($_POST['manifestCode'])) {
@@ -98,13 +98,12 @@ if (!empty($sOrder) && $sOrder !== '') {
 if (isset($sLimit) && isset($sOffset)) {
      $sQuery = $sQuery . ' LIMIT ' . $sOffset . ',' . $sLimit;
 }
-
+die($sQuery);
 [$rResult, $resultCount] = $db->getDataAndCount($sQuery);
-
 $output = [
      "sEcho" => (int) $_POST['sEcho'],
-     "iTotalRecords" => $resultCount,
-     "iTotalDisplayRecords" => $resultCount,
+     "iTotalRecords" => $resultCount ?? 0,
+     "iTotalDisplayRecords" => $resultCount ?? 0,
      "aaData" => []
 ];
 
