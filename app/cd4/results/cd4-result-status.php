@@ -1,5 +1,6 @@
 <?php
 
+use App\Services\UsersService;
 use App\Services\CommonService;
 use App\Services\DatabaseService;
 use App\Services\FacilitiesService;
@@ -22,6 +23,9 @@ $healthFacilites = $facilitiesService->getHealthFacilities('cd4');
 
 $facilitiesDropdown = $general->generateSelectOptions($healthFacilites, null, "-- Select --");
 
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 $sQuery = "SELECT * FROM r_cd4_sample_types";
 $sResult = $db->rawQuery($sQuery);
@@ -190,7 +194,7 @@ foreach ($rejectionTypeResult as $type) {
 
           </table>
           <div class="box-header with-border">
-            <div class="col-md-5 col-sm-5">
+            <div class="col-md-3 col-sm-3">
               <input type="hidden" name="checkedTests" id="checkedTests" />
               <select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
                 <option value="">
@@ -206,6 +210,37 @@ foreach ($rejectionTypeResult as $type) {
                   <?php echo _translate("Lost"); ?>
                 </option>
               </select>
+            </div>
+             <div class="col-md-2 col-sm-2">
+               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Approver --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Tester --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Reviewer --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                 
             </div>
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
               <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
@@ -444,8 +479,14 @@ foreach ($rejectionTypeResult as $type) {
     $("#checkedTests").val(selectedTests.join());
     if (selectedTests.length != 0) {
       $("#status").prop('disabled', false);
+      $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
     } else {
       $("#status").prop('disabled', true);
+      $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     }
 
   }
@@ -457,6 +498,9 @@ foreach ($rejectionTypeResult as $type) {
       selectedTests.splice($.inArray(this.value, selectedTests), 1);
       selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
       $("#status").prop('disabled', true);
+      $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     });
     if ($("#checkTestsData").is(':checked')) {
       $(".checkTests").each(function() {
@@ -465,21 +509,33 @@ foreach ($rejectionTypeResult as $type) {
         selectedTestsId.push(this.id);
       });
       $("#status").prop('disabled', false);
+      $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
     } else {
       $(".checkTests").each(function() {
         $(this).prop('checked', false);
         selectedTests.splice($.inArray(this.value, selectedTests), 1);
         selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
         $("#status").prop('disabled', true);
+        $("#approver").prop('disabled', true);
+        $("#tester").prop('disabled', true);
+        $("#reviewer").prop('disabled', true);
       });
     }
     $("#checkedTests").val(selectedTests.join());
   }
 
   function submitTestStatus() {
+            $.blockUI();
+
     var stValue = $("#status").val();
+    var approver = $("#approver").val();
+    var tester = $("#tester").val();
+    var reviewer = $("#reviewer").val();
     var testIds = $("#checkedTests").val();
-    if (stValue != '' && testIds != '') {
+      if(testIds != ''){
+      if ((stValue != '' && approver != '' && reviewer != '')) {
       conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
       if (conf) {
         $.post("/cd4/results/updateTestStatus.php", {
@@ -502,10 +558,17 @@ foreach ($rejectionTypeResult as $type) {
             }
           });
       }
+      }
+      else{
+        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
+      }
     } else {
-      alert("<?= _translate("Please select at least one checkbox", true); ?>");
+      alert("<?= _translate("Please select at least one checkbox"); ?>");
     }
+        $.unblockUI();
+
   }
+   
 
   function updateStatus(obj, optVal) {
     if (obj.value == '4') {

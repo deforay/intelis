@@ -53,8 +53,6 @@ try {
         }
 
 
-
-
         $vlService = ContainerRegistry::get(VlService::class);
         $status['vl_result_category'] = $vlService->getVLResultCategory($status['result_status'], $vlRow['result']);
         if ($status['vl_result_category'] == 'failed' || $status['vl_result_category'] == 'invalid') {
@@ -63,9 +61,26 @@ try {
             $status['result_status'] = SAMPLE_STATUS\REJECTED;
         }
 
-        // echo "<pre>";print_r($status);die;
         $db->where('vl_sample_id', $id[$i]);
         $db->update($tableName, $status);
+    
+        $userData = [];
+        if($_POST['approver'] != ''){
+           $userData['result_approved_by'] = $_POST['approver'];
+        }
+        if($_POST['tester'] != ''){
+           $userData['tested_by'] = $_POST['tester'];
+        }
+        if($_POST['reviewer'] != ''){
+            $userData['result_reviewed_by'] = $_POST['reviewer'];
+        }
+      
+        if (count($userData) > 0) {
+            $db->where('vl_sample_id', $id[$i]);
+            $db->update($tableName, $userData);
+        }
+
+
         $result = $id[$i];
 
         $sampleCode = 'sample_code';

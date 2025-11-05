@@ -3,6 +3,7 @@ $title = _translate("Manage Result Status");
 
 require_once APPLICATION_PATH . '/header.php';
 
+use App\Services\UsersService;
 use App\Registries\ContainerRegistry;
 use App\Services\DatabaseService;
 
@@ -20,6 +21,10 @@ $batResult = $db->rawQuery($batQuery);
 
 $rejectionTypeQuery = "SELECT DISTINCT rejection_type FROM r_covid19_sample_rejection_reasons WHERE rejection_reason_status ='active'";
 $rejectionTypeResult = $db->rawQuery($rejectionTypeQuery);
+
+/** @var UsersService $usersService */
+$usersService = ContainerRegistry::get(UsersService::class);
+$userResult = $usersService->getActiveUsers($_SESSION['facilityMap']);
 
 //sample rejection reason
 $rejectionQuery = "SELECT * FROM r_covid19_sample_rejection_reasons where rejection_reason_status = 'active'";
@@ -142,7 +147,7 @@ foreach ($rejectionTypeResult as $type) {
 
           </table>
           <div class="box-header with-border">
-            <div class="col-md-5 col-sm-5">
+            <div class="col-md-3 col-sm-3">
               <input type="hidden" name="checkedTests" id="checkedTests" />
               <select class="form-control" id="status" name="status" title="<?php echo _translate('Please select test status'); ?>" disabled="disabled" onchange="showSampleRejectionReason()">
                 <option value=""><?php echo _translate("-- Select at least one sample to apply bulk action --"); ?></option>
@@ -151,6 +156,39 @@ foreach ($rejectionTypeResult as $type) {
                 <option value="2"><?php echo _translate("Lost"); ?></option>
               </select>
             </div>
+
+            <div class="col-md-2 col-sm-2">
+               <select class="form-control" id="approver" name="approver" title="<?php echo _translate('Please select approver'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Approver --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="tester" name="tester" title="<?php echo _translate('Please select tester'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Tester --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                  </div>
+                  <div class="col-md-2 col-sm-2">
+                 <select class="form-control" id="reviewer" name="reviewer" title="<?php echo _translate('Please select reviewer'); ?>" disabled="disabled">
+                <option value="">
+                  <?php echo _translate("-- Select Reviewer --"); ?>
+                </option>
+                  <?php foreach ($userResult as $uName) { ?>
+                      <option value="<?php echo $uName['user_id']; ?>"><?php echo ($uName['user_name']); ?></option>
+                  <?php } ?>
+                </select>
+                 
+            </div>
+
             <div style="display:none;" class="col-md-5 col-sm-5 bulkRejectionReason">
               <select class="form-control" id="bulkRejectionReason" name="bulkRejectionReason" title="<?php echo _translate('Please select test status'); ?>">
                 <option value=''> <?php echo _translate("-- Select --"); ?> </option>
@@ -176,12 +214,11 @@ foreach ($rejectionTypeResult as $type) {
                   <th scope="row"><?php echo _translate("Facility Name"); ?></th>
                   <th><?php echo _translate("Result"); ?></th>
                   <th><?php echo _translate("Last Modified on"); ?></th>
-                  <th scope="row"><?php echo _translate("Status"); ?></th>
                 </tr>
               </thead>
               <tbody>
                 <tr>
-                  <td colspan="13" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
+                  <td colspan="12" class="dataTables_empty"><?php echo _translate("Loading data from server"); ?></td>
                 </tr>
               </tbody>
             </table>
@@ -282,9 +319,6 @@ foreach ($rejectionTypeResult as $type) {
         {
           "sClass": "center"
         },
-        {
-          "sClass": "center"
-        },
         //{"sClass":"center","bSortable":false},
       ],
       "aaSorting": [
@@ -355,19 +389,27 @@ foreach ($rejectionTypeResult as $type) {
     $("#checkedTests").val(selectedTests.join());
     if (selectedTests.length != 0) {
       $("#status").prop('disabled', false);
+       $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
     } else {
       $("#status").prop('disabled', true);
+       $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     }
 
   }
 
   function toggleAllVisible() {
-    //alert(tabStatus);
     $(".checkTests").each(function() {
       $(this).prop('checked', false);
       selectedTests.splice($.inArray(this.value, selectedTests), 1);
       selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
       $("#status").prop('disabled', true);
+      $("#approver").prop('disabled', true);
+      $("#tester").prop('disabled', true);
+      $("#reviewer").prop('disabled', true);
     });
     if ($("#checkTestsData").is(':checked')) {
       $(".checkTests").each(function() {
@@ -376,25 +418,41 @@ foreach ($rejectionTypeResult as $type) {
         selectedTestsId.push(this.id);
       });
       $("#status").prop('disabled', false);
+      $("#approver").prop('disabled', false);
+      $("#tester").prop('disabled', false);
+      $("#reviewer").prop('disabled', false);
+
     } else {
       $(".checkTests").each(function() {
         $(this).prop('checked', false);
         selectedTests.splice($.inArray(this.value, selectedTests), 1);
         selectedTestsId.splice($.inArray(this.id, selectedTestsId), 1);
         $("#status").prop('disabled', true);
+        $("#approver").prop('disabled', true);
+        $("#tester").prop('disabled', true);
+        $("#reviewer").prop('disabled', true);
       });
     }
     $("#checkedTests").val(selectedTests.join());
   }
 
   function submitTestStatus() {
+        $.blockUI();
+
     var stValue = $("#status").val();
+    var approver = $("#approver").val();
+    var tester = $("#tester").val();
+    var reviewer = $("#reviewer").val();
     var testIds = $("#checkedTests").val();
-    if (stValue != '' && testIds != '') {
+    if(testIds != ''){
+      if ((stValue != '' && approver != '' && reviewer != '')) {
       conf = confirm("<?= _translate("Are you sure you want to modify the sample status?", true); ?>");
       if (conf) {
         $.post("/covid-19/results/update-status.php", {
             status: stValue,
+              approver: approver,
+              tester: tester,
+              reviewer: reviewer,
             id: testIds,
             rejectedReason: $("#bulkRejectionReason").val()
           },
@@ -406,63 +464,30 @@ foreach ($rejectionTypeResult as $type) {
               $("#checkTestsData").attr("checked", false);
               $("#status").val('');
               $("#status").prop('disabled', true);
+              $("#approver").val('');
+              $("#approver").prop('disabled', true);
+              $("#tester").val('');
+              $("#tester").prop('disabled', true);
+              $("#reviewer").val('');
+              $("#reviewer").prop('disabled', true);
               $("#bulkRejectionReason").val('');
               $(".bulkRejectionReason").hide();
               oTable.fnDraw();
               alert("<?php echo _translate("Updated successfully."); ?>");
             }
           });
+       }
+      }
+      else{
+        alert("<?= _translate("Please select Status, Approver & Reviewer fields to update", true); ?>");
       }
     } else {
-      alert("<?php echo _translate("Please be checked atleast one checkbox."); ?>");
+      alert("<?= _translate("Please select at least one checkbox"); ?>");
     }
+        $.unblockUI();
+
   }
 
-  function updateStatus(obj, optVal) {
-    if (obj.value == '4') {
-      var confrm = confirm("<?php echo _translate("Do you wish to overwrite this result?"); ?>");
-      if (confrm) {
-        var pos = $("#" + obj.id).offset();
-        $("#rejectReasonDiv").show();
-        $("#rejectReasonDiv").css({
-          top: Math.round(pos.top) - 30,
-          position: 'absolute',
-          'z-index': 1,
-          right: '15%'
-        });
-        $("#statusDropDownId").val(obj.id);
-        return false;
-      } else {
-        $("#" + obj.id).val(optVal);
-        return false;
-      }
-    } else {
-      $("#rejectReasonDiv").hide();
-    }
-    if (obj.value != '') {
-      conf = confirm("<?php echo _translate("Do you wish to change the status ?"); ?>");
-      if (conf) {
-        $.post("/covid-19/results/update-status.php", {
-            status: obj.value,
-            id: obj.id
-          },
-          function(data) {
-            if (data != "") {
-              $("#checkedTests").val('');
-              selectedTests = [];
-              selectedTestsId = [];
-              $("#checkTestsData").attr("checked", false);
-              $("#status").val('');
-              $("#status").prop('disabled', true);
-              oTable.fnDraw();
-              alert("<?php echo _translate("Updated successfully."); ?>");
-            }
-          });
-      } else {
-        $("#rejectReasonDiv").hide();
-      }
-    }
-  }
 
   function updateRejectionReasonStatus(obj) {
     if (obj.value != '') {

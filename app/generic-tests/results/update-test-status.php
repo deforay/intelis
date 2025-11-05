@@ -28,7 +28,7 @@ try {
             'last_modified_datetime'     =>  DateUtility::getCurrentDateTime(),
             'data_sync'                 => 0
         );
-        /* Check if already have reviewed and approved by */
+        /* Check if already have reviewed and approved by 
         $db->where('sample_id', $id[$i]);
         $vlRow = $db->getOne($tableName);
         if (empty($vlRow['result_reviewed_by'])) {
@@ -36,7 +36,7 @@ try {
         }
         if (empty($vlRow['result_approved_by'])) {
             $status['result_approved_by'] = $_SESSION['userId'];
-        }
+        }*/
         if ($_POST['status'] == SAMPLE_STATUS\REJECTED) {
             $status['result'] = '';
             $status['is_sample_rejected'] = 'yes';
@@ -48,6 +48,22 @@ try {
         $db->where('sample_id', $id[$i]);
         $db->update($tableName, $status);
         $result = $id[$i];
+
+        $userData = [];
+        if($_POST['approver'] != ''){
+           $userData['result_approved_by'] = $_POST['approver'];
+        }
+        if($_POST['tester'] != ''){
+           $userData['tested_by'] = $_POST['tester'];
+        }
+        if($_POST['reviewer'] != ''){
+            $userData['result_reviewed_by'] = $_POST['reviewer'];
+        }
+      
+        if (count($userData) > 0) {
+            $db->where('sample_id', $id[$i]);
+            $db->update($tableName, $userData);
+        }
 
 
         //Add event log
