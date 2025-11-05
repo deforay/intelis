@@ -274,7 +274,7 @@ try {
         'result_dispatched_datetime' => DateUtility::isoDateFormat($_POST['resultDispatchedOn'] ?? '', true),
         'result_value_hiv_detection' => $hivDetection,
         'reason_for_failure' => $_POST['reasonForFailure'] ?? null,
-        'is_sample_rejected' => $_POST['isSampleRejected'] ?? null,
+        'is_sample_rejected' => $isRejected ?? null,
         'reason_for_sample_rejection' => (isset($_POST['rejectionReason']) && trim((string) $_POST['rejectionReason']) != '') ? $_POST['rejectionReason'] : null,
         'recommended_corrective_action' => (isset($_POST['correctiveAction']) && trim((string) $_POST['correctiveAction']) != '') ? $_POST['correctiveAction'] : null,
         'rejection_on' => DateUtility::isoDateFormat($_POST['rejectionDate'] ?? ''),
