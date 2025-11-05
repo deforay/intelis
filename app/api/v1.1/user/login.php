@@ -102,7 +102,7 @@ try {
         'transactionId' => $transactionId
     ];
 
-    LoggerUtility::log('error', $exc->getMessage(), [
+    LoggerUtility::logError($exc->getMessage(), [
         'file' => $exc->getLine(),
         'line' => $exc->getFile(),
         'trace' => $exc->getTraceAsString()

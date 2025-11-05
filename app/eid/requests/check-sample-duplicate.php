@@ -51,7 +51,7 @@ if (!empty($value) && !empty($fieldName) && !empty($tableName)) {
             $data = 0;
         }
     } catch (Exception $e) {
-        LoggerUtility::log('error', $e->getMessage(), [
+        LoggerUtility::logError($e->getMessage(), [
             'file' => $e->getFile(),
             'line' => $e->getLine(),
             'trace' => $e->getTraceAsString()

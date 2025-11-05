@@ -167,7 +167,7 @@ try {
     $_SESSION['errorDisplayMessage'] = _translate('Unable to process the request');
 
     // Log extra context if you want
-    LoggerUtility::log('error', $e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
+    LoggerUtility::logError($e->getFile() . ":" . $e->getLine() . ":" . $e->getMessage(), [
         'last_db_query' => $db->getLastQuery(),
         'last_db_error' => $db->getLastError(),
         'exception'     => $e,

@@ -28,7 +28,7 @@ $cliMode = php_sapi_name() === 'cli';
 $isLIS = $general->isLISInstance();
 
 if (!$isLIS || !$cliMode) {
-    //LoggerUtility::log('error', "Token not generated. This script is only for LIS instances.");
+    //LoggerUtility::logError("Token not generated. This script is only for LIS instances.");
     exit(0);
 }
 
@@ -40,7 +40,7 @@ $remoteURL = rtrim($general->getRemoteURL(), '/');
 
 // Check connectivity
 if (empty($remoteURL) || $remoteURL == '') {
-    LoggerUtility::log('error', "Please check if STS URL is set");
+    LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 

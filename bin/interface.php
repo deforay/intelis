@@ -114,7 +114,7 @@ $labId = $general->getSystemConfig('sc_testing_lab_id');
 $formId = (int) $general->getGlobalConfig('vl_form');
 
 if (empty($labId)) {
-    LoggerUtility::log('error', "No Lab ID set in System Config. Skipping Interfacing Results");
+    LoggerUtility::logError("No Lab ID set in System Config. Skipping Interfacing Results");
     exit(0);
 }
 

@@ -354,7 +354,7 @@ final class DateUtility
                         $startDate = $start->format('Y-m-d');
                     }
                 } catch (\Exception $e) {
-                    LoggerUtility::log('error', "Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
+                    LoggerUtility::logError("Failed to parse start date: " . $dates[0] . " - " . $e->getMessage());
                 }
             }
 
@@ -369,7 +369,7 @@ final class DateUtility
                         $endDate = $end->format('Y-m-d');
                     }
                 } catch (\Exception $e) {
-                    LoggerUtility::log('error', "Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
+                    LoggerUtility::logError("Failed to parse end date: " . $dates[1] . " - " . $e->getMessage());
                 }
             }
 

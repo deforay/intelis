@@ -64,7 +64,6 @@ try {
         ]);
 
         $appVersion = _getIteratorKey($appVersion, 'appVersion');
-
     } catch (PathNotFoundException | Throwable $e) {
         // If the pointer is not found, appVersion remains null
         $appVersion = null;
@@ -548,7 +547,7 @@ try {
         'data' => []
     ];
 
-    LoggerUtility::log('error', $exc->getMessage(), [
+    LoggerUtility::logError($exc->getMessage(), [
         'file' => $exc->getFile(),
         'line' => $exc->getLine(),
         'trace' => $exc->getTraceAsString()

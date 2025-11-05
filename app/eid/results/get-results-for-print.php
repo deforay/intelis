@@ -245,10 +245,8 @@ try {
     }
 
     echo json_encode($output);
-
-
 } catch (Exception $e) {
-    LoggerUtility::log('error', $e->getMessage(), [
+    LoggerUtility::logError($e->getMessage(), [
         'file' => $e->getFile(),
         'line' => $e->getLine(),
         'code' => $e->getCode(),

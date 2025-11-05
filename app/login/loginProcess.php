@@ -144,7 +144,7 @@ try {
     }
 } catch (Throwable $e) {
     $_SESSION['alertMsg'] = $e->getMessage();
-    LoggerUtility::log('error', $e->getMessage() . " | " . $ipAddress . " | " . $_POST['username'], [
+    LoggerUtility::logError($e->getMessage() . " | " . $ipAddress . " | " . $_POST['username'], [
         'errorType' => 'login',
         'exception' => $e,
         'code'  => $e->getCode(), // Error code

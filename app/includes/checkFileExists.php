@@ -22,7 +22,7 @@ if (!empty($_POST['fileName'])) {
             echo 'not exists';
         }
     } catch (Throwable $e) {
-        LoggerUtility::log('error', $e->getMessage());
-        LoggerUtility::log('error', $e->getTraceAsString());
+        LoggerUtility::logError($e->getMessage());
+        LoggerUtility::logError($e->getTraceAsString());
     }
 }

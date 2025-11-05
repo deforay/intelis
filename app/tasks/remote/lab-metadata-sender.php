@@ -47,14 +47,14 @@ $lastUpdatedOn = $db->getValue('s_vlsm_instance', 'last_lab_metadata_sync');
 $remoteURL = $general->getRemoteURL();
 
 if (empty($remoteURL)) {
-    LoggerUtility::log('error', "Please check if STS URL is set");
+    LoggerUtility::logError("Please check if STS URL is set");
     exit(0);
 }
 
 try {
     // Checking if the network connection is available
     if ($apiService->checkConnectivity("$remoteURL/api/version.php?labId=$labId&version=$version") === false) {
-        LoggerUtility::log('error', "No network connectivity while trying remote sync.");
+        LoggerUtility::logError("No network connectivity while trying remote sync.");
         return false;
     }
 
