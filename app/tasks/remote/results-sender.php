@@ -20,6 +20,7 @@ use App\Services\ApiService;
 use App\Utilities\DateUtility;
 use App\Utilities\MiscUtility;
 use App\Services\CommonService;
+use App\Services\TestsService;
 use App\Services\Covid19Service;
 use App\Utilities\LoggerUtility;
 use App\Services\DatabaseService;
@@ -204,7 +205,7 @@ $sampleCode = null;
 $chunkSize = RESULTS_SENDER_DEFAULT_CHUNK_SIZE;
 
 if ($cliMode) {
-    $validModules = ['vl', 'eid', 'covid19', 'hepatitis', 'tb', 'cd4', 'generic-tests'];
+    $validModules = TestsService::getActiveTests();
     $awaitingTestType = false;
     $awaitingChunkSize = false;
 
